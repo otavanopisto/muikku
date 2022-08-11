@@ -108,7 +108,9 @@
 }
 
 .card__meta-body-link--instagram {
+  align-items: center;
   color: $color-instagram-main-color;
+  display: flex;
   transition: color 0.3s ease-in-out;
 }
 
@@ -263,16 +265,4 @@
   .button {
     margin: 5px;
   }
-}
-
-.card__meta-external {
-  margin-left: 5px;
-}
-
-.card__meta-screen-reader-text {
-  clip: rect(1px, 1px, 1px, 1px);
-  height: 0.0625rem;
-  overflow: hidden;
-  position: absolute;
-  width: 0.0625rem;
 }

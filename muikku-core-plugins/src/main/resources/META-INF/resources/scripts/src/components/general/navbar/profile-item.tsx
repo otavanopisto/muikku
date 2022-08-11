@@ -82,10 +82,13 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
 
             {item.openInNewTab && (
               <>
-                <span className="link__screen-reader-text">
+                <span className="visually-hidden">
                   Avautuu uuuteen välilehteen
                 </span>
-                <span className="link__icon link__icon--external-right icon-external-link" />
+                <span
+                  role="presentation"
+                  className="external-link-indicator icon-external-link"
+                />
               </>
             )}
           </Link>

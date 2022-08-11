@@ -1,10 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 
-import "~/sass/elements/hero.scss";
-import "~/sass/elements/bubble.scss";
-import "~/sass/elements/logo.scss";
-
 import Button from "~/components/general/button";
 import Bubble from "~/components/general/bubble";
 
@@ -45,8 +41,6 @@ export default class FrontpageHero extends React.Component<
               )}
             >
               <Button
-                icon="external-link"
-                iconPosition="right"
                 buttonModifiers={["branded", "frontpage-bubble", "warn"]}
                 href="https://pyramus.otavanopisto.fi/applications/index.page"
                 openInNewTab="_blank"

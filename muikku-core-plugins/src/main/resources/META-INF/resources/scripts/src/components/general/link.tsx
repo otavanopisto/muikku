@@ -196,8 +196,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       case "_blank":
         return (
           <>
-            <span className="icon-external-link"></span>
-            <span className="visually-hidden">Opens to new tab</span>
+            <span className="visually-hidden">Avautuu uuuteen välilehteen</span>
+            <span
+              role="presentation"
+              className="external-link-indicator icon-external-link"
+            ></span>
           </>
         );
 
@@ -257,8 +260,13 @@ export default class Link extends React.Component<LinkProps, LinkState> {
             this.renderAccessibilityIndicatorByTarget(this.props.target)
           ) : this.props.openInNewTab ? (
             <>
-              <span className="icon-external-link"></span>
-              <span className="visually-hidden">Opens to new tab</span>
+              <span className="visually-hidden">
+                Avautuu uuuteen välilehteen
+              </span>
+              <span
+                role="presentation"
+                className="external-link-indicator icon-external-link"
+              ></span>
             </>
           ) : null}
         </Element>

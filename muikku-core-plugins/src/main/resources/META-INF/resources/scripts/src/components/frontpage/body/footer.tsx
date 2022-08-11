@@ -1,9 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 
-import "~/sass/elements/footer.scss";
-import "~/sass/elements/wcag.scss";
-
 /**
  * FrontpageFooterProps
  */
@@ -66,10 +63,13 @@ export default class FrontpageFooter extends React.Component<
                 {this.props.i18n.text.get(
                   "plugin.footer.ooPrivacyPolicy.label"
                 )}
-                <span className="link__screen-reader-text">
+                <span className="visually-hidden">
                   Avautuu uuteen välilehteen
                 </span>
-                <span className="link__icon link__icon--external-right icon-external-link" />
+                <span
+                  role="presentation"
+                  className="external-link-indicator icon-external-link"
+                />
               </a>
             </p>
             <p className="footer__subitem footer__subitem--accessibility-statement">
@@ -82,7 +82,10 @@ export default class FrontpageFooter extends React.Component<
                 {this.props.i18n.text.get(
                   "plugin.footer.accesibilityStatement.text"
                 )}
-                <span className="link__icon link__icon--external-right icon-external-link" />
+                <span
+                  role="presentation"
+                  className="external-link-indicator icon-external-link"
+                />
               </a>
             </p>
           </div>
@@ -110,6 +113,11 @@ export default class FrontpageFooter extends React.Component<
               rel="noreferrer"
             >
               <img src="/gfx/plagscan-logo-white.png" alt="Plagscan logo" />
+              <span className="visually-hidden">Avautuu uuteen ikkunaan</span>
+              <span
+                role="presentation"
+                className="external-link-indicator icon-external-link"
+              />
             </a>
             <span className="footer__item--plagscan-text">
               {this.props.i18n.text.get("plugin.footer.plagscan.text")}
@@ -120,11 +128,15 @@ export default class FrontpageFooter extends React.Component<
               className="link link--plagscan-privacy-policy"
               rel="noreferrer"
             >
-              (<span className="visually-hidden">Plagscan </span>
+              (
               {this.props.i18n.text.get(
                 "plugin.footer.plagScanPrivacyPolicy.label"
               )}
-              ).
+              <span className="visually-hidden">Avautuu uuteen ikkunaan</span>).
+              <span
+                role="presentation"
+                className="external-link-indicator icon-external-link"
+              />
             </a>
           </div>
         </div>

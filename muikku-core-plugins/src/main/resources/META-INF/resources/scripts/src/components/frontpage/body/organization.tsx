@@ -2,12 +2,6 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Button, { ButtonSocial } from "~/components/general/button";
 
-import "~/sass/elements/ordered-container.scss";
-import "~/sass/elements/logo.scss";
-import "~/sass/elements/buttons.scss";
-import "~/sass/elements/rich-text.scss";
-import "~/sass/elements/wcag.scss";
-
 /**
  * FrontpageOrganizationProps
  */
@@ -85,8 +79,6 @@ export default class FrontpageOrganization extends React.Component<
                   }}
                 ></div>
                 <Button
-                  icon="external-link"
-                  iconPosition="right"
                   href="http://www.otavia.fi"
                   openInNewTab="_blank"
                   buttonModifiers={["branded", "frontpage-website"]}

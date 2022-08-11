@@ -122,7 +122,15 @@
 }
 
 .link--plagscan-logo {
+  align-items: center;
   border: 0;
+  color: $color-default;
+  display: flex;
+
+  &:hover,
+  &:active {
+    color: $color-default;
+  }
 }
 
 .link--plagscan-privacy-policy,
@@ -472,17 +480,4 @@
     display: none;
     padding: 0;
   }
-}
-
-.link__screen-reader-text {
-  clip: rect(1px, 1px, 1px, 1px);
-  height: 0.0625rem;
-  overflow: hidden;
-  position: absolute;
-  width: 0.0625rem;
-}
-
-.link__icon--external-right {
-  margin-left: 5px;
-  margin-right: 0;
 }

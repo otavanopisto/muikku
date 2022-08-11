@@ -6,8 +6,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import "~/sass/elements/label.scss";
-import "~/sass/elements/link.scss";
 
 /**
  * FrontpageNavbarProps

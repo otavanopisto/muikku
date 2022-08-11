@@ -1,10 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 
-import "~/sass/elements/ordered-container.scss";
-import "~/sass/elements/card.scss";
-import "~/sass/elements/wcag.scss";
-
 /**
  * FrontpageInstagramProps
  */
@@ -67,10 +63,13 @@ export default class FrontpageInstagram extends React.Component<
                       >
                         <span className="visually-hidden">Instagram </span>
                         muikkuofficial
-                        <span className="card__meta-screen-reader-text">
+                        <span className="visually-hidden">
                           Avautuu uuteen välilehteen
                         </span>
-                        <span className="card__meta-external icon-external-link" />
+                        <span
+                          role="presentation"
+                          className="external-link-indicator icon-external-link"
+                        />
                       </a>
                     </div>
                     <div className="card__meta-body-description">

@@ -84,13 +84,13 @@ class Feed extends React.Component<FeedProps, FeedState> {
                     ? "nettilukio.fi"
                     : "nettiperuskoulu.fi"}
                   )
-                  <span
-                    role="presentation"
-                    className="feed__item-external icon-external-link"
-                  />
                   <span className="visually-hidden">
                     {entry.title} Avautuu uuteen välilehteen
                   </span>
+                  <span
+                    role="presentation"
+                    className="external-link-indicator icon-external-link"
+                  />
                 </a>
               </div>
               <div className="feed__item-meta">

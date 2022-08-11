@@ -104,12 +104,6 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
         )}
         {this.props.children}
 
-        {this.props.openInNewTab && (
-          <span className="button__screen-reader-text">
-            Avautuu uuteen välilehteen
-          </span>
-        )}
-
         {this.props.icon && this.props.iconPosition === "right" && (
           <span
             className={`button__icon icon-${this.props.icon} button__icon--right`}
