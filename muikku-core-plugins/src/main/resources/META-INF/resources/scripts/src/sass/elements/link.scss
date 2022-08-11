@@ -56,6 +56,18 @@
   }
 }
 
+.link--feed-nettilukio {
+  align-items: center;
+  color: $color-frontpage-card-upper-secondary-school-title;
+  display: flex;
+}
+
+.link--feed-nettipk {
+  align-items: center;
+  color: $color-frontpage-card-secondary-school-title;
+  display: flex;
+}
+
 .link--submit-worklist-approval,
 .link--worklist-entries-sorting {
   text-decoration: underline;
