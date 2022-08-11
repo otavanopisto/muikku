@@ -130,8 +130,8 @@ class DiscussionThreadReply extends React.Component<
           />
         ) : (
           <>
-            <DiscussionThreadBody>
-              {discussionItem.deleted ? (
+            {discussionItem.deleted ? (
+              <DiscussionThreadBody>
                 <div className="rich-text">
                   [
                   {this.props.i18n.text.get(
@@ -139,21 +139,29 @@ class DiscussionThreadReply extends React.Component<
                   )}
                   ]
                 </div>
-              ) : (
-                <div
-                  className="rich-text"
-                  dangerouslySetInnerHTML={{ __html: discussionItem.message }}
-                ></div>
-              )}
-              {discussionItem.created !== discussionItem.lastModified ? (
-                <span className="application-list__item-edited">
-                  {this.props.i18n.text.get(
-                    "plugin.discussion.content.isEdited",
-                    this.props.i18n.time.format(discussionItem.lastModified)
-                  )}
-                </span>
-              ) : null}
-            </DiscussionThreadBody>
+
+                {discussionItem.created !== discussionItem.lastModified ? (
+                  <span className="application-list__item-edited">
+                    {this.props.i18n.text.get(
+                      "plugin.discussion.content.isEdited",
+                      this.props.i18n.time.format(discussionItem.lastModified)
+                    )}
+                  </span>
+                ) : null}
+              </DiscussionThreadBody>
+            ) : (
+              <DiscussionThreadBody html={discussionItem.message}>
+                {discussionItem.created !== discussionItem.lastModified ? (
+                  <span className="application-list__item-edited">
+                    {this.props.i18n.text.get(
+                      "plugin.discussion.content.isEdited",
+                      this.props.i18n.time.format(discussionItem.lastModified)
+                    )}
+                  </span>
+                ) : null}
+              </DiscussionThreadBody>
+            )}
+
             {!discussionItem.deleted && user !== null ? (
               <DiscussionThreadFooter>
                 {!threadLocked || !isStudent ? (

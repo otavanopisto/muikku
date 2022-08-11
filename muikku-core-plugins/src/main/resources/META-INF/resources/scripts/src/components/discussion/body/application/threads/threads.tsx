@@ -99,10 +99,17 @@ export class DiscussionThreadHeader extends React.Component<
 }
 
 /**
+ * DiscussionThreadBodyProps
+ */
+interface DiscussionThreadBodyProps {
+  html?: string;
+}
+
+/**
  * DiscussionThreadBody
  */
 export class DiscussionThreadBody extends React.Component<
-  Record<string, unknown>,
+  DiscussionThreadBodyProps,
   Record<string, unknown>
 > {
   /**
@@ -110,7 +117,9 @@ export class DiscussionThreadBody extends React.Component<
    */
   render() {
     return (
-      <ApplicationListItemBody>{this.props.children}</ApplicationListItemBody>
+      <ApplicationListItemBody content={this.props.html}>
+        {this.props.children}
+      </ApplicationListItemBody>
     );
   }
 }

@@ -14,6 +14,7 @@ import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/rich-text.scss";
+import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
 /**
  * EvaluationEventContentCardProps
@@ -93,14 +94,6 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
     return mod;
   };
-
-  /**
-   * createHtmlMarkup
-   * @param htmlString htmlString
-   */
-  const createHtmlMarkup = (htmlString: string) => ({
-    __html: htmlString,
-  });
 
   /**
    * handleOpenContentClick
@@ -283,10 +276,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         </div>
 
         <AnimateHeight duration={300} height={height}>
-          <div
-            className="evaluation-modal__event-literal-assessment rich-text rich-text--evaluation-literal"
-            dangerouslySetInnerHTML={createHtmlMarkup(text)}
-          />
+          <div className="evaluation-modal__event-literal-assessment rich-text rich-text--evaluation-literal">
+            <CkeditorContentLoader html={text} />
+          </div>
         </AnimateHeight>
 
         {showModifyLink || showDeleteLink ? (
