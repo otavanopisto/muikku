@@ -106,21 +106,6 @@
   }
 }
 
-.link--privacy-policy {
-  color: $color-default;
-  text-align: center;
-  white-space: normal;
-
-  &:hover,
-  &:active {
-    color: $color-default;
-  }
-
-  @include breakpoint($breakpoint-pad) {
-    text-align: left;
-  }
-}
-
 .link--plagscan-logo {
   align-items: center;
   border: 0;
@@ -133,9 +118,12 @@
   }
 }
 
+.link--privacy-policy,
 .link--plagscan-privacy-policy,
 .link--accessibility-statement {
+  align-items: center;
   color: $color-default;
+  display: inline-flex;
 
   &:hover,
   &:active {

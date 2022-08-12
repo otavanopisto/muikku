@@ -136,7 +136,6 @@ export default class FrontpageFooter extends React.Component<
               {this.props.i18n.text.get(
                 "plugin.footer.plagScanPrivacyPolicy.label"
               )}
-              ).
               <span className="visually-hidden">
                 {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
               </span>
@@ -144,6 +143,7 @@ export default class FrontpageFooter extends React.Component<
                 role="presentation"
                 className="external-link-indicator icon-external-link"
               />
+              ).
             </a>
           </div>
         </div>
