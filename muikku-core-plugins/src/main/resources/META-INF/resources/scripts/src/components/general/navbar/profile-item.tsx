@@ -83,7 +83,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
             {item.openInNewTab && (
               <>
                 <span className="visually-hidden">
-                  Avautuu uuuteen välilehteen
+                  {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
                 </span>
                 <span
                   role="presentation"

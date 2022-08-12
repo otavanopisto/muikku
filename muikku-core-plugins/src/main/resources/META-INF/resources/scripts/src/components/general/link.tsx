@@ -9,6 +9,7 @@ import { HTMLAttributeAnchorTarget } from "react";
 import { Redirect } from "react-router-dom";
 import "~/sass/elements/link.scss";
 import { scrollToSection } from "~/util/modifiers";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * LinkProps
@@ -30,6 +31,7 @@ interface LinkProps
   scrollPadding?: number;
   disableScroll?: boolean;
   disableSmoothScroll?: boolean;
+  i18n?: i18nType;
 }
 
 /**
@@ -196,7 +198,9 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       case "_blank":
         return (
           <>
-            <span className="visually-hidden">Avautuu uuuteen välilehteen</span>
+            <span className="visually-hidden">
+              {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+            </span>
             <span
               role="presentation"
               className="external-link-indicator icon-external-link"
@@ -261,7 +265,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
           ) : this.props.openInNewTab ? (
             <>
               <span className="visually-hidden">
-                Avautuu uuuteen välilehteen
+                {/* {this.props.i18n.text.get("plugin.wcag.externalLink.label")} */}
               </span>
               <span
                 role="presentation"

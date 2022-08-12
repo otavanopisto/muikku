@@ -47,7 +47,9 @@ export default class Link extends React.Component<
       case "_blank":
         return (
           <>
-            <span className="visually-hidden">Avautuu uuuteen välilehteen</span>
+            <span className="visually-hidden">
+              {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+            </span>
             <span
               role="presentation"
               className="external-link-indicator icon-external-link"

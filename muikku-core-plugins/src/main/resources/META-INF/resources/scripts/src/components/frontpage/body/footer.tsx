@@ -63,7 +63,7 @@ export default class FrontpageFooter extends React.Component<
                   "plugin.footer.ooPrivacyPolicy.label"
                 )}
                 <span className="visually-hidden">
-                  Avautuu uuteen välilehteen
+                  {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
                 </span>
                 <span
                   role="presentation"
@@ -81,7 +81,9 @@ export default class FrontpageFooter extends React.Component<
                 {this.props.i18n.text.get(
                   "plugin.footer.accesibilityStatement.text"
                 )}
-                <span className="visually-hidden">Avautuu uuteen ikkunaan</span>
+                <span className="visually-hidden">
+                  {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+                </span>
                 <span
                   role="presentation"
                   className="external-link-indicator icon-external-link"
@@ -113,7 +115,9 @@ export default class FrontpageFooter extends React.Component<
               rel="noreferrer"
             >
               <img src="/gfx/plagscan-logo-white.png" alt="Plagscan logo" />
-              <span className="visually-hidden">Avautuu uuteen ikkunaan</span>
+              <span className="visually-hidden">
+                {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+              </span>
               <span
                 role="presentation"
                 className="external-link-indicator icon-external-link"
@@ -132,7 +136,10 @@ export default class FrontpageFooter extends React.Component<
               {this.props.i18n.text.get(
                 "plugin.footer.plagScanPrivacyPolicy.label"
               )}
-              <span className="visually-hidden">Avautuu uuteen ikkunaan</span>).
+              ).
+              <span className="visually-hidden">
+                {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+              </span>
               <span
                 role="presentation"
                 className="external-link-indicator icon-external-link"

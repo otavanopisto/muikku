@@ -51,7 +51,9 @@ export default class FrontpageInstagram extends React.Component<
                           Instagram muikkuofficial
                         </span>
                         <span className="visually-hidden">
-                          Avautuu uuteen välilehteen
+                          {this.props.i18n.text.get(
+                            "plugin.wcag.externalLink.label"
+                          )}
                         </span>
                       </span>
                     </a>
@@ -67,7 +69,9 @@ export default class FrontpageInstagram extends React.Component<
                         <span className="visually-hidden">Instagram </span>
                         muikkuofficial
                         <span className="visually-hidden">
-                          Avautuu uuteen välilehteen
+                          {this.props.i18n.text.get(
+                            "plugin.wcag.externalLink.label"
+                          )}
                         </span>
                         <span
                           role="presentation"

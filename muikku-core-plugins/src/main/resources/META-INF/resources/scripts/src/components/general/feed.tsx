@@ -85,7 +85,8 @@ class Feed extends React.Component<FeedProps, FeedState> {
                     : "nettiperuskoulu.fi"}
                   )
                   <span className="visually-hidden">
-                    {entry.title} Avautuu uuteen välilehteen
+                    {entry.title}
+                    {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
                   </span>
                   <span
                     role="presentation"
