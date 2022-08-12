@@ -1307,6 +1307,14 @@
       margin: 0 0 0 0.3rem;
     }
   }
+
+  // This needs to be added here as we place external-link-indicator
+  // automatically to every button and anchor element that opens up a new tab/window.
+  // This way we only hide the indicator in button-social element and avoid making
+  // unnecessary conditional to the button and/or link component.
+  .external-link-indicator {
+    display: none;
+  }
 }
 
 .button--change-image-edit,

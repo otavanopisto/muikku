@@ -59,7 +59,6 @@ export default class FrontpageFooter extends React.Component<
                 className="link link--privacy-policy"
                 rel="noreferrer"
               >
-                <span className="visually-hidden">Otavia </span>
                 {this.props.i18n.text.get(
                   "plugin.footer.ooPrivacyPolicy.label"
                 )}
@@ -82,6 +81,7 @@ export default class FrontpageFooter extends React.Component<
                 {this.props.i18n.text.get(
                   "plugin.footer.accesibilityStatement.text"
                 )}
+                <span className="visually-hidden">Avautuu uuteen ikkunaan</span>
                 <span
                   role="presentation"
                   className="external-link-indicator icon-external-link"
