@@ -10,6 +10,10 @@ import { Redirect } from "react-router-dom";
 import "~/sass/elements/link.scss";
 import { scrollToSection } from "~/util/modifiers";
 import { i18nType } from "~/reducers/base/i18n";
+import { StateType } from "~/reducers";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
+import { AnyActionType } from "~/actions/index";
 
 /**
  * LinkProps
@@ -31,7 +35,7 @@ interface LinkProps
   scrollPadding?: number;
   disableScroll?: boolean;
   disableSmoothScroll?: boolean;
-  i18n?: i18nType;
+  i18n: i18nType;
 }
 
 /**
@@ -45,7 +49,7 @@ interface LinkState {
 /**
  * Link
  */
-export default class Link extends React.Component<LinkProps, LinkState> {
+class Link extends React.Component<LinkProps, LinkState> {
   private touchCordX: number | null;
   private touchCordY: number | null;
 
@@ -265,7 +269,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
           ) : this.props.openInNewTab ? (
             <>
               <span className="visually-hidden">
-                {/* {this.props.i18n.text.get("plugin.wcag.externalLink.label")} */}
+                {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
               </span>
               <span
                 role="presentation"
@@ -303,3 +307,23 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     return this.refs["element"] as HTMLElement;
   }
 }
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Link);
