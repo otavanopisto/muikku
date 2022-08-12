@@ -97,7 +97,7 @@ public class WebSocketMessenger {
       }
     }
     catch (Exception e) {
-      logger.log(Level.WARNING, "Unable to send websocket message", e);
+      logger.log(Level.WARNING, String.format("Unable to send websocket message: %s", e.getMessage()));
       closeSession(session, ticket, null);
     }
   }
