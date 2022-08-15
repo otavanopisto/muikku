@@ -223,6 +223,20 @@ public class GuiderRESTService extends PluginRESTService {
     Set<Long> userGroupFilters = null;
     Set<Long> workspaceFilters = null;
 
+    // #4585: By default, teachers should only see their own students
+    // #6170: Teachers used to see only their own workspaces' students. They should also see their own groups' students
+    
+    boolean joinGroupsAndWorkspaces = false;
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    if (roleEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Unknown role").build();
+    }
+    if (roleEntity.getArchetype() == EnvironmentRoleArchetype.TEACHER) {
+      myUserGroups = CollectionUtils.isEmpty(userGroupIds) && CollectionUtils.isEmpty(workspaceIds);
+      myWorkspaces = CollectionUtils.isEmpty(userGroupIds) && CollectionUtils.isEmpty(workspaceIds);
+      joinGroupsAndWorkspaces = myUserGroups && myWorkspaces;
+    }
+
     if (!sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS)) {
       if ((myUserGroups != null) && myUserGroups) {
         userGroupFilters = new HashSet<Long>();
@@ -256,6 +270,9 @@ public class GuiderRESTService extends PluginRESTService {
       } else {
         userGroupFilters.addAll(accessibleUserGroupEntityIds);
       }
+      // Study guiders only have access to their groups' students, so even if group and workspace filters would
+      // be in effect, they are used to create an intersection result rather than a join result 
+      joinGroupsAndWorkspaces = false;
     }
 
     List<SchoolDataIdentifier> userIdentifiers = null;
@@ -298,14 +315,6 @@ public class GuiderRESTService extends PluginRESTService {
       }
     }
 
-    // #4585: By default, teachers should only see their own students
-    if (CollectionUtils.isEmpty(workspaceIds) && !Boolean.TRUE.equals(myWorkspaces)) {
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-      if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.TEACHER) {
-        myWorkspaces = true;
-      }
-    }
-
     if ((myWorkspaces != null) && myWorkspaces) {
       // Workspaces where user is a member
       List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
@@ -327,7 +336,7 @@ public class GuiderRESTService extends PluginRESTService {
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
 
       SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT),
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults, joinGroupsAndWorkspaces);
 
       List<Map<String, Object>> results = result.getResults();
 
@@ -364,12 +373,7 @@ public class GuiderRESTService extends PluginRESTService {
             continue;
           }
           String emailAddress = "";
-          User student = userController.findUserByIdentifier(studentIdentifier);
-          if (student == null) {
-            logger.severe(String.format("Couldn't fetch user %s found in search index", studentIdentifier));
-            continue;
-          }
-          if (!Boolean.TRUE.equals(student.getHidden())) {
+          if (!Boolean.TRUE.equals((Boolean) o.get("hidden"))) {
             emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
           }
           Date studyStartDate = getDateResult(o.get("studyStartDate"));
