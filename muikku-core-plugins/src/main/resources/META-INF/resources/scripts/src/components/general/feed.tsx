@@ -79,7 +79,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
                   rel="noreferrer"
                   className={`link link--feed-${entry.feed}`}
                 >
-                  Lue koko artikkeli (
+                  {this.props.i18n.text.get("plugin.feeds.readMore.label")} (
                   {entry.feed === "nettilukio"
                     ? "nettilukio.fi"
                     : "nettiperuskoulu.fi"}

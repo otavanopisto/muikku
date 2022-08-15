@@ -109,7 +109,7 @@ export default class Link extends React.Component<
         if (props.target) {
           return (
             <Tag {...props}>
-              {children}{" "}
+              {children}
               {this.renderAccessibilityIndicatorByTarget(props.target)}
             </Tag>
           );

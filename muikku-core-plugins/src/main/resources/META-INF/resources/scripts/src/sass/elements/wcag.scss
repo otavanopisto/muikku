@@ -12,5 +12,12 @@
 }
 
 .external-link-indicator {
-  margin: 0 0 0 5px;
+  align-items: center;
+  display: inline-flex;
+  font-size: $text-mobile-font-size;
+  padding: 0 0 0 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
