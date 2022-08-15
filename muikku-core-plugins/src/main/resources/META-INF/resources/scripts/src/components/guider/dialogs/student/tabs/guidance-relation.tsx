@@ -30,7 +30,10 @@ interface GuidanceRelationProps {
   loadStudentGuiderRelations: LoadStudentDataTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
 }
-
+/**
+ * Context for the contactLogsPerPage
+ */
+export const ContactLogsContext = React.createContext(10);
 /**
  * GuidanceReleation
  * @param props GuidanceRelationProps
@@ -38,7 +41,6 @@ interface GuidanceRelationProps {
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
   const { i18n, currentStudent, contactLogsPerPage } = props;
-  const [currentPage, setCurrentPage] = React.useState<number>(0);
 
   if (!currentStudent) {
     return null;
@@ -56,20 +58,23 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
       selectedItem.selected,
       true
     );
-    setCurrentPage(selectedItem.selected);
   };
 
   const { contactLogs, contactLogState, basic } = props.currentStudent;
-  const pages = Math.ceil(
-    contactLogs && contactLogs.totalHitCount / contactLogsPerPage
-  );
+
+  const pages = contactLogs
+    ? Math.ceil(contactLogs.totalHitCount / contactLogsPerPage)
+    : 0;
+  const currentPage = contactLogs
+    ? contactLogs.firstResult / contactLogsPerPage
+    : 0;
 
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader
         title={i18n.text.get("plugin.guider.user.tabs.title.guidanceRelations")}
       >
-        <NewContactEvent>
+        <NewContactEvent logsPerPage={contactLogsPerPage}>
           <ButtonPill
             icon="bubbles"
             buttonModifiers="create-contact-log-entry"
@@ -111,33 +116,35 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
             {i18n.text.get("plugin.guider.user.contactLog.title")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
-            {contactLogState && contactLogState === "LOADING" ? (
-              <div className="loader-empty" />
-            ) : contactLogs && contactLogs.results.length > 0 ? (
-              <>
-                {contactLogs.results.map((contactEvent) => (
-                  <ContactEvent
-                    key={"contact-event-" + contactEvent.id}
-                    studentId={basic.userEntityId}
-                    event={contactEvent}
+            <ContactLogsContext.Provider value={contactLogsPerPage}>
+              {contactLogState && contactLogState === "LOADING" ? (
+                <div className="loader-empty" />
+              ) : contactLogs && contactLogs.results.length > 0 ? (
+                <>
+                  {contactLogs.results.map((contactEvent) => (
+                    <ContactEvent
+                      key={"contact-event-" + contactEvent.id}
+                      studentId={basic.userEntityId}
+                      event={contactEvent}
+                    />
+                  ))}
+                  <PagerV2
+                    previousLabel=""
+                    nextLabel=""
+                    breakLabel="..."
+                    forcePage={currentPage}
+                    pageCount={pages}
+                    onPageChange={handlePageChange}
+                    marginPagesDisplayed={1}
+                    pageRangeDisplayed={2}
                   />
-                ))}
-                <PagerV2
-                  previousLabel=""
-                  nextLabel=""
-                  breakLabel="..."
-                  forcePage={currentPage}
-                  pageCount={pages}
-                  onPageChange={handlePageChange}
-                  marginPagesDisplayed={1}
-                  pageRangeDisplayed={2}
-                />
-              </>
-            ) : (
-              <div className="empty">
-                {i18n.text.get("plugin.guider.user.contactLog.empty")}
-              </div>
-            )}
+                </>
+              ) : (
+                <div className="empty">
+                  {i18n.text.get("plugin.guider.user.contactLog.empty")}
+                </div>
+              )}
+            </ContactLogsContext.Provider>
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
       </ApplicationSubPanel.Body>

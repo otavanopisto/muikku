@@ -12,66 +12,82 @@ import {
 } from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
 import * as React from "react";
+import { ContactLogsContext } from "../../guidance-relation";
+import { IContactLogs } from "~/reducers/main-function/guider";
+import {
+  loadStudentContactLogs,
+  LoadContactLogsTriggerType,
+} from "~/actions/main-function/guider";
+
 /**
  * ContactEventDeletePromptProps
  */
 interface ContactEventDeletePromptProps {
   i18n: i18nType;
   commentId?: number;
+  contactLogs: IContactLogs;
   contactLogEntryId: number;
   studentUserEntityId: number;
   deleteContactLogEvent: DeleteContactLogEventTriggerType;
   deleteContactLogEventComment: DeleteContactLogEventCommentTriggerType;
+  loadStudentContactLogs: LoadContactLogsTriggerType;
   children: JSX.Element;
 }
 
 /**
- * ContactEventDeletePromptState
- */
-interface ContactEventDeletePromptState {
-  locked: boolean;
-}
-
-/**
  * A prompt for deleting a contact log entry or comment
+ * @param props ContactEventDeletePromptProps
  */
-class ContactEventDeletePrompt extends React.Component<
-  ContactEventDeletePromptProps,
-  ContactEventDeletePromptState
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: ContactEventDeletePromptProps) {
-    super(props);
-    this.state = {
-      locked: false,
-    };
-  }
-
+const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
+  props
+) => {
+  const [locked, setLocked] = React.useState<boolean>(false);
+  const {
+    i18n,
+    commentId,
+    contactLogEntryId,
+    studentUserEntityId,
+    contactLogs,
+    deleteContactLogEvent,
+    deleteContactLogEventComment,
+    loadStudentContactLogs,
+  } = props;
+  const contactLogsPerPage = React.useContext(ContactLogsContext);
   /**
    * handleOnDelete
    * @param closeDialog closeDialog
    */
-  handleOnDelete = (closeDialog: () => void) => {
-    this.setState({ locked: true });
-    if (!this.props.commentId) {
-      this.props.deleteContactLogEvent(
-        this.props.studentUserEntityId,
-        this.props.contactLogEntryId,
+  const handleOnDelete = (closeDialog: () => void) => {
+    setLocked(true);
+    if (!commentId) {
+      deleteContactLogEvent(
+        studentUserEntityId,
+        contactLogEntryId,
         /**
          * onSuccess
          */
         () => {
           closeDialog();
+          if (contactLogs.results.length === 0) {
+            const returnPage =
+              contactLogs.firstResult === 0
+                ? 0
+                : contactLogs.firstResult / contactLogsPerPage - 1;
+
+            loadStudentContactLogs(
+              studentUserEntityId,
+              contactLogsPerPage,
+              returnPage,
+              true
+            );
+          }
         }
       );
     } else {
-      this.props.deleteContactLogEventComment(
-        this.props.studentUserEntityId,
-        this.props.contactLogEntryId,
-        this.props.commentId,
+      deleteContactLogEventComment(
+        studentUserEntityId,
+        contactLogEntryId,
+        commentId,
         /**
          * onSuccess
          */
@@ -83,73 +99,65 @@ class ContactEventDeletePrompt extends React.Component<
   };
 
   /**
-   * render
+   * content
+   * @param closeDialog closeDialog
+   * @returns JSX.Element
    */
-  render() {
-    /**
-     * content
-     * @param closeDialog closeDialog
-     * @returns JSX.Element
-     */
-    const content = (closeDialog: () => void) => (
-      <div>
-        {this.props.commentId
-          ? this.props.i18n.text.get(
-              "plugin.guider.user.dialog.removePrompt.comment.content"
-            )
-          : this.props.i18n.text.get(
-              "plugin.guider.user.dialog.removePrompt.entry.content"
-            )}
-      </div>
-    );
+  const content = (closeDialog: () => void) => (
+    <div>
+      {commentId
+        ? i18n.text.get(
+            "plugin.guider.user.dialog.removePrompt.comment.content"
+          )
+        : i18n.text.get("plugin.guider.user.dialog.removePrompt.entry.content")}
+    </div>
+  );
 
+  const footer = (closeDialog: () => void) => (
+    <div className="dialog__button-set">
+      <Button
+        buttonModifiers={["fatal", "standard-ok"]}
+        onClick={() => handleOnDelete(closeDialog)}
+        disabled={locked}
+      >
+        {i18n.text.get(
+          "plugin.discussion.confirmThreadRemovalDialog.confirmButton"
+        )}
+      </Button>
+      <Button
+        buttonModifiers={["cancel", "standard-cancel"]}
+        onClick={closeDialog}
+      >
+        {i18n.text.get(
+          "plugin.discussion.confirmThreadRemovalDialog.cancelButton"
+        )}
+      </Button>
+    </div>
+  );
+
+  return (
     /**
      * footer
      * @param closeDialog close dialog function
      * @returns JSX.Element
      */
-    const footer = (closeDialog: () => void) => (
-      <div className="dialog__button-set">
-        <Button
-          buttonModifiers={["fatal", "standard-ok"]}
-          onClick={this.handleOnDelete.bind(this, closeDialog)}
-          disabled={this.state.locked}
-        >
-          {this.props.i18n.text.get(
-            "plugin.discussion.confirmThreadRemovalDialog.confirmButton"
-          )}
-        </Button>
-        <Button
-          buttonModifiers={["cancel", "standard-cancel"]}
-          onClick={closeDialog}
-        >
-          {this.props.i18n.text.get(
-            "plugin.discussion.confirmThreadRemovalDialog.cancelButton"
-          )}
-        </Button>
-      </div>
-    );
 
-    return (
-      <Dialog
-        modifier="delete-area"
-        title={
-          this.props.commentId
-            ? this.props.i18n.text.get(
-                "plugin.guider.user.dialog.removePrompt.comment.title"
-              )
-            : this.props.i18n.text.get(
-                "plugin.guider.user.dialog.removePrompt.entry.title"
-              )
-        }
-        content={content}
-        footer={footer}
-      >
-        {this.props.children}
-      </Dialog>
-    );
-  }
-}
+    <Dialog
+      modifier="delete-area"
+      title={
+        commentId
+          ? i18n.text.get(
+              "plugin.guider.user.dialog.removePrompt.comment.title"
+            )
+          : i18n.text.get("plugin.guider.user.dialog.removePrompt.entry.title")
+      }
+      content={content}
+      footer={footer}
+    >
+      {props.children}
+    </Dialog>
+  );
+};
 
 /**
  * mapStateToProps
@@ -159,6 +167,7 @@ class ContactEventDeletePrompt extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    contactLogs: state.guider.currentStudent.contactLogs,
   };
 }
 
@@ -169,7 +178,11 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { deleteContactLogEvent, deleteContactLogEventComment },
+    {
+      deleteContactLogEvent,
+      deleteContactLogEventComment,
+      loadStudentContactLogs,
+    },
     dispatch
   );
 }

@@ -74,7 +74,7 @@ class StudentDialog extends React.Component<
   StudentDialogProps,
   StudentDialogState
 > {
-  private contactLogsPerPage = 10;
+  private contactLogsPerPage = 2;
 
   /**
    * constructor

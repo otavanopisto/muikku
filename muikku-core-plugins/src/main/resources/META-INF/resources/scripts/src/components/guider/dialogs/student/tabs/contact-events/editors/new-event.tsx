@@ -21,6 +21,10 @@ import {
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
+import {
+  loadStudentContactLogs,
+  LoadContactLogsTriggerType,
+} from "~/actions/main-function/guider";
 
 /**
  * NewContactEventProps
@@ -29,6 +33,8 @@ interface NewContactEventProps {
   children?: JSX.Element;
   i18n: i18nType;
   createContactLogEvent: CreateContactLogEventTriggerType;
+  loadStudentContactLogs: LoadContactLogsTriggerType;
+  logsPerPage: number;
   currentStudent: GuiderStudentType;
   status: StatusType;
   initialDate?: Date;
@@ -51,6 +57,8 @@ interface NewContactEventState {
   locked: boolean;
 }
 
+export const contactLogsContext = React.createContext(10);
+
 /**
  * NewContactEvent
  */
@@ -60,6 +68,7 @@ class NewContactEvent extends SessionStateComponent<
 > {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
   private nameSpace = "new-contact-event";
+  static contextType = contactLogsContext;
   /**
    * constructor
    * @param props props
@@ -166,6 +175,7 @@ class NewContactEvent extends SessionStateComponent<
    */
   clearUp = () => {
     this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
+    const test = this.context;
     setTimeout(() => {
       this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
     }, 100);
@@ -179,6 +189,12 @@ class NewContactEvent extends SessionStateComponent<
       type: this.props.initialType || "OTHER",
       locked: false,
     });
+    this.props.loadStudentContactLogs(
+      this.props.currentStudent.userEntityId,
+      this.props.logsPerPage,
+      0,
+      true
+    );
   };
 
   /**
@@ -310,6 +326,8 @@ class NewContactEvent extends SessionStateComponent<
   }
 }
 
+NewContactEvent.contextType = contactLogsContext;
+
 /**
  * mapStateToProps
  * @param state state
@@ -329,7 +347,10 @@ function mapStateToProps(state: StateType) {
  * @returns dispatch functions
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ createContactLogEvent }, dispatch);
+  return bindActionCreators(
+    { createContactLogEvent, loadStudentContactLogs },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewContactEvent);
