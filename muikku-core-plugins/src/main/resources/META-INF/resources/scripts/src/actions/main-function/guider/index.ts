@@ -35,7 +35,6 @@ import {
   WorkspaceListType,
   WorkspaceForumStatisticsType,
   ActivityLogType,
-  WorkspaceStudentActivityType,
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
@@ -896,86 +895,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     }
   };
 };
-
-/**
- * loadStudentGuiderRelations thunk action creator
- * @param id student id
- * @param forceLoad should the guiderRelation load be forced
- * @returns a thunk function for loading guidance relations tab
- */
-const loadStudentGuiderRelations: LoadStudentDataTriggerType =
-  function loadStudentGuiderRelations(id, forceLoad) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      try {
-        const contactLogsLoaded =
-          getState().guider.currentStudent.contactLogState === "READY";
-
-        if (contactLogsLoaded && !forceLoad) {
-          return;
-        }
-
-        dispatch({
-          type: "LOCK_TOOLBAR",
-          payload: null,
-        });
-
-        dispatch({
-          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-          payload: {
-            property: "contactLogState",
-            value: <LoadingState>"LOADING",
-          },
-        });
-
-        await promisify(
-          mApi().guider.users.contactLog.read(id),
-          "callback"
-        )().then((contactLogs: IContactLogs) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "contactLogs", value: contactLogs },
-          });
-        });
-
-        dispatch({
-          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-          payload: {
-            property: "contactLogState",
-            value: <LoadingState>"READY",
-          },
-        });
-
-        dispatch({
-          type: "UNLOCK_TOOLBAR",
-          payload: null,
-        });
-      } catch (err) {
-        if (!(err instanceof MApiError)) {
-          throw err;
-        }
-        dispatch(
-          notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
-            "error"
-          )
-        );
-        dispatch({
-          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-          payload: {
-            property: "contactLogState",
-            value: <LoadingState>"ERROR",
-          },
-        });
-        dispatch({
-          type: "UNLOCK_TOOLBAR",
-          payload: null,
-        });
-      }
-    };
-  };
 
 /**
  * loadStudentContactLogs thunk action creator
@@ -2234,7 +2153,7 @@ export {
   loadMoreStudents,
   loadStudent,
   loadStudentHistory,
-  loadStudentGuiderRelations,
+  // loadStudentGuiderRelations,
   loadStudentContactLogs,
   createContactLogEvent,
   deleteContactLogEvent,

@@ -99,8 +99,8 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
   };
 
   /**
-   * content
-   * @param closeDialog closeDialog
+   * content element
+   * @param closeDialog function to close the dialog
    * @returns JSX.Element
    */
   const content = (closeDialog: () => void) => (
@@ -113,6 +113,11 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
     </div>
   );
 
+  /**
+   * footer element
+   * @param closeDialog function to close the dialog
+   * @returns JSX.Element
+   */
   const footer = (closeDialog: () => void) => (
     <div className="dialog__button-set">
       <Button

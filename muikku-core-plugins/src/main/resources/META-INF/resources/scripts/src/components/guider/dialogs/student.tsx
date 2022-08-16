@@ -23,8 +23,6 @@ import GuidanceRelation from "./student/tabs/guidance-relation";
 import {
   loadStudentHistory,
   LoadStudentTriggerType,
-  loadStudentGuiderRelations,
-  LoadStudentDataTriggerType,
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
   UpdateCurrentStudentHopsPhaseTriggerType,
@@ -54,7 +52,6 @@ interface StudentDialogProps {
   i18n: i18nType;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
-  loadStudentGuiderRelations: LoadStudentDataTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
 }
@@ -327,7 +324,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     {
       loadStudentHistory,
       loadStudentContactLogs,
-      loadStudentGuiderRelations,
       updateCurrentStudentHopsPhase,
     },
     dispatch

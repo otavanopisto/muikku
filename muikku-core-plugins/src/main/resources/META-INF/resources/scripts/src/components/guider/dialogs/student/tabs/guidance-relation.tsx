@@ -14,8 +14,6 @@ import NewContactEvent from "./contact-events/editors/new-event";
 import { ButtonPill } from "~/components/general/button";
 import PagerV2 from "~/components/general/pagerV2";
 import {
-  loadStudentGuiderRelations,
-  LoadStudentDataTriggerType,
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
 } from "~/actions/main-function/guider";
@@ -27,7 +25,6 @@ interface GuidanceRelationProps {
   i18n: i18nType;
   currentStudent: GuiderStudentUserProfileType;
   contactLogsPerPage: number;
-  loadStudentGuiderRelations: LoadStudentDataTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
 }
 /**
@@ -171,7 +168,6 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
-      loadStudentGuiderRelations,
       loadStudentContactLogs,
     },
     dispatch

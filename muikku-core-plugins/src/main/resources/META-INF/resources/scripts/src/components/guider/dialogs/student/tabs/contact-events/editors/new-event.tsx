@@ -175,7 +175,6 @@ class NewContactEvent extends SessionStateComponent<
    */
   clearUp = () => {
     this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
-    const test = this.context;
     setTimeout(() => {
       this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
     }, 100);
