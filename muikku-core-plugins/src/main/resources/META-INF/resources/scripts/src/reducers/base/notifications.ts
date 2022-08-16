@@ -18,6 +18,7 @@ export type NotificationSeverityType =
 export interface NotificationState {
   notifications: NotificationListType;
   notificationDialogOpen: boolean;
+  dialogMessage: string;
 }
 
 /**
@@ -34,6 +35,7 @@ export type NotificationListType = Array<NotificationType>;
 const initialNotificationState: NotificationState = {
   notifications: [],
   notificationDialogOpen: false,
+  dialogMessage: "",
 };
 
 /**
@@ -66,6 +68,7 @@ export default function notifications(
       return {
         ...state,
         notificationDialogOpen: true,
+        dialogMessage: action.payload,
       };
 
     case "CLOSE_NOTIFICATION_DIALOG":

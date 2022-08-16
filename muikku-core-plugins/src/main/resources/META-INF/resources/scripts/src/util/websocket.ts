@@ -280,7 +280,11 @@ export default class MuikkuWebsocket {
           if (jqXHR.status == 403) {
             // According to server, we are no longer logged in. Stop everything, user needs to login again
             // TODO localization
-            this.store.dispatch(actions.openNotificationDialog() as Action);
+            this.store.dispatch(
+              actions.openNotificationDialog(
+                "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään"
+              ) as Action
+            );
             // this.store.dispatch(
             //   actions.displayNotification(
             //     "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
@@ -300,7 +304,11 @@ export default class MuikkuWebsocket {
           } else if (jqXHR.status == 502) {
             // Server is down. Stop everything, user needs to reload page
             // TODO localization
-            this.store.dispatch(actions.openNotificationDialog() as Action);
+            this.store.dispatch(
+              actions.openNotificationDialog(
+                "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen."
+              ) as Action
+            );
             // this.store.dispatch(
             //   actions.displayNotification(
             //     "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.",
@@ -489,7 +497,11 @@ export default class MuikkuWebsocket {
           this.discarded = true;
           this.discardCurrentWebSocket(true);
           // TODO localization
-          this.store.dispatch(actions.openNotificationDialog() as Action);
+          this.store.dispatch(
+            actions.openNotificationDialog(
+              "Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi."
+            ) as Action
+          );
           /* this.store.dispatch(
             actions.displayNotification(
               "Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.",
