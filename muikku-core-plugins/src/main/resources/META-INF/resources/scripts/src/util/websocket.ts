@@ -485,7 +485,7 @@ export default class MuikkuWebsocket {
       } else {
         this.reconnectRetries++;
         if (this.reconnectRetries == 6) {
-          // two minutes have passed, let's give up
+          // one minute have passed, let's give up
           this.discarded = true;
           this.discardCurrentWebSocket(true);
           // TODO localization
