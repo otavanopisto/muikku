@@ -15,7 +15,7 @@ export type HIDE_NOTIFICATION = SpecificActionType<
 
 export type OPEN_NOTIFICATION_DIALOG = SpecificActionType<
   "OPEN_NOTIFICATION_DIALOG",
-  null
+  string
 >;
 
 export type CLOSE_NOTIFICATION_DIALOG = SpecificActionType<
@@ -41,7 +41,7 @@ export interface HideNotificationTriggerType {
  * OpenNotificationDialogTrigger
  */
 export interface OpenNotificationDialogTrigger {
-  (): OPEN_NOTIFICATION_DIALOG;
+  (message: string): OPEN_NOTIFICATION_DIALOG;
 }
 
 /**
@@ -99,12 +99,13 @@ const hideNotification: HideNotificationTriggerType =
 
 /**
  * openNotificationDialog
+ * @param message message
  */
 const openNotificationDialog: OpenNotificationDialogTrigger =
-  function hideNotificationType() {
+  function openNotificationDialog(message) {
     return {
       type: "OPEN_NOTIFICATION_DIALOG",
-      payload: null,
+      payload: message,
     };
   };
 
@@ -112,7 +113,7 @@ const openNotificationDialog: OpenNotificationDialogTrigger =
  * closeNotificationDialog
  */
 const closeNotificationDialog: CloseNotificationDialogTrigger =
-  function hideNotificationType() {
+  function closeNotificationDialog() {
     return {
       type: "CLOSE_NOTIFICATION_DIALOG",
       payload: null,

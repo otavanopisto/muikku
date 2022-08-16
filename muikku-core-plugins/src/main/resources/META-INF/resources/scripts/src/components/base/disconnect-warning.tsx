@@ -17,6 +17,7 @@ import Button from "~/components/general/button";
 interface DisconnectedWarningDialogProps {
   i18n: i18nType;
   dialogOpen: boolean;
+  dialogMessage: string;
   closeNotificationDialog: CloseNotificationDialogTrigger;
   children?: React.ReactElement;
 }
@@ -53,17 +54,7 @@ class DisconnectedWarningDialog extends React.Component<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => never) => (
-      <div>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industrys standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a type specimen book. It has survived not only five
-        centuries, but also the leap into electronic typesetting, remaining
-        essentially unchanged. It was popularised in the 1960s with the release
-        of Letraset sheets containing Lorem Ipsum passages, and more recently
-        with desktop publishing software like Aldus PageMaker including versions
-        of Lorem Ipsum.
-      </div>
+      <div>{this.props.dialogMessage}</div>
     );
 
     /**
@@ -103,6 +94,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     dialogOpen: state.notifications.notificationDialogOpen,
+    dialogMessage: state.notifications.dialogMessage,
   };
 }
 
