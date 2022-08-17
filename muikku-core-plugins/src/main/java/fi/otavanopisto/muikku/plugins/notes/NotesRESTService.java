@@ -247,14 +247,7 @@ public class NotesRESTService extends PluginRESTService {
       }
     }
 
-    note = notesController.toggleArchived(note);
-    
-    if(note.getArchived().equals(Boolean.FALSE)) {
-      note.setDueDate(null);
-      note.setStartDate(null);
-    }
-    
-    NoteRestModel noteRestModel = toRestModel(note);
+    NoteRestModel noteRestModel = toRestModel(notesController.toggleArchived(note));
     return Response.ok(noteRestModel).build();
 
   }
