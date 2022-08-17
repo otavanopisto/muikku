@@ -1454,7 +1454,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
       boolean hasImage = false;
       
-      UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(toUserEntityId(response.getEntity().getCreatorId())));
+      UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
       if (userEntity != null) {  
         hasImage = userEntityFileController.hasProfilePicture(userEntity);
       }
