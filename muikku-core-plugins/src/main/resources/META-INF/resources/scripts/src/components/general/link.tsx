@@ -49,7 +49,7 @@ interface LinkState {
 /**
  * Link
  */
-class Link extends React.Component<LinkProps, LinkState> {
+export class Link extends React.Component<LinkProps, LinkState> {
   private touchCordX: number | null;
   private touchCordY: number | null;
 
@@ -326,4 +326,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Link);
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  withRef: true,
+})(Link);

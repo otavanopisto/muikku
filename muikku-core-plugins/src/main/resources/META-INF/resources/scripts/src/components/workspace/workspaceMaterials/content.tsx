@@ -34,6 +34,7 @@ import {
   SetWholeWorkspaceMaterialsTriggerType,
 } from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
+import { AnyActionType } from "~/actions/index";
 
 /**
  * ContentProps
@@ -125,10 +126,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ContentProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: ContentProps) {
     this.setState({
       materials: nextProps.materials,
     });
@@ -322,8 +324,6 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * onDropBetweenSections
-   * @param base base
-   * @param target target
    */
   onDropBetweenSections() {
     this.storedLastUpdateServerExecution &&
@@ -373,8 +373,6 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * onDropBetweenSubnodes
-   * @param base base
-   * @param target target
    */
   onDropBetweenSubnodes() {
     this.storedLastUpdateServerExecution &&
@@ -632,8 +630,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -650,10 +647,9 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceMaterials },
     dispatch
