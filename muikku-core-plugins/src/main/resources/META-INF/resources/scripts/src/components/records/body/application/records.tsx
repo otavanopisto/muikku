@@ -1,12 +1,11 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/activity-badge.scss";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-sub-panel.scss";
-import "~/sass/elements/workspace-activity.scss";
 import "~/sass/elements/file-uploader.scss";
 import {
   RecordsType,
@@ -14,15 +13,13 @@ import {
 } from "~/reducers/main-function/records";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import Link from "~/components/general/link";
-import {
-  WorkspaceType,
-  WorkspaceAssessementStateType,
-} from "~/reducers/workspaces";
+import { WorkspaceType, Assessment } from "~/reducers/workspaces";
 import { UserWithSchoolDataType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";
 import ApplicationList, {
   ApplicationListItem,
+  ApplicationListItemContentContainer,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 
@@ -47,59 +44,59 @@ interface RecordsState {
 const storedCurriculumIndex: any = {};
 
 /**
- * getEvaluationRequestIfAvailable
- * @param props props
- * @param workspace workspace
+ * AssessmentRequestIndicatorProps
+ */
+interface AssessmentRequestIndicatorProps extends RecordsProps {
+  assessment: Assessment;
+  i18n: i18nType;
+}
+
+/**
+ * Creates assessment request indicator if assessmentState is following
+ * @param props component props
  * @returns JSX.Element
  */
-function getEvaluationRequestIfAvailable(
-  props: RecordsProps,
-  workspace: WorkspaceType
-) {
-  let assesmentState: WorkspaceAssessementStateType;
-  let assesmentDate: string;
-  if (
-    workspace.studentAssessmentState &&
-    workspace.studentAssessmentState.state
-  ) {
-    assesmentState = workspace.studentAssessmentState.state;
-    assesmentDate = workspace.studentAssessmentState.date;
-  } else if (
-    workspace.studentActivity &&
-    workspace.studentActivity.assessmentState
-  ) {
-    assesmentState = workspace.studentActivity.assessmentState.state;
-    assesmentDate = workspace.studentActivity.assessmentState.date;
-  }
+const AssessmentRequestIndicator: React.FC<AssessmentRequestIndicatorProps> = (
+  props
+) => {
+  const { assessment, i18n } = props;
 
   if (
-    assesmentState === "pending" ||
-    assesmentState === "pending_pass" ||
-    assesmentState === "pending_fail"
+    assessment.state === "pending" ||
+    assessment.state === "pending_pass" ||
+    assessment.state === "pending_fail"
   ) {
     return (
       <span
-        title={props.i18n.text.get(
+        title={i18n.text.get(
           "plugin.records.workspace.pending",
-          props.i18n.time.format(assesmentDate)
+          props.i18n.time.format(assessment.date)
         )}
         className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending"
       ></span>
     );
   }
   return null;
+};
+
+/**
+ * TransfereCreditValueIndicatorProps
+ */
+interface TransfereCreditValueIndicatorProps {
+  transferCredit: TransferCreditType;
+  i18n: i18nType;
 }
 
 /**
- * getTransferCreditValue
- * @param props props
- * @param transferCredit transferCredit
+ * Creates indicator for transferecredit
+ * @param props Component props
  * @returns JSX.Element
  */
-function getTransferCreditValue(
-  props: RecordsProps,
-  transferCredit: TransferCreditType
-) {
+const TransfereCreditValueIndicator: React.FC<
+  TransfereCreditValueIndicatorProps
+> = (props) => {
+  const { i18n, transferCredit } = props;
+
   // this shouldn't come to this, but just in case
   if (transferCredit === null) {
     return <div className="application-list__header-secondary" />;
@@ -108,9 +105,9 @@ function getTransferCreditValue(
   return (
     <span
       title={
-        props.i18n.text.get(
+        i18n.text.get(
           "plugin.records.transferCreditsDate",
-          props.i18n.time.format(transferCredit.date)
+          i18n.time.format(transferCredit.date)
         ) + getShortenGradeExtension(transferCredit.grade)
       }
       className={`application-list__indicator-badge application-list__indicator-badge-course ${
@@ -120,58 +117,67 @@ function getTransferCreditValue(
       {shortenGrade(transferCredit.grade)}
     </span>
   );
+};
+
+/**
+ * AssessmentProps
+ */
+interface AssessmentProps extends RecordsProps {
+  assessment?: Assessment;
+  isCombinationWorkspace: boolean;
 }
 
 /**
- * getAssessments
- * @param props props
- * @param workspace workspace
+ * Creates component that shows assessment
+ * @param props Component props
  * @returns JSX.Element
  */
-function getAssessments(props: RecordsProps, workspace: WorkspaceType) {
-  if (
-    workspace.studentAssessmentState &&
-    workspace.studentAssessmentState.grade
-  ) {
+const RecordsAssessment: React.FC<AssessmentProps> = (props) => {
+  const { i18n, assessment, isCombinationWorkspace } = props;
+
+  if (!assessment) {
+    return null;
+  }
+
+  // We can have situation where course module has PASSED assessment and also it's state is INCOMPLETE
+  // as it has been evaluated as incomplete after evaluated as PASSED
+  if (assessment.grade && assessment.state !== "incomplete") {
     return (
       <span
         title={
-          props.i18n.text.get(
+          i18n.text.get(
             "plugin.records.workspace.evaluated",
-            props.i18n.time.format(workspace.studentAssessmentState.date)
-          ) + getShortenGradeExtension(workspace.studentAssessmentState.grade)
+            i18n.time.format(assessment.date)
+          ) + getShortenGradeExtension(assessment.grade)
         }
         className={`application-list__indicator-badge application-list__indicator-badge--course ${
-          workspace.studentAssessmentState.state === "pass" ||
-          workspace.studentAssessmentState.state === "pending_pass"
+          assessment.state === "pass" || assessment.state === "pending_pass"
             ? "state-PASSED"
             : "state-FAILED"
         }`}
       >
-        {shortenGrade(workspace.studentAssessmentState.grade)}
+        {shortenGrade(assessment.grade)}
       </span>
     );
-  } else if (
-    workspace.studentAssessmentState &&
-    workspace.studentAssessmentState.state === "incomplete"
-  ) {
-    const status = props.i18n.text.get(
-      workspace.studentAssessmentState.state === "incomplete"
+  } else if (assessment.state === "incomplete") {
+    const status = i18n.text.get(
+      assessment.state === "incomplete"
         ? "plugin.records.workspace.incomplete"
         : "plugin.records.workspace.failed"
     );
+
     return (
       <span
         title={
-          props.i18n.text.get(
+          i18n.text.get(
             "plugin.records.workspace.evaluated",
-            props.i18n.time.format(workspace.studentAssessmentState.date)
+            i18n.time.format(assessment.date)
           ) +
           " - " +
           status
         }
         className={`application-list__indicator-badge application-list__indicator-badge--course ${
-          workspace.studentAssessmentState.state === "incomplete"
+          assessment.state === "incomplete"
             ? "state-INCOMPLETE"
             : "state-FAILED"
         }`}
@@ -180,58 +186,88 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType) {
       </span>
     );
   } else {
-    return null;
+    if (isCombinationWorkspace) {
+      return (
+        <span
+          title={
+            assessment.grade
+              ? i18n.text.get(
+                  "plugin.records.workspace.evaluated",
+                  i18n.time.format(assessment.date)
+                ) + getShortenGradeExtension(assessment.grade)
+              : ""
+          }
+          className={`application-list__indicator-badge application-list__indicator-badge--course ${
+            assessment.state === "unassessed" ? "state-UNASSESSED" : ""
+          }`}
+          style={{ color: "#000" }}
+        >
+          -
+        </span>
+      );
+    }
   }
+
+  return null;
+};
+
+/**
+ * ActivityIndicatorProps
+ */
+interface ActivityIndicatorProps extends RecordsProps {
+  workspace: WorkspaceType;
 }
 
 /**
- * getActivity
- * @param props props
- * @param workspace workspace
+ * Creates activity indicator component if
+ * activity property exist and there are excercise
+ * @param props component prosp
  * @returns JSX.Element
  */
-function getActivity(props: RecordsProps, workspace: WorkspaceType) {
-  if (!workspace.studentActivity) {
+const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
+  const { workspace, i18n } = props;
+
+  if (!workspace.activity) {
     return null;
   } else if (
-    workspace.studentActivity.exercisesTotal +
-      workspace.studentActivity.evaluablesTotal ===
+    workspace.activity.exercisesTotal + workspace.activity.evaluablesTotal ===
     0
   ) {
     return null;
   }
+
   return (
     <div className="activity-badge">
-      {workspace.studentActivity.evaluablesTotal ? (
+      {workspace.activity.evaluablesTotal ? (
         <div
-          title={props.i18n.text.get(
+          title={i18n.text.get(
             "plugin.records.workspace.activity.assignment.title",
-            workspace.studentActivity.evaluablesDonePercent
+            workspace.activity.evaluablesDonePercent
           )}
           className="activity-badge__item activity-badge__item--assignment"
         >
           <div
             className={
               "activity-badge__unit-bar activity-badge__unit-bar--" +
-              workspace.studentActivity.evaluablesDonePercent
+              workspace.activity.evaluablesDonePercent
             }
           ></div>
         </div>
       ) : (
         <div className="activity-badge__item activity-badge__item--empty"></div>
       )}
-      {workspace.studentActivity.exercisesTotal ? (
+      {workspace.activity.exercisesTotal ? (
         <div
-          title={props.i18n.text.get(
+          title={i18n.text.get(
             "plugin.records.workspace.activity.exercise.title",
-            workspace.studentActivity.exercisesDonePercent
+            workspace.activity.exercisesDonePercent
           )}
           className="activity-badge__item activity-badge__item--exercise"
         >
           <div
             className={
               "activity-badge__unit-bar activity-badge__unit-bar--" +
-              workspace.studentActivity.exercisesDonePercent
+              workspace.activity.exercisesDonePercent
             }
           ></div>
         </div>
@@ -240,7 +276,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType) {
       )}
     </div>
   );
-}
+};
 
 /**
  * Records
@@ -324,7 +360,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   }
 
   /**
-   * render
+   * Component render method
+   * @returns JSX.Element
    */
   render() {
     if (
@@ -351,6 +388,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       });
     }
 
+    /**
+     * studentRecords
+     */
     const studentRecords = (
       <div className="application-sub-panel">
         {this.props.records.userData.map((data) => {
@@ -393,24 +433,27 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                         </div>
                       ) : null}
                       {record.workspaces.map((workspace) => {
-                        // Do we want an special way to display all these different states? passed is very straightforward but failed and
-                        // incomplete might be difficult to understand
-                        let extraClassNameState = "";
-                        if (workspace.studentAssessmentState.state === "pass") {
-                          extraClassNameState = "state-PASSED";
-                        } else if (
-                          workspace.studentAssessmentState.state === "fail"
-                        ) {
-                          extraClassNameState = "state-FAILED";
-                        } else if (
-                          workspace.studentAssessmentState.state ===
-                          "incomplete"
-                        ) {
-                          extraClassNameState = "state-INCOMPLETE";
+                        // By default every workspace is not combination
+                        let isCombinationWorkspace = false;
+
+                        if (workspace.subjects) {
+                          // If assessmentState contains more than 1 items, then its is combination
+                          isCombinationWorkspace =
+                            workspace.subjects.length > 1;
                         }
+
+                        // By default this is undefined so ApplicationListItemHeader won't get empty list
+                        // item as part of its modifiers when course is non combined version
+                        let applicationListWorkspaceTypeMod = undefined;
+
+                        if (isCombinationWorkspace) {
+                          applicationListWorkspaceTypeMod =
+                            "combination-course";
+                        }
+
                         return (
                           <ApplicationListItem
-                            className={`course course--studies ${extraClassNameState}`}
+                            className="course course--studies"
                             key={workspace.id}
                             onClick={this.goToWorkspace.bind(
                               this,
@@ -419,7 +462,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                             )}
                           >
                             <ApplicationListItemHeader
-                              modifiers="course"
+                              modifiers={
+                                applicationListWorkspaceTypeMod
+                                  ? ["course", applicationListWorkspaceTypeMod]
+                                  : ["course"]
+                              }
                               key={workspace.id}
                             >
                               <span className="application-list__header-icon icon-books"></span>
@@ -430,14 +477,87 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                                   : null}
                               </span>
                               <div className="application-list__header-secondary">
-                                {getEvaluationRequestIfAvailable(
-                                  this.props,
-                                  workspace
-                                )}
-                                {getAssessments(this.props, workspace)}
-                                {getActivity(this.props, workspace)}
+                                {!isCombinationWorkspace ? (
+                                  // So "legasy" case where there is only one module, render indicator etc next to workspace name
+                                  <>
+                                    <AssessmentRequestIndicator
+                                      {...this.props}
+                                      assessment={
+                                        workspace.activity.assessmentState[0]
+                                      }
+                                    />
+                                    <RecordsAssessment
+                                      {...this.props}
+                                      assessment={
+                                        workspace.activity.assessmentState[0]
+                                      }
+                                      isCombinationWorkspace={
+                                        isCombinationWorkspace
+                                      }
+                                    />
+                                  </>
+                                ) : null}
+                                <ActivityIndicator
+                                  {...this.props}
+                                  workspace={workspace}
+                                />
                               </div>
                             </ApplicationListItemHeader>
+
+                            {isCombinationWorkspace ? (
+                              // If combinatin workspace render module assessments below workspace name
+                              <ApplicationListItemContentContainer modifiers="combination-course">
+                                {workspace.activity.assessmentState.map((a) => {
+                                  /**
+                                   * Find subject data, that contains basic information about that subject
+                                   */
+                                  const subjectData = workspace.subjects.find(
+                                    (s) =>
+                                      s.identifier ===
+                                      a.workspaceSubjectIdentifier
+                                  );
+
+                                  /**
+                                   * If not found, return nothing
+                                   */
+                                  if (!subjectData) {
+                                    return;
+                                  }
+
+                                  const codeSubjectString = `${subjectData.subject.code.toUpperCase()}${
+                                    subjectData.courseNumber
+                                      ? subjectData.courseNumber
+                                      : ""
+                                  } (${subjectData.courseLength} ${
+                                    subjectData.courseLengthSymbol.symbol
+                                  }) - ${subjectData.subject.name}`;
+
+                                  return (
+                                    <div
+                                      key={a.workspaceSubjectIdentifier}
+                                      className="application-list__item-content-single-item"
+                                    >
+                                      <span className="application-list__item-content-single-item-primary">
+                                        {codeSubjectString}
+                                      </span>
+
+                                      <AssessmentRequestIndicator
+                                        {...this.props}
+                                        assessment={a}
+                                      />
+
+                                      <RecordsAssessment
+                                        {...this.props}
+                                        assessment={a}
+                                        isCombinationWorkspace={
+                                          isCombinationWorkspace
+                                        }
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </ApplicationListItemContentContainer>
+                            ) : null}
                           </ApplicationListItem>
                         );
                       })}
@@ -479,7 +599,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                               {credit.courseName}
                             </span>
                             <div className="application-list__header-secondary">
-                              {getTransferCreditValue(this.props, credit)}
+                              <TransfereCreditValueIndicator
+                                {...this.props}
+                                transferCredit={credit}
+                              />
                             </div>
                           </ApplicationListItemHeader>
                         </ApplicationListItem>
@@ -559,8 +682,9 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
+ * @param dispatch dispatch
  */
-function mapDispatchToProps() {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Records);

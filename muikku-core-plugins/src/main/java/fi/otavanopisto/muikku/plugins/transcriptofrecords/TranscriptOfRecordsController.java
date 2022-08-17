@@ -24,9 +24,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.EducationTypeMapping;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.MatriculationSubjects;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.StudentMatriculationSubjects;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -198,11 +198,11 @@ public class TranscriptOfRecordsController {
     return new TranscriptofRecordsUserProperties(userProperties, studentMatriculationSubjects);
   }
 
-  public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+  public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(SchoolDataIdentifier subjectIdentifier, int courseNumber) {
     List<VopsWorkspace> retval = new ArrayList<>();
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
-      SearchResult sr = searchProvider.searchWorkspaces(schoolDataSource, subjectIdentifier, courseNumber);
+      SearchResult sr = searchProvider.searchWorkspaces(subjectIdentifier, courseNumber);
       List<Map<String, Object>> results = sr.getResults();
       for (Map<String, Object> result : results) {
         String searchId = (String) result.get("id");

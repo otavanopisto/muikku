@@ -37,10 +37,6 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
     @IndexableFieldOption (
       name = "organizationIdentifier",
       type = IndexableFieldType.KEYWORD
-//      multiFields = {
-//        @IndexableFieldMultiField(name = "organizationIdentifier", type="string", index = "analyzed"),
-//        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-//      }
     )
   }
 )

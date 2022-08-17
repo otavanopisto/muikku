@@ -13,25 +13,28 @@ public class WorkspaceAssessmentState {
   public static final String INCOMPLETE = "incomplete";       // teacher has requested changes
 
   public WorkspaceAssessmentState() {
-
   }
 
-  public WorkspaceAssessmentState(String state) {
+  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
     this.state = state;
   }
 
-  public WorkspaceAssessmentState(String state, Date date) {
+  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
     this.state = state;
     this.date = date;
   }
 
-  public WorkspaceAssessmentState(String state, Date date, String text) {
+  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
     this.state = state;
     this.date = date;
     this.text = text;
   }
 
-  public WorkspaceAssessmentState(String state, Date date, String text, String grade, Date gradeDate) {
+  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text, String grade, Date gradeDate) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
     this.state = state;
     this.date = date;
     this.text = text;
@@ -79,10 +82,19 @@ public class WorkspaceAssessmentState {
     this.gradeDate = gradeDate;
   }
 
+  public String getWorkspaceSubjectIdentifier() {
+    return workspaceSubjectIdentifier;
+  }
+
+  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
+  }
+
   private Date date;
   private String state;
   private String grade;
   private Date gradeDate;
   private String text;
-
+  private String workspaceSubjectIdentifier;
+  
 }

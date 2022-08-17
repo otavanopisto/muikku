@@ -27,6 +27,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 
 public class GradingController {
@@ -124,11 +125,12 @@ public class GradingController {
   
   /* Workspace assessment */
   
-  public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date) {
+  public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, WorkspaceUser workspaceUser, WorkspaceSubject workspaceSubject, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date) {
     return gradingSchoolDataController.createWorkspaceAssessment(schoolDataSource, 
         workspaceUser.getIdentifier().getIdentifier(), 
         workspaceUser.getIdentifier().getDataSource(),
-        workspaceUser.getWorkspaceIdentifier().getIdentifier(), 
+        workspaceUser.getWorkspaceIdentifier().getIdentifier(),
+        workspaceSubject.getIdentifier().getIdentifier(),
         workspaceUser.getUserIdentifier().getIdentifier(),
         assessingUser.getIdentifier(), 
         assessingUser.getSchoolDataSource(), 
@@ -192,12 +194,13 @@ public class GradingController {
     }
   }
  
-  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataIdentifier workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
+  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataIdentifier workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, WorkspaceSubject workspaceSubject, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
     return gradingSchoolDataController.updateWorkspaceAssessment(workspaceAssesmentIdentifier.getDataSource(),
        workspaceAssesmentIdentifier.getIdentifier(),
        workspaceUser.getIdentifier().getIdentifier(),
        workspaceUser.getIdentifier().getDataSource(),
        workspaceUser.getWorkspaceIdentifier().getIdentifier(),
+       workspaceSubject.getIdentifier().getIdentifier(),
        workspaceUser.getUserIdentifier().getIdentifier(),
        assessingUser.getIdentifier(),
        assessingUser.getSchoolDataSource(),

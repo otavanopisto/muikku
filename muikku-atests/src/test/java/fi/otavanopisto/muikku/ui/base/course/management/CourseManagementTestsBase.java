@@ -16,7 +16,7 @@ import org.openqa.selenium.Keys;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
@@ -28,7 +28,6 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
-import fi.otavanopisto.pyramus.rest.model.OrganizationBasicInfo;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
@@ -71,17 +70,13 @@ public class CourseManagementTestsBase extends AbstractUITest {
         clearElement("input[name=\"wokspace-name\"]");
         sendKeys("input[name=\"wokspace-name\"]", "Testing course");
 
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
 
         OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
-        Course course = new Course(course1.getId(), "Testing course", created, created, "<p>test course for testing</p>\n", false, 1, 
-            (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
-            (double) 15, (double) 45, (double) 45, end, (long) 1,
-            (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-            null, null, 1L, false, 1L, 1L);
+        Course course = new CourseBuilder().name("Testing course").id((long) 3).description("<p>test course for testing</p>\n").created(created).beginDate(begin).endDate(end).buildCourse();
         String courseJson = objectMapper.writeValueAsString(course);        
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -201,16 +196,12 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
 
         OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-        Course course = new Course(course1.getId(), "Test", created, created, "<p>test course for testing</p>\n", false, 1, 
-            (long) 25, begin, end, "For Test", (double) 15, (double) 45, (double) 45,
-            (double) 15, (double) 45, (double) 45, end, (long) 1,
-            (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-            null, null, 1L, false, 1L, 1L);
+        Course course = new CourseBuilder().name("Testing course").id((long) 3).description("<p>test course for testing</p>\n").nameExtension("For Test").created(created).beginDate(begin).endDate(end).buildCourse();
         String courseJson = objectMapper.writeValueAsString(course);        
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -275,17 +266,13 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
 
         OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
  
-        Course course = new Course(course1.getId(), "testcourse", created, created, "<p>test course for testing</p>\n", false, 1, 
-            (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
-            (double) 15, (double) 45, (double) 45, end, (long) 1,
-            (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 2, 
-            null, null, 1L, false, 1L, 1L);
+        Course course = new CourseBuilder().name("testcourse").id((long) 3).description("<p>test course for testing</p>\n").typeId(2L).created(created).beginDate(begin).endDate(end).buildCourse();
         String courseJson = objectMapper.writeValueAsString(course);
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()

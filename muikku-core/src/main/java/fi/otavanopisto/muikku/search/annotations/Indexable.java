@@ -12,5 +12,6 @@ public @interface Indexable {
   String typeName();
   String indexName();
   IndexableFieldOption[] options() default {};
+  IndexableSubObject[] subObjects() default {};
   
 }

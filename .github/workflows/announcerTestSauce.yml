@@ -1,7 +1,10 @@
 name: Announcer sauce tests
 on: 
-  pull_request:
-    branches: [master]
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: 'Commit to test.'
+        required: true
 jobs:
   testing:
     env:

@@ -3,16 +3,12 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -49,6 +45,7 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
@@ -59,8 +56,7 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUse
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsLister;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCourseChoice;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
@@ -74,10 +70,12 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
-import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
@@ -111,28 +109,28 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private SessionController sessionController;
-  
+
   @Inject
   private WorkspaceController workspaceController;
-  
+
   @Inject
-  private UserGroupEntityController userGroupEntityController;  
-  
+  private UserGroupEntityController userGroupEntityController;
+
   @Inject
-  private CourseMetaController courseMetaController;  
-  
+  private CourseMetaController courseMetaController;
+
   @Inject
   private UserController userController;
 
   @Inject
   private UserEntityController userEntityController;
-  
+
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-  
+
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
-  
+
   @Inject
   private PluginSettingsController pluginSettingsController;
 
@@ -144,7 +142,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
-  
+
   @Inject
   private MatriculationSchoolDataController matriculationSchoolDataController;
 
@@ -152,11 +150,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private OrganizationEntityController organizationEntityController;
 
   @Inject
-  private WorkspaceVisitController workspaceVisitController;
+  private WorkspaceRestModels workspaceRestModels;
 
-  @Inject
-  private WorkspaceEntityFileController workspaceEntityFileController;
-  
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -216,31 +211,31 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (studentIdentifier == null) {
       return Response.status(Status.NOT_FOUND).entity("Student identifier not found").build();
     }
-    
+
     if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_STUDIES)
         && !Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
 
     User student = userController.findUserByIdentifier(studentIdentifier);
-    
+
     if (!transcriptOfRecordsController.shouldShowStudies(student)) {
       VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
       return Response.ok(result).build();
     }
-    
+
     List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
 
     List<Subject> subjects = courseMetaController.listSubjects();
     Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = transcriptOfRecordsController.listStudentAssessments(studentIdentifier);
-    
-    
+
+
     String curriculum = pluginSettingsController.getPluginSetting("transcriptofrecords", "curriculum");
     SchoolDataIdentifier curriculumIdentifier = null;
     if (curriculum != null) {
       curriculumIdentifier = SchoolDataIdentifier.fromId(curriculum);
     }
-    
+
     final List<String> subjectList = new ArrayList<String>();
     String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
     if (!StringUtils.isBlank(commaSeparatedSubjectsOrder)) {
@@ -255,7 +250,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         return i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
       }
     });
-    
+
     VopsLister lister = new VopsLister(
       subjects,
       transcriptOfRecordsController,
@@ -273,7 +268,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       educationTypeMapping,
       workspaceEntityController
     );
-    
+
     lister.performListing();
 
     VopsRESTModel result = new VopsRESTModel(
@@ -327,7 +322,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     return new HopsRESTModel();
   }
-  
+
   @GET
   @Path("/hopseligibility")
   @RESTPermit(handling=Handling.INLINE)
@@ -350,13 +345,13 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    
+
     HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
-    
+
     if (response == null) {
       return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
     }
-    
+
     return Response.ok(response).build();
   }
 
@@ -390,7 +385,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
-    
+
     if (response == null) {
       return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
     }
@@ -409,7 +404,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (!hasPermission) {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to access this").build();
     }
-    
+
     StudiesViewCourseChoice choice = studiesViewCourseChoiceController.find(
         model.getSubjectIdentifier(),
         model.getCourseNumber(),
@@ -461,7 +456,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
     }
-    
+
     try {
       userEntityController.setUserIdentifierProperty(userIdentifier.getIdentifier(), "hops", new ObjectMapper().writeValueAsString(model));
     }
@@ -472,7 +467,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     return Response.ok().entity(model).build();
   }
-  
+
   @GET
   @Consumes("application/json")
   @Path("/studentMatriculationEligibility/{STUDENTIDENTIFIER}")
@@ -482,33 +477,34 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
     }
-    
+
     if (!identifier.equals(sessionController.getLoggedUser())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
+
     User student = userController.findUserByIdentifier(identifier);
     if (student == null) {
       return Response.status(Status.NOT_FOUND).entity("Student not found").build();
     }
-    
+
     StudentCourseStats studentCourseStats = transcriptOfRecordsController.fetchStudentCourseStats(identifier);
-    
+
     MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
     int coursesCompleted = studentCourseStats.getNumMandatoryCompletedCourses();
     int coursesRequired = transcriptOfRecordsController.getMandatoryCoursesRequiredForMatriculation();
-    
+
     double creditPoints = studentCourseStats.getSumMandatoryCompletedCreditPoints();
     double creditPointsRequired = transcriptOfRecordsController.getMandatoryCreditPointsRequiredForMatriculation();
-    
+
+    result.setCoursesCompleted(coursesCompleted);
+    result.setCoursesRequired(coursesRequired);
+    result.setCreditPoints(creditPoints);
+    result.setCreditPointsRequired(creditPointsRequired);
+
     if ((coursesCompleted >= coursesRequired) || (creditPoints >= creditPointsRequired)) {
       result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
     } else {
       result.setStatus(MatriculationExamEligibilityStatus.NOT_ELIGIBLE);
-      result.setCoursesCompleted(coursesCompleted);
-      result.setCoursesRequired(coursesRequired);
-      result.setCreditPoints(creditPoints);
-      result.setCreditPointsRequired(creditPointsRequired);
     }
 
     return Response.ok(result).build();
@@ -516,9 +512,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   /**
    * REST endpoint for listing matriculation subjects.
-   * 
+   *
    * Method requires that user is logged in but does not require any special permissions.
-   * 
+   *
    * @return REST response object
    */
   @GET
@@ -528,10 +524,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
-    
+
     return Response.ok(transcriptOfRecordsController.listMatriculationSubjects()).build();
   }
-  
+
   @GET
   @Path("/matriculationEligibility")
   @RESTPermit(handling = Handling.INLINE)
@@ -539,19 +535,19 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
-    
+
     StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(sessionController.getLoggedUser(), subjectCode);
-    
+
     return Response.ok(result).build();
   }
-  
+
   @GET
   @Path("/workspaces/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaces(
         @QueryParam("userIdentifier") String userIdentifierParam,
         @Context Request request) {
-    List<fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
+    List<ToRWorkspaceRestModel> workspaces = new ArrayList<>();
 
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierParam);
     if (userIdentifier == null) {
@@ -564,80 +560,42 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.schoolDataIdentifier().toId().equals(userIdentifierParam))) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
-    String schoolDataSourceFilter = null;
 
     TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
     PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
     List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
-   
+
     if (CollectionUtils.isEmpty(workspaceEntities)) {
       return Response.ok(Collections.emptyList()).build();
     }
-    
+
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
-      SearchResult searchResult = null;
-      
-      List<String> workspaceIdentifierFilters = new ArrayList<>();
-      
-      for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-        if (schoolDataSourceFilter == null) {
-          schoolDataSourceFilter = workspaceEntity.getDataSource().getIdentifier();
-        }
-        
-        workspaceIdentifierFilters.add(workspaceEntity.getIdentifier());
-      }
-      
+
+      List<SchoolDataIdentifier> workspaceIdentifierFilters = workspaceEntities.stream()
+          .map(WorkspaceEntity::schoolDataIdentifier).collect(Collectors.toList());
+
       List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
       List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
       // The list is restricted to all of the students' workspaces so list them all
       organizationRestrictions = organizationRestrictions.stream()
           .map(organizationRestriction -> new OrganizationRestriction(organizationRestriction.getOrganizationIdentifier(), PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES))
           .collect(Collectors.toList());
-      
-      searchResult = searchProvider.searchWorkspaces()
-        .setSchoolDataSource(schoolDataSourceFilter)
+
+      SearchResults<List<IndexedWorkspace>> searchResult = searchProvider.searchWorkspaces()
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
         .setOrganizationRestrictions(organizationRestrictions)
         .setMaxResults(500)
         .addSort(new Sort("name.untouched", Sort.Order.ASC))
-        .search();
+        .searchTyped();
+
+      List<IndexedWorkspace> indexedWorkspaces = searchResult.getResults();
+
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
       
-      List<Map<String, Object>> results = searchResult.getResults();
-      for (Map<String, Object> result : results) {
-        String searchId = (String) result.get("id");
-        if (StringUtils.isNotBlank(searchId)) {
-          String[] id = searchId.split("/", 2);
-          if (id.length == 2) {
-            String dataSource = id[1];
-            String identifier = id[0];
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
-            if (workspaceEntity != null) {
-              String name = (String) result.get("name");
-              String description = (String) result.get("description");
-              String nameExtension = (String) result.get("nameExtension");
-              String subjectIdentifier = (String) result.get("subjectIdentifier");
-              
-              Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
-              Set<String> curriculumIdentifiers = new HashSet<String>();
-              if (curriculumIdentifiersObject instanceof Collection) {
-                Collection<?> curriculumIdentifierCollection = (Collection<?>) curriculumIdentifiersObject;
-                for (Object o : curriculumIdentifierCollection) {
-                  if (o instanceof String)
-                    curriculumIdentifiers.add((String) o);
-                  else
-                    logger.warning("curriculumIdentifier not of type String");
-                }
-              }
-              
-              if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier));
-              }
-            }
-          }
-        }
+      for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
+        workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping));
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -645,33 +603,24 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     return Response.ok(workspaces).build();
   }
-  
-  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
-      WorkspaceEntity workspaceEntity,
-      String name,
-      String nameExtension,
-      String description,
-      Set<String> curriculumIdentifiers,
-      String subjectIdentifier) {
-    Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
-    Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
-    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
 
-    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(),
-        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
-        workspaceEntity.getUrlName(),
-        workspaceEntity.getAccess(),
-        workspaceEntity.getArchived(), 
-        workspaceEntity.getPublished(), 
-        name, 
-        nameExtension, 
-        description, 
-        workspaceEntity.getDefaultMaterialLicense(),
-        numVisits, 
-        lastVisit,
-        curriculumIdentifiers,
-        subjectIdentifier,
-        hasCustomImage);
+  @GET
+  @Path("/workspaces/{ID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspace(@PathParam("ID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    return Response.ok(workspaceRestModels.createRestModelWithActivity(sessionController.getLoggedUser(), workspaceEntity, workspace, educationTypeMapping)).build();
   }
-
+  
 }

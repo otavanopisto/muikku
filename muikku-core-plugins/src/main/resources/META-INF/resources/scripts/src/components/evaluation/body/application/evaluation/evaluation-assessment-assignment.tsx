@@ -1,6 +1,9 @@
 import * as React from "react";
 import EvaluationMaterial from "./evaluation-material";
-import { AssignmentEvaluationSaveReturn } from "~/@types/evaluation";
+import {
+  AssessmentRequest,
+  AssignmentEvaluationSaveReturn,
+} from "~/@types/evaluation";
 import {
   WorkspaceType,
   MaterialContentNodeType,
@@ -39,6 +42,7 @@ interface EvaluationAssessmentAssignmentProps {
   open: boolean;
   i18n: i18nType;
   evaluations: EvaluationState;
+  selectedAssessment: AssessmentRequest;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
   showAsHidden: boolean;
   compositeReply?: MaterialCompositeRepliesType;
@@ -116,10 +120,9 @@ class EvaluationAssessmentAssignment extends React.Component<
    * loadMaterialData
    */
   loadMaterialData = async () => {
-    const { workspace, assigment, evaluations } = this.props;
+    const { workspace, assigment, selectedAssessment } = this.props;
 
-    const userEntityId =
-      evaluations.evaluationSelectedAssessmentId.userEntityId;
+    const userEntityId = selectedAssessment.userEntityId;
 
     this.setState({
       isLoading: true,
@@ -637,6 +640,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           ) : this.state.materialNode ? (
             this.props.assigment.assignmentType === "EVALUATED" ? (
               <AssignmentEditor
+                selectedAssessment={this.props.selectedAssessment}
                 onAudioAssessmentChange={this.handleAudioAssessmentChange}
                 showAudioAssessmentWarningOnClose={
                   this.state.showCloseEditorWarning
@@ -654,6 +658,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             ) : (
               <ExcerciseEditor
+                selectedAssessment={this.props.selectedAssessment}
                 onAudioAssessmentChange={this.handleAudioAssessmentChange}
                 showAudioAssessmentWarningOnClose={
                   this.state.showCloseEditorWarning
@@ -716,10 +721,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               material={this.state.materialNode}
               workspace={this.props.workspace}
               compositeReply={compositeReply}
-              userEntityId={
-                this.props.evaluations.evaluationSelectedAssessmentId
-                  .userEntityId
-              }
+              userEntityId={this.props.selectedAssessment.userEntityId}
             />
           ) : null}
         </AnimateHeight>

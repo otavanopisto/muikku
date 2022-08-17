@@ -24,7 +24,7 @@ export default class WorkspaceEvaluationBody extends React.Component<
 > {
   /**
    * Constructor method
-   * @param props
+   * @param props props
    */
   constructor(props: WorkspaceEvaluationBodyProps) {
     super(props);

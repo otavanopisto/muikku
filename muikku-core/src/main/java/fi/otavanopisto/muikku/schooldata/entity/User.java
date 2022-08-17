@@ -20,6 +20,8 @@ public interface User extends SchoolDataEntity {
   
   public String getStudyProgrammeName();
 
+  public String getStudyProgrammeEducationType();
+  
   public SchoolDataIdentifier getStudyProgrammeIdentifier();
   
   public String getNationality();
@@ -55,4 +57,6 @@ public interface User extends SchoolDataEntity {
   public void setNickName(String nickName);
 
   public String getNickName();  
+  
+  public boolean getMatriculationEligibility();
 }

@@ -20,12 +20,20 @@ export default function Pdf(props: {
         data={`/rest/materials/binary/${props.material.materialId}/content`}
       >
         <Link
+          className="link"
           href={`/rest/materials/binary/${props.material.materialId}/content`}
           openInNewTab={props.material.title}
         >
           {props.i18n.text.get("plugin.workspace.materials.binaryDownload")}
         </Link>
       </object>
+      <Link
+        className="link link--download-pdf"
+        href={`/rest/materials/binary/${props.material.materialId}/content`}
+        openInNewTab={props.material.title}
+      >
+        {props.i18n.text.get("plugin.workspace.materials.binaryDownload")}
+      </Link>
     </div>
   );
 }

@@ -7,11 +7,12 @@ public class RestSupplementationRequest {
   public RestSupplementationRequest() {
   }
 
-  public RestSupplementationRequest(Long id, Long userEntityId, Long studentEntityId, Long workspaceEntityId, Long workspaceMaterialId, Date requestDate, String requestText) {
+  public RestSupplementationRequest(Long id, Long userEntityId, Long studentEntityId, Long workspaceEntityId, String workspaceSubjectIdentifier, Long workspaceMaterialId, Date requestDate, String requestText) {
     this.id = id;
     this.userEntityId = userEntityId;
     this.studentEntityId = studentEntityId;
     this.workspaceEntityId = workspaceEntityId;
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
     this.workspaceMaterialId = workspaceMaterialId;
     this.requestDate = requestDate;
     this.requestText = requestText;
@@ -73,10 +74,19 @@ public class RestSupplementationRequest {
     this.requestText = requestText;
   }
 
+  public String getWorkspaceSubjectIdentifier() {
+    return workspaceSubjectIdentifier;
+  }
+
+  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
+  }
+
   private Long id;
   private Long userEntityId;
   private Long studentEntityId;
   private Long workspaceEntityId;
+  private String workspaceSubjectIdentifier;
   private Long workspaceMaterialId;
   private Date requestDate;
   private String requestText;

@@ -1,11 +1,13 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
-import java.util.Date;
-import java.util.Set;
 import java.time.OffsetDateTime;
-import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.AbstractWorkspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 
 public class PyramusWorkspace extends AbstractWorkspace {
   
@@ -13,20 +15,14 @@ public class PyramusWorkspace extends AbstractWorkspace {
     super();
   }
 
-  public PyramusWorkspace(String identifier, String name, String nameExtension, String viewLink,
-      SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
-      String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length,
-      String lengthUnitIdentifier, OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived,
-      boolean evaluationFeeApplicable, Set<SchoolDataIdentifier> curriculumIdentifiers, Integer courseNumber,
+  public PyramusWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String viewLink,
+      SchoolDataIdentifier workspaceTypeId, String description, SchoolDataIdentifier educationTypeIdentifier, Date modified, 
+      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, Set<SchoolDataIdentifier> curriculumIdentifiers, 
       SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier,
-      boolean isTemplate) {
-    super(identifier, name, nameExtension, viewLink, workspaceTypeId, courseIdentifierIdentifier, description,
-        subjectIdentifier, educationTypeIdentifier, modified, length, lengthUnitIdentifier, beginDate, endDate, archived,
-        evaluationFeeApplicable, curriculumIdentifiers, courseNumber, educationSubtypeIdentifier, organizationIdentifier, isTemplate);
+      boolean isTemplate, List<WorkspaceSubject> subjects) {
+    super(identifier, name, nameExtension, viewLink, workspaceTypeId, description,
+        educationTypeIdentifier, modified, beginDate, endDate, archived,
+        curriculumIdentifiers, educationSubtypeIdentifier, organizationIdentifier, isTemplate, subjects);
   }
 
-  @Override
-  public String getSchoolDataSource() {
-    return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
-  }
 }

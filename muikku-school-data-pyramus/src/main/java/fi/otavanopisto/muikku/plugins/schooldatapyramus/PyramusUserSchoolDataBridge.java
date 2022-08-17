@@ -21,7 +21,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
@@ -31,6 +33,9 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProp
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
@@ -57,7 +62,10 @@ import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
+import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.pyramus.rest.model.Address;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
@@ -103,6 +111,15 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   
   @Inject 
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
+  private UserEntityFileController userEntityFileController;
+  
+  @Inject
+  private UserEntityController userEntityController;
  
   @Override
   public String getSchoolDataSource() {
@@ -264,7 +281,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       String curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()).toId() : null;
       SchoolDataIdentifier organizationIdentifier = (studyProgramme != null && studyProgramme.getOrganizationId() != null) ? identifierMapper.getOrganizationIdentifier(studyProgramme.getOrganizationId()) : null;
-      
+
       boolean evaluationFees = studyProgramme != null && Boolean.TRUE.equals(studyProgramme.getHasEvaluationFees());
       
       users.add(entityFactory.createEntity(
@@ -280,7 +297,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           evaluationFees,
           hidden,
           curriculumIdentifier,
-          organizationIdentifier));
+          organizationIdentifier,
+          student.getMatriculationEligibility() != null ? student.getMatriculationEligibility().isUpperSecondarySchoolCurriculum() : false));
     }
     
     return users;
@@ -1226,7 +1244,182 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   private StudentStudyPeriod[] listStudentStudyPeriods(Long pyramusStudentId) {
     return pyramusClient.get(String.format("/students/students/%d/studyPeriods", pyramusStudentId), StudentStudyPeriod[].class);
   }
+  
+  private Long toUserEntityId(Long pyramusStaffMemberId) {
+    SchoolDataIdentifier identifier = identifierMapper.getStaffIdentifier(pyramusStaffMemberId); 
+    
+    if (identifier != null) { 
+      UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(identifier);
+      if (usdi != null) { 
+        return usdi.getUserEntity().getId(); 
+      } else { 
+        return null; 
+      }
+    } else {
+      return null;
+    }
+  }
+  
+  @Override
+  public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntriesByStudent(SchoolDataIdentifier userIdentifier, Integer resultsPerPage, Integer page){
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
 
+    if (pyramusStudentId != null) {
+      StudentContactLogEntryBatch studentContactLogEntryBatch = new StudentContactLogEntryBatch();
+      BridgeResponse<StudentContactLogEntryBatch> response = pyramusClient.responseGet(String.format("/students/students/%d/contactLogEntries?resultsPerPage=%d&page=%d", pyramusStudentId, resultsPerPage, page), StudentContactLogEntryBatch.class);
+      List<StudentContactLogEntryRestModel> contactLogEntries = null;
+      if(response.getEntity() != null) {
+        contactLogEntries = new ArrayList<>();
+        if (response.getEntity().getResults() != null) {
+          for (StudentContactLogEntryRestModel contactLogEntry : response.getEntity().getResults()) {
+            boolean hasImage = false;
+            if (contactLogEntry.getCreatorId() != null) {
+              contactLogEntry.setCreatorId(toUserEntityId(contactLogEntry.getCreatorId()));
+              
+              UserEntity userEntity = userEntityController.findUserEntityById(contactLogEntry.getCreatorId());
+              hasImage = userEntityFileController.hasProfilePicture(userEntity);
+            }
+            contactLogEntry.setHasImage(hasImage);
+  
+            List<StudentContactLogEntryCommentRestModel> comments = contactLogEntry.getComments();
+            
+            for (StudentContactLogEntryCommentRestModel comment : comments) {
+              boolean hasProfileImage = false;
+              if (comment.getCreatorId() != null) {
+                UserEntity userEntity = userEntityController.findUserEntityById(contactLogEntry.getCreatorId());
+                hasProfileImage = userEntityFileController.hasProfilePicture(userEntity);
+              }
+              comment.setHasImage(hasProfileImage);
+  
+            }
+            
+            contactLogEntries.add(contactLogEntry);
+          }
+          studentContactLogEntryBatch.setFirstResult(response.getEntity().getFirstResult());
+          studentContactLogEntryBatch.setResults(contactLogEntries);
+          studentContactLogEntryBatch.setTotalHitCount(response.getEntity().getTotalHitCount());
+        }
+      }
+      return new BridgeResponse<StudentContactLogEntryBatch>(response.getStatusCode(), studentContactLogEntryBatch);
+    }
+    logger.warning(String.format("PyramusUserSchoolDataBridge.listStudentContactLogEntriesByStudent malformed user identifier %s\n%s",
+      userIdentifier,
+      ExceptionUtils.getStackTrace(new Throwable())));
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
+  }
+  
+  @Override 
+  public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(SchoolDataIdentifier studentIdentifier, StudentContactLogEntryRestModel payload){
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    if (studentId == null) {
+      logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
+      return null;
+    }
+    BridgeResponse<StudentContactLogEntryRestModel> response =  pyramusClient.responsePost(String.format("/students/students/%d/contactLogEntries", studentId), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentContactLogEntryRestModel.class);
+    boolean hasImage = false;
+    if (response.getEntity() != null) {
+      if (response.getEntity().getCreatorId() != null) {
+        response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
+        
+        UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+        hasImage = userEntityFileController.hasProfilePicture(userEntity);
+      }
+      response.getEntity().setHasImage(hasImage);
+    }
+    
+    return response;
+  }
+  
+  @Override
+  public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(SchoolDataIdentifier studentIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    if (studentId == null) {
+      logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
+      return null;
+    }
+    BridgeResponse<StudentContactLogEntryRestModel> response = pyramusClient.responsePut(String.format("/students/students/%d/contactLogEntries/%d", studentId, contactLogEntryId), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentContactLogEntryRestModel.class);
+    boolean hasImage = false;
+    if (response.getEntity() != null) {
+      if (response.getEntity().getCreatorId() != null) {
+        response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
+        
+        UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+        hasImage = userEntityFileController.hasProfilePicture(userEntity);
+      }
+      response.getEntity().setHasImage(hasImage);
+    }
+    
+    return response;
+  }
+  
+  @Override
+  public void removeStudentContactLogEntry(SchoolDataIdentifier studentIdentifier, Long contactLogEntryId) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    if (studentId == null) {
+      throw new SchoolDataBridgeInternalException(String.format("StudentId for identifier %s not found", studentIdentifier));
+    }
+    pyramusClient.delete("/students/students/" + studentId + "/contactLogEntries/" + contactLogEntryId);
+  }
+  
+  @Override 
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(SchoolDataIdentifier studentIdentifier, Long entryId, StudentContactLogEntryCommentRestModel payload){
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    if (studentId == null) {
+      logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
+      return null;
+    }
+    BridgeResponse<StudentContactLogEntryCommentRestModel> response = pyramusClient.responsePost(String.format("/students/students/%d/contactLogEntries/%d/comments", studentId, entryId), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentContactLogEntryCommentRestModel.class);
+    boolean hasImage = false;
+    if (response.getEntity() != null ) {
+      if (response.getEntity().getCreatorId() != null) {
+        response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
+        
+        UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+        hasImage = userEntityFileController.hasProfilePicture(userEntity);
+      }
+      response.getEntity().setHasImage(hasImage);
+    }
+    
+    return response;
+  }
+  
+  @Override
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(SchoolDataIdentifier studentIdentifier, Long entryId, Long commentId, StudentContactLogEntryCommentRestModel payload) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    if (studentId == null) {
+      logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
+      return null;
+    }
+    BridgeResponse<StudentContactLogEntryCommentRestModel> response = pyramusClient.responsePut(String.format("/students/students/%d/contactLogEntries/%d/comments/%d", studentId, entryId, commentId), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentContactLogEntryCommentRestModel.class);
+    boolean hasImage = false;
+    if (response.getEntity() != null) {
+      if (response.getEntity().getCreatorId() != null) {
+    
+        response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
+        
+        UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(toUserEntityId(response.getEntity().getCreatorId())));
+        hasImage = userEntityFileController.hasProfilePicture(userEntity);
+      }
+      response.getEntity().setHasImage(hasImage);
+    }
+    return response;
+  }
+  
+  @Override
+  public void removeStudentContactLogEntryComment(SchoolDataIdentifier studentIdentifier, Long commentId) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    if (studentId == null) {
+      throw new SchoolDataBridgeInternalException(String.format("StudentId for identifier %s not found", studentIdentifier));
+    }
+    pyramusClient.delete("/students/students/" + studentId + "/contactLogEntries/entryComments/" + commentId);
+  }
+  
   @Override
   public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates() {
     BridgeResponse<WorklistItemTemplateRestModel[]> response = pyramusClient.responseGet("/worklist/templates", WorklistItemTemplateRestModel[].class);

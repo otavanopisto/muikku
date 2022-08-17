@@ -7,9 +7,9 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 public abstract class AbstractUser implements User {
   
   public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
-      String studyProgrammeName, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
+      String studyProgrammeName, String studyProgrammeEducationType, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier) {
+      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility) {
     super();
     this.identifier = identifier;
     this.firstName = firstName;
@@ -17,6 +17,7 @@ public abstract class AbstractUser implements User {
     this.nickName = nickName;
     this.displayName = displayName;
     this.studyProgrammeName = studyProgrammeName;
+    this.studyProgrammeEducationType = studyProgrammeEducationType;
     this.studyProgrammeIdentifier = studyProgrammeIdentifier;
     this.nationality = nationality;
     this.language = language;
@@ -29,6 +30,7 @@ public abstract class AbstractUser implements User {
     this.evaluationFees = evaluationFees;
     this.curriculumIdentifier = curriculumIdentifier;
     this.organizationIdentifier = organizationIdentifier;
+    this.matriculationEligibility = matriculationEligibility;
   }
 
   @Override
@@ -64,6 +66,11 @@ public abstract class AbstractUser implements User {
   @Override
   public String getStudyProgrammeName() {
     return studyProgrammeName;
+  }
+
+  @Override
+  public String getStudyProgrammeEducationType() {
+    return studyProgrammeEducationType;
   }
 
   @Override
@@ -174,11 +181,20 @@ public abstract class AbstractUser implements User {
     this.organizationIdentifier = organizationIdentifier;
   }
 
+  public boolean getMatriculationEligibility() {
+    return matriculationEligibility;
+  }
+
+  public void setMatriculationEligibility(boolean matriculationEligibility) {
+    this.matriculationEligibility = matriculationEligibility;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;
   private String displayName;
   private String studyProgrammeName;
+  private String studyProgrammeEducationType;
   private SchoolDataIdentifier studyProgrammeIdentifier;
   private String nationality;
   private String language;
@@ -192,4 +208,5 @@ public abstract class AbstractUser implements User {
   private String curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
+  private boolean matriculationEligibility;
 }

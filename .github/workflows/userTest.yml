@@ -1,7 +1,7 @@
 name: User headless tests
 on: 
   pull_request:
-    branches: [devel]
+    branches: [devel, master]
 jobs:
   testing:
     env:

@@ -36,6 +36,7 @@ import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
 
 @ApplicationScoped
 public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
@@ -80,17 +81,6 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
         RestClient.builder(
                 new HttpHost("localhost", portNumber, "http")));    
 
-//    Settings settings = Settings.settingsBuilder()
-//        .put("cluster.name", clusterName).build();
-//    
-//    try {
-//      elasticClient = TransportClient.builder().settings(settings).build()
-//          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), portNumber));
-//    } catch (UnknownHostException e) {
-//      logger.log(Level.SEVERE, "Failed to connect to elasticsearch cluster", e);
-//      return;
-//    }
-
     for (Indexable indexable : IndexableEntityVault.getEntities()) {
       String indexName = indexable.indexName();
 
@@ -107,28 +97,32 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
         IndexableFieldOption[] fieldOptions = indexable.options();
         if (fieldOptions != null) {
           for (IndexableFieldOption fieldOption : fieldOptions) {
-            ElasticMappingProperty fieldMapping = null;
-            
-            switch (fieldOption.type()) {
-              case TEXT:
-              case KEYWORD:
-                fieldMapping = new ElasticMappingStringProperty(fieldOption.type(), fieldOption.index());
-              break;
+            TypedElasticMappingProperty fieldMapping = fieldOptionToMapping(fieldOption);
+
+            if (fieldMapping != null) {
+              properties.put(fieldOption.name(), fieldMapping);
             }
-
-            if (fieldMapping == null) {
-              logger.severe(String.format("Unknown field type %s", fieldOption.type()));
-              continue;
-            } else {
-              IndexableFieldMultiField[] multiFields = fieldOption.multiFields();
-
-              if (multiFields != null && multiFields.length > 0) {
-                for (IndexableFieldMultiField multiField : multiFields) {
-                  fieldMapping.addField(multiField.name(), new ElasticMappingPropertyOptionField(multiField.type(), multiField.index()));
+          }
+        }
+        
+        IndexableSubObject[] subObjects = indexable.subObjects();
+        if (subObjects != null) {
+          for (IndexableSubObject subObject : subObjects) {
+            IndexableFieldOption[] subObjectOptions = subObject.options();
+            
+            if (subObjectOptions != null) {
+              Map<String, ElasticMappingProperty> subObjectProperties = new HashMap<>();
+              
+              for (IndexableFieldOption subObjectOption : subObject.options()) {
+                TypedElasticMappingProperty property = fieldOptionToMapping(subObjectOption);
+                if (property != null) {
+                  subObjectProperties.put(subObjectOption.name(), property);
                 }
               }
-
-              properties.put(fieldOption.name(), fieldMapping);
+              
+              if (!subObjectProperties.isEmpty()) {
+                properties.put(subObject.name(), new ElasticMappingProperties(subObjectProperties));
+              }
             }
           }
         }
@@ -142,6 +136,31 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
         }
       }
     }
+  }
+
+  private TypedElasticMappingProperty fieldOptionToMapping(IndexableFieldOption fieldOption) {
+    TypedElasticMappingProperty fieldMapping = null;
+    
+    switch (fieldOption.type()) {
+      case KEYWORD:
+      case TEXT:
+        fieldMapping = new ElasticMappingStringProperty(fieldOption.type(), fieldOption.index());
+      break;
+    }
+    
+    if (fieldMapping == null) {
+      logger.severe(String.format("Unknown field type %s", fieldOption.type()));
+    } else {
+      IndexableFieldMultiField[] multiFields = fieldOption.multiFields();
+
+      if (multiFields != null && multiFields.length > 0) {
+        for (IndexableFieldMultiField multiField : multiFields) {
+          fieldMapping.addField(multiField.name(), new ElasticMappingPropertyOptionField(multiField.type(), multiField.index()));
+        }
+      }
+    }
+
+    return fieldMapping;
   }
   
   private void ensureIndexExists(String indexName) throws IOException {
@@ -167,12 +186,6 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     mappingRequest.source(mapping, XContentType.JSON);
     
     elasticClient.indices().putMapping(mappingRequest, RequestOptions.DEFAULT);
-//      elasticClient.admin().indices()
-//          .preparePutMapping("muikku")
-//          .setType(propertyName)
-//          .setSource(mapping)
-//          .execute()
-//          .actionGet();
   }
 
   public static String elasticType(IndexableFieldType type) {
@@ -186,7 +199,10 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     return null;
   }
   
-  public static class ElasticMappingProperties {
+  public abstract static class ElasticMappingProperty {
+  }
+  
+  public static class ElasticMappingProperties extends ElasticMappingProperty {
 
     public ElasticMappingProperties(Map<String, ElasticMappingProperty> properties) {
       super();
@@ -200,10 +216,9 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     private Map<String, ElasticMappingProperty> properties;
   }
   
-  @JsonInclude(Include.NON_EMPTY)
-  public abstract static class ElasticMappingProperty {
+  public abstract static class TypedElasticMappingProperty extends ElasticMappingProperty {
 
-    public ElasticMappingProperty(String type) {
+    public TypedElasticMappingProperty(String type) {
       this.type = type;
     }
     
@@ -223,7 +238,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     private Map<String, ElasticMappingPropertyOptionField> fields = new HashMap<>();
   }
 
-  public static class ElasticMappingStringProperty extends ElasticMappingProperty {
+  public static class ElasticMappingStringProperty extends TypedElasticMappingProperty {
 
     public ElasticMappingStringProperty(IndexableFieldType indexableFieldType, boolean indexed) {
       super(indexableFieldType == IndexableFieldType.KEYWORD ? "keyword" : "text");
@@ -237,20 +252,6 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     private boolean index;
   }
   
-//  public static class ElasticMappingMultifieldProperty extends ElasticMappingProperty {
-//
-//    public ElasticMappingMultifieldProperty(Map<String, ElasticMappingPropertyOptionField> fields) {
-//      super("multi_field");
-//      this.fields = fields;
-//    }
-//
-//    public Map<String, ElasticMappingPropertyOptionField> getFields() {
-//      return fields;
-//    }
-//
-//    private Map<String, ElasticMappingPropertyOptionField> fields;
-//  }
-
   public static class ElasticMappingPropertyOptionField {
 
     public ElasticMappingPropertyOptionField(IndexableFieldType indexableFieldType, boolean indexed) {
@@ -314,8 +315,6 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       e.printStackTrace();
       throw new RuntimeException("KÄÄK");
     }
-//    @SuppressWarnings("unused")
-//    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id).execute().actionGet();
   }
 
   @Override

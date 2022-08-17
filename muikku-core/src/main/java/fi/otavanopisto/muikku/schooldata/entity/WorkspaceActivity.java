@@ -117,8 +117,17 @@ public class WorkspaceActivity {
     this.gradeDate = gradeDate;
   }
 
+  public String getWorkspaceSubjectIdentifier() {
+    return workspaceSubjectIdentifier;
+  }
+
+  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
+  }
+
   private Long id;
   private String identifier;
+  private String workspaceSubjectIdentifier;
   private String name;
   private List<String> curriculumIdentifiers;
   private String grade;
@@ -131,5 +140,4 @@ public class WorkspaceActivity {
   private Integer exercisesAnswered;
   private Integer evaluablesTotal;
   private Integer evaluablesAnswered;
-
 }
