@@ -486,31 +486,49 @@ class ContactInformation extends React.Component<
 
               {!this.props.status.isStudent ? (
                 <div className="form__row">
-                  <div className="form-element">
-                    <label htmlFor="profileAppointmentCalendar">
+                  <div className="form-element form-element--appointment-calendar">
+                    <legend className="form__legend">
                       {this.props.i18n.text.get(
-                        "plugin.profile.appointmentCalendar.label"
+                        "plugin.profile.appointmentCalendar.legend"
                       )}
-                    </label>
-                    <input
-                      id="profileAppointmentCalendar"
-                      className="form-element__input"
-                      type="text"
-                      autoComplete="tel-national"
-                      onChange={(e) =>
-                        this.updateField("appointmentCalendar", e.target.value)
-                      }
-                      value={this.state.appointmentCalendar}
-                    />
-                    <Button
-                      href={this.state.appointmentCalendar}
-                      openInNewTab="_blank"
-                      disabled={hasACalendar}
-                    >
+                    </legend>
+                    <fieldset className="form__fieldset">
+                      <div className="form__fieldset-content form__fieldset-content--horizontal">
+                        <label htmlFor="profileAppointmentCalendar">
+                          {this.props.i18n.text.get(
+                            "plugin.profile.appointmentCalendar.label"
+                          )}
+                        </label>
+                        <input
+                          id="profileAppointmentCalendar"
+                          className="form-element__input"
+                          type="text"
+                          autoComplete="tel-national"
+                          onChange={(e) =>
+                            this.updateField(
+                              "appointmentCalendar",
+                              e.target.value
+                            )
+                          }
+                          value={this.state.appointmentCalendar}
+                        />
+                        <Button
+                          href={this.state.appointmentCalendar}
+                          buttonModifiers="primary-function-content"
+                          openInNewTab="_blank"
+                          disabled={hasACalendar}
+                        >
+                          {this.props.i18n.text.get(
+                            "plugin.profile.appointmentCalendar.testButton"
+                          )}
+                        </Button>
+                      </div>
+                    </fieldset>
+                    <div className="form-element__description">
                       {this.props.i18n.text.get(
-                        "plugin.profile.appointmentCalendar.testButton"
+                        "plugin.profile.appointmentCalendar.description"
                       )}
-                    </Button>
+                    </div>
                   </div>
                 </div>
               ) : null}
