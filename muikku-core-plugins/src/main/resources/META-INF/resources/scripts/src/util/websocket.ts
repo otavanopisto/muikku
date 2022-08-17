@@ -282,15 +282,11 @@ export default class MuikkuWebsocket {
             // TODO localization
             this.store.dispatch(
               actions.openNotificationDialog(
-                "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään"
+                this.store
+                  .getState()
+                  .i18n.text.get("plugin.server.unreachable.403")
               ) as Action
             );
-            // this.store.dispatch(
-            //   actions.displayNotification(
-            //     "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
-            //     "error"
-            //   ) as Action
-            // );
             this.ticket = null;
             this.discarded = true;
             this.discardCurrentWebSocket(true);
@@ -306,15 +302,11 @@ export default class MuikkuWebsocket {
             // TODO localization
             this.store.dispatch(
               actions.openNotificationDialog(
-                "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen."
+                this.store
+                  .getState()
+                  .i18n.text.get("plugin.server.unreachable.502")
               ) as Action
             );
-            // this.store.dispatch(
-            //   actions.displayNotification(
-            //     "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.",
-            //     "error"
-            //   ) as Action
-            // );
             this.ticket = null;
             this.discarded = true;
             this.discardCurrentWebSocket(true);
@@ -492,22 +484,18 @@ export default class MuikkuWebsocket {
         this.openWebSocket();
       } else {
         this.reconnectRetries++;
-        if (this.reconnectRetries == 6) {
+        if (this.reconnectRetries == 2) {
           // one minute have passed, let's give up
           this.discarded = true;
           this.discardCurrentWebSocket(true);
           // TODO localization
           this.store.dispatch(
             actions.openNotificationDialog(
-              "Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi."
+              this.store
+                .getState()
+                .i18n.text.get("plugin.server.unreachable.reconnectFailed")
             ) as Action
           );
-          /* this.store.dispatch(
-            actions.displayNotification(
-              "Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.",
-              "error"
-            ) as Action
-          ); */
         } else {
           // Reconnect retry failed, retry after reconnectInterval
           this.reconnectHandler = setTimeout(() => {

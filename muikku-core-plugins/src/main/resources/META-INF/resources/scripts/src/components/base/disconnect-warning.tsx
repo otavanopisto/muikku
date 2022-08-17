@@ -64,11 +64,11 @@ class DisconnectedWarningDialog extends React.Component<
     const footer = (closeDialog: () => never) => (
       <div className="dialog__button-set">
         <Button
-          buttonModifiers={["cancel", "standard-cancel"]}
+          buttonModifiers={["disconnect-warning"]}
           onClick={this.cancel(closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.cancelButton"
+            "plugin.server.unreachable.button.close"
           )}
         </Button>
       </div>
@@ -77,10 +77,10 @@ class DisconnectedWarningDialog extends React.Component<
     return (
       <Dialog
         isOpen={this.props.dialogOpen}
-        title="Ilmoittaudu ylioppilaskokeisiin"
+        title={this.props.i18n.text.get("plugin.server.unreachable.title")}
         content={content}
         footer={footer}
-        modifier={["wizard", "matriculation"]}
+        modifier={["disconnect-warning"]}
       />
     );
   }
