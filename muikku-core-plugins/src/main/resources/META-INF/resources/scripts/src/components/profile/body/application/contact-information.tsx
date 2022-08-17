@@ -40,6 +40,7 @@ interface ContactInformationProps {
  */
 interface ContactInformationState {
   phoneNumber: string;
+  appointmentCalendar: string;
   street: string;
   postalCode: string;
   city: string;
@@ -68,6 +69,8 @@ class ContactInformation extends React.Component<
     this.state = {
       phoneNumber: props.profile.properties["profile-phone"] || "",
       extraInfo: props.profile.properties["profile-extraInfo"] || "",
+      appointmentCalendar:
+        props.profile.properties["profile-appointmentCalendar"] || "",
       street: "",
       postalCode: "",
       city: "",
@@ -90,6 +93,16 @@ class ContactInformation extends React.Component<
     ) {
       this.setState({
         phoneNumber: nextProps.profile.properties["profile-phone"],
+      });
+    }
+    if (
+      nextProps.profile.properties["profile-appointmentCalendar"] &&
+      this.props.profile.properties["profile-appointmentCalendar"] !==
+        nextProps.profile.properties["profile-appointmentCalendar"]
+    ) {
+      this.setState({
+        appointmentCalendar:
+          nextProps.profile.properties["profile-appointmentCalendar"],
       });
     }
 
@@ -148,6 +161,18 @@ class ContactInformation extends React.Component<
           this.props.saveProfileProperty({
             key: "profile-phone",
             value: this.state.phoneNumber.trim(),
+            success: executor.succeeded,
+            fail: executor.failed,
+          });
+        }
+      )
+      .addAction(
+        (this.props.profile.properties["profile-appointmentCalendar"] || "") !==
+          this.state.appointmentCalendar,
+        () => {
+          this.props.saveProfileProperty({
+            key: "profile-appointmentCalendar",
+            value: this.state.appointmentCalendar.trim(),
             success: executor.succeeded,
             fail: executor.failed,
           });
@@ -256,6 +281,7 @@ class ContactInformation extends React.Component<
     ) {
       return null;
     }
+    const hasACalendar = !this.state.appointmentCalendar;
 
     return (
       <section>
@@ -454,6 +480,37 @@ class ContactInformation extends React.Component<
                         "plugin.profile.whatsappIntegration.description"
                       )}
                     </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {!this.props.status.isStudent ? (
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileAppointmentCalendar">
+                      {this.props.i18n.text.get(
+                        "plugin.profile.appointmentCalendar.label"
+                      )}
+                    </label>
+                    <input
+                      id="profileAppointmentCalendar"
+                      className="form-element__input"
+                      type="text"
+                      autoComplete="tel-national"
+                      onChange={(e) =>
+                        this.updateField("appointmentCalendar", e.target.value)
+                      }
+                      value={this.state.appointmentCalendar}
+                    />
+                    <Button
+                      href={this.state.appointmentCalendar}
+                      openInNewTab="_blank"
+                      disabled={hasACalendar}
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.profile.appointmentCalendar.testButton"
+                      )}
+                    </Button>
                   </div>
                 </div>
               ) : null}
