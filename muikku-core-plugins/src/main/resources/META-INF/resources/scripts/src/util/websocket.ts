@@ -484,7 +484,7 @@ export default class MuikkuWebsocket {
         this.openWebSocket();
       } else {
         this.reconnectRetries++;
-        if (this.reconnectRetries == 2) {
+        if (this.reconnectRetries == 6) {
           // one minute have passed, let's give up
           this.discarded = true;
           this.discardCurrentWebSocket(true);
