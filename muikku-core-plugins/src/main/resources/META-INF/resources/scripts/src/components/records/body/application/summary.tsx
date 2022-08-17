@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -20,6 +20,13 @@ import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
+import CourseCarousel from "~/components/general/carousel/course-carousel";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 
 /**
  * SummaryProps
@@ -30,6 +37,7 @@ interface SummaryProps {
   summary: SummaryType;
   status: StatusType;
   hops: HOPSType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -263,6 +271,20 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
+              {this.props.hops.eligibility &&
+                !this.props.hops.eligibility.upperSecondarySchoolCurriculum && (
+                  <div className="application-sub-panel">
+                    <div className="application-sub-panel__header">
+                      Kursseja sinulle
+                    </div>
+                    <CourseCarousel
+                      studentId={this.props.status.userSchoolDataIdentifier}
+                      studentUserEntityId={this.props.status.userId}
+                      displayNotification={this.props.displayNotification}
+                    />
+                  </div>
+                )}
+
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
                   {this.props.i18n.text.get(
@@ -313,6 +335,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   </div>
                 </div>
               </div>
+
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
                   {this.props.i18n.text.get(
@@ -351,9 +374,10 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
+ * @param dispatch dispatch
  */
-function mapDispatchToProps() {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Summary);

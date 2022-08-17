@@ -21,7 +21,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   
   private static final long serialVersionUID = 1265008061182482207L;
 
-  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Long creator, Long lastModifier, Date dueDate, NoteStatus status){
+  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Long creator, Long lastModifier,Date startDate, Date dueDate, NoteStatus status, Boolean archived){
     Note note = new Note();
     note.setTitle(title);
     note.setDescription(description);
@@ -33,21 +33,24 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     note.setCreated(new Date());
     note.setLastModifier(lastModifier);
     note.setLastModified(new Date());
-    note.setArchived(false);
+    note.setArchived(archived);
+    note.setStartDate(startDate);
     note.setDueDate(dueDate);
     note.setStatus(status);
     return persist(note);
   }
   
-  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, Long lastModifier, Date dueDate, NoteStatus status){
+  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, Long lastModifier, Date startDate, Date dueDate, NoteStatus status, Boolean archived){
     note.setTitle(title);
     note.setDescription(description);
     note.setPriority(priority);
     note.setPinned(pinned);
     note.setLastModifier(lastModifier);
     note.setLastModified(new Date());
+    note.setStartDate(startDate);
     note.setDueDate(dueDate);
     note.setStatus(status);
+    note.setArchived(archived);
     return persist(note);
   }
   
@@ -69,10 +72,14 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   }
   
   
-  public Note toggleArchived(Note note, boolean archived) {
+  public Note toggleArchived(Note note, Boolean archived) {
     note.setArchived(archived);
     note.setLastModified(new Date());
     
+    if (archived.equals(Boolean.TRUE)) {
+      note.setDueDate(null);
+      note.setStartDate(null);
+    }
     getEntityManager().persist(note);
     
     return note;
