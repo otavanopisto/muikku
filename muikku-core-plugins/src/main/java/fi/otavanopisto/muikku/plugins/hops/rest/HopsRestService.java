@@ -547,7 +547,10 @@ public class HopsRestService {
               @SuppressWarnings("unchecked")
               List<Map<String, Object>> subjects = (List<Map<String, Object>>) result.get("subjects");
               for (Map<String, Object> s : subjects) {
-                courseNum = (Integer) s.get("courseNumber");
+                if (subjectObject.getCode().equals(s.get("subjectCode"))){
+                  courseNum = (Integer) s.get("courseNumber");
+                  break;
+                }
               }
               
               SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();

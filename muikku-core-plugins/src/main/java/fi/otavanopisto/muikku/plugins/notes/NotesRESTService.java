@@ -94,7 +94,7 @@ public class NotesRESTService extends PluginRESTService {
     
     noteRest.setIsActive(true);
     if (note.getStartDate() != null) {
-      // If startDate is after today
+      // If startDate is after yesterday
       if (note.getStartDate().after(Date.from(OffsetDateTime.now().minusDays(1).toInstant()))) {
         noteRest.setIsActive(false);
       } 
@@ -150,7 +150,7 @@ public class NotesRESTService extends PluginRESTService {
     updatedRestModel.setIsActive(true);
     
     if (updatedNote.getStartDate() != null) {
-      // If startDate is after today
+      //If startDate is after yesterday
       if (updatedNote.getStartDate().after(Date.from(OffsetDateTime.now().minusDays(1).toInstant()))) {
         updatedRestModel.setIsActive(false);
       }
@@ -221,7 +221,7 @@ public class NotesRESTService extends PluginRESTService {
         // Set active by default
         noteRest.setIsActive(true);
         if (note.getStartDate() != null) {
-          // If startDate is after today
+          // If startDate is after yesterday
           if (note.getStartDate().after(Date.from(OffsetDateTime.now().minusDays(1).toInstant()))) {
             noteRest.setIsActive(false);
           } 
@@ -262,19 +262,20 @@ public class NotesRESTService extends PluginRESTService {
       }
     }
 
-    Note updatedNote = notesController.toggleArchived(note);
+    note = notesController.toggleArchived(note);
+    
     if(note.getArchived().equals(Boolean.FALSE)) {
       note.setDueDate(null);
       note.setStartDate(null);
     }
     
-    NoteRestModel updatedRestModel = toRestModel(updatedNote);
-    updatedRestModel.setIsActive(true);
+    NoteRestModel noteRestModel = toRestModel(note);
+    noteRestModel.setIsActive(true);
 
     if (note.getArchived().equals(Boolean.TRUE)) {
-      updatedRestModel.setIsActive(false);
+      noteRestModel.setIsActive(false);
     }
-    return Response.ok(updatedRestModel).build();
+    return Response.ok(noteRestModel).build();
 
   }
 } 
