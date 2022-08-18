@@ -761,7 +761,6 @@ class WorkspaceMaterials extends React.Component<
           {emptyMessage}
           {createSectionElementWhenEmpty}
         </ContentPanel>
-        <DisconnectedWarningDialog />
       </div>
     );
   }
