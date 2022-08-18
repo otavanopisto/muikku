@@ -183,15 +183,19 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                     onClick={closePortal}
                   ></div>
                 </header>
-                <section className={`dialog__content ${(modifiers || [])
+                <section
+                  className={`dialog__content ${(modifiers || [])
                     .map((s) => `dialog__content--${s}`)
-                    .join(" ")}`}>
+                    .join(" ")}`}
+                >
                   {this.props.content(closePortal)}
                 </section>
                 {this.props.footer ? (
-                  <footer className={`dialog__footer ${(modifiers || [])
-                    .map((s) => `dialog__footer--${s}`)
-                    .join(" ")}`}>
+                  <footer
+                    className={`dialog__footer ${(modifiers || [])
+                      .map((s) => `dialog__footer--${s}`)
+                      .join(" ")}`}
+                  >
                     {this.props.footer && this.props.footer(closePortal)}
                   </footer>
                 ) : null}

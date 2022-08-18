@@ -67,9 +67,7 @@ class DisconnectedWarningDialog extends React.Component<
           buttonModifiers={["disconnect-warning"]}
           onClick={this.cancel(closeDialog)}
         >
-          {this.props.i18n.text.get(
-            "plugin.server.unreachable.button.close"
-          )}
+          {this.props.i18n.text.get("plugin.server.unreachable.button.close")}
         </Button>
       </div>
     );
