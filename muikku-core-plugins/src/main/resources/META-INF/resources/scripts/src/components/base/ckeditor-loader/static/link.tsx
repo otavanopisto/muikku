@@ -47,8 +47,13 @@ export default class Link extends React.Component<
       case "_blank":
         return (
           <>
-            <span className="icon-external-link"></span>
-            <span className="visually-hidden">Opens to new tab</span>
+            <span className="visually-hidden">
+              {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+            </span>
+            <span
+              role="presentation"
+              className="external-link-indicator icon-external-link"
+            ></span>
           </>
         );
 
@@ -104,7 +109,7 @@ export default class Link extends React.Component<
         if (props.target) {
           return (
             <Tag {...props}>
-              {children}{" "}
+              {children}
               {this.renderAccessibilityIndicatorByTarget(props.target)}
             </Tag>
           );
