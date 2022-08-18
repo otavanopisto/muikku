@@ -66,7 +66,7 @@
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    border-radius: 3px;
+    border-radius: 5px;
     bottom: auto;
     box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-size: $text-desktop-font-size;
@@ -75,6 +75,13 @@
     position: relative;
     right: auto;
     top: auto;
+  }
+}
+
+.dialog__window--course-description {
+  .dialog__content {
+    line-height: 1.5rem;
+    padding: 5px 20px;
   }
 }
 
@@ -256,7 +263,7 @@
 
   @include breakpoint($breakpoint-pad) {
     background-color: $color-dialog-desktop-background;
-    border-radius: 3px 3px 0 0;
+    border-radius: 5px 5px 0 0;
     color: $color-dialog-desktop-text;
   }
 }
@@ -267,6 +274,11 @@
     top: 0;
     z-index: 1;
   }
+}
+
+.dialog__header--course-description {
+  background: $color-default;
+  color: $color-default-contrast;
 }
 
 .dialog__header--wizard {

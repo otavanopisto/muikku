@@ -40,6 +40,7 @@
     "deep-equal": "2.0.5",
     "fork-ts-checker-webpack-plugin": "7.2.1",
     "mini-css-extract-plugin": "2.6.0",
+    "react-multi-carousel": "2.6.5",
     "moment": "2.29.3",
     "null-loader": "4.0.1",
     "promise": "8.1.0",
