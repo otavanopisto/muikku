@@ -123,7 +123,7 @@
   position: fixed;
   right: 0;
   top: $navbar-mobile-height;
-  z-index: 998;
+  z-index: 98;
 
   @include breakpoint($breakpoint-pad) {
     align-items: center;
@@ -277,6 +277,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   margin: 0;
+  min-width: 0;
   padding: 0;
   position: relative;
   width: 100%;
