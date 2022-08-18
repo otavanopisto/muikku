@@ -139,6 +139,7 @@ export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
  */
 interface ButtonPillProps extends ButtonProps {
   icon?: string;
+  openInNewTab?: string;
 }
 
 /**

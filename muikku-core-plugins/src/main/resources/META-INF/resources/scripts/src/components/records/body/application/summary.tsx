@@ -20,6 +20,7 @@ import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
+import { WhatsappLink } from "~/components/general/whatsapp-link";
 
 /**
  * SummaryProps
@@ -175,29 +176,60 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                   : null}
                               </div>
                             ) : null}
-                            <CommunicatorNewMessage
-                              extraNamespace="guidance-councelor"
-                              initialSelectedItems={[
-                                {
-                                  type: "staff",
-                                  value: {
-                                    id: councelor.userEntityId,
-                                    name: getName(councelor, true),
+                            <div className="item-list__user-actions">
+                              <CommunicatorNewMessage
+                                extraNamespace="guidance-councelor"
+                                initialSelectedItems={[
+                                  {
+                                    type: "staff",
+                                    value: {
+                                      id: councelor.userEntityId,
+                                      name: getName(councelor, true),
+                                    },
                                   },
-                                },
-                              ]}
-                            >
-                              <Button
-                                buttonModifiers={[
-                                  "info",
-                                  "contact-student-councelor",
                                 ]}
                               >
-                                {this.props.i18n.text.get(
-                                  "plugin.records.contactStudentCouncelor.message.label"
-                                )}
-                              </Button>
-                            </CommunicatorNewMessage>
+                                <Button
+                                  buttonModifiers={[
+                                    "info",
+                                    "contact-student-councelor",
+                                  ]}
+                                >
+                                  {this.props.i18n.text.get(
+                                    "plugin.records.contactStudentCouncelor.message.label"
+                                  )}
+                                </Button>
+                              </CommunicatorNewMessage>
+                              {councelor.properties["profile-phone"] &&
+                              councelor.properties["profile-whatsapp"] ? (
+                                <WhatsappLink
+                                  i18n={this.props.i18n}
+                                  mobileNumber={
+                                    councelor.properties["profile-phone"]
+                                  }
+                                />
+                              ) : null}
+                              {councelor.properties[
+                                "profile-appointmentCalendar"
+                              ] ? (
+                                <Button
+                                  href={
+                                    councelor.properties[
+                                      "profile-appointmentCalendar"
+                                    ]
+                                  }
+                                  openInNewTab="_blank"
+                                  buttonModifiers={[
+                                    "info",
+                                    "appointment-calendar",
+                                  ]}
+                                >
+                                  {this.props.i18n.text.get(
+                                    "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
+                                  )}
+                                </Button>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
                       );

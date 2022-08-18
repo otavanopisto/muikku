@@ -4,7 +4,7 @@ import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { getName } from "~/util/modifiers";
-import Button from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
@@ -160,11 +160,7 @@ class WorkspaceTeachers extends React.Component<
                             true
                           )}
                         >
-                          <Button buttonModifiers={["info", "contact-teacher"]}>
-                            {this.props.i18n.text.get(
-                              "plugin.workspace.index.message.label"
-                            )}
-                          </Button>
+                          <ButtonPill icon="envelope"></ButtonPill>
                         </CommunicatorNewMessage>
                         {teacher.properties["profile-phone"] !== undefined &&
                           teacher.properties["profile-phone"] !== null &&
@@ -172,6 +168,21 @@ class WorkspaceTeachers extends React.Component<
                             <WhatsappLink
                               i18n={this.props.i18n}
                               mobileNumber={teacher.properties["profile-phone"]}
+                            />
+                          )}
+
+                        {teacher.properties["profile-appointmentCalendar"] !==
+                          undefined &&
+                          teacher.properties["profile-appointmentCalendar"] !==
+                            null && (
+                            <ButtonPill
+                              icon="clock"
+                              openInNewTab="_blank"
+                              href={
+                                teacher.properties[
+                                  "profile-appointmentCalendar"
+                                ]
+                              }
                             />
                           )}
                       </div>
