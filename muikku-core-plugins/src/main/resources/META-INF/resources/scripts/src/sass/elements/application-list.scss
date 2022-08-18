@@ -945,6 +945,11 @@
 
 .application-list__item-content-main--discussion {
   align-self: center;
+  max-width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: calc(100% - #{$avatar-desktop-size} - 16px);
+  }
 }
 
 .application-list__item-header--discussion-current-thread-title {
