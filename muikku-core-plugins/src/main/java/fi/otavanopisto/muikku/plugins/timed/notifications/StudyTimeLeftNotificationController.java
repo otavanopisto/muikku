@@ -32,7 +32,7 @@ public class StudyTimeLeftNotificationController {
   public SearchResult searchActiveStudents(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date studyTimeEndsBefore){
     SearchProvider searchProvider = getProvider("elastic-search");
     return searchProvider.searchUsers(activeOrganizations, null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, 
-        null, null, false, true, true, firstResult, maxResults, null, excludeSchoolDataIdentifiers, null, studyTimeEndsBefore);
+        null, null, false, true, true, firstResult, maxResults, null, excludeSchoolDataIdentifiers, null, studyTimeEndsBefore, false);
   }
 
   public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiersAfter(Date date){

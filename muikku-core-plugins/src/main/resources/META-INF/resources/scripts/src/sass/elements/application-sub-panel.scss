@@ -252,7 +252,6 @@
 .application-sub-panel__body--studies-summary-info {
   display: flex;
   flex-flow: column nowrap;
-  width: 50%;
 }
 
 .application-sub-panel__body--studies-options {
@@ -343,7 +342,7 @@
   margin: 10px 0;
 
   @include breakpoint($breakpoint-desktop) {
-    border-radius: 3px;
+    border-radius: 5px;
     flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;

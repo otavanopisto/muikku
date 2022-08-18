@@ -72,10 +72,14 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   }
   
   
-  public Note toggleArchived(Note note, boolean archived) {
+  public Note toggleArchived(Note note, Boolean archived) {
     note.setArchived(archived);
     note.setLastModified(new Date());
     
+    if (archived.equals(Boolean.TRUE)) {
+      note.setDueDate(null);
+      note.setStartDate(null);
+    }
     getEntityManager().persist(note);
     
     return note;

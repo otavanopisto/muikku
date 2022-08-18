@@ -91,6 +91,25 @@
   margin: 0 10px 0 0;
 }
 
+.button--studies-course-action {
+  background: $color-default;
+  border: 1px solid darken($color-workspace, 10%);
+  color: darken($color-workspace, 15%);
+  font-size: 0.75rem;
+  margin: 0 10px 0 0;
+  padding: 4px 10px;
+
+  &:last-child {
+    margin: 0;
+  }
+
+  &:hover {
+    background: darken($color-workspace, 15%);
+    border: 1px solid darken($color-workspace, 15%);
+    color: $color-default;
+  }
+}
+
 .button--execute {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
@@ -272,17 +291,6 @@
 }
 
 // FRONTPAGE
-.button--forgotpassword-dialog-submit {
-  display: inline-flex;
-  font-weight: 400; // This element is actually <label> so we need to reset font-weight
-  margin: 0 0 0 10px;
-}
-
-.button--forgotpassword-dialog-cancel {
-  display: inline-flex;
-  margin: 0 0 0 10px;
-}
-
 .button--login {
   background-color: $color-frontpage-button-login-background;
   color: $color-frontpage-button-login-text;

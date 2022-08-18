@@ -107,10 +107,21 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     />
                   ))
                 ) : (
+<<<<<<< HEAD
                   <div className="empty">
                     <span>
                       {this.props.i18n.text.get("plugin.records.courses.empty")}
                     </span>
+=======
+                  <div className="application-sub-panel__item">
+                    <div className="empty">
+                      <span>
+                        {this.props.i18n.text.get(
+                          "plugin.records.courses.empty"
+                        )}
+                      </span>
+                    </div>
+>>>>>>> origin/devel
                   </div>
                 )}
               </ApplicationSubPanel.Body>
@@ -157,11 +168,21 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 ))}
               </ApplicationList>
             ) : (
+<<<<<<< HEAD
               <div className="empty">
                 <span>
                   {this.props.i18n.text.get("plugin.records.files.empty")}
                 </span>
               </div>
+=======
+              <ApplicationListItem className="application-list__item application-list__item--studies-file-attacment">
+                <div className="empty">
+                  <span>
+                    {this.props.i18n.text.get("plugin.records.files.empty")}
+                  </span>
+                </div>
+              </ApplicationListItem>
+>>>>>>> origin/devel
             )}
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
