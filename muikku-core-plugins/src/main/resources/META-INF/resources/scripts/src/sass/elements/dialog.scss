@@ -96,16 +96,16 @@
   }
 }
 
-<<<<<<< HEAD
 .dialog__window--assignments {
   @include breakpoint($breakpoint-pad) {
     max-width: 1000px;
-=======
+  }
+}
+
 .dialog__window--course-description {
   .dialog__content {
     line-height: 1.5rem;
     padding: 5px 20px;
->>>>>>> origin/devel
   }
 }
 
@@ -290,17 +290,13 @@
   }
 }
 
-<<<<<<< HEAD
 .dialog__header--wizard,
-.dialog__header--studies {
-=======
 .dialog__header--course-description {
   background: $color-default;
   color: $color-default-contrast;
 }
 
 .dialog__header--wizard {
->>>>>>> origin/devel
   @include breakpoint($breakpoint-pad) {
     background-color: $color-dialog-wizard-desktop-background;
     border-top-left-radius: 10px;
