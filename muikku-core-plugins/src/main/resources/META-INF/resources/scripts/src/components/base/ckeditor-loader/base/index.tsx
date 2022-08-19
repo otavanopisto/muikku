@@ -214,11 +214,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     // This is all there is we just glue the HTML in there
     // and pick out the content from there
     return (
-      <div>
+      <>
         {this.state.elements.map((rootElement, index) =>
           HTMLtoReactComponent(rootElement, processingRules, index)
         )}
-      </div>
+      </>
     );
   }
 }

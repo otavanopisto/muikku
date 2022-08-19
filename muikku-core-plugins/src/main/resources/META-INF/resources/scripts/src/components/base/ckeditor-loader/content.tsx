@@ -26,10 +26,8 @@ function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
  */
 function CkeditorLoaderContent(props: CkeditorLoaderContentProps) {
   return (
-    <div className="react-required-container">
-      <div className="react-required-container" onClick={stopPropagation}>
-        <Base html={props.html} i18n={props.i18n} usedAs="default" />
-      </div>
+    <div onClick={stopPropagation}>
+      <Base html={props.html} i18n={props.i18n} usedAs="default" />
     </div>
   );
 }

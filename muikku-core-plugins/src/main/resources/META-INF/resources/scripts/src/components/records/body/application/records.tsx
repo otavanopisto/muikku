@@ -397,7 +397,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           const user = data.user;
           const records = data.records;
           return (
-            <div className="react-required-container" key={data.user.id}>
+            <React.Fragment key={data.user.id}>
               <div className="application-sub-panel__header">
                 {user.studyProgrammeName}
               </div>
@@ -615,7 +615,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   </div>
                 )}
               </div>
-            </div>
+            </React.Fragment>
           );
         })}
       </div>

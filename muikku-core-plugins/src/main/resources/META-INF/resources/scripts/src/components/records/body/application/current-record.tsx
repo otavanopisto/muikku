@@ -336,10 +336,7 @@ class CurrentRecord extends React.Component<
             "(" + this.props.records.current.workspace.nameExtension + ")"}
         </h3>
         <div className="application-sub-panel">
-          <div className="react-required-container">
-            {renderAssessmentsInformations()}
-          </div>
-
+          {renderAssessmentsInformations()}
           <div className="application-sub-panel__header">
             {this.props.i18n.text.get("plugin.records.assignments.title")}
           </div>
