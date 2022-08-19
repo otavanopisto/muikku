@@ -102,8 +102,8 @@ public class ToRTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
         assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
         
-        waitAndClick(".application-list__item-header--course .application-list__header-primary");
-        waitForPresent(".workspace-assessment__literal .workspace-assessment__literal-data");
+        waitAndClick(".application-list__item-header--course");
+        waitForContent(".workspace-assessment__literal .workspace-assessment__literal-data", 5);
         assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -195,15 +195,15 @@ public class ToRTestsBase extends AbstractUITest {
         login();
         
         navigate("/records#records", false);
-        waitForPresent(".application-list__header-primary");
-        waitAndClick(".application-list__header-primary");
-        waitForPresent(".state-PASSED");
-        assertText(".state-PASSED", "E");
-        waitAndClick(".application-list__item-header--studies-assignment .application-list__header-primary");
-        waitForVisible(".material-page__assignment-assessment-grade-data");
-        assertText(".material-page__assignment-assessment-grade-data", "Excellent");
-        waitForVisible(".material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p");
-        assertTextIgnoreCase(".material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p", "Test evaluation.");
+        waitForPresent(".application-list__header-secondary");
+        waitAndClick(".application-list__header-secondary .button--assignments-and-exercieses");
+        waitForPresent(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED");
+        assertText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED", "E");
+        waitAndClick(".dialog--studies .tabs__tab-data--assignments.active .application-list__item-header--studies-assignment");
+        waitForVisible(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-grade-data");
+        assertText(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-grade-data", "Excellent");
+        waitForVisible(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p");
+        assertTextIgnoreCase(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p", "Test evaluation.");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());

@@ -93,7 +93,7 @@ public class HopsRestService {
 
   @Inject
   private HopsController hopsController;
-
+  
   @Inject
   private UserEntityController userEntityController;
 
@@ -509,7 +509,8 @@ public class HopsRestService {
 
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
-    	SearchResult sr = searchProvider.searchWorkspaces(subjectObject.schoolDataIdentifier(), courseNumber);
+      SearchResult sr = searchProvider.searchWorkspaces(subjectObject.schoolDataIdentifier(), courseNumber);
+
       List<Map<String, Object>> results = sr.getResults();
       for (Map<String, Object> result : results) {
         String searchId = (String) result.get("id");

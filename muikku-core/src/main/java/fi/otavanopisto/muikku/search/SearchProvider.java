@@ -21,7 +21,9 @@ public interface SearchProvider {
   public WorkspaceSearchBuilder searchWorkspaces();
   public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers,
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
+
   public SearchResult searchWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers,
+
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
   public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber);
 

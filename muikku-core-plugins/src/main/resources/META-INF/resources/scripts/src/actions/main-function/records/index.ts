@@ -437,32 +437,14 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                   "callback"
                 )() || [];
 
-              let materials: Array<MaterialContentNodeType>;
-              let evaluations: Array<MaterialEvaluationType>;
-              // eslint-disable-next-line prefer-const
-              [materials, evaluations] = <any>await Promise.all([
+              const [materials] = await Promise.all([
                 Promise.all(
                   assignments.map((assignment) =>
                     promisify(
                       mApi().materials.html.read(assignment.materialId),
                       "callback"
-                    )()
-                  )
-                ),
-                Promise.all(
-                  assignments.map((assignment) =>
-                    promisify(
-                      mApi().workspace.workspaces.materials.evaluations.read(
-                        workspaceId,
-                        assignment.id,
-                        {
-                          userEntityId,
-                        }
-                      ),
-                      "callback"
                     )().then(
-                      (evaluations: Array<MaterialEvaluationType>) =>
-                        evaluations[0]
+                      (assignments: MaterialContentNodeType) => assignments
                     )
                   )
                 ),
@@ -472,7 +454,6 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                 (material, index) => <MaterialContentNodeType>Object.assign(
                     material,
                     {
-                      evaluation: evaluations[index],
                       assignment: assignments[index],
                       path: assignments[index].path,
                     }

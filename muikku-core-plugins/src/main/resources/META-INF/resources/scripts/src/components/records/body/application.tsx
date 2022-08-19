@@ -15,9 +15,15 @@ import {
 import { HOPSType } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
-import CurrentRecord from "./application/current-record";
-import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
+import "~/sass/elements/link.scss";
+import "~/sass/elements/application-list.scss";
+import "~/sass/elements/assignment.scss";
+import "~/sass/elements/rich-text.scss";
+import "~/sass/elements/application-list.scss";
+import "~/sass/elements/journal.scss";
+import "~/sass/elements/workspace-assessment.scss";
+import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 
 /**
  * StudiesApplicationProps
@@ -197,7 +203,6 @@ class StudiesApplication extends React.Component<
         component: (
           <ApplicationPanelBody modifier="tabs">
             <Records />
-            <CurrentRecord />
           </ApplicationPanelBody>
         ),
       },
