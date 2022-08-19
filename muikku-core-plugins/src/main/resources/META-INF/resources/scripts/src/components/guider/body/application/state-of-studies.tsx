@@ -424,7 +424,7 @@ class StateOfStudies extends React.Component<
                 <ApplicationSubPanel>
                   <ApplicationSubPanel.Header>
                     {this.props.i18n.text.get(
-                      "plugin.guider.user.details.proggressOfStudies"
+                      "plugin.guider.user.details.progressOfStudies"
                     )}
                   </ApplicationSubPanel.Header>
                   <ApplicationSubPanel.Body>
