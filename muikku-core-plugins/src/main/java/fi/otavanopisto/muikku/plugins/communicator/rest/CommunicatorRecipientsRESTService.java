@@ -174,7 +174,8 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
           false,
           onlyDefaultUsers,
           firstResult, 
-          maxResults);
+          maxResults,
+          false);
       
       List<Map<String, Object>> results = result.getResults();
 

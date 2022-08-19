@@ -33,19 +33,19 @@ public interface SearchProvider {
   public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
-      Boolean onlyDefaultUsers, int start, int maxResults);
+      Boolean onlyDefaultUsers, int start, int maxResults, boolean joinGroupsAndWorkspaces);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
-      Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields);
+      Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, boolean joinGroupsAndWorkspaces);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
       Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
-      Date startedStudiesBefore);
+      Date startedStudiesBefore, boolean joinGroupsAndWorkspaces);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore,
-      Date studyTimeEndsBefore);
+      Date studyTimeEndsBefore, boolean joinGroupsAndWorkspaces);
 
   public SearchResult findUserGroup(SchoolDataIdentifier identifier);
   public SearchResult searchUserGroups(String searchTerm, String archetype, List<OrganizationEntity> organizations, int start, int maxResults);

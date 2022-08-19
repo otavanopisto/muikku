@@ -610,8 +610,14 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     </ApplicationList>
                   ))
                 ) : (
-                  <div className="application-sub-panel__item application-sub-panel__item--empty">
-                    {this.props.i18n.text.get("plugin.records.courses.empty")}
+                  <div className="application-sub-panel__item">
+                    <div className="empty">
+                      <span>
+                        {this.props.i18n.text.get(
+                          "plugin.records.courses.empty"
+                        )}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -659,7 +665,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               </ApplicationList>
             ) : (
               <ApplicationListItem className="application-list__item application-list__item--studies-file-attacment">
-                {this.props.i18n.text.get("plugin.records.files.empty")}
+                <div className="empty">
+                  <span>
+                    {this.props.i18n.text.get("plugin.records.files.empty")}
+                  </span>
+                </div>
               </ApplicationListItem>
             )}
           </div>
