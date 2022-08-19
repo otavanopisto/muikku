@@ -1841,6 +1841,37 @@
   }
 }
 
+.button-pill--whatsapp-me {
+  background: $color-whatsapp-dark;
+  color: $color-default;
+
+  &:hover,
+  &.hover {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+}
+
+.button-pill--appointment-calendar {
+  background: #f64e4e;
+  color: $color-default;
+
+  &:hover,
+  &.hover {
+    background: darken(#f64e4e, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken(#f64e4e, 10%);
+  }
+}
+
+
 .button--wizard {
   background-color: $color-button-wizard-background;
   border: 0;
@@ -1937,7 +1968,7 @@
   margin: 0 5px;
 }
 
-.button--whatsapp-me {
+.button--whatsapp-me{
   background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
   color: $color-default;
   font-size: 0.75rem;

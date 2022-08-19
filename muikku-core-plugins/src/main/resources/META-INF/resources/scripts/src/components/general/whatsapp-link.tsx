@@ -56,7 +56,7 @@ export const WhatsappLink: React.FC<WhatsappLinkProps> = (props) => {
  * @returns JSX.Element
  */
 export const WhatsappButtonLink: React.FC<WhatsappLinkProps> = (props) => {
-  const { mobileNumber } = props;
+  const { mobileNumber, i18n } = props;
 
   /**
    * handleOpenLinkClick
@@ -82,6 +82,7 @@ export const WhatsappButtonLink: React.FC<WhatsappLinkProps> = (props) => {
   return (
     <ButtonPill
       icon="whatsapp"
+      title={i18n.text.get("plugin.profile.whatsappIntegration.button.label")}
       buttonModifiers="whatsapp-me"
       onClick={handleOpenLinkClick}
     ></ButtonPill>

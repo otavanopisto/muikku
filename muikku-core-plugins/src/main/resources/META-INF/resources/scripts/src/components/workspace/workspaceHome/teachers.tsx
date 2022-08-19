@@ -13,7 +13,7 @@ import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
-import { WhatsappLink } from "~/components/general/whatsapp-link";
+import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 
 /**
  * WorkspaceTeachersProps
@@ -160,12 +160,18 @@ class WorkspaceTeachers extends React.Component<
                             true
                           )}
                         >
-                          <ButtonPill icon="envelope"></ButtonPill>
+                          <ButtonPill
+                            icon="envelope"
+                            title={this.props.i18n.text.get(
+                              "plugin.workspace.index.newMessage.label"
+                            )}
+                            buttonModifiers="new-message"
+                          ></ButtonPill>
                         </CommunicatorNewMessage>
                         {teacher.properties["profile-phone"] !== undefined &&
                           teacher.properties["profile-phone"] !== null &&
                           teacher.properties["profile-whatsapp"] === "true" && (
-                            <WhatsappLink
+                            <WhatsappButtonLink
                               i18n={this.props.i18n}
                               mobileNumber={teacher.properties["profile-phone"]}
                             />
@@ -176,7 +182,11 @@ class WorkspaceTeachers extends React.Component<
                           teacher.properties["profile-appointmentCalendar"] !==
                             null && (
                             <ButtonPill
+                              title={this.props.i18n.text.get(
+                                "plugin.workspace.index.appointmentCalendar.label"
+                              )}
                               icon="clock"
+                              buttonModifiers="appointment-calendar"
                               openInNewTab="_blank"
                               href={
                                 teacher.properties[
