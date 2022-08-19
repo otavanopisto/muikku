@@ -117,7 +117,7 @@ export class DiscussionThreadBody extends React.Component<
    */
   render() {
     return (
-      <ApplicationListItemBody content={this.props.html}>
+      <ApplicationListItemBody content={this.props.html} modifiers="discussion">
         {this.props.children}
       </ApplicationListItemBody>
     );
