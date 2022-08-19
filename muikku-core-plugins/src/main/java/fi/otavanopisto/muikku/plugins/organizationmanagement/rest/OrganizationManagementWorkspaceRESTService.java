@@ -312,7 +312,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     searchResult = searchProvider.searchWorkspaces()
         .setOrganizationRestrictions(organizationRestrictions)
         .setFirstResult(0)
-        .setMaxResults(Integer.MAX_VALUE)
+        .setMaxResults(10000) // 10000 is the elastic max for a simple query
         .search();
     
     OrganizationOverviewWorkspaces overviewWorkspaces = new OrganizationOverviewWorkspaces();
