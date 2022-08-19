@@ -54,7 +54,9 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     super(props);
 
     const img = this.props.element.querySelector("img");
-    const aspectRatio = img ? img.width / img.height : 0;
+    const aspectRatio = img
+      ? parseInt(img.style.width) / parseInt(img.style.height)
+      : 0;
 
     this.state = {
       predictedHeight: null,
@@ -222,7 +224,9 @@ export default class Image extends React.Component<ImageProps, ImageState> {
 
         const img = this.props.element.querySelector("img");
         props.style = props.style || {};
-        props.style.width = img ? (img.width || this.state.maxWidth) + "px" : 0;
+        props.style.width = img
+          ? (parseInt(img.style.width) || this.state.maxWidth) + "px"
+          : 0;
         props.style.maxWidth = "100%";
 
         // If we have image without caption and it's set to float we need to get
