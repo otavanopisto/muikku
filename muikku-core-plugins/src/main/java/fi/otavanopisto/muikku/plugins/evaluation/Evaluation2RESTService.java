@@ -313,7 +313,8 @@ public class Evaluation2RESTService {
     List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
         workspaceEntity.getDataSource().getIdentifier(), 
         workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
+        true);
     for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
       RestEvaluationEvent event = new RestEvaluationEvent();
       event.setWorkspaceSubjectIdentifier(null);
@@ -1265,7 +1266,8 @@ public class Evaluation2RESTService {
     List<WorkspaceAssessmentRequest> requests = gradingController.listWorkspaceAssessmentRequests(
         workspaceEntity.getDataSource().getIdentifier(),
         workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
+        false);
 
     // Mark each assessment request archived
     // #5940 hard deleted only latest, and even failed to figure out the correct one

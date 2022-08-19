@@ -216,8 +216,8 @@ public class GradingController {
     gradingSchoolDataController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
   }
   
-  public void restoreLatestAssessmentRequest(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
-    List<WorkspaceAssessmentRequest> requests = listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
+  public void restoreLatestAssessmentRequest(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier, Boolean archived) {
+    List<WorkspaceAssessmentRequest> requests = listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier(), archived);
     if (CollectionUtils.isNotEmpty(requests)) {
       requests.sort(new Comparator<WorkspaceAssessmentRequest>() {
         public int compare(WorkspaceAssessmentRequest o1, WorkspaceAssessmentRequest o2) {
@@ -253,8 +253,8 @@ public class GradingController {
     return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, workspaceIdentifier);
   }
 
-  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier, String studentIdentifier) {
-    return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, workspaceIdentifier, studentIdentifier);
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier, String studentIdentifier, Boolean archived) {
+    return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, workspaceIdentifier, studentIdentifier, archived);
   }
   
   public List<WorkspaceAssessmentRequest> listStudentAssessmentRequests(SchoolDataIdentifier studentIdentifier) {

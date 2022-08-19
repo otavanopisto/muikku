@@ -486,7 +486,8 @@ public class EvaluationController {
     List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
         workspaceEntity.getDataSource().getIdentifier(),
         workspaceEntity.getIdentifier(),
-        userEntity.getDefaultIdentifier());
+        userEntity.getDefaultIdentifier(),
+        false);
     
     // Mark each assessment request as handled (to Pyramus)
     

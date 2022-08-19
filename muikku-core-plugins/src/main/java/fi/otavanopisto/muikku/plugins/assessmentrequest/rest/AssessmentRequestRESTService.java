@@ -136,7 +136,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   @DELETE
   @Path("/workspace/{WORKSPACEENTITYID}/assessmentRequests/{ID}")
   @RESTPermitUnimplemented
-  public Response deleteAssessmentRequest(
+  public Response archiveAssessmentRequest(
       @PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
       @PathParam("ID") String assessmentRequestId) {
     
@@ -180,7 +180,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     if (assessmentRequest != null) {
       SchoolDataIdentifier assessmentRequestWorkspaceUserIdentifier = new SchoolDataIdentifier(assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getSchoolDataSource());
       if (assessmentRequestWorkspaceUserIdentifier.equals(workspaceStudentIdentifier)) {
-        assessmentRequestController.deleteWorkspaceAssessmentRequest(workspaceUserEntity, assessmentRequestIdentifier);
+        assessmentRequestController.archiveWorkspaceAssessmentRequest(assessmentRequest, workspaceEntity, studentEntity);
         communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(workspaceUserEntity);
         evaluationController.createAssessmentRequestCancellation(studentEntity.getId(), workspaceEntityId, new Date());
       } else {
