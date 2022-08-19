@@ -1,24 +1,24 @@
 /**
- * JournalCreationType
+ * NotesItemCreation
  */
-export enum JournalCreationType {
+export enum NotesItemCreation {
   MANUAL = "MANUAL",
   AUTOMATIC = "AUTOMATIC",
 }
 
 /**
- * JournalStatusType
+ * NotesItemStatus
  */
-export enum JournalStatusType {
+export enum NotesItemStatus {
   ONGOING = "ONGOING",
   APPROVAL_PENDING = "APPROVAL_PENDING",
   APPROVED = "APPROVED",
 }
 
 /**
- * JournalPriority
+ * NotesItemPriority
  */
-export enum JournalPriority {
+export enum NotesItemPriority {
   OWN = "OWN",
   LOW = "LOW",
   NORMAL = "NORMAL",
@@ -26,14 +26,14 @@ export enum JournalPriority {
 }
 
 /**
- * JournalNoteRead
+ * NotesItemRead
  */
-export interface JournalNoteRead {
+export interface NotesItemRead {
   id: number;
   title: string;
   description: string;
-  type: JournalCreationType;
-  priority: JournalPriority;
+  type: NotesItemCreation;
+  priority: NotesItemPriority;
   pinned: boolean;
   isActive: boolean;
   isArchived: boolean;
@@ -43,17 +43,17 @@ export interface JournalNoteRead {
   created: string;
   startDate: Date | null;
   dueDate: Date | null;
-  status: JournalStatusType;
+  status: NotesItemStatus;
 }
 
 /**
- * JournalNote
+ *  NotesItemCreate
  */
-export interface JournalNoteCreate {
+export interface NotesItemCreate {
   title: string;
   description: string;
-  type: JournalCreationType;
-  priority: JournalPriority;
+  type: NotesItemCreation;
+  priority: NotesItemPriority;
   pinned: boolean;
   owner: number;
   startDate: Date | null;
@@ -61,26 +61,26 @@ export interface JournalNoteCreate {
 }
 
 /**
- * JournalNote
+ * NotesItemUpdate
  */
-export interface JournalNoteUpdate {
+export interface NotesItemUpdate {
   title: string;
   description: string;
-  priority: JournalPriority;
+  priority: NotesItemPriority;
   pinned: boolean;
   startDate: Date | null;
   dueDate: Date | null;
-  status: JournalStatusType;
+  status: NotesItemStatus;
 }
 
 /**
- * UseSuggestion
+ * UseNotesItem
  */
-export interface UseJournals {
+export interface UseNotesItem {
   isLoadingList: boolean;
   isUpdatingList: boolean;
-  journalsList: JournalNoteRead[];
-  journalsArchivedList: JournalNoteRead[];
+  notesItemList: NotesItemRead[];
+  notesArchivedItemList: NotesItemRead[];
 }
 
 /**
@@ -88,13 +88,13 @@ export interface UseJournals {
  */
 export type OptionType = {
   label: string;
-  value: JournalPriority;
+  value: NotesItemPriority;
 };
 
 /**
- * JournalPriorityFiltters
+ * NotesItemFilters
  */
-export interface JournalFilters {
+export interface NotesItemFilters {
   high: boolean;
   normal: boolean;
   low: boolean;
@@ -103,14 +103,14 @@ export interface JournalFilters {
 }
 
 /**
- * JournalCenterUsePlaceType
+ * NotesLocation
  */
-export type JournalCenterUsePlaceType = "records" | "guider";
+export type NotesLocation = "records" | "guider";
 
 /**
- * SelectedJournal
+ * SelectedNotesItem
  */
-export interface SelectedJournal {
-  journal: JournalNoteRead;
+export interface SelectedNotesItem {
+  notesItem: NotesItemRead;
   inEditMode: boolean;
 }

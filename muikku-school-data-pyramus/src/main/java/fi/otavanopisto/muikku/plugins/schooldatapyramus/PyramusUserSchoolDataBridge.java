@@ -1340,7 +1340,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             }
             contactLogEntries.add(contactLogEntry);
           }
-          
           studentContactLogEntryBatch.setFirstResult(response.getEntity().getFirstResult());
           studentContactLogEntryBatch.setResults(contactLogEntries);
           studentContactLogEntryBatch.setTotalHitCount(response.getEntity().getTotalHitCount());
@@ -1368,6 +1367,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
 
       boolean hasImage = false;
+
       UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
       
       if (userEntity != null) {
@@ -1375,6 +1375,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
         
       response.getEntity().setHasImage(hasImage);
+
     }
 
     return response;
@@ -1460,6 +1461,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
       
       response.getEntity().setHasImage(hasImage);
+
     }
     return response;
   }

@@ -27,6 +27,7 @@ import {
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
+import Notes from "~/components/general/notes/notes";
 
 /**
  * SummaryProps
@@ -285,6 +286,17 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   </div>
                 )}
 
+              <div className="application-sub-panel">
+                <div className="application-sub-panel__header">
+                  Tehtävät ja omat muistutukset
+                </div>
+                <Notes
+                  usePlace="records"
+                  showHistoryPanel
+                  userId={this.props.status.userId}
+                  studentId={this.props.status.userId}
+                />
+              </div>
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
                   {this.props.i18n.text.get(

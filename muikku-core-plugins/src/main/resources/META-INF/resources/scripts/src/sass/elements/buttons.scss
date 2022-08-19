@@ -290,6 +290,48 @@
   }
 }
 
+// STUDIES NOTES
+.button--note-priority {
+  background: $color-default;
+  border-style: solid;
+  border-width: 1px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin: 2px 10px 0 0;
+  padding: 2px 6px;
+
+  &.button--active {
+    color: $color-default;
+  }
+}
+
+.button--note-priority-high {
+  border-color: $color-priority-high;
+  color: $color-priority-high;
+
+  &.button--active {
+    background-color: $color-priority-high;
+  }
+}
+
+.button--note-priority-normal {
+  border-color: $color-priority-normal;
+  color: $color-priority-normal;
+
+  &.button--active {
+    background-color: $color-priority-normal;
+  }
+}
+
+.button--note-priority-low {
+  border-color: $color-priority-low;
+  color: $color-priority-low;
+
+  &.button--active {
+    background-color: $color-priority-low;
+  }
+}
+
 // FRONTPAGE
 .button--login {
   background-color: $color-frontpage-button-login-background;
@@ -678,16 +720,28 @@
   }
 }
 
-.button-icon--edit-hops-history-event-description {
-  font-size: 0.8125rem;
-  height: auto;
-  width: auto;
+.button-icon--notes-action {
+  color: $color-notes-action-button;
+  font-size: 0.9375rem;
+  height: 1.25rem;
+  margin: 0 0 0 10px;
+  width: 1.25rem;
+
+  &:hover {
+    color: $color-info;
+  }
 }
 
 .button-icon--journal-central {
   font-size: 2rem;
   height: 2.5rem;
   width: 2.5rem;
+}
+
+.button-icon--edit-hops-history-event-description {
+  font-size: 0.8125rem;
+  height: auto;
+  width: auto;
 }
 
 .button-icon--workspace-users-contact {
@@ -885,7 +939,8 @@
 .button-pill--restore,
 .button-pill--edit,
 .button-pill--new-message,
-.button-pill--filter {
+.button-pill--filter,
+.button-pill--add-note {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
   flex-basis: auto;
@@ -913,6 +968,13 @@
   @include breakpoint($breakpoint-pad) {
     margin: 0 10px 0 0;
   }
+}
+
+// Slightly smaller button-pill to be used amongst other page elements a.k.a within content
+.button-pill--within-content {
+  font-size: 1rem;
+  height: 2rem;
+  width: 2rem;
 }
 
 .button-pill--filter {
