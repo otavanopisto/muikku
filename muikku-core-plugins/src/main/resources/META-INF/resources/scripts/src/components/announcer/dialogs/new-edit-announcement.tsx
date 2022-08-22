@@ -556,10 +556,10 @@ class NewEditAnnouncement extends SessionStateComponent<
     const content = (closeDialog: () => any) => [
       // FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       <div
-        className="env-dialog__row env-dialog__row--new-announcement-options"
+        className="env-dialog__row env-dialog__row--dates"
         key="annnouncement-edit-1"
       >
-        <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
+        <div className="env-dialog__form-element-container">
           <label htmlFor="announcementStartSate" className="env-dialog__label">
             {this.props.i18n.text.get(
               "plugin.announcer.createannouncement.startdate.label"
@@ -576,7 +576,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             dateFormat="P"
           />
         </div>
-        <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
+        <div className="env-dialog__form-element-container">
           <label htmlFor="announcementEndDate" className="env-dialog__label">
             {this.props.i18n.text.get(
               "plugin.announcer.createannouncement.enddate.label"

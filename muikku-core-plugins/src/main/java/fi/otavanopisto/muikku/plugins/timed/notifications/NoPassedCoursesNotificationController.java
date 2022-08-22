@@ -55,7 +55,8 @@ public class NoPassedCoursesNotificationController {
         maxResults, 
         null, 
         excludeSchoolDataIdentifiers, 
-        startedStudiesBefore);
+        startedStudiesBefore,
+        false); // join groups and workspaces
   }
   
   public Long countPassedCoursesByStudentIdentifierSince(SchoolDataIdentifier studentIdentifier, Date since) {

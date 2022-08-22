@@ -33,7 +33,7 @@ public class NoLoggedInForTwoMonthsNotificationController {
     SearchProvider searchProvider = getProvider("elastic-search");
     return searchProvider.searchUsers(activeOrganizations, null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, 
         null, null, false, true, true, firstResult, maxResults, null, excludeSchoolDataIdentifiers, 
-        studiesStartedBefore, null);
+        studiesStartedBefore, null, false);
   }
 
   public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiersAfter(Date date){
