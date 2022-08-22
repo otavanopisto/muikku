@@ -178,6 +178,7 @@
 
   .dialog__content {
     flex-basis: auto;
+    flex-flow: column nowrap;
     flex-grow: 1;
     flex-shrink: 1;
   }
