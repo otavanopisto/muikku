@@ -56,7 +56,13 @@ const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
  */
 interface SubPanelViewHeaderProps {
   title: string;
+  /**
+   * Decoration that comes before the main header (could be an avatar, icon)
+   */
   decoration?: JSX.Element;
+  /**
+   * Additional information for the  title
+   */
   titleDetail?: string;
   modifier?: string;
 }

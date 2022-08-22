@@ -87,9 +87,7 @@ class Student extends React.Component<StudentProps, StudentState> {
       >
         <ApplicationListItemHeader>
           <span className="application-list__header-primary">
-            <span>
-              {getName(this.props.student as unknown as UserType, true)}
-            </span>
+            <span>{getName(this.props.student, true)}</span>
             <span className="application-list__header-helper">
               {this.props.student.email}
             </span>

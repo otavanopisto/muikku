@@ -29,6 +29,8 @@ interface GuidanceRelationProps {
 }
 /**
  * Context for the contactLogsPerPage
+ * This is so that the child components can have the same
+ * information about how many contactlogs per page there will be from single source
  */
 export const ContactLogsContext = React.createContext(10);
 /**

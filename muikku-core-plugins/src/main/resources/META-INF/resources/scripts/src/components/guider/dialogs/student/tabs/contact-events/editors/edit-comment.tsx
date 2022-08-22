@@ -170,7 +170,7 @@ class EditContactLogEventComment extends SessionStateComponent<
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
-          onClick={this.editContactEventComment.bind(this)}
+          onClick={this.editContactEventComment}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get("plugin.discussion.createmessage.send")}

@@ -183,7 +183,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
             <DatePicker
               className="env-dialog__input"
               id="contactEventdate"
-              onChange={(date: Date) => this.onDateChange(date)}
+              onChange={this.onDateChange}
               locale={outputCorrectDatePickerLocale(
                 this.props.i18n.time.getLocale()
               )}
@@ -236,7 +236,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
-          onClick={this.editContactEvent.bind(this)}
+          onClick={this.editContactEvent}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
