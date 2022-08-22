@@ -1435,9 +1435,7 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
             JSON.stringify(getState().guider.currentStudent.contactLogs)
           ) as IContactLogs;
 
-          const contactLogsResults = [
-            ...getState().guider.currentStudent.contactLogs.results,
-          ];
+          const contactLogsResults = [...contactLogs.results];
 
           // find the current contactEvent
           const contactEvent = contactLogsResults.find(
