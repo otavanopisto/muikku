@@ -263,7 +263,7 @@
   }
 
   &.state-UNASSESSED {
-    cursor: default;
+    color: $color-default-contrast;
   }
 }
 
@@ -272,7 +272,10 @@
 }
 
 .application-list__indicator-badge--task {
+  font-size: 1rem;
+  height: 1.75rem;
   margin: 0 10px 0 0;
+  width: 1.75rem;
 }
 
 .application-list__indicator-badge--evaluation-request {
@@ -794,6 +797,16 @@
   }
 }
 
+.application-list__item-header-main-content--journal-entry-title-in-studies {
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+}
+
 .application-list__item-header-aside {
   flex-basis: auto;
   flex-grow: 0;
@@ -923,7 +936,7 @@
 }
 
 .application-list__item--discussion-reply {
-  border-top: 5px solid $color-message-border;
+  border-top: 3px solid $color-message-border;
   margin: 10px 0 0;
   padding: 10px;
 
@@ -996,7 +1009,7 @@
 
 // Communicator
 .application-list__item--communicator-message {
-  border-bottom: 5px solid $color-message-border;
+  border-bottom: 3px solid $color-message-border;
   padding: 10px 0;
 
   &:last-child {
@@ -1122,6 +1135,13 @@
 
 .application-list__item-header--studies-assignment {
   cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1rem;
+    font-weight: 400;
+  }
 }
 
 .application-list__item-body--evaluation-assignment {

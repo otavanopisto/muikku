@@ -37,6 +37,28 @@
   }
 }
 
+.dialog--studies {
+  .dialog__window {
+    @include breakpoint($breakpoint-pad) {
+      left: auto;
+      right: auto;
+      width: 728px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      width: 984px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      width: 1160px;
+    }
+  }
+
+  .dialog__content {
+    overflow: auto;
+  }
+}
+
 .dialog--guider-student {
   background-color: $color-dialog-default-background;
   overflow: auto;
@@ -51,10 +73,14 @@
 }
 
 .dialog__window {
+  align-items: flex-start;
   background-color: $color-dialog-default-background;
   bottom: 0;
+  display: flex;
+  flex-flow: column nowrap;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
+  justify-content: flex-start;
   left: 0;
   position: fixed;
   right: 0;
@@ -62,7 +88,7 @@
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    border-radius: 3px;
+    border-radius: 5px;
     bottom: auto;
     box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-size: $text-desktop-font-size;
@@ -74,13 +100,25 @@
   }
 }
 
+.dialog__window--assignments {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 1000px;
+  }
+}
+
+.dialog__window--course-description {
+  .dialog__content {
+    line-height: 1.5rem;
+    padding: 5px 20px;
+  }
+}
+
 .dialog__window--guider-student {
   position: absolute;
 
   @include breakpoint($breakpoint-pad) {
     box-shadow: unset;
     max-width: unset;
-    position: absolute;
     top: 20px;
     width: calc(100% - 40px);
   }
@@ -117,7 +155,8 @@
   }
 }
 
-.dialog__window--wizard {
+.dialog__window--wizard,
+.dialog__window--studies {
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -166,6 +205,19 @@
     flex-grow: 1;
     flex-shrink: 1;
     overflow: auto;
+  }
+}
+
+.dialog__window--note-information {
+  max-height: 100%;
+
+  .dialog__content {
+    padding: 20px 15px 20px 20px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-radius: 20px;
+    max-height: calc(100% - 30px);
   }
 }
 
@@ -230,6 +282,9 @@
   background-color: $color-dialog-mobile-background;
   color: $color-dialog-mobile-text;
   display: flex;
+  flex-basis: 3rem;
+  flex-grow: 0;
+  flex-shrink: 0;
   height: $dialog-title-height;
   padding: 15px 20px;
   position: relative;
@@ -237,8 +292,12 @@
 
   @include breakpoint($breakpoint-pad) {
     background-color: $color-dialog-desktop-background;
-    border-radius: 3px 3px 0 0;
+    border-radius: 5px 5px 0 0;
     color: $color-dialog-desktop-text;
+    display: flex;
+    height: 3rem;
+    min-height: 3rem;
+    padding: 0 20px;
   }
 }
 
@@ -250,16 +309,27 @@
   }
 }
 
+.dialog__header--wizard,
+.dialog__header--course-description {
+  background: $color-default;
+  color: $color-default-contrast;
+}
+
 .dialog__header--wizard {
   @include breakpoint($breakpoint-pad) {
-    align-items: center;
     background-color: $color-dialog-wizard-desktop-background;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     color: $color-dialog-wizard-desktop-text;
-    display: flex;
-    height: 3rem;
-    padding: 0 20px;
+  }
+}
+
+.dialog__header--note-information {
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    color: $color-default-contrast;
   }
 }
 
@@ -317,6 +387,12 @@
 }
 
 .dialog__content {
+  display: flex;
+  flex-basis: calc(100% - 6rem - 20px);
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-height: calc(100% - 6rem - 20px);
+  min-height: 0;
   padding: $dialog-content-padding;
   position: relative;
   width: 100%;
@@ -448,6 +524,7 @@
 
   .dialog__content {
     height: 100%;
+    max-height: 100%;
     padding: 0;
   }
 

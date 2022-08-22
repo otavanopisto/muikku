@@ -111,6 +111,14 @@ public class Note {
     this.archived = archived;
   }
   
+  public Date getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+  
   public Date getDueDate() {
     return dueDate;
   }
@@ -172,6 +180,9 @@ public class Note {
 
   @Column (nullable = false)
   private Boolean archived = Boolean.FALSE;
+  
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date startDate;
   
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date dueDate;

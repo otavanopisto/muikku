@@ -1,9 +1,12 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { MaterialContentNodeType, WorkspaceType } from "~/reducers/workspaces";
-
+import {
+  MaterialCompositeRepliesType,
+  MaterialContentNodeType,
+  WorkspaceType,
+} from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
-import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";
+import { shortenGrade } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
@@ -14,6 +17,8 @@ import {
   ApplicationListItemHeader,
   ApplicationListItemBody,
 } from "~/components/general/application-list";
+import AnimateHeight from "react-animate-height";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * MaterialProps
@@ -23,6 +28,12 @@ interface MaterialProps {
   workspace: WorkspaceType;
   i18n: i18nType;
   status: StatusType;
+  compositeReply: MaterialCompositeRepliesType;
+  open: boolean;
+  onMaterialClick: (
+    id: number,
+    type: "EXERCISE" | "EVALUATED"
+  ) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 /**
@@ -54,20 +65,6 @@ export default class Material extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
-   * @param nextProps nextProps
-   */
-  componentWillReceiveProps(nextProps: MaterialProps) {
-    if (
-      nextProps.material.assignment.id !== this.props.material.assignment.id
-    ) {
-      this.setState({
-        opened: false,
-      });
-    }
-  }
-
-  /**
    * toggleOpened
    */
   toggleOpened() {
@@ -75,51 +72,134 @@ export default class Material extends React.Component<
   }
 
   /**
-   * render
+   * indicatorClassModifier
    */
-  render() {
-    const evaluation = this.props.material.evaluation;
-    return (
-      <ApplicationListItem
-        key={this.props.material.id}
-        className={`application-list__item assignment ${
-          this.props.material.evaluation ? "" : "state-NO-ASSESSMENT"
-        }`}
-      >
-        <ApplicationListItemHeader
-          modifiers="studies-assignment"
-          onClick={this.toggleOpened}
-        >
-          {evaluation ? (
-            <span
-              title={
-                evaluation.gradingScale +
-                getShortenGradeExtension(evaluation.grade)
+  checkIndicatorClassModifier = () => {
+    const { compositeReply, material } = this.props;
+
+    if (compositeReply) {
+      switch (compositeReply.state) {
+        case "PASSED":
+          return material.assignment &&
+            material.assignment.assignmentType === "EVALUATED"
+            ? "state-PASSED"
+            : "state-PASSED icon-check";
+
+        case "FAILED":
+          return "state-FAILED";
+
+        default:
+          return "";
+      }
+    }
+
+    return "";
+  };
+
+  /**
+   * renderIndicator
+   * @returns JSX.Element
+   */
+  renderIndicator = () => {
+    const { compositeReply } = this.props;
+
+    if (compositeReply && compositeReply.evaluationInfo) {
+      switch (compositeReply.state) {
+        case "PASSED":
+        case "FAILED":
+          return (
+            <Dropdown
+              openByHover
+              content={
+                <span>
+                  {this.props.i18n.time.format(
+                    compositeReply.evaluationInfo.date
+                  )}
+                </span>
               }
-              className={`application-list__indicator-badge application-list__indicator-badge--task ${
-                evaluation.passed ? "state-PASSED" : "state-FAILED"
-              }`}
             >
-              {shortenGrade(evaluation.grade)}
-            </span>
-          ) : (
+              <span
+                className={`application-list__indicator-badge application-list__indicator-badge--task ${this.checkIndicatorClassModifier()}`}
+              >
+                {shortenGrade(compositeReply.evaluationInfo.grade)}
+              </span>
+            </Dropdown>
+          );
+
+        case "INCOMPLETE":
+          return (
+            <Dropdown
+              openByHover
+              content={
+                <span>
+                  {this.props.i18n.time.format(
+                    compositeReply.evaluationInfo.date
+                  )}
+                </span>
+              }
+            >
+              <span
+                className={`application-list__indicator-badge application-list__indicator-badge--task state-INCOMPLETE`}
+              >
+                T
+              </span>
+            </Dropdown>
+          );
+
+        default:
+          return (
             <span
               className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
             >
               N
             </span>
+          );
+      }
+    }
+
+    return (
+      <span
+        className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
+      >
+        N
+      </span>
+    );
+  };
+
+  /**
+   * render
+   */
+  render() {
+    return (
+      <ApplicationListItem
+        key={this.props.material.id}
+        className={`application-list__item assignment ${
+          this.props.compositeReply &&
+          this.props.compositeReply.state !== "UNANSWERED"
+            ? ""
+            : "state-NO-ASSESSMENT"
+        }`}
+      >
+        <ApplicationListItemHeader
+          modifiers="studies-assignment"
+          onClick={this.props.onMaterialClick(
+            this.props.material.id,
+            this.props.material.assignment.assignmentType
           )}
+        >
+          {this.renderIndicator()}
           <span className="application-list__header-primary">
             {this.props.material.assignment.title}
           </span>
         </ApplicationListItemHeader>
-        {this.state.opened ? (
-          <ApplicationListItemBody>
+
+        <ApplicationListItemBody>
+          <AnimateHeight height={this.props.open ? "auto" : 0}>
             <MaterialLoader
               material={this.props.material}
               workspace={this.props.workspace}
               readOnly
-              loadCompositeReplies
+              compositeReplies={this.props.compositeReply}
               modifiers="studies-material-page"
             >
               {(props, state, stateConfiguration) => {
@@ -176,8 +256,8 @@ export default class Material extends React.Component<
                 );
               }}
             </MaterialLoader>
-          </ApplicationListItemBody>
-        ) : null}
+          </AnimateHeight>
+        </ApplicationListItemBody>
       </ApplicationListItem>
     );
   }

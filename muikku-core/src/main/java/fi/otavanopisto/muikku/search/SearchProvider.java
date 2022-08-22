@@ -21,12 +21,13 @@ public interface SearchProvider {
   public WorkspaceSearchBuilder searchWorkspaces();
   public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers,
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
+
   public SearchResult searchWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers,
+
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
   public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber);
 
-  public SearchResult findWorkspace(SchoolDataIdentifier identifier); 
-  
+  public SearchResult findWorkspace(SchoolDataIdentifier identifier);
   public IndexedCommunicatorMessage findCommunicatorMessage(Long communicatorMessageId);
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();
   public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(String queryString, long senderId, IndexedCommunicatorMessageSender sender, List<IndexedCommunicatorMessageRecipient> recipients, Date created, Set<Long> tags, int start, int maxResults, List<Sort> sorts);
@@ -34,19 +35,19 @@ public interface SearchProvider {
   public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
-      Boolean onlyDefaultUsers, int start, int maxResults);
+      Boolean onlyDefaultUsers, int start, int maxResults, boolean joinGroupsAndWorkspaces);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
-      Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields);
+      Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, boolean joinGroupsAndWorkspaces);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
       Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
-      Date startedStudiesBefore);
+      Date startedStudiesBefore, boolean joinGroupsAndWorkspaces);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore,
-      Date studyTimeEndsBefore);
+      Date studyTimeEndsBefore, boolean joinGroupsAndWorkspaces);
 
   public SearchResult findUserGroup(SchoolDataIdentifier identifier);
   public SearchResult searchUserGroups(String searchTerm, String archetype, List<OrganizationEntity> organizations, int start, int maxResults);
