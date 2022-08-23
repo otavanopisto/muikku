@@ -361,6 +361,11 @@ class Message extends React.Component<MessageProps, MessageState> {
             {this.props.message.caption}
           </header>
           <section className="application-list__item-content-body rich-text">
+            {/*
+             * Its possible that string content containg html as string is not valid
+             * and can't be processed by CkeditorLoader, so in those cases just put content
+             * inside of "valid" html tags and go with it
+             */}
             {isStringHTML(this.props.message.content) ? (
               <CkeditorLoaderContent html={this.props.message.content} />
             ) : (
