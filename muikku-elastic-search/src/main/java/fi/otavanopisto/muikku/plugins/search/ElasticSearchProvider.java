@@ -168,7 +168,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult findWorkspace(SchoolDataIdentifier identifier) {
-    BoolQueryBuilder query = boolQuery().must(termQuery("identifier", identifier.getIdentifier()));
+    BoolQueryBuilder query = boolQuery().must(termQuery("identifier", identifier.toId()));
 
     try {
       SearchResponse response = searchRequest(MUIKKU_WORKSPACE_INDEX, query);
