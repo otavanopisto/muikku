@@ -138,7 +138,7 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
     SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudents(
         getActiveOrganizations(),
         groups,
-        FIRST_RESULT,
+        FIRST_RESULT + offset,
         MAX_RESULTS,
         studentIdentifierAlreadyNotified,
         thresholdDate);
