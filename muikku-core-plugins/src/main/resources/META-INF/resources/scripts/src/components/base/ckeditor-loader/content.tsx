@@ -13,14 +13,6 @@ interface CkeditorLoaderContentProps {
 }
 
 /**
- * stopPropagation
- * @param e e
- */
-function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
-  e.stopPropagation();
-}
-
-/**
  * CkeditorLoaderContent
  * @param props props
  */
