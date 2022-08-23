@@ -19,7 +19,7 @@ import {
   GuiderStudentType,
 } from "~/reducers/main-function/guider";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import moment from "~/lib/moment";
+import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import {
   loadStudentContactLogs,

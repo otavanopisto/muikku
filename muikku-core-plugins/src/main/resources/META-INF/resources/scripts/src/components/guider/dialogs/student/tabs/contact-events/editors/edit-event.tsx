@@ -17,7 +17,7 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import moment from "~/lib/moment";
+import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { ContactLogEvent } from "~/reducers/main-function/guider";
 

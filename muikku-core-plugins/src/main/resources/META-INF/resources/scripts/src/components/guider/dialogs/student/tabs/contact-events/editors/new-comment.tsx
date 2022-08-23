@@ -11,7 +11,7 @@ import {
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import moment from "~/lib/moment";
+import * as moment from "moment";
 
 /**
  * ReplyThreadDrawerProps
