@@ -1014,6 +1014,10 @@ export default class MainFunction extends React.Component<
     return <EvaluationBody />;
   }
 
+  /**
+   * renderCeeposDoneBody
+   * @returns JSX.Element
+   */
   renderCeeposDoneBody() {
     this.updateFirstTime();
 
@@ -1038,6 +1042,10 @@ export default class MainFunction extends React.Component<
     return <CeeposDone status={parseInt(locationData.Status)} />;
   }
 
+  /**
+   * renderCeeposPayBody
+   * @returns JSX.Element
+   */
   renderCeeposPayBody() {
     this.updateFirstTime();
 

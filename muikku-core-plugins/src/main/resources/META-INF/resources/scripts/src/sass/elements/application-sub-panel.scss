@@ -91,6 +91,12 @@
   }
 }
 
+.application-sub-panel--studies-journal-entries,
+.application-sub-panel--studies-assignments,
+.application-sub-panel--studies-exercises {
+  padding: 10px;
+}
+
 .application-sub-panel--worklist {
   border: 0;
   margin: 0 0 15px;
@@ -170,6 +176,16 @@
   font-size: 1rem;
   margin: 0;
   padding: 5px;
+}
+
+.application-sub-panel__header--studies-assignments,
+.application-sub-panel__header--studies-exercises,
+.application-sub-panel__header--studies-journal-entries {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  margin: 10px 0;
 }
 
 .application-sub-panel__header-action {
@@ -263,7 +279,6 @@
 .application-sub-panel__body--studies-summary-info {
   display: flex;
   flex-flow: column nowrap;
-  width: 50%;
 }
 
 .application-sub-panel__body--studies-options {
@@ -359,7 +374,7 @@
   margin: 10px 0;
 
   @include breakpoint($breakpoint-desktop) {
-    border-radius: 3px;
+    border-radius: 5px;
     flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;

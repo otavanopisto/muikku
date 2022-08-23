@@ -48,16 +48,33 @@ public class NotesController {
     return filteredNoteList; 
   }
   
-  public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Date dueDate) {
+  public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Date startDate, Date dueDate) {
     NoteStatus status = NoteStatus.ONGOING;
-    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId(), dueDate, status);
+    Boolean archived = false;
+    if (dueDate != null) {
+      OffsetDateTime dueDateOffset = toOffsetDateTime(dueDate);
+      // Archive note if dueDate is earlier than yesterday
+      if (dueDateOffset.isBefore(OffsetDateTime.now().minusDays(1))) {
+        archived = true;
+      }
+    }
+    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId(), startDate, dueDate, status, archived);
     
     return note;
   }
   
-  public Note updateNote(Note note, String title, String description, NotePriority priority, Boolean pinned, Date dueDate, NoteStatus status) {
+  public Note updateNote(Note note, String title, String description, NotePriority priority, Boolean pinned, Date startDate,  Date dueDate, NoteStatus status) {
     Long lastModifier = sessionController.getLoggedUserEntity().getId();
-    Note updatedNote = noteDAO.update(note, title, description, priority, pinned, lastModifier, dueDate, status);
+    Boolean archived = false;
+    
+    if (dueDate != null) {
+      OffsetDateTime dueDateOffset = toOffsetDateTime(dueDate);
+      
+      if (dueDateOffset.isBefore(OffsetDateTime.now().minusDays(1))) {
+        archived = true;
+      }
+    }
+    Note updatedNote = noteDAO.update(note, title, description, priority, pinned, lastModifier, startDate, dueDate, status, archived);
     
     return updatedNote;
   }

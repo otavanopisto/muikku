@@ -124,7 +124,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
 
     if (
       this.props.hops.eligibility &&
-      this.props.hops.eligibility.upperSecondarySchoolCurriculum === true
+      this.props.hops.eligibility.upperSecondarySchoolCurriculum
     ) {
       return this.renderUpperSecondaryHops();
     }
