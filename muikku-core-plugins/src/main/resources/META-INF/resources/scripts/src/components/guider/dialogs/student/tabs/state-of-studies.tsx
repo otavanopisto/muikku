@@ -39,6 +39,7 @@ import {
 import StudySuggestionMatrix from "./state-of-studies/study-suggestion-matrix";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
+import Notes from "~/components/general/notes/notes";
 
 /**
  * StateOfStudiesProps
@@ -446,6 +447,23 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel>
               </ApplicationSubPanel>
             ) : null}
+            <ApplicationSubPanel modifier="student-data-container">
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
+                  {this.props.i18n.text.get("plugin.guider.user.details.notes")}
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  <Notes
+                    userId={this.props.status.userId}
+                    usePlace="guider"
+                    studentId={
+                      this.props.guider.currentStudent.basic.userEntityId
+                    }
+                    showHistoryPanel
+                  />
+                </ApplicationSubPanel.Body>
+              </ApplicationSubPanel>
+            </ApplicationSubPanel>
           </>
         )}
       </>

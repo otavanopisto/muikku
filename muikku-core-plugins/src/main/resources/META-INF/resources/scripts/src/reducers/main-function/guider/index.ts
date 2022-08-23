@@ -100,9 +100,9 @@ export const contactTypesArray = [
 export type ContactTypes = typeof contactTypesArray[number];
 
 /**
- * IContactLogEvent
+ * ContactLogEvent
  */
-export interface IContactLogEvent {
+export interface ContactLogEvent {
   id: number;
   entryDate: string;
   type: ContactTypes;
@@ -110,22 +110,22 @@ export interface IContactLogEvent {
   creatorName: string;
   hasImage: boolean;
   text: string;
-  comments?: IContactLogEventComment[];
+  comments?: ContactLogEventComment[];
 }
 
 /**
- * IContactLogs
+ * ContactLogData
  */
-export interface IContactLogs {
+export interface ContactLogData {
   totalHitCount: number;
   firstResult: number;
-  results: IContactLogEvent[];
+  results: ContactLogEvent[];
 }
 
 /**
  * contactEventComment
  */
-export type IContactLogEventComment = {
+export type ContactLogEventComment = {
   id: number;
   entry: number;
   commentDate: string;
@@ -154,7 +154,7 @@ export interface GuiderStudentUserProfileType {
   //  vops: VOPSDataType,
   hops: HOPSDataType;
   notifications: GuiderNotificationStudentsDataType;
-  contactLogs: IContactLogs;
+  contactLogs: ContactLogData;
   currentWorkspaces: WorkspaceListType;
   pastWorkspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];
@@ -566,7 +566,7 @@ export default function guider(
 
     const contactLogs = JSON.parse(
       JSON.stringify(state.currentStudent.contactLogs)
-    ) as IContactLogs;
+    ) as ContactLogData;
 
     const contactLogsResults = contactLogs.results;
 
