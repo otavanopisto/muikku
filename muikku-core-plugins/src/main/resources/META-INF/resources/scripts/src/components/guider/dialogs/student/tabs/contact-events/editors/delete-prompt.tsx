@@ -13,7 +13,7 @@ import {
 import { StateType } from "~/reducers";
 import * as React from "react";
 import { ContactLogsContext } from "../../guidance-relation";
-import { IContactLogs } from "~/reducers/main-function/guider";
+import { ContactLogData } from "~/reducers/main-function/guider";
 import {
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
@@ -25,7 +25,7 @@ import {
 interface ContactEventDeletePromptProps {
   i18n: i18nType;
   commentId?: number;
-  contactLogs: IContactLogs;
+  contactLogs: ContactLogData;
   contactLogEntryId: number;
   studentUserEntityId: number;
   deleteContactLogEvent: DeleteContactLogEventTriggerType;

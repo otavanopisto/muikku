@@ -2,7 +2,7 @@ import * as React from "react";
 import "~/sass/elements/contact-event.scss";
 import "~/sass/elements/rich-text.scss";
 import { i18nType } from "~/reducers/base/i18n";
-import { IContactLogEvent } from "~/reducers/main-function/guider";
+import { ContactLogEvent } from "~/reducers/main-function/guider";
 import CommentContactEvent from "./editors/new-comment";
 import EditContactEvent from "./editors/edit-event";
 import EditContactEventComment from "./editors/edit-comment";
@@ -18,7 +18,7 @@ import Link from "~/components/general/link";
  * ContactEventProps
  */
 interface ContactEventProps {
-  event: IContactLogEvent;
+  event: ContactLogEvent;
   studentId: number;
   modifier?: string;
   i18n: i18nType;

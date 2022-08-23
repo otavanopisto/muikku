@@ -14,7 +14,7 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
-import { IContactLogEventComment } from "~/reducers/main-function/guider";
+import { ContactLogEventComment } from "~/reducers/main-function/guider";
 
 /**
  * EditContactLogEventCommentStateProps
@@ -22,7 +22,7 @@ import { IContactLogEventComment } from "~/reducers/main-function/guider";
 interface EditContactLogEventCommentProps {
   i18n: i18nType;
   status: StatusType;
-  comment: IContactLogEventComment;
+  comment: ContactLogEventComment;
   studentUserEntityId: number;
   editContactLogEventComment: EditContactLogEventCommentTriggerType;
   closeEditor: () => void;

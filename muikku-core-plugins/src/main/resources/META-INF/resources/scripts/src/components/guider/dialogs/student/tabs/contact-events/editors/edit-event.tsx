@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
-import { IContactLogEvent } from "~/reducers/main-function/guider";
+import { ContactLogEvent } from "~/reducers/main-function/guider";
 
 /**
  * TODO: maybe make this more generic,
@@ -33,7 +33,7 @@ import { IContactLogEvent } from "~/reducers/main-function/guider";
 interface EditContactLogEventProps {
   i18n: i18nType;
   status: StatusType;
-  contactEvent: IContactLogEvent;
+  contactEvent: ContactLogEvent;
   studentUserEntityId: number;
   editContactLogEvent: EditContactLogEventTriggerType;
   closeEditor: () => void;
