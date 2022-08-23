@@ -26,9 +26,9 @@ import {
   GuiderUserLabelListType,
   GuiderWorkspaceListType,
   GuiderUserGroupListType,
-  IContactLogEvent,
-  IContactLogs,
-  IContactLogEventComment,
+  ContactLogEvent,
+  ContactLogData,
+  ContactLogEventComment,
   ContactTypes,
 } from "~/reducers/main-function/guider";
 import {
@@ -932,7 +932,7 @@ const loadStudentContactLogs: LoadContactLogsTriggerType =
         await promisify(
           mApi().guider.users.contactLog.read(id, { resultsPerPage, page }),
           "callback"
-        )().then((contactLogs: IContactLogs) => {
+        )().then((contactLogs: ContactLogData) => {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "contactLogs", value: contactLogs },
@@ -1001,12 +1001,12 @@ const createContactLogEvent: CreateContactLogEventTriggerType =
         });
         const contactLogs = JSON.parse(
           JSON.stringify(getState().guider.currentStudent.contactLogs)
-        ) as IContactLogs;
+        ) as ContactLogData;
 
         await promisify(
           mApi().guider.student.contactLog.create(studentUserEntityId, payload),
           "callback"
-        )().then((contactLog: IContactLogEvent) => {
+        )().then((contactLog: ContactLogEvent) => {
           contactLogs.results = [...[contactLog], ...contactLogs.results];
           contactLogs.totalHitCount = contactLogs.totalHitCount + 1;
 
@@ -1157,11 +1157,11 @@ const editContactLogEvent: EditContactLogEventTriggerType =
             payload
           ),
           "callback"
-        )().then((contactLog: IContactLogEvent) => {
+        )().then((contactLog: ContactLogEvent) => {
           // Make a deep copy of the current state of contactLogs
           const contactLogs = JSON.parse(
             JSON.stringify(getState().guider.currentStudent.contactLogs)
-          ) as IContactLogs;
+          ) as ContactLogData;
 
           // Find the index of the edited contactLog
           const contactLogIndex = contactLogs.results.findIndex(
@@ -1253,12 +1253,12 @@ const createContactLogEventComment: CreateContactLogEventCommentTriggerType =
             payload
           ),
           "callback"
-        )().then((comment: IContactLogEventComment) => {
+        )().then((comment: ContactLogEventComment) => {
           // Make a deep copy of the current state contactLogs
 
           const contactLogs = JSON.parse(
             JSON.stringify(getState().guider.currentStudent.contactLogs)
-          ) as IContactLogs;
+          ) as ContactLogData;
 
           const contactLogResults = contactLogs.results;
 
@@ -1428,12 +1428,12 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
             payload
           ),
           "callback"
-        )().then((comment: IContactLogEventComment) => {
+        )().then((comment: ContactLogEventComment) => {
           // Make a deep copy of the current state contactLogs
 
           const contactLogs = JSON.parse(
             JSON.stringify(getState().guider.currentStudent.contactLogs)
-          ) as IContactLogs;
+          ) as ContactLogData;
 
           const contactLogsResults = [...contactLogs.results];
 
