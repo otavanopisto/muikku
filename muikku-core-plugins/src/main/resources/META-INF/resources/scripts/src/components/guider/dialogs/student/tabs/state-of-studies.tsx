@@ -434,7 +434,9 @@ class StateOfStudies extends React.Component<
               <ApplicationSubPanel modifier="student-data-container">
                 <ApplicationSubPanel>
                   <ApplicationSubPanel.Header>
-                    Opintojen edistyminen
+                    {this.props.i18n.text.get(
+                      "plugin.guider.user.details.progressOfStudies"
+                    )}
                   </ApplicationSubPanel.Header>
                   <ApplicationSubPanel.Body>
                     <StudySuggestionMatrix
