@@ -396,7 +396,6 @@
   }
 }
 
-
 .button--frontpage-upper-secondary-school-readmore {
   background-color: $color-frontpage-button-upper-secondary-school-readmore-background;
   color: $color-frontpage-button-upper-secondary-school-readmore-text;
@@ -550,8 +549,6 @@
     }
   }
 }
-
-
 
 .button--guider-student {
   overflow: unset;
@@ -1931,20 +1928,19 @@
 }
 
 .button-pill--appointment-calendar {
-  background: #f64e4e;
+  background: $color-appointment-calendar-button-background;
   color: $color-default;
 
   &:hover,
   &.hover {
-    background: darken(#f64e4e, 10%);
+    background: darken($color-appointment-calendar-button-background, 10%);
   }
 
   &:active,
   &.active {
-    background: darken(#f64e4e, 10%);
+    background: darken($color-appointment-calendar-button-background, 10%);
   }
 }
-
 
 .button--wizard {
   background-color: $color-button-wizard-background;
@@ -2042,7 +2038,7 @@
   margin: 0 5px;
 }
 
-.button--whatsapp-me{
+.button--whatsapp-me {
   background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
   color: $color-default;
   font-size: 0.75rem;
