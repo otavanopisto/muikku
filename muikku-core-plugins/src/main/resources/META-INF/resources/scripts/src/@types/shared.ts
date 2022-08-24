@@ -589,6 +589,17 @@ export interface StudentActivityByStatus {
 }
 
 /**
+ * UploadingValue
+ */
+export interface UploadingValue {
+  name: string;
+  contentType: string;
+  failed?: boolean;
+  progress?: number;
+  file?: File;
+}
+
+/**
  * SkillAndArtByKeys
  */
 export interface ActivityBySubject {

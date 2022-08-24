@@ -465,6 +465,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber) {
+
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("subjects.subjectIdentifier.untouched", subjectIdentifier.toId()));
