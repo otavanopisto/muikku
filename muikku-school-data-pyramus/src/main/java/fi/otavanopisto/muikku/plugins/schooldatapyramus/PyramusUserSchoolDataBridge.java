@@ -1323,7 +1323,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
               contactLogEntry.setCreatorId(toUserEntityId(contactLogEntry.getCreatorId()));
               
               UserEntity userEntity = userEntityController.findUserEntityById(contactLogEntry.getCreatorId());
-              hasImage = userEntityFileController.hasProfilePicture(userEntity);
+              
+              if (userEntity != null) {
+                hasImage = userEntityFileController.hasProfilePicture(userEntity);
+              }
             }
             contactLogEntry.setHasImage(hasImage);
   
@@ -1333,7 +1336,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
               boolean hasProfileImage = false;
               if (comment.getCreatorId() != null) {
                 UserEntity userEntity = userEntityController.findUserEntityById(contactLogEntry.getCreatorId());
-                hasProfileImage = userEntityFileController.hasProfilePicture(userEntity);
+                
+                if (userEntity != null) {
+                  hasProfileImage = userEntityFileController.hasProfilePicture(userEntity);
+                }
               }
               comment.setHasImage(hasProfileImage);
             }
