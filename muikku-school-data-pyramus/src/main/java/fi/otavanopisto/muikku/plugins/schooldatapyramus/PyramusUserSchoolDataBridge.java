@@ -1348,6 +1348,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           studentContactLogEntryBatch.setFirstResult(response.getEntity().getFirstResult());
           studentContactLogEntryBatch.setResults(contactLogEntries);
           studentContactLogEntryBatch.setTotalHitCount(response.getEntity().getTotalHitCount());
+          studentContactLogEntryBatch.setAllPrivileges(response.getEntity().getAllPrivileges());
         }
       }
       return new BridgeResponse<StudentContactLogEntryBatch>(response.getStatusCode(), studentContactLogEntryBatch);
