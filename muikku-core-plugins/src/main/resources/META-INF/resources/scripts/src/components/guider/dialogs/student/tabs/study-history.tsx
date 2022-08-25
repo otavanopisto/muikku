@@ -56,6 +56,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     activityLogState,
     pastWorkspaces,
     pastWorkspacesState,
+    currentWorkspaces,
     basic,
     files,
   } = props.guider.currentStudent;
@@ -76,6 +77,8 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       }
     }
   };
+
+  const combinedWorkspaces = [...currentWorkspaces, ...pastWorkspaces];
 
   /**
    * Aside navigation for the study-history
@@ -150,15 +153,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {pastWorkspacesState === "READY" ? (
-            <Workspaces
-              workspaces={pastWorkspaces.filter(
-                (w) =>
-                  w.activity &&
-                  w.activity.assessmentState.find(
-                    (assesmentState) => assesmentState.state !== "unassessed"
-                  )
-              )}
-            />
+            <Workspaces workspaces={pastWorkspaces} />
           ) : (
             <div className="loader-empty" />
           )}
@@ -171,7 +166,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         <ApplicationSubPanel.Body>
           {activityLogState === "READY" ? (
             <MainChart
-              workspaces={pastWorkspaces}
+              workspaces={combinedWorkspaces}
               activityLogs={activityLogs}
             />
           ) : (

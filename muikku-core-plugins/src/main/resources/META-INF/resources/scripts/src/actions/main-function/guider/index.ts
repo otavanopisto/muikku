@@ -694,7 +694,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           });
         }),
         promisify(
-          mApi().guider.students.workspaces.read(id),
+          mApi().guider.students.workspaces.read(id, { active: true }),
           "callback"
         )().then(async (workspaces: WorkspaceListType) => {
           if (workspaces && workspaces.length) {
@@ -840,9 +840,42 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         });
         promises.push(
           promisify(
-            mApi().guider.students.workspaces.read(id),
+            mApi().guider.students.workspaces.read(id, { active: false }),
             "callback"
           )().then(async (workspaces: WorkspaceListType) => {
+            if (workspaces && workspaces.length) {
+              await Promise.all([
+                Promise.all(
+                  workspaces.map(async (workspace, index) => {
+                    const statistics: WorkspaceForumStatisticsType = <
+                      WorkspaceForumStatisticsType
+                    >await promisify(
+                      mApi().workspace.workspaces.forumStatistics.read(
+                        workspace.id,
+                        { userIdentifier: id }
+                      ),
+                      "callback"
+                    )();
+                    workspaces[index].forumStatistics = statistics;
+                  })
+                ),
+                Promise.all(
+                  workspaces.map(async (workspace, index) => {
+                    const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
+                      await promisify(
+                        mApi().activitylogs.user.workspace.read(id, {
+                          workspaceEntityId: workspace.id,
+                          from: new Date(new Date().getFullYear() - 2, 0),
+                          to: new Date(),
+                        }),
+                        "callback"
+                      )()
+                    );
+                    workspaces[index].activityLogs = activityLogs;
+                  })
+                ),
+              ]);
+            }
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "pastWorkspaces", value: workspaces },
