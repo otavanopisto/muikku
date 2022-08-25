@@ -1,6 +1,4 @@
 import * as React from "react";
-import { isThisTypeNode } from "typescript";
-
 import "~/sass/elements/buttons.scss";
 import Link from "./link";
 
@@ -139,7 +137,6 @@ export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
  */
 interface ButtonPillProps extends ButtonProps {
   icon?: string;
-  openInNewTab?: string;
 }
 
 /**
