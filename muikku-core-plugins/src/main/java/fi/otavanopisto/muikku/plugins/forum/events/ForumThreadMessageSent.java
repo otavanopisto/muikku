@@ -5,10 +5,10 @@ public class ForumThreadMessageSent {
   public ForumThreadMessageSent() {
   }
   
-  public ForumThreadMessageSent(Long threadId, Long recipientUserEntityId, String baseUrl) {
+  public ForumThreadMessageSent(Long threadId, Long posterUserEntityId, String baseUrl) {
     super();
     this.threadId = threadId;
-    this.recipientUserEntityId = recipientUserEntityId;
+    this.posterUserEntityId = posterUserEntityId;
     this.baseUrl = baseUrl;
   }
 
@@ -16,8 +16,8 @@ public class ForumThreadMessageSent {
     return threadId;
   }
 
-  public Long getRecipientUserEntityId() {
-    return recipientUserEntityId;
+  public Long getPosterUserEntityId() {
+    return posterUserEntityId;
   }
 
   public String getBaseUrl() {
@@ -25,6 +25,6 @@ public class ForumThreadMessageSent {
   }
 
   private Long threadId;
-  private Long recipientUserEntityId;
+  private Long posterUserEntityId;
   private String baseUrl;
 }

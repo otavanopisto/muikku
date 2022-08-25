@@ -838,7 +838,7 @@ public class ForumRESTService extends PluginRESTService {
    */
   @POST
   @Path("/areas/{AREAID}/threads/{THREADID}/toggleSubscription")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response toggleForumThreadSubscription(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
     try {
       ForumArea forumArea = forumController.getForumArea(areaId);
@@ -885,7 +885,7 @@ public class ForumRESTService extends PluginRESTService {
    */
   @GET
   @Path ("/subscriptions/threads/{USERID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listThreadSubscriptionsByUser(@PathParam ("USERID") Long userId) {
     
     UserEntity userEntity = userEntityController.findUserEntityById(userId);

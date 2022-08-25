@@ -55,7 +55,7 @@ public class ForumThreadSubscriptionNotifier {
   @Transactional (value = TxType.REQUIRES_NEW)
   public void onForumThreadMessageSent(@Observes (during = TransactionPhase.AFTER_COMPLETION) ForumThreadMessageSent event) {
     ForumThread forumThread = forumController.getForumThread(event.getThreadId());
-    UserEntity sender = userEntityController.findUserEntityById(event.getRecipientUserEntityId());
+    UserEntity poster = userEntityController.findUserEntityById(event.getPosterUserEntityId());
     
     List<ForumThreadSubscription> subscriptions = forumThreadSubsciptionController.listByThread(forumThread);
     
@@ -65,10 +65,10 @@ public class ForumThreadSubscriptionNotifier {
         
         UserEntity recipient = userEntityController.findUserEntityById(userId);
 
-        if ((forumThread != null) && (sender != null) && (recipient != null)) {
-          if (!Objects.equals(sender.getId(), recipient.getId())) {
+        if ((forumThread != null) && (poster != null) && (recipient != null)) {
+          if (!Objects.equals(poster.getId(), recipient.getId())) {
             Map<String, Object> params = new HashMap<String, Object>();
-            User senderUser = userController.findUserByUserEntityDefaults(sender);
+            User senderUser = userController.findUserByUserEntityDefaults(poster);
             params.put("sender", String.format("%s", senderUser.getDisplayName()));
             params.put("subject", forumThread.getTitle());
             params.put("content", forumThread.getMessage());
@@ -76,7 +76,7 @@ public class ForumThreadSubscriptionNotifier {
             //TODO Hash paramters cannot be utilized in redirect URLs
             //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
             
-            notifierController.sendNotification(forumThreadNewMessageNotification, sender, recipient, params);
+            notifierController.sendNotification(forumThreadNewMessageNotification, poster, recipient, params);
           }
       }
     }
