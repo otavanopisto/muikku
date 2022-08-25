@@ -694,7 +694,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           });
         }),
         promisify(
-          mApi().guider.students.workspaces.read(id),
+          mApi().guider.students.workspaces.read(id, { active: true }),
           "callback"
         )().then(async (workspaces: WorkspaceListType) => {
           if (workspaces && workspaces.length) {
@@ -809,7 +809,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         },
       });
 
-
       const promises = [
         promisify(
           mApi().activitylogs.user.workspace.read(id, {
@@ -841,10 +840,9 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         });
         promises.push(
           promisify(
-            mApi().guider.students.workspaces.read(id),
+            mApi().guider.students.workspaces.read(id, { active: false }),
             "callback"
           )().then(async (workspaces: WorkspaceListType) => {
-
             if (workspaces && workspaces.length) {
               await Promise.all([
                 Promise.all(
