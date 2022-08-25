@@ -1366,8 +1366,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
 
       boolean hasImage = false;
-
-      UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+      UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
       
       if (userEntity != null) {
         hasImage = userEntityFileController.hasProfilePicture(userEntity);
@@ -1393,7 +1392,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       if (response.getEntity().getCreatorId() != null) {
         response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
 
-        UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+        UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
         hasImage = userEntityFileController.hasProfilePicture(userEntity);
       }
       response.getEntity().setHasImage(hasImage);
@@ -1427,7 +1426,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
       boolean hasImage = false;
           
-      UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+      UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
       if (userEntity != null) {
         hasImage = userEntityFileController.hasProfilePicture(userEntity);
       }
@@ -1452,7 +1451,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
       boolean hasImage = false;
       
-      UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+      UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
       if (userEntity != null) {  
         hasImage = userEntityFileController.hasProfilePicture(userEntity);
       }
