@@ -37,6 +37,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -63,6 +64,12 @@ public class UserSchoolDataController {
 
   public boolean isActiveUser(User user) {
     return getUserBridge(user.getSchoolDataSource()).isActiveUser(user);
+  }
+  
+  /* HOPS */
+  
+  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String dataSource, String identifier) {
+    return getUserBridge(dataSource).getStudyActivity(identifier);
   }
   
   /* Worklist */
@@ -525,6 +532,14 @@ public class UserSchoolDataController {
         "lukio",
         "pakollinen"
     );
+  }
+  
+  public boolean amICounselor(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).amICounselor(studentIdentifier.getIdentifier());
   }
   
 }

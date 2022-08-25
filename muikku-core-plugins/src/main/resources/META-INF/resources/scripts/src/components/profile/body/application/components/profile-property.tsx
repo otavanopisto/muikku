@@ -30,33 +30,38 @@ export default function ProfileProperty(props: {
   }
   return (
     <div className="application-sub-panel__item  application-sub-panel__item--profile">
-      <label className="application-sub-panel__item-title">
-        {props.i18n.text.get(props.label)}
-      </label>
-      <div
-        className={`application-sub-panel__item-data ${
-          props.modifier
-            ? "application-sub-panel__item-data--" + props.modifier
-            : ""
-        }`}
-      >
-        {typeof props.value === "string" ? (
-          <span className="application-sub-panel__single-entry">
-            {props.value}
-          </span>
-        ) : (
-          props.value.map((v) =>
-            typeof v === "string" ? (
-              <span className="application-sub-panel__single-entry" key={v}>
-                {v}
+      <div className="form__row">
+        <div className="form-element">
+          <label>{props.i18n.text.get(props.label)}</label>
+          <div
+            className={`application-sub-panel__item-data ${
+              props.modifier
+                ? "application-sub-panel__item-data--" + props.modifier
+                : ""
+            }`}
+          >
+            {typeof props.value === "string" ? (
+              <span className="application-sub-panel__single-entry">
+                {props.value}
               </span>
             ) : (
-              <span className="application-sub-panel__single-entry" key={v.key}>
-                {v.value}
-              </span>
-            )
-          )
-        )}
+              props.value.map((v) =>
+                typeof v === "string" ? (
+                  <span className="application-sub-panel__single-entry" key={v}>
+                    {v}
+                  </span>
+                ) : (
+                  <span
+                    className="application-sub-panel__single-entry"
+                    key={v.key}
+                  >
+                    {v.value}
+                  </span>
+                )
+              )
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

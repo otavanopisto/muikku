@@ -4,7 +4,6 @@
 @import "../base/breakpoints";
 
 .button {
-  @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
 
   align-items: center;
@@ -21,7 +20,7 @@
   text-decoration: none;
   text-overflow: ellipsis;
   text-transform: uppercase;
-  user-select: none;
+  user-select: text;
   white-space: nowrap;
 
   @include breakpoint($breakpoint-pad) {
@@ -92,6 +91,25 @@
   margin: 0 10px 0 0;
 }
 
+.button--studies-course-action {
+  background: $color-default;
+  border: 1px solid darken($color-workspace, 10%);
+  color: darken($color-workspace, 15%);
+  font-size: 0.75rem;
+  margin: 0 10px 0 0;
+  padding: 4px 10px;
+
+  &:last-child {
+    margin: 0;
+  }
+
+  &:hover {
+    background: darken($color-workspace, 15%);
+    border: 1px solid darken($color-workspace, 15%);
+    color: $color-default;
+  }
+}
+
 .button--execute {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
@@ -129,6 +147,10 @@
   &.active {
     background-color: darken($color-button-warn-background, 20%);
   }
+}
+
+.button--assigments {
+  margin-left: 15px;
 }
 
 .button--info {
@@ -268,18 +290,49 @@
   }
 }
 
+// STUDIES NOTES
+.button--note-priority {
+  background: $color-default;
+  border-style: solid;
+  border-width: 1px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin: 2px 10px 0 0;
+  padding: 2px 6px;
+
+  &.button--active {
+    color: $color-default;
+  }
+}
+
+.button--note-priority-high {
+  border-color: $color-priority-high;
+  color: $color-priority-high;
+
+  &.button--active {
+    background-color: $color-priority-high;
+  }
+}
+
+.button--note-priority-normal {
+  border-color: $color-priority-normal;
+  color: $color-priority-normal;
+
+  &.button--active {
+    background-color: $color-priority-normal;
+  }
+}
+
+.button--note-priority-low {
+  border-color: $color-priority-low;
+  color: $color-priority-low;
+
+  &.button--active {
+    background-color: $color-priority-low;
+  }
+}
+
 // FRONTPAGE
-.button--forgotpassword-dialog-submit {
-  display: inline-flex;
-  font-weight: 400; // This element is actually <label> so we need to reset font-weight
-  margin: 0 0 0 10px;
-}
-
-.button--forgotpassword-dialog-cancel {
-  display: inline-flex;
-  margin: 0 0 0 10px;
-}
-
 .button--login {
   background-color: $color-frontpage-button-login-background;
   color: $color-frontpage-button-login-text;
@@ -589,7 +642,31 @@
 
 .button--contact-teacher {
   font-size: 0.75rem;
-  padding: 4px 12px;
+}
+
+.button--guider-hops-studytool {
+  background-color: $color-button-primary-background;
+  border: 0;
+  color: $color-button-primary-text;
+  display: inline-flex;
+  font-size: 0.75rem;
+  margin: 5px 10px 5px 0;
+  padding: 4px 10px;
+}
+
+.button--guider-hops-studytool-suggested {
+  background: $color-default;
+  border: 2px solid $color-suggested;
+  color: $color-suggested;
+  font-weight: 600;
+}
+
+.button--guider-hops-studytool-next {
+  background: $color-default;
+  border: 2px solid $color-next;
+  color: $color-next;
+  font-weight: 600;
+  margin: 5px 0 5px 10px;
 }
 
 .button-icon {
@@ -641,6 +718,30 @@
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
   }
+}
+
+.button-icon--notes-action {
+  color: $color-notes-action-button;
+  font-size: 0.9375rem;
+  height: 1.25rem;
+  margin: 0 0 0 10px;
+  width: 1.25rem;
+
+  &:hover {
+    color: $color-info;
+  }
+}
+
+.button-icon--journal-central {
+  font-size: 2rem;
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.button-icon--edit-hops-history-event-description {
+  font-size: 0.8125rem;
+  height: auto;
+  width: auto;
 }
 
 .button-icon--workspace-users-contact {
@@ -803,6 +904,11 @@
   }
 }
 
+.button-pill--hops {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
 .button-pill--settings {
   background-color: $color-main-function-button-pill-settings-background;
   color: $color-main-function-button-pill-settings-text;
@@ -833,7 +939,8 @@
 .button-pill--restore,
 .button-pill--edit,
 .button-pill--new-message,
-.button-pill--filter {
+.button-pill--filter,
+.button-pill--add-note {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
   flex-basis: auto;
@@ -861,6 +968,13 @@
   @include breakpoint($breakpoint-pad) {
     margin: 0 10px 0 0;
   }
+}
+
+// Slightly smaller button-pill to be used amongst other page elements a.k.a within content
+.button-pill--within-content {
+  font-size: 1rem;
+  height: 2rem;
+  width: 2rem;
 }
 
 .button-pill--filter {
@@ -1288,7 +1402,7 @@
 }
 
 // Buttons used in Material pages
-.button--muikku-check-exercises,
+.button--muikku-submit-exercise,
 .button--muikku-show-correct-answers-button,
 .button--muikku-submit-assignment,
 .button--muikku-withdraw-assignment,
@@ -1302,7 +1416,7 @@
   }
 }
 
-.button--muikku-check-exercises {
+.button--muikku-submit-exercise {
   background: $color-exercise;
 }
 
@@ -1809,23 +1923,59 @@
   }
 }
 
-.button--add-matriculation-row {
+.button--add-matriculation-row,
+.button--add-hops-row,
+.button--load-all-hops-events,
+.button--back-to-hops-start {
   background: $color-default;
   border: 1px solid $color-default;
   color: $color-info;
   padding: 4px 6px;
+
+  &.disabled {
+    background: $color-default;
+    border: 1px solid $color-default;
+    color: $color-disabled;
+
+    &:hover {
+      background: $color-default;
+      border: 1px solid $color-default;
+      color: $color-disabled;
+    }
+  }
 }
 
-.button--remove-matriculation-row {
-  align-items: center;
+.button--remove-matriculation-row,
+.button--remove-hops-row {
   background: transparent;
-  color: $color-fatal;
-  display: flex;
-  font-size: 1.25rem;
   height: 2.25rem;
-  justify-content: center;
   padding: 5px;
   width: 2.25rem;
+
+  .icon-trash {
+    align-items: center;
+    color: $color-fatal;
+    display: flex;
+    font-size: 1.25rem;
+    height: 2.25rem;
+    justify-content: center;
+    margin: 0;
+    padding: 5px;
+    width: 2.25rem;
+  }
+
+  &.disabled {
+    background: transparent;
+
+    .icon-trash {
+      color: $color-disabled;
+    }
+
+    &:hover {
+      background: transparent;
+      color: $color-disabled;
+    }
+  }
 }
 
 .button--evaluate-assignment {
@@ -1858,6 +2008,13 @@
   margin: 0 5px;
 }
 
+.button--whatsapp-me {
+  background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
+  color: $color-default;
+  font-size: 0.75rem;
+  margin: 0 0 0 10px;
+}
+
 .button-icon--evaluation {
   &.button-icon--excercise-drawer-close {
     color: $color-default-contrast;
@@ -1884,4 +2041,36 @@
     background-color: transparent;
     color: $color-disabled;
   }
+}
+
+.button-icon--whatsapp-me {
+  font-size: 1.75rem;
+  height: 1.75rem;
+  margin: 0 5px 0 0;
+  transition: 0.3s;
+  width: 1.75rem;
+
+  &:hover {
+    color: $color-whatsapp-light;
+  }
+}
+
+.button-icon--whatsapp-active {
+  color: $color-whatsapp-dark;
+}
+
+.button-icon--whatsapp-inactive {
+  color: $color-disabled;
+}
+
+.button--modify-hops {
+  background-color: $color-info;
+  color: $color-default;
+  margin-right: 10px;
+}
+
+.button--modify-hops-active {
+  background-color: $color-fatal;
+  color: $color-default;
+  margin-right: 10px;
 }

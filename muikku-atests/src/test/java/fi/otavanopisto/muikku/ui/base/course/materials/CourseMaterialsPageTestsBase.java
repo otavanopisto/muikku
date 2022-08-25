@@ -267,8 +267,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         selectFinnishLocale();
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".button--muikku-check-exercises");
-        assertTextIgnoreCase(".button--muikku-check-exercises", "Tarkasta harjoitustehtävä");
+        waitForPresent(".button--muikku-submit-exercise");
+        assertTextIgnoreCase(".button--muikku-submit-exercise", "Palauta tehtävä");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         deleteWorkspace(workspace.getId());
@@ -321,9 +321,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
         waitForNotVisible(".material-page__field-answer-synchronizer");
-        waitAndClick(".button--muikku-check-exercises");
-        waitUntilContentChanged(".button--muikku-check-exercises", "Tarkasta harjoitustehtävä");
-        assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä tarkastettu");
+        waitAndClick(".button--muikku-submit-exercise");
+        waitUntilContentChanged(".button--muikku-submit-exercise", "Palauta tehtävä");
+        assertTextIgnoreCase(".button--muikku-submit-exercise", "Tehtävä palautettu");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
@@ -386,9 +386,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
           waitForNotVisible(".material-page__field-answer-synchronizer");
-          waitAndClick(".button--muikku-check-exercises");
-          waitUntilContentChanged(".button--muikku-check-exercises", "Tarkasta harjoitustehtävä");
-          assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä tarkastettu");
+          waitAndClick(".button--muikku-submit-exercise");
+          waitUntilContentChanged(".button--muikku-submit-exercise", "Palauta tehtävä");
+          assertTextIgnoreCase(".button--muikku-submit-exercise", "Tehtävä palautettu");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
@@ -801,7 +801,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "                  ']");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
 
-        waitAndClick(".button--muikku-check-exercises");
+        waitAndClick(".button--muikku-submit-exercise");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
         assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
@@ -862,7 +862,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         scrollIntoView(".material-page__connectfield-wrapper");
         dragAndDropXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]", "//span[@class='material-page__connectfield-counterparts-container']/span[1]", 10, 10);
 
-        waitAndClick(".button--muikku-check-exercises");
+        waitAndClick(".button--muikku-submit-exercise");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
         assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
@@ -935,7 +935,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           mathml = getAttributeValue(".material-page__sorterfield-item .MathJax_SVG", "data-mathml");
           assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           sleep(1000);
-          waitAndClick(".button--muikku-check-exercises");
+          waitAndClick(".button--muikku-submit-exercise");
           
           waitForPresent(".material-page__correct-answers-data");
           String correctAnswersCount = getElementText(".material-page__correct-answers-data");
@@ -1016,7 +1016,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(4)", ".material-page__organizerfield-category:nth-child(2)", 120, 50);
   //        TODO: Remove sleep when concurrent save and submit issue fixed
           sleep(350);
-          waitAndClick(".button--muikku-check-exercises");
+          waitAndClick(".button--muikku-submit-exercise");
           waitForVisible(".material-page__correct-answers");
           assertTextIgnoreCase(".material-page__correct-answers-data", "0 / 1");
         } finally {

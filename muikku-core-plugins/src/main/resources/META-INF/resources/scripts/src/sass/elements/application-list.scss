@@ -263,7 +263,7 @@
   }
 
   &.state-UNASSESSED {
-    cursor: default;
+    color: $color-default-contrast;
   }
 }
 
@@ -272,7 +272,10 @@
 }
 
 .application-list__indicator-badge--task {
+  font-size: 1rem;
+  height: 1.75rem;
   margin: 0 10px 0 0;
+  width: 1.75rem;
 }
 
 .application-list__indicator-badge--evaluation-request {
@@ -569,38 +572,6 @@
 .application-list__item-content-aside {
   display: none;
 
-  input {
-    align-items: center;
-    appearance: none;
-    border: solid 2px $color-main-function-application-list-item-checkbox-border;
-    border-radius: 3px;
-    display: flex;
-    height: 1rem;
-    justify-content: center;
-    width: 1rem;
-  }
-
-  input:checked {
-    background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border:
-      solid 2px
-      $color-main-function-application-list-item-checkbox-checked-background;
-  }
-
-  input:checked::after {
-    color: $color-main-function-application-list-item-checkbox-checked-mark;
-    content: "\e639";
-    font-family: "muikku";
-    font-size: 0.875rem;
-  }
-
-  input[type="radio"] {
-    border-radius: 50%;
-
-    // this could be for any input inside the aside, but in communicator it is in the container
-    margin-right: 5px;
-  }
-
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
     display: flex;
@@ -612,10 +583,6 @@
 
 .application-list__item-content-aside--course {
   padding: 15px 0;
-
-  input[type="radio"] {
-    padding: 8px;
-  }
 }
 
 .application-list__item-content-aside--workspace-user {
@@ -829,6 +796,16 @@
   }
 }
 
+.application-list__item-header-main-content--journal-entry-title-in-studies {
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+}
+
 .application-list__item-header-aside {
   flex-basis: auto;
   flex-grow: 0;
@@ -957,7 +934,7 @@
 }
 
 .application-list__item--discussion-reply {
-  border-top: 5px solid $color-message-border;
+  border-top: 3px solid $color-message-border;
   margin: 10px 0 0;
   padding: 10px;
 
@@ -1030,7 +1007,7 @@
 
 // Communicator
 .application-list__item--communicator-message {
-  border-bottom: 5px solid $color-message-border;
+  border-bottom: 3px solid $color-message-border;
   padding: 10px 0;
 
   &:last-child {
@@ -1156,6 +1133,13 @@
 
 .application-list__item-header--studies-assignment {
   cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1rem;
+    font-weight: 400;
+  }
 }
 
 .application-list__item-body--evaluation-assignment {

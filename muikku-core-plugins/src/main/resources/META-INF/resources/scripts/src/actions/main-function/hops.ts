@@ -33,6 +33,8 @@ export type UPDATE_HOPS_STATUS = SpecificActionType<
   HOPSStatusType
 >;
 
+export type SET_HOPS_PHASE = SpecificActionType<"SET_HOPS_PHASE", string>;
+
 /**
  * updateHops
  * @param callback callback
@@ -50,6 +52,18 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
       dispatch({
         type: "UPDATE_HOPS_STATUS",
         payload: <HOPSStatusType>"LOADING",
+      });
+
+      const properties: any = await promisify(
+        mApi().user.properties.read(getState().status.userId, {
+          properties: "hopsPhase",
+        }),
+        "callback"
+      )();
+
+      dispatch({
+        type: "SET_HOPS_PHASE",
+        payload: properties[0].value,
       });
 
       const hops = <HOPSDataType>(

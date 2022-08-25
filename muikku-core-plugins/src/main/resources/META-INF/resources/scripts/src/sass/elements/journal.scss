@@ -17,5 +17,8 @@
 }
 
 .journal--studies {
+  border-top: 1px solid $color-message-border;
+  cursor: pointer;
   padding: 15px 0;
+  width: 100%;
 }

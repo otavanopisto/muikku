@@ -4,6 +4,7 @@ import java.util.Date;
 
 
 import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
+import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 
 public class NoteRestModel {
@@ -88,6 +89,46 @@ public class NoteRestModel {
     this.created = created;
   }
 
+  public Date getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+
+  public Date getDueDate() {
+    return dueDate;
+  }
+
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
+  }
+
+  public NoteStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(NoteStatus status) {
+    this.status = status;
+  }
+
+  public Boolean getIsActive() {
+    return isActive;
+  }
+
+  public void setIsActive(Boolean isActive) {
+    this.isActive = isActive;
+  }
+
+  public Boolean getIsArchived() {
+    return isArchived;
+  }
+
+  public void setIsArchived(Boolean isArchived) {
+    this.isArchived = isArchived;
+  }
+
   private Long id;
   private String title;
   private String description;
@@ -98,4 +139,10 @@ public class NoteRestModel {
   private Long creator;
   private String creatorName;
   private Date created;
+  private Date startDate;
+  private Date dueDate;
+  private NoteStatus status;
+  private Boolean isActive;
+  private Boolean isArchived;
+
 }

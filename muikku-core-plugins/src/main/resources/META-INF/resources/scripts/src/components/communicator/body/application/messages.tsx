@@ -9,6 +9,7 @@ import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/message.scss";
+import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
@@ -383,7 +384,6 @@ class CommunicatorMessages extends BodyScrollLoader<
                   )
                 : null,
               checkboxId: `messageSelect-${index}`,
-              checkboxClassName: "message__selector",
               /**
                * contents
                * @param checkbox checkbox
@@ -391,7 +391,7 @@ class CommunicatorMessages extends BodyScrollLoader<
               contents: (checkbox: React.ReactElement<any>) => (
                 <ApplicationListItemContentWrapper
                   aside={
-                    <div className="message__select-container">
+                    <div className="form-element form-element--item-selection-container">
                       <label
                         htmlFor={`messageSelect-` + index}
                         className="visually-hidden"

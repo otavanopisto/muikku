@@ -18,7 +18,6 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { StatusType } from "~/reducers/base/status";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 /**
@@ -377,7 +376,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
       this.props.signature ? (
         <div
           key="new-message-4"
-          className="env-dialog__row env-dialog__row--communicator-signature"
+          className="env-dialog__row env-dialog__row--options"
         >
           <input
             id="messageSignature"

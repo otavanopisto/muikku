@@ -1,12 +1,11 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
+import Button from "~/components/general/button";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import mApi, { MApiError } from "~/lib/mApi";
 
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
 import { bindActionCreators } from "redux";
@@ -144,22 +143,22 @@ class ForgotPasswordDialog extends React.Component<
           className="form"
           onSubmit={this.resetPassword.bind(this, closeDialog)}
         >
-          <div className="form-element">
-            <label
-              className="form-element__label"
-              htmlFor="forgotpassword-email"
-            >
-              {this.props.i18n.text.get(
-                "plugin.forgotpassword.forgotPasswordDialog.email"
-              )}
-            </label>
-            <input
-              type="text"
-              name="email"
-              value={this.state.email}
-              onChange={this.updateEmail}
-              className="form-element__input form-element__input--forgotpassword"
-            />
+          <div className="form__row">
+            <div className="form-element">
+              <label htmlFor="forgotpasswordEmail">
+                {this.props.i18n.text.get(
+                  "plugin.forgotpassword.forgotPasswordDialog.email"
+                )}
+              </label>
+              <input
+                type="text"
+                name="email"
+                id="forgotpasswordEmail"
+                value={this.state.email}
+                onChange={this.updateEmail}
+                className="form-element__input form-element__input--forgotpassword"
+              />
+            </div>
           </div>
         </form>
       </div>
@@ -170,23 +169,23 @@ class ForgotPasswordDialog extends React.Component<
      * @param closeDialog closeDialog
      */
     const footer = (closeDialog: () => any) => (
-      <div>
-        <Link
-          className="button button--forgotpassword-dialog-cancel button--cancel"
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-cancel", "cancel"]}
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
             "plugin.forgotpassword.forgotPasswordDialog.cancelButtonLabel"
           )}
-        </Link>
-        <Link
-          className="button button--forgotpassword-dialog-submit button--success"
+        </Button>
+        <Button
+          buttonModifiers={["standard-ok", "success"]}
           onClick={this.resetPassword.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
             "plugin.forgotpassword.forgotPasswordDialog.sendButtonLabel"
           )}
-        </Link>
+        </Button>
       </div>
     );
     return (

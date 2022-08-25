@@ -4,3 +4,9 @@
 .react-datepicker-popper {
   z-index: 101;
 }
+
+/* stylelint-disable declaration-no-important */
+.react-datepicker__triangle {
+  transform: translate(25px) !important;
+}
+/* stylelint-enable declaration-no-important */

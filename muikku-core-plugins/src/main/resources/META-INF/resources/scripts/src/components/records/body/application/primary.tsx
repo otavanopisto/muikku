@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { TranscriptOfRecordLocationType } from "~/reducers/main-function/records";
 import { StateType } from "~/reducers";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 
 /**
  * StudiesPrimaryOptionProps

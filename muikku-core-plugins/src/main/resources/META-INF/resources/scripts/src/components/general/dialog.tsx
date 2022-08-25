@@ -2,7 +2,7 @@ import Portal from "./portal";
 import * as React from "react";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/dialog.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { SearchFormElement } from "~/components/general/form-element";
 import ApplicationList, {
   ApplicationListItemContentWrapper,

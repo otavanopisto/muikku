@@ -1195,7 +1195,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         true,                                                     // include hidden
         false,                                                    // only default users
         firstResult,                                              // first result
-        maxResults);                                              // max results
+        maxResults,                                               // max results
+        false);                                                   // join groups and workspaces
 
     List<Map<String, Object>> elasticUsers = searchResult.getResults();
 
@@ -1296,7 +1297,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         false,                                                    // include hidden
         false,                                                    // only default users
         0,                                                        // first result
-        Integer.MAX_VALUE);                                       // max results
+        Integer.MAX_VALUE,                                        // max results
+        false);                                                   // join groups and workspaces
     List<Map<String, Object>> elasticUsers = searchResult.getResults();
 
     List<WorkspaceUserRestModel> workspaceStaffMembers = new ArrayList<WorkspaceUserRestModel>();
@@ -2829,7 +2831,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         true,                                                     // include hidden
         false,                                                    // only default users
         0,                                                        // first result
-        1);                                                       // max results
+        1,                                                        // max results
+        false);                                                   // join groups and workspaces
     List<Map<String, Object>> elasticUsers = searchResult.getResults();
     if (elasticUsers.isEmpty()) {
       return Response.status(Status.NOT_FOUND).build();

@@ -30,7 +30,7 @@ public class RequestedAssessmentSupplementationsNotificationController {
   public SearchResult searchActiveStudents(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults){
     SearchProvider searchProvider = getProvider("elastic-search");
     return searchProvider.searchUsers(activeOrganizations, null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, false, 
-        firstResult, maxResults, null);
+        firstResult, maxResults, null, false);
   }
   
   public RequestedAssessmentSupplementationNotification createRequestedAssessmentSupplementationNotification(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier workspaceIdentifier){

@@ -41,7 +41,6 @@
     display: list-item;
   }
 
-  // scss-lint:disable SelectorFormat
   &.state-INFO {
     border-color: $color-info;
 
@@ -81,8 +80,6 @@
       color: $color-tertiary;
     }
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .matriculation-container__state-icon {
@@ -109,16 +106,29 @@
   }
 }
 
+.matriculation-container__fieldset {
+  border: 0;
+  border-bottom: 1px solid $color-default-separator-border;
+  margin: 0 0 15px;
+  padding: 0 0 15px;
+}
+
 .matriculation-container__subheader {
   border: 0;
   display: block;
-  font-size: 1rem;
+  font-size: 1.1875rem;
   font-weight: 400;
   margin: 0 0 10px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.1875rem;
+    font-size: 1.25rem;
+  }
+}
+
+.matriculation-container__info {
+  .matriculation-container__subheader {
+    margin: 15px 0 10px;
   }
 }
 
@@ -188,12 +198,6 @@
   }
 }
 
-.matriculation-container__fieldset {
-  border-bottom: 1px solid $color-default-separator-border;
-  margin: 0 0 15px;
-  padding: 0 0 10px;
-}
-
 .matriculation__label {
   display: block;
   font-weight: 600;
@@ -213,12 +217,23 @@
   width: 1.5rem;
 }
 
-.matriculation__input[type="checkbox"]:checked {
+.matriculation__input[type="radio"] {
+  align-items: center;
+  appearance: none;
+  border: solid 2px $color-matriculation-dialog-form-element-border;
+  border-radius: 100%;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
+}
+
+.matriculation__input:checked {
   background-color: $color-application-dialog-border-color;
   border: solid 2px $color-application-dialog-border-color;
 }
 
-.matriculation__input[type="checkbox"]:checked::after {
+.matriculation__input:checked::after {
   color: $color-default;
   content: "\e639";
   font-family: "muikku";
@@ -229,13 +244,14 @@
   background: $color-default;
   border: 2px solid $color-matriculation-dialog-form-element-border;
   border-radius: 3px;
-  height: 2.25rem;
+  height: $select-height-mobile;
   padding: 4px 8px;
   width: 100%;
 
   &[readonly] {
     background-color: lighten($color-disabled, 20%);
     border: 0;
+    height: $select-height-desktop;
   }
 }
 
@@ -244,13 +260,14 @@
   border: 2px solid $color-matriculation-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  height: 2.25rem;
+  height: $select-height-mobile;
   padding: 4px;
   width: 100%;
 
   &[disabled] {
     background-color: lighten($color-disabled, 20%);
     border: 0;
+    height: $select-height-desktop;
   }
 }
 

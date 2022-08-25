@@ -104,11 +104,11 @@ public class UserTestsBase extends AbstractUITest {
       waitForVisible(".application-sub-panel__item .application-sub-panel__item-data span");
       assertTextIgnoreCase(".application-sub-panel__item .application-sub-panel__item-data span", "admin@example.com");
       
-      assertTextIgnoreCase(".application-sub-panel__item .application-sub-panel__item-title[for='profilePhoneNumber']", "Puhelinnumero");
-      assertVisible(".application-sub-panel__item .application-sub-panel__item-data input#profilePhoneNumber");
+      assertTextIgnoreCase(".form .form__row .form-element label[for='profilePhoneNumber']", "Puhelinnumero");
+      assertVisible(".form .form__row .form-element input#profilePhoneNumber");
 
-      assertTextIgnoreCase(".application-sub-panel__item-actions .button--primary-function-save", "Tallenna");
-      assertVisible(".application-sub-panel__item-actions .button--primary-function-save");
+      assertTextIgnoreCase(".form .form__buttons .button--primary-function-save", "Tallenna");
+      assertVisible(".form .form__buttons .button--primary-function-save");
     }finally {
       mockBuilder.wiremockReset();
     }

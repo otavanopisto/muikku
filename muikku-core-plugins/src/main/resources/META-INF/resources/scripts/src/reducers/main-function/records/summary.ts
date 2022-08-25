@@ -14,6 +14,29 @@ export interface SummaryStudyTime {
 }
 
 /**
+ * SummarStudentDetails
+ */
+export interface SummarStudentDetails extends SummaryStudyTime {
+  id: string;
+  firstName: string;
+  lastName: string;
+  nickName: string | null;
+  studyProgrammeName: string;
+  studyProgrammeIdentifier: string;
+  hasImage: boolean;
+  nationality: string | null;
+  language: string | null;
+  municipality: string | null;
+  school: string | null;
+  email: string | null;
+  lastLogin: string;
+  curriculumIdentifier: string | null;
+  updatedByStudent: boolean;
+  userEntityId: number;
+  flags: any;
+}
+
+/**
  * SummaryStudentsGuidanceCouncelorsType
  */
 export interface SummaryStudentsGuidanceCouncelorsType {
@@ -35,7 +58,7 @@ export interface SummaryDataType {
   returnedExercises: number;
   graphData: GraphDataType;
   coursesDone: number;
-  studentsDetails: SummaryStudyTime;
+  studentsDetails: SummarStudentDetails;
   studentsGuidanceCouncelors: SummaryStudentsGuidanceCouncelorsType[];
 }
 

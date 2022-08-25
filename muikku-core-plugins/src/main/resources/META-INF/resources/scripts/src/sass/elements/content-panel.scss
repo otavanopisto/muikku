@@ -179,12 +179,8 @@
   overscroll-behavior: contain;
   position: absolute;
   right: 0;
-
-  // scss-lint:disable PropertySpelling
   scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
   scrollbar-width: thin;
-
-  // scss-lint:enable PropertySpelling
   top: 0;
   width: 90%;
 
@@ -254,12 +250,9 @@
   position: relative;
   z-index: 2;
 
-  // scss-lint:disable SelectorFormat
   &.state-HIDDEN {
     opacity: 30%;
   }
-
-  // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.375rem;

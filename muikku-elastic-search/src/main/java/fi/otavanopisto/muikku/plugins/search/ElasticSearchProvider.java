@@ -88,10 +88,10 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-  
+
   @Inject
   private SessionController sessionController;
-  
+
   @Override
   public void init() {
     String portNumberProperty = System.getProperty("elasticsearch.node.port");
@@ -105,7 +105,7 @@ public class ElasticSearchProvider implements SearchProvider {
     elasticClient = new RestHighLevelClient(
         RestClient.builder(new HttpHost("localhost", portNumber, "http")));    
   }
-  
+
   @Override
   public void deinit() {
     try {
@@ -114,23 +114,23 @@ public class ElasticSearchProvider implements SearchProvider {
       logger.log(Level.SEVERE, "Failed to shutdown elastic connection.", e);
     }
   }
-  
+
   private String sanitizeSearchString(String query) {
     if (query == null)
       return null;
-    
+
     // TODO: query_string search for case insensitive searches??
     // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
     String ret = query.toLowerCase();
 
     // Escape special characters including elastic's control characters and some other additions
     String escapedCharacters = Pattern.quote("\\/+-&|!(){}[]^~*?:" + ".,");
-    
+
     ret = ret.replaceAll(String.format("([%s])", escapedCharacters), " ");
-    
+
     // Trims and removes double spaces (incl. tabs etc)
     ret = StringUtils.normalizeSpace(ret);
-    
+
     return ret;
   }
 
@@ -194,12 +194,12 @@ public class ElasticSearchProvider implements SearchProvider {
       return new SearchResult(0, new ArrayList<Map<String, Object>>(), 0);
     }
   }
-  
+
   @Override
   public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive) {
 
     // Query that checks activity based on user having a study end date set
-    
+
     BoolQueryBuilder query = boolQuery();
     if (!includeInactive) {
       query.mustNot(existsQuery("studyEndDate"));
@@ -235,30 +235,30 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, 
-      Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, 
-      Date startedStudiesBefore, Date studyTimeEndsBefore) {
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
+      Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
+      Date startedStudiesBefore, Date studyTimeEndsBefore, boolean joinGroupsAndWorkspaces) {
     try {
       long now = OffsetDateTime.now().toEpochSecond();
 
       if (CollectionUtils.isEmpty(organizations)) {
         throw new IllegalArgumentException("Cannot search with no organizations specified.");
       }
-      
+
       text = sanitizeSearchString(text);
 
       BoolQueryBuilder query = boolQuery();
-      
+
       if (!Boolean.TRUE.equals(includeHidden)) {
         query.mustNot(termQuery("hidden", true));
       }
-      
+
       if (Boolean.TRUE.equals(onlyDefaultUsers)) {
         query.must(termQuery("isDefaultIdentifier", true));
       }
-      
+
       if (StringUtils.isNotBlank(text) && !ArrayUtils.isEmpty(textFields)) {
         String[] words = text.split(" ");
         for (int i = 0; i < words.length; i++) {
@@ -271,7 +271,7 @@ public class ElasticSearchProvider implements SearchProvider {
           }
         }
       }
-      
+
       if (excludeSchoolDataIdentifiers != null) {
         IdsQueryBuilder excludeIdsQuery = idsQuery();
         
@@ -280,7 +280,7 @@ public class ElasticSearchProvider implements SearchProvider {
         }
         query.mustNot(excludeIdsQuery);
       }
-      
+
       if (startedStudiesBefore != null) {
         query.must(rangeQuery("studyStartDate").lt((long) startedStudiesBefore.getTime() / 1000));
       }
@@ -288,16 +288,16 @@ public class ElasticSearchProvider implements SearchProvider {
       if (studyTimeEndsBefore != null) {
         query.must(rangeQuery("studyTimeEnd").lt((long) studyTimeEndsBefore.getTime() / 1000));
       }
-      
+
       if (archetypes != null) {
         List<String> archetypeNames = new ArrayList<>(archetypes.size());
         for (EnvironmentRoleArchetype archetype : archetypes) {
           archetypeNames.add(archetype.name().toLowerCase());
         }
 
-        query.must(termsQuery("archetype", archetypeNames.toArray(new String[0]))); 
+        query.must(termsQuery("archetype", archetypeNames.toArray(new String[0])));
       }
-      
+
       Set<String> organizationIdentifiers = organizations
           .stream()
           .filter(Objects::nonNull).map(organization -> String.format("%s-%s", organization.getDataSource().getIdentifier(), organization.getIdentifier()))
@@ -305,15 +305,26 @@ public class ElasticSearchProvider implements SearchProvider {
       if (CollectionUtils.isNotEmpty(organizationIdentifiers)) {
         query.must(termsQuery("organizationIdentifier", organizationIdentifiers.toArray()));
       }
+
+      // #6170: If both group and workspace filters have been provided, possibly treat them as a join rather than an intersection
       
-      if (groups != null) {
-        query.must(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
+      if (groups != null && workspaces != null && joinGroupsAndWorkspaces) {
+        query.must(
+            boolQuery()
+            .should(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))))
+            .should(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))))
+          );
+      }
+      else {
+        if (groups != null) {
+          query.must(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
+        }
+
+        if (workspaces != null) {
+          query.must(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
+        }
       }
 
-      if (workspaces != null) {
-        query.must(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
-      }
-      
       if (userIdentifiers != null) {
         IdsQueryBuilder includeIdsQuery = idsQuery();
         for (SchoolDataIdentifier userIdentifier : userIdentifiers) {
@@ -324,21 +335,21 @@ public class ElasticSearchProvider implements SearchProvider {
 
       if (includeInactiveStudents == false) {
         /**
-         * List only active users. 
-         * 
+         * List only active users.
+         *
          * Active user is
          * - staff member (teacher, manager, study guider, study programme leader, administrator)
          * - student that has study start date (in the past) and no study end date
          * - student that has study start date (in the past) and study end date in the future
          * - student that has no study start and end date but belongs to an active workspace
-         *   
+         *
          * Active workspace is
          * - published and
          * - either has no start/end date or current date falls between them
          */
-        
+
         Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
-        
+
         query.must(
           boolQuery()
           .should(termsQuery("archetype",
@@ -399,46 +410,47 @@ public class ElasticSearchProvider implements SearchProvider {
         hitSource.put("indexType", "User");
         searchResults.add(hitSource);
       }
-      
+
       SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0); 
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
   }
-  
+
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
-      Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore) {
-    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
-        onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
+      Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore, boolean joinGroupsAndWorkspaces) {
+    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+        onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null, joinGroupsAndWorkspaces);
   }
-  
+
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults) {
-    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
-        onlyDefaultUsers, start, maxResults, null, null, null);
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, boolean joinGroupsAndWorkspaces) {
+    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+        onlyDefaultUsers, start, maxResults, null, null, null, joinGroupsAndWorkspaces);
   }
-  
+
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields) {
-    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
-        onlyDefaultUsers, start, maxResults, fields, null, null);
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields,
+      boolean joinGroupsAndWorkspaces) {
+    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+        onlyDefaultUsers, start, maxResults, fields, null, null, joinGroupsAndWorkspaces);
   }
-  
+
   private Set<Long> getActiveWorkspaces() {
-    
+
     long now = OffsetDateTime.now().with(ChronoField.MILLI_OF_DAY, 0).toInstant().toEpochMilli() / 1000;
-    
+
     BoolQueryBuilder query = boolQuery();
-    
+
     query.must(termQuery("published", Boolean.TRUE));
     query.must(
       boolQuery()
@@ -454,7 +466,7 @@ public class ElasticSearchProvider implements SearchProvider {
         )
     );
 
-    // TODO: this very likely needs to use Scroll API
+    // TODO: this very likely needs to use Scroll API - 10000 is default max
     
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
         .query(query)
@@ -485,11 +497,11 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber) {
+
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("subjects.subjectIdentifier.untouched", subjectIdentifier.toId()));
     query.must(termQuery("subjects.courseNumber", courseNumber));
-    // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
     
     try {
       SearchResponse response = searchRequest(MUIKKU_WORKSPACE_INDEX, query, 0, 50);
@@ -510,7 +522,7 @@ public class ElasticSearchProvider implements SearchProvider {
       return new SearchResult(0, Collections.emptyList(), 0);
     }
   }
-  
+
   private BoolQueryBuilder prepareWorkspaceSearchQuery(
       List<SchoolDataIdentifier> subjects,
       List<SchoolDataIdentifier> identifiers,
@@ -628,18 +640,18 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(
-      List<SchoolDataIdentifier> subjects, 
-      List<SchoolDataIdentifier> identifiers, 
-      List<SchoolDataIdentifier> educationTypes, 
-      List<SchoolDataIdentifier> curriculumIdentifiers, 
+      List<SchoolDataIdentifier> subjects,
+      List<SchoolDataIdentifier> identifiers,
+      List<SchoolDataIdentifier> educationTypes,
+      List<SchoolDataIdentifier> curriculumIdentifiers,
       Collection<OrganizationRestriction> organizationRestrictions,
-      String freeText, 
-      Collection<WorkspaceAccess> accesses, 
-      SchoolDataIdentifier accessUser, 
-      int start, 
-      int maxResults, 
+      String freeText,
+      Collection<WorkspaceAccess> accesses,
+      SchoolDataIdentifier accessUser,
+      int start,
+      int maxResults,
       List<Sort> sorts) {
-      
+
     if ((identifiers != null && identifiers.isEmpty()) || CollectionUtils.isEmpty(organizationRestrictions)) {
       return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
@@ -669,33 +681,33 @@ public class ElasticSearchProvider implements SearchProvider {
         hitSource.put("indexType", "Workspace");
         searchResults.add(hitSource);
       }
-      
+
       SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0); 
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
   }
 
   @Override
   public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(
-      List<SchoolDataIdentifier> subjects, 
-      List<SchoolDataIdentifier> identifiers, 
-      List<SchoolDataIdentifier> educationTypes, 
-      List<SchoolDataIdentifier> curriculumIdentifiers, 
+      List<SchoolDataIdentifier> subjects,
+      List<SchoolDataIdentifier> identifiers,
+      List<SchoolDataIdentifier> educationTypes,
+      List<SchoolDataIdentifier> curriculumIdentifiers,
       Collection<OrganizationRestriction> organizationRestrictions,
-      String freeText, 
-      Collection<WorkspaceAccess> accesses, 
-      SchoolDataIdentifier accessUser, 
-      int start, 
-      int maxResults, 
+      String freeText,
+      Collection<WorkspaceAccess> accesses,
+      SchoolDataIdentifier accessUser,
+      int start,
+      int maxResults,
       List<Sort> sorts) {
-      
+
     if ((identifiers != null && identifiers.isEmpty()) || CollectionUtils.isEmpty(organizationRestrictions)) {
-      return new SearchResults<List<IndexedWorkspace>>(0, new ArrayList<IndexedWorkspace>(), 0); 
+      return new SearchResults<List<IndexedWorkspace>>(0, new ArrayList<IndexedWorkspace>(), 0);
     }
-    
+
     try {
       BoolQueryBuilder query = prepareWorkspaceSearchQuery(subjects, identifiers, educationTypes, curriculumIdentifiers, organizationRestrictions, freeText, accesses, accessUser);
 
@@ -731,12 +743,12 @@ public class ElasticSearchProvider implements SearchProvider {
             return null;
           })
           .collect(Collectors.toList());
-      
+
       return new SearchResults<List<IndexedWorkspace>>(start, searchResults, totalHitCount);
-      
+
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResults<List<IndexedWorkspace>>(0, new ArrayList<IndexedWorkspace>(), 0); 
+      return new SearchResults<List<IndexedWorkspace>>(0, new ArrayList<IndexedWorkspace>(), 0);
     }
   }
 
@@ -782,12 +794,12 @@ public class ElasticSearchProvider implements SearchProvider {
       return null;
     }
   }
-  
+
   @Override
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages() {
     return new ElasticCommunicatorMessageSearchBuilder(this);
   }
-  
+
   @Override
   public IndexedCommunicatorMessage findCommunicatorMessage(Long communicatorMessageId) {
     if (communicatorMessageId == null) {
@@ -840,11 +852,11 @@ public class ElasticSearchProvider implements SearchProvider {
       List<IndexedCommunicatorMessageRecipient> recipients,
       Date created,
       Set<Long> tags,
-      int start, 
-      int maxResults, 
+      int start,
+      int maxResults,
       List<Sort> sorts) {
     BoolQueryBuilder query = boolQuery();
-    
+
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     Long loggedUserId = loggedUser.getId();
     String loggedUserIdStr = String.valueOf(loggedUserId);
@@ -965,16 +977,16 @@ public class ElasticSearchProvider implements SearchProvider {
             return null;
           })
           .collect(Collectors.toList());
-      
+
       SearchResults<List<IndexedCommunicatorMessage>> result = new SearchResults<List<IndexedCommunicatorMessage>>(start, searchResults, totalHitCount);
       return result;
-      
+
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResults<List<IndexedCommunicatorMessage>>(0, new ArrayList<IndexedCommunicatorMessage>(), 0); 
+      return new SearchResults<List<IndexedCommunicatorMessage>>(0, new ArrayList<IndexedCommunicatorMessage>(), 0);
     }
   }
-  
+
   private String prepareQueryString(String queryString) {
     String prepared = queryString.trim();
     while (prepared.contains("  ")) {
@@ -983,15 +995,15 @@ public class ElasticSearchProvider implements SearchProvider {
     prepared = prepared.replace(" ", "* ");
     return prepared + "*";
   }
-  
+
   @Override
   public SearchResult findUserGroup(SchoolDataIdentifier identifier) {
-    
+
     BoolQueryBuilder query = boolQuery();
     IdsQueryBuilder includeIdsQuery = idsQuery();
     includeIdsQuery.addIds(String.format("%s/%s", identifier.getIdentifier(), identifier.getDataSource()));
     query.must(includeIdsQuery);
-    
+
     // Search
     
     try {
@@ -1025,9 +1037,9 @@ public class ElasticSearchProvider implements SearchProvider {
       if (CollectionUtils.isEmpty(organizations)) {
         throw new IllegalArgumentException("Cannot search with no organizations specified.");
       }
-      
+
       query = sanitizeSearchString(query);
-      
+
       BoolQueryBuilder boolQuery = boolQuery();
 
       if (StringUtils.isNotBlank(query)) {
@@ -1038,7 +1050,7 @@ public class ElasticSearchProvider implements SearchProvider {
           }
         }
       }
-      
+
       if (StringUtils.isNotBlank(archetype)) {
         boolQuery.must(termQuery("archetype", StringUtils.lowerCase(archetype)));
       }
@@ -1062,7 +1074,7 @@ public class ElasticSearchProvider implements SearchProvider {
         hitSource.put("indexType", "UserGroup");
         searchResults.add(hitSource);
       }
-      
+
       SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
@@ -1076,11 +1088,11 @@ public class ElasticSearchProvider implements SearchProvider {
     long now = OffsetDateTime.now().toEpochSecond();
     String organizationIdentifier = String.format("%s-%s",
         organizationEntity.getDataSource().getIdentifier(), organizationEntity.getIdentifier());
-    
+
     BoolQueryBuilder query = boolQuery();
     query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
     query.must(termQuery("isDefaultIdentifier", true));
-    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name()))); 
+    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name())));
 
     Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
     query.must(
@@ -1122,8 +1134,8 @@ public class ElasticSearchProvider implements SearchProvider {
     BoolQueryBuilder query = boolQuery();
     query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
     query.must(termQuery("isDefaultIdentifier", true));
-    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name()))); 
-    
+    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name())));
+
     Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
     query.must(
       boolQuery()
