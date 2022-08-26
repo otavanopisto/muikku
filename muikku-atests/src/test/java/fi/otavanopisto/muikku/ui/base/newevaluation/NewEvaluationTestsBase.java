@@ -499,11 +499,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitAndClick(".form__buttons--evaluation a.button--evaluate-supplementation");
         waitForNotVisible(".evaluation-modal__evaluate-drawer");
         waitForVisible(".evaluation-modal__header-title");
-        assertTextIgnoreCase(".evaluation-modal__event .evaluation-modal__event-meta", "Admin User pyysi täydennystä");
+        assertTextIgnoreCase(".evaluation-modal__event:nth-child(2) .evaluation-modal__event-meta", "Admin User pyysi täydennystä");
         
-        waitAndClick(".evaluation-modal__event .evaluation-modal__event-meta");
-        waitUntilAnimationIsDone(".evaluation-modal__event .rah-static");
-        assertText(".evaluation-modal__event .rah-static .evaluation-modal__event-literal-assessment p", "Test supplementation request.");
+        waitAndClick(".evaluation-modal__event:nth-child(2) .evaluation-modal__event-meta");
+        waitUntilAnimationIsDone(".evaluation-modal__event:nth-child(2) .rah-static");
+        assertText(".evaluation-modal__event:nth-child(2) .rah-static .evaluation-modal__event-literal-assessment p", "Test supplementation request.");
 
         logout();
         mockBuilder.mockLogin(student);
