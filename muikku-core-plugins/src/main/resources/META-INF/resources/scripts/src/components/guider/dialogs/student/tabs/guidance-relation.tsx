@@ -80,7 +80,9 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
           ></ButtonPill>
         </NewContactEvent>
       </ApplicationSubPanelViewHeader>
+
       <ApplicationSubPanel.Body modifier="guidance-relation">
+        {/* Removed for later - this needs to be thought through with the contact persons and so
         {basic && basic.email ? (
           <ApplicationSubPanel modifier="guidance-relation-contact-info">
             <ApplicationSubPanelItem
@@ -92,7 +94,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                 <div>{basic.email}</div>
               </ApplicationSubPanelItem.Content>
             </ApplicationSubPanelItem>
-            {/* Removed for later
+
 
           <ApplicationSubPanelItem
             title={i18n.text.get(
@@ -107,9 +109,9 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                 {i18n.text.get("plugin.guider.user.details.label.email")}
               </div>
             </ApplicationSubPanelItem.Content>
-          </ApplicationSubPanelItem> */}
+          </ApplicationSubPanelItem>
           </ApplicationSubPanel>
-        ) : null}
+        ) : null}*/}
         <ApplicationSubPanel modifier="guidance-relation-contact-events">
           <ApplicationSubPanel.Header>
             {i18n.text.get("plugin.guider.user.contactLog.title")}
