@@ -1335,7 +1335,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             for (StudentContactLogEntryCommentRestModel comment : comments) {
               boolean hasProfileImage = false;
               if (comment.getCreatorId() != null) {
-                UserEntity userEntity = userEntityController.findUserEntityById(contactLogEntry.getCreatorId());
+                UserEntity userEntity = userEntityController.findUserEntityById(comment.getCreatorId());
                 
                 if (userEntity != null) {
                   hasProfileImage = userEntityFileController.hasProfilePicture(userEntity);
