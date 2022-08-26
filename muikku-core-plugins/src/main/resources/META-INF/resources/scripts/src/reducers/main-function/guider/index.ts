@@ -118,6 +118,7 @@ export interface ContactLogEvent {
  */
 export interface ContactLogData {
   totalHitCount: number;
+  allPrivileges: boolean;
   firstResult: number;
   results: ContactLogEvent[];
 }
@@ -271,7 +272,7 @@ export default function guider(
       basic: null,
       labels: [],
       emails: [],
-      phoneNumbers:[],
+      phoneNumbers: [],
       addresses: [],
       files: [],
       usergroups: [],

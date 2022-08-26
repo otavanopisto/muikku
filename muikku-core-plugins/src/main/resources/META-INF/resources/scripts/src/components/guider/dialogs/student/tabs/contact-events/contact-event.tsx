@@ -19,6 +19,7 @@ import Link from "~/components/general/link";
  */
 interface ContactEventProps {
   event: ContactLogEvent;
+  allPrivileges: boolean;
   studentId: number;
   modifier?: string;
   i18n: i18nType;
@@ -41,11 +42,10 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
     creatorId,
     id,
   } = props.event;
-  const { modifier, studentId, i18n } = props;
+  const { modifier, studentId, i18n, allPrivileges, status } = props;
   const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
   const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
   const [commentEditOpen, setCommentEditOpen] = React.useState<number[]>([]);
-
   return (
     <div
       className={`contact-event ${
@@ -154,27 +154,31 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   dangerouslySetInnerHTML={{ __html: comment.text }}
                 ></div>
               )}
-              <div className="contact-event__footer">
-                <Link
-                  className="link link--contact-event-footer"
-                  onClick={() =>
-                    setCommentEditOpen([...commentEditOpen, ...[comment.id]])
-                  }
-                >
-                  {i18n.text.get("plugin.guider.user.contactLog.actions.edit")}
-                </Link>
-                <ContactEventDeletePrompt
-                  studentUserEntityId={studentId}
-                  contactLogEntryId={id}
-                  commentId={comment.id}
-                >
-                  <Link className="link link--contact-event-footer">
+              {allPrivileges || comment.creatorId === status.userId ? (
+                <div className="contact-event__footer">
+                  <Link
+                    className="link link--contact-event-footer"
+                    onClick={() =>
+                      setCommentEditOpen([...commentEditOpen, ...[comment.id]])
+                    }
+                  >
                     {i18n.text.get(
-                      "plugin.guider.user.contactLog.actions.delete"
+                      "plugin.guider.user.contactLog.actions.edit"
                     )}
                   </Link>
-                </ContactEventDeletePrompt>
-              </div>
+                  <ContactEventDeletePrompt
+                    studentUserEntityId={studentId}
+                    contactLogEntryId={id}
+                    commentId={comment.id}
+                  >
+                    <Link className="link link--contact-event-footer">
+                      {i18n.text.get(
+                        "plugin.guider.user.contactLog.actions.delete"
+                      )}
+                    </Link>
+                  </ContactEventDeletePrompt>
+                </div>
+              ) : null}
             </div>
           ))}
         </div>

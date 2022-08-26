@@ -122,6 +122,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                 <>
                   {contactLogs.results.map((contactEvent) => (
                     <ContactEvent
+                      allPrivileges={contactLogs.allPrivileges}
                       key={"contact-event-" + contactEvent.id}
                       studentId={basic.userEntityId}
                       event={contactEvent}
