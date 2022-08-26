@@ -78,8 +78,8 @@ public class CoursePickerTestsBase extends AbstractUITest {
         waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
         waitForPresent("div.application-panel__main-container .application-list__item-header--course .application-list__header-primary");
         waitAndClick("div.application-panel__main-container .application-list__item-header--course .application-list__header-primary");
-        waitForVisible(".course--open .application-list__item-body--course article");
-        assertText(".course--open .application-list__item-body--course article", "test course for testing");
+        waitForVisible(".course--open .application-list__item-body--course section p");
+        assertText(".course--open .application-list__item-body--course section p", "test course for testing p");
       }finally {
         deleteWorkspace(workspace.getId());
       }
