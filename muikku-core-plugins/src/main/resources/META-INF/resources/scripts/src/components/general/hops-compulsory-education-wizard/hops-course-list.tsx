@@ -258,39 +258,41 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                     </>
                   ) : (
                     <>
-                      {showSuggestAndAddToHopsButtons &&
-                        props.useCase === "hops-planning" && (
+                      <div className="hops-container__study-tool-button-container">
+                        {showSuggestAndAddToHopsButtons &&
+                          props.useCase === "hops-planning" && (
+                            <Button
+                              buttonModifiers={[
+                                "guider-hops-studytool",
+                                "guider-hops-studytool-suggested",
+                              ]}
+                              onClick={handleToggleSuggestOptional({
+                                courseNumber: course.courseNumber,
+                                subject: sSubject.subjectCode,
+                                studentId: props.studentId,
+                              })}
+                            >
+                              {suggestedBySupervisor
+                                ? "Ehdotettu"
+                                : "Ehdota valinnaiseksi"}
+                            </Button>
+                          )}
+
+                        {showSuggestAndAddToHopsButtons && (
                           <Button
-                            buttonModifiers={[
-                              "guider-hops-studytool",
-                              "guider-hops-studytool-suggested",
-                            ]}
-                            onClick={handleToggleSuggestOptional({
+                            onClick={handleToggleChoiceClick({
+                              studentId: props.studentId,
                               courseNumber: course.courseNumber,
                               subject: sSubject.subjectCode,
-                              studentId: props.studentId,
                             })}
+                            buttonModifiers={["guider-hops-studytool"]}
                           >
-                            {suggestedBySupervisor
-                              ? "Ehdotettu"
-                              : "Ehdota valinnaiseksi"}
+                            {selectedByStudent
+                              ? "Peru valinta"
+                              : "Valitse osaksi hopsia"}
                           </Button>
                         )}
-
-                      {showSuggestAndAddToHopsButtons && (
-                        <Button
-                          onClick={handleToggleChoiceClick({
-                            studentId: props.studentId,
-                            courseNumber: course.courseNumber,
-                            subject: sSubject.subjectCode,
-                          })}
-                          buttonModifiers={["guider-hops-studytool"]}
-                        >
-                          {selectedByStudent
-                            ? "Peru valinta"
-                            : "Valitse osaksi hopsia"}
-                        </Button>
-                      )}
+                      </div>
 
                       {showSuggestionList && (
                         <HopsSuggestionList
