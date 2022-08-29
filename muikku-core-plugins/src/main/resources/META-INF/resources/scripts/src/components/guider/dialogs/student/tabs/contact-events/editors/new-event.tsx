@@ -76,15 +76,18 @@ class NewContactEvent extends SessionStateComponent<
   constructor(props: NewContactEventProps) {
     super(props, "new-contact-event");
 
-    this.state = this.getRecoverStoredState({
-      text: props.initialMessage || "",
-      sender: props.initialSender || "",
-      date:
-        props.i18n.time.getLocalizedMoment(props.initialDate).toDate() ||
-        props.i18n.time.getLocalizedMoment().toDate(),
-      type: props.initialType || "OTHER",
-      locked: false,
-    }, this.nameSpace);
+    this.state = this.getRecoverStoredState(
+      {
+        text: props.initialMessage || "",
+        sender: props.initialSender || "",
+        date:
+          props.i18n.time.getLocalizedMoment(props.initialDate).toDate() ||
+          props.i18n.time.getLocalizedMoment().toDate(),
+        type: props.initialType || "OTHER",
+        locked: false,
+      },
+      this.nameSpace
+    );
   }
 
   /**
