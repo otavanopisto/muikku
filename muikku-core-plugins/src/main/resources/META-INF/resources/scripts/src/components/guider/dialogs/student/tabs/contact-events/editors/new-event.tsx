@@ -84,7 +84,7 @@ class NewContactEvent extends SessionStateComponent<
         props.i18n.time.getLocalizedMoment().toDate(),
       type: props.initialType || "OTHER",
       locked: false,
-    });
+    }, this.nameSpace);
   }
 
   /**
