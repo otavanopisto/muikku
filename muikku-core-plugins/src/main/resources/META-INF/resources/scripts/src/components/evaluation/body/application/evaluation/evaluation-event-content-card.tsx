@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
+import { isStringHTML } from "~/helper-functions/shared";
 
 /**
  * EvaluationEventContentCardProps
@@ -277,7 +278,16 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
         <AnimateHeight duration={300} height={height}>
           <div className="evaluation-modal__event-literal-assessment rich-text rich-text--evaluation-literal">
-            <CkeditorContentLoader html={text} />
+            {/*
+             * Its possible that string content containg html as string is not valid
+             * and can't be processed by CkeditorLoader, so in those cases just put content
+             * inside of "valid" html tags and go with it
+             */}
+            {isStringHTML(text) ? (
+              <CkeditorContentLoader html={text} />
+            ) : (
+              <CkeditorContentLoader html={`<p>${text}</p>`} />
+            )}
           </div>
         </AnimateHeight>
 
