@@ -181,16 +181,19 @@ class NewContactEvent extends SessionStateComponent<
     setTimeout(() => {
       this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
     }, 100);
-    this.setStateAndClear({
-      text: this.props.initialMessage || "",
-      sender: this.props.initialSender || "",
-      date:
-        this.props.i18n.time
-          .getLocalizedMoment(this.props.initialDate)
-          .toDate() || this.props.i18n.time.getLocalizedMoment().toDate(),
-      type: this.props.initialType || "OTHER",
-      locked: false,
-    });
+    this.setStateAndClear(
+      {
+        text: this.props.initialMessage || "",
+        sender: this.props.initialSender || "",
+        date:
+          this.props.i18n.time
+            .getLocalizedMoment(this.props.initialDate)
+            .toDate() || this.props.i18n.time.getLocalizedMoment().toDate(),
+        type: this.props.initialType || "OTHER",
+        locked: false,
+      },
+      this.nameSpace
+    );
     this.props.loadStudentContactLogs(
       this.props.currentStudent.userEntityId,
       this.props.logsPerPage,
