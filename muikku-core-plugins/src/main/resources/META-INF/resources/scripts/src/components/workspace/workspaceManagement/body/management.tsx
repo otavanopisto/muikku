@@ -113,47 +113,19 @@ class ManagementPanel extends React.Component<
   constructor(props: ManagementPanelProps) {
     super(props);
     this.state = {
-      workspaceName: props.workspace ? props.workspace.name : null,
-      workspacePublished: props.workspace ? props.workspace.published : null,
-      workspaceAccess: props.workspace ? props.workspace.access : null,
-      workspaceExtension: props.workspace
-        ? props.workspace.nameExtension
-        : null,
-      workspaceType:
-        props.workspace && props.workspace.details
-          ? props.workspace.details.typeId
-          : null,
-      workspaceStartDate:
-        props.workspace && props.workspace.details
-          ? moment(props.workspace.details.beginDate).toDate()
-          : null,
-      workspaceEndDate:
-        props.workspace && props.workspace.details
-          ? moment(props.workspace.details.endDate).toDate()
-          : null,
-      workspaceProducers:
-        props.workspace && props.workspace.producers
-          ? props.workspace.producers
-          : null,
-      workspaceDescription: props.workspace
-        ? props.workspace.description || ""
-        : "",
-      workspaceLicense: props.workspace
-        ? props.workspace.materialDefaultLicense
-        : "",
-      workspaceHasCustomImage: props.workspace
-        ? props.workspace.hasCustomImage
-        : false,
-      workspaceChatStatus:
-        props.workspace &&
-        props.status &&
-        props.status.permissions.CHAT_AVAILABLE
-          ? props.workspace.chatStatus
-          : null,
-      workspacePermissions:
-        props.workspace && props.workspace.permissions
-          ? props.workspace.permissions
-          : [],
+      workspaceName: null,
+      workspacePublished: false,
+      workspaceAccess: null,
+      workspaceExtension: null,
+      workspaceType: null,
+      workspaceStartDate: null,
+      workspaceEndDate: null,
+      workspaceProducers: null,
+      workspaceDescription: "",
+      workspaceLicense: "",
+      workspaceHasCustomImage: false,
+      workspaceChatStatus: null,
+      workspacePermissions: [],
       workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
       isDeleteImageDialogOpen: false,

@@ -215,10 +215,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
 
     const content = (
       <>
-        <div
-          key="1"
-          className="env-dialog__row env-dialog__row--new-discussion-options"
-        >
+        <div key="1" className="env-dialog__row env-dialog__row--titles">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">
               {this.props.i18n.text.get(
@@ -239,10 +236,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         </div>
 
         {this.props.status.permissions.FORUM_LOCK_STICKY_PERMISSION ? (
-          <div
-            key="2"
-            className="env-dialog__row  env-dialog__row--new-discussion-thread-states"
-          >
+          <div key="2" className="env-dialog__row  env-dialog__row--options">
             <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
               <input
                 id="messagePinned"

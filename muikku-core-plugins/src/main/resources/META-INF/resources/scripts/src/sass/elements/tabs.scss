@@ -9,10 +9,15 @@
   margin-top: 10px;
 }
 
+.tabs--notes {
+  width: 100%;
+}
+
 .tabs--guider-student {
   margin-left: auto;
   margin-right: auto;
   max-width: $dialog-max-resolution - $dialog-content-padding;
+  width: 100%;
 }
 
 .tabs--material-editor {
@@ -93,7 +98,6 @@
 
   @include breakpoint($breakpoint-pad) {
     cursor: pointer;
-    margin: 0;
   }
 }
 

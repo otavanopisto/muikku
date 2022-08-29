@@ -138,25 +138,49 @@
   flex-shrink: 1;
 }
 
-.env-dialog__row--communicator-signature,
-.env-dialog__row--new-discussion-thread-states {
+// This encapsulates checkboxes and necessary spane element that appear on the same row
+.env-dialog__row--options {
   align-items: center;
   display: flex;
   padding: 10px 0;
 }
 
-.env-dialog__row--new-discussion-options {
+// This encapsulates titles and selection that appear on the same row
+.env-dialog__row--titles {
   display: flex;
   flex-flow: column wrap;
+
+  .env-dialog__form-element-container {
+    &:not(:first-child) {
+      margin: 10px 0 0;
+
+      @include breakpoint($breakpoint-pad) {
+        margin: 0 0 0 20px;
+      }
+    }
+  }
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
   }
 }
 
-.env-dialog__row--new-announcement-options {
+// This encapsulates dates fields that appear on the same row
+.env-dialog__row--dates {
   display: flex;
   flex-direction: row nowrap;
+
+  .env-dialog__form-element-container {
+    flex-grow: 0;
+
+    &:not(:first-child) {
+      margin: 0 0 0 10px;
+
+      @include breakpoint($breakpoint-pad) {
+        margin: 0 0 0 20px;
+      }
+    }
+  }
 
   @include breakpoint($breakpoint-pad) {
     flex-direction: initial;
@@ -180,24 +204,6 @@
 
     @include breakpoint($breakpoint-pad) {
       flex-basis: 210px;
-    }
-  }
-
-  &:not(:first-child) {
-    @include breakpoint($breakpoint-pad) {
-      margin-left: 20px;
-    }
-  }
-}
-
-.env-dialog__form-element-container--datepicker {
-  flex-grow: 0;
-
-  &:not(:first-child) {
-    margin-left: 10px;
-
-    @include breakpoint($breakpoint-pad) {
-      margin-left: 20px;
     }
   }
 }
@@ -275,6 +281,7 @@
 }
 
 .env-dialog__input {
+  background-color: $color-default;
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
@@ -306,6 +313,7 @@
 .env-dialog__input[type="checkbox"] {
   align-items: center;
   appearance: none;
+  background-color: $color-default;
   border: solid 2px $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: flex;
@@ -332,7 +340,7 @@
 }
 
 .env-dialog__select {
-  background: $color-default;
+  background-color: $color-default;
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
@@ -349,6 +357,7 @@
 }
 
 .env-dialog__textarea {
+  background-color: $color-default;
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;

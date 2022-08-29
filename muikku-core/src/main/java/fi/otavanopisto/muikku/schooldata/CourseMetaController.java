@@ -46,6 +46,7 @@ public class CourseMetaController {
     }
     return null;
   }
+  
   public Subject findSubject(SchoolDataIdentifier subjectIdentifier) {
     return findSubject(subjectIdentifier.getDataSource(), subjectIdentifier.getIdentifier());
   }

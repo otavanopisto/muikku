@@ -403,16 +403,6 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
           oneSubjectMandatoryHours += aCourse.length;
           totalCourseCompleted++;
         }
-        if (
-          studentActivity.transferedList &&
-          studentActivity.transferedList.find(
-            (tCourse) =>
-              sSubject.subjectCode === tCourse.subject &&
-              tCourse.courseNumber === aCourse.courseNumber
-          )
-        ) {
-          totalCourseCompleted++;
-        }
       }
 
       totalHoursCompleted += oneSubjectMandatoryHours;
@@ -760,7 +750,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                     },
                   }}
                   text={`${Math.round(proggressOfStudies * 100)}%`}
-                  progress={proggressOfStudies}
+                  progress={proggressOfStudies > 1 ? 1 : proggressOfStudies}
                 />
               </div>
             </Dropdown>
