@@ -124,7 +124,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
+        createAnnouncement(admin.getId(), "Test title", "<p>Announcer test announcement</p>", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -136,7 +136,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitForPresent(".reading-panel__main-container header.article__header");
         assertTextIgnoreCase(".reading-panel__main-container header.article__header", "Test title");
         assertTextIgnoreCase(".reading-panel__main-container header.article__header + div", "12.11.2015");
-        assertTextIgnoreCase(".reading-panel__main-container .article__body", "announcer test announcement");
+        assertTextIgnoreCase(".reading-panel__main-container .article__body p", "Announcer test announcement");
       }finally{
         archiveUserByEmail(student.getEmail());
         deleteAnnouncements();
