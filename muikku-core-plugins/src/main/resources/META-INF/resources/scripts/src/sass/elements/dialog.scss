@@ -345,6 +345,32 @@
   }
 }
 
+.dialog__header--disconnect-warning {
+  background-color: transparent;
+  color: $color-default;
+  height: auto;
+  padding: 20px;
+
+  .dialog__title {
+    font-size: 1.375rem;
+    text-transform: none;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 30px;
+
+    .dialog__title {
+      font-size: 1.75rem;
+      text-transform: none;
+    }
+
+    .dialog__close {
+      right: 5px;
+      top: 25px;
+    }
+  }
+}
+
 .dialog__icon-container {
   align-items: center;
   border-radius: 5px;
