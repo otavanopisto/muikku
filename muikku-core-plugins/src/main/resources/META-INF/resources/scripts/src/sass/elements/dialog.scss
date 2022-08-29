@@ -348,6 +348,7 @@
 .dialog__header--disconnect-warning {
   background-color: transparent;
   color: $color-default;
+  flex-basis: auto;
   height: auto;
   padding: 20px;
 
