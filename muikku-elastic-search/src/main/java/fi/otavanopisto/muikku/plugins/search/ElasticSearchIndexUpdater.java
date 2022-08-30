@@ -1,8 +1,6 @@
 package fi.otavanopisto.muikku.plugins.search;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -21,11 +19,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.client.indices.PutMappingRequest;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.xcontent.XContentType;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
@@ -179,8 +174,6 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
 //        .writeValueAsString(mappings);
 
     String mapping = new ObjectMapper().writeValueAsString(properties);
-    
-    System.out.println(mapping);
     
     PutMappingRequest mappingRequest = new PutMappingRequest(indexName);
     mappingRequest.source(mapping, XContentType.JSON);

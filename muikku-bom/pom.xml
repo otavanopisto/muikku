@@ -63,7 +63,7 @@
 
     <xmpp.rocks.version>0.8.2</xmpp.rocks.version>
 
-    <elasticsearch.lucene.version>8.8.0</elasticsearch.lucene.version>
+    <elasticsearch.lucene.version>8.11.1</elasticsearch.lucene.version>
   </properties>
 
   <dependencyManagement>
