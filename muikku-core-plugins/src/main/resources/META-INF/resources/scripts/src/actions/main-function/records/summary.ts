@@ -97,7 +97,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
             mApi()
               .usergroup.groups.staffMembers.read(studentsUserGroup.id, {
                 properties:
-                  "profile-phone,profile-vacation-start,profile-vacation-end",
+                  "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
               })
               .callback(
                 (err: any, result: SummaryStudentsGuidanceCouncelorsType[]) => {

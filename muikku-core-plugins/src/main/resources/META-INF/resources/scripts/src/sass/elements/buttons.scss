@@ -1912,6 +1912,36 @@
   }
 }
 
+.button-pill--whatsapp-me {
+  background: $color-whatsapp-dark;
+  color: $color-default;
+
+  &:hover,
+  &.hover {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+}
+
+.button-pill--appointment-calendar {
+  background: $color-appointment-calendar-button-background;
+  color: $color-default;
+
+  &:hover,
+  &.hover {
+    background: darken($color-appointment-calendar-button-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-appointment-calendar-button-background, 10%);
+  }
+}
+
 .button--wizard {
   background-color: $color-button-wizard-background;
   border: 0;

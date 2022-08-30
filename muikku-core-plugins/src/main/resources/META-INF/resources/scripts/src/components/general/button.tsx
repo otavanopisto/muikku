@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import "~/sass/elements/buttons.scss";
 import Link from "./link";
 
