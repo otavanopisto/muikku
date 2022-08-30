@@ -486,7 +486,8 @@ public class ChatSyncController {
         false,                    // includeHidden
         true,                     // onlyDefaultUsers
         0, 
-        Integer.MAX_VALUE);
+        Integer.MAX_VALUE,
+        false);                   // join groups and workspaces
     List<Map<String, Object>> results = result.getResults();
     for (Map<String, Object> o : results) {
       Long userEntityId = Long.valueOf(o.get("userEntityId").toString());

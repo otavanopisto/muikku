@@ -93,7 +93,7 @@ public class HopsRestService {
 
   @Inject
   private HopsController hopsController;
-
+  
   @Inject
   private UserEntityController userEntityController;
 
@@ -479,7 +479,7 @@ public class HopsRestService {
   @Path("/listWorkspaceSuggestions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("onlySignupWorkspaces") @DefaultValue ("false") Boolean onlySignupWorkspaces, @QueryParam("userEntityId") Long userEntityId) {
-
+    
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     
     SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
@@ -509,7 +509,8 @@ public class HopsRestService {
 
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
-    	SearchResult sr = searchProvider.searchWorkspaces(subjectObject.schoolDataIdentifier(), courseNumber);
+      SearchResult sr = searchProvider.searchWorkspaces(subjectObject.schoolDataIdentifier(), courseNumber);
+
       List<Map<String, Object>> results = sr.getResults();
       for (Map<String, Object> result : results) {
         String searchId = (String) result.get("id");
@@ -542,12 +543,23 @@ public class HopsRestService {
                 continue;
               }
               
+              Integer courseNum = null;
+              
+              @SuppressWarnings("unchecked")
+              List<Map<String, Object>> subjects = (List<Map<String, Object>>) result.get("subjects");
+              for (Map<String, Object> s : subjects) {
+                if (subjectObject.getCode().equals(s.get("subjectCode"))){
+                  courseNum = (Integer) s.get("courseNumber");
+                  break;
+                }
+              }
+              
               SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
               suggestedWorkspace.setId(workspaceEntity.getId());
               suggestedWorkspace.setName((String) result.get("name"));
               suggestedWorkspace.setNameExtension((String) result.get("nameExtension"));
               suggestedWorkspace.setSubject(subjectObject.getCode());
-              suggestedWorkspace.setCourseNumber((Integer) result.get("courseNumber"));
+              suggestedWorkspace.setCourseNumber(courseNum);
               suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
               suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
               suggestedWorkspace.setDescription((String) result.get("description"));

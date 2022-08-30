@@ -209,7 +209,7 @@ public class ElasticSearchProvider implements SearchProvider {
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
-      Date startedStudiesBefore, Date studyTimeEndsBefore) {
+      Date startedStudiesBefore, Date studyTimeEndsBefore, boolean joinGroupsAndWorkspaces) {
     try {
       long now = OffsetDateTime.now().toEpochSecond();
 
@@ -276,12 +276,23 @@ public class ElasticSearchProvider implements SearchProvider {
         query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifiers.toArray()));
       }
 
-      if (groups != null) {
-        query.must(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
+      // #6170: If both group and workspace filters have been provided, possibly treat them as a join rather than an intersection
+      
+      if (groups != null && workspaces != null && joinGroupsAndWorkspaces) {
+        query.must(
+            boolQuery()
+            .should(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))))
+            .should(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))))
+          );
       }
+      else {
+        if (groups != null) {
+          query.must(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
+        }
 
-      if (workspaces != null) {
-        query.must(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
+        if (workspaces != null) {
+          query.must(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
+        }
       }
 
       if (userIdentifiers != null) {
@@ -385,25 +396,26 @@ public class ElasticSearchProvider implements SearchProvider {
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
-      Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore) {
+      Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore, boolean joinGroupsAndWorkspaces) {
     return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
-        onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
+        onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null, joinGroupsAndWorkspaces);
   }
 
   @Override
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults) {
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, boolean joinGroupsAndWorkspaces) {
     return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
-        onlyDefaultUsers, start, maxResults, null, null, null);
+        onlyDefaultUsers, start, maxResults, null, null, null, joinGroupsAndWorkspaces);
   }
 
   @Override
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields) {
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields,
+      boolean joinGroupsAndWorkspaces) {
     return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
-        onlyDefaultUsers, start, maxResults, fields, null, null);
+        onlyDefaultUsers, start, maxResults, fields, null, null, joinGroupsAndWorkspaces);
   }
 
   private Set<Long> getActiveWorkspaces() {
@@ -453,6 +465,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber) {
+
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("subjects.subjectIdentifier.untouched", subjectIdentifier.toId()));

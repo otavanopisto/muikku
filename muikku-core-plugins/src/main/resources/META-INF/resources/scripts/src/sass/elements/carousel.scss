@@ -6,6 +6,42 @@
 .carousel {
   position: relative;
   width: 100%;
+
+  .react-multiple-carousel__arrow--right {
+    background: $color-default;
+    box-shadow: 0 0 20px rgba(0 0 0 / 30%);
+    opacity: 100%;
+    right: 30px;
+    top: 50px;
+
+    &::before {
+      color: $color-workspace;
+      content: "\f105";
+      font-family: "muikku";
+    }
+
+    &:hover {
+      background: $color-default;
+    }
+  }
+
+  .react-multiple-carousel__arrow--left {
+    background: $color-default;
+    box-shadow: 0 0 20px rgba(0 0 0 / 30%);
+    left: 30px;
+    opacity: 100%;
+    top: 50px;
+
+    &::before {
+      color: $color-workspace;
+      content: "\f104";
+      font-family: "muikku";
+    }
+
+    &:hover {
+      background: $color-default;
+    }
+  }
 }
 
 .carousel__item {
@@ -71,4 +107,99 @@
   button:focus {
     background: $color-carousel-focused-dot-active-background;
   }
+}
+
+// Studies view's carousel styles
+.carousel__dots-list {
+  padding: 20px 0;
+  position: relative;
+
+  > li {
+    display: flex;
+  }
+
+  .react-multi-carousel-dot button {
+    border: none;
+    margin-right: 10px;
+
+    &:hover {
+      background: lighten($color-info, 20%);
+    }
+  }
+
+  .react-multi-carousel-dot--active button {
+    background: $color-info;
+
+    &:hover {
+      background: $color-info;
+    }
+  }
+}
+
+.carousel__item-container {
+  border: 1px solid lighten($color-workspace, 20%);
+  border-radius: 5px;
+  margin: 0 10px;
+  padding: 4px;
+}
+
+.carousel__item-hero {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100px;
+  justify-content: center;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 110px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    height: 120px;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    height: 140px;
+  }
+}
+
+.carousel__item-image {
+  background-position: center center;
+  background-size: cover;
+  border-radius: 2px;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.carousel__item-title {
+  font-size: 0.875rem;
+  font-weight: 400;
+  padding: 5px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 0.935rem;
+  }
+}
+
+.carousel__item-details {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  min-height: 120px;
+  padding: 10px;
+}
+
+.carousel__item-actions {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  padding: 5px;
+  width: 100%;
 }

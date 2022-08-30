@@ -139,7 +139,8 @@ public class OrganizationUserManagementRESTService {
         false,             // includeHidden
         true,              // onlyDefaultUsers
         firstResult, 
-        maxResults);
+        maxResults,
+        false);            // join groups and workspaces
       
     List<Map<String, Object>> results = result.getResults();
 
@@ -250,7 +251,8 @@ public class OrganizationUserManagementRESTService {
         false,                                                // includeHidden
         true,                                                 // onlyDefaultUsers
         firstResult,
-        maxResults);
+        maxResults,
+        false);                                               // join groups and workspaces
 
     List<Map<String, Object>> results = result.getResults();
 

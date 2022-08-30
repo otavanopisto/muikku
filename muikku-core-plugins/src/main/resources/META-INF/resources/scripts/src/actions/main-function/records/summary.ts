@@ -7,7 +7,6 @@ import {
   SummaryDataType,
   SummaryStatusType,
   SummaryStudentsGuidanceCouncelorsType,
-  SummaryStudyTime,
 } from "~/reducers/main-function/records/summary";
 import {
   WorkspaceForumStatisticsType,
