@@ -11,7 +11,6 @@ import {
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
-import AnimateHeight from "react-animate-height";
 
 /**
  * SuggestionListProps
@@ -101,40 +100,35 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
         }
 
         return (
-          <div key={suggestion.id}>
-            {isLoading ? (
-              <div className="loader-empty" />
-            ) : (
-              <>
-                <div className="hops-container__study-tool-dropdow-subsection">
-                  <div className="hops-container__study-tool-dropdow-title">
-                    {suggestion.name} ({suggestion.nameExtension})
-                  </div>
-                  <Button
-                    buttonModifiers={[
-                      "guider-hops-studytool",
-                      "guider-hops-studytool-next",
-                    ]}
-                    onClick={handleSuggestionNextClick({
-                      actionType: suggestionNextActionType,
-                      courseNumber: props.course.courseNumber,
-                      subjectCode: props.subjectCode,
-                      courseId: suggestion.id,
-                      studentId: props.studentId,
-                    })}
-                  >
-                    {suggestionNextActionType === "remove"
-                      ? "Ehdotettu"
-                      : "Ehdota seuraavaksi"}
-                  </Button>
-                </div>
-              </>
-            )}
+          <div
+            key={suggestion.id}
+            className="hops-container__study-tool-dropdow-suggestion-subsection"
+          >
+            <div className="hops-container__study-tool-dropdow-title">
+              {suggestion.name} ({suggestion.nameExtension})
+            </div>
+            <Button
+              buttonModifiers={[
+                "guider-hops-studytool",
+                "guider-hops-studytool-next",
+              ]}
+              onClick={handleSuggestionNextClick({
+                actionType: suggestionNextActionType,
+                courseNumber: props.course.courseNumber,
+                subjectCode: props.subjectCode,
+                courseId: suggestion.id,
+                studentId: props.studentId,
+              })}
+            >
+              {suggestionNextActionType === "remove"
+                ? "Ehdotettu"
+                : "Ehdota seuraavaksi"}
+            </Button>
           </div>
         );
       })
     ) : (
-      <div className="hops-container__study-tool-dropdow-subsection">
+      <div className="hops-container__study-tool-dropdow-suggestion-subsection">
         <div className="hops-container__study-tool-dropdow-title">
           Ei kursseja. Tarkista kurssitarjonta!
         </div>
@@ -142,9 +136,9 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
     );
 
   return (
-    <AnimateHeight height="auto">
+    <div className="hops-container__study-tool-dropdow-suggestion-container">
       {isLoading ? <div className="loader-empty" /> : listItems}
-    </AnimateHeight>
+    </div>
   );
 };
 

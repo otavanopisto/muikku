@@ -650,7 +650,8 @@
   color: $color-button-primary-text;
   display: inline-flex;
   font-size: 0.75rem;
-  margin: 5px 10px 5px 0;
+  margin: 5px 2.5px;
+  min-width: fit-content;
   padding: 4px 10px;
 }
 
@@ -666,7 +667,6 @@
   border: 2px solid $color-next;
   color: $color-next;
   font-weight: 600;
-  margin: 5px 0 5px 10px;
 }
 
 .button-icon {
