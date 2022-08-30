@@ -1,0 +1,57 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.reading-ruler-container {
+  display: block;
+  height: 100vh;
+  position: absolute;
+  width: 100%;
+  z-index: 9999;
+}
+
+.reading-ruler-top,
+.reading-ruler-middle,
+.reading-ruler-bottom {
+  background: $color-cagtegory-11;
+  height: 100px;
+  left: 0;
+  opacity: 50%;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10000;
+}
+
+.reading-ruler-top--inverted,
+.reading-ruler-middle--inverted,
+.reading-ruler-bottom--inverted {
+  background: unset;
+}
+
+.reading-ruler-middle {
+  align-items: center;
+  background: unset;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  opacity: 100%;
+}
+
+.reading-ruler-middle--inverted {
+  opacity: 50%;
+}
+
+.reading-ruler-bottom {
+  bottom: 0;
+  top: auto;
+}
+
+.reading-ruler-controllers {
+  color: $color-cagtegory-11;
+  display: inline-block;
+  position: fixed;
+  right: 10px;
+  z-index: 10010;
+}

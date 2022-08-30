@@ -113,6 +113,7 @@ import {
 } from "~/actions/main-function/ceepos";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
+import ReadingRuler from "~/components/reading-ruler/reading-ruler";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1089,6 +1090,7 @@ export default class MainFunction extends React.Component<
       <BrowserRouter>
         <div id="root">
           <Notifications></Notifications>
+          <ReadingRuler active={true} />
           <Route exact path="/" render={this.renderIndexBody} />
           <Route
             path="/organization"
