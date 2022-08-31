@@ -78,6 +78,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
       case EvaluationEnum.EVALUATION_REQUEST:
         mod = "state-REQUESTED";
         break;
+      case EvaluationEnum.EVALUATION_REQUEST_CANCELLED:
+        mod = "state-REQUESTED-CANCELLED";
+        break;
       case EvaluationEnum.SUPPLEMENTATION_REQUEST:
         mod = "state-INCOMPLETE";
         break;
