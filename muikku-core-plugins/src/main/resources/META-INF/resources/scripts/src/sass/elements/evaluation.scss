@@ -12,6 +12,7 @@
   margin: 55px 0 0;
   overflow: auto;
   padding: 0 0 75px;
+  width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
     flex-direction: row;

@@ -597,6 +597,7 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  min-width: 0;
 }
 
 .application-list__item-content-main--workspace-user {
@@ -841,7 +842,8 @@
   }
 }
 
-.application-list__item-content-body--journal-entry {
+.application-list__item-content-body--journal-entry,
+.application-list__item-content-body--discussion {
   padding: 0;
 }
 

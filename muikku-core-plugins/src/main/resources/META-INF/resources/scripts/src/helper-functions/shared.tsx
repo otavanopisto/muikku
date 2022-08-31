@@ -44,3 +44,24 @@ export const filterSpecialSubjects = (
 
   return alteredShoolCourseTable;
 };
+
+/**
+ * Checks if string is valid html
+ * @param str str
+ * @returns boolean
+ */
+export const isStringHTML = (str: string) => {
+  // Creates div helper element and inserts checkable string inside of it
+  const helperElement = document.createElement("div");
+  helperElement.innerHTML = str;
+
+  // Loops childeNodes of helperElement and check every node type.
+  // Type number 1 is elements like divs or p tags etc.
+  // DISCLAIMER:As str is inserted to helperElement it only has one childNode,
+  // but forsake of usefulness of this method it is checked and looped as array
+  for (let c = helperElement.childNodes, i = c.length; i--; ) {
+    if (c[i].nodeType == 1) return true;
+  }
+
+  return false;
+};

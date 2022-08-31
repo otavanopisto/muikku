@@ -138,7 +138,7 @@ public class NoLoggedInForTwoMonthsNotificationStrategy extends AbstractTimedNot
     SearchResult searchResult = noLoggedInForTwoMonthsNotificationController.searchActiveStudents(
         getActiveOrganizations(),
         groups,
-        FIRST_RESULT,
+        FIRST_RESULT + offset,
         MAX_RESULTS,
         studentIdentifierAlreadyNotified,
         thresholdDate);
