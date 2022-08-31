@@ -65,7 +65,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
    * @param typeMsg typeMsg
    * @returns arrow class modifier
    */
-  const arrowClassMod = (typeMsg: EvaluationEnum) => {
+  const evalEventClassMod = (typeMsg: EvaluationEnum) => {
     let mod = "";
 
     switch (typeMsg) {
@@ -111,10 +111,10 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
   const arrowClasses =
     height === 0
-      ? `evaluation-modal__event-arrow ${arrowClassMod(
+      ? `evaluation-modal__event-arrow ${evalEventClassMod(
           type
         )} evaluation-modal__event-arrow--right `
-      : `evaluation-modal__event-arrow ${arrowClassMod(
+      : `evaluation-modal__event-arrow ${evalEventClassMod(
           type
         )} evaluation-modal__event-arrow--down `;
 
@@ -299,7 +299,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
   return (
     <>
-      <div className="evaluation-modal__event">
+      <div className={`evaluation-modal__event ${evalEventClassMod(type)}`}>
         <div
           onClick={handleOpenContentClick}
           className="evaluation-modal__event-header"
