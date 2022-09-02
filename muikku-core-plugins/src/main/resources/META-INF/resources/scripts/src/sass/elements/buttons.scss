@@ -32,11 +32,6 @@
     background-color: $color-button-disabled-background;
     cursor: not-allowed;
   }
-
-  > [class^="icon-"],
-  > [class*=" icon-"] {
-    margin-right: 5px;
-  }
 }
 
 .button__icon {
@@ -501,7 +496,7 @@
 }
 
 .button--frontpage-bubble {
-  height: auto;
+  height: 40px;
   letter-spacing: 1px;
   overflow-wrap: break-word;
   padding-bottom: 5px;
@@ -726,6 +721,16 @@
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
   }
+}
+
+.button__icon--left {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+.button__icon--right {
+  margin-left: 5px;
+  margin-right: 0;
 }
 
 .button-icon--notes-action {
@@ -1384,6 +1389,14 @@
     &:last-of-type {
       margin: 0 0 0 0.3rem;
     }
+  }
+
+  // This needs to be added here as we place external-link-indicator
+  // automatically to every button and anchor element that opens up a new tab/window.
+  // This way we only hide the indicator in button-social element and avoid making
+  // unnecessary conditional to the button and/or link component.
+  .external-link-indicator {
+    display: none;
   }
 }
 

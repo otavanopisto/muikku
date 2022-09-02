@@ -459,17 +459,15 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   ];
 
   return (
-    <div>
-      <section>
-        <Tabs
-          modifier="studies-assignments"
-          tabs={panelTabs}
-          onTabChange={onTabChange}
-          activeTab={activeTab}
-        />
-      </section>
-      <section>{renderJournalsList}</section>
-    </div>
+    <>
+      <Tabs
+        modifier="studies-assignments"
+        tabs={panelTabs}
+        onTabChange={onTabChange}
+        activeTab={activeTab}
+      />
+      {renderJournalsList}
+    </>
   );
 };
 
