@@ -54,6 +54,8 @@ public class AssessmentRequestCancellation {
   @Column(nullable = false)
   private Long studentEntityId;
 
+  @NotNull
+  @Column(nullable = false)
   private Long workspaceEntityId;
   
   @NotNull
