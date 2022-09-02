@@ -3,6 +3,7 @@ import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import { WorkspaceJournalType } from "~/reducers/workspaces/index";
 import "~/sass/elements/rich-text.scss";
+import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
 /**
  * EvaluationEventContentCardProps
@@ -27,16 +28,6 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     const openAsHeight = open ? "auto" : 0;
     setHeight(openAsHeight);
   }, [open]);
-
-  /**
-   * This should sanitize html
-   *
-   * @param htmlString string that contains html
-   * @returns object containing __html property
-   */
-  const createHtmlMarkup = (htmlString: string) => ({
-    __html: htmlString,
-  });
 
   /**
    * handleOpenContentClick
@@ -74,10 +65,9 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
         </div>
       </div>
       <AnimateHeight duration={500} height={height}>
-        <div
-          className="evaluation-modal__item-body rich-text"
-          dangerouslySetInnerHTML={createHtmlMarkup(content)}
-        />
+        <div className="evaluation-modal__item-body rich-text">
+          <CkeditorContentLoader html={content} />
+        </div>
       </AnimateHeight>
     </div>
   );

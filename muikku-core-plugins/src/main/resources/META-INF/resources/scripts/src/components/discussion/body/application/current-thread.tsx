@@ -247,13 +247,9 @@ class CurrentThread extends React.Component<
             />
           ) : (
             <>
-              <DiscussionThreadBody>
-                <div
-                  className="rich-text"
-                  dangerouslySetInnerHTML={{
-                    __html: this.props.discussion.current.message,
-                  }}
-                ></div>
+              <DiscussionThreadBody
+                html={this.props.discussion.current.message}
+              >
                 {this.props.discussion.current.created !==
                 this.props.discussion.current.lastModified ? (
                   <span className="application-list__item-edited">

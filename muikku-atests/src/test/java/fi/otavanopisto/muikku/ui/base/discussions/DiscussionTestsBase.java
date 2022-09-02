@@ -119,8 +119,8 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick(".link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply for test.");
         waitAndClick(".env-dialog__actions .button--dialog-execute");
-        waitForVisible(".application-list__item--discussion-reply .application-list__item-body div p");
-        assertText(".application-list__item--discussion-reply .application-list__item-body div p", "Test reply for test.");
+        waitForVisible(".application-list__item--discussion-reply .application-list__item-body p");
+        assertText(".application-list__item--discussion-reply .application-list__item-body p", "Test reply for test.");
     } finally {
       deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
       deleteDiscussion(discussionGroup.getId(), discussion.getId());
