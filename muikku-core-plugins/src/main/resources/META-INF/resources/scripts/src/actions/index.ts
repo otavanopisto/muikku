@@ -17,7 +17,12 @@ type DeferredAction = (
 ) => any;
 
 import { SET_LOCALE } from "./base/locales";
-import { ADD_NOTIFICATION, HIDE_NOTIFICATION } from "./base/notifications";
+import {
+  ADD_NOTIFICATION,
+  CLOSE_NOTIFICATION_DIALOG,
+  HIDE_NOTIFICATION,
+  OPEN_NOTIFICATION_DIALOG,
+} from "./base/notifications";
 import {
   LOGOUT,
   UPDATE_STATUS_PROFILE,
@@ -496,6 +501,8 @@ export type ActionType =
   | UPDATE_CURRENT_WORKSPACE_ACTIVITY
   | UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS
   | UPDATE_CALENDAR_EVENTS_STATUS
-  | UPDATE_AVAILABLE_CURRICULUMS;
+  | UPDATE_AVAILABLE_CURRICULUMS
+  | OPEN_NOTIFICATION_DIALOG
+  | CLOSE_NOTIFICATION_DIALOG;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

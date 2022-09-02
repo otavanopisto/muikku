@@ -228,6 +228,14 @@
   }
 }
 
+.button--disconnect-warning {
+  background-color: transparent;
+  border: 1px solid $color-default;
+  border-radius: 3px;
+  color: $color-default;
+  font-size: 1rem;
+}
+
 .button--loading {
   background-color: $color-button-loading-background;
   color: $color-button-loading-text;
