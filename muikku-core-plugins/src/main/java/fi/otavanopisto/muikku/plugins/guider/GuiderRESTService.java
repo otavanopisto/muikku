@@ -162,7 +162,7 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-  
+
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -478,8 +478,8 @@ public class GuiderRESTService extends PluginRESTService {
     }
 
     GuiderStudentRestModel student = new GuiderStudentRestModel(
-        studentIdentifier.toId(), 
-        user.getFirstName(), 
+        studentIdentifier.toId(),
+        user.getFirstName(),
         user.getLastName(),
         user.getNickName(),
         user.getStudyProgrammeName(),
@@ -754,7 +754,7 @@ public class GuiderRESTService extends PluginRESTService {
    *
    * {text: "something something",
    *  entryDate: 2021-02-15
-   *  creatorName: "Etunimi Sukunomi",
+
    *  type: "OTHER"/"LETTER"/"EMAIL"/"PHONE"/"CHATLOG"/"SKYPE"/"FACE2FACE"/"ABSENCE"/"MUIKKU"
    * }
    *
@@ -894,14 +894,14 @@ public class GuiderRESTService extends PluginRESTService {
    * POST mApi().guider.student.contactLog.comments.create(userEntityId, contactLogEntryId, payload)
    *
    * payload: {
-   * commentDate: Date
+   * commentDate: "date"
    * text: "plaaplaa";
    * }
    *
    * @param userEntityId
    * @param entryId
    * @param payload
-   * @return
+   * @return comment
    */
   @POST
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments")
@@ -923,7 +923,7 @@ public class GuiderRESTService extends PluginRESTService {
    *
    * payload: {
    * text: "plaa",
-   * commentDate: Date,
+   * commentDate: "date"
    * creatorId: 2
    * }
    *

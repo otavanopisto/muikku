@@ -271,6 +271,10 @@
   margin: 0;
 }
 
+.application-panel__helper-container--guider-student {
+  padding: 0 12px 0 0;
+}
+
 // Main containers
 .application-panel__main-container {
   flex-basis: auto;
@@ -308,6 +312,10 @@
   @include breakpoint($breakpoint-pad) {
     display: block;
   }
+}
+
+.application-panel__main-container--guider-student {
+  padding: 0 0 0 12px;
 }
 
 .application-panel__main-container--header {

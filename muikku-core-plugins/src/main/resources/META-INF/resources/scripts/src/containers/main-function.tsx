@@ -93,7 +93,6 @@ import {
 } from "~/actions/main-function/records/yo";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
-import { loadCalendarEvents } from "~/actions/main-function/calendar";
 import Chat from "../components/chat/chat";
 import EvaluationBody from "../components/evaluation/body";
 import CeeposDone from "../components/ceepos/done";
@@ -585,17 +584,8 @@ export default class MainFunction extends React.Component<
           this.props.store.getState().i18n.text.get("plugin.site.title")
         )
       );
-      this.props.store.dispatch(
-        loadCalendarEvents(
-          this.props.store.getState().status.userId,
-          moment().day(0).format(),
-          moment().day(5).format(),
-          "guidance"
-        ) as Action
-      );
       this.loadChatSettings();
     }
-
     return <IndexBody />;
   }
 

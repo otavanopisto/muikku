@@ -15,6 +15,12 @@ import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
 
 /**
+ * TODO: maybe make this more generic,
+ * since there is need for this kind of a reply outside discussion,
+ * for example in the communicator and the guider
+ * */
+
+/**
  * ReplyThreadDrawerProps
  */
 interface ReplyThreadDrawerProps {

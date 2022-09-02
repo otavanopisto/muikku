@@ -4,11 +4,11 @@ import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions/index";
 import { connect, Dispatch } from "react-redux";
-import FileDeleteDialog from "../../dialogs/file-delete";
+import FileDeleteDialog from "../../../dialogs/file-delete";
 import FileUploader from "~/components/general/file-uploader";
 import { bindActionCreators } from "redux";
 import { UserFileType } from "~/reducers/user-index";
-import Workspaces from "./workspaces";
+import Workspaces from "../workspaces";
 import MainChart from "~/components/general/graph/main-chart";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
@@ -50,11 +50,16 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     return null;
   }
 
-  const { i18n, guider, addFileToCurrentStudent } = props;
-
-  const studentWorkspaces = (
-    <Workspaces workspaces={guider.currentStudent.pastWorkspaces} />
-  );
+  const { i18n, addFileToCurrentStudent } = props;
+  const {
+    activityLogs,
+    activityLogState,
+    pastWorkspaces,
+    pastWorkspacesState,
+    currentWorkspaces,
+    basic,
+    files,
+  } = props.guider.currentStudent;
 
   /**
    * Switches the active navigaton state
@@ -72,6 +77,8 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       }
     }
   };
+
+  const combinedWorkspaces = [...currentWorkspaces, ...pastWorkspaces];
 
   /**
    * Aside navigation for the study-history
@@ -94,13 +101,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       </NavigationElement>
     </Navigation>
   );
-  /**
-   * historyDataLoaded
-   */
-  const historyDataLoaded =
-    guider.currentStudent.activityLogs && guider.currentStudent.pastWorkspaces
-      ? true
-      : false;
+
   /**
    * formDataGenerator
    * @param file file
@@ -110,10 +111,10 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     formData.append("upload", file);
     formData.append("title", file.name);
     formData.append("description", "");
-    formData.append("userIdentifier", guider.currentStudent.basic.id);
+    formData.append("userIdentifier", basic.id);
   };
 
-  const files = guider.currentStudent.basic && (
+  const userFiles = basic && (
     <div className="application-sub-panel__body">
       <FileUploader
         url="/transcriptofrecordsfileupload/"
@@ -126,7 +127,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         fileTooLargeErrorText={i18n.text.get(
           "plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge"
         )}
-        files={guider.currentStudent.files}
+        files={files}
         fileIdKey="id"
         fileNameKey="title"
         fileUrlGenerator={(f) => `/rest/guider/files/${f.id}/content`}
@@ -144,92 +145,69 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     </div>
   );
 
+  const historyComponent = (
+    <React.Fragment key="history-component">
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Header>
+          {i18n.text.get("plugin.guider.user.details.workspaces")}
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          {pastWorkspacesState === "READY" ? (
+            <Workspaces workspaces={pastWorkspaces} />
+          ) : (
+            <div className="loader-empty" />
+          )}
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Header>
+          {i18n.text.get("plugin.guider.user.details.statistics")}
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          {activityLogState === "READY" ? (
+            <MainChart
+              workspaces={combinedWorkspaces}
+              activityLogs={activityLogs}
+            />
+          ) : (
+            <div className="loader-empty" />
+          )}
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+    </React.Fragment>
+  );
+
+  const libraryComponent = (
+    <ApplicationSubPanel key="library-component">
+      <ApplicationSubPanel.Header>
+        {i18n.text.get("plugin.guider.user.details.files")}
+      </ApplicationSubPanel.Header>
+      <ApplicationSubPanel.Body>{userFiles}</ApplicationSubPanel.Body>
+    </ApplicationSubPanel>
+  );
+
   /**
-   * studyHisrtoryContent switches the corrent component
+   * studyHistoryContent switches the corrent component
    * @returns JSX.element
    */
   const studyHistoryContent = () => {
     if (!isAtMobileWidth) {
       switch (navigationActive) {
         case "history": {
-          return (
-            <>
-              <ApplicationSubPanel>
-                <ApplicationSubPanel.Header>
-                  {i18n.text.get("plugin.guider.user.details.workspaces")}
-                </ApplicationSubPanel.Header>
-                <ApplicationSubPanel.Body>
-                  {studentWorkspaces}
-                </ApplicationSubPanel.Body>
-              </ApplicationSubPanel>
-              <ApplicationSubPanel>
-                <ApplicationSubPanel.Header>
-                  {i18n.text.get("plugin.guider.user.details.statistics")}
-                </ApplicationSubPanel.Header>
-                <ApplicationSubPanel.Body>
-                  <MainChart
-                    workspaces={guider.currentStudent.pastWorkspaces}
-                    activityLogs={guider.currentStudent.activityLogs}
-                  />
-                </ApplicationSubPanel.Body>
-              </ApplicationSubPanel>
-            </>
-          );
+          return historyComponent;
         }
         case "library": {
-          return (
-            <ApplicationSubPanel>
-              <ApplicationSubPanel.Header>
-                {i18n.text.get("plugin.guider.user.details.files")}
-              </ApplicationSubPanel.Header>
-              <ApplicationSubPanel.Body>{files}</ApplicationSubPanel.Body>
-            </ApplicationSubPanel>
-          );
+          return libraryComponent;
         }
       }
     } else {
-      return (
-        <>
-          <ApplicationSubPanel>
-            <ApplicationSubPanel.Header>
-              {i18n.text.get("plugin.guider.user.details.workspaces")}
-            </ApplicationSubPanel.Header>
-            <ApplicationSubPanel.Body>
-              {studentWorkspaces}
-            </ApplicationSubPanel.Body>
-          </ApplicationSubPanel>
-          <ApplicationSubPanel>
-            <ApplicationSubPanel.Header>
-              {i18n.text.get("plugin.guider.user.details.statistics")}
-            </ApplicationSubPanel.Header>
-            <ApplicationSubPanel.Body>
-              <MainChart
-                workspaces={guider.currentStudent.pastWorkspaces}
-                activityLogs={guider.currentStudent.activityLogs}
-              />
-            </ApplicationSubPanel.Body>
-          </ApplicationSubPanel>
-
-          <ApplicationSubPanel>
-            <ApplicationSubPanel.Header>
-              {i18n.text.get("plugin.guider.user.details.files")}
-            </ApplicationSubPanel.Header>
-            <ApplicationSubPanel.Body>{files}</ApplicationSubPanel.Body>
-          </ApplicationSubPanel>
-        </>
-      );
+      return [historyComponent, libraryComponent];
     }
   };
 
   return (
     <ApplicationPanelBody modifier="guider-student" asideBefore={aside}>
-      {historyDataLoaded ? (
-        studyHistoryContent()
-      ) : (
-        <ApplicationSubPanel>
-          <div className="loader-empty" />
-        </ApplicationSubPanel>
-      )}
+      {studyHistoryContent()}
     </ApplicationPanelBody>
   );
 };
