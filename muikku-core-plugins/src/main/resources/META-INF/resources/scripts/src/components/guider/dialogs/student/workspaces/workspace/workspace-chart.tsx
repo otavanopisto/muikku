@@ -309,7 +309,7 @@ class CurrentStudentStatistics extends React.Component<
       Graph.MATERIAL_EXERCISEDONE,
     ];
     return (
-      <div className="react-required-container">
+      <>
         <div className="chart-legend">
           <div className="chart-legend-filter chart-legend-filter--graph-filter">
             <GraphFilter
@@ -324,7 +324,7 @@ class CurrentStudentStatistics extends React.Component<
           className="chart chart--workspace-chart"
           options={config}
         />
-      </div>
+      </>
     );
   }
 }
