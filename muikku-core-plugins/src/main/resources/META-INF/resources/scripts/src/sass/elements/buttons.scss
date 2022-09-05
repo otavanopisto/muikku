@@ -815,6 +815,14 @@
     width: 100%;
   }
 
+  // This needs to be added here as we place external-link-indicator
+  // automatically to every button and anchor element that opens up a new tab/window.
+  // This way we only hide the indicator in button-pill element and avoid making
+  // unnecessary conditional to the button and/or link component.
+  .external-link-indicator {
+    display: none;
+  }
+
   @include breakpoint($breakpoint-pad) {
     font-size: $button-pill-desktop-font-size;
     height: $button-pill-desktop-size;
@@ -952,7 +960,6 @@
 .button-pill--restore,
 .button-pill--edit,
 .button-pill--create-contact-log-entry,
-.button-pill--new-message,
 .button-pill--filter,
 .button-pill--add-note {
   background-color: $color-main-function-button-pill-delete-background;
@@ -1934,9 +1941,30 @@
   }
 }
 
+.button-pill--new-message {
+  background: $color-info;
+  color: $color-default;
+  font-size: 1.125rem;
+  height: 2rem;
+  width: 2rem;
+
+  &:hover,
+  &.hover {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+}
+
 .button-pill--whatsapp-me {
   background: $color-whatsapp-dark;
   color: $color-default;
+  font-size: 1.25rem;
+  height: 2rem;
+  width: 2rem;
 
   &:hover,
   &.hover {
@@ -1952,6 +1980,9 @@
 .button-pill--appointment-calendar {
   background: $color-appointment-calendar-button-background;
   color: $color-default;
+  font-size: 1.25rem;
+  height: 2rem;
+  width: 2rem;
 
   &:hover,
   &.hover {
