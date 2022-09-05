@@ -81,6 +81,9 @@ export const WhatsappButtonLink: React.FC<WhatsappLinkProps> = (props) => {
 
   return (
     <ButtonPill
+      aria-label={i18n.text.get(
+        "plugin.profile.whatsappIntegration.button.label"
+      )}
       icon="whatsapp"
       title={i18n.text.get("plugin.profile.whatsappIntegration.button.label")}
       buttonModifiers="whatsapp-me"

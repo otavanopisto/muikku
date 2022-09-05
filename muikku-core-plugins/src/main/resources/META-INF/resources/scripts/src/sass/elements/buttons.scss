@@ -1950,12 +1950,12 @@
 
   &:hover,
   &.hover {
-    background: darken($color-whatsapp-dark, 10%);
+    background: darken($color-info, 10%);
   }
 
   &:active,
   &.active {
-    background: darken($color-whatsapp-dark, 10%);
+    background: darken($color-info, 10%);
   }
 }
 
