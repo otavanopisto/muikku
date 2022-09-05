@@ -67,7 +67,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
    * @param typeMsg typeMsg
    * @returns arrow class modifier
    */
-  const arrowClassMod = (typeMsg: EvaluationEnum) => {
+  const evalEventClassMod = (typeMsg: EvaluationEnum) => {
     let mod = "";
 
     switch (typeMsg) {
@@ -79,6 +79,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         break;
       case EvaluationEnum.EVALUATION_REQUEST:
         mod = "state-REQUESTED";
+        break;
+      case EvaluationEnum.EVALUATION_REQUEST_CANCELLED:
+        mod = "state-REQUESTED-CANCELLED";
         break;
       case EvaluationEnum.SUPPLEMENTATION_REQUEST:
         mod = "state-INCOMPLETE";
@@ -105,10 +108,10 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
   const arrowClasses =
     height === 0
-      ? `evaluation-modal__event-arrow ${arrowClassMod(
+      ? `evaluation-modal__event-arrow ${evalEventClassMod(
           type
         )} evaluation-modal__event-arrow--right `
-      : `evaluation-modal__event-arrow ${arrowClassMod(
+      : `evaluation-modal__event-arrow ${evalEventClassMod(
           type
         )} evaluation-modal__event-arrow--down `;
 
@@ -256,6 +259,34 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
             ) : null}
           </>
         );
+
+      case EvaluationEnum.EVALUATION_REQUEST_CANCELLED:
+        return (
+          <>
+            <div className="evaluation-modal__event-meta">
+              <span className="evaluation-modal__event-author">{author}</span>{" "}
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.evaluationRequestCancel.1"
+              )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
+              <span className="evaluation-modal__event-type state-CANCELLED">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.evaluationRequestCancel.2"
+                )}
+              </span>
+            </div>
+            {grade !== null ||
+            type === EvaluationEnum.SUPPLEMENTATION_REQUEST ? (
+              <div className="evaluation-modal__event-grade state-INCOMPLETE">
+                {EvaluationEnum.SUPPLEMENTATION_REQUEST ? "T" : grade}
+              </div>
+            ) : null}
+          </>
+        );
       default:
         return;
     }
@@ -265,7 +296,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
   return (
     <>
-      <div className="evaluation-modal__event">
+      <div className={`evaluation-modal__event ${evalEventClassMod(type)}`}>
         <div
           onClick={handleOpenContentClick}
           className="evaluation-modal__event-header"

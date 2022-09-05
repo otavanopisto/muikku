@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
@@ -81,7 +82,8 @@ public class AssessmentRequestController {
     return gradingController.listWorkspaceAssessmentRequests(
         workspaceEntity.getDataSource().getIdentifier(),
         workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
+        false);
   }
 
   public WorkspaceAssessmentState getWorkspaceAssessmentState(WorkspaceUserEntity workspaceUserEntity) {
@@ -209,6 +211,10 @@ public class AssessmentRequestController {
         assessmentRequestIdentifier.getIdentifier(),
         workspaceUserEntity.getWorkspaceEntity().getIdentifier(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+  }
+  
+  public WorkspaceAssessmentRequest archiveWorkspaceAssessmentRequest(WorkspaceAssessmentRequest assessmentRequest, WorkspaceEntity workspaceEntity, UserEntity studentEntity) {
+    return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), true , assessmentRequest.getHandled());
   }
 
   public CommunicatorMessageId findCommunicatorMessageId(WorkspaceUserEntity workspaceUserEntity) {
