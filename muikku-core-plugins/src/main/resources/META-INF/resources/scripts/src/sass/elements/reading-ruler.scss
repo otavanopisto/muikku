@@ -4,16 +4,26 @@
 @import "../base/breakpoints";
 
 .reading-ruler-container {
+  /* display: none; */
   display: block;
   height: 100vh;
-  position: absolute;
+  position: fixed;
   width: 100%;
   z-index: 9999;
+
+  /* @include breakpoint($breakpoint-desktop) {
+    display: block;
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    z-index: 9999;
+  } */
 }
 
 .reading-ruler-top,
 .reading-ruler-middle,
-.reading-ruler-bottom {
+.reading-ruler-bottom,
+.reading-ruler-dragger-handle-container {
   background: $color-cagtegory-11;
   height: 100px;
   left: 0;
@@ -34,9 +44,31 @@
   align-items: center;
   background: unset;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-end;
   opacity: 100%;
+}
+
+.reading-ruler-dragger-handle-container {
+  align-items: center;
+  background: unset;
+  bottom: 0;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  top: auto;
+}
+
+.reading-ruler-middle-mobile-handle {
+  background-color: black;
+  border-radius: 25px;
+  height: inherit;
+  opacity: 70%;
+  width: 200px;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
+  }
 }
 
 .reading-ruler-middle--inverted {
@@ -49,9 +81,40 @@
 }
 
 .reading-ruler-controllers {
+  align-items: center;
   color: $color-cagtegory-11;
-  display: inline-block;
+  display: flex;
+  justify-content: flex-end;
   position: fixed;
   right: 10px;
   z-index: 10010;
+}
+
+.reading-ruler-controllers-tool-button {
+  transform: rotate(0deg);
+  transition: rotate 0.2s ease;
+}
+
+.reading-ruler-controllers-tool-button--open {
+  transform: rotate(180deg);
+  transition: rotate 0.2s ease;
+}
+
+.reading-ruler-controllers-presets-container,
+.reading-ruler-controllers-settings-container {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  max-width: 0%;
+  opacity: 0%;
+  transition: max-width 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+  visibility: hidden;
+}
+
+.reading-ruler-controllers-presets-container--open,
+.reading-ruler-controllers-settings-container--open {
+  max-width: 100%;
+  opacity: 100%;
+  transition: max-width 0.3s ease, opacity 0.3s ease;
+  visibility: visible;
 }

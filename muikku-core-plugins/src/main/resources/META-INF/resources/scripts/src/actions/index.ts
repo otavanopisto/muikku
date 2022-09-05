@@ -287,6 +287,7 @@ import {
   DELETE_CALENDAR_GUIDANCE_EVENT,
   UPDATE_CALENDAR_EVENTS_STATUS,
 } from "./main-function/calendar";
+import { SET_ACTIVE_EASY_TO_USE_TOOL } from "./easy-to-use-functions";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD
@@ -500,6 +501,7 @@ export type ActionType =
   | UPDATE_CALENDAR_GUIDANCE_EVENT
   | DELETE_CALENDAR_GUIDANCE_EVENT
   | UPDATE_CALENDAR_EVENTS_STATUS
-  | UPDATE_AVAILABLE_CURRICULUMS;
+  | UPDATE_AVAILABLE_CURRICULUMS
+  | SET_ACTIVE_EASY_TO_USE_TOOL;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

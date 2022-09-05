@@ -113,7 +113,8 @@ import {
 } from "~/actions/main-function/ceepos";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
-import ReadingRuler from "~/components/reading-ruler/reading-ruler";
+import EasytoUseToolDrawer from "~/components/easy-to-use-reading-functions/easy-to-use-tool-drawer";
+import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1090,7 +1091,8 @@ export default class MainFunction extends React.Component<
       <BrowserRouter>
         <div id="root">
           <Notifications></Notifications>
-          <ReadingRuler active={true} />
+          <EasytoUseToolDrawer />
+          <EasyToUseFunctions />
           <Route exact path="/" render={this.renderIndexBody} />
           <Route
             path="/organization"
