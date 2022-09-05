@@ -14,7 +14,7 @@ import {
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { PurchaseType, PurchaseProductType } from "../profile";
-
+import { LoadingState } from "~/@types/shared";
 /**
  * GuiderUserLabelType
  */
@@ -80,9 +80,70 @@ export interface GuiderNotificationStudentsDataType {
 }
 
 /**
+ * ContactTypesArray for dropdowns etc.
+ */
+export const contactTypesArray = [
+  "OTHER",
+  "LETTER",
+  "EMAIL",
+  "PHONE",
+  "CHATLOG",
+  "SKYPE",
+  "FACE2FACE",
+  "ABSENCE",
+  "MUIKKU",
+] as const;
+
+/**
+ *  ContactTypes created from the ContactTypesArray
+ */
+export type ContactTypes = typeof contactTypesArray[number];
+
+/**
+ * ContactLogEvent
+ */
+export interface ContactLogEvent {
+  id: number;
+  entryDate: string;
+  type: ContactTypes;
+  creatorId: number;
+  creatorName: string;
+  hasImage: boolean;
+  text: string;
+  comments?: ContactLogEventComment[];
+}
+
+/**
+ * ContactLogData
+ */
+export interface ContactLogData {
+  totalHitCount: number;
+  allPrivileges: boolean;
+  firstResult: number;
+  results: ContactLogEvent[];
+}
+
+/**
+ * contactEventComment
+ */
+export type ContactLogEventComment = {
+  id: number;
+  entry: number;
+  commentDate: string;
+  creatorId: number;
+  creatorName: string;
+  hasImage: boolean;
+  text: string;
+};
+
+/**
  * GuiderStudentUserProfileType
  */
 export interface GuiderStudentUserProfileType {
+  contactLogState: LoadingState;
+  currentWorkspacesState: LoadingState;
+  pastWorkspacesState: LoadingState;
+  activityLogState: LoadingState;
   basic: GuiderStudentType;
   labels: Array<GuiderStudentUserProfileLabelType>;
   emails: Array<StudentUserProfileEmailType>;
@@ -94,6 +155,7 @@ export interface GuiderStudentUserProfileType {
   //  vops: VOPSDataType,
   hops: HOPSDataType;
   notifications: GuiderNotificationStudentsDataType;
+  contactLogs: ContactLogData;
   currentWorkspaces: WorkspaceListType;
   pastWorkspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];
@@ -162,13 +224,11 @@ function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
     ? 1
     : 0;
 }
-
 /**
- * sortOrders
- *
- * @param a a
- * @param b b
- * @returns sort
+ * Sort for ceepos orders
+ * @param a a type of purchase
+ * @param b a second type of purchas
+ * @returns sorted orders by date
  */
 function sortOrders(a: PurchaseType, b: PurchaseType) {
   const dateA = new Date(a.created).getTime();
@@ -176,6 +236,12 @@ function sortOrders(a: PurchaseType, b: PurchaseType) {
   return dateA > dateB ? -1 : 1;
 }
 
+/**
+ * guider reducer function
+ * @param state app state
+ * @param action redux action
+ * @returns new app state
+ */
 export default function guider(
   state: GuiderType = {
     studentsState: "LOADING",
@@ -198,7 +264,27 @@ export default function guider(
     selectedStudents: [],
     selectedStudentsIds: [],
     toggleAllStudentsActive: false,
-    currentStudent: null,
+    currentStudent: {
+      contactLogState: "LOADING",
+      currentWorkspacesState: "LOADING",
+      pastWorkspacesState: "LOADING",
+      activityLogState: "LOADING",
+      basic: null,
+      labels: [],
+      emails: [],
+      phoneNumbers: [],
+      addresses: [],
+      files: [],
+      usergroups: [],
+      hops: null,
+      notifications: null,
+      contactLogs: null,
+      currentWorkspaces: [],
+      pastWorkspaces: [],
+      activityLogs: [],
+      purchases: [],
+      hopsAvailable: false,
+    },
   },
   action: ActionType
 ): GuiderType {
@@ -246,11 +332,12 @@ export default function guider(
       currentStudentState: "LOADING",
     });
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP") {
-    const obj: any = {};
-    obj[action.payload.property] = action.payload.value;
-
+    const updatedCurrentStudent = {
+      ...state.currentStudent,
+      [action.payload.property]: action.payload.value,
+    };
     return Object.assign({}, state, {
-      currentStudent: Object.assign({}, state.currentStudent, obj),
+      currentStudent: updatedCurrentStudent,
     });
   } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_STATE") {
     return Object.assign({}, state, {
@@ -483,6 +570,57 @@ export default function guider(
         ? state.students.map((student) => student.id)
         : [],
     });
+  } else if (action.type === "DELETE_CONTACT_EVENT") {
+    const contactLogs = state.currentStudent.contactLogs;
+    const newContactLogsResults = contactLogs.results.filter(
+      (log) => log.id !== action.payload
+    );
+    const newContactLogs = contactLogs;
+    newContactLogs.results = newContactLogsResults;
+
+    return {
+      ...state,
+      currentStudent: { ...state.currentStudent, contactLogs: newContactLogs },
+    };
+  } else if (action.type === "DELETE_CONTACT_EVENT_COMMENT") {
+    // Make a deep copy of the contact logs natively since there are no complex types involved
+
+    const contactLogs = JSON.parse(
+      JSON.stringify(state.currentStudent.contactLogs)
+    ) as ContactLogData;
+
+    const contactLogsResults = contactLogs.results;
+
+    // Find the current contact log
+    const currentContactLogResult = contactLogsResults.find(
+      (log) => log.id === action.payload.contactLogEntryId
+    );
+
+    // Get the array index for the current contact log
+    const currentContactLogIndex = contactLogsResults.findIndex(
+      (log) => log.id === currentContactLogResult.id
+    );
+    // Get the index of the comment to be deleted from the current contact log
+    const contactLogCommentIndex = currentContactLogResult.comments.findIndex(
+      (comment) => comment.id === action.payload.commentId
+    );
+
+    // Remove the comment by index
+    currentContactLogResult.comments.splice(contactLogCommentIndex, 1);
+
+    // Replace the the contact log entry with the new one
+    contactLogsResults.splice(
+      currentContactLogIndex,
+      1,
+      currentContactLogResult
+    );
+
+    contactLogs.results = contactLogsResults;
+
+    return {
+      ...state,
+      currentStudent: { ...state.currentStudent, contactLogs: contactLogs },
+    };
   }
   return state;
 }

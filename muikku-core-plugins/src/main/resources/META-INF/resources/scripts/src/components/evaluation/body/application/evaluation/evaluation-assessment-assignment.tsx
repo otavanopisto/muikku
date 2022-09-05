@@ -32,6 +32,7 @@ import promisify from "~/util/promisify";
 import ExcerciseEditor from "./editors/excercise-editor";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 import { RecordValue } from "~/@types/recorder";
+import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
 /**
  * EvaluationCardProps
@@ -228,15 +229,6 @@ class EvaluationAssessmentAssignment extends React.Component<
       materialNode: updatedMaterial,
     });
   };
-
-  /**
-   * createHtmlMarkup
-   * This should sanitize html
-   * @param htmlString string that contains html
-   */
-  createHtmlMarkup = (htmlString: string) => ({
-    __html: htmlString,
-  });
 
   /**
    * toggleOpened
@@ -691,12 +683,11 @@ class EvaluationAssessmentAssignment extends React.Component<
                     )}
                   </div>
 
-                  <div
-                    className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
-                    dangerouslySetInnerHTML={this.createHtmlMarkup(
-                      compositeReply.evaluationInfo.text
-                    )}
-                  />
+                  <div className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal">
+                    <CkeditorContentLoader
+                      html={compositeReply.evaluationInfo.text}
+                    />
+                  </div>
                 </div>
               ) : null}
 

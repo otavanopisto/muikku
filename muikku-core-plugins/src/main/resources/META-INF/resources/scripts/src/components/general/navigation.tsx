@@ -186,6 +186,6 @@ export class NavigationElement extends React.Component<
    * @returns HTMLElement
    */
   getElement(): HTMLElement {
-    return (this.refs["element"] as Link).getElement();
+    return (this.refs["element"] as any).getElement();
   }
 }

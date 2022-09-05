@@ -281,9 +281,10 @@ export default class MuikkuWebsocket {
             // According to server, we are no longer logged in. Stop everything, user needs to login again
             // TODO localization
             this.store.dispatch(
-              actions.displayNotification(
-                "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
-                "error"
+              actions.openNotificationDialog(
+                this.store
+                  .getState()
+                  .i18n.text.get("plugin.server.unreachable.403")
               ) as Action
             );
             this.ticket = null;
@@ -300,9 +301,10 @@ export default class MuikkuWebsocket {
             // Server is down. Stop everything, user needs to reload page
             // TODO localization
             this.store.dispatch(
-              actions.displayNotification(
-                "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.",
-                "error"
+              actions.openNotificationDialog(
+                this.store
+                  .getState()
+                  .i18n.text.get("plugin.server.unreachable.502")
               ) as Action
             );
             this.ticket = null;
@@ -482,15 +484,16 @@ export default class MuikkuWebsocket {
         this.openWebSocket();
       } else {
         this.reconnectRetries++;
-        if (this.reconnectRetries == 12) {
-          // two minutes have passed, let's give up
+        if (this.reconnectRetries == 6) {
+          // one minute have passed, let's give up
           this.discarded = true;
           this.discardCurrentWebSocket(true);
           // TODO localization
           this.store.dispatch(
-            actions.displayNotification(
-              "Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.",
-              "error"
+            actions.openNotificationDialog(
+              this.store
+                .getState()
+                .i18n.text.get("plugin.server.unreachable.reconnectFailed")
             ) as Action
           );
         } else {

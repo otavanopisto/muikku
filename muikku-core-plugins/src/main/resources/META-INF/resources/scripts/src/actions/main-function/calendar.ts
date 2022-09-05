@@ -6,6 +6,7 @@ import { StateType } from "~/reducers";
 import { EventsState, CalendarEvent } from "~/reducers/main-function/calendar";
 
 /**
+ *
  * Participant
  */
 export type Participants = {
@@ -32,7 +33,8 @@ export interface LoadCalendarEventsTriggerType {
     userEntityId: number,
     start: string,
     end: string,
-    type?: string
+    type: string,
+    reload?: boolean
   ): AnyActionType;
 }
 
@@ -66,74 +68,53 @@ export interface deleteCalendarEventTrigger {
 }
 
 /**
- * Load guidance events action type
- */
-export interface LOAD_CALENDAR_GUIDANCE_EVENTS
-  extends SpecificActionType<
-    "LOAD_CALENDAR_GUIDANCE_EVENTS",
-    CalendarEvent[]
-  > {}
-
-/**
- * Update guidance events action type
- */
-export interface UPDATE_CALENDAR_GUIDANCE_EVENT
-  extends SpecificActionType<"UPDATE_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
-
-/**
- * Add guidance event action type
- */
-export interface ADD_CALENDAR_GUIDANCE_EVENT
-  extends SpecificActionType<"ADD_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
-
-/**
- * Delete guidance event action type
- */
-export interface DELETE_CALENDAR_GUIDANCE_EVENT
-  extends SpecificActionType<
-    "DELETE_CALENDAR_GUIDANCE_EVENT",
-    CalendarEvent | number
-  > {}
-
-/**
  * Update calendar events status action type
  */
 export interface UPDATE_CALENDAR_EVENTS_STATUS
   extends SpecificActionType<"UPDATE_CALENDAR_EVENTS_STATUS", EventsState> {}
 
 /**
- * LoadCalendarEvents thunk function
+ * LoadCalendarEvents thunk action creator
  *
  * @param userEntityId userEntityId
  * @param start start date string
  * @param end end date string
  * @param type events type
+ * @returns thunk function
  */
+
+// TODO needs a "range" evaluation to avoid unnecessary loads
+
 const loadCalendarEvents: LoadCalendarEventsTriggerType =
   function loadCalendarEvents(
     userEntityId: number,
     start: string,
     end: string,
-    type: string
+    type: string,
+    reload?: boolean
   ) {
+    const reloadEvents = reload ? reload : false;
+
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
       try {
+        const payload = <CalendarEvent[]>(
+          await promisify(
+            mApi().calendar.events.read({ userEntityId, start, end, type }),
+            "callback"
+          )()
+        );
         dispatch({
           type: "UPDATE_CALENDAR_EVENTS_STATUS",
           payload: <EventsState>"LOADING",
         });
-        dispatch({
-          type: "LOAD_CALENDAR_GUIDANCE_EVENTS",
-          payload: <CalendarEvent[]>(
-            await promisify(
-              mApi().calendar.events.read({ userEntityId, start, end, type }),
-              "callback"
-            )()
-          ),
-        });
+        if (reloadEvents) {
+          // dispatch reload events
+        } else {
+          // dispatch load events
+        }
         dispatch({
           type: "UPDATE_CALENDAR_EVENTS_STATUS",
           payload: <EventsState>"READY",
@@ -178,22 +159,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
       getState: () => StateType
     ) => {
       try {
-        dispatch({
-          type: "ADD_CALENDAR_GUIDANCE_EVENT",
-          payload: <CalendarEvent>await promisify(
-            mApi().calendar.event.create({
-              start,
-              end,
-              allDay,
-              title,
-              description,
-              visibility,
-              type,
-              participants,
-            }),
-            "callback"
-          )(),
-        });
+        // Dispatch create event
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -230,22 +196,7 @@ const updateCalendarEvent: createCalendarEventTriggerType =
       getState: () => StateType
     ) => {
       try {
-        dispatch({
-          type: "UPDATE_CALENDAR_GUIDANCE_EVENT",
-          payload: <CalendarEvent>await promisify(
-            mApi().calendar.event.update({
-              start,
-              end,
-              allDay,
-              title,
-              description,
-              visibility,
-              type,
-              participants,
-            }),
-            "callback"
-          )(),
-        });
+        // Dispatch update event
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -272,15 +223,7 @@ const changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger =
       getState: () => StateType
     ) => {
       try {
-        dispatch({
-          type: "UPDATE_CALENDAR_GUIDANCE_EVENT",
-          payload: <CalendarEvent>(
-            await promisify(
-              mApi().calendar.event.attendance.update(id, attendanceState),
-              "callback"
-            )()
-          ),
-        });
+        // Dispatch change attendance
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -308,10 +251,7 @@ const deleteCalendarEvent: deleteCalendarEventTrigger =
       try {
         await mApi().calendar.event.del(id);
 
-        dispatch({
-          type: "DELETE_CALENDAR_GUIDANCE_EVENT",
-          payload: id,
-        });
+        // Dispatch delete
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;

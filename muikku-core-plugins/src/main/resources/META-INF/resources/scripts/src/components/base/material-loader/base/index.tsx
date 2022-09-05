@@ -621,7 +621,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @param props props
          * @param children children
          * @param element element
-         * @returns any
          */
         preprocessReactProperties: (tag, props, children, element) => {
           if (this.props.checkAnswers && this.props.displayCorrectAnswers) {

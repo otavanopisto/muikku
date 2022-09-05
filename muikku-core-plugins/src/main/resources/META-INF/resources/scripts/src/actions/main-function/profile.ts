@@ -258,7 +258,7 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
         const properties = (await promisify(
           mApi().user.properties.read(state.status.userId, {
             properties:
-              "profile-phone,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg,communicator-auto-reply-subject",
+              "profile-phone,profile-appointmentCalendar,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg,communicator-auto-reply-subject",
           }),
           "callback"
         )()) as ProfileProperty[];

@@ -1,4 +1,5 @@
 import Notifications from "../components/base/notifications";
+import DisconnectedWarningDialog from "../components/base/disconnect-warning";
 import { BrowserRouter, Route } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
@@ -1233,6 +1234,7 @@ export default class Workspace extends React.Component<
       <BrowserRouter>
         <div id="root">
           <Notifications></Notifications>
+          <DisconnectedWarningDialog />
           <Route
             exact
             path="/workspace/:workspaceUrl/"

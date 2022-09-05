@@ -44,12 +44,10 @@ class WorkspaceAssignmentsAndDiaryDialog extends React.Component<
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const content = (closeDialog: () => any) => (
-      <div>
-        <AssignmentsAndDiaries
-          workspaceId={this.props.workspaceId}
-          workspace={this.props.workspace}
-        />
-      </div>
+      <AssignmentsAndDiaries
+        workspaceId={this.props.workspaceId}
+        workspace={this.props.workspace}
+      />
     );
 
     let title = this.props.workspace.name;
