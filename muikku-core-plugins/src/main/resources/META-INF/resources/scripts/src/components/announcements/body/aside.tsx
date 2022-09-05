@@ -35,7 +35,7 @@ class AnnouncementsAside extends React.Component<
    */
   render() {
     return (
-      <div className="react-required-container">
+      <>
         {this.props.announcements.announcements.length !== 0 ? (
           <div className="item-list item-list--panel-announcements">
             {this.props.announcements.announcements.map(
@@ -92,7 +92,7 @@ class AnnouncementsAside extends React.Component<
         ) : (
           <div>{this.props.i18n.text.get("plugin.announcer.empty.title")}</div>
         )}
-      </div>
+      </>
     );
   }
 }

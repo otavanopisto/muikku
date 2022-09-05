@@ -133,7 +133,6 @@ class MainFunctionNavbar extends React.Component<
         icon: "evaluate",
         to: true,
         condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
-        openInNewTab: "_blank",
       },
       {
         modifier: "organization",

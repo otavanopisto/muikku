@@ -35,6 +35,7 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
+import DisconnectedWarningDialog from "~/components/base/disconnect-warning";
 
 /**
  * WorkspaceMaterialsProps

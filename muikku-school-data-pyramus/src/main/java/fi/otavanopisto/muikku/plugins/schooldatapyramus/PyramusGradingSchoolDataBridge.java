@@ -425,7 +425,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Override
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier,
-      String studentIdentifier) {
+      String studentIdentifier, Boolean archived) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     if (courseId == null) {
@@ -436,7 +436,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
       return null; 
     }
-    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), CourseAssessmentRequest[].class));
+    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/?archived="+ archived, studentId, courseId), CourseAssessmentRequest[].class));
   }
 
   @Override

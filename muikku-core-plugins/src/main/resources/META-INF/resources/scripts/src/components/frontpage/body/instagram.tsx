@@ -1,10 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 
-import "~/sass/elements/ordered-container.scss";
-import "~/sass/elements/card.scss";
-import "~/sass/elements/wcag.scss";
-
 /**
  * FrontpageInstagramProps
  */
@@ -54,6 +50,11 @@ export default class FrontpageInstagram extends React.Component<
                         <span className="visually-hidden">
                           Instagram muikkuofficial
                         </span>
+                        <span className="visually-hidden">
+                          {this.props.i18n.text.get(
+                            "plugin.wcag.externalLink.label"
+                          )}
+                        </span>
                       </span>
                     </a>
                   </div>
@@ -67,6 +68,15 @@ export default class FrontpageInstagram extends React.Component<
                       >
                         <span className="visually-hidden">Instagram </span>
                         muikkuofficial
+                        <span className="visually-hidden">
+                          {this.props.i18n.text.get(
+                            "plugin.wcag.externalLink.label"
+                          )}
+                        </span>
+                        <span
+                          role="presentation"
+                          className="external-link-indicator icon-external-link"
+                        />
                       </a>
                     </div>
                     <div className="card__meta-body-description">

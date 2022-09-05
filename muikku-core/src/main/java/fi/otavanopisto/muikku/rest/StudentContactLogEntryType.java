@@ -7,6 +7,7 @@ public enum StudentContactLogEntryType {
   PHONE,
   CHATLOG,
   SKYPE,
+  ABSENCE,
   FACE2FACE,
   MUIKKU
 }

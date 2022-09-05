@@ -82,7 +82,7 @@ class Notifications extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    notifications: state.notifications,
+    notifications: state.notifications.notifications,
   };
 }
 

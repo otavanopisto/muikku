@@ -10,3 +10,14 @@
   position: absolute;
   width: 1px;
 }
+
+.external-link-indicator {
+  align-items: center;
+  display: inline-flex;
+  font-size: $text-mobile-font-size;
+  padding: 0 4px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}

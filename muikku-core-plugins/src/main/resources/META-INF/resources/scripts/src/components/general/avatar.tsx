@@ -7,7 +7,7 @@ import "~/sass/elements/avatar.scss";
  */
 interface AvatarProps {
   hasImage: boolean;
-  id: number;
+  id: number | null;
   firstName: string;
   size?: string;
   userCategory?: number;
@@ -23,7 +23,10 @@ const Avatar = (props: AvatarProps) => {
   const { id, userCategory, hasImage, firstName, avatarAriaLabel } = props;
 
   const category =
-    (userCategory && userCategory) || id > 10 ? (id % 10) + 1 : id;
+    (userCategory && userCategory) ||
+    (id && (id > 10 ? (id % 10) + 1 : id)) ||
+    // This is a nullcheck. Makes the avatar readable (and colourful!) if the id is "null"
+    Math.floor(Math.random() * 10 + 1);
 
   return hasImage ? (
     <object

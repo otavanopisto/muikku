@@ -23,7 +23,8 @@ const useIsAtBreakpoint = (breakPoint: number): boolean => {
       const width = Math.round(window.innerWidth / 16); // Width on resize
       const direction = countRef.current < width ? "out" : "in"; // Direction of the resize
 
-      /** If the resize zoom direction is outwards
+      /**
+       * If the resize zoom direction is outwards
        * we don't need to re-render
        * if we're already using the correct component
        * and vice versa

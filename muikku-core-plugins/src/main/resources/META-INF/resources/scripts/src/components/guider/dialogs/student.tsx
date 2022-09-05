@@ -16,12 +16,15 @@ import {
   GuiderCurrentStudentStateType,
   GuiderType,
 } from "~/reducers/main-function/guider";
-import StateOfStudies from "../body/application/state-of-studies";
-import StudyHistory from "../body/application/study-history";
-import StudyPlan from "../body/application/study-plan";
+import StateOfStudies from "./student/tabs/state-of-studies";
+import StudyHistory from "./student/tabs/study-history";
+import StudyPlan from "./student/tabs/study-plan";
+import GuidanceRelation from "./student/tabs/guidance-relation";
 import {
   loadStudentHistory,
   LoadStudentTriggerType,
+  loadStudentContactLogs,
+  LoadContactLogsTriggerType,
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
@@ -49,6 +52,7 @@ interface StudentDialogProps {
   i18n: i18nType;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
+  loadStudentContactLogs: LoadContactLogsTriggerType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
 }
 
@@ -67,9 +71,17 @@ class StudentDialog extends React.Component<
   StudentDialogProps,
   StudentDialogState
 > {
+  // This definition is the source of truth for every child component
+  private contactLogsPerPage = 10;
+
   /**
    * constructor
    * @param props props for the constructor
+   */
+
+  /**
+   * constructor
+   * @param props StudentDialogProps
    */
   constructor(props: StudentDialogProps) {
     super(props);
@@ -96,10 +108,19 @@ class StudentDialog extends React.Component<
    */
   onTabChange = (id: tabs) => {
     const studentId = this.props.student.basic.id;
+    const studentUserEntityId = this.props.student.basic.userEntityId;
     this.setState({ activeTab: id });
     switch (id) {
       case "STUDY_HISTORY": {
         this.props.loadStudentHistory(studentId);
+        break;
+      }
+      case "GUIDANCE_RELATIONS": {
+        this.props.loadStudentContactLogs(
+          studentUserEntityId,
+          this.contactLogsPerPage,
+          0
+        );
         break;
       }
     }
@@ -142,12 +163,16 @@ class StudentDialog extends React.Component<
         type: "guider-student",
         component: <StateOfStudies />,
       },
-      // {
-      //   id: "GUIDANCE_RELATIONS",
-      //   name: this.props.i18n.text.get('plugin.guider.user.tabs.title.guidanceRelations'),
-      //   type: "guider-student",
-      //   component: <div >Ohjaussuhde</div>
-      // },
+      {
+        id: "GUIDANCE_RELATIONS",
+        name: this.props.i18n.text.get(
+          "plugin.guider.user.tabs.title.guidanceRelations"
+        ),
+        type: "guider-student",
+        component: (
+          <GuidanceRelation contactLogsPerPage={this.contactLogsPerPage} />
+        ),
+      },
       {
         id: "STUDY_HISTORY",
         name: this.props.i18n.text.get(
@@ -299,6 +324,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStudentHistory,
+      loadStudentContactLogs,
       updateCurrentStudentHopsPhase,
     },
     dispatch

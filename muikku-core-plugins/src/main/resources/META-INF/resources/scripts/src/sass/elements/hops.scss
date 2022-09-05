@@ -646,24 +646,42 @@
 
 // HOPS study tool dropdown content
 .hops-container__study-tool-dropdown-container {
-  padding: 10px;
+  max-height: 340px;
+  max-width: 375px;
+  padding: 5px;
 }
 
-.hops-container__study-tool-dropdow-subsection {
+.hops-container__study-tool-dropdow-suggestion-subsection {
   align-items: center;
+  border-bottom: 1px solid $color-default-separator-border;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: wrap;
   justify-content: flex-start;
-  margin: 10px 0 0;
+  padding: 10px 0;
 
   .hops-container__study-tool-dropdow-title {
     font-size: 0.875rem;
+    font-weight: 400;
   }
+}
+
+.hops-container__study-tool-dropdow-suggestion-container {
+  display: flex;
+  flex-flow: column;
+  max-height: 275px;
+  max-width: inherit;
+  overflow: auto;
+}
+
+.hops-container__study-tool-dropdow-suggestion-subsection:last-child {
+  border-bottom: none;
 }
 
 .hops-container__study-tool-dropdow-title {
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: bold;
+  padding: 5px 0;
+  text-align: initial;
 }
 
 .hops-planning__activity-proggressbar-tooltip {
@@ -671,4 +689,9 @@
   max-width: 400px;
   padding: 5px 10px;
   text-align: left;
+}
+
+.hops-container__study-tool-button-container {
+  display: flex;
+  width: 100%;
 }

@@ -5,9 +5,15 @@
  */
 
 import * as React from "react";
+import { HTMLAttributeAnchorTarget } from "react";
 import { Redirect } from "react-router-dom";
 import "~/sass/elements/link.scss";
 import { scrollToSection } from "~/util/modifiers";
+import { i18nType } from "~/reducers/base/i18n";
+import { StateType } from "~/reducers";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
+import { AnyActionType } from "~/actions/index";
 
 /**
  * LinkProps
@@ -29,6 +35,7 @@ interface LinkProps
   scrollPadding?: number;
   disableScroll?: boolean;
   disableSmoothScroll?: boolean;
+  i18n: i18nType;
 }
 
 /**
@@ -42,7 +49,7 @@ interface LinkState {
 /**
  * Link
  */
-export default class Link extends React.Component<LinkProps, LinkState> {
+export class Link extends React.Component<LinkProps, LinkState> {
   private touchCordX: number | null;
   private touchCordY: number | null;
 
@@ -184,6 +191,33 @@ export default class Link extends React.Component<LinkProps, LinkState> {
   }
 
   /**
+   * renderAccessibilityIndicator
+   * @param target target
+   * @returns target accessibility indicator
+   */
+  renderAccessibilityIndicatorByTarget = (
+    target: HTMLAttributeAnchorTarget
+  ) => {
+    switch (target) {
+      case "_blank":
+        return (
+          <>
+            <span className="visually-hidden">
+              {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+            </span>
+            <span
+              role="presentation"
+              className="external-link-indicator icon-external-link"
+            ></span>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -213,6 +247,40 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       elementProps.tabIndex = 0;
     }
 
+    if (Element === "a") {
+      return (
+        <Element
+          ref="element"
+          {...elementProps}
+          onKeyDown={this.onKeyDown}
+          className={
+            (this.props.className || "") +
+            (this.state.active ? " active" : "") +
+            (this.props.disabled ? " disabled" : "")
+          }
+          onClick={this.onClick}
+          onTouchStart={this.onTouchStart}
+          onTouchEnd={this.onTouchEnd}
+          onTouchMove={this.onTouchMove}
+        >
+          {elementProps.children}
+          {this.props.target ? (
+            this.renderAccessibilityIndicatorByTarget(this.props.target)
+          ) : this.props.openInNewTab ? (
+            <>
+              <span className="visually-hidden">
+                {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+              </span>
+              <span
+                role="presentation"
+                className="external-link-indicator icon-external-link"
+              ></span>
+            </>
+          ) : null}
+        </Element>
+      );
+    }
+
     return (
       <Element
         ref="element"
@@ -239,3 +307,25 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     return this.refs["element"] as HTMLElement;
   }
 }
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  withRef: true,
+})(Link);

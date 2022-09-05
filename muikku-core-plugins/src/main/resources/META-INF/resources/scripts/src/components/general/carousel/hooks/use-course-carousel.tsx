@@ -6,6 +6,8 @@ import { CourseStatus, StudentActivityCourse } from "~/@types/shared";
 import { Course } from "../course-carousel";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { Suggestion } from "../../../../@types/shared";
+import { AlternativeStudyObject } from "~/hooks/useStudentAlternativeOptions";
+import { filterSpecialSubjects } from "~/helper-functions/shared";
 
 /**
  * UseStudentActivityState
@@ -65,39 +67,40 @@ export const useCourseCarousel = (
       }));
 
       try {
-        /**
-         * Loadeds course carousel data
-         */
+        // Loadeds course carousel data
         const [loadedCourseCarouselData] = await Promise.all([
           (async () => {
-            /**
-             * Loaded student activity list
-             */
+            // Student subject options
+            const loadedStudentAlternativeOptions = (await promisify(
+              mApi().hops.student.alternativeStudyOptions.read(studentId),
+              "callback"
+            )()) as AlternativeStudyObject;
+
+            //Loaded student activity list
             const studentActivityList = (await promisify(
               mApi().hops.student.studyActivity.read(studentId),
               "callback"
             )()) as StudentActivityCourse[];
 
-            /**
-             * Initialized with empty array. This list will be looped
-             * with server calls that returns suggested courses which will eventually go
-             * to course carousel. For now there is atleast one course per subject. Might be changed later.
-             */
+            // Initialized with empty array. This list will be looped
+            // with server calls that returns suggested courses which will eventually go
+            // to course carousel. For now there is atleast one course per subject. Might be changed later.
             let courses: CarouselSuggestion[] = [];
 
-            /**
-             * This list only contains courses suggested as next. Will do same procedure as
-             * first list
-             */
+            // This list only contains courses suggested as next. Will do same procedure as
+            // first list
             const coursesAsNext: CarouselSuggestion[] = [];
 
-            /**
-             * Ids of supervisor suggestions
-             */
+            // Ids of supervisor suggestions
             const suggestedNextIdList: number[] = [];
 
+            const filteredSchoolCourseTable = filterSpecialSubjects(
+              schoolCourseTable,
+              loadedStudentAlternativeOptions
+            );
+
             // Iterate course matrix
-            for (const sCourseItem of schoolCourseTable) {
+            for (const sCourseItem of filteredSchoolCourseTable) {
               for (const aCourse of sCourseItem.availableCourses) {
                 // If transfered, graded, ongoing
                 if (

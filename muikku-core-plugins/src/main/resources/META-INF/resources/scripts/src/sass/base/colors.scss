@@ -169,6 +169,7 @@ $color-assessment-box-shadow: 0 0 5px rgb(255 255 255 / 80%);
 // General
 $color-default-body: #f5f5f5;
 $color-overlay-background: rgb(0 0 0 / 50%);
+$color-disconnect-warning-overlay-background: rgb(0 0 0 / 85%);
 $color-executing-background: #ffffff;
 
 // Notification queue
@@ -229,6 +230,7 @@ $color-button-inverse-background: $color-inverse;
 $color-button-inverse-text: $color-inverse-contrast;
 $color-button-disabled-background: #cccccc;
 $color-workspace-signup-readmore-button-background: #ff008d;
+$color-appointment-calendar-button-background: #f64e4e;
 $color-button-wizard-background: $color-primary;
 $color-button-wizard-text: $color-primary-contrast;
 $color-button-floating-shadow: rgb(0 0 0 / 25%);
@@ -492,7 +494,7 @@ $color-math-editor-line-storage-color: #0083db;
 $color-math-editor-line-constant-color: #ff9900;
 $color-math-editor-line-keyword-color: #0083db;
 
-// Task fields
+// TASK FIELDS
 $taskfield-border-color: #5ed2ff;
 
 // Transferred from main-functions.scss
@@ -507,8 +509,7 @@ $color-environment-navbar-item-menu-button: $color-default;
 $color-workspace-navbar-background: $color-workspace;
 $color-workspace-edit-mode-navbar-background: #000000;
 
-// scollbar
-
+// SCROLLBAR
 $color-scrollbar-background: #e0e0e0;
 $color-scrollbar-handle: #afafaf;
 

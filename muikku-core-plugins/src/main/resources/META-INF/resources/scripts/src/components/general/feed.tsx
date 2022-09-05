@@ -4,6 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/feed.scss";
+import "~/sass/elements/wcag.scss";
 
 /**
  * FeedProps
@@ -62,53 +63,41 @@ class Feed extends React.Component<FeedProps, FeedState> {
               )}
             </div>
             <div className="feed__item-body">
-              {entry.feed === "nettilukio" ? (
-                <a
-                  className="feed__item-title feed__item-title--nettilukio"
-                  href={entry.link}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {entry.title}
-                </a>
-              ) : (
-                <a
-                  className="feed__item-title feed__item-title--nettiperuskoulu"
-                  href={entry.link}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {entry.title}
-                </a>
-              )}
+              <div
+                className={`feed__item-title feed__item-title--${entry.feed}`}
+              >
+                {entry.title}
+              </div>
               <div
                 className="feed__item-description"
                 dangerouslySetInnerHTML={{ __html: entry.description }}
               />
+              <div className="feed__item-link">
+                <a
+                  href={entry.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`link link--feed-${entry.feed}`}
+                >
+                  {this.props.i18n.text.get("plugin.feeds.readMore.label")} (
+                  {entry.feed === "nettilukio"
+                    ? "nettilukio.fi"
+                    : "nettiperuskoulu.fi"}
+                  )
+                  <span className="visually-hidden">
+                    {entry.title}
+                    {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+                  </span>
+                  <span
+                    role="presentation"
+                    className="external-link-indicator icon-external-link"
+                  />
+                </a>
+              </div>
               <div className="feed__item-meta">
                 <span className="feed__item-date">
                   {this.props.i18n.time.format(entry.publicationDate)}
-                </span>{" "}
-                -{" "}
-                {entry.feed === "nettilukio" ? (
-                  <a
-                    href="https://nettilukio.fi"
-                    target="_blank"
-                    className="feed__item-label feed__item-label--nettilukio"
-                    rel="noreferrer"
-                  >
-                    nettilukio.fi
-                  </a>
-                ) : (
-                  <a
-                    href="https://nettiperuskoulu.fi"
-                    target="_blank"
-                    className="feed__item-label feed__item-label--nettiperuskoulu"
-                    rel="noreferrer"
-                  >
-                    nettiperuskoulu.fi
-                  </a>
-                )}
+                </span>
               </div>
             </div>
           </li>
