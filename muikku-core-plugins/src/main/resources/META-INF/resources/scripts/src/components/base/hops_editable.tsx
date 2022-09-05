@@ -5,6 +5,7 @@ import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
+import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 
@@ -16,6 +17,7 @@ interface HopsProps {
   defaultData: HOPSDataType;
   onHopsChange?: (hops: HOPSDataType) => any;
   i18n: i18nType;
+  status: StatusType;
 }
 
 /**
@@ -508,7 +510,13 @@ class Hops extends React.Component<HopsProps, HopsState> {
           </div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get("plugin.records.hops.science.title")}
+              {this.props.status.profile.curriculumName === "OPS 2016"
+                ? this.props.i18n.text.get(
+                    "plugin.records.hops.science.ops2016.title"
+                  )
+                : this.props.i18n.text.get(
+                    "plugin.records.hops.science.ops2021.title"
+                  )}
             </div>
             <div className="application-sub-panel__item-data">
               {["BI", "FY", "KE", "GE"].map((option: string) => {
@@ -596,6 +604,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     defaultData: state.hops && state.hops.value,
+    status: state.status,
   };
 }
 
