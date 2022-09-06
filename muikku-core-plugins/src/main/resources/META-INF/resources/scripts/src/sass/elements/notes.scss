@@ -71,7 +71,7 @@
   }
 }
 
-.notes__item--expired {
+.notes__item--overdue {
   .notes__item-dates-date-range {
     background-color: $color-fatal;
     color: $color-default;
@@ -237,7 +237,7 @@
   padding: 2px 8px;
 }
 
-.notes__item-status--expired {
+.notes__item-status--overdue {
   background-color: $color-fatal;
   color: $color-default;
 }
