@@ -17,6 +17,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
+import Tabs, { Tab } from "../general/tabs";
 
 /**
  * IChatRoomType
@@ -114,6 +115,7 @@ interface IOpenChatJID {
 interface IChatState {
   connection: Strophe.Connection;
   connectionHostname: string;
+  activeTab: string;
   isInitialized: boolean;
   availableMucRooms: IAvailableChatRoomType[];
   showControlBox: boolean;
@@ -163,7 +165,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.state = {
       connection: null,
       connectionHostname: null,
-
+      activeTab: "rooms",
       isInitialized: false,
       availableMucRooms: [],
       showControlBox:
@@ -825,17 +827,14 @@ class Chat extends React.Component<IChatProps, IChatState> {
       return null;
     }
 
-    return (
-      <div className="chat">
-        {/* Chat bubble */}
-        {this.state.showControlBox ? null : (
-          <div onClick={this.toggleControlBox} className="chat__bubble">
-            <span className="icon-chat"></span>
-          </div>
-        )}
-
-        {/* Chat controlbox */}
-        {this.state.showControlBox && (
+    const chatTabs: Tab[] = [
+      {
+        id: "rooms",
+        type: "chat",
+        name: this.props.i18n.text.get(
+          "plugin.workspace.materialsManagement.editorView.tabs.label.content"
+        ),
+        component: (
           <div className="chat__panel chat__panel--controlbox">
             <div className="chat__panel-header chat__panel-header--controlbox">
               <Dropdown
@@ -999,6 +998,67 @@ class Chat extends React.Component<IChatProps, IChatState> {
               )}
             </div>
           </div>
+        ),
+      },
+      {
+        id: "persons",
+        type: "chat",
+        name: this.props.i18n.text.get(
+          "plugin.workspace.materialsManagement.editorView.tabs.label.content"
+        ),
+        component: (
+          <div className="chat__panel chat__panel--controlbox">
+            <div className="chat__panel-header chat__panel-header--controlbox">
+              <Dropdown
+                alignSelf="left"
+                modifier="chat"
+                items={this.setUserAvailabilityDropdown().map(
+                  (item) => (closeDropdown: () => any) =>
+                    (
+                      <Link
+                        className={`link link--full link--chat-dropdown link--chat-availability-${item.modifier}`}
+                        onClick={(...args: any[]) => {
+                          closeDropdown();
+                          item.onClick && item.onClick(...args);
+                        }}
+                      >
+                        <span className={`link__icon icon-${item.icon}`}></span>
+                        <span>{this.props.i18n.text.get(item.text)}</span>
+                      </Link>
+                    )
+                )}
+              >
+                <span
+                  className={`chat__button chat__button--availability chat__button--availability-${this.state.selectedUserPresence} icon-user`}
+                ></span>
+              </Dropdown>
+              <span
+                onClick={this.toggleControlBox}
+                className="chat__button chat__button--close icon-cross"
+              ></span>
+            </div>
+          </div>
+        ),
+      },
+    ];
+
+    return (
+      <div className="chat">
+        {/* Chat bubble */}
+        {this.state.showControlBox ? null : (
+          <div onClick={this.toggleControlBox} className="chat__bubble">
+            <span className="icon-chat"></span>
+          </div>
+        )}
+
+        {/* Chat controlbox */}
+        {this.state.showControlBox && (
+          <Tabs
+            modifier="chat"
+            tabs={chatTabs}
+            onTabChange={(id: string) => this.setState({ activeTab: id })}
+            activeTab={this.state.activeTab}
+          ></Tabs>
         )}
 
         {/* Chatrooms */}
