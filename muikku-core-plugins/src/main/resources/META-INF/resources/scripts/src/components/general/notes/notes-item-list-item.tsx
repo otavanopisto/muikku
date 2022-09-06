@@ -81,6 +81,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       status,
     } = notesItem;
 
+    const isExpired = isNoteLate(dueDate);
+
     const updatedModifiers = [];
 
     if (containerModifier && containerModifier.length > 0) {
@@ -177,6 +179,10 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
     }
 
+    if (dueDate !== null && isExpired) {
+      updatedModifiers.push("expired");
+    }
+
     /**
      * createHtmlMarkup
      * @param htmlString string that contains html
@@ -237,32 +243,44 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * renderStatus
      */
     const renderStatus = () => {
+      const statuses: JSX.Element[] = [];
+
+      if (isExpired) {
+        statuses.push(
+          <div className="notes__item-status notes__item-status--expired">
+            Myöhässä
+          </div>
+        );
+      }
+
       switch (status) {
         case NotesItemStatus.ONGOING:
-          return (
+          statuses.push(
             <div className="notes__item-status notes__item-status--ongoing">
               {props.i18n.text.get("plugin.records.notes.status.ongoing")}
             </div>
           );
-
+          break;
         case NotesItemStatus.APPROVAL_PENDING:
-          return (
+          statuses.push(
             <div className="notes__item-status notes__item-status--pending">
               {props.i18n.text.get("plugin.records.notes.status.pending")}
             </div>
           );
-
+          break;
         case NotesItemStatus.APPROVED:
-          return (
+          statuses.push(
             <div className="notes__item-status notes__item-status--done">
               <span className="notes__item-status-indicator icon-check"></span>
               {props.i18n.text.get("plugin.records.notes.status.done")}
             </div>
           );
-
+          break;
         default:
           break;
       }
+
+      return statuses;
     };
 
     /**
@@ -476,3 +494,11 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
 NotesListItem.displayName = "NotesListItem";
 
 export default React.memo(NotesListItem);
+
+/**
+ * Checks if note is expired or late
+ * @param dueDate due date to check agains
+ * @returns Whether note is expired or late
+ */
+const isNoteLate = (dueDate: Date | null) =>
+  dueDate !== null && moment(new Date()).isAfter(new Date(dueDate));
