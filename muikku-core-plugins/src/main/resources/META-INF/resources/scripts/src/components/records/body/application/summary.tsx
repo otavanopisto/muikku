@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -16,10 +16,20 @@ import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
+import CourseCarousel from "~/components/general/carousel/course-carousel";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
+import Notes from "~/components/general/notes/notes";
+import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 
 /**
  * SummaryProps
@@ -30,6 +40,7 @@ interface SummaryProps {
   summary: SummaryType;
   status: StatusType;
   hops: HOPSType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -175,29 +186,60 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                   : null}
                               </div>
                             ) : null}
-                            <CommunicatorNewMessage
-                              extraNamespace="guidance-councelor"
-                              initialSelectedItems={[
-                                {
-                                  type: "staff",
-                                  value: {
-                                    id: councelor.userEntityId,
-                                    name: getName(councelor, true),
+                            <div className="item-list__user-actions">
+                              <CommunicatorNewMessage
+                                extraNamespace="guidance-councelor"
+                                initialSelectedItems={[
+                                  {
+                                    type: "staff",
+                                    value: {
+                                      id: councelor.userEntityId,
+                                      name: getName(councelor, true),
+                                    },
                                   },
-                                },
-                              ]}
-                            >
-                              <Button
-                                buttonModifiers={[
-                                  "info",
-                                  "contact-student-councelor",
                                 ]}
                               >
-                                {this.props.i18n.text.get(
-                                  "plugin.records.contactStudentCouncelor.message.label"
-                                )}
-                              </Button>
-                            </CommunicatorNewMessage>
+                                <ButtonPill
+                                  icon="envelope"
+                                  aria-label={this.props.i18n.text.get(
+                                    "plugin.records.contactStudentCouncelor.message.label"
+                                  )}
+                                  title={this.props.i18n.text.get(
+                                    "plugin.records.contactStudentCouncelor.message.label"
+                                  )}
+                                  buttonModifiers="new-message"
+                                ></ButtonPill>
+                              </CommunicatorNewMessage>
+                              {councelor.properties["profile-phone"] &&
+                              councelor.properties["profile-whatsapp"] ? (
+                                <WhatsappButtonLink
+                                  i18n={this.props.i18n}
+                                  mobileNumber={
+                                    councelor.properties["profile-phone"]
+                                  }
+                                />
+                              ) : null}
+                              {councelor.properties[
+                                "profile-appointmentCalendar"
+                              ] ? (
+                                <ButtonPill
+                                  aria-label={this.props.i18n.text.get(
+                                    "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
+                                  )}
+                                  title={this.props.i18n.text.get(
+                                    "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
+                                  )}
+                                  icon="clock"
+                                  buttonModifiers="appointment-calendar"
+                                  openInNewTab="_blank"
+                                  href={
+                                    councelor.properties[
+                                      "profile-appointmentCalendar"
+                                    ]
+                                  }
+                                />
+                              ) : null}
+                            </div>
                           </div>
                         </div>
                       );
@@ -263,6 +305,31 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
+              {this.props.hops.eligibility &&
+                !this.props.hops.eligibility.upperSecondarySchoolCurriculum && (
+                  <div className="application-sub-panel">
+                    <div className="application-sub-panel__header">
+                      Kursseja sinulle
+                    </div>
+                    <CourseCarousel
+                      studentId={this.props.status.userSchoolDataIdentifier}
+                      studentUserEntityId={this.props.status.userId}
+                      displayNotification={this.props.displayNotification}
+                    />
+                  </div>
+                )}
+
+              <div className="application-sub-panel">
+                <div className="application-sub-panel__header">
+                  Tehtävät ja omat muistutukset
+                </div>
+                <Notes
+                  usePlace="records"
+                  showHistoryPanel
+                  userId={this.props.status.userId}
+                  studentId={this.props.status.userId}
+                />
+              </div>
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
                   {this.props.i18n.text.get(
@@ -313,6 +380,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   </div>
                 </div>
               </div>
+
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
                   {this.props.i18n.text.get(
@@ -351,9 +419,10 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
+ * @param dispatch dispatch
  */
-function mapDispatchToProps() {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Summary);

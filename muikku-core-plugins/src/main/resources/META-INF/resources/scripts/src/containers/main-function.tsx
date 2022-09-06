@@ -1,4 +1,5 @@
 import Notifications from "../components/base/notifications";
+import DisconnectedWarningDialog from "../components/base/disconnect-warning";
 import { BrowserRouter, Route } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
@@ -81,6 +82,7 @@ import {
   setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
+  setLocationToInfoInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { updateVops } from "~/actions/main-function/vops";
@@ -92,7 +94,6 @@ import {
 } from "~/actions/main-function/records/yo";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
-import { loadCalendarEvents } from "~/actions/main-function/calendar";
 import Chat from "../components/chat/chat";
 import EvaluationBody from "../components/evaluation/body";
 import CeeposDone from "../components/ceepos/done";
@@ -293,6 +294,7 @@ export default class MainFunction extends React.Component<
    */
   loadRecordsData(dataSplitted: string[]) {
     const givenLocation = dataSplitted[0].split("/")[0];
+
     const originalData: any = queryString.parse(dataSplitted[1] || "", {
       arrayFormat: "bracket",
     });
@@ -346,6 +348,11 @@ export default class MainFunction extends React.Component<
         setLocationToStatisticsInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateStatistics() as Action);
+    } else if (givenLocation === "info") {
+      this.props.store.dispatch(
+        setLocationToInfoInTranscriptOfRecords() as Action
+      );
+      this.props.store.dispatch(updateSummary() as Action);
     }
     this.props.store.dispatch(updateHops() as Action);
   }
@@ -578,17 +585,8 @@ export default class MainFunction extends React.Component<
           this.props.store.getState().i18n.text.get("plugin.site.title")
         )
       );
-      this.props.store.dispatch(
-        loadCalendarEvents(
-          this.props.store.getState().status.userId,
-          moment().day(0).format(),
-          moment().day(5).format(),
-          "guidance"
-        ) as Action
-      );
       this.loadChatSettings();
     }
-
     return <IndexBody />;
   }
 
@@ -967,6 +965,7 @@ export default class MainFunction extends React.Component<
         loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
       );
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
+
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
       this.loadChatSettings();
     }
@@ -1016,6 +1015,10 @@ export default class MainFunction extends React.Component<
     return <EvaluationBody />;
   }
 
+  /**
+   * renderCeeposDoneBody
+   * @returns JSX.Element
+   */
   renderCeeposDoneBody() {
     this.updateFirstTime();
 
@@ -1040,6 +1043,10 @@ export default class MainFunction extends React.Component<
     return <CeeposDone status={parseInt(locationData.Status)} />;
   }
 
+  /**
+   * renderCeeposPayBody
+   * @returns JSX.Element
+   */
   renderCeeposPayBody() {
     this.updateFirstTime();
 
@@ -1073,6 +1080,7 @@ export default class MainFunction extends React.Component<
       <BrowserRouter>
         <div id="root">
           <Notifications></Notifications>
+          <DisconnectedWarningDialog />
           <Route exact path="/" render={this.renderIndexBody} />
           <Route
             path="/organization"

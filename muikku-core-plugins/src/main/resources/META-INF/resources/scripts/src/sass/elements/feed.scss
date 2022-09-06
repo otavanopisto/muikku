@@ -114,7 +114,7 @@
   color: $color-feed-default-text;
   display: block;
   font-weight: 600;
-  margin: 0 0 5px;
+  margin: 0 0 15px;
 
   @include breakpoint($breakpoint-mobile-xl) {
     font-size: 1rem;
@@ -124,14 +124,6 @@
   @include breakpoint($breakpoint-pad) {
     font-size: 1.25rem;
   }
-}
-
-.feed__item-title--nettilukio {
-  color: $color-frontpage-card-upper-secondary-school-title;
-}
-
-.feed__item-title--nettiperuskoulu {
-  color: $color-frontpage-card-secondary-school-title;
 }
 
 .feed__item-body {

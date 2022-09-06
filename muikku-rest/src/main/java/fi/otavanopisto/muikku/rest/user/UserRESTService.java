@@ -212,7 +212,7 @@ public class UserRESTService extends AbstractRESTService {
   public Response getUserEntityProperty(@PathParam("KEY") String key) {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     UserEntityProperty property = userEntityController.getUserEntityPropertyByKey(loggedUserEntity, key);
-    return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue())).build();
+    return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue(), property == null ? null : property.getUserEntity().getId())).build();
   }
   
   @GET
@@ -248,7 +248,7 @@ public class UserRESTService extends AbstractRESTService {
     if (StringUtils.isBlank(keys)) {
       storedProperties = userEntityController.listUserEntityProperties(userEntity);
       for (UserEntityProperty property : storedProperties) {
-        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(property.getKey(), property.getValue()));
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(property.getKey(), property.getValue(), userEntityId));
       }
     }
     else {
@@ -257,7 +257,8 @@ public class UserRESTService extends AbstractRESTService {
       for (int i = 0; i < keyArray.length; i++) {
         storedProperty = userEntityController.getUserEntityPropertyByKey(userEntity, keyArray[i]);
         String value = storedProperty == null ? null : storedProperty.getValue();
-        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(keyArray[i], value));
+
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(keyArray[i], value, userEntityId));
       }
     }
     return Response.ok(restProperties).build();
@@ -268,8 +269,29 @@ public class UserRESTService extends AbstractRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response setUserEntityProperty(fi.otavanopisto.muikku.rest.model.UserEntityProperty payload) {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-    userEntityController.setUserEntityProperty(loggedUserEntity, payload.getKey(), payload.getValue());
-    return Response.ok(payload).build();
+    
+    Boolean isLoggedUserStudent = userEntityController.isStudent(loggedUserEntity);
+    
+    if (payload.getUserEntityId() == null || payload.getUserEntityId().equals(loggedUserEntity.getId())) {
+      if (StringUtils.equals(payload.getKey(), "hopsPhase") && isLoggedUserStudent) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      userEntityController.setUserEntityProperty(loggedUserEntity, payload.getKey(), payload.getValue());
+      return Response.ok(payload).build();
+    }
+    else {
+      
+      if (isLoggedUserStudent) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      UserEntity userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
+      
+      if (!userEntityController.isStudent(userEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      userEntityController.setUserEntityProperty(userEntity, payload.getKey(), payload.getValue());
+      return Response.ok(payload).build();
+    }
   }
   
   @GET
@@ -421,7 +443,7 @@ public class UserRESTService extends AbstractRESTService {
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
       
       SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults, false);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -1295,7 +1317,8 @@ public class UserRESTService extends AbstractRESTService {
           false,
           onlyDefaultUsers,
           firstResult, 
-          maxResults);
+          maxResults,
+          false);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -1317,7 +1340,8 @@ public class UserRESTService extends AbstractRESTService {
               userEntity.getId(), 
               (String) o.get("firstName"),
               (String) o.get("lastName"), 
-              (String) o.get("nickName"), 
+              (String) o.get("nickName"),
+              (String) o.get("studyProgrammeName"),
               hasImage,
               (String) o.get("nationality"),
               (String) o.get("language"), 
@@ -1814,7 +1838,8 @@ public class UserRESTService extends AbstractRESTService {
           false,
           false,
           firstResult, 
-          maxResults);
+          maxResults,
+          false);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -1898,7 +1923,7 @@ public class UserRESTService extends AbstractRESTService {
     Date endDate = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
     
     return new fi.otavanopisto.muikku.rest.model.User(userEntity.getId(),
-        user.getFirstName(), user.getLastName(), user.getNickName(), hasImage,
+        user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage,
         user.getNationality(), user.getLanguage(),
         user.getMunicipality(), user.getSchool(), emailAddress,
         startDate, endDate);

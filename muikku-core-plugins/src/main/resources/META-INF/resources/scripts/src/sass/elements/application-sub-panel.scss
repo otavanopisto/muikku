@@ -6,11 +6,36 @@
 .application-sub-panel {
   border-bottom: 1px solid $color-subpanel-border;
   margin: 0 0 30px;
+  width: 100%;
 
   &:last-child {
     border: 0;
     margin: 0;
   }
+}
+
+.application-sub-panel--guidance-relation-contact-info {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 400px;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+}
+
+.application-sub-panel--guidance-relation-contact-events {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    flex-grow: 2;
+    flex-shrink: 1;
+  }
+}
+
+.application-sub-panel--guidance-relation-guidance-events {
+  flex-basis: 100%;
 }
 
 .application-sub-panel--header-main {
@@ -31,6 +56,7 @@
 }
 
 .application-sub-panel--student-data-container {
+  align-items: flex-start;
   display: flex;
   flex-wrap: wrap;
 
@@ -40,21 +66,35 @@
 }
 
 .application-sub-panel--student-data-primary {
+  border: 0;
   flex-basis: 100%;
+  margin: 0 0 30px;
+  width: auto;
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: 45%;
+    margin: 0;
   }
 }
 
 .application-sub-panel--student-data-secondary {
+  border: 0;
   flex-basis: 100%;
+  margin: 0 0 30px;
+  width: auto;
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: auto;
     flex-grow: 1;
+    margin: 0;
     padding: 0 0 0 20px;
   }
+}
+
+.application-sub-panel--studies-journal-entries,
+.application-sub-panel--studies-assignments,
+.application-sub-panel--studies-exercises {
+  padding: 10px;
 }
 
 .application-sub-panel--worklist {
@@ -64,7 +104,6 @@
 
 .application-sub-panel--yo-status-container {
   border-bottom: 0;
-  flex-basis: 50%;
 }
 
 .application-sub-panel--workspace-settings {
@@ -139,6 +178,16 @@
   padding: 5px;
 }
 
+.application-sub-panel__header--studies-assignments,
+.application-sub-panel__header--studies-exercises,
+.application-sub-panel__header--studies-journal-entries {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
 .application-sub-panel__header-action {
   border: 1px solid $color-subpanel-border;
   border-radius: 3px;
@@ -154,8 +203,11 @@
   flex-flow: column wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  margin-left: 15px;
   text-transform: none;
+
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
 
   @include breakpoint($breakpoint-desktop) {
     align-items: center;
@@ -229,6 +281,16 @@
   flex-flow: column nowrap;
 }
 
+.application-sub-panel__body--studies-options {
+  align-items: center;
+  background-color: $color-info;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  text-align: center;
+  width: 50%;
+}
+
 .application-sub-panel__body--studies-summary-cards {
   display: flex;
   flex-direction: column;
@@ -247,6 +309,11 @@
   @include breakpoint($breakpoint-pad) {
     flex-direction: row;
   }
+}
+
+.application-sub-panel__body--guidance-relation {
+  display: flex;
+  flex-flow: wrap;
 }
 
 .application-sub-panel__notification-item {
@@ -307,7 +374,7 @@
   margin: 10px 0;
 
   @include breakpoint($breakpoint-desktop) {
-    border-radius: 3px;
+    border-radius: 5px;
     flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;
@@ -1034,20 +1101,11 @@
   justify-content: flex-end;
 }
 
-.application-sub-panel__item-data--workspace-management {
-  align-items: flex-start;
-  flex-flow: column nowrap;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row wrap;
-  }
-}
-
-.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-start-date.application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-end-date.application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }
@@ -1078,15 +1136,6 @@
   display: inline-block;
   margin: 2px 5px 2px 0;
   padding: 4px;
-}
-
-.application-sub-panel__item-description {
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: 0.8125rem;
-  font-style: italic;
-  margin: 10px 0 0;
 }
 
 // HOPS in Guider in readable state
@@ -1128,7 +1177,7 @@
 // Profile view
 .application-sub-panel__item--profile {
   align-items: flex-start;
-  flex-flow: row wrap;
+  flex-flow: column wrap;
 
   .application-sub-panel__item-title {
     flex-basis: 100%;
@@ -1213,6 +1262,18 @@
 
 .application-sub-panel__item--course-activity {
   padding: 10px 0;
+}
+
+.application-sub-panel__item-data-container--currentstudent-emails-list,
+.application-sub-panel__item-data-container--currentstudent-phonenumbers-list,
+.application-sub-panel__item-data-container--currentstudent-usergroups-list {
+  flex-wrap: wrap;
+}
+
+.application-sub-panel__item-data--currentstudent-email-item,
+.application-sub-panel__item-data--currentstudent-phonenumber-item,
+.application-sub-panel__item-data--currentstudent-usergroup-item {
+  width: 100%;
 }
 
 // This is related to matriculation enrollment and needs to be done different when Studies view gets integrated to devel

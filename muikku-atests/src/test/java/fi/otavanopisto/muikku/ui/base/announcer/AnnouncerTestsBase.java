@@ -34,9 +34,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitAndClick("div.application-panel__helper-container.application-panel__helper-container--main-action > a.button--primary-function");
         
         waitForPresent(".cke_contents");
-        waitForPresent(".env-dialog__form-element-container--datepicker:nth-child(2) .react-datepicker__input-container input");
-        selectAllAndClear(".env-dialog__form-element-container--datepicker:nth-child(2) .react-datepicker__input-container input");
-        sendKeys(".env-dialog__form-element-container--datepicker:nth-child(2) .react-datepicker__input-container input", "21.12.2025");
+        waitForPresent(".env-dialog__row--dates .env-dialog__form-element-container:nth-child(2) input");
+        selectAllAndClear(".env-dialog__row--dates .env-dialog__form-element-container:nth-child(2) input");
+        sendKeys(".env-dialog__row--dates .env-dialog__form-element-container:nth-child(2) input", "21.12.2025");
         waitAndClick(".env-dialog__header");
         waitForNotVisible(".react-datepicker");
         sleep(500);
@@ -66,7 +66,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
         navigate("/announcer", false);
         waitForPresent(".application-list__item-content-header");
-        waitAndClick(".announcement__select-container input");
+        waitAndClick(".application-list__item-content-aside .form-element--item-selection-container input");
         waitAndClick("span.button-pill__icon.icon-trash");
         waitForVisible(".dialog a.button--standard-ok");
         sleep(500);
@@ -124,7 +124,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
+        createAnnouncement(admin.getId(), "Test title", "<p>Announcer test announcement</p>", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -136,7 +136,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitForPresent(".reading-panel__main-container header.article__header");
         assertTextIgnoreCase(".reading-panel__main-container header.article__header", "Test title");
         assertTextIgnoreCase(".reading-panel__main-container header.article__header + div", "12.11.2015");
-        assertTextIgnoreCase(".reading-panel__main-container .article__body", "announcer test announcement");
+        assertTextIgnoreCase(".reading-panel__main-container .article__body p", "Announcer test announcement");
       }finally{
         archiveUserByEmail(student.getEmail());
         deleteAnnouncements();

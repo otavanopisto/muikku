@@ -169,7 +169,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
           // TODO: At some point, refactor to simply fetch latest request by student + workspace
 
           WorkspaceAssessmentRequest latestAssesmentRequest = null;
-          List<WorkspaceAssessmentRequest> studentAssesmentRequests = gradingController.listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
+          List<WorkspaceAssessmentRequest> studentAssesmentRequests = gradingController.listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier(), false);
           for (WorkspaceAssessmentRequest assessmentRequest : studentAssesmentRequests) {
             Date assessmentRequestDate = assessmentRequest.getDate();
             if (assessmentRequestDate != null) {

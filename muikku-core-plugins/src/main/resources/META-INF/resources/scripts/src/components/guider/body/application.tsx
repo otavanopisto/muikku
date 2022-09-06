@@ -4,14 +4,13 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import { i18nType } from "reducers/base/i18n";
 import Students from "./application/students";
 import Toolbar from "./application/toolbar";
-import CurrentStudent from "./application/state-of-studies";
 import { StateType } from "~/reducers";
 
 /**
  * GuiderApplicationProps
  */
 interface GuiderApplicationProps {
-  aside: React.ReactElement<any>;
+  aside: JSX.Element;
   i18n: i18nType;
 }
 

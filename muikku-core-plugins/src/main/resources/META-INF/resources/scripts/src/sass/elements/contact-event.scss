@@ -1,0 +1,119 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.contact-event {
+  padding: 20px 0;
+
+  &:not(:last-child) {
+    border-bottom: 4px solid $color-default-separator-border;
+  }
+}
+
+.contact-event__header {
+  display: flex;
+  padding: 10px 0;
+}
+
+.contact-event__title {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  flex-grow: 1;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.contact-event__creator {
+  font-weight: 600;
+  line-height: 1;
+  margin-right: 10px;
+}
+
+.contact-event__type {
+  background-color: transparent;
+  border-radius: 12px;
+  font-size: 0.6875rem;
+  margin-right: 10px;
+  padding: 2px 8px;
+  text-transform: uppercase;
+
+  &.type-OTHER {
+    background-color: lighten($color-category-1, 35%);
+  }
+
+  &.type-LETTER {
+    background-color: lighten($color-category-2, 35%);
+  }
+
+  &.type-EMAIL {
+    background-color: lighten($color-category-3, 35%);
+  }
+
+  &.type-PHONE {
+    background-color: lighten($color-category-4, 35%);
+  }
+
+  &.type-CHATLOG {
+    background-color: lighten($color-category-5, 35%);
+  }
+
+  &.type-SKYPE {
+    background-color: lighten($color-category-6, 35%);
+  }
+
+  &.type-FACE2FACE {
+    background-color: lighten($color-category-7, 35%);
+  }
+
+  &.type-ABSENCE {
+    background-color: lighten($color-category-8, 35%);
+  }
+
+  &.type-MUIKKU {
+    background-color: lighten($color-category-9, 35%);
+  }
+}
+
+.contact-event__date {
+  color: darken($color-default-helper, 20%);
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 2px 0;
+}
+
+.contact-event__body {
+  background-color: $color-default;
+  padding: 0 10px;
+}
+
+.contact-event__footer {
+  align-items: center;
+  display: flex;
+  padding: 10px;
+
+  a {
+    cursor: pointer;
+  }
+
+  & > div:not(:first-child),
+  a:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.contact-event__header--reply {
+  font-size: 1.05 rem;
+}
+
+.contact-event__replies {
+  padding: 0 0 0 40px;
+}
+
+.contact-event__reply {
+  margin-top: 20px;
+}

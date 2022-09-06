@@ -53,6 +53,7 @@ public class ToRTestsBase extends AbstractUITest {
       
       CourseActivity ca = new CourseActivity();
       ca.setCourseId(course1.getId());
+      ca.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
       ca.setCourseName(course1.getName());
       ca.setGrade("Excellent");
       ca.setPassingGrade(true);
@@ -60,7 +61,6 @@ public class ToRTestsBase extends AbstractUITest {
       ca.setText("Test evaluation.");
       ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
       ca.setState(CourseActivityState.GRADED);
-      
       
       List<CourseActivity> courseActivities = new ArrayList<>();
       courseActivities.add(ca);
@@ -88,7 +88,7 @@ public class ToRTestsBase extends AbstractUITest {
           .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date, true)
           .mockStaffCompositeCourseAssessmentRequests()
           .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
-          .mockCourseAssessments(courseStudent, admin)
+          .mockCourseAssessments(course1, courseStudent, admin)
           .mockStudentCourseStats(student.getId(), 10).build();
         
         logout();
@@ -102,8 +102,8 @@ public class ToRTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
         assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
         
-        waitAndClick(".application-list__item-header--course .application-list__header-primary");
-        waitForPresent(".workspace-assessment__literal .workspace-assessment__literal-data");
+        waitAndClick(".application-list__item-header--course");
+        waitForContent(".workspace-assessment__literal .workspace-assessment__literal-data", 5);
         assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -195,15 +195,15 @@ public class ToRTestsBase extends AbstractUITest {
         login();
         
         navigate("/records#records", false);
-        waitForPresent(".application-list__header-primary");
-        waitAndClick(".application-list__header-primary");
-        waitForPresent(".state-PASSED");
-        assertText(".state-PASSED", "E");
-        waitAndClick(".application-list__item-header--studies-assignment .application-list__header-primary");
-        waitForVisible(".material-page__assignment-assessment-grade-data");
-        assertText(".material-page__assignment-assessment-grade-data", "Excellent");
-        waitForVisible(".material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p");
-        assertTextIgnoreCase(".material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p", "Test evaluation.");
+        waitForPresent(".application-list__header-secondary");
+        waitAndClick(".application-list__header-secondary .button--assignments-and-exercieses");
+        waitForPresent(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED");
+        assertText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED", "E");
+        waitAndClick(".dialog--studies .tabs__tab-data--assignments.active .application-list__item-header--studies-assignment");
+        waitForVisible(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-grade-data");
+        assertText(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-grade-data", "Excellent");
+        waitForVisible(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p");
+        assertTextIgnoreCase(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p", "Test evaluation.");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());
@@ -233,7 +233,7 @@ public class ToRTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       navigate("/records#hops", false);
-      waitAndClick(".form-element__radio-option-container #goalMatriculationExamyes");
+      waitAndClick(".form-element--checkbox-radiobutton #goalMatriculationExamyes");
       waitAndClick(".button--add-subject-row");
       waitForVisible(".form-element__select--matriculation-exam");
       selectOption(".form-element__select--matriculation-exam", "A");
@@ -276,7 +276,7 @@ public class ToRTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       navigate("/records#hops", false);
-      waitAndClick(".form-element__radio-option-container #goalMatriculationExamyes");
+      waitAndClick(".form-element--checkbox-radiobutton #goalMatriculationExamyes");
       waitAndClick(".button--add-subject-row");
       waitForVisible(".form-element__select--matriculation-exam");
       waitAndClick(".tabs--application-panel .tabs__tab--yo");
@@ -325,7 +325,7 @@ public class ToRTestsBase extends AbstractUITest {
         findElementOrReloadAndFind(".item-list--student-councelors .item-list__user-name", 5, 5000);
         assertTextIgnoreCase(".item-list--student-councelors .item-list__user-name", "Admin User");
         assertTextIgnoreCase(".item-list--student-councelors .item-list__user-email", "admin@example.com");
-        assertTextIgnoreCase(".button--contact-student-councelor", "Lähetä viesti");
+        assertPresent(".item-list--student-councelors .button-pill--new-message");
         
         waitForPresent(".application-sub-panel__card-header--summary-evaluated");
         assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");

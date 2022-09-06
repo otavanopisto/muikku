@@ -64,7 +64,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     try {
-      Course course1 = new CourseBuilder().name("testcourse 2").id((long) 101).description("test course for testing").buildCourse();
+      Course course1 = new CourseBuilder().name("testcourse 2").id((long) 101).description("<p>test course for testing</p>").buildCourse();
       mockBuilder
         .addStaffMember(admin)
         .mockLogin(admin)
@@ -78,8 +78,8 @@ public class CoursePickerTestsBase extends AbstractUITest {
         waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
         waitForPresent("div.application-panel__main-container .application-list__item-header--course .application-list__header-primary");
         waitAndClick("div.application-panel__main-container .application-list__item-header--course .application-list__header-primary");
-        waitForVisible(".course--open .application-list__item-body--course article");
-        assertText(".course--open .application-list__item-body--course article", "test course for testing");
+        waitForVisible(".course--open .application-list__item-content-body p");  
+        assertText(".course--open .application-list__item-content-body p", "test course for testing");
       }finally {
         deleteWorkspace(workspace.getId());
       }
@@ -138,7 +138,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     try{
-      Course course1 = new CourseBuilder().name("testcourse hurhur").id((long) 102).description("test course for testing").buildCourse();
+      Course course1 = new CourseBuilder().name("testcourse").id((long) 102).description("test course for testing").buildCourse();
       Course course2 = new CourseBuilder().name("WIENER course").id((long) 103).description("wiener course for testing").buildCourse();
       Course course3 = new CourseBuilder().name("potato course").id((long) 104).description("potato course for testing").buildCourse();
       mockBuilder

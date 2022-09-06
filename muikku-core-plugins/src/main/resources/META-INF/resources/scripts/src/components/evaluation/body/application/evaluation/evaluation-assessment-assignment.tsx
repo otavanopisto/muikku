@@ -1,6 +1,9 @@
 import * as React from "react";
 import EvaluationMaterial from "./evaluation-material";
-import { AssignmentEvaluationSaveReturn } from "~/@types/evaluation";
+import {
+  AssessmentRequest,
+  AssignmentEvaluationSaveReturn,
+} from "~/@types/evaluation";
 import {
   WorkspaceType,
   MaterialContentNodeType,
@@ -29,6 +32,7 @@ import promisify from "~/util/promisify";
 import ExcerciseEditor from "./editors/excercise-editor";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 import { RecordValue } from "~/@types/recorder";
+import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
 /**
  * EvaluationCardProps
@@ -39,6 +43,7 @@ interface EvaluationAssessmentAssignmentProps {
   open: boolean;
   i18n: i18nType;
   evaluations: EvaluationState;
+  selectedAssessment: AssessmentRequest;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
   showAsHidden: boolean;
   compositeReply?: MaterialCompositeRepliesType;
@@ -116,10 +121,9 @@ class EvaluationAssessmentAssignment extends React.Component<
    * loadMaterialData
    */
   loadMaterialData = async () => {
-    const { workspace, assigment, evaluations } = this.props;
+    const { workspace, assigment, selectedAssessment } = this.props;
 
-    const userEntityId =
-      evaluations.evaluationSelectedAssessmentId.userEntityId;
+    const userEntityId = selectedAssessment.userEntityId;
 
     this.setState({
       isLoading: true,
@@ -225,15 +229,6 @@ class EvaluationAssessmentAssignment extends React.Component<
       materialNode: updatedMaterial,
     });
   };
-
-  /**
-   * createHtmlMarkup
-   * This should sanitize html
-   * @param htmlString string that contains html
-   */
-  createHtmlMarkup = (htmlString: string) => ({
-    __html: htmlString,
-  });
 
   /**
    * toggleOpened
@@ -637,6 +632,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           ) : this.state.materialNode ? (
             this.props.assigment.assignmentType === "EVALUATED" ? (
               <AssignmentEditor
+                selectedAssessment={this.props.selectedAssessment}
                 onAudioAssessmentChange={this.handleAudioAssessmentChange}
                 showAudioAssessmentWarningOnClose={
                   this.state.showCloseEditorWarning
@@ -654,6 +650,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             ) : (
               <ExcerciseEditor
+                selectedAssessment={this.props.selectedAssessment}
                 onAudioAssessmentChange={this.handleAudioAssessmentChange}
                 showAudioAssessmentWarningOnClose={
                   this.state.showCloseEditorWarning
@@ -686,12 +683,11 @@ class EvaluationAssessmentAssignment extends React.Component<
                     )}
                   </div>
 
-                  <div
-                    className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
-                    dangerouslySetInnerHTML={this.createHtmlMarkup(
-                      compositeReply.evaluationInfo.text
-                    )}
-                  />
+                  <div className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal">
+                    <CkeditorContentLoader
+                      html={compositeReply.evaluationInfo.text}
+                    />
+                  </div>
                 </div>
               ) : null}
 
@@ -716,10 +712,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               material={this.state.materialNode}
               workspace={this.props.workspace}
               compositeReply={compositeReply}
-              userEntityId={
-                this.props.evaluations.evaluationSelectedAssessmentId
-                  .userEntityId
-              }
+              userEntityId={this.props.selectedAssessment.userEntityId}
             />
           ) : null}
         </AnimateHeight>

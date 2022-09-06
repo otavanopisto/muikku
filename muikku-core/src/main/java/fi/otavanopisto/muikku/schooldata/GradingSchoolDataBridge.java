@@ -70,7 +70,7 @@ public interface GradingSchoolDataBridge {
    * @return created workspace assessment
    */
   public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String WorkspaceIdentifier,
-      String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource,
+      String workspaceSubjectIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource,
       String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date);
 
   /**
@@ -123,7 +123,7 @@ public interface GradingSchoolDataBridge {
    * @return updated workspace assessment
    */
   public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
-      String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier,
+      String workspaceIdentifier, String workspaceSubjectIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier,
       String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date);
 
   public void deleteWorkspaceAssessment(SchoolDataIdentifier workspaceIdentifier,
@@ -136,7 +136,7 @@ public interface GradingSchoolDataBridge {
 
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier);
 
-  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier, String studentIdentifier);
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier, String studentIdentifier, Boolean archived);
 
   public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String studentIdentifier);
   

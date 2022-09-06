@@ -76,7 +76,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       
       waitForPresent(".application-list__item-content-header");
-      waitAndClick(".announcement__select-container input");
+      waitAndClick(".form-element--item-selection-container input");
       waitAndClick(".application-panel__toolbar .button-pill--delete");
       sleep(1500);
       waitAndClick(".button--standard-ok");

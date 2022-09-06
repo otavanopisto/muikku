@@ -14,14 +14,13 @@ public interface CourseMetaSchoolDataBridge {
 	
 	/* Subjects */
 	
+	public Subject findSubjectByCode(String code);
 	public Subject findSubject(String identifier);
 	public List<Subject> listSubjects();
 	
 	/* CourseIdentifier */
 
 	public CourseIdentifier findCourseIdentifier(String identifier);
-	public List<CourseIdentifier> listCourseIdentifiers();
-	public List<CourseIdentifier> listCourseIdentifiersBySubject(String subjectIdentifier);
 	
 	/* EducationType */
 	

@@ -19,9 +19,13 @@ import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
   updateCurrentStudentCompositeRepliesData,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import { AudioAssessment } from "~/@types/evaluation";
+import {
+  AssessmentRequest,
+  AudioAssessment,
+  EvaluationGradeSystem,
+} from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
 import { LocaleListType } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
@@ -40,6 +44,7 @@ import WarningDialog from "../../../../dialogs/close-warning";
  */
 interface AssignmentEditorProps {
   i18n: i18nType;
+  selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
   compositeReplies: MaterialCompositeRepliesType;
@@ -82,6 +87,8 @@ class AssignmentEditor extends SessionStateComponent<
   AssignmentEditorProps,
   AssignmentEditorState
 > {
+  private unknownGradeSystemIsUsed: EvaluationGradeSystem;
+
   /**
    * constructor
    * @param props props
@@ -89,9 +96,8 @@ class AssignmentEditor extends SessionStateComponent<
   constructor(props: AssignmentEditorProps) {
     super(props, `assignment-editor`);
 
-    const { materialEvaluation, compositeReplies } = props;
-    const { evaluationGradeSystem, evaluationSelectedAssessmentId } =
-      props.evaluations;
+    const { materialEvaluation, compositeReplies, selectedAssessment } = props;
+    const { evaluationGradeSystem } = props.evaluations;
 
     const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
@@ -101,7 +107,7 @@ class AssignmentEditor extends SessionStateComponent<
       ? ""
       : defaultGrade;
 
-    const draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
+    const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -369,6 +375,7 @@ class AssignmentEditor extends SessionStateComponent<
   ) => {
     const { evaluationGradeSystem } = this.props.evaluations;
     const { grade } = this.state;
+    const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
 
     const usedGradeSystem = this.getUsedGradingScaleByGradeId(grade);
     const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
@@ -380,11 +387,8 @@ class AssignmentEditor extends SessionStateComponent<
       const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
 
       await this.saveAssignmentEvaluationGradeToServer({
-        workspaceEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId
-            .workspaceEntityId,
-        userEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+        workspaceEntityId: workspaceEntityId,
+        userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           assessorIdentifier: this.props.status.userSchoolDataIdentifier,
@@ -399,16 +403,12 @@ class AssignmentEditor extends SessionStateComponent<
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
       this.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId
-            .workspaceEntityId,
-        userEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+        workspaceEntityId: workspaceEntityId,
+        userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           userEntityId: this.props.status.userId,
-          studentEntityId:
-            this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+          studentEntityId: userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,
@@ -518,119 +518,147 @@ class AssignmentEditor extends SessionStateComponent<
    */
   render() {
     const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map((gScale) => (
-        <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
-          {gScale.grades.map((grade) => (
-            <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+      this.props.evaluations.evaluationGradeSystem.map(
+        (gScale) =>
+          gScale.active && (
+            <optgroup
+              key={`${gScale.dataSource}-${gScale.id}`}
+              label={gScale.name}
+            >
+              {gScale.grades.map((grade) => (
+                <option
+                  key={grade.id}
+                  value={`${gScale.dataSource}-${grade.id}`}
+                >
+                  {grade.name}
+                </option>
+              ))}
+            </optgroup>
+          )
+      );
+
+    // IF evaluation uses some unknown grade system that is not normally showed, then we add it to options also
+    if (this.unknownGradeSystemIsUsed) {
+      const missingOption = (
+        <optgroup
+          key={`${this.unknownGradeSystemIsUsed.dataSource}-${this.unknownGradeSystemIsUsed.id}`}
+          label={this.unknownGradeSystemIsUsed.name}
+        >
+          {this.unknownGradeSystemIsUsed.grades.map((grade) => (
+            <option
+              key={grade.id}
+              value={`${this.unknownGradeSystemIsUsed.dataSource}-${grade.id}`}
+            >
               {grade.name}
             </option>
           ))}
         </optgroup>
-      ));
+      );
+
+      renderGradingOptions.push(missingOption);
+    }
 
     return (
-      <>
-        <div className="evaluation-modal__evaluate-drawer-row form-element">
-          {this.props.editorLabel && (
-            <label className="evaluation-modal__evaluate-drawer-row-label">
-              {this.props.editorLabel}
-            </label>
-          )}
+      <div className="form" role="form">
+        <div className="form__row">
+          <div className="form-element">
+            {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
 
-          <CKEditor
-            onChange={this.handleCKEditorChange}
-            configuration={CKEditorConfig(this.props.locale.current)}
-          >
-            {this.state.literalEvaluation}
-          </CKEditor>
+            <CKEditor
+              onChange={this.handleCKEditorChange}
+              configuration={CKEditorConfig(this.props.locale.current)}
+            >
+              {this.state.literalEvaluation}
+            </CKEditor>
+          </div>
         </div>
 
-        <div className="evaluation-modal__evaluate-drawer-row  form-element">
-          <AnimateHeight
-            height={
-              this.state.assignmentEvaluationType !== "INCOMPLETE" ? "auto" : 0
-            }
-          >
-            <label
-              htmlFor="assignmentEvaluationGrade"
-              className="evaluation-modal__evaluate-drawer-row-label"
+        <div className="form__row">
+          <div className="form-element">
+            <AnimateHeight
+              height={
+                this.state.assignmentEvaluationType !== "INCOMPLETE"
+                  ? "auto"
+                  : 0
+              }
             >
+              <label htmlFor="assignmentEvaluationGrade">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.audioAssessments"
+                )}
+              </label>
+              <Recorder
+                onIsRecordingChange={this.props.onIsRecordingChange}
+                onChange={this.handleAudioAssessmentChange}
+                values={this.state.audioAssessments}
+              />
+            </AnimateHeight>
+          </div>
+        </div>
+        <div className="form__row">
+          <fieldset className="form__fieldset">
+            <legend className="form__legend">
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.audioAssessments"
+                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
+              )}
+            </legend>
+            <div className="form__fieldset-content form__fieldset-content--horizontal">
+              <div className="form-element form-element--checkbox-radiobutton">
+                <input
+                  id="assignmentEvaluationTypeGRADED"
+                  type="radio"
+                  name="assignmentEvaluationType"
+                  value="GRADED"
+                  checked={this.state.assignmentEvaluationType === "GRADED"}
+                  onChange={this.handleAssignmentEvaluationChange}
+                />
+                <label htmlFor="assignmentEvaluationTypeGRADED">
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+                  )}
+                </label>
+              </div>
+              <div className="form-element form-element--checkbox-radiobutton">
+                <input
+                  id="assignmentEvaluationTypeINCOMPLETE"
+                  type="radio"
+                  name="assignmentEvaluationType"
+                  value="INCOMPLETE"
+                  checked={this.state.assignmentEvaluationType === "INCOMPLETE"}
+                  onChange={this.handleAssignmentEvaluationChange}
+                />
+                <label htmlFor="assignmentEvaluationTypeINCOMPLETE">
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
+                  )}
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div className="form__row">
+          <div className="form-element">
+            <label htmlFor="assignmentEvaluationGrade">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.assignmentGradeLabel"
               )}
             </label>
-            <Recorder
-              onIsRecordingChange={this.props.onIsRecordingChange}
-              onChange={this.handleAudioAssessmentChange}
-              values={this.state.audioAssessments}
-            />
-          </AnimateHeight>
-        </div>
 
-        <div className="evaluation-modal__evaluate-drawer-row form-element">
-          <label className="evaluation-modal__evaluate-drawer-row-label">
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
-            )}
-          </label>
-          <div className="evaluation-modal__evaluate-drawer-row-data">
-            <div className="evaluation-modal__evaluate-drawer-row-item">
-              <input
-                id="assignmentEvaluationTypeGRADED"
-                type="radio"
-                name="assignmentEvaluationType"
-                value="GRADED"
-                checked={this.state.assignmentEvaluationType === "GRADED"}
-                onChange={this.handleAssignmentEvaluationChange}
-              />
-              <label htmlFor="assignmentEvaluationTypeGRADED">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-                )}
-              </label>
-            </div>
-            <div className="evaluation-modal__evaluate-drawer-row-item">
-              <input
-                id="assignmentEvaluationTypeINCOMPLETE"
-                type="radio"
-                name="assignmentEvaluationType"
-                value="INCOMPLETE"
-                checked={this.state.assignmentEvaluationType === "INCOMPLETE"}
-                onChange={this.handleAssignmentEvaluationChange}
-              />
-              <label htmlFor="assignmentEvaluationTypeINCOMPLETE">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
-                )}
-              </label>
+            <div className="evaluation-modal__evaluate-drawer-row-data">
+              <select
+                id="assignmentEvaluationGrade"
+                className="form-element__select"
+                value={this.state.grade}
+                onChange={this.handleSelectGradeChange}
+                disabled={this.state.assignmentEvaluationType === "INCOMPLETE"}
+              >
+                {renderGradingOptions}
+              </select>
             </div>
           </div>
         </div>
 
-        <div className="evaluation-modal__evaluate-drawer-row  form-element">
-          <label
-            htmlFor="assignmentEvaluationGrade"
-            className="evaluation-modal__evaluate-drawer-row-label"
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-            )}
-          </label>
-
-          <div className="evaluation-modal__evaluate-drawer-row-data">
-            <select
-              id="assignmentEvaluationGrade"
-              className="form-element__select form-element__select--evaluation"
-              value={this.state.grade}
-              onChange={this.handleSelectGradeChange}
-              disabled={this.state.assignmentEvaluationType === "INCOMPLETE"}
-            >
-              {renderGradingOptions}
-            </select>
-          </div>
-        </div>
-
-        <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
+        <div className="form__buttons form__buttons--evaluation">
           <Button
             buttonModifiers="evaluate-assignment"
             onClick={this.handleSaveAssignment}
@@ -685,7 +713,7 @@ class AssignmentEditor extends SessionStateComponent<
             </div>
           </div>
         )}
-      </>
+      </div>
     );
   }
 }

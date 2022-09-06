@@ -216,7 +216,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
     return (
       <section>
-        <form onSubmit={this.onFormSubmit}>
+        <form onSubmit={this.onFormSubmit} className="form">
           <h2 className="application-panel__content-header">
             {this.props.i18n.text.get("plugin.profile.titles.worklist")}
           </h2>
@@ -225,30 +225,32 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
               {this.props.i18n.text.get("plugin.profile.worklist.addNewEntry")}
             </h3>
             <div className="application-sub-panel__body">
-              <WorkListEditable
-                base={this.state.currentTemplate}
-                currentMonthDayLimit={currentMonthDayLimit}
-                onSubmit={this.insertNew}
-                isEditMode={false}
-                resetOnSubmit={true}
-              >
-                <select
-                  className="form-element__select form-element__select--worklist-template"
-                  value={
-                    (this.state.currentTemplate &&
-                      this.state.currentTemplate.id) ||
-                    ""
-                  }
-                  onChange={this.onSelect}
+              <div className="form__row">
+                <WorkListEditable
+                  base={this.state.currentTemplate}
+                  currentMonthDayLimit={currentMonthDayLimit}
+                  onSubmit={this.insertNew}
+                  isEditMode={false}
+                  resetOnSubmit={true}
                 >
-                  {this.props.profile.worklistTemplates &&
-                    this.props.profile.worklistTemplates.map((v) => (
-                      <option value={v.id} key={v.id}>
-                        {v.description}
-                      </option>
-                    ))}
-                </select>
-              </WorkListEditable>
+                  <select
+                    className="form-element__select form-element__select--worklist-template"
+                    value={
+                      (this.state.currentTemplate &&
+                        this.state.currentTemplate.id) ||
+                      ""
+                    }
+                    onChange={this.onSelect}
+                  >
+                    {this.props.profile.worklistTemplates &&
+                      this.props.profile.worklistTemplates.map((v) => (
+                        <option value={v.id} key={v.id}>
+                          {v.description}
+                        </option>
+                      ))}
+                  </select>
+                </WorkListEditable>
+              </div>
             </div>
           </div>
           <div className="application-sub-panel__panels-wrapper">

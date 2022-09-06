@@ -5,7 +5,7 @@ import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
-import "~/sass/elements/form-elements.scss";
+import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 
@@ -17,6 +17,7 @@ interface HopsProps {
   defaultData: HOPSDataType;
   onHopsChange?: (hops: HOPSDataType) => any;
   i18n: i18nType;
+  status: StatusType;
 }
 
 /**
@@ -116,7 +117,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 );
                 return (
                   <div
-                    className="form-element__radio-option-container"
+                    className="form-element form-element--checkbox-radiobutton"
                     key={option}
                   >
                     <input
@@ -147,7 +148,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 "plugin.records.hops.goals.matriculationExam"
               )}
             </div>
-            <div className="application-sub-panel__item-data form-element">
+            <div className="application-sub-panel__item-data">
               {["yes", "no", "maybe"].map((option: string) => {
                 const onEvent = this.set.bind(
                   this,
@@ -156,7 +157,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 );
                 return (
                   <div
-                    className="form-element__radio-option-container"
+                    className="form-element form-element--checkbox-radiobutton"
                     key={option}
                   >
                     <input
@@ -186,7 +187,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   "plugin.records.hops.goals.matriculationSubjects"
                 )}
               </div>
-              <div className="application-sub-panel__item-data form-element">
+              <div className="application-sub-panel__item-data">
                 <MatriculationSubjectsList
                   initialMatriculationSubjects={
                     this.state.hops.studentMatriculationSubjects
@@ -229,7 +230,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 "plugin.records.hops.goals.vocationalYears2"
               )}
             </div>
-            <div className="application-sub-panel__item-data form-element">
+            <div className="application-sub-panel__item-data">
               {["yes", "no"].map((option: string) => {
                 const onEvent = this.set.bind(
                   this,
@@ -238,7 +239,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 );
                 return (
                   <div
-                    className="form-element__radio-option-container"
+                    className="form-element form-element--checkbox-radiobutton"
                     key={option}
                   >
                     <input
@@ -297,7 +298,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 "plugin.records.hops.goals.justTransferCredits2"
               )}
             </div>
-            <div className="application-sub-panel__item-data form-element">
+            <div className="application-sub-panel__item-data">
               {["yes", "no"].map((option: string) => {
                 const onEvent = this.set.bind(
                   this,
@@ -306,7 +307,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 );
                 return (
                   <div
-                    className="form-element__radio-option-container"
+                    className="form-element form-element--checkbox-radiobutton"
                     key={option}
                   >
                     <input
@@ -365,13 +366,13 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 "plugin.records.hops.languages.mandatory.title"
               )}
             </div>
-            <div className="application-sub-panel__item-data form-element">
+            <div className="application-sub-panel__item-data">
               {["AI", "S2"].map((option: string) => {
                 const onEvent = this.set.bind(this, "finnish", option);
                 const nativity: any = { AI: "native", S2: "foreign" };
                 return (
                   <div
-                    className="form-element__radio-option-container"
+                    className="form-element form-element--checkbox-radiobutton"
                     key={option}
                   >
                     <input
@@ -405,8 +406,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 "plugin.records.hops.languages.optional.title"
               )}
             </div>
-            <div className="application-sub-panel__item-data form-element">
-              <div className="form-element__check-option-container">
+            <div className="application-sub-panel__item-data">
+              <div className="form-element form-element--checkbox-radiobutton">
                 <input
                   id="langGerman"
                   type="checkbox"
@@ -423,7 +424,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   )}
                 </label>
               </div>
-              <div className="form-element__check-option-container">
+              <div className="form-element form-element--checkbox-radiobutton">
                 <input
                   id="langFrench"
                   type="checkbox"
@@ -440,7 +441,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   )}
                 </label>
               </div>
-              <div className="form-element__check-option-container">
+              <div className="form-element form-element--checkbox-radiobutton">
                 <input
                   id="langItalian"
                   type="checkbox"
@@ -457,7 +458,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   )}
                 </label>
               </div>
-              <div className="form-element__check-option-container">
+              <div className="form-element form-element--checkbox-radiobutton">
                 <input
                   id="langSpanish"
                   type="checkbox"
@@ -482,12 +483,12 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 "plugin.records.hops.mathSyllabus.title"
               )}
             </div>
-            <div className="application-sub-panel__item-data form-element">
+            <div className="application-sub-panel__item-data">
               {["MAA", "MAB"].map((option: string) => {
                 const onEvent = this.set.bind(this, "mathSyllabus", option);
                 return (
                   <div
-                    className="form-element__radio-option-container"
+                    className="form-element form-element--checkbox-radiobutton"
                     key={option}
                   >
                     <input
@@ -509,14 +510,20 @@ class Hops extends React.Component<HopsProps, HopsState> {
           </div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get("plugin.records.hops.science.title")}
+              {this.props.status.profile.curriculumName === "OPS 2016"
+                ? this.props.i18n.text.get(
+                    "plugin.records.hops.science.ops2016.title"
+                  )
+                : this.props.i18n.text.get(
+                    "plugin.records.hops.science.ops2021.title"
+                  )}
             </div>
-            <div className="application-sub-panel__item-data form-element">
+            <div className="application-sub-panel__item-data">
               {["BI", "FY", "KE", "GE"].map((option: string) => {
                 const onEvent = this.set.bind(this, "science", option);
                 return (
                   <div
-                    className="form-element__radio-option-container"
+                    className="form-element form-element--checkbox-radiobutton"
                     key={option}
                   >
                     <input
@@ -540,12 +547,12 @@ class Hops extends React.Component<HopsProps, HopsState> {
             <div className="application-sub-panel__item-title">
               {this.props.i18n.text.get("plugin.records.hops.religion.title")}
             </div>
-            <div className="application-sub-panel__item-data form-element">
+            <div className="application-sub-panel__item-data">
               {["UE", "ET", "UX"].map((option: string) => {
                 const onEvent = this.set.bind(this, "religion", option);
                 return (
                   <div
-                    className="form-element__radio-option-container"
+                    className="form-element form-element--checkbox-radiobutton"
                     key={option}
                   >
                     <input
@@ -565,7 +572,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
               })}
             </div>
           </div>
-          <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
+          <div className="application-sub-panel__item application-sub-panel__item--hops-editable form-element">
             <label
               htmlFor="additionalInfo"
               className="application-sub-panel__item-title"
@@ -597,6 +604,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     defaultData: state.hops && state.hops.value,
+    status: state.status,
   };
 }
 

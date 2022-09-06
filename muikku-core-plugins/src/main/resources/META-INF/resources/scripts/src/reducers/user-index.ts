@@ -85,6 +85,7 @@ export interface UserWithSchoolDataType {
   lastLogin?: string;
   updatedByStudent: boolean;
   userEntityId: number;
+  matriculationEligibility: boolean;
 }
 
 /**
@@ -178,6 +179,7 @@ export interface ContactRecipientType {
     archived?: boolean;
     studiesEnded?: boolean;
     identifier?: string;
+    studyProgrammeName?: string;
   };
 }
 

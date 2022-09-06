@@ -100,7 +100,8 @@ export type TranscriptOfRecordLocationType =
   | "hops"
   | "vops"
   | "summary"
-  | "yo";
+  | "yo"
+  | "info";
 
 /**
  * initialState

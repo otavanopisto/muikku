@@ -23,11 +23,11 @@ public class SearchIndexer {
   @Inject
   private Logger logger;
 
-  public void index(String name, Object entity) {
-    index(name, entity, null);
+  public void index(String indexName, String typeName, Object entity) {
+    index(indexName, typeName, entity, null);
   }
   
-  public void index(String name, Object entity, Map<String, Object> extraProperties) {
+  public void index(String indexName, String typeName, Object entity, Map<String, Object> extraProperties) {
     Iterator<SearchIndexUpdater> updaters = searchIndexUpdaters.iterator();
     while (updaters.hasNext()) {
       SearchIndexUpdater updater = updaters.next();
@@ -41,7 +41,7 @@ public class SearchIndexer {
             }
           }
           
-          updater.addOrUpdateIndex(name, indexEntity);
+          updater.addOrUpdateIndex(indexName, typeName, indexEntity);
         }
       } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
         logger.log(Level.WARNING, "Entity processing exception", e);
@@ -49,23 +49,23 @@ public class SearchIndexer {
     }
   }
   
-  public void remove(String name, Object entity) {
+  public void remove(String indexName, String name, Object entity) {
     try {
       Map<String, Object> indexEntity = indexEntityProcessor.process(entity);
       if (indexEntity != null) {
-        remove(name, indexEntity.get("id").toString());
+        remove(indexName, name, indexEntity.get("id").toString());
       }
     } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
       logger.log(Level.WARNING, "Entity processing exception", e);
     }
   }
   
-  public void remove(String name, String id) {
+  public void remove(String indexName, String typeName, String id) {
     Iterator<SearchIndexUpdater> providers = searchIndexUpdaters.iterator();
     while (providers.hasNext()) {
       SearchIndexUpdater provider = providers.next();
       try {
-        provider.deleteFromIndex(name, id);
+        provider.deleteFromIndex(indexName, typeName, id);
       } catch (IllegalArgumentException | SecurityException e) {
         logger.log(Level.WARNING, "Entity processing exception", e);
       }

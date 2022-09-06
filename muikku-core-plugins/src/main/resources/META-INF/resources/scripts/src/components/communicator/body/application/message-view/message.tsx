@@ -16,6 +16,9 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/link.scss";
 import AnswerMessageDrawer from "./message-editor/answer-message-drawer";
 import { MessageSignatureType } from "~/reducers/main-function/messages";
+import { AnyActionType } from "~/actions";
+import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
+import { isStringHTML } from "~/helper-functions/shared";
 
 /**
  * MessageProps
@@ -54,9 +57,8 @@ class Message extends React.Component<MessageProps, MessageState> {
 
   /**
    * getMessageSender
-   * @param sender
-   * @returns
-   * Returns span element with sender name
+   * @param sender sender
+   * @returns Returns span element with sender name
    */
   getMessageSender(sender: UserType): JSX.Element {
     if (sender.archived === true) {
@@ -66,18 +68,23 @@ class Message extends React.Component<MessageProps, MessageState> {
         </span>
       );
     }
+
+    let name = `${getName(sender as any, !this.props.status.isStudent)}`;
+
+    if (sender.studyProgrammeName) {
+      name = `${getName(sender as any, !this.props.status.isStudent)} (${
+        sender.studyProgrammeName
+      })`;
+    }
+
     if (sender.studiesEnded === true) {
       return (
         <span key={sender.userEntityId} className="message__user-studies-ended">
-          {getName(sender as any, !this.props.status.isStudent)}
+          {name}
         </span>
       );
     }
-    return (
-      <span key={sender.userEntityId}>
-        {getName(sender as any, !this.props.status.isStudent)}
-      </span>
-    );
+    return <span key={sender.userEntityId}>{name}</span>;
   }
 
   /**
@@ -92,7 +99,7 @@ class Message extends React.Component<MessageProps, MessageState> {
     const messageRecipientsList = message.recipients.map((recipient) => {
       if (recipient.archived === true) {
         return (
-          <span key={recipient.recipientId} className="message__user-archived">
+          <span key={recipient.userEntityId} className="message__user-archived">
             {this.props.i18n.text.get("plugin.communicator.sender.archived")}
           </span>
         );
@@ -100,7 +107,7 @@ class Message extends React.Component<MessageProps, MessageState> {
       if (recipient.studiesEnded === true) {
         return (
           <span
-            key={recipient.recipientId}
+            key={recipient.userEntityId}
             className="message__user-studies-ended"
           >
             {getName(recipient as any, !this.props.status.isStudent)}
@@ -108,7 +115,7 @@ class Message extends React.Component<MessageProps, MessageState> {
         );
       }
       return (
-        <span key={recipient.recipientId}>
+        <span key={recipient.userEntityId}>
           {getName(recipient as any, !this.props.status.isStudent)}
         </span>
       );
@@ -141,7 +148,7 @@ class Message extends React.Component<MessageProps, MessageState> {
    * sets state new message type to indicating that with type there
    * is new message editor visible/open. If clicking second time
    * same then close exixting dialog
-   * @param type
+   * @param type type
    */
   handleOpenNewMessage =
     (type: "person" | "all") =>
@@ -165,7 +172,7 @@ class Message extends React.Component<MessageProps, MessageState> {
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     /**
@@ -353,10 +360,20 @@ class Message extends React.Component<MessageProps, MessageState> {
           <header className="application-list__item-content-header">
             {this.props.message.caption}
           </header>
-          <section
-            className="application-list__item-content-body rich-text"
-            dangerouslySetInnerHTML={{ __html: this.props.message.content }}
-          ></section>
+          <section className="application-list__item-content-body rich-text">
+            {/*
+             * Its possible that string content containg html as string is not valid
+             * and can't be processed by CkeditorLoader, so in those cases just put content
+             * inside of "valid" html tags and go with it
+             */}
+            {isStringHTML(this.props.message.content) ? (
+              <CkeditorLoaderContent html={this.props.message.content} />
+            ) : (
+              <CkeditorLoaderContent
+                html={`<p>${this.props.message.content}</p>`}
+              />
+            )}
+          </section>
           <footer className="application-list__item-footer application-list__item-footer--communicator-message-thread-actions">
             {this.props.message.sender.studiesEnded ||
             this.props.message.sender.archived ? null : (
@@ -424,8 +441,7 @@ class Message extends React.Component<MessageProps, MessageState> {
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -437,10 +453,9 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

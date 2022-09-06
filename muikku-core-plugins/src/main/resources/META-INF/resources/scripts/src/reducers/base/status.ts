@@ -18,6 +18,7 @@ export interface WhoAmIType {
   phoneNumbers: any;
   displayName: string;
   curriculumIdentifier: string;
+  curriculumName: string;
   firstName: string;
   lastName: string;
   hasEvaluationFees: boolean;
@@ -29,6 +30,7 @@ export interface WhoAmIType {
   permissions: string[];
   roles: string[];
   studyProgrammeName: string;
+  studyProgrammeIdentifier: string;
   addresses: string;
   emails: string;
 }
@@ -84,7 +86,10 @@ export interface ProfileStatusType {
   studyStartDate: string;
   studyEndDate: string;
   studyTimeEnd: string;
+  studyProgrammeName: string;
+  studyProgrammeIdentifier: string;
   permissions: string[];
+  curriculumName: string;
 }
 
 export enum Role {

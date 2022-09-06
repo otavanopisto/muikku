@@ -7,7 +7,6 @@ import { ChromePicker, ColorState } from "react-color";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 import { GuiderUserLabelType } from "~/reducers/main-function/guider";
@@ -55,10 +54,11 @@ interface SharedFlagUser {
  * GuiderLabelUpdateDialogProps
  */
 interface GuiderLabelUpdateDialogProps {
+  // eslint-disable-next-line
   children: React.ReactElement<any>;
   label: GuiderUserLabelType;
   isOpen?: boolean;
-  onClose?: () => any;
+  onClose?: () => void;
   i18n: i18nType;
   updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType;
   removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType;

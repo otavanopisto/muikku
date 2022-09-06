@@ -253,7 +253,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
   /**
    * updateRoomNameField
-   * @param ee
+   * @param e e
    */
   public updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({

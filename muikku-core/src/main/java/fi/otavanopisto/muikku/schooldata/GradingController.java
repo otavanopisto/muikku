@@ -27,6 +27,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 
 public class GradingController {
@@ -124,11 +125,12 @@ public class GradingController {
   
   /* Workspace assessment */
   
-  public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date) {
+  public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, WorkspaceUser workspaceUser, WorkspaceSubject workspaceSubject, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date) {
     return gradingSchoolDataController.createWorkspaceAssessment(schoolDataSource, 
         workspaceUser.getIdentifier().getIdentifier(), 
         workspaceUser.getIdentifier().getDataSource(),
-        workspaceUser.getWorkspaceIdentifier().getIdentifier(), 
+        workspaceUser.getWorkspaceIdentifier().getIdentifier(),
+        workspaceSubject.getIdentifier().getIdentifier(),
         workspaceUser.getUserIdentifier().getIdentifier(),
         assessingUser.getIdentifier(), 
         assessingUser.getSchoolDataSource(), 
@@ -192,12 +194,13 @@ public class GradingController {
     }
   }
  
-  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataIdentifier workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
+  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataIdentifier workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, WorkspaceSubject workspaceSubject, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
     return gradingSchoolDataController.updateWorkspaceAssessment(workspaceAssesmentIdentifier.getDataSource(),
        workspaceAssesmentIdentifier.getIdentifier(),
        workspaceUser.getIdentifier().getIdentifier(),
        workspaceUser.getIdentifier().getDataSource(),
        workspaceUser.getWorkspaceIdentifier().getIdentifier(),
+       workspaceSubject.getIdentifier().getIdentifier(),
        workspaceUser.getUserIdentifier().getIdentifier(),
        assessingUser.getIdentifier(),
        assessingUser.getSchoolDataSource(),
@@ -213,8 +216,8 @@ public class GradingController {
     gradingSchoolDataController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
   }
   
-  public void restoreLatestAssessmentRequest(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
-    List<WorkspaceAssessmentRequest> requests = listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
+  public void restoreLatestAssessmentRequest(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier, Boolean archived) {
+    List<WorkspaceAssessmentRequest> requests = listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier(), archived);
     if (CollectionUtils.isNotEmpty(requests)) {
       requests.sort(new Comparator<WorkspaceAssessmentRequest>() {
         public int compare(WorkspaceAssessmentRequest o1, WorkspaceAssessmentRequest o2) {
@@ -250,8 +253,8 @@ public class GradingController {
     return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, workspaceIdentifier);
   }
 
-  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier, String studentIdentifier) {
-    return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, workspaceIdentifier, studentIdentifier);
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier, String studentIdentifier, Boolean archived) {
+    return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, workspaceIdentifier, studentIdentifier, archived);
   }
   
   public List<WorkspaceAssessmentRequest> listStudentAssessmentRequests(SchoolDataIdentifier studentIdentifier) {

@@ -18,7 +18,6 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { StatusType } from "~/reducers/base/status";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 /**
@@ -165,8 +164,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text
-   * @returns
+   * @param text text
    */
   onCKEditorChange(text: string) {
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
@@ -178,7 +176,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * setSelectedItems
-   * @param selectedItems
+   * @param selectedItems selectedItems
    */
   setSelectedItems(selectedItems: Array<ContactRecipientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
@@ -187,7 +185,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * onSubjectChange
-   * @param e
+   * @param e e
    */
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
@@ -274,7 +272,6 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * inputContactsAutofillLoaders
-   * @returns
    */
   inputContactsAutofillLoaders() {
     return {
@@ -307,7 +304,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const editorTitle =
@@ -318,7 +315,8 @@ class CommunicatorNewMessage extends SessionStateComponent<
       );
 
     /**
-     * @param closeDialog
+     * content
+     * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => any) => [
       <InputContactsAutofill
@@ -378,7 +376,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
       this.props.signature ? (
         <div
           key="new-message-4"
-          className="env-dialog__row env-dialog__row--communicator-signature"
+          className="env-dialog__row env-dialog__row--options"
         >
           <input
             id="messageSignature"

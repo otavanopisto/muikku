@@ -1,4 +1,3 @@
-import { EvaluationFilters } from "./../../../@types/evaluation";
 import { ActionType } from "../../../actions/index";
 import { MaterialCompositeRepliesType } from "../../workspaces/index";
 import {
@@ -10,6 +9,8 @@ import {
   EvaluationAssigmentData,
   EvaluationEvent,
   EvaluationStudyDiaryEvent,
+  EvaluationBasePriceById,
+  EvaluationFilters,
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
 
@@ -45,7 +46,7 @@ export interface EvaluationState {
   openedAssignmentEvaluationId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;
-  basePrice: EvaluationStateAndData<number>;
+  basePrice: EvaluationStateAndData<EvaluationBasePriceById>;
 }
 
 /**

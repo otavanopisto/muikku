@@ -228,14 +228,10 @@ class Course extends React.Component<CourseProps, CourseState> {
         </ApplicationListItemHeader>
         {!this.state.loading && this.state.expanded ? (
           <div>
-            <ApplicationListItemBody className="application-list__item-body--course">
-              <article
-                className="rich-text"
-                dangerouslySetInnerHTML={{
-                  __html: this.props.workspace.description,
-                }}
-              ></article>
-            </ApplicationListItemBody>
+            <ApplicationListItemBody
+              content={this.props.workspace.description}
+              className="application-list__item-body--course"
+            />
             <ApplicationListItemFooter className="application-list__item-footer--course">
               <Button
                 aria-label={this.props.workspace.name}
@@ -252,7 +248,15 @@ class Course extends React.Component<CourseProps, CourseState> {
                     )}
               </Button>
               {this.state.canSignUp && this.props.status.loggedIn ? (
-                <WorkspaceSignupDialog workspace={this.props.workspace}>
+                <WorkspaceSignupDialog
+                  workspace={this.props.workspace}
+                  workspaceSignUpDetails={{
+                    id: this.props.workspace.id,
+                    name: this.props.workspace.name,
+                    nameExtension: this.props.workspace.nameExtension,
+                    urlName: this.props.workspace.urlName,
+                  }}
+                >
                   <Button
                     aria-label={this.props.workspace.name}
                     buttonModifiers={[

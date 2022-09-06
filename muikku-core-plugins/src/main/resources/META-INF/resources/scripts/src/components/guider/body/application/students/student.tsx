@@ -27,7 +27,7 @@ type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
  */
 interface StudentProps {
   student: GuiderStudentType;
-  checkbox: any;
+  checkbox: React.ReactElement<HTMLInputElement>;
   i18n: i18nType;
   index: number;
   status: StatusType;
@@ -74,7 +74,7 @@ class Student extends React.Component<StudentProps, StudentState> {
       <ApplicationListItemContentWrapper
         className={"state-" + studyTimeEndState}
         aside={
-          <div className="user__select-container">
+          <div className="form-element form-element--item-selection-container">
             <label
               htmlFor={`userSelect-` + this.props.index}
               className="visually-hidden"
@@ -87,7 +87,7 @@ class Student extends React.Component<StudentProps, StudentState> {
       >
         <ApplicationListItemHeader>
           <span className="application-list__header-primary">
-            <span>{getName(this.props.student as any as UserType, true)}</span>
+            <span>{getName(this.props.student, true)}</span>
             <span className="application-list__header-helper">
               {this.props.student.email}
             </span>

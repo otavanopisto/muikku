@@ -174,7 +174,8 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
           false,
           onlyDefaultUsers,
           firstResult, 
-          maxResults);
+          maxResults,
+          false);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -194,6 +195,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
             (String) o.get("firstName"),
             (String) o.get("lastName"), 
             (String) o.get("nickName"), 
+            (String) o.get("studyProgrammeName"), 
             hasImage,
             (String) o.get("nationality"),
             (String) o.get("language"), 
@@ -231,23 +233,17 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       return Response.ok(Collections.EMPTY_LIST).build();
     }
     
-    String schoolDataSourceFilter = null;
-
     SearchProvider searchProvider = getSearchProvider();
     if (searchProvider != null) {
       SearchResult searchResult = null;
       
-      List<String> workspaceIdentifierFilters = new ArrayList<>();
+      List<SchoolDataIdentifier> workspaceIdentifierFilters = new ArrayList<>();
       
       for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-        if (schoolDataSourceFilter == null) {
-          schoolDataSourceFilter = workspaceEntity.getDataSource().getIdentifier();
-        }
-        
-        workspaceIdentifierFilters.add(workspaceEntity.getIdentifier());
+        workspaceIdentifierFilters.add(workspaceEntity.schoolDataIdentifier());
       }
 
-      List<String> subjects = null;
+      List<SchoolDataIdentifier> subjects = null;
       List<SchoolDataIdentifier> educationTypes = null;
       List<SchoolDataIdentifier> curriculumIdentifiers = null;
       List<WorkspaceAccess> accesses = null;
@@ -259,7 +255,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       
       List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , publicityRestriction, templateRestriction);
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes,
+      searchResult = searchProvider.searchWorkspaces(subjects, workspaceIdentifierFilters, educationTypes,
           curriculumIdentifiers, organizationRestrictions, searchString, accesses, sessionController.getLoggedUser(), firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();

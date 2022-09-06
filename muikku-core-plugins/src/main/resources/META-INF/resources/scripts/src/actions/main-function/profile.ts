@@ -14,6 +14,7 @@ import {
   updateStatusHasImage,
 } from "~/actions/base/status";
 import {
+  ProfileProperty,
   PurchaseType,
   StoredWorklistItem,
   WorklistBillingState,
@@ -23,6 +24,9 @@ import {
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
 
+/**
+ * LoadProfilePropertiesSetTriggerType
+ */
 export interface LoadProfilePropertiesSetTriggerType {
   (): AnyActionType;
 }
@@ -251,15 +255,15 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
       const state = getState();
 
       try {
-        const properties: any = await promisify(
+        const properties = (await promisify(
           mApi().user.properties.read(state.status.userId, {
             properties:
-              "profile-phone,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg,communicator-auto-reply-subject",
+              "profile-phone,profile-appointmentCalendar,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg,communicator-auto-reply-subject",
           }),
           "callback"
-        )();
+        )()) as ProfileProperty[];
 
-        properties.forEach((property: any) => {
+        properties.forEach((property: ProfileProperty) => {
           dispatch({
             type: "SET_PROFILE_USER_PROPERTY",
             payload: {
@@ -278,7 +282,7 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
 
 /**
  * SaveProfilePropertyTriggerType
- * @param data
+ * @param data data
  */
 const saveProfileProperty: SaveProfilePropertyTriggerType =
   function saveProfileProperty(data) {

@@ -71,7 +71,16 @@ public class RestEvaluationEvent {
     this.gradeIdentifier = gradeIdentifier;
   }
 
+  public String getWorkspaceSubjectIdentifier() {
+    return workspaceSubjectIdentifier;
+  }
+
+  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
+  }
+
   private String identifier;
+  private String workspaceSubjectIdentifier;
   private Date date;
   private String student;
   private String author;

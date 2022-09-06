@@ -83,19 +83,17 @@ function onModification(props: MaterialLoaderContentProps) {
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
   if (props.isViewRestricted) {
     return (
-      <div className="react-required-container">
-        <div
-          className="material-page__content material-page__content--view-restricted"
-          onClick={stopPropagation}
-        >
-          {props.i18n.text.get("plugin.workspace.materialViewRestricted")}
-        </div>
+      <div
+        className="material-page__content material-page__content--view-restricted"
+        onClick={stopPropagation}
+      >
+        {props.i18n.text.get("plugin.workspace.materialViewRestricted")}
       </div>
     );
   }
   return (
-    <div className="react-required-container">
-      <div className="react-required-container" onClick={stopPropagation}>
+    <>
+      <div className="material-page__content-wrapper" onClick={stopPropagation}>
         {props.loadCompositeReplies &&
         typeof props.compositeReplies === "undefined" ? null : (
           <Base
@@ -133,6 +131,6 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
           invisible={props.invisible}
         />
       ) : null}
-    </div>
+    </>
   );
 }

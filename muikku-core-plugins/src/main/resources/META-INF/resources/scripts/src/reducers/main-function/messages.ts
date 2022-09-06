@@ -35,6 +35,7 @@ export interface MessageSearchResult {
     firstName: string;
     lastName: string;
     nickName: string;
+    studyProgrammeName?: string;
   };
   senderId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -910,10 +911,6 @@ export const messages: Reducer<MessagesType> = (
       selectedThreadsIds: state.selectedThreadsIds.concat([
         newThread.communicatorMessageId,
       ]),
-      toggleSelectAllMessageItemsActive:
-        state.selectedThreads.length === state.threads.length - 1
-          ? true
-          : false,
     });
   } else if (action.type === "REMOVE_FROM_MESSAGES_SELECTED_THREADS") {
     return Object.assign({}, state, {
@@ -1053,19 +1050,28 @@ export const messages: Reducer<MessagesType> = (
       currentThread: newCurrent,
     });
   } else if (action.type === "DELETE_MESSAGE_THREAD") {
+    const updatedThreads = state.threads.filter(
+      (thread: MessageThreadType) =>
+        thread.communicatorMessageId !== action.payload.communicatorMessageId
+    );
+
+    const updatedSelectedThreads = state.selectedThreads.filter(
+      (selectedThread: MessageThreadType) =>
+        selectedThread.communicatorMessageId !==
+        action.payload.communicatorMessageId
+    );
+
+    const updatedSelectedThreadsIds = state.selectedThreadsIds.filter(
+      (id: number) => id !== action.payload.communicatorMessageId
+    );
+
     return Object.assign({}, state, {
-      selectedThreads: state.selectedThreads.filter(
-        (selectedThread: MessageThreadType) =>
-          selectedThread.communicatorMessageId !==
-          action.payload.communicatorMessageId
-      ),
-      threads: state.threads.filter(
-        (thread: MessageThreadType) =>
-          thread.communicatorMessageId !== action.payload.communicatorMessageId
-      ),
-      selectedThreadsIds: state.selectedThreadsIds.filter(
-        (id: number) => id !== action.payload.communicatorMessageId
-      ),
+      threads: updatedThreads,
+      selectedThreads: updatedSelectedThreads,
+      selectedThreadsIds: updatedSelectedThreadsIds,
+      toggleSelectAllMessageItemsActive: state.toggleSelectAllMessageItemsActive
+        ? updatedThreads.length > 0
+        : false,
     });
   } else if (action.type === "SET_CURRENT_MESSAGE_THREAD") {
     return Object.assign({}, state, {

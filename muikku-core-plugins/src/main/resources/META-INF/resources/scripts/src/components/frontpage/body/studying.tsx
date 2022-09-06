@@ -2,14 +2,9 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Button from "~/components/general/button";
 
-import "~/sass/elements/ordered-container.scss";
-import "~/sass/elements/card.scss";
-import "~/sass/elements/buttons.scss";
-import "~/sass/elements/screen-container.scss";
-
 /**
 interface FrontpageStudyingProps {
- * 
+ *
  */
 interface FrontpageStudyingProps {
   i18n: i18nType;

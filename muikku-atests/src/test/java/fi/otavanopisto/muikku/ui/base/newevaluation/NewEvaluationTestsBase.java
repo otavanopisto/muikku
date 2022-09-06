@@ -31,6 +31,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel;
 
 public class NewEvaluationTestsBase extends AbstractUITest {
   
@@ -53,7 +54,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
+
       Double price = new Double(75);
+      WorklistBasePriceRestModel courseBasePrices = new WorklistBasePriceRestModel();
+      courseBasePrices.put(course1.getCourseModules().iterator().next().getId(), price);
       
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -95,7 +99,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .mockCompositeCourseAssessmentRequests()
         .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, false)
         .mockStaffCompositeCourseAssessmentRequests()
-        .mockWorkspaceBasePrice(workspace.getIdentifier(), price)
+        .mockWorkspaceBasePrice(course1.getId(), courseBasePrices)
         .mockWorkspaceBilledPriceUpdate(String.valueOf(price/2));
       
       logout();
@@ -133,12 +137,12 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       mockBuilder.removeMockCourseStudent(courseStudent);
       courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED));
       mockBuilder
-        .mockCourseAssessments(courseStudent, admin)
+        .mockCourseAssessments(course1, courseStudent, admin)
         .mockWorkspaceBilledPrice(String.valueOf(price/2))
         .addCourseStudent(course1.getId(), courseStudent)
         .mockCourseActivities();
       
-      waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons .button--evaluate-workspace");
+      waitAndClick(".form__buttons--evaluation .button--evaluate-workspace");
       waitForPresent(".dialog--evaluation-archive-student.dialog--visible .button--standard-ok");
       waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".dialog--evaluation-archive-student.dialog--visible", 3, 2000);
       assertText(".evaluation-modal__event .evaluation-modal__event-grade.state-PASSED", "Excellent");
@@ -492,14 +496,14 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresent(".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents");
         addTextToCKEditor("Test supplementation request.");
 
-        waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons a.button--evaluate-supplementation");
+        waitAndClick(".form__buttons--evaluation a.button--evaluate-supplementation");
         waitForNotVisible(".evaluation-modal__evaluate-drawer");
         waitForVisible(".evaluation-modal__header-title");
-        assertTextIgnoreCase(".evaluation-modal__event:nth-child(2) .evaluation-modal__event-meta", "Admin User pyysi täydennystä");
+        assertTextIgnoreCase(".evaluation-modal__event.state-INCOMPLETE .evaluation-modal__event-meta", "Admin User pyysi täydennystä");
         
-        waitAndClick(".evaluation-modal__event:nth-child(2) .evaluation-modal__event-meta");
-        waitUntilAnimationIsDone(".evaluation-modal__event:nth-child(2) .rah-static");
-        assertText(".evaluation-modal__event:nth-child(2) .rah-static .evaluation-modal__event-literal-assessment p", "Test supplementation request.");
+        waitAndClick(".evaluation-modal__event.state-INCOMPLETE .evaluation-modal__event-meta");
+        waitUntilAnimationIsDone(".evaluation-modal__event.state-INCOMPLETE .rah-static");
+        assertText(".evaluation-modal__event.state-INCOMPLETE .rah-static .evaluation-modal__event-literal-assessment p", "Test supplementation request.");
 
         logout();
         mockBuilder.mockLogin(student);

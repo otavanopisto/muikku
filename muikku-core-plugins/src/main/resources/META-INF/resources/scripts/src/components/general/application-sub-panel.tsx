@@ -13,10 +13,11 @@ interface SubPanelProps {
  * @param props component props
  * @returns JSX.Element
  * Has child components:
- * ApplicationSubpanel.Header, ApplicationSubpanel.Body
+ * ApplicationSubpanel.Header, ApplicationSubpanel.Body, ApplicationSubpanel.ViewHeader
  */
 const ApplicationSubPanel: React.FC<SubPanelProps> & {
   Header?: React.FC<{ modifier?: string }>;
+  ViewHeader?: React.FC<{ modifier?: string }>;
   Body?: React.FC<{ modifier?: string }>;
 } = (props) => {
   const { modifier, children } = props;
@@ -55,6 +56,13 @@ const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
  */
 interface SubPanelViewHeaderProps {
   title: string;
+  /**
+   * Decoration that comes before the main header (could be an avatar, icon)
+   */
+  decoration?: JSX.Element;
+  /**
+   * Additional information for the  title
+   */
   titleDetail?: string;
   modifier?: string;
 }
@@ -65,13 +73,15 @@ interface SubPanelViewHeaderProps {
  * @returns JSX.Element
  */
 
-// guider-profile-student-name
-//-guider-profile-student-email
-
 export const ApplicationSubPanelViewHeader: React.FC<
   SubPanelViewHeaderProps
 > = (props) => (
-  <>
+  <div
+    className={`application-sub-panel__header ${
+      props.modifier ? `application-sub-panel__header--${props.modifier}` : ""
+    }`}
+  >
+    {props.decoration ? props.decoration : null}
     <div className="application-sub-panel__header-main-container">
       <h2
         className={`application-sub-panel__header-main ${
@@ -99,7 +109,7 @@ export const ApplicationSubPanelViewHeader: React.FC<
         {props.children}
       </div>
     ) : null}
-  </>
+  </div>
 );
 
 /**
@@ -206,13 +216,9 @@ const ApplicationSubPanelItemData: React.FC<SubPanelItemDataProps> = (
           : ""
       }`}
     >
-      {React.Children.count(props.children) > 1 ? (
-        props.children
-      ) : (
-        <span className="application-sub-panel__single-entry">
-          {props.children}
-        </span>
-      )}
+      {React.Children.map(props.children, (child) => (
+        <span className="application-sub-panel__single-entry">{child}</span>
+      ))}
     </div>
   </div>
 );
@@ -237,6 +243,7 @@ const ApplicationSubPanelSubItem: React.FC<{
 );
 
 ApplicationSubPanel.Header = ApplicationSubPanelHeader;
+ApplicationSubPanel.ViewHeader = ApplicationSubPanelViewHeader;
 ApplicationSubPanel.Body = ApplicationSubPanelBody;
 ApplicationSubPanelItem.Content = ApplicationSubPanelItemData;
 ApplicationSubPanelItem.SubItem = ApplicationSubPanelSubItem;
