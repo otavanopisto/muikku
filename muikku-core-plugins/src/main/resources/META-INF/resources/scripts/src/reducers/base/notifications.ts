@@ -1,4 +1,5 @@
 import { ActionType } from "~/actions";
+import { Reducer } from "redux";
 
 export type NotificationSeverityType =
   | "error"
@@ -39,14 +40,15 @@ const initialNotificationState: NotificationState = {
 };
 
 /**
- * notifications
+ * Reducer function for notifications
  * @param state state
  * @param action action
+ * @returns State of notifications
  */
-export default function notifications(
+export const notifications: Reducer<NotificationState> = (
   state: NotificationState = initialNotificationState,
   action: ActionType
-) {
+) => {
   switch (action.type) {
     case "ADD_NOTIFICATION": {
       const newNotification: NotificationType = action.payload;
@@ -92,4 +94,4 @@ export default function notifications(
   } else if (action.type === "CLOSE_NOTIFICATION_DIALOG") {
   }
   return state; */
-}
+};

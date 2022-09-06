@@ -479,5 +479,4 @@ export const evaluations: Reducer<EvaluationState> = (
     });
   }
   return state;
-}
- */
+} */
