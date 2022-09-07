@@ -4,7 +4,8 @@ import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { Strophe } from "strophe.js";
-import { Room } from "./room";
+import { Room } from "./tabs/room";
+import { People } from "./tabs/people";
 import { Groupchat } from "./groupchat";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
@@ -831,9 +832,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       {
         id: "rooms",
         type: "chat",
-        name: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.editorView.tabs.label.content"
-        ),
+        name: this.props.i18n.text.get("plugin.chat.tabs.label.rooms"),
         component: (
           <div className="chat__panel chat__panel--controlbox">
             <div className="chat__panel-header chat__panel-header--controlbox">
@@ -1001,11 +1000,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
         ),
       },
       {
-        id: "persons",
+        id: "people",
         type: "chat",
-        name: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.editorView.tabs.label.content"
-        ),
+        name: this.props.i18n.text.get("plugin.chat.tabs.label.people"),
         component: (
           <div className="chat__panel chat__panel--controlbox">
             <div className="chat__panel-header chat__panel-header--controlbox">
@@ -1036,6 +1033,35 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 onClick={this.toggleControlBox}
                 className="chat__button chat__button--close icon-cross"
               ></span>
+            </div>
+
+            <div className="chat__panel-body chat__panel-body--controlbox">
+              <div className="chat__controlbox-rooms-heading">
+                {this.props.i18n.text.get("plugin.chat.people.guider")}
+              </div>
+              <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
+                {this.getWorkspaceMucRooms().length > 0 ? (
+                  this.getWorkspaceMucRooms().map((chat, i) => (
+                    <People
+                      requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(
+                        this,
+                        chat
+                      )}
+                      modifier="workspace"
+                      toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(
+                        this,
+                        chat.roomJID
+                      )}
+                      key={i}
+                      chat={chat}
+                    />
+                  ))
+                ) : (
+                  <div className="chat__controlbox-room  chat__controlbox-room--empty">
+                    {this.props.i18n.text.get("plugin.chat.people.empty")}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         ),

@@ -1,11 +1,11 @@
 import * as React from "react";
 import "~/sass/elements/chat.scss";
-import { IAvailableChatRoomType } from "./chat";
+import { IAvailableChatRoomType } from "../chat";
 
 /**
- * IRoomProps
+ * IPeopleProps
  */
-interface IRoomProps {
+interface IPeopleProps {
   chat: IAvailableChatRoomType;
   modifier?: string;
   toggleJoinLeaveChatRoom: () => void;
@@ -13,16 +13,16 @@ interface IRoomProps {
 }
 
 /**
- * IRoomState
+ * IPeopleState
  */
-interface IRoomState {
+interface IPeopleState {
   showRoomInfo: boolean;
 }
 
 /**
  * Room
  */
-export class Room extends React.Component<IRoomProps, IRoomState> {
+export class People extends React.Component<IPeopleProps, IPeopleState> {
   /**
    * constructor
    * @param props props
