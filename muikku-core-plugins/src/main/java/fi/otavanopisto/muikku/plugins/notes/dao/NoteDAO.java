@@ -16,8 +16,6 @@ import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 import fi.otavanopisto.muikku.plugins.notes.model.Note_;
 
 public class NoteDAO extends CorePluginsDAO<Note> {
-
-  
   
   private static final long serialVersionUID = 1265008061182482207L;
 
@@ -72,16 +70,10 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   }
   
   
-  public Note toggleArchived(Note note, Boolean archived) {
+  public Note setArchived(Note note, Boolean archived) {
     note.setArchived(archived);
     note.setLastModified(new Date());
-    
-    if (archived.equals(Boolean.TRUE)) {
-      note.setDueDate(null);
-      note.setStartDate(null);
-    }
     getEntityManager().persist(note);
-    
     return note;
   }
 
