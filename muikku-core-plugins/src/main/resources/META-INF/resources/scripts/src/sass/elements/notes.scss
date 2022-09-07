@@ -71,6 +71,17 @@
   }
 }
 
+.notes__item--overdue {
+  .notes__item-dates-date-range {
+    background-color: $color-fatal;
+    color: $color-default;
+  }
+
+  .notes__item-dates-date-range .notes__item-dates-indicator {
+    color: $color-default;
+  }
+}
+
 // Used in dialog where we load the full note information
 .notes__item--dialog-information {
   align-items: flex-start;
@@ -224,6 +235,11 @@
   flex-flow: row nowrap;
   font-size: 0.75rem;
   padding: 2px 8px;
+}
+
+.notes__item-status--overdue {
+  background-color: $color-fatal;
+  color: $color-default;
 }
 
 .notes__item-status--ongoing,

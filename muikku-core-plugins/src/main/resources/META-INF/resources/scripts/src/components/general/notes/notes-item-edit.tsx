@@ -188,6 +188,8 @@ class NotesItemEdit extends SessionStateComponent<
               this.props.i18n.time.getLocale()
             )}
             dateFormat="P"
+            minDate={new Date()}
+            maxDate={this.state.notesItem.dueDate}
           />
         </div>
         <div className="env-dialog__form-element-container">
@@ -208,6 +210,11 @@ class NotesItemEdit extends SessionStateComponent<
               this.props.i18n.time.getLocale()
             )}
             dateFormat="P"
+            minDate={
+              this.state.notesItem.startDate !== null
+                ? new Date(this.state.notesItem.startDate)
+                : new Date()
+            }
           />
         </div>
       </div>,
