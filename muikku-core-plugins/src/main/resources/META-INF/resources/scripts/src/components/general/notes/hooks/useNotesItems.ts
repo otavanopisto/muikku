@@ -84,7 +84,7 @@ export const useNotesItem = (
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(
-            i18n.text.get("plugin.records.notes.notification.load.error", err),
+            i18n.text.get("plugin.records.tasks.notification.load.error", err),
             "error"
           );
           setNotesItem((notesItems) => ({
@@ -160,7 +160,7 @@ export const useNotesItem = (
         }));
 
         displayNotification(
-          i18n.text.get("plugin.records.notes.notification.create.success"),
+          i18n.text.get("plugin.records.tasks.notification.create.success"),
           "success"
         );
       } else {
@@ -179,13 +179,13 @@ export const useNotesItem = (
         onSuccess && onSuccess();
 
         displayNotification(
-          i18n.text.get("plugin.records.notes.notification.create.success"),
+          i18n.text.get("plugin.records.tasks.notification.create.success"),
           "success"
         );
       }
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.create.error", err),
+        i18n.text.get("plugin.records.tasks.notification.create.error", err),
         "error"
       );
       setNotesItem((notesItem) => ({
@@ -238,12 +238,12 @@ export const useNotesItem = (
       onSuccess && onSuccess();
 
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.edit.success"),
+        i18n.text.get("plugin.records.tasks.notification.edit.success"),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.edit.error", err),
+        i18n.text.get("plugin.records.tasks.notification.edit.error", err),
         "error"
       );
       setNotesItem((notesItems) => ({
@@ -302,7 +302,7 @@ export const useNotesItem = (
       onSuccess && onSuccess();
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.pinn.error", err),
+        i18n.text.get("plugin.records.tasks.notification.pinn.error", err),
         "error"
       );
       setNotesItem((notesItems) => ({
@@ -360,12 +360,12 @@ export const useNotesItem = (
       onSuccess && onSuccess();
 
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.archive.success"),
+        i18n.text.get("plugin.records.tasks.notification.archive.success"),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.archive.error", err),
+        i18n.text.get("plugin.records.tasks.notification.archive.error", err),
         "error"
       );
       setNotesItem((notesItems) => ({
@@ -423,12 +423,12 @@ export const useNotesItem = (
       onSuccess && onSuccess();
 
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.unarchive.success"),
+        i18n.text.get("plugin.records.tasks.notification.unarchive.success"),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.unarchive.error", err),
+        i18n.text.get("plugin.records.tasks.notification.unarchive.error", err),
         "error"
       );
       setNotesItem((notesItems) => ({
@@ -478,12 +478,12 @@ export const useNotesItem = (
       }));
 
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.status.success"),
+        i18n.text.get("plugin.records.tasks.notification.status.success"),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.notes.notification.status.error", err),
+        i18n.text.get("plugin.records.tasks.notification.status.error", err),
         "error"
       );
       setNotesItem((notesItems) => ({

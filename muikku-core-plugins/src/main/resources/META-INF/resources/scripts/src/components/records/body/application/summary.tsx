@@ -309,7 +309,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 !this.props.hops.eligibility.upperSecondarySchoolCurriculum && (
                   <div className="application-sub-panel">
                     <div className="application-sub-panel__header">
-                      Kursseja sinulle
+                      {this.props.i18n.text.get(
+                        "plugin.records.suggestedCourses.sectionTitle"
+                      )}
                     </div>
                     <CourseCarousel
                       studentId={this.props.status.userSchoolDataIdentifier}
@@ -321,7 +323,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
-                  Tehtävät ja omat muistutukset
+                  {this.props.i18n.text.get(
+                    "plugin.records.tasks.sectionTitle"
+                  )}
                 </div>
                 <Notes
                   usePlace="records"

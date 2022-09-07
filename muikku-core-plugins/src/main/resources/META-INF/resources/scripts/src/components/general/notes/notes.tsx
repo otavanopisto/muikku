@@ -125,7 +125,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     {
       id: "active",
       type: "notes",
-      name: props.i18n.text.get("plugin.records.notes.tab.active"),
+      name: props.i18n.text.get("plugin.records.tasks.tab.active"),
       /**
        * component
        */
@@ -172,7 +172,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     notesTabs.push({
       id: "archived",
       type: "notes",
-      name: props.i18n.text.get("plugin.records.notes.tab.archived"),
+      name: props.i18n.text.get("plugin.records.tasks.tab.archived"),
       /**
        * component
        */
