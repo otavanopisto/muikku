@@ -407,12 +407,6 @@ export const messages: Reducer<MessagesType> = (
               ...item,
               ...action.payload.update,
             };
-
-            /* return Object.assign(
-              {},
-              item,
-              <MessagesNavigationItemUpdateType>action.payload.update
-            ); */
           })
           .sort(sortNavigationItems),
       };
@@ -530,9 +524,6 @@ export const messages: Reducer<MessagesType> = (
                 ...selectedThread,
                 labels: selectedThread.labels.concat([action.payload.label]),
               };
-              /* return Object.assign({}, selectedThread, {
-                labels: selectedThread.labels.concat([action.payload.label]),
-              }); */
             } else {
               return selectedThread;
             }
@@ -553,9 +544,6 @@ export const messages: Reducer<MessagesType> = (
                 ...thread,
                 labels: thread.labels.concat([action.payload.label]),
               };
-              /* return Object.assign({}, thread, {
-                labels: thread.labels.concat([action.payload.label]),
-              }); */
             } else {
               return thread;
             }
@@ -593,12 +581,6 @@ export const messages: Reducer<MessagesType> = (
                 (label) => label.labelId !== action.payload.label.labelId
               ),
             };
-
-            /* return Object.assign({}, selectedThread, {
-              labels: selectedThread.labels.filter(
-                (label) => label.labelId !== action.payload.label.labelId
-              ),
-            }); */
           }
           return selectedThread;
         }),
@@ -613,12 +595,6 @@ export const messages: Reducer<MessagesType> = (
                 (label) => label.labelId !== action.payload.label.labelId
               ),
             };
-
-            /* return Object.assign({}, thread, {
-              labels: thread.labels.filter(
-                (label) => label.labelId !== action.payload.label.labelId
-              ),
-            }); */
           }
           return thread;
         }),
@@ -662,16 +638,7 @@ export const messages: Reducer<MessagesType> = (
             return label;
           }),
         })),
-        /* selectedThreads: state.selectedThreads.map((selectedThread) =>
-          Object.assign({}, selectedThread, {
-            labels: selectedThread.labels.map((label) => {
-              if (label.labelId === action.payload.labelId) {
-                return Object.assign({}, label, action.payload.update);
-              }
-              return label;
-            }),
-          })
-        ), */
+
         threads: state.threads.map((thread: MessageThreadType) => ({
           ...thread,
           labels: thread.labels.map((label) => {
@@ -684,16 +651,7 @@ export const messages: Reducer<MessagesType> = (
             return label;
           }),
         })),
-        /* threads: state.threads.map((thread: MessageThreadType) =>
-          Object.assign({}, thread, {
-            labels: thread.labels.map((label) => {
-              if (label.labelId === action.payload.labelId) {
-                return Object.assign({}, label, action.payload.update);
-              }
-              return label;
-            }),
-          })
-        ), */
+
         currentThread: state.currentThread
           ? {
               ...state.currentThread,
@@ -705,17 +663,6 @@ export const messages: Reducer<MessagesType> = (
               }),
             }
           : state.currentThread,
-
-        /* currentThread: state.currentThread
-          ? Object.assign({}, state.currentThread, {
-              labels: state.currentThread.labels.map((label) => {
-                if (label.labelId === action.payload.labelId) {
-                  return Object.assign({}, label, action.payload.update);
-                }
-                return label;
-              }),
-            })
-          : state.currentThread, */
       };
 
     case "REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS":
@@ -728,27 +675,12 @@ export const messages: Reducer<MessagesType> = (
           ),
         })),
 
-        /* selectedThreads: state.selectedThreads.map((selectedThread) =>
-          Object.assign({}, selectedThread, {
-            labels: selectedThread.labels.filter(
-              (label) => label.labelId !== action.payload.labelId
-            ),
-          })
-        ), */
-        threads: state.threads.map(
-          (thread) => ({
-            ...thread,
-            labels: thread.labels.filter(
-              (label) => label.labelId !== action.payload.labelId
-            ),
-          })
-
-          /* Object.assign({}, thread, {
-            labels: thread.labels.filter(
-              (label) => label.labelId !== action.payload.labelId
-            ),
-          }) */
-        ),
+        threads: state.threads.map((thread) => ({
+          ...thread,
+          labels: thread.labels.filter(
+            (label) => label.labelId !== action.payload.labelId
+          ),
+        })),
         currentThread: state.currentThread
           ? {
               ...state.currentThread,
@@ -757,14 +689,6 @@ export const messages: Reducer<MessagesType> = (
               ),
             }
           : state.currentThread,
-
-        /* currentThread: state.currentThread
-          ? Object.assign({}, state.currentThread, {
-              labels: state.currentThread.labels.filter(
-                (label) => label.labelId !== action.payload.labelId
-              ),
-            })
-          : state.currentThread, */
       };
 
     case "PUSH_ONE_MESSAGE_THREAD_FIRST": {

@@ -5,8 +5,8 @@ import i18n from "./base/i18n";
 import { combineReducers } from "redux";
 
 export default combineReducers({
-  notifications,
   i18n,
   locales,
+  notifications,
   status,
 });

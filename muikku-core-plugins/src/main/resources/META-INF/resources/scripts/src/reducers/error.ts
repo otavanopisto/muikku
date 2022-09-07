@@ -8,10 +8,10 @@ import { error } from "~/reducers/base/error";
 import { combineReducers } from "redux";
 
 export default combineReducers({
+  error,
   i18n,
   locales,
+  messages,
   status,
   title,
-  messages,
-  error,
 });

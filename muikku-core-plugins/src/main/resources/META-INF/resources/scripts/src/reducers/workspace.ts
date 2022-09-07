@@ -15,16 +15,16 @@ import { profile } from "./main-function/profile";
 import { combineReducers } from "redux";
 
 export default combineReducers({
-  notifications,
-  i18n,
-  locales,
-  status,
-  websocket,
-  title,
-  profile,
-  workspaces,
   announcements,
   discussion,
-  userIndex,
   evaluations,
+  i18n,
+  locales,
+  notifications,
+  profile,
+  status,
+  title,
+  userIndex,
+  websocket,
+  workspaces,
 });

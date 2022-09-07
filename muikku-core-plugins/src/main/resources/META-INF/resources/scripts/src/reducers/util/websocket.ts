@@ -1,9 +1,15 @@
 import { ActionType, SpecificActionType } from "~/actions";
 import MuikkuWebsocket from "~/util/websocket";
 
+export type WebsocketEventType =
+  | "webSocketConnected"
+  | "webSocketDisconnected"
+  | "webSocketDesync"
+  | "webSocketSync";
+
 export type WEBSOCKET_EVENT = SpecificActionType<
   "WEBSOCKET_EVENT",
-  { event: string }
+  { event: WebsocketEventType }
 >;
 export type INITIALIZE_WEBSOCKET = SpecificActionType<
   "INITIALIZE_WEBSOCKET",
@@ -20,16 +26,23 @@ export interface WebsocketStateType {
 }
 
 /**
+ * initialWebsocketState
+ */
+const initialWebsocketState: WebsocketStateType = {
+  connected: false,
+  synchronized: true,
+  websocket: null,
+};
+
+// Is using old if else way to handle actions, just cause its here way more simple that switch case
+
+/**
  * websocket
  * @param state state
  * @param action action
  */
 export default function websocket(
-  state: WebsocketStateType = {
-    connected: false,
-    synchronized: true,
-    websocket: null,
-  },
+  state: WebsocketStateType = initialWebsocketState,
   action: ActionType
 ): WebsocketStateType {
   if (
