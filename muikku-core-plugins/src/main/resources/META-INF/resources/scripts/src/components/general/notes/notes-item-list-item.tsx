@@ -81,6 +81,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       status,
     } = notesItem;
 
+    const overdue = isOverdue(dueDate);
+
     const updatedModifiers = [];
 
     if (containerModifier && containerModifier.length > 0) {
@@ -177,6 +179,10 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
     }
 
+    if (overdue) {
+      updatedModifiers.push("overdue");
+    }
+
     /**
      * createHtmlMarkup
      * @param htmlString string that contains html
@@ -237,32 +243,56 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * renderStatus
      */
     const renderStatus = () => {
+      const statuses: JSX.Element[] = [];
+
+      if (overdue) {
+        statuses.push(
+          <div
+            key="note-overdue"
+            className="notes__item-status notes__item-status--overdue"
+          >
+            {props.i18n.text.get("plugin.records.notes.status.overdue")}
+          </div>
+        );
+      }
+
       switch (status) {
         case NotesItemStatus.ONGOING:
-          return (
-            <div className="notes__item-status notes__item-status--ongoing">
+          statuses.push(
+            <div
+              key="note-ongoing"
+              className="notes__item-status notes__item-status--ongoing"
+            >
               {props.i18n.text.get("plugin.records.tasks.status.ongoing")}
             </div>
           );
-
+          break;
         case NotesItemStatus.APPROVAL_PENDING:
-          return (
-            <div className="notes__item-status notes__item-status--pending">
+          statuses.push(
+            <div
+              key="note-pending"
+              className="notes__item-status notes__item-status--pending"
+            >
               {props.i18n.text.get("plugin.records.tasks.status.pending")}
             </div>
           );
-
+          break;
         case NotesItemStatus.APPROVED:
-          return (
-            <div className="notes__item-status notes__item-status--done">
+          statuses.push(
+            <div
+              key="note-approved"
+              className="notes__item-status notes__item-status--done"
+            >
               <span className="notes__item-status-indicator icon-check"></span>
               {props.i18n.text.get("plugin.records.tasks.status.done")}
             </div>
           );
-
+          break;
         default:
           break;
       }
+
+      return statuses;
     };
 
     /**
@@ -476,3 +506,11 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
 NotesListItem.displayName = "NotesListItem";
 
 export default React.memo(NotesListItem);
+
+/**
+ * Checks if note is expired or late
+ * @param dueDate due date to check agains
+ * @returns Whether note is expired or late
+ */
+const isOverdue = (dueDate: Date | null) =>
+  dueDate !== null && moment(new Date()).isAfter(new Date(dueDate));
