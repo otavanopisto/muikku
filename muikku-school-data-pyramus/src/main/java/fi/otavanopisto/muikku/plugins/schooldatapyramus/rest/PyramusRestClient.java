@@ -17,6 +17,8 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
@@ -234,23 +236,29 @@ class PyramusRestClient implements Serializable {
 
   @SuppressWarnings("unchecked")
   private <T> T createResponse(Response response, Class<T> type, String path) {
-    switch (response.getStatus()) {
+    int statusCode = response.getStatus();
+    switch (statusCode) {
       case 200:
         return response.readEntity(type);
       case 204:
         if (type.isArray()) {
           return (T) Array.newInstance(type.getComponentType(), 0);
-        } else {
+        }
+        else {
           return null;
         }
       case 403:
-        logger.warning(String.format("Pyramus call for path %s unauthorized (%d)", path, response.getStatus()));
-        throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
+        logger.warning(String.format("Pyramus call for path %s unauthorized (%d)", path, statusCode));
+        throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", statusCode, response.getEntity(), path));
       case 404:
         return null;
       default:
-        logger.warning(String.format("Pyramus call for path %s failed (%d)", path, response.getStatus()));
-        throw new SchoolDataBridgeException(response.getStatus(), String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
+        String responseContent = response.hasEntity() ? response.readEntity(String.class) : null; // note: response now closed
+        logger.warning(String.format("Pyramus call for path %s failed: %d %s",
+            path,
+            statusCode,
+            StringUtils.defaultIfEmpty(responseContent, "")));
+        throw new SchoolDataBridgeException(statusCode, String.format("Received http error %d (%s) when requesting %s", statusCode, responseContent, path));
     }
   }
   
@@ -260,7 +268,6 @@ class PyramusRestClient implements Serializable {
     String responseContent = response.hasEntity() ? response.readEntity(String.class) : null; // note: response now closed
     T entity = null;
     String message = null;
-    
     if (responseContent != null && statusCode >= 200 && statusCode < 300) {
       // ok response with entity 
       try {
@@ -278,6 +285,12 @@ class PyramusRestClient implements Serializable {
     else if (responseContent != null) {
       // error response, assume content to be message
       message = responseContent;
+      if (statusCode != 403 && statusCode != 404) {
+        logger.warning(String.format("Pyramus call for path %s failed: %d %s",
+            path,
+            statusCode,
+            StringUtils.defaultIfEmpty(message, "")));
+      }
     }
     return new BridgeResponse<T>(statusCode, entity, message);
   }

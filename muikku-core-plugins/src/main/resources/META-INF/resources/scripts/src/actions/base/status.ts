@@ -104,6 +104,7 @@ async function loadWhoAMI(
         permissions: whoAmI.permissions,
         studyProgrammeName: whoAmI.studyProgrammeName,
         studyProgrammeIdentifier: whoAmI.studyProgrammeIdentifier,
+        curriculumName: whoAmI.curriculumName,
       },
     },
   });

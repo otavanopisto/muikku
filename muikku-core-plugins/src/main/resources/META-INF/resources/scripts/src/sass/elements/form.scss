@@ -606,6 +606,10 @@ legend {
   width: 100%;
 }
 
+.form-element__select--evaluation {
+  background-color: $color-default;
+}
+
 // TEXTAREA
 .form-element__textarea-container {
   width: 100%;
