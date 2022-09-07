@@ -16,6 +16,7 @@ import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
@@ -28,7 +29,7 @@ import {
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import Notes from "~/components/general/notes/notes";
-import { WhatsappLink } from "~/components/general/whatsapp-link";
+import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 
 /**
  * SummaryProps
@@ -198,20 +199,20 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                   },
                                 ]}
                               >
-                                <Button
-                                  buttonModifiers={[
-                                    "info",
-                                    "contact-student-councelor",
-                                  ]}
-                                >
-                                  {this.props.i18n.text.get(
+                                <ButtonPill
+                                  icon="envelope"
+                                  aria-label={this.props.i18n.text.get(
                                     "plugin.records.contactStudentCouncelor.message.label"
                                   )}
-                                </Button>
+                                  title={this.props.i18n.text.get(
+                                    "plugin.records.contactStudentCouncelor.message.label"
+                                  )}
+                                  buttonModifiers="new-message"
+                                ></ButtonPill>
                               </CommunicatorNewMessage>
                               {councelor.properties["profile-phone"] &&
                               councelor.properties["profile-whatsapp"] ? (
-                                <WhatsappLink
+                                <WhatsappButtonLink
                                   i18n={this.props.i18n}
                                   mobileNumber={
                                     councelor.properties["profile-phone"]
@@ -221,22 +222,22 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                               {councelor.properties[
                                 "profile-appointmentCalendar"
                               ] ? (
-                                <Button
+                                <ButtonPill
+                                  aria-label={this.props.i18n.text.get(
+                                    "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
+                                  )}
+                                  title={this.props.i18n.text.get(
+                                    "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
+                                  )}
+                                  icon="clock"
+                                  buttonModifiers="appointment-calendar"
+                                  openInNewTab="_blank"
                                   href={
                                     councelor.properties[
                                       "profile-appointmentCalendar"
                                     ]
                                   }
-                                  openInNewTab="_blank"
-                                  buttonModifiers={[
-                                    "info",
-                                    "appointment-calendar",
-                                  ]}
-                                >
-                                  {this.props.i18n.text.get(
-                                    "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
-                                  )}
-                                </Button>
+                                />
                               ) : null}
                             </div>
                           </div>

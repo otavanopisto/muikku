@@ -1,9 +1,6 @@
 package fi.otavanopisto.muikku.plugins.notes;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,12 +92,6 @@ public class NotesRESTService extends PluginRESTService {
     return Response.ok(noteRest).build();
   }
   
-  private OffsetDateTime toOffsetDateTime(Date date) {
-    Instant instant = date.toInstant();
-    ZoneId systemId = ZoneId.systemDefault();
-    ZoneOffset offset = systemId.getRules().getOffset(instant);
-    return date.toInstant().atOffset(offset);
-  }
   //mApi() call (mApi().notes.note.update(noteId, noteRestModel)
   // Editable fields are title, description, priority, pinned, dueDate & status)
   @PUT
@@ -142,7 +133,6 @@ public class NotesRESTService extends PluginRESTService {
     
     UserEntity userEntity = userEntityController.findUserEntityById(note.getCreator());
     String creatorName = userEntityController.getName(userEntity).getDisplayNameWithLine();
-
     
     NoteRestModel restModel = new NoteRestModel();
     restModel.setId(note.getId());
@@ -159,26 +149,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setDueDate(note.getDueDate());
     restModel.setStatus(note.getStatus());
     restModel.setIsArchived(note.getArchived());
-    
-    restModel.setIsActive(true);
-    
-    if (note.getStartDate() != null) {
-      //If startDate is after yesterday
-      if (note.getStartDate().after(Date.from(OffsetDateTime.now().minusDays(1).toInstant()))) {
-        restModel.setIsActive(false);
-      }
-    } else if (note.getDueDate() != null) {
-      OffsetDateTime dueDate= toOffsetDateTime(note.getDueDate());
-      // Note is not active if dueDate is earlier than yesterday
-      if (dueDate.isBefore(OffsetDateTime.now().minusDays(1))) {
-        restModel.setIsActive(false);
-      }
-    }
-    
-    if (note.getArchived().equals(Boolean.TRUE)) {
-      restModel.setIsActive(false);
-    }
-    
+
     return restModel;
   }
   
@@ -186,37 +157,37 @@ public class NotesRESTService extends PluginRESTService {
   @GET
   @Path("/owner/{OWNER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getNotesByOwner(@PathParam("OWNER") Long owner, @QueryParam("listArchived") @DefaultValue ("false") Boolean listArchived) {
+  public Response listNotesByOwner(@PathParam("OWNER") Long owner, @QueryParam("listArchived") @DefaultValue ("false") Boolean listArchived) {
 
     List<Note> notes = notesController.listByOwner(owner, listArchived);
     List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
+    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
+    if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && !owner.equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     for (Note note : notes) {
-      NoteRestModel noteRest = toRestModel(note);
       UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
       EnvironmentRoleArchetype creatorUserRole = getUserRoleArchetype(creator.defaultSchoolDataIdentifier());
-      EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
       
       if (loggedUserRole == null || creatorUserRole == null) {
         return Response.status(Status.BAD_REQUEST).build();
       }
 
-      if (Boolean.TRUE.equals(listArchived)) {
-        noteRest.setIsActive(false);
-        // List archived notes from last two weeks
-        if (!note.getLastModified().before(Date.from(inLastTwoWeeks.toInstant()))) {
-          if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) || !creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-            notesList.add(noteRest);
-          }
-        }
-      } else {
-        if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) || !creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) { // if logged user role is student
-          if (noteRest.getIsActive().equals(Boolean.TRUE) || sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) { // If note is active we can add it to list
-            notesList.add(noteRest);
-          }
-        }
+      // Ignore archived notes older than last two weeks
+      if (Boolean.TRUE.equals(listArchived) && note.getLastModified().before(Date.from(inLastTwoWeeks.toInstant()))) {
+        continue;
       }
+      
+      // Do not return students' personal notes to staff 
+      if (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+        continue;
+      }
+
+      NoteRestModel noteRest = toRestModel(note);
+      notesList.add(noteRest);
     }
     
     return Response.ok(notesList).build();
@@ -240,7 +211,13 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("Note (%d) not found", noteId)).build();
     }
     
-    // permissions
+    // Students can only archive their own notes
+    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
+    if (loggedUserRole == EnvironmentRoleArchetype.STUDENT && !note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build(); 
+    }
+    
+    // Archiving is only allowed if you're the creator or owner of the note
     if ((!sessionController.getLoggedUserEntity().getId().equals(note.getCreator()))) {
       if (!sessionController.getLoggedUserEntity().getId().equals(note.getOwner())) {
         return Response.status(Status.FORBIDDEN).build();

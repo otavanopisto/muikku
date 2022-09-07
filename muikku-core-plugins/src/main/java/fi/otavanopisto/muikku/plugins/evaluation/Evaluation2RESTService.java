@@ -271,8 +271,8 @@ public class Evaluation2RESTService {
       event.setGradeIdentifier(String.format("PYRAMUS-%s@PYRAMUS-%s", gradingScale.getIdentifier(), gradingScaleItem.getIdentifier()));
       event.setIdentifier(workspaceAssessment.getIdentifier().toId());
       event.setText(workspaceAssessment.getVerbalAssessment());
-      // subseequent workspace assessments are always considered improved grades
-      if (seenWorkspaceSubjects.contains(workspaceAssessment.getWorkspaceSubjectIdentifier())) {
+      // subseequent workspace assessments are always considered improved grades (#6213: if passing)
+      if (gradingScaleItem.isPassingGrade() && seenWorkspaceSubjects.contains(workspaceAssessment.getWorkspaceSubjectIdentifier())) {
         event.setType(RestEvaluationEventType.EVALUATION_IMPROVED);
       }
       else {
