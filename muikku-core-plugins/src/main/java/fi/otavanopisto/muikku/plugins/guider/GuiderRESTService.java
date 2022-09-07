@@ -494,7 +494,7 @@ public class GuiderRESTService extends PluginRESTService {
         studyEndDate,
         studyTimeEnd,
         userEntity == null ? null : userEntity.getLastLogin(),
-        user.getCurriculumIdentifier(),
+        user.getCurriculumIdentifier() != null ? user.getCurriculumIdentifier().toId() : null,
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
         null,

@@ -17,6 +17,18 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
   typeName = IndexedUser.TYPE_NAME,
   options = {
     @IndexableFieldOption (
+      name = "identifier",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "schoolDataSource",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "archetype",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
       name = "firstName",
       type = IndexableFieldType.TEXT,
       multiFields = {
@@ -32,6 +44,14 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
     ),
     @IndexableFieldOption (
       name = "email",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "studyProgrammeIdentifier",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "curriculumIdentifier",
       type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
@@ -174,11 +194,12 @@ public class IndexedUser {
     return evaluationFees;
   }
 
-  public String getCurriculumIdentifier() {
+  @IndexField (toId = true)
+  public SchoolDataIdentifier getCurriculumIdentifier() {
     return curriculumIdentifier;
   }
 
-  public void setCurriculumIdentifier(String curriculumIdentifier) {
+  public void setCurriculumIdentifier(SchoolDataIdentifier curriculumIdentifier) {
     this.curriculumIdentifier = curriculumIdentifier;
   }
 
@@ -272,7 +293,7 @@ public class IndexedUser {
   private OffsetDateTime studyTimeEnd;
   private boolean hidden;
   private boolean evaluationFees;
-  private String curriculumIdentifier;
+  private SchoolDataIdentifier curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
   private EnvironmentRoleArchetype archetype;
