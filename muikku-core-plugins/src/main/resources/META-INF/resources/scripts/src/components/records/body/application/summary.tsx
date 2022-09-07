@@ -207,7 +207,10 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                   title={this.props.i18n.text.get(
                                     "plugin.records.contactStudentCouncelor.message.label"
                                   )}
-                                  buttonModifiers="new-message"
+                                  buttonModifiers={[
+                                    "new-message",
+                                    "new-message-to-staff",
+                                  ]}
                                 ></ButtonPill>
                               </CommunicatorNewMessage>
                               {councelor.properties["profile-phone"] &&
