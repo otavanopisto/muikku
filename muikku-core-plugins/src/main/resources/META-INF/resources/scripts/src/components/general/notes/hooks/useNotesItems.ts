@@ -478,12 +478,15 @@ export const useNotesItem = (
       }));
 
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.status.success"),
+        i18n.text.get("plugin.records.tasks.notification.stateUpdate.success"),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.status.error", err),
+        i18n.text.get(
+          "plugin.records.tasks.notification.stateUpdate.error",
+          err
+        ),
         "error"
       );
       setNotesItem((notesItems) => ({
