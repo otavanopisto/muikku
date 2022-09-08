@@ -17,11 +17,11 @@ public class PyramusWorkspace extends AbstractWorkspace {
 
   public PyramusWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String viewLink,
       SchoolDataIdentifier workspaceTypeId, String description, SchoolDataIdentifier educationTypeIdentifier, Date modified, 
-      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, Set<SchoolDataIdentifier> curriculumIdentifiers, 
+      OffsetDateTime beginDate, OffsetDateTime endDate, OffsetDateTime signupStart, OffsetDateTime signupEnd, boolean archived, Set<SchoolDataIdentifier> curriculumIdentifiers, 
       SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier,
       boolean isTemplate, List<WorkspaceSubject> subjects) {
     super(identifier, name, nameExtension, viewLink, workspaceTypeId, description,
-        educationTypeIdentifier, modified, beginDate, endDate, archived,
+        educationTypeIdentifier, modified, beginDate, endDate, signupStart, signupEnd, archived,
         curriculumIdentifiers, educationSubtypeIdentifier, organizationIdentifier, isTemplate, subjects);
   }
 
