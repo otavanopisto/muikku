@@ -292,7 +292,7 @@ public class ElasticSearchProvider implements SearchProvider {
       if (archetypes != null) {
         List<String> archetypeNames = new ArrayList<>(archetypes.size());
         for (EnvironmentRoleArchetype archetype : archetypes) {
-          archetypeNames.add(archetype.name().toLowerCase());
+          archetypeNames.add(archetypeToIndexString(archetype));
         }
 
         query.must(termsQuery("archetype", archetypeNames.toArray(new String[0])));
@@ -353,27 +353,27 @@ public class ElasticSearchProvider implements SearchProvider {
         query.must(
           boolQuery()
           .should(termsQuery("archetype",
-              EnvironmentRoleArchetype.TEACHER.name().toLowerCase(),
-              EnvironmentRoleArchetype.MANAGER.name().toLowerCase(),
-              EnvironmentRoleArchetype.STUDY_GUIDER.name().toLowerCase(),
-              EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.name().toLowerCase(),
-              EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase())
+              archetypeToIndexString(EnvironmentRoleArchetype.TEACHER),
+              archetypeToIndexString(EnvironmentRoleArchetype.MANAGER),
+              archetypeToIndexString(EnvironmentRoleArchetype.STUDY_GUIDER),
+              archetypeToIndexString(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER),
+              archetypeToIndexString(EnvironmentRoleArchetype.ADMINISTRATOR))
             )
             .should(boolQuery()
-              .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
+              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
               .must(existsQuery("studyStartDate"))
               .must(rangeQuery("studyStartDate").lte(now))
               .mustNot(existsQuery("studyEndDate"))
             )
             .should(boolQuery()
-              .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
+              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
               .must(existsQuery("studyStartDate"))
               .must(rangeQuery("studyStartDate").lte(now))
               .must(existsQuery("studyEndDate"))
               .must(rangeQuery("studyEndDate").gte(now))
             )
             .should(boolQuery()
-              .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
+              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
               .mustNot(existsQuery("studyEndDate"))
               .mustNot(existsQuery("studyStartDate"))
               .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
@@ -445,6 +445,16 @@ public class ElasticSearchProvider implements SearchProvider {
         onlyDefaultUsers, start, maxResults, fields, null, null, joinGroupsAndWorkspaces);
   }
 
+  /**
+   * Returns the string representation of archetype the way it is indexed.
+   * @param  
+   * 
+   * @return the string representation of archetype the way it is indexed
+   */
+  private String archetypeToIndexString(EnvironmentRoleArchetype archetype) {
+    return archetype.name();
+  }
+  
   private Set<Long> getActiveWorkspaces() {
 
     long now = OffsetDateTime.now().with(ChronoField.MILLI_OF_DAY, 0).toInstant().toEpochMilli() / 1000;
@@ -500,7 +510,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
-    query.must(termQuery("subjects.subjectIdentifier.untouched", subjectIdentifier.toId()));
+    query.must(termQuery("subjects.subjectIdentifier", subjectIdentifier.toId()));
     query.must(termQuery("subjects.courseNumber", courseNumber));
     
     try {
@@ -562,18 +572,18 @@ public class ElasticSearchProvider implements SearchProvider {
 
     if (CollectionUtils.isNotEmpty(subjects)) {
       List<String> subjectIds = subjects.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toList());
-      query.must(termsQuery("subjects.subjectIdentifier.untouched", subjectIds));
+      query.must(termsQuery("subjects.subjectIdentifier", subjectIds));
     }
 
     if (CollectionUtils.isNotEmpty(educationTypes)) {
       List<String> educationTypeIds = educationTypes.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toList());
-      query.must(termsQuery("educationTypeIdentifier.untouched", educationTypeIds));
+      query.must(termsQuery("educationTypeIdentifier", educationTypeIds));
     }
 
     if (CollectionUtils.isNotEmpty(curriculumIdentifiers)) {
       List<String> curriculumIds = curriculumIdentifiers.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toList());
       query.must(boolQuery()
-          .should(termsQuery("curriculumIdentifiers.untouched", curriculumIds))
+          .should(termsQuery("curriculumIdentifiers", curriculumIds))
           .should(boolQuery().mustNot(existsQuery("curriculumIdentifiers")))
           .minimumShouldMatch(1));
     }
@@ -583,7 +593,7 @@ public class ElasticSearchProvider implements SearchProvider {
     for (OrganizationRestriction organizationRestriction : organizationRestrictions) {
       SchoolDataIdentifier organizationIdentifier = organizationRestriction.getOrganizationIdentifier();
 
-      BoolQueryBuilder organizationRestrictionQuery = boolQuery().must(termQuery("organizationIdentifier.untouched", organizationIdentifier.toId()));
+      BoolQueryBuilder organizationRestrictionQuery = boolQuery().must(termQuery("organizationIdentifier", organizationIdentifier.toId()));
 
       switch (organizationRestriction.getPublicityRestriction()) {
         case ONLY_PUBLISHED:
@@ -617,7 +627,7 @@ public class ElasticSearchProvider implements SearchProvider {
       List<String> identifiersStrList = identifiers.stream()
           .map(SchoolDataIdentifier::toId)
           .collect(Collectors.toList());
-      query.must(termsQuery("identifier.untouched", identifiersStrList));
+      query.must(termsQuery("identifier", identifiersStrList));
     }
 
     if (StringUtils.isNotBlank(freeText)) {
@@ -1092,7 +1102,7 @@ public class ElasticSearchProvider implements SearchProvider {
     BoolQueryBuilder query = boolQuery();
     query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
     query.must(termQuery("isDefaultIdentifier", true));
-    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name())));
+    query.must(termsQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)));
 
     Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
     query.must(
@@ -1134,7 +1144,7 @@ public class ElasticSearchProvider implements SearchProvider {
     BoolQueryBuilder query = boolQuery();
     query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
     query.must(termQuery("isDefaultIdentifier", true));
-    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name())));
+    query.must(termsQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)));
 
     Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
     query.must(

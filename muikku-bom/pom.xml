@@ -19,11 +19,6 @@
     <commons-collections.version>3.2.2</commons-collections.version>
     <commons-validator.version>1.5.0</commons-validator.version>
 
-    <!-- Jackson -->
-
-<!--     <jackson.version>2.9.10</jackson.version> -->
-<!--     <jackson-databind.version>2.9.10.8</jackson-databind.version> -->
-
     <!-- Scribe -->
 
     <scribe.version>1.3.5</scribe.version>
@@ -54,9 +49,6 @@
     <!-- Tests -->
     <cdi-unit.version>3.1.0</cdi-unit.version>
     <rest-assured.version>2.3.4</rest-assured.version>
-
-    <!-- JSR310 -->
-<!--     <jackson-datatype-jsr310.version>2.5.4</jackson-datatype-jsr310.version> -->
 
     <!-- ROME -->
     <rome.version>1.12.2</rome.version>
@@ -308,38 +300,12 @@
         </exclusions>
       </dependency>
 
-      <!-- Mail API -->
-
-<!--       <dependency> -->
-<!--         <groupId>javax.mail</groupId> -->
-<!--         <artifactId>javax.mail-api</artifactId> -->
-<!--         <version>${mail-api.version}</version> -->
-<!--         <groupId>com.sun.mail</groupId> -->
-<!--         <artifactId>jakarta.mail</artifactId> -->
-<!--       </dependency> -->
-      
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${google-guava.version}</version>
       </dependency>
       
-<!--       <dependency> -->
-<!--         <groupId>com.fasterxml.jackson.datatype</groupId> -->
-<!--         <artifactId>jackson-datatype-jsr310</artifactId> -->
-<!--         <version>${jackson-datatype-jsr310.version}</version> -->
-<!--         <exclusions> -->
-<!--           <exclusion> -->
-<!--             <groupId>com.fasterxml.jackson.core</groupId> -->
-<!--             <artifactId>jackson-core</artifactId> -->
-<!--           </exclusion> -->
-<!--           <exclusion> -->
-<!--             <groupId>com.fasterxml.jackson.core</groupId> -->
-<!--             <artifactId>jackson-databind</artifactId> -->
-<!--           </exclusion> -->
-<!--         </exclusions> -->
-<!--       </dependency> -->
-
       <dependency>
         <groupId>com.rometools</groupId>
         <artifactId>rome</artifactId>

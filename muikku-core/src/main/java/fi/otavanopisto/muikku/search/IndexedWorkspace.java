@@ -22,8 +22,6 @@ import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
   indexName = IndexedWorkspace.INDEX_NAME,
   typeName = IndexedWorkspace.TYPE_NAME,
   options = {
-    // TODO check all these, likely the text versions are not needed for the identifiers
-      
     @IndexableFieldOption (
       name = "identifier",
       type = IndexableFieldType.KEYWORD
@@ -38,46 +36,34 @@ import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
     ),
     @IndexableFieldOption (
       name = "educationTypeIdentifier",
-      type = IndexableFieldType.TEXT,
-      multiFields = {
-        @IndexableFieldMultiField(name = "educationTypeIdentifier", type = IndexableFieldType.TEXT),
-        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
-      }
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "educationSubTypeIdentifier",
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "curriculumIdentifiers",
-      type = IndexableFieldType.TEXT,
-      multiFields = {
-        @IndexableFieldMultiField(name = "curriculumIdentifiers", type = IndexableFieldType.TEXT),
-        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
-      }
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "signupPermissionGroups",
-      type = IndexableFieldType.TEXT,
-      multiFields = {
-        @IndexableFieldMultiField(name = "signupPermissionGroups", type = IndexableFieldType.TEXT),
-        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
-      }
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "organizationIdentifier",
-      type = IndexableFieldType.TEXT,
-      multiFields = {
-        @IndexableFieldMultiField(name = "organizationIdentifier", type = IndexableFieldType.TEXT),
-        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
-      }
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "workspaceTypeId",
-      type = IndexableFieldType.TEXT,
-      multiFields = {
-        @IndexableFieldMultiField(name = "workspaceTypeId", type=IndexableFieldType.TEXT),
-        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
-      }
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "access",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "viewLink",
       type = IndexableFieldType.KEYWORD
     )
   },
@@ -86,20 +72,24 @@ import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
       name = "subjects",
       options = {
         @IndexableFieldOption (
+          name = "identifier",
+          type = IndexableFieldType.KEYWORD
+        ),
+        @IndexableFieldOption (
           name = "subjectIdentifier",
-          type = IndexableFieldType.TEXT,
-          multiFields = {
-            @IndexableFieldMultiField(name = "identifier", type = IndexableFieldType.TEXT),
-            @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
-          }
+          type = IndexableFieldType.KEYWORD
+        ),
+        @IndexableFieldOption (
+          name = "subjectCode",
+          type = IndexableFieldType.KEYWORD
         ),
         @IndexableFieldOption (
           name = "lengthUnitIdentifier",
-          type = IndexableFieldType.TEXT,
-          multiFields = {
-            @IndexableFieldMultiField(name = "identifier", type = IndexableFieldType.TEXT),
-            @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
-          }
+          type = IndexableFieldType.KEYWORD
+        ),
+        @IndexableFieldOption (
+          name = "lengthUnitSymbol",
+          type = IndexableFieldType.KEYWORD
         )
       }
     )

@@ -4,7 +4,6 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
-import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
 
@@ -15,10 +14,6 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
         @IndexableFieldOption (
           name = "organizationIdentifier",
           type = IndexableFieldType.KEYWORD
-//          multiFields = {
-//            @IndexableFieldMultiField(name = "organizationIdentifier", type="string", index = "analyzed"),
-//            @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-//          }
         )
     }
 )

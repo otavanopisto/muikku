@@ -69,23 +69,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Rewrite -->
-
-<!--     <dependency> -->
-<!--       <groupId>org.ocpsoft.rewrite</groupId> -->
-<!--       <artifactId>rewrite-servlet</artifactId> -->
-<!--     </dependency> -->
-
-<!--     <dependency> -->
-<!--       <groupId>org.ocpsoft.rewrite</groupId> -->
-<!--       <artifactId>rewrite-integration-faces</artifactId> -->
-<!--     </dependency> -->
-
-<!--     <dependency> -->
-<!--       <groupId>org.ocpsoft.rewrite</groupId> -->
-<!--       <artifactId>rewrite-integration-cdi</artifactId> -->
-<!--     </dependency> -->
-
     <!-- Hibernate -->
 
     <dependency>
@@ -93,12 +76,6 @@
       <artifactId>hibernate-core</artifactId>
       <scope>provided</scope>
     </dependency>
-
-<!--     <dependency> -->
-<!--       <groupId>org.hibernate</groupId> -->
-<!--       <artifactId>hibernate-infinispan</artifactId> -->
-<!--       <scope>provided</scope> -->
-<!--     </dependency> -->
 
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -132,14 +109,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- H2 -->
-
-<!--     <dependency> -->
-<!--       <groupId>com.h2database</groupId> -->
-<!--       <artifactId>h2</artifactId> -->
-<!--       <scope>provided</scope> -->
-<!--     </dependency> -->
-
     <!-- RESTEasy -->
 
     <dependency>
@@ -147,12 +116,6 @@
       <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-
-<!--     <dependency> -->
-<!--       <groupId>org.jboss.resteasy</groupId> -->
-<!--       <artifactId>resteasy-jaxrs</artifactId> -->
-<!--       <scope>provided</scope> -->
-<!--     </dependency> -->
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
