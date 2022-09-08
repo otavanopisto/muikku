@@ -409,18 +409,18 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
     modifiers.push("inverted");
   }
 
-  let pinnedButtonMod = ["ruler-pin"];
-  let overlayButtonMod = ["ruler-overlay"];
-  let invertButtonMod = ["ruler-invert"];
+  let pinnedButtonMod = ["reading-ruler"];
+  let overlayButtonMod = ["reading-ruler"];
+  let invertButtonMod = ["reading-ruler"];
 
   if (pinned) {
-    pinnedButtonMod = [...pinnedButtonMod, "active"];
+    pinnedButtonMod = [...pinnedButtonMod, "reading-ruler-active"];
   }
   if (overlayClickActive) {
-    overlayButtonMod = [...overlayButtonMod, "active"];
+    overlayButtonMod = [...overlayButtonMod];
   }
   if (invert) {
-    invertButtonMod = [...invertButtonMod, "active"];
+    invertButtonMod = [...invertButtonMod, "reading-ruler-active"];
   }
 
   let rulerHeightIncrement = rulerHeight;
@@ -467,6 +467,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
         tools={
           <>
             <IconButton
+              buttonModifiers={["reading-ruler"]}
               icon="minus"
               onClick={(e) =>
                 handleSettingsChange(
@@ -489,6 +490,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               }
             />
             <IconButton
+              buttonModifiers={["reading-ruler"]}
               onClick={(e) =>
                 handleSettingsChange(
                   "rulerHeight",
@@ -497,15 +499,14 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               }
               icon="plus"
             />
-            {!overlayClickActive && (
-              <IconButton
-                icon="eye"
-                buttonModifiers={invertButtonMod}
-                onClick={(e) => handleSettingsChange("invert", !invert)}
-              />
-            )}
             <IconButton
-              icon="evaluate"
+              disabled={overlayClickActive}
+              icon="invert-colors"
+              buttonModifiers={invertButtonMod}
+              onClick={(e) => handleSettingsChange("invert", !invert)}
+            />
+            <IconButton
+              icon={!overlayClickActive ? "no-touch" : "touch"}
               buttonModifiers={overlayButtonMod}
               onClick={(e) =>
                 handleSettingsChange("overlayClickActive", !overlayClickActive)
@@ -525,7 +526,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
                 </div>
               }
             >
-              <IconButton icon="board" />
+              <IconButton icon="palette" buttonModifiers={["reading-ruler"]} />
             </Dropdown>
             <IconButton
               icon="pin"

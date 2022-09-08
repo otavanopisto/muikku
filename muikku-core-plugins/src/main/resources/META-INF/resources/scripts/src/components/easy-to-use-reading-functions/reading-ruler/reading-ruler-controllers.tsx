@@ -33,7 +33,11 @@ export const ReadingRulerControllers = React.forwardRef<
 
   return (
     <div ref={ref} className="reading-ruler-controllers">
-      <IconButton onClick={handleShowToolsClick} icon="arrow-left" />
+      <IconButton
+        buttonModifiers={["reading-ruler"]}
+        onClick={handleShowToolsClick}
+        icon={toolsDrawerOpen ? "arrow-right" : "arrow-left"}
+      />
       <div
         className={`${
           toolsDrawerOpen
@@ -43,7 +47,13 @@ export const ReadingRulerControllers = React.forwardRef<
       >
         {tools}
       </div>
-      {onClose && <IconButton icon="cross" onClick={onClose} />}
+      {onClose && (
+        <IconButton
+          icon="cross"
+          onClick={onClose}
+          buttonModifiers={["reading-ruler"]}
+        />
+      )}
     </div>
   );
 });
