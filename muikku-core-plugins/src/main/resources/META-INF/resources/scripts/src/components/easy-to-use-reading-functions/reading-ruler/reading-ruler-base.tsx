@@ -466,16 +466,19 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
         onClose={onClose}
         tools={
           <>
-            <IconButton
-              buttonModifiers={["reading-ruler"]}
-              icon="minus"
-              onClick={(e) =>
-                handleSettingsChange(
-                  "rulerHeight",
-                  (rulerHeightIncrement -= 0.25)
-                )
-              }
-            />
+            <Dropdown openByHover content={<div>Pienennä</div>}>
+              <IconButton
+                buttonModifiers={["reading-ruler"]}
+                icon="minus"
+                onClick={(e) =>
+                  handleSettingsChange(
+                    "rulerHeight",
+                    (rulerHeightIncrement -= 0.25)
+                  )
+                }
+              />
+            </Dropdown>
+
             <input
               type="range"
               min={0}
@@ -489,29 +492,41 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
                 )
               }
             />
-            <IconButton
-              buttonModifiers={["reading-ruler"]}
-              onClick={(e) =>
-                handleSettingsChange(
-                  "rulerHeight",
-                  (rulerHeightIncrement += 0.25)
-                )
-              }
-              icon="plus"
-            />
-            <IconButton
-              disabled={overlayClickActive}
-              icon="invert-colors"
-              buttonModifiers={invertButtonMod}
-              onClick={(e) => handleSettingsChange("invert", !invert)}
-            />
-            <IconButton
-              icon={!overlayClickActive ? "no-touch" : "touch"}
-              buttonModifiers={overlayButtonMod}
-              onClick={(e) =>
-                handleSettingsChange("overlayClickActive", !overlayClickActive)
-              }
-            />
+            <Dropdown openByHover content={<div>Suurenna</div>}>
+              <IconButton
+                buttonModifiers={["reading-ruler"]}
+                onClick={(e) =>
+                  handleSettingsChange(
+                    "rulerHeight",
+                    (rulerHeightIncrement += 0.25)
+                  )
+                }
+                icon="plus"
+              />
+            </Dropdown>
+
+            <Dropdown openByHover content={<div>Käännävärit</div>}>
+              <IconButton
+                disabled={overlayClickActive}
+                icon="invert-colors"
+                buttonModifiers={invertButtonMod}
+                onClick={(e) => handleSettingsChange("invert", !invert)}
+              />
+            </Dropdown>
+
+            <Dropdown openByHover content={<div>Läpiklikkaus</div>}>
+              <IconButton
+                icon={!overlayClickActive ? "no-touch" : "touch"}
+                buttonModifiers={overlayButtonMod}
+                onClick={(e) =>
+                  handleSettingsChange(
+                    "overlayClickActive",
+                    !overlayClickActive
+                  )
+                }
+              />
+            </Dropdown>
+
             <Dropdown
               modifier="color-picker"
               content={
@@ -528,11 +543,15 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
             >
               <IconButton icon="palette" buttonModifiers={["reading-ruler"]} />
             </Dropdown>
-            <IconButton
-              icon="pin"
-              buttonModifiers={pinnedButtonMod}
-              onClick={handleRulerPinClick}
-            />
+
+            <Dropdown openByHover content={<div>Pin</div>}>
+              <IconButton
+                icon="pin"
+                buttonModifiers={pinnedButtonMod}
+                onClick={handleRulerPinClick}
+              />
+            </Dropdown>
+
             <Button
               onClick={handleChangePresetClick("custom", customPresetSettings)}
               buttonModifiers={
@@ -543,47 +562,54 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
             >
               Oma
             </Button>
-            <Button
-              onClick={handleChangePresetClick(
-                "default1",
-                readingRulerPresetDefault1
-              )}
-              buttonModifiers={
-                activePreset === "default1"
-                  ? "reading-ruler-preset-active"
-                  : undefined
-              }
-            >
-              1
-            </Button>
 
-            <Button
-              onClick={handleChangePresetClick(
-                "default2",
-                readingRulerPresetDefault2
-              )}
-              buttonModifiers={
-                activePreset === "default2"
-                  ? "reading-ruler-preset-active"
-                  : undefined
-              }
-            >
-              2
-            </Button>
+            <Dropdown openByHover content={<div>Preset 1</div>}>
+              <Button
+                onClick={handleChangePresetClick(
+                  "default1",
+                  readingRulerPresetDefault1
+                )}
+                buttonModifiers={
+                  activePreset === "default1"
+                    ? "reading-ruler-preset-active"
+                    : undefined
+                }
+              >
+                1
+              </Button>
+            </Dropdown>
 
-            <Button
-              onClick={handleChangePresetClick(
-                "default3",
-                readingRulerPresetDefault3
-              )}
-              buttonModifiers={
-                activePreset === "default3"
-                  ? "reading-ruler-preset-active"
-                  : undefined
-              }
-            >
-              3
-            </Button>
+            <Dropdown openByHover content={<div>Preset 2</div>}>
+              <Button
+                onClick={handleChangePresetClick(
+                  "default2",
+                  readingRulerPresetDefault2
+                )}
+                buttonModifiers={
+                  activePreset === "default2"
+                    ? "reading-ruler-preset-active"
+                    : undefined
+                }
+              >
+                2
+              </Button>
+            </Dropdown>
+
+            <Dropdown openByHover content={<div>Preset 3</div>}>
+              <Button
+                onClick={handleChangePresetClick(
+                  "default3",
+                  readingRulerPresetDefault3
+                )}
+                buttonModifiers={
+                  activePreset === "default3"
+                    ? "reading-ruler-preset-active"
+                    : undefined
+                }
+              >
+                3
+              </Button>
+            </Dropdown>
           </>
         }
       />
