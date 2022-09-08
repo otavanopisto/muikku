@@ -1,5 +1,6 @@
 import * as React from "react";
 import { IconButton } from "~/components/general/button";
+import Dropdown from "../../general/dropdown";
 
 /**
  * ReadingRulerControllersProps
@@ -33,11 +34,22 @@ export const ReadingRulerControllers = React.forwardRef<
 
   return (
     <div ref={ref} className="reading-ruler-controllers">
-      <IconButton
-        buttonModifiers={["reading-ruler"]}
-        onClick={handleShowToolsClick}
-        icon={toolsDrawerOpen ? "arrow-right" : "arrow-left"}
-      />
+      <Dropdown
+        openByHover
+        content={
+          toolsDrawerOpen ? (
+            <div>Sulje työkaluvalikko</div>
+          ) : (
+            <div>Avaa työkaluvalikko</div>
+          )
+        }
+      >
+        <IconButton
+          buttonModifiers={["reading-ruler"]}
+          onClick={handleShowToolsClick}
+          icon={toolsDrawerOpen ? "arrow-right" : "arrow-left"}
+        />
+      </Dropdown>
       <div
         className={`${
           toolsDrawerOpen
@@ -48,11 +60,13 @@ export const ReadingRulerControllers = React.forwardRef<
         {tools}
       </div>
       {onClose && (
-        <IconButton
-          icon="cross"
-          onClick={onClose}
-          buttonModifiers={["reading-ruler"]}
-        />
+        <Dropdown openByHover content={<div>Sulje lukiviivain</div>}>
+          <IconButton
+            icon="cross"
+            onClick={onClose}
+            buttonModifiers={["reading-ruler"]}
+          />
+        </Dropdown>
       )}
     </div>
   );
