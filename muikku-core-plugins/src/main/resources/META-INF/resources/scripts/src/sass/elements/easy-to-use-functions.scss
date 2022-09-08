@@ -13,8 +13,9 @@
   /* display: none; */
 
   display: flex;
-  height: 100vh;
+  height: 80px;
   position: fixed;
+  top: calc(50% - 40px);
   transform: translateX(0);
   transition: transform 0.3s ease;
   z-index: 9999;

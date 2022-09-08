@@ -49,7 +49,10 @@ const EasytoUseToolDrawer: React.FC<EasytoUseToolDrawerProps> = (props) => {
 
   const modifiers: string[] = [];
 
-  if (!open) {
+  // close drawer if reading ruler is open so it side bar won't
+  // interfere other elements, and because closing side with ruler open
+  // is more complicated
+  if (!open || props.easyToUse.activeTool === "Reading-ruler") {
     modifiers.push("closed");
   }
 

@@ -1,6 +1,5 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
-import { ReadingRulerDefaultProps } from "~/components/easy-to-use-reading-functions/reading-ruler/reading-ruler-base";
 
 export type ReadingRulerNameType =
   | "default1"
@@ -13,7 +12,7 @@ export type EasyToUseToolType = "Reading-ruler" | "unset";
 /**
  *ReadingRulerOption
  */
-export interface ReadingRulerOption extends ReadingRulerDefaultProps {
+export interface ReadingRulerOption {
   name?: ReadingRulerNameType;
 }
 
