@@ -138,6 +138,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
      * @param event event
      */
     const handleTouchMove = (event: TouchEvent) => {
+      event.stopPropagation();
       if (isDragging === true && event.touches[0].clientY) {
         const location =
           event.touches[0].clientY < 0 ? 0 : event.touches[0].clientY;
@@ -156,8 +157,8 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
       }
     };
 
-    window.addEventListener("touchmove", handleTouchMove);
-    window.addEventListener("touchend", handleTouchEnd);
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: false });
     return () => {
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
@@ -541,7 +542,12 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
                 </div>
               }
             >
-              <IconButton icon="palette" buttonModifiers={["reading-ruler"]} />
+              <Dropdown openByHover content={<div>Väripaletti</div>}>
+                <IconButton
+                  icon="palette"
+                  buttonModifiers={["reading-ruler"]}
+                />
+              </Dropdown>
             </Dropdown>
 
             <Dropdown openByHover content={<div>Pin</div>}>
