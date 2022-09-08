@@ -27,7 +27,7 @@
   background: $color-cagtegory-11;
   height: 100px;
   left: 0;
-  opacity: 50%;
+  opacity: 65%;
   position: fixed;
   top: 0;
   width: 100%;
@@ -60,7 +60,7 @@
 }
 
 .reading-ruler-middle-mobile-handle {
-  background-color: black;
+  background-color: $color-default-contrast;
   border-radius: 25px;
   height: inherit;
   opacity: 70%;
