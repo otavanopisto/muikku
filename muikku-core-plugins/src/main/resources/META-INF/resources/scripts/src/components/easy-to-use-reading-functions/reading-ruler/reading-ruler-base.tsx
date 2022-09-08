@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChromePicker, ColorState } from "react-color";
+import { ChromePicker } from "react-color";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { useLocalStorage } from "usehooks-ts";
@@ -33,24 +33,58 @@ const defaultProps: ReadingRulerDefaultProps = {
 };
 
 /**
- * ReadingRulerState
+ * ReadingRulerPresetSettings
  */
-interface ReadingRulerState {
-  activePreset: ReadingRulerNameType;
+interface ReadingRulerPresetSettings {
   rulerHeight: number;
   invert: boolean;
   overlayClickActive: boolean;
   backgroundColor: string;
 }
 
-const initialStateCustom: Partial<ReadingRulerState> = {
+/**
+ * ReadingRulerState
+ */
+interface ReadingRulerState {
+  activePreset: ReadingRulerNameType;
+  activePresetSettings: ReadingRulerPresetSettings;
+  customPresetSettings: ReadingRulerPresetSettings;
+}
+
+/**
+ * readingRulerPresetCustom
+ */
+const readingRulerPresetCustom: Partial<ReadingRulerPresetSettings> = {
   rulerHeight: defaultProps.defaultRulerHeight,
   invert: defaultProps.defaultInverted,
   overlayClickActive: false,
   backgroundColor: "#000000",
 };
 
-const initialStateDefault1: Partial<ReadingRulerState> = {
+/**
+ * readingRulerPresetDefault1
+ */
+const readingRulerPresetDefault1: Partial<ReadingRulerPresetSettings> = {
+  rulerHeight: defaultProps.defaultRulerHeight,
+  invert: defaultProps.defaultInverted,
+  overlayClickActive: false,
+  backgroundColor: "#000000",
+};
+
+/**
+ * readingRulerPresetDefault2
+ */
+const readingRulerPresetDefault2: Partial<ReadingRulerPresetSettings> = {
+  rulerHeight: 20,
+  invert: defaultProps.defaultInverted,
+  overlayClickActive: true,
+  backgroundColor: "#000000",
+};
+
+/**
+ * readingRulerPresetDefault3
+ */
+const readingRulerPresetDefault3: Partial<ReadingRulerPresetSettings> = {
   rulerHeight: 20,
   invert: defaultProps.defaultInverted,
   overlayClickActive: true,
@@ -75,8 +109,13 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
   // Localstorage stuff
   const [readingRulerState, setReadingRulerState] =
     useLocalStorage<ReadingRulerState>("reading-ruler-settings", {
-      activePreset: "custom",
-      ...initialStateCustom,
+      activePreset: "default1",
+      activePresetSettings: {
+        ...readingRulerPresetDefault1,
+      },
+      customPresetSettings: {
+        ...readingRulerPresetCustom,
+      },
     } as ReadingRulerState);
 
   const mobileBreakpoint = useIsAtBreakpoint(48);
@@ -87,13 +126,11 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
   const dragger = React.useRef<HTMLDivElement>(null);
   const controllers = React.useRef<HTMLDivElement>(null);
 
-  const {
-    activePreset,
-    rulerHeight,
-    invert,
-    overlayClickActive,
-    backgroundColor,
-  } = readingRulerState;
+  const { activePreset, activePresetSettings, customPresetSettings } =
+    readingRulerState;
+
+  const { rulerHeight, invert, overlayClickActive, backgroundColor } =
+    activePresetSettings;
 
   React.useEffect(() => {
     /**
@@ -257,122 +294,85 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
   ]);
 
   /**
-   * handleRulerHeightChangeClick
-   * @param operation type of numberic operation
+   * handleSettingsChange
+   * @param key key
+   * @param value value
    */
-  const handleRulerHeightChangeClick =
-    (operation: "increment" | "decrement") =>
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      let newValue = rulerHeight;
-
-      switch (operation) {
-        case "increment":
-          newValue += 0.25;
-          break;
-
-        case "decrement":
-          newValue -= 0.25;
-          break;
-        default:
-          break;
-      }
-
-      if (activePreset === "default1") {
-        setReadingRulerState((oldState) => ({
-          ...oldState,
-          activePreset: "custom",
-          rulerHeight: newValue,
-        }));
-      } else {
-        setReadingRulerState((oldState) => ({
-          ...oldState,
-          rulerHeight: newValue,
-        }));
-      }
-    };
+  const handleSettingsChange = <T extends keyof ReadingRulerPresetSettings>(
+    key: T,
+    value: ReadingRulerPresetSettings[T]
+  ) => {
+    if (
+      activePreset === "default1" ||
+      activePreset === "default2" ||
+      activePreset === "default3"
+    ) {
+      // Changing from default presets to back to custom
+      // spread last used custom settings and new changeable variable value
+      setReadingRulerState((oldState) => ({
+        ...oldState,
+        activePreset: "custom",
+        activePresetSettings: {
+          ...oldState.activePresetSettings,
+          ...customPresetSettings,
+          [key]: value,
+        },
+      }));
+    } else {
+      // Here otherway
+      setReadingRulerState((oldState) => ({
+        ...oldState,
+        activePresetSettings: {
+          ...oldState.activePresetSettings,
+          [key]: value,
+        },
+      }));
+    }
+  };
 
   /**
    * handleChangePresetClick
    * @param presetName presetName
-   * @param presetOptions presetOptions
+   * @param presetSettings presetSettings
    */
   const handleChangePresetClick =
     (
       presetName: ReadingRulerNameType,
-      presetOptions: Partial<ReadingRulerState>
+      presetSettings: Partial<ReadingRulerPresetSettings>
     ) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      setReadingRulerState((oldState) => ({
-        ...oldState,
-        activePreset: presetName,
-        ...presetOptions,
-      }));
+      if (
+        activePreset === "default1" ||
+        activePreset === "default2" ||
+        activePreset === "default3"
+      ) {
+        // Changing preset from any default preset to custom
+        // presetsSettings hold old customPresetSettings values which will be changed to be active
+        setReadingRulerState((oldState) => ({
+          ...oldState,
+          activePreset: presetName,
+          activePresetSettings: {
+            ...oldState.activePresetSettings,
+            ...presetSettings,
+          },
+        }));
+      } else {
+        // Here otherway
+        // Changing to other default presets saves old active "custom" preset settings
+        // for later use
+        setReadingRulerState((oldState) => ({
+          ...oldState,
+          activePreset: presetName,
+          activePresetSettings: {
+            ...oldState.activePresetSettings,
+            ...presetSettings,
+          },
+          customPresetSettings: {
+            ...oldState.activePresetSettings,
+          },
+        }));
+      }
     };
-
-  /**
-   * handleRulerRangeInputChange
-   * @param e e
-   */
-  const handleRulerRangeInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { value } = e.currentTarget;
-
-    if (activePreset === "default1") {
-      setReadingRulerState((oldState) => ({
-        ...oldState,
-        activePreset: "custom",
-        rulerHeight: parseInt(value),
-      }));
-    } else {
-      setReadingRulerState((oldState) => ({
-        ...oldState,
-        rulerHeight: parseInt(value),
-      }));
-    }
-  };
-
-  /**
-   * handleRulerInvertClick
-   * @param e e
-   */
-  const handleRulerInvertClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    if (activePreset === "default1") {
-      setReadingRulerState((oldState) => ({
-        ...oldState,
-        activePreset: "custom",
-        invert: !invert,
-      }));
-    } else {
-      setReadingRulerState((oldState) => ({
-        ...oldState,
-        invert: !invert,
-      }));
-    }
-  };
-
-  /**
-   * handleChangeOverlayClickActiveClick
-   * @param e e
-   */
-  const handleChangeOverlayClickActiveClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    if (activePreset === "default1") {
-      setReadingRulerState((oldState) => ({
-        ...oldState,
-        activePreset: "custom",
-        overlayClickActive: !overlayClickActive,
-      }));
-    } else {
-      setReadingRulerState((oldState) => ({
-        ...oldState,
-        overlayClickActive: !overlayClickActive,
-      }));
-    }
-  };
 
   /**
    * handleRulerPinClick
@@ -382,25 +382,6 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     setPinned(!pinned);
-  };
-
-  /**
-   * handleChangeComplete
-   * @param e e
-   */
-  const handleChangeComplete = (e: ColorState) => {
-    if (activePreset === "default1") {
-      setReadingRulerState((oldState) => ({
-        ...oldState,
-        activePreset: "custom",
-        backgroundColor: e.hex,
-      }));
-    } else {
-      setReadingRulerState((oldState) => ({
-        ...oldState,
-        backgroundColor: e.hex,
-      }));
-    }
   };
 
   /**
@@ -441,6 +422,8 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
   if (invert) {
     invertButtonMod = [...invertButtonMod, "active"];
   }
+
+  let rulerHeightIncrement = rulerHeight;
 
   return (
     <div className="reading-ruler-container">
@@ -485,7 +468,12 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
           <>
             <IconButton
               icon="minus"
-              onClick={handleRulerHeightChangeClick("decrement")}
+              onClick={(e) =>
+                handleSettingsChange(
+                  "rulerHeight",
+                  (rulerHeightIncrement -= 0.25)
+                )
+              }
             />
             <input
               type="range"
@@ -493,23 +481,35 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               max={100}
               step={0.25}
               value={rulerHeight}
-              onChange={handleRulerRangeInputChange}
+              onChange={(e) =>
+                handleSettingsChange(
+                  "rulerHeight",
+                  parseInt(e.currentTarget.value)
+                )
+              }
             />
             <IconButton
-              onClick={handleRulerHeightChangeClick("increment")}
+              onClick={(e) =>
+                handleSettingsChange(
+                  "rulerHeight",
+                  (rulerHeightIncrement += 0.25)
+                )
+              }
               icon="plus"
             />
             {!overlayClickActive && (
               <IconButton
                 icon="eye"
                 buttonModifiers={invertButtonMod}
-                onClick={handleRulerInvertClick}
+                onClick={(e) => handleSettingsChange("invert", !invert)}
               />
             )}
             <IconButton
               icon="evaluate"
               buttonModifiers={overlayButtonMod}
-              onClick={handleChangeOverlayClickActiveClick}
+              onClick={(e) =>
+                handleSettingsChange("overlayClickActive", !overlayClickActive)
+              }
             />
             <Dropdown
               modifier="color-picker"
@@ -518,7 +518,9 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
                   <ChromePicker
                     disableAlpha
                     color={backgroundColor}
-                    onChangeComplete={handleChangeComplete}
+                    onChangeComplete={(e) =>
+                      handleSettingsChange("backgroundColor", e.hex)
+                    }
                   />
                 </div>
               }
@@ -531,7 +533,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               onClick={handleRulerPinClick}
             />
             <Button
-              onClick={handleChangePresetClick("custom", initialStateCustom)}
+              onClick={handleChangePresetClick("custom", customPresetSettings)}
               buttonModifiers={
                 activePreset === "custom"
                   ? "reading-ruler-preset-active"
@@ -543,7 +545,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
             <Button
               onClick={handleChangePresetClick(
                 "default1",
-                initialStateDefault1
+                readingRulerPresetDefault1
               )}
               buttonModifiers={
                 activePreset === "default1"
@@ -552,6 +554,34 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               }
             >
               1
+            </Button>
+
+            <Button
+              onClick={handleChangePresetClick(
+                "default2",
+                readingRulerPresetDefault2
+              )}
+              buttonModifiers={
+                activePreset === "default2"
+                  ? "reading-ruler-preset-active"
+                  : undefined
+              }
+            >
+              2
+            </Button>
+
+            <Button
+              onClick={handleChangePresetClick(
+                "default3",
+                readingRulerPresetDefault3
+              )}
+              buttonModifiers={
+                activePreset === "default3"
+                  ? "reading-ruler-preset-active"
+                  : undefined
+              }
+            >
+              3
             </Button>
           </>
         }
