@@ -25,7 +25,6 @@ export default class IndexFrontpage extends React.Component<
       <div id="root">
         <Notifications></Notifications>
         <DisconnectedWarningDialog />
-        <EasyToUseToolDrawer />
         <EasyToUseFunctions />
         <Body></Body>
       </div>

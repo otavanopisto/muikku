@@ -1,3 +1,6 @@
+// Component is not used anywhere yet, but its wating for future use.
+// After more easy-to-use functions are added
+
 import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
@@ -37,7 +40,7 @@ const EasytoUseToolDrawer: React.FC<EasytoUseToolDrawerProps> = (props) => {
    */
   const handleOpenReadingRulerClick =
     (readingRulerProps?: ReadingRulerOption) => () => {
-      props.openReadingRuler(readingRulerProps);
+      props.openReadingRuler();
     };
 
   /**
