@@ -10,6 +10,10 @@ import { logout, LogoutTriggerType } from "~/actions/base/status";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
 import { getUserImageUrl } from "~/util/modifiers";
+import {
+  OpenReadingRuler,
+  openReadingRuler,
+} from "../../../actions/easy-to-use-functions/index";
 
 /**
  * ProfileItemProps
@@ -19,6 +23,7 @@ interface ProfileItemProps {
   i18n: i18nType;
   status: StatusType;
   logout: LogoutTriggerType;
+  openReadingRuler: OpenReadingRuler;
   isProfileContainedInThisApp: boolean;
 }
 
@@ -56,6 +61,11 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         icon: "support",
         text: "plugin.profileBadge.links.helpdesk",
         href: "mailto:helpdesk@muikkuverkko.fi",
+      },
+      {
+        icon: "cogs",
+        text: "Ruler",
+        onClick: this.props.openReadingRuler,
       },
       {
         icon: "sign-out",
@@ -144,7 +154,7 @@ function mapStateToProps(state: StateType) {
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({ logout }, dispatch);
+  return bindActionCreators({ logout, openReadingRuler }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileItem);

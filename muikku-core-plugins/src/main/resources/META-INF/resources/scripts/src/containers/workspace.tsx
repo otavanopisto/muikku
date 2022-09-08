@@ -1237,7 +1237,6 @@ export default class Workspace extends React.Component<
         <div id="root">
           <Notifications></Notifications>
           <DisconnectedWarningDialog />
-          <EasyToUseToolDrawer />
           <EasyToUseFunctions />
           <Route
             exact

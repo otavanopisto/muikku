@@ -1083,7 +1083,6 @@ export default class MainFunction extends React.Component<
         <div id="root">
           <Notifications></Notifications>
           <DisconnectedWarningDialog />
-          <EasytoUseToolDrawer />
           <EasyToUseFunctions />
           <Route exact path="/" render={this.renderIndexBody} />
           <Route
