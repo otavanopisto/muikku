@@ -238,14 +238,18 @@
 }
 
 .notes__item-status--overdue {
-  background-color: $color-fatal;
-  color: $color-default;
+  background-color: lighten($color-fatal, 42%);
+  color: darken($color-fatal, 15%);
 }
 
-.notes__item-status--ongoing,
-.notes__item-status--pending {
+.notes__item-status--ongoing {
   background-color: lighten($color-cancel, 42%);
   color: darken($color-cancel, 15%);
+}
+
+.notes__item-status--pending {
+  background-color: lighten($color-info, 52%);
+  color: darken($color-info, 15%);
 }
 
 .notes__item-status--done {

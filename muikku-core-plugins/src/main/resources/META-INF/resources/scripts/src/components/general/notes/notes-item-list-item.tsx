@@ -4,7 +4,8 @@ import {
   NotesItemUpdate,
   NotesItemStatus,
 } from "~/@types/notes";
-import Button, { IconButton } from "~/components/general/button";
+import { IconButton } from "~/components/general/button";
+import Link from "~/components/general/link";
 import * as moment from "moment";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
@@ -203,7 +204,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">
-              {props.i18n.text.get("plugin.records.notes.dates.active")}
+              {props.i18n.text.get("plugin.records.tasks.dates.active")}
             </span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")} - {moment(dueDate).format("l")}
@@ -214,7 +215,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">
-              {props.i18n.text.get("plugin.records.notes.dates.active")}
+              {props.i18n.text.get("plugin.records.tasks.dates.active")}
             </span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")}
@@ -226,7 +227,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">
-              {props.i18n.text.get("plugin.records.notes.dates.active")}
+              {props.i18n.text.get("plugin.records.tasks.dates.active")}
             </span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
             <span className="notes__item-dates-date">
@@ -251,7 +252,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             key="note-overdue"
             className="notes__item-status notes__item-status--overdue"
           >
-            {props.i18n.text.get("plugin.records.notes.status.overdue")}
+            {props.i18n.text.get("plugin.records.tasks.status.overdue")}
           </div>
         );
       }
@@ -263,7 +264,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               key="note-ongoing"
               className="notes__item-status notes__item-status--ongoing"
             >
-              {props.i18n.text.get("plugin.records.notes.status.ongoing")}
+              {props.i18n.text.get("plugin.records.tasks.status.ongoing")}
             </div>
           );
           break;
@@ -273,7 +274,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               key="note-pending"
               className="notes__item-status notes__item-status--pending"
             >
-              {props.i18n.text.get("plugin.records.notes.status.pending")}
+              {props.i18n.text.get("plugin.records.tasks.status.pending")}
             </div>
           );
           break;
@@ -284,7 +285,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               className="notes__item-status notes__item-status--done"
             >
               <span className="notes__item-status-indicator icon-check"></span>
-              {props.i18n.text.get("plugin.records.notes.status.done")}
+              {props.i18n.text.get("plugin.records.tasks.status.done")}
             </div>
           );
           break;
@@ -308,56 +309,66 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       if (loggedUserIsOwner) {
         if (status === NotesItemStatus.ONGOING) {
           content = (
-            <div>
-              <Button
+            <div className="dropdown__container-item">
+              <Link
+                className="link link--full link--tasks-dropdown"
                 onClick={handleUpdateNotesItemStatusClick(
                   NotesItemStatus.APPROVAL_PENDING
                 )}
               >
-                {props.i18n.text.get("plugin.records.notes.status.askapproval")}
-              </Button>
+                {props.i18n.text.get(
+                  "plugin.records.tasks.action.requestApproval"
+                )}
+              </Link>
             </div>
           );
           if (loggedUserIsCreator) {
             content = (
-              <div>
-                <Button
+              <div className="dropdown__container-item">
+                <Link
+                  className="link link--full link--tasks-dropdown"
                   onClick={handleUpdateNotesItemStatusClick(
                     NotesItemStatus.APPROVED
                   )}
                 >
                   {props.i18n.text.get(
-                    "plugin.records.notes.status.markasdone"
+                    "plugin.records.tasks.action.markAsDone"
                   )}
-                </Button>
+                </Link>
               </div>
             );
           }
         }
         if (status === NotesItemStatus.APPROVAL_PENDING) {
           content = (
-            <div>
-              <Button
+            <div className="dropdown__container-item">
+              <Link
+                className="link link--full link--tasks-dropdown"
                 onClick={handleUpdateNotesItemStatusClick(
                   NotesItemStatus.ONGOING
                 )}
               >
-                {props.i18n.text.get("plugin.records.notes.status.cancel")}
-              </Button>
+                {props.i18n.text.get(
+                  "plugin.records.tasks.action.cancelApprovalRequest"
+                )}
+              </Link>
             </div>
           );
         }
 
         if (status === NotesItemStatus.APPROVED) {
           content = (
-            <div>
-              <Button
+            <div className="dropdown__container-item">
+              <Link
+                className="link link--full link--tasks-dropdown"
                 onClick={handleUpdateNotesItemStatusClick(
                   NotesItemStatus.ONGOING
                 )}
               >
-                {props.i18n.text.get("plugin.records.notes.status.ongoing")}?
-              </Button>
+                {props.i18n.text.get(
+                  "plugin.records.tasks.action.markAsIncomplete"
+                )}
+              </Link>
             </div>
           );
         }
@@ -367,36 +378,47 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         }
         if (status === NotesItemStatus.APPROVAL_PENDING) {
           content = (
-            <div>
-              <Button
-                onClick={handleUpdateNotesItemStatusClick(
-                  NotesItemStatus.APPROVED
-                )}
-              >
-                {props.i18n.text.get("plugin.records.notes.status.approve")}
-              </Button>
-              <Button
-                onClick={handleUpdateNotesItemStatusClick(
-                  NotesItemStatus.ONGOING
-                )}
-              >
-                {props.i18n.text.get("plugin.records.notes.status.cancel")}
-              </Button>
-            </div>
+            <>
+              <div className="dropdown__container-item">
+                <Link
+                  className="link link--full link--tasks-dropdown"
+                  onClick={handleUpdateNotesItemStatusClick(
+                    NotesItemStatus.APPROVED
+                  )}
+                >
+                  {props.i18n.text.get(
+                    "plugin.records.tasks.action.markAsApproved"
+                  )}
+                </Link>
+              </div>
+              <div className="dropdown__container-item">
+                <Link
+                  className="link link--full link--tasks-dropdown"
+                  onClick={handleUpdateNotesItemStatusClick(
+                    NotesItemStatus.ONGOING
+                  )}
+                >
+                  {props.i18n.text.get(
+                    "plugin.records.tasks.action.markAsIncomplete"
+                  )}
+                </Link>
+              </div>
+            </>
           );
         }
         if (status === NotesItemStatus.APPROVED) {
           content = (
-            <div>
-              <Button
+            <div className="dropdown__container-item">
+              <Link
+                className="link link--full link--tasks-dropdown"
                 onClick={handleUpdateNotesItemStatusClick(
                   NotesItemStatus.APPROVAL_PENDING
                 )}
               >
                 {props.i18n.text.get(
-                  "plugin.records.notes.status.cancelapproval"
+                  "plugin.records.tasks.action.markAsIncomplete"
                 )}
-              </Button>
+              </Link>
             </div>
           );
         }
