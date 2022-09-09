@@ -136,7 +136,7 @@ class WorkspaceTeachers extends React.Component<
                           </div>
                         )}
 
-                      <div className="item-list__user-contact-me">
+                      <div className="item-list__user-actions">
                         <CommunicatorNewMessage
                           extraNamespace="workspace-teachers"
                           initialSelectedItems={[
@@ -168,7 +168,10 @@ class WorkspaceTeachers extends React.Component<
                             title={this.props.i18n.text.get(
                               "plugin.workspace.index.newMessage.label"
                             )}
-                            buttonModifiers="new-message"
+                            buttonModifiers={[
+                              "new-message",
+                              "new-message-to-staff",
+                            ]}
                           ></ButtonPill>
                         </CommunicatorNewMessage>
                         {teacher.properties["profile-phone"] !== undefined &&

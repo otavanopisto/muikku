@@ -446,7 +446,7 @@ class StateOfStudies extends React.Component<
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>
-                  {this.props.i18n.text.get("plugin.guider.user.details.notes")}
+                  {this.props.i18n.text.get("plugin.guider.user.details.tasks")}
                 </ApplicationSubPanel.Header>
                 <ApplicationSubPanel.Body>
                   <Notes
