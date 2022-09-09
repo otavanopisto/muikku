@@ -89,18 +89,6 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
           >
             <span className={`link__icon icon-${item.icon}`}></span>
             <span>{this.props.i18n.text.get(item.text)}</span>
-
-            {item.openInNewTab && (
-              <>
-                <span className="visually-hidden">
-                  {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
-                </span>
-                <span
-                  role="presentation"
-                  className="external-link-indicator icon-external-link"
-                />
-              </>
-            )}
           </Link>
         ))}
       >

@@ -113,14 +113,6 @@ public class NoteRestModel {
     this.status = status;
   }
 
-  public Boolean getIsActive() {
-    return isActive;
-  }
-
-  public void setIsActive(Boolean isActive) {
-    this.isActive = isActive;
-  }
-
   public Boolean getIsArchived() {
     return isArchived;
   }
@@ -142,7 +134,6 @@ public class NoteRestModel {
   private Date startDate;
   private Date dueDate;
   private NoteStatus status;
-  private Boolean isActive;
   private Boolean isArchived;
 
 }
