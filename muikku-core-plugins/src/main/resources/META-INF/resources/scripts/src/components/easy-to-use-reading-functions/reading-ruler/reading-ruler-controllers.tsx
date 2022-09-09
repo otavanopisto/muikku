@@ -1,5 +1,6 @@
 import * as React from "react";
 import { IconButton } from "~/components/general/button";
+import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "../../general/dropdown";
 
 /**
@@ -7,6 +8,7 @@ import Dropdown from "../../general/dropdown";
  */
 interface ReadingRulerControllersProps {
   tools: React.ReactNode;
+  i18n: i18nType;
   /* presets: React.ReactNode; */
   onClose: () => void;
 }
@@ -18,7 +20,7 @@ export const ReadingRulerControllers = React.forwardRef<
   HTMLDivElement,
   ReadingRulerControllersProps
 >((props, ref) => {
-  const { tools, onClose } = props;
+  const { tools, onClose, i18n } = props;
 
   const [toolsDrawerOpen, setToolsDrawerOpen] = React.useState(false);
 
@@ -39,13 +41,13 @@ export const ReadingRulerControllers = React.forwardRef<
         content={
           toolsDrawerOpen ? (
             <div>
-              {props.i18n.text.get(
+              {i18n.text.get(
                 "plugin.wcag.readingRuler.actions.closeRulersToolbar"
               )}
             </div>
           ) : (
             <div>
-              {props.i18n.text.get(
+              {i18n.text.get(
                 "plugin.wcag.readingRuler.actions.closeRulersToolbar"
               )}
             </div>
@@ -72,7 +74,7 @@ export const ReadingRulerControllers = React.forwardRef<
           openByHover
           content={
             <div>
-              {props.i18n.text.get(
+              {i18n.text.get(
                 "plugin.wcag.readingRuler.actions.closeRuler"
               )}
             </div>

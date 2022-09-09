@@ -10,7 +10,7 @@ import {
   closeReadingRuler,
 } from "~/actions/easy-to-use-functions";
 import { i18nType } from "~/reducers/base/i18n";
-import { ReadingRuler } from "./reading-ruler/reading-ruler";
+import ReadingRuler from "./reading-ruler/reading-ruler";
 
 /**
  * EasyToUseFunctionsProps
