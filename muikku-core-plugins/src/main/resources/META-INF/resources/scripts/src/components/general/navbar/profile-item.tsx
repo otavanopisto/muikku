@@ -63,8 +63,8 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         href: "mailto:helpdesk@muikkuverkko.fi",
       },
       {
-        icon: "cogs",
-        text: "Ruler",
+        icon: "ruler",
+        text: "plugin.wcag.readingRuler.link.label",
         onClick: this.props.openReadingRuler,
       },
       {

@@ -82,11 +82,15 @@
 
 .reading-ruler-controllers {
   align-items: center;
-  color: $color-cagtegory-11;
-  display: flex;
+  background: $color-default;
+  border: 1px solid $color-default-separator-border;
+  border-radius: 20px;
+  display: inline-flex;
   justify-content: flex-end;
+  min-width: 0;
   position: fixed;
   right: 10px;
+  width: auto;
   z-index: 10010;
 }
 
@@ -105,16 +109,15 @@
   align-items: center;
   display: flex;
   justify-content: flex-end;
-  max-width: 0%;
   opacity: 0%;
-  transition: max-width 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+  transition: width 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
   visibility: hidden;
+  width: 0;
 }
 
 .reading-ruler-controllers-presets-container--open,
 .reading-ruler-controllers-settings-container--open {
-  max-width: 100%;
   opacity: 100%;
-  transition: max-width 0.3s ease, opacity 0.3s ease;
   visibility: visible;
+  width: auto;
 }

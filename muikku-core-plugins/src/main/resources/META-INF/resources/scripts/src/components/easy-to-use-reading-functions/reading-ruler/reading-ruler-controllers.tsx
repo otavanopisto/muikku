@@ -48,7 +48,7 @@ export const ReadingRulerControllers = React.forwardRef<
           ) : (
             <div>
               {i18n.text.get(
-                "plugin.wcag.readingRuler.actions.closeRulersToolbar"
+                "plugin.wcag.readingRuler.actions.openRulersToolbar"
               )}
             </div>
           )
@@ -74,9 +74,7 @@ export const ReadingRulerControllers = React.forwardRef<
           openByHover
           content={
             <div>
-              {i18n.text.get(
-                "plugin.wcag.readingRuler.actions.closeRuler"
-              )}
+              {i18n.text.get("plugin.wcag.readingRuler.actions.closeRuler")}
             </div>
           }
         >
