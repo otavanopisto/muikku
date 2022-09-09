@@ -10,6 +10,7 @@ import Dropdown from "../../general/dropdown";
 import { ReadingRulerControllers } from "./reading-ruler-controllers";
 import useIsAtBreakpoint from "../../../hooks/useIsAtBreakpoint";
 import { i18nType } from "~/reducers/base/i18n";
+import { throttle } from "lodash";
 
 /**
  * ReadingRulerProps
@@ -167,29 +168,29 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
   }, [isDragging]);
 
   React.useEffect(() => {
-    /**
-     * handleMouseMove
-     * @param event event
-     */
-    const handleMouseMove = (event: MouseEvent) => {
+    // Event is throttled to work max 16ms intervals
+    // It is so setState is not called too many times
+    const throttleEvent = throttle((e: MouseEvent) => {
       if (!pinned) {
         if (isDragging) {
           unstable_batchedUpdates(() => {
             setIsDragging(false);
-            setCursorLocation(event.clientY);
+            setCursorLocation(e.clientY);
           });
         } else {
-          setCursorLocation(event.clientY);
+          setCursorLocation(e.clientY);
         }
       }
-    };
+    }, 16);
+
+    const handleMouseMove = throttleEvent;
 
     window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [isDragging, pinned]);
+  }, [pinned, isDragging]);
 
   React.useLayoutEffect(() => {
     if (active) {
