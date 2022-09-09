@@ -66,30 +66,30 @@ const readingRulerPresetCustom: Partial<ReadingRulerPresetSettings> = {
  * readingRulerPresetDefault1
  */
 const readingRulerPresetDefault1: Partial<ReadingRulerPresetSettings> = {
-  rulerHeight: defaultProps.defaultRulerHeight,
+  rulerHeight: 10,
   invert: defaultProps.defaultInverted,
   overlayClickActive: false,
-  backgroundColor: "#000000",
+  backgroundColor: "#dd1d1d",
 };
 
 /**
  * readingRulerPresetDefault2
  */
 const readingRulerPresetDefault2: Partial<ReadingRulerPresetSettings> = {
-  rulerHeight: 20,
+  rulerHeight: 10,
   invert: defaultProps.defaultInverted,
   overlayClickActive: true,
-  backgroundColor: "#000000",
+  backgroundColor: "#1dafdd",
 };
 
 /**
  * readingRulerPresetDefault3
  */
 const readingRulerPresetDefault3: Partial<ReadingRulerPresetSettings> = {
-  rulerHeight: 20,
+  rulerHeight: 10,
   invert: defaultProps.defaultInverted,
   overlayClickActive: true,
-  backgroundColor: "#000000",
+  backgroundColor: "#dd1daf",
 };
 
 /**
