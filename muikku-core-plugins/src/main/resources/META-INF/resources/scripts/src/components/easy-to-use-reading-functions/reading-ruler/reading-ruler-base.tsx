@@ -69,7 +69,7 @@ const readingRulerPresetDefault1: Partial<ReadingRulerPresetSettings> = {
   rulerHeight: 10,
   invert: defaultProps.defaultInverted,
   overlayClickActive: false,
-  backgroundColor: "#dd1d1d",
+  backgroundColor: "#000000",
 };
 
 /**
