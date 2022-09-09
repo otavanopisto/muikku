@@ -144,6 +144,10 @@
     padding: 5px;
     text-decoration: none;
     width: auto;
+
+    .external-link-indicator {
+      display: none;
+    }
   }
 
   .file-uploader__item-delete-icon {

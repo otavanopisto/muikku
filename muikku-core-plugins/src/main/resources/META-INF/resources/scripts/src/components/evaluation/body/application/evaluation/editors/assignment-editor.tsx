@@ -21,7 +21,11 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import { AssessmentRequest, AudioAssessment } from "~/@types/evaluation";
+import {
+  AssessmentRequest,
+  AudioAssessment,
+  EvaluationGradeSystem,
+} from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
 import { LocaleListType } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
@@ -83,6 +87,8 @@ class AssignmentEditor extends SessionStateComponent<
   AssignmentEditorProps,
   AssignmentEditorState
 > {
+  private unknownGradeSystemIsUsed: EvaluationGradeSystem;
+
   /**
    * constructor
    * @param props props
@@ -512,15 +518,45 @@ class AssignmentEditor extends SessionStateComponent<
    */
   render() {
     const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map((gScale) => (
-        <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
-          {gScale.grades.map((grade) => (
-            <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+      this.props.evaluations.evaluationGradeSystem.map(
+        (gScale) =>
+          gScale.active && (
+            <optgroup
+              key={`${gScale.dataSource}-${gScale.id}`}
+              label={gScale.name}
+            >
+              {gScale.grades.map((grade) => (
+                <option
+                  key={grade.id}
+                  value={`${gScale.dataSource}-${grade.id}`}
+                >
+                  {grade.name}
+                </option>
+              ))}
+            </optgroup>
+          )
+      );
+
+    // IF evaluation uses some unknown grade system that is not normally showed, then we add it to options also
+    if (this.unknownGradeSystemIsUsed) {
+      const missingOption = (
+        <optgroup
+          key={`${this.unknownGradeSystemIsUsed.dataSource}-${this.unknownGradeSystemIsUsed.id}`}
+          label={this.unknownGradeSystemIsUsed.name}
+        >
+          {this.unknownGradeSystemIsUsed.grades.map((grade) => (
+            <option
+              key={grade.id}
+              value={`${this.unknownGradeSystemIsUsed.dataSource}-${grade.id}`}
+            >
               {grade.name}
             </option>
           ))}
         </optgroup>
-      ));
+      );
+
+      renderGradingOptions.push(missingOption);
+    }
 
     return (
       <div className="form" role="form">

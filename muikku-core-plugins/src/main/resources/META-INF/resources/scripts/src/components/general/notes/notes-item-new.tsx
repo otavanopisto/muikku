@@ -64,7 +64,7 @@ class NotesItemNew extends SessionStateComponent<
         title: "",
         description: "",
         type: NotesItemCreation.MANUAL,
-        priority: NotesItemPriority.HIGH,
+        priority: NotesItemPriority.NORMAL,
         pinned: false,
         owner: props.newNoteOwnerId,
         startDate: null,
@@ -82,7 +82,7 @@ class NotesItemNew extends SessionStateComponent<
         title: "",
         description: "",
         type: NotesItemCreation.MANUAL,
-        priority: NotesItemPriority.HIGH,
+        priority: NotesItemPriority.NORMAL,
         pinned: false,
         owner: this.props.newNoteOwnerId,
         startDate: null,
@@ -200,6 +200,8 @@ class NotesItemNew extends SessionStateComponent<
               this.props.i18n.time.getLocale()
             )}
             dateFormat="P"
+            minDate={new Date()}
+            maxDate={this.state.notesItem.dueDate}
           />
         </div>
         <div className="env-dialog__form-element-container">
@@ -220,6 +222,11 @@ class NotesItemNew extends SessionStateComponent<
               this.props.i18n.time.getLocale()
             )}
             dateFormat="P"
+            minDate={
+              this.state.notesItem.startDate !== null
+                ? this.state.notesItem.startDate
+                : new Date()
+            }
           />
         </div>
       </div>,

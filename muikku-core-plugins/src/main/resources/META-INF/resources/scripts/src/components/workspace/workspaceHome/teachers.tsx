@@ -161,6 +161,9 @@ class WorkspaceTeachers extends React.Component<
                           )}
                         >
                           <ButtonPill
+                            aria-label={this.props.i18n.text.get(
+                              "plugin.workspace.index.newMessage.label"
+                            )}
                             icon="envelope"
                             title={this.props.i18n.text.get(
                               "plugin.workspace.index.newMessage.label"
@@ -182,6 +185,9 @@ class WorkspaceTeachers extends React.Component<
                           teacher.properties["profile-appointmentCalendar"] !==
                             null && (
                             <ButtonPill
+                              aria-label={this.props.i18n.text.get(
+                                "plugin.workspace.index.appointmentCalendar.label"
+                              )}
                               title={this.props.i18n.text.get(
                                 "plugin.workspace.index.appointmentCalendar.label"
                               )}
