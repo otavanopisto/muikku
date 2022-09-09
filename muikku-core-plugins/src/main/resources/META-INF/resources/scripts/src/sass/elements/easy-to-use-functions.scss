@@ -19,16 +19,6 @@
   transform: translateX(0);
   transition: transform 0.3s ease;
   z-index: 9999;
-
- /*  @include breakpoint($breakpoint-desktop) {
-    display: flex;
-    height: 100vh;
-    position: fixed;
-    transform: translateX(0);
-    transition: transform 0.3s ease;
-    z-index: 9999;
-  } */
-
 }
 
 .easy-to-use-drawer--closed {
@@ -42,7 +32,7 @@
 
 .easy-to-use-list-item {
   align-items: center;
-  background: white;
+  background: $color-default;
   border-radius: 50px;
   display: flex;
   height: var(--fg-container-item-ht);
@@ -50,14 +40,6 @@
   margin: 10px 0;
   transition: 0.3s;
   width: var(--fg-container-item-wt);
-}
-
-.easy-to-use-list-item:hover {
-  background: #95caf899;
-}
-
-.easy-to-use-list-item--active {
-  background-color: #95caf8;
 }
 
 .easy-to-use-drawer-handle {
