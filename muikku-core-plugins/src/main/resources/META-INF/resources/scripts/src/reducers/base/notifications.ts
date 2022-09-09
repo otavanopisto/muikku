@@ -82,16 +82,4 @@ export const notifications: Reducer<NotificationState> = (
     default:
       return state;
   }
-
-  /*   if (action.type === "ADD_NOTIFICATION") {
-    const newNotification: NotificationType = action.payload;
-    return state.concat(newNotification);
-  } else if (action.type === "HIDE_NOTIFICATION") {
-    return state.filter(
-      (element: NotificationType) => element.id !== action.payload.id
-    );
-  } else if (action.type === "OPEN_NOTIFICATION_DIALOG") {
-  } else if (action.type === "CLOSE_NOTIFICATION_DIALOG") {
-  }
-  return state; */
 };

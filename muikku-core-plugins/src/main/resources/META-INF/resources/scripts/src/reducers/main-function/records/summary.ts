@@ -115,27 +115,3 @@ export const summary: Reducer<SummaryType> = (
       return state;
   }
 };
-
-/**
- * summary
- * @param state state
- * @param action action
- */
-/* export default function summary(
-  state: SummaryType = {
-    status: "WAIT",
-    data: null,
-  },
-  action: ActionType
-): SummaryType {
-  if (action.type === "UPDATE_STUDIES_SUMMARY_STATUS") {
-    return Object.assign({}, state, {
-      status: action.payload,
-    });
-  } else if (action.type === "UPDATE_STUDIES_SUMMARY") {
-    return Object.assign({}, state, {
-      data: action.payload,
-    });
-  }
-  return state;
-} */

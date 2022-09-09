@@ -56,27 +56,3 @@ export const statistics: Reducer<StatisticsType> = (
       return state;
   }
 };
-
-/**
- * statistics
- * @param state state
- * @param action action
- */
-/* export default function statistics(
-  state: StatisticsType = {
-    status: "WAIT",
-    value: null,
-  },
-  action: ActionType
-): StatisticsType {
-  if (action.type === "UPDATE_STUDIES_STATISTICS_STATUS") {
-    return Object.assign({}, state, {
-      status: action.payload,
-    });
-  } else if (action.type === "UPDATE_STUDIES_STATISTICS") {
-    return Object.assign({}, state, {
-      value: action.payload,
-    });
-  }
-  return state;
-} */

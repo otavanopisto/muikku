@@ -48,27 +48,3 @@ export const locales: Reducer<LocaleListType> = (
       return state;
   }
 };
-
-/**
- * locales
- * @param state state
- * @param action action
- */
-/* export default function locales(
-  state = {
-    available: $.makeArray(
-      $("#language-picker a").map((index: number, element: HTMLElement) => ({
-        name: $(element).text().trim(),
-        locale: $(element).data("locale"),
-      }))
-    ),
-    current: $("#locale").text(),
-  },
-  action: ActionType
-): LocaleListType {
-  if (action.type === "SET_LOCALE") {
-    $('#language-picker a[data-locale="' + action.payload + '"]').click();
-    return Object.assign({}, state, { current: action.payload });
-  }
-  return state;
-} */

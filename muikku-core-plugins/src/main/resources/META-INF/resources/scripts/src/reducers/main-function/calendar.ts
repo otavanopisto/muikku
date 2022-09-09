@@ -107,28 +107,3 @@ export const calendar: Reducer<Calendar> = (
       return state;
   }
 };
-
-/**
- * Reducer function for calendar
- *
- * @param state
- * @param action
- * @returns returns state
- */
-/* export default function calendar(
-  state: Calendar = {
-    state: "LOADING",
-    guidanceEvents: [],
-  },
-  action: ActionType
-): Calendar {
-  switch (action.type) {
-    case "UPDATE_CALENDAR_EVENTS_STATUS": {
-      const newState: EventsState = action.payload;
-      return Object.assign({}, state, { state: newState });
-    }
-
-    default:
-      return state;
-  }
-} */

@@ -75,27 +75,3 @@ export const vops: Reducer<VOPSType> = (
       return state;
   }
 };
-
-/**
- * vops
- * @param state state
- * @param action action
- */
-/* export default function vops(
-  state: VOPSType = {
-    status: "WAIT",
-    value: null,
-  },
-  action: ActionType
-): VOPSType {
-  if (action.type === "UPDATE_VOPS_STATUS") {
-    return Object.assign({}, state, {
-      status: action.payload,
-    });
-  } else if (action.type === "UPDATE_VOPS") {
-    return Object.assign({}, state, {
-      value: action.payload,
-    });
-  }
-  return state;
-} */
