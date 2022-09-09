@@ -38,9 +38,17 @@ export const ReadingRulerControllers = React.forwardRef<
         openByHover
         content={
           toolsDrawerOpen ? (
-            <div>Sulje työkaluvalikko</div>
+            <div>
+              {props.i18n.text.get(
+                "plugin.wcag.readingRuler.actions.closeRulersToolbar"
+              )}
+            </div>
           ) : (
-            <div>Avaa työkaluvalikko</div>
+            <div>
+              {props.i18n.text.get(
+                "plugin.wcag.readingRuler.actions.closeRulersToolbar"
+              )}
+            </div>
           )
         }
       >
@@ -60,7 +68,16 @@ export const ReadingRulerControllers = React.forwardRef<
         {tools}
       </div>
       {onClose && (
-        <Dropdown openByHover content={<div>Sulje lukiviivain</div>}>
+        <Dropdown
+          openByHover
+          content={
+            <div>
+              {props.i18n.text.get(
+                "plugin.wcag.readingRuler.actions.closeRuler"
+              )}
+            </div>
+          }
+        >
           <IconButton
             icon="cross"
             onClick={onClose}

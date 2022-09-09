@@ -467,7 +467,16 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
         onClose={onClose}
         tools={
           <>
-            <Dropdown openByHover content={<div>Pienennä</div>}>
+            <Dropdown
+              openByHover
+              content={
+                <div>
+                  {props.i18n.text.get(
+                    "plugin.wcag.readingRuler.actions.decreaseRuler"
+                  )}
+                </div>
+              }
+            >
               <IconButton
                 buttonModifiers={["reading-ruler"]}
                 icon="minus"
@@ -493,7 +502,16 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
                 )
               }
             />
-            <Dropdown openByHover content={<div>Suurenna</div>}>
+            <Dropdown
+              openByHover
+              content={
+                <div>
+                  {props.i18n.text.get(
+                    "plugin.wcag.readingRuler.actions.increaseRuler"
+                  )}
+                </div>
+              }
+            >
               <IconButton
                 buttonModifiers={["reading-ruler"]}
                 onClick={(e) =>
@@ -506,7 +524,16 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               />
             </Dropdown>
 
-            <Dropdown openByHover content={<div>Käännävärit</div>}>
+            <Dropdown
+              openByHover
+              content={
+                <div>
+                  {props.i18n.text.get(
+                    "plugin.wcag.readingRuler.actions.invertRulersColors"
+                  )}
+                </div>
+              }
+            >
               <IconButton
                 disabled={overlayClickActive}
                 icon="invert-colors"
@@ -515,7 +542,16 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               />
             </Dropdown>
 
-            <Dropdown openByHover content={<div>Läpiklikkaus</div>}>
+            <Dropdown
+              openByHover
+              content={
+                <div>
+                  {props.i18n.text.get(
+                    "plugin.wcag.readingRuler.actions.clickThroughRuler"
+                  )}
+                </div>
+              }
+            >
               <IconButton
                 icon={!overlayClickActive ? "no-touch" : "touch"}
                 buttonModifiers={overlayButtonMod}
@@ -542,7 +578,16 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
                 </div>
               }
             >
-              <Dropdown openByHover content={<div>Väripaletti</div>}>
+              <Dropdown
+                openByHover
+                content={
+                  <div>
+                    {props.i18n.text.get(
+                      "plugin.wcag.readingRuler.actions.chooseRulersColor"
+                    )}
+                  </div>
+                }
+              >
                 <IconButton
                   icon="palette"
                   buttonModifiers={["reading-ruler"]}
@@ -550,7 +595,16 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               </Dropdown>
             </Dropdown>
 
-            <Dropdown openByHover content={<div>Pin</div>}>
+            <Dropdown
+              openByHover
+              content={
+                <div>
+                  {props.i18n.text.get(
+                    "plugin.wcag.readingRuler.actions.pinRuler"
+                  )}
+                </div>
+              }
+            >
               <IconButton
                 icon="pin"
                 buttonModifiers={pinnedButtonMod}
@@ -569,7 +623,16 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               Oma
             </Button>
 
-            <Dropdown openByHover content={<div>Preset 1</div>}>
+            <Dropdown
+              openByHover
+              content={
+                <div>
+                  {props.i18n.text.get(
+                    "plugin.wcag.readingRuler.actions.preset1"
+                  )}
+                </div>
+              }
+            >
               <Button
                 onClick={handleChangePresetClick(
                   "default1",
@@ -585,7 +648,16 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               </Button>
             </Dropdown>
 
-            <Dropdown openByHover content={<div>Preset 2</div>}>
+            <Dropdown
+              openByHover
+              content={
+                <div>
+                  {props.i18n.text.get(
+                    "plugin.wcag.readingRuler.actions.preset2"
+                  )}
+                </div>
+              }
+            >
               <Button
                 onClick={handleChangePresetClick(
                   "default2",
@@ -601,7 +673,16 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               </Button>
             </Dropdown>
 
-            <Dropdown openByHover content={<div>Preset 3</div>}>
+            <Dropdown
+              openByHover
+              content={
+                <div>
+                  {props.i18n.text.get(
+                    "plugin.wcag.readingRuler.actions.preset3"
+                  )}
+                </div>
+              }
+            >
               <Button
                 onClick={handleChangePresetClick(
                   "default3",
