@@ -15,7 +15,7 @@ import {
   userGroups,
 } from "./main-function/users";
 import { discussion } from "~/reducers/discussion";
-import guider from "./main-function/guider";
+import { guider } from "./main-function/guider";
 import { profile } from "./main-function/profile";
 import { records } from "~/reducers/main-function/records";
 import { vops } from "~/reducers/main-function/vops";
