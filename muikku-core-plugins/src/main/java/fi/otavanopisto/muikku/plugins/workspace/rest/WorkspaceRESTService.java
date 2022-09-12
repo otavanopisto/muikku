@@ -817,6 +817,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       Map<String, Object> result = new HashMap<>();
       result.put("beginDate", workspace.getBeginDate());
       result.put("endDate", workspace.getEndDate());
+      result.put("signupStart", workspace.getSignupStart());
+      result.put("signupEnd", workspace.getSignupEnd());
       result.put("viewLink", workspace.getViewLink());
       result.put("workspaceTypeId", typeId);
       result.put("educationType", educationTypeObject);
@@ -864,6 +866,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(new WorkspaceDetails(typeId,
         workspace.getBeginDate(),
         workspace.getEndDate(),
+        workspace.getSignupStart(),
+        workspace.getSignupEnd(),
         workspace.getViewLink(),
         rootFolder.getId(),
         helpFolder.getId(),
@@ -1027,6 +1031,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         typeId,
         workspace.getBeginDate(),
         workspace.getEndDate(),
+        workspace.getSignupStart(),
+        workspace.getSignupEnd(),
         workspace.getViewLink(),
         payload.getRootFolderId(),
         helpFolder.getId(),

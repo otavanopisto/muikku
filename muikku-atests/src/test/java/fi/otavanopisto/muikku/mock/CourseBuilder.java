@@ -24,6 +24,8 @@ public class CourseBuilder {
   private OffsetDateTime lastModified = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
   OffsetDateTime beginDate = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
   OffsetDateTime endDate = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+  OffsetDateTime signupStart = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+  OffsetDateTime signupEnd = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
   private Boolean archived = false;
   private Integer courseNumber = 1;
   private Long maxParticipantCount = (long) 25;
@@ -71,7 +73,7 @@ public class CourseBuilder {
     );
     
     return new Course(id, name, created, lastModified, description, archived, maxParticipantCount, beginDate,
-        endDate, nameExtension, localTeachingDays, teachingHours, distanceTeachingHours, distanceTeachingDays,
+        endDate, signupStart, signupEnd, nameExtension, localTeachingDays, teachingHours, distanceTeachingHours, distanceTeachingDays,
         assessingHours, planningHours, enrolmentTimeEnd, creatorId, lastModifierId, curriculumIds, 
         moduleId, stateId, typeId, variables, tags, organizationId, courseTemplate, primaryEducationTypeId, primaryEducationSubtypeId, courseModules);
   }

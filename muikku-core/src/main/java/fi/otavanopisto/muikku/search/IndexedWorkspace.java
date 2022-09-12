@@ -295,6 +295,22 @@ public class IndexedWorkspace {
   public void setEndDate(OffsetDateTime endDate) {
     this.endDate = endDate;
   }
+  
+  public OffsetDateTime getSignupStart() {
+    return signupStart;
+  }
+
+  public void setSignupStart(OffsetDateTime signupStart) {
+    this.signupStart = signupStart;
+  }
+
+  public OffsetDateTime getSignupEnd() {
+    return signupEnd;
+  }
+
+  public void setSignupEnd(OffsetDateTime signupEnd) {
+    this.signupEnd = signupEnd;
+  }
 
   @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier identifier;
@@ -322,6 +338,8 @@ public class IndexedWorkspace {
   private boolean published;
   private OffsetDateTime beginDate;
   private OffsetDateTime endDate;
+  private OffsetDateTime signupStart;
+  private OffsetDateTime signupEnd;
   private Set<IndexedWorkspaceUser> staffMembers = new HashSet<>();
   @JsonDeserialize(contentUsing = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private Set<SchoolDataIdentifier> signupPermissionGroups = new HashSet<>();

@@ -30,6 +30,14 @@ public interface Workspace extends SchoolDataEntity {
   public OffsetDateTime getEndDate();
   
   public void setEndDate(OffsetDateTime endDate);
+  
+  public OffsetDateTime getSignupStart();
+  
+  public void setSignupStart(OffsetDateTime signupStart);
+  
+  public OffsetDateTime getSignupEnd();
+  
+  public void setSignupEnd(OffsetDateTime signupEnd);
 
   public SchoolDataIdentifier getWorkspaceTypeId();
   public void setWorkspaceTypeId(SchoolDataIdentifier workspaceTypeId);

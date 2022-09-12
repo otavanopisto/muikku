@@ -55,8 +55,13 @@ export const isStringHTML = (str: string) => {
   const helperElement = document.createElement("div");
   helperElement.innerHTML = str;
 
-  // Check if string is not empty and nodeType is 1.
+  // Check if string is not empty/null/undefined and nodeType is 1.
   // Number 1 is elements like divs or p tags etc.
   // First nodeType tells if the str is not valid html
-  return str !== "" && helperElement.childNodes[0].nodeType == 1;
+  return (
+    str !== null &&
+    str !== undefined &&
+    str !== "" &&
+    helperElement.childNodes[0].nodeType == 1
+  );
 };

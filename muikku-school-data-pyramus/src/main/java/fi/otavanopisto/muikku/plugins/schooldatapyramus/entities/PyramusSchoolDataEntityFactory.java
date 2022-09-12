@@ -329,6 +329,8 @@ public class PyramusSchoolDataEntityFactory {
         modified != null ? Date.from(modified.toInstant()) : null, 
         course.getBeginDate(), 
         course.getEndDate(), 
+        course.getSignupStart(),
+        course.getSignupEnd(),
         course.getArchived(), 
         curriculumIdentifiers,
         identifierMapper.getEducationSubtypeIdentifier(course.getPrimaryEducationSubtypeId()),
