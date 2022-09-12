@@ -1,0 +1,19 @@
+@media print {
+  .content-panel__navigation-open,
+  .material-page__buttonset,
+  .button--muikku-submit-exercise,
+  .button--muikku-submit-assignment,
+  .chat {
+    display: none;
+  }
+
+  .navbar {
+    position: relative;
+  }
+
+  .application-panel,
+  .reading-panel,
+  .content-panel {
+    padding: 0;
+  }
+}
