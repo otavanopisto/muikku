@@ -123,6 +123,8 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         course.getMaxParticipantCount(),
         course.getBeginDate(),
         course.getEndDate(),
+        course.getSignupStart(),
+        course.getSignupEnd(),
         nameExtension, // copy has new name extension
         course.getLocalTeachingDays(),
         course.getTeachingHours(),
@@ -213,6 +215,8 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     course.setDescription(workspace.getDescription());
     course.setBeginDate(workspace.getBeginDate());
     course.setEndDate(workspace.getEndDate());
+    course.setSignupStart(workspace.getSignupStart());
+    course.setSignupEnd(workspace.getSignupEnd());
     course.setTypeId(typeId);
 
     // Updating course modules (length, subject) is not currently available

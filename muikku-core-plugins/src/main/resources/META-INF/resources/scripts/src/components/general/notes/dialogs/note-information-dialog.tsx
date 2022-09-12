@@ -69,7 +69,7 @@ class NoteInformationDialog extends React.Component<
         modifier="note-information"
         disableScroll={true}
         title={this.props.i18n.text.get(
-          "plugin.records.notes.dialog.noteDetails.title"
+          "plugin.records.tasks.dialog.noteDetails.title"
         )}
         content={content}
         footer={footer}

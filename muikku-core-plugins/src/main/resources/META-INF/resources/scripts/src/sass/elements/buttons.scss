@@ -960,6 +960,7 @@
 .button-pill--restore,
 .button-pill--edit,
 .button-pill--create-contact-log-entry,
+.button-pill--new-message,
 .button-pill--filter,
 .button-pill--add-note {
   background-color: $color-main-function-button-pill-delete-background;
@@ -1941,11 +1942,12 @@
   }
 }
 
-.button-pill--new-message {
+.button-pill--new-message-to-staff {
   background: $color-info;
   color: $color-default;
   font-size: 1.125rem;
   height: 2rem;
+  margin: 0 10px 0 0;
   width: 2rem;
 
   &:hover,
@@ -1964,6 +1966,7 @@
   color: $color-default;
   font-size: 1.25rem;
   height: 2rem;
+  margin: 0 10px 0 0;
   width: 2rem;
 
   &:hover,
@@ -1982,6 +1985,7 @@
   color: $color-default;
   font-size: 1.25rem;
   height: 2rem;
+  margin: 0 10px 0 0;
   width: 2rem;
 
   &:hover,

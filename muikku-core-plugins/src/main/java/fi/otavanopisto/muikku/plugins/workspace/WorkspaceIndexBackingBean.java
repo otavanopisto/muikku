@@ -228,6 +228,22 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     return endDate;
   }
   
+  public Date getSignupStart() {
+    return signupStart;
+  }
+
+  public void setSignupStart(Date signupStart) {
+    this.signupStart = signupStart;
+  }
+
+  public Date getSignupEnd() {
+    return signupEnd;
+  }
+
+  public void setSignupEnd(Date signupEnd) {
+    this.signupEnd = signupEnd;
+  }
+  
   public List<ContentNode> getContentNodes() {
     return contentNodes;
   }
@@ -275,6 +291,8 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
   private Boolean canPublish;
   private Date beginDate;
   private Date endDate;
+  private Date signupStart;
+  private Date signupEnd;
   private List<ContentNode> contentNodes;
   private String materialsBaseUrl;
   private String announcementsBaseUrl;

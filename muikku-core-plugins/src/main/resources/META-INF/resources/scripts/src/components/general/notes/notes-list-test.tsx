@@ -24,7 +24,7 @@ const NotesItemListWithoutAnimation: React.FC<NotesItemListProps> = (props) => {
   if (React.Children.count(children) === 0) {
     return (
       <div className="empty">
-        <span>{props.i18n.text.get("plugin.records.notes.empty")}</span>
+        <span>{props.i18n.text.get("plugin.records.tasks.empty")}</span>
       </div>
     );
   }
