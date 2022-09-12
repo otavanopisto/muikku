@@ -110,7 +110,6 @@
   display: flex;
   justify-content: flex-end;
   opacity: 0%;
-  transition: width 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
   visibility: hidden;
   width: 0;
 }
@@ -118,7 +117,6 @@
 .reading-ruler-controllers-presets-container--open,
 .reading-ruler-controllers-settings-container--open {
   opacity: 100%;
-  transition: width 0.3s ease, opacity 0.3s ease;
   visibility: visible;
   width: auto;
 }

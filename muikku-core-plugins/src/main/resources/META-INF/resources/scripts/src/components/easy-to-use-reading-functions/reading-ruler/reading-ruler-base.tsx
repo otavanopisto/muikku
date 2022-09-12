@@ -613,6 +613,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               />
             </Dropdown>
 
+            {/* These are commented out as we test whether we gonna use these or not.
             <Button
               onClick={handleChangePresetClick("custom", customPresetSettings)}
               buttonModifiers={
@@ -691,7 +692,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               >
                 3
               </Button>
-            </Dropdown>
+            </Dropdown> */}
           </>
         }
       />
