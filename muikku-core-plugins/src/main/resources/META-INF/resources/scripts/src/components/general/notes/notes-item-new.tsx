@@ -64,7 +64,7 @@ class NotesItemNew extends SessionStateComponent<
         title: "",
         description: "",
         type: NotesItemCreation.MANUAL,
-        priority: NotesItemPriority.HIGH,
+        priority: NotesItemPriority.NORMAL,
         pinned: false,
         owner: props.newNoteOwnerId,
         startDate: null,
@@ -82,7 +82,7 @@ class NotesItemNew extends SessionStateComponent<
         title: "",
         description: "",
         type: NotesItemCreation.MANUAL,
-        priority: NotesItemPriority.HIGH,
+        priority: NotesItemPriority.NORMAL,
         pinned: false,
         owner: this.props.newNoteOwnerId,
         startDate: null,
@@ -134,7 +134,7 @@ class NotesItemNew extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.records.notes.createEditnote.title.label"
+              "plugin.records.tasks.createEditnote.title.label"
             )}
           </label>
           <input
@@ -149,7 +149,7 @@ class NotesItemNew extends SessionStateComponent<
 
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.records.notes.priority.label")}
+            {this.props.i18n.text.get("plugin.records.tasks.priority.label")}
           </label>
           <select
             className="env-dialog__select"
@@ -163,17 +163,17 @@ class NotesItemNew extends SessionStateComponent<
           >
             <option value={NotesItemPriority.HIGH}>
               {this.props.i18n.text.get(
-                "plugin.records.notes.priority.high.label"
+                "plugin.records.tasks.priority.high.label"
               )}
             </option>
             <option value={NotesItemPriority.NORMAL}>
               {this.props.i18n.text.get(
-                "plugin.records.notes.priority.normal.label"
+                "plugin.records.tasks.priority.normal.label"
               )}
             </option>
             <option value={NotesItemPriority.LOW}>
               {this.props.i18n.text.get(
-                "plugin.records.notes.priority.low.label"
+                "plugin.records.tasks.priority.low.label"
               )}
             </option>
           </select>
@@ -183,7 +183,7 @@ class NotesItemNew extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.records.notes.createEditnote.startdate.label"
+              "plugin.records.tasks.createEditnote.startdate.label"
             )}
           </label>
           <DatePicker
@@ -200,12 +200,14 @@ class NotesItemNew extends SessionStateComponent<
               this.props.i18n.time.getLocale()
             )}
             dateFormat="P"
+            minDate={new Date()}
+            maxDate={this.state.notesItem.dueDate}
           />
         </div>
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.records.notes.createEditnote.enddate.label"
+              "plugin.records.tasks.createEditnote.enddate.label"
             )}
           </label>
           <DatePicker
@@ -220,6 +222,11 @@ class NotesItemNew extends SessionStateComponent<
               this.props.i18n.time.getLocale()
             )}
             dateFormat="P"
+            minDate={
+              this.state.notesItem.startDate !== null
+                ? this.state.notesItem.startDate
+                : new Date()
+            }
           />
         </div>
       </div>,
@@ -227,7 +234,7 @@ class NotesItemNew extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.records.notes.createEditnote.content.label"
+              "plugin.records.tasks.createEditnote.content.label"
             )}
           </label>
           <CKEditor
@@ -248,10 +255,10 @@ class NotesItemNew extends SessionStateComponent<
           buttonModifiers={["dialog-execute"]}
           onClick={this.handleSaveClick(closeDialog)}
         >
-          {this.props.i18n.text.get("plugin.records.notes.send")}
+          {this.props.i18n.text.get("plugin.records.tasks.send")}
         </Button>
         <Button buttonModifiers={["dialog-cancel"]} onClick={closeDialog}>
-          {this.props.i18n.text.get("plugin.records.notes.cancel")}
+          {this.props.i18n.text.get("plugin.records.tasks.cancel")}
         </Button>
       </div>
     );
@@ -260,7 +267,7 @@ class NotesItemNew extends SessionStateComponent<
       <EnvironmentDialog
         modifier="add-note"
         title={this.props.i18n.text.get(
-          "plugin.records.notes.createnote.topic"
+          "plugin.records.tasks.createnote.topic"
         )}
         content={content}
         footer={footer}

@@ -56,6 +56,18 @@
   }
 }
 
+.link--feed-nettilukio {
+  align-items: center;
+  color: $color-frontpage-card-upper-secondary-school-title;
+  display: flex;
+}
+
+.link--feed-nettipk {
+  align-items: center;
+  color: $color-frontpage-card-secondary-school-title;
+  display: flex;
+}
+
 .link--submit-worklist-approval,
 .link--worklist-entries-sorting {
   text-decoration: underline;
@@ -94,28 +106,24 @@
   }
 }
 
-.link--privacy-policy {
+.link--plagscan-logo {
+  align-items: center;
+  border: 0;
   color: $color-default;
-  text-align: center;
-  white-space: normal;
+  display: flex;
 
   &:hover,
   &:active {
     color: $color-default;
   }
-
-  @include breakpoint($breakpoint-pad) {
-    text-align: left;
-  }
 }
 
-.link--plagscan-logo {
-  border: 0;
-}
-
+.link--privacy-policy,
 .link--plagscan-privacy-policy,
 .link--accessibility-statement {
+  align-items: center;
   color: $color-default;
+  display: inline-flex;
 
   &:hover,
   &:active {
@@ -243,6 +251,7 @@
 
 .link--language-picker-dropdown,
 .link--profile-dropdown,
+.link--tasks-dropdown,
 .link--purchasable-product-dropdown,
 .link--chat-dropdown {
   color: $color-default-contrast;
@@ -368,7 +377,8 @@
   }
 }
 
-.link--application-list-item-footer {
+.link--application-list-item-footer,
+.link--contact-event-footer {
   color: $color-link-application-item-footer;
   cursor: pointer;
   text-decoration: underline;

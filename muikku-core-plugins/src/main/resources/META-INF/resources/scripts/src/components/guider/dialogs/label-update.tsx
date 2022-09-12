@@ -54,10 +54,11 @@ interface SharedFlagUser {
  * GuiderLabelUpdateDialogProps
  */
 interface GuiderLabelUpdateDialogProps {
+  // eslint-disable-next-line
   children: React.ReactElement<any>;
   label: GuiderUserLabelType;
   isOpen?: boolean;
-  onClose?: () => any;
+  onClose?: () => void;
   i18n: i18nType;
   updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType;
   removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType;

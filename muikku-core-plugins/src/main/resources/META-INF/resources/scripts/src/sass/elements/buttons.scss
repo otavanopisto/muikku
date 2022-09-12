@@ -32,11 +32,6 @@
     background-color: $color-button-disabled-background;
     cursor: not-allowed;
   }
-
-  > [class^="icon-"],
-  > [class*=" icon-"] {
-    margin-right: 5px;
-  }
 }
 
 .button__icon {
@@ -226,6 +221,14 @@
   &.active {
     background-color: darken($color-button-cancel-background, 20%);
   }
+}
+
+.button--disconnect-warning {
+  background-color: transparent;
+  border: 1px solid $color-default;
+  border-radius: 3px;
+  color: $color-default;
+  font-size: 1rem;
 }
 
 .button--loading {
@@ -493,7 +496,7 @@
 }
 
 .button--frontpage-bubble {
-  height: auto;
+  height: 40px;
   letter-spacing: 1px;
   overflow-wrap: break-word;
   padding-bottom: 5px;
@@ -720,6 +723,16 @@
   }
 }
 
+.button__icon--left {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+.button__icon--right {
+  margin-left: 5px;
+  margin-right: 0;
+}
+
 .button-icon--notes-action {
   color: $color-notes-action-button;
   font-size: 0.9375rem;
@@ -800,6 +813,14 @@
     opacity: 0%;
     position: absolute;
     width: 100%;
+  }
+
+  // This needs to be added here as we place external-link-indicator
+  // automatically to every button and anchor element that opens up a new tab/window.
+  // This way we only hide the indicator in button-pill element and avoid making
+  // unnecessary conditional to the button and/or link component.
+  .external-link-indicator {
+    display: none;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -938,6 +959,7 @@
 .button-pill--toggle,
 .button-pill--restore,
 .button-pill--edit,
+.button-pill--create-contact-log-entry,
 .button-pill--new-message,
 .button-pill--filter,
 .button-pill--add-note {
@@ -1375,6 +1397,14 @@
     &:last-of-type {
       margin: 0 0 0 0.3rem;
     }
+  }
+
+  // This needs to be added here as we place external-link-indicator
+  // automatically to every button and anchor element that opens up a new tab/window.
+  // This way we only hide the indicator in button-social element and avoid making
+  // unnecessary conditional to the button and/or link component.
+  .external-link-indicator {
+    display: none;
   }
 }
 
@@ -1912,9 +1942,32 @@
   }
 }
 
+.button-pill--new-message-to-staff {
+  background: $color-info;
+  color: $color-default;
+  font-size: 1.125rem;
+  height: 2rem;
+  margin: 0 10px 0 0;
+  width: 2rem;
+
+  &:hover,
+  &.hover {
+    background: darken($color-info, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-info, 10%);
+  }
+}
+
 .button-pill--whatsapp-me {
   background: $color-whatsapp-dark;
   color: $color-default;
+  font-size: 1.25rem;
+  height: 2rem;
+  margin: 0 10px 0 0;
+  width: 2rem;
 
   &:hover,
   &.hover {
@@ -1930,6 +1983,10 @@
 .button-pill--appointment-calendar {
   background: $color-appointment-calendar-button-background;
   color: $color-default;
+  font-size: 1.25rem;
+  height: 2rem;
+  margin: 0 10px 0 0;
+  width: 2rem;
 
   &:hover,
   &.hover {
@@ -2041,7 +2098,6 @@
 .button--whatsapp-me {
   background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
   color: $color-default;
-  font-size: 0.75rem;
   margin: 0 0 0 10px;
 }
 

@@ -1,10 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 
-import "~/sass/elements/hero.scss";
-import "~/sass/elements/bubble.scss";
-import "~/sass/elements/logo.scss";
-
 import Button from "~/components/general/button";
 import Bubble from "~/components/general/bubble";
 

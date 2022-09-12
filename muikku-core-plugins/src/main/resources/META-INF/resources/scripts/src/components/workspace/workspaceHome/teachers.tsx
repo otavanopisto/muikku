@@ -136,7 +136,7 @@ class WorkspaceTeachers extends React.Component<
                           </div>
                         )}
 
-                      <div className="item-list__user-contact-me">
+                      <div className="item-list__user-actions">
                         <CommunicatorNewMessage
                           extraNamespace="workspace-teachers"
                           initialSelectedItems={[
@@ -161,11 +161,17 @@ class WorkspaceTeachers extends React.Component<
                           )}
                         >
                           <ButtonPill
+                            aria-label={this.props.i18n.text.get(
+                              "plugin.workspace.index.newMessage.label"
+                            )}
                             icon="envelope"
                             title={this.props.i18n.text.get(
                               "plugin.workspace.index.newMessage.label"
                             )}
-                            buttonModifiers="new-message"
+                            buttonModifiers={[
+                              "new-message",
+                              "new-message-to-staff",
+                            ]}
                           ></ButtonPill>
                         </CommunicatorNewMessage>
                         {teacher.properties["profile-phone"] !== undefined &&
@@ -182,6 +188,9 @@ class WorkspaceTeachers extends React.Component<
                           teacher.properties["profile-appointmentCalendar"] !==
                             null && (
                             <ButtonPill
+                              aria-label={this.props.i18n.text.get(
+                                "plugin.workspace.index.appointmentCalendar.label"
+                              )}
                               title={this.props.i18n.text.get(
                                 "plugin.workspace.index.appointmentCalendar.label"
                               )}
