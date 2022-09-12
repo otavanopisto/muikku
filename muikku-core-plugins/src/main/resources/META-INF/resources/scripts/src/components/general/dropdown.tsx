@@ -27,18 +27,50 @@ type itemType2 = (closeDropdown: () => any) => any;
 /**
  * DropdownProps
  */
-interface DropdownProps {
+export interface DropdownProps {
   modifier?: string;
   children?: React.ReactNode;
+  /**
+   * Using item list as content
+   */
   items?: Array<React.ReactNode | itemType2>;
+  /**
+   * Content to show
+   */
   content?: any;
+  /**
+   * Open content when hovering
+   */
   openByHover?: boolean;
+  /**
+   * Click to show content
+   */
   openByHoverIsClickToo?: boolean;
+  /**
+   * Scroll don't close popper
+   */
   persistent?: boolean;
-  onOpen?: () => any;
-  onClose?: () => any;
-  onClick?: () => any;
+
+  /**
+   * Aligns popper by value horizontally
+   */
   alignSelf?: "left" | "center" | "right";
+  /**
+   * Alings popper content by value vertically
+   */
+  alignSelfVertically?: "top" | "bottom";
+  /**
+   * onOpen
+   */
+  onOpen?: () => any;
+  /**
+   * onClose
+   */
+  onClose?: () => any;
+  /**
+   * onClick
+   */
+  onClick?: () => any;
 }
 
 /**
@@ -64,6 +96,7 @@ export default class Dropdown extends React.Component<
 > {
   private id: string;
   private isUnmounted = false;
+  private originalPositionTop: number;
 
   /**
    * constructor
@@ -92,11 +125,100 @@ export default class Dropdown extends React.Component<
   }
 
   /**
+   * componentDidMount
+   */
+  componentDidMount(): void {
+    this.props.persistent &&
+      window.addEventListener("scroll", this.handleScroll);
+  }
+
+  /**
    * componentWillUnmount
    */
   componentWillUnmount() {
     this.isUnmounted = true;
+    this.props.persistent &&
+      window.removeEventListener("scroll", this.handleScroll);
   }
+
+  /**
+   * handleScroll
+   * @param event event
+   */
+  handleScroll = (event: WheelEvent) => {
+    if (this.isUnmounted) {
+      return;
+    }
+
+    let activator: any = this.refs["activator"];
+    if (!(activator instanceof HTMLElement)) {
+      activator = findDOMNode(activator);
+    }
+
+    const $target = $(activator);
+    const $dropdown = $(this.refs["dropdown"]);
+    const position = activator.getBoundingClientRect();
+    const windowHeight = $(window).height();
+    const spaceLeftInTop = position.top;
+    const spaceLeftInBottom = windowHeight - position.top - position.height;
+    const notEnoughSpaceInBottom =
+      spaceLeftInBottom < $dropdown.outerHeight() + 5;
+
+    const notEnoughSpaceInTop = spaceLeftInTop < $dropdown.outerHeight() + 5;
+
+    let top = null;
+    let arrowTop = null;
+    let reverseArrow = false;
+
+    if (notEnoughSpaceInBottom) {
+      top = position.top - 5 - $dropdown.outerHeight();
+    } else {
+      top = position.top + $target.outerHeight() + 5;
+    }
+
+    switch (this.props.alignSelfVertically) {
+      case "top":
+        top = position.top - 5 - $dropdown.outerHeight();
+        arrowTop = $dropdown.outerHeight();
+        reverseArrow = true;
+        if (notEnoughSpaceInTop) {
+          top = position.top + $target.outerHeight() + 5;
+          arrowTop = null;
+          reverseArrow = false;
+        }
+        break;
+
+      case "bottom":
+        top = position.top + $target.outerHeight() + 5;
+        if (notEnoughSpaceInBottom) {
+          top = position.top - 5 - $dropdown.outerHeight();
+          arrowTop = $dropdown.outerHeight();
+          reverseArrow = true;
+        }
+        break;
+      default:
+        top = position.top + $target.outerHeight() + 5;
+        if (notEnoughSpaceInBottom) {
+          top = position.top - 5 - $dropdown.outerHeight();
+          arrowTop = $dropdown.outerHeight();
+          reverseArrow = true;
+        }
+        break;
+    }
+
+    this.originalPositionTop = window.scrollY;
+
+    const calculation = top - (this.originalPositionTop - window.scrollY);
+
+    this.setState(
+      {
+        top: calculation,
+        arrowTop,
+        reverseArrow,
+      },
+      this.props.onOpen
+    );
+  };
 
   /**
    * onOpen
@@ -120,9 +242,12 @@ export default class Dropdown extends React.Component<
     const moreSpaceInTheLeftSide = windowWidth - position.left < position.left;
     const targetIsWiderThanDropdown =
       $target.outerWidth() > $dropdown.outerWidth();
+    const spaceLeftInTop = position.top;
     const spaceLeftInBottom = windowHeight - position.top - position.height;
     const notEnoughSpaceInBottom =
       spaceLeftInBottom < $dropdown.outerHeight() + 5;
+
+    const notEnoughSpaceInTop = spaceLeftInTop < $dropdown.outerHeight() + 5;
 
     let left = null;
     if (this.props.alignSelf === "left") {
@@ -144,16 +269,41 @@ export default class Dropdown extends React.Component<
     }
 
     let top = null;
-    if (notEnoughSpaceInBottom) {
-      top = position.top - 5 - $dropdown.outerHeight();
-    } else {
-      top = position.top + $target.outerHeight() + 5;
-    }
-
     let arrowLeft = null;
     let arrowRight = null;
     let arrowTop = null;
     let reverseArrow = false;
+
+    switch (this.props.alignSelfVertically) {
+      case "top":
+        top = position.top - 5 - $dropdown.outerHeight();
+        arrowTop = $dropdown.outerHeight();
+        reverseArrow = true;
+
+        if (notEnoughSpaceInTop) {
+          top = position.top + $target.outerHeight() + 5;
+          arrowTop = null;
+          reverseArrow = false;
+        }
+        break;
+
+      case "bottom":
+        top = position.top + $target.outerHeight() + 5;
+        if (notEnoughSpaceInBottom) {
+          top = position.top - 5 - $dropdown.outerHeight();
+          arrowTop = $dropdown.outerHeight();
+          reverseArrow = true;
+        }
+        break;
+      default:
+        top = position.top + $target.outerHeight() + 5;
+        if (notEnoughSpaceInBottom) {
+          top = position.top - 5 - $dropdown.outerHeight();
+          arrowTop = $dropdown.outerHeight();
+          reverseArrow = true;
+        }
+        break;
+    }
 
     if (this.props.alignSelf === "left") {
       arrowLeft = $target.outerWidth() / 2 - $arrow.outerWidth() / 2;
@@ -169,11 +319,6 @@ export default class Dropdown extends React.Component<
       } else {
         arrowLeft = $target.outerWidth() / 2 - $arrow.outerWidth() / 2;
       }
-    }
-
-    if (notEnoughSpaceInBottom) {
-      arrowTop = $dropdown.outerHeight();
-      reverseArrow = true;
     }
 
     let forcedWidth: number = null;
@@ -388,7 +533,7 @@ export default class Dropdown extends React.Component<
               left: this.state.arrowLeft,
               right: this.state.arrowRight,
               top: this.state.arrowTop,
-              transform: this.state.reverseArrow ? "scaleY(-1)" : null,
+              transform: this.state.reverseArrow ? "scaleY(-1)" : "",
             }}
           ></span>
           <div className="dropdown__container">
