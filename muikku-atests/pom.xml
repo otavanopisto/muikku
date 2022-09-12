@@ -97,14 +97,14 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.181-SNAPSHOT</version>
+      <version>0.7.181</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.181-SNAPSHOT</version>
+      <version>0.7.181</version>
       <scope>test</scope>
     </dependency>
 
