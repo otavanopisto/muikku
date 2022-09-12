@@ -579,6 +579,8 @@ public class PyramusMocks extends AbstractPyramusMocks {
     OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+    OffsetDateTime signupStart = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
+    OffsetDateTime signupEnd = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
 
     Set<CourseModule> courseModules = new HashSet<>();
     Subject subject = new Subject(1L, null, null, null, null);
@@ -593,7 +595,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     );
     
     Course course = new Course(id, name, created, created, description, false,
-      (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
+      (long) 25, begin, end, signupStart, signupEnd, "test extension", (double) 15, (double) 45, (double) 45,
       (double) 15, (double) 45, (double) 45, end, (long) 1,
       (long) 1, null, (long) 1, (long) 1, (long) 1, 
       null, null, 1L, false, 1L, 1L, courseModules);
