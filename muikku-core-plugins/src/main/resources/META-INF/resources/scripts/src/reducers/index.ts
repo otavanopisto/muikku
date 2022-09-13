@@ -1,3 +1,4 @@
+import { EasyToUseFunctionState } from "./easy-to-use-functions/index";
 import { i18nType } from "./base/i18n";
 import { LocaleListType } from "./base/locales";
 import { NotificationState } from "./base/notifications";
@@ -65,4 +66,5 @@ export interface StateType {
   evaluations?: EvaluationState;
   ceepos?: CeeposState;
   calendar?: Calendar;
+  easyToUse?: EasyToUseFunctionState;
 }

@@ -960,6 +960,7 @@
 .button-pill--restore,
 .button-pill--edit,
 .button-pill--create-contact-log-entry,
+.button-pill--new-message,
 .button-pill--filter,
 .button-pill--add-note {
   background-color: $color-main-function-button-pill-delete-background;
@@ -1941,11 +1942,12 @@
   }
 }
 
-.button-pill--new-message {
+.button-pill--new-message-to-staff {
   background: $color-info;
   color: $color-default;
   font-size: 1.125rem;
   height: 2rem;
+  margin: 0 10px 0 0;
   width: 2rem;
 
   &:hover,
@@ -1964,6 +1966,7 @@
   color: $color-default;
   font-size: 1.25rem;
   height: 2rem;
+  margin: 0 10px 0 0;
   width: 2rem;
 
   &:hover,
@@ -1982,6 +1985,7 @@
   color: $color-default;
   font-size: 1.25rem;
   height: 2rem;
+  margin: 0 10px 0 0;
   width: 2rem;
 
   &:hover,
@@ -2145,6 +2149,36 @@
   color: $color-disabled;
 }
 
+.button-icon--reading-ruler {
+  border-radius: 100%;
+  color: $color-default-contrast;
+
+  &.disabled,
+  &.disabled:hover,
+  &.disabled:active {
+    background-color: transparent;
+    color: $color-disabled;
+  }
+}
+
+.button-icon--reading-ruler-active {
+  background: $color-default-contrast;
+  border-radius: 100%;
+  color: $color-default;
+  height: 2rem;
+  margin: 0 4px;
+  width: 2rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: $color-default-contrast;
+    border-radius: 100%;
+    color: $color-default;
+  }
+}
+
 .button--modify-hops {
   background-color: $color-info;
   color: $color-default;
@@ -2155,4 +2189,9 @@
   background-color: $color-fatal;
   color: $color-default;
   margin-right: 10px;
+}
+
+.button--reading-ruler-preset-active {
+  background-color: $color-default-contrast;
+  color: $color-default;
 }

@@ -1,0 +1,47 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+:root {
+  --fg-container-item-ht: 60px;
+  --fg-container-item-wt: 60px;
+  --fg-container-wt-tf: -60px;
+}
+
+.easy-to-use-drawer {
+  /* display: none; */
+
+  display: flex;
+  height: 80px;
+  position: fixed;
+  top: calc(50% - 40px);
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+  z-index: 9999;
+}
+
+.easy-to-use-drawer--closed {
+  transform: translateX(var(--fg-container-wt-tf));
+  transition: transform 0.3s ease;
+}
+
+.easy-to-use-list {
+  margin: auto 0;
+}
+
+.easy-to-use-list-item {
+  align-items: center;
+  background: $color-default;
+  border-radius: 50px;
+  display: flex;
+  height: var(--fg-container-item-ht);
+  justify-content: center;
+  margin: 10px 0;
+  transition: 0.3s;
+  width: var(--fg-container-item-wt);
+}
+
+.easy-to-use-drawer-handle {
+  margin: auto 0;
+}

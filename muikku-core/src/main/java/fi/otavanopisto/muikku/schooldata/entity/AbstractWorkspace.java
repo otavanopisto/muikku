@@ -16,7 +16,7 @@ public abstract class AbstractWorkspace implements Workspace {
   
   public AbstractWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String viewLink,
       SchoolDataIdentifier workspaceTypeId, String description, SchoolDataIdentifier educationTypeIdentifier, Date modified, 
-      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, Set<SchoolDataIdentifier> curriculumIdentifiers, 
+      OffsetDateTime beginDate, OffsetDateTime endDate, OffsetDateTime signupStart, OffsetDateTime signupEnd, boolean archived, Set<SchoolDataIdentifier> curriculumIdentifiers, 
       SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier, boolean isTemplate, List<WorkspaceSubject> subjects) {
     super();
     this.identifier = identifier.getIdentifier();
@@ -30,6 +30,8 @@ public abstract class AbstractWorkspace implements Workspace {
     this.modified = modified;
     this.beginDate = beginDate;
     this.endDate = endDate;
+    this.setSignupStart(signupStart);
+    this.setSignupEnd(signupEnd);
     this.archived = archived;
     this.curriculumIdentifiers = curriculumIdentifiers;
     this.educationSubtypeIdentifier = educationSubtypeIdentifier;
@@ -131,6 +133,22 @@ public abstract class AbstractWorkspace implements Workspace {
     this.endDate = endDate;
   }
   
+  public OffsetDateTime getSignupStart() {
+    return signupStart;
+  }
+
+  public void setSignupStart(OffsetDateTime signupStart) {
+    this.signupStart = signupStart;
+  }
+
+  public OffsetDateTime getSignupEnd() {
+    return signupEnd;
+  }
+
+  public void setSignupEnd(OffsetDateTime signupEnd) {
+    this.signupEnd = signupEnd;
+  }
+
   @Override
   public boolean isArchived() {
     return archived;
@@ -173,6 +191,8 @@ public abstract class AbstractWorkspace implements Workspace {
   private Date modified;
   private OffsetDateTime beginDate;
   private OffsetDateTime endDate;
+  private OffsetDateTime signupStart;
+  private OffsetDateTime signupEnd;
   private boolean archived;
   private Set<SchoolDataIdentifier> curriculumIdentifiers;
   private boolean isTemplate;

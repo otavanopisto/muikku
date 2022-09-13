@@ -6,7 +6,6 @@
 
 import Link from "../link";
 import * as React from "react";
-
 import { logout, LogoutTriggerType } from "~/actions/base/status";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -14,6 +13,14 @@ import $ from "~/lib/jquery";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
+import "~/sass/elements/drawer.scss";
+import "~/sass/elements/menu.scss";
+import "~/sass/elements/link.scss";
+import { getUserImageUrl } from "~/util/modifiers";
+import {
+  OpenReadingRuler,
+  openReadingRuler,
+} from "~/actions/easy-to-use-functions";
 
 /**
  * checkLinkClicked
@@ -27,11 +34,6 @@ function checkLinkClicked(target: HTMLElement): boolean {
   );
 }
 
-import "~/sass/elements/drawer.scss";
-import "~/sass/elements/menu.scss";
-import "~/sass/elements/link.scss";
-import { getUserImageUrl } from "~/util/modifiers";
-
 /**
  * DrawerProps
  */
@@ -44,6 +46,7 @@ interface DrawerProps {
   status: StatusType;
   i18n: i18nType;
   logout: LogoutTriggerType;
+  openReadingRuler: OpenReadingRuler;
 }
 
 /**
@@ -326,6 +329,15 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     </Link>
                   </li>
                 ) : null}
+                <li className="menu__item menu__item--main">
+                  <Link
+                    className="menu__item-link menu__item-link--helpdesk"
+                    onClick={this.props.openReadingRuler}
+                  >
+                    <span className="menu__item-link-icon icon-cogs"></span>
+                    <span className="menu__item-link-text">Ruleri</span>
+                  </Link>
+                </li>
                 {this.props.status.loggedIn ? (
                   <li className="menu__item menu__item--main">
                     <Link
@@ -368,7 +380,7 @@ function mapStateToProps(state: StateType) {
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({ logout }, dispatch);
+  return bindActionCreators({ logout, openReadingRuler }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Drawer);

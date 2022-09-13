@@ -9,8 +9,10 @@ public class MockCourse {
   private String description;  
   private OffsetDateTime begin;
   private OffsetDateTime end;
+  private OffsetDateTime signupStart;
+  private OffsetDateTime signupEnd;
   
-  public MockCourse(long id, String name, OffsetDateTime created, String description, OffsetDateTime begin, OffsetDateTime end) {
+  public MockCourse(long id, String name, OffsetDateTime created, String description, OffsetDateTime begin, OffsetDateTime end, OffsetDateTime signupStart, OffsetDateTime signupEnd) {
     super();
     this.id = id;
     this.name = name;
@@ -18,6 +20,8 @@ public class MockCourse {
     this.description = description;
     this.begin = begin;
     this.end = end;
+    this.signupStart = signupStart;
+    this.signupEnd = signupEnd;
   }
   
   public String getName() {
@@ -55,5 +59,21 @@ public class MockCourse {
   }
   public void setEnd(OffsetDateTime end) {
     this.end = end;
+  }
+
+  public OffsetDateTime getSignupStart() {
+    return signupStart;
+  }
+
+  public void setSignupStart(OffsetDateTime signupStart) {
+    this.signupStart = signupStart;
+  }
+
+  public OffsetDateTime getSignupEnd() {
+    return signupEnd;
+  }
+
+  public void setSignupEnd(OffsetDateTime signupEnd) {
+    this.signupEnd = signupEnd;
   }
 }

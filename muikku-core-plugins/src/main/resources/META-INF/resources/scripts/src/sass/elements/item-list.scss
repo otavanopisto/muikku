@@ -167,29 +167,13 @@
 }
 
 .item-list__user-actions {
+  align-items: center;
   display: flex;
-
-  > a:not(:first-child) {
-    margin-left: 10px;
-  }
+  margin: 4px 0;
 }
 
 .item-list__user-name {
   font-weight: 600;
-}
-
-.item-list__user-contact-me {
-  align-items: center;
-  display: flex;
-  margin: 4px 0;
-
-  > a:first-child {
-    margin: 0;
-  }
-
-  > a:not(:first-child) {
-    margin-left: 10px;
-  }
 }
 
 .item-list__user-email,
