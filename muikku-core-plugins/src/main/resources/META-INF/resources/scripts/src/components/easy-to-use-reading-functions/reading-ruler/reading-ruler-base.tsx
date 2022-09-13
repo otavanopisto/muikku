@@ -5,7 +5,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useLocalStorage } from "usehooks-ts";
 import { ReadingRulerNameType } from "~/reducers/easy-to-use-functions";
 import "~/sass/elements/reading-ruler.scss";
-import Button, { IconButton } from "../../general/button";
+import { IconButton } from "../../general/button";
 import Dropdown from "../../general/dropdown";
 import { ReadingRulerControllers } from "./reading-ruler-controllers";
 import useIsAtBreakpoint from "../../../hooks/useIsAtBreakpoint";
@@ -76,22 +76,22 @@ const readingRulerPresetDefault1: Partial<ReadingRulerPresetSettings> = {
 /**
  * readingRulerPresetDefault2
  */
-const readingRulerPresetDefault2: Partial<ReadingRulerPresetSettings> = {
-  rulerHeight: 10,
-  invert: defaultProps.defaultInverted,
-  overlayClickActive: true,
-  backgroundColor: "#1dafdd",
-};
+// const readingRulerPresetDefault2: Partial<ReadingRulerPresetSettings> = {
+//   rulerHeight: 10,
+//   invert: defaultProps.defaultInverted,
+//   overlayClickActive: true,
+//   backgroundColor: "#1dafdd",
+// };
 
 /**
  * readingRulerPresetDefault3
  */
-const readingRulerPresetDefault3: Partial<ReadingRulerPresetSettings> = {
-  rulerHeight: 10,
-  invert: defaultProps.defaultInverted,
-  overlayClickActive: true,
-  backgroundColor: "#dd1daf",
-};
+// const readingRulerPresetDefault3: Partial<ReadingRulerPresetSettings> = {
+//   rulerHeight: 10,
+//   invert: defaultProps.defaultInverted,
+//   overlayClickActive: true,
+//   backgroundColor: "#dd1daf",
+// };
 
 /**
  * Reading ruler component
