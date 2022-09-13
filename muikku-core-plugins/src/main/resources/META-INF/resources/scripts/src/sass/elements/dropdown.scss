@@ -150,3 +150,14 @@
     overflow-y: auto;
   }
 }
+
+.dropdown--instructions {
+  .dropdown__container {
+    max-width: 500px;
+    text-align: initial;
+  }
+
+  p {
+    margin: 10px 0;
+  }
+}
