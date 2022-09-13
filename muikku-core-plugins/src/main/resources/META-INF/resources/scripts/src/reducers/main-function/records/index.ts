@@ -1,6 +1,7 @@
 import { UserWithSchoolDataType, UserFileType } from "~/reducers/user-index";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
+import { Reducer } from "redux";
 import {
   WorkspaceCurriculumFilterListType,
   WorkspaceJournalListType,
@@ -103,54 +104,52 @@ export type TranscriptOfRecordLocationType =
   | "info";
 
 /**
- * records
+ * initialState
+ */
+const initialState: RecordsType = {
+  userData: [],
+  userDataStatus: "WAIT",
+  location: null,
+  files: null,
+  current: null,
+  currentStatus: "WAIT",
+  curriculums: [],
+};
+
+/**
+ * Reducer function for records
+ *
  * @param state state
  * @param action action
+ * @returns State of evaluation
  */
-export default function records(
-  state: RecordsType = {
-    userData: [],
-    userDataStatus: "WAIT",
-    location: null,
-    files: null,
-    current: null,
-    currentStatus: "WAIT",
-    curriculums: [],
-  },
+export const records: Reducer<RecordsType> = (
+  state = initialState,
   action: ActionType
-): RecordsType {
-  if (action.type === "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA") {
-    return Object.assign({}, state, {
-      userData: action.payload,
-    });
-  } else if (action.type === "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS") {
-    return Object.assign({}, state, {
-      userDataStatus: action.payload,
-    });
-  } else if (action.type === "UPDATE_RECORDS_LOCATION") {
-    return Object.assign({}, state, {
-      location: action.payload,
-    });
-  } else if (
-    action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS"
-  ) {
-    return Object.assign({}, state, {
-      curriculums: action.payload,
-    });
-  } else if (
-    action.type === "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS"
-  ) {
-    return Object.assign({}, state, {
-      currentStatus: action.payload,
-    });
-  } else if (action.type === "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE") {
-    return Object.assign({}, state, {
-      current: action.payload,
-    });
-  } else if (action.type === "UPDATE_RECORDS_SET_FILES") {
-    return Object.assign({}, state, {
-      files: action.payload,
-    });
+) => {
+  switch (action.type) {
+    case "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA":
+      return { ...state, userData: action.payload };
+
+    case "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS":
+      return { ...state, userDataStatus: action.payload };
+
+    case "UPDATE_RECORDS_LOCATION":
+      return { ...state, location: action.payload };
+
+    case "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS":
+      return { ...state, curriculums: action.payload };
+
+    case "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS":
+      return { ...state, currentStatus: action.payload };
+
+    case "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE":
+      return { ...state, current: action.payload };
+
+    case "UPDATE_RECORDS_SET_FILES":
+      return { ...state, files: action.payload };
+
+    default:
+      return state;
   }
-  return state;
-}
+};

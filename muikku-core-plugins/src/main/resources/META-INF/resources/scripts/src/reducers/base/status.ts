@@ -157,42 +157,53 @@ export default function status(
   },
   action: ActionType
 ): StatusType {
-  if (action.type === "LOGOUT") {
-    // chat listens to this event to close the connection
-    (window as any).ON_LOGOUT && (window as any).ON_LOGOUT();
-    // remove the old session on logout
-    window.sessionStorage.removeItem("strophe-bosh-session");
-    // trigger the logout
-    $("#logout").click();
-    return state;
-  } else if (action.type === "UPDATE_STATUS_PROFILE") {
-    return { ...state, profile: action.payload };
-  } else if (action.type === "UPDATE_STATUS_HAS_IMAGE") {
-    return {
-      ...state,
-      hasImage: action.payload,
-      imgVersion: new Date().getTime(),
-    };
-  } else if (action.type === "UPDATE_STATUS") {
-    const actionPayloadWoPermissions = { ...action.payload };
-    delete actionPayloadWoPermissions["permissions"];
+  switch (action.type) {
+    case "LOGOUT": {
+      // chat listens to this event to close the connection
+      (window as any).ON_LOGOUT && (window as any).ON_LOGOUT();
+      // remove the old session on logout
+      window.sessionStorage.removeItem("strophe-bosh-session");
+      // trigger the logout
+      $("#logout").click();
 
-    // TODO remove when JSF removed
-    const stateBasedCloneWoPermissions: any = {};
-    Object.keys(actionPayloadWoPermissions).forEach((k) => {
-      stateBasedCloneWoPermissions[k] = (state as any)[k];
-    });
+      return {
+        ...state,
+      };
+    }
 
-    const permissionsBasedClone: any = {};
-    Object.keys(action.payload.permissions || {}).forEach((k) => {
-      permissionsBasedClone[k] = (state as any).permissions[k];
-    });
+    case "UPDATE_STATUS_PROFILE":
+      return { ...state, profile: action.payload };
 
-    return {
-      ...state,
-      ...actionPayloadWoPermissions,
-      permissions: { ...state.permissions, ...action.payload.permissions },
-    };
+    case "UPDATE_STATUS_HAS_IMAGE":
+      return {
+        ...state,
+        hasImage: action.payload,
+        imgVersion: new Date().getTime(),
+      };
+
+    case "UPDATE_STATUS": {
+      const actionPayloadWoPermissions = { ...action.payload };
+      delete actionPayloadWoPermissions["permissions"];
+
+      // TODO remove when JSF removed
+      const stateBasedCloneWoPermissions: any = {};
+      Object.keys(actionPayloadWoPermissions).forEach((k) => {
+        stateBasedCloneWoPermissions[k] = (state as any)[k];
+      });
+
+      const permissionsBasedClone: any = {};
+      Object.keys(action.payload.permissions || {}).forEach((k) => {
+        permissionsBasedClone[k] = (state as any).permissions[k];
+      });
+
+      return {
+        ...state,
+        ...actionPayloadWoPermissions,
+        permissions: { ...state.permissions, ...action.payload.permissions },
+      };
+    }
+
+    default:
+      return state;
   }
-  return state;
 }

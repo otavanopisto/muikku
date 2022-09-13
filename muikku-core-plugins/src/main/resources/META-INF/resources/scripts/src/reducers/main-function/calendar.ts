@@ -1,4 +1,5 @@
 import { ActionType } from "~/actions";
+import { Reducer } from "redux";
 
 /**
  *  Participant
@@ -80,26 +81,29 @@ export const evaluateEvents = (
 };
 
 /**
+ * initialCalendarState
+ */
+const initialCalendarState: Calendar = {
+  state: "LOADING",
+  guidanceEvents: [],
+};
+
+/**
  * Reducer function for calendar
  *
- * @param state
- * @param action
- * @returns returns state
+ * @param state state
+ * @param action action
+ * @returns State of calendar
  */
-export default function calendar(
-  state: Calendar = {
-    state: "LOADING",
-    guidanceEvents: [],
-  },
+export const calendar: Reducer<Calendar> = (
+  state = initialCalendarState,
   action: ActionType
-): Calendar {
+) => {
   switch (action.type) {
-    case "UPDATE_CALENDAR_EVENTS_STATUS": {
-      const newState: EventsState = action.payload;
-      return Object.assign({}, state, { state: newState });
-    }
+    case "UPDATE_CALENDAR_EVENTS_STATUS":
+      return { ...state, state: action.payload };
 
     default:
       return state;
   }
-}
+};

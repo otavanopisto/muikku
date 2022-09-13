@@ -1,4 +1,5 @@
 import { ActionType } from "~/actions";
+import { Reducer } from "redux";
 
 /**
  * CredentialsType
@@ -12,24 +13,33 @@ export interface CredentialsType {
 export type CredentialsStateType = "LOADING" | "READY" | "CHANGED";
 
 /**
- * credentials
+ * initialCredentialsState
+ */
+const initialCredentialsState: CredentialsType = {
+  secret: "",
+  username: "",
+  state: "LOADING",
+};
+
+/**
+ * Reducer function for credentials
+ *
  * @param state state
  * @param action action
+ * @returns State of credentials
  */
-export default function credentials(
-  state: CredentialsType = {
-    secret: "",
-    username: "",
-    state: "LOADING",
-  },
+export const credentials: Reducer<CredentialsType> = (
+  state = initialCredentialsState,
   action: ActionType
-): CredentialsType {
-  if (action.type === "LOAD_CREDENTIALS") {
-    return Object.assign({}, state, action.payload);
-  } else if (action.type === "CREDENTIALS_STATE") {
-    const newState: CredentialsStateType = action.payload;
-    return Object.assign({}, state, { state: newState });
-  }
+) => {
+  switch (action.type) {
+    case "LOAD_CREDENTIALS":
+      return { ...state, ...action.payload };
 
-  return state;
-}
+    case "CREDENTIALS_STATE":
+      return { ...state, state: action.payload };
+
+    default:
+      return state;
+  }
+};
