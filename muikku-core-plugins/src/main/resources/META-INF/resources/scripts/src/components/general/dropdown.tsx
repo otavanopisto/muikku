@@ -39,18 +39,29 @@ export interface DropdownProps {
    */
   content?: any;
   /**
-   * Open content when hovering
+   * Open content when hovering. If set to false
+   * opens popper when clicking element
    */
   openByHover?: boolean;
   /**
-   * Click to show content
+   * Click to show content. Extends hover opening with click also
    */
   openByHoverIsClickToo?: boolean;
   /**
-   * Scroll don't close popper
+   * Closes popper when clicking outside
+   * @default true
+   */
+  closeOnOutsideClick?: boolean;
+  /**
+   * Closes popper onClick
+   * @default false
+   */
+  closeOnClick?: boolean;
+  /**
+   * Scroll don't close popper. Popper keeps its position
+   * if scrolled
    */
   persistent?: boolean;
-
   /**
    * Aligns popper by value horizontally
    */
@@ -476,18 +487,28 @@ export default class Dropdown extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const {
+      closeOnOutsideClick = true,
+      closeOnClick = false,
+      persistent,
+      openByHoverIsClickToo,
+      children,
+      openByHover,
+      onClick,
+    } = this.props;
+
     let elementCloned: React.ReactElement<any> = React.cloneElement(
-      this.props.children as any,
+      children as any,
       { ref: "activator" }
     );
     const portalProps: any = {};
-    if (!this.props.openByHover) {
+    if (!openByHover) {
       portalProps.openByClickOn = elementCloned;
     } else {
-      if (this.props.onClick) {
-        elementCloned = React.cloneElement(this.props.children as any, {
+      if (onClick) {
+        elementCloned = React.cloneElement(children as any, {
           ref: "activator",
-          onClick: this.props.onClick,
+          onClick: onClick,
           id: this.id + "-button",
           role: "combobox",
           "aria-autocomplete": "list",
@@ -497,12 +518,14 @@ export default class Dropdown extends React.Component<
         });
       }
       portalProps.openByHoverOn = elementCloned;
-      portalProps.openByHoverIsClickToo = this.props.openByHoverIsClickToo;
+      portalProps.openByHoverIsClickToo = openByHoverIsClickToo;
     }
 
     portalProps.closeOnEsc = true;
-    portalProps.closeOnOutsideClick = true;
-    portalProps.closeOnScroll = !this.props.persistent;
+    portalProps.closeOnOutsideClick = closeOnOutsideClick;
+    portalProps.closeOnScroll = !persistent;
+    portalProps.closeOnClick = closeOnClick;
+    console.log("portalProps::>", portalProps);
 
     return (
       <Portal
