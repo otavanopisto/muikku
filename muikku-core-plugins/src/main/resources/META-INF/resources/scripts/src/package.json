@@ -42,7 +42,7 @@
     "fork-ts-checker-webpack-plugin": "7.2.1",
     "lodash.throttle": "4.1.1",
     "mini-css-extract-plugin": "2.6.0",
-    "moment": "2.29.3",
+    "moment": "2.29.4",
     "null-loader": "4.0.1",
     "promise": "8.1.0",
     "pure-react-carousel": "1.28.1",
