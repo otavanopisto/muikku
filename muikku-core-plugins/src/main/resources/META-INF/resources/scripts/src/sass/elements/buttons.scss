@@ -2149,6 +2149,36 @@
   color: $color-disabled;
 }
 
+.button-icon--reading-ruler {
+  border-radius: 100%;
+  color: $color-default-contrast;
+
+  &.disabled,
+  &.disabled:hover,
+  &.disabled:active {
+    background-color: transparent;
+    color: $color-disabled;
+  }
+}
+
+.button-icon--reading-ruler-active {
+  background: $color-default-contrast;
+  border-radius: 100%;
+  color: $color-default;
+  height: 2rem;
+  margin: 0 4px;
+  width: 2rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: $color-default-contrast;
+    border-radius: 100%;
+    color: $color-default;
+  }
+}
+
 .button--modify-hops {
   background-color: $color-info;
   color: $color-default;
@@ -2159,4 +2189,9 @@
   background-color: $color-fatal;
   color: $color-default;
   margin-right: 10px;
+}
+
+.button--reading-ruler-preset-active {
+  background-color: $color-default-contrast;
+  color: $color-default;
 }
