@@ -1,3 +1,4 @@
+import { easyToUse } from "./easy-to-use-functions/index";
 import notifications from "./base/notifications";
 import locales from "./base/locales";
 import status from "./base/status";
@@ -27,4 +28,5 @@ export default combineReducers({
   discussion,
   userIndex,
   evaluations,
+  easyToUse,
 });

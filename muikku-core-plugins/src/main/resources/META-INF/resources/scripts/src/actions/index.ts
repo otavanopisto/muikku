@@ -290,6 +290,7 @@ import {
 
 // Guidance events are no longer being
 import { UPDATE_CALENDAR_EVENTS_STATUS } from "./main-function/calendar";
+import { SET_ACTIVE_EASY_TO_USE_TOOL } from "./easy-to-use-functions";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD
@@ -503,6 +504,7 @@ export type ActionType =
   | UPDATE_CALENDAR_EVENTS_STATUS
   | UPDATE_AVAILABLE_CURRICULUMS
   | OPEN_NOTIFICATION_DIALOG
-  | CLOSE_NOTIFICATION_DIALOG;
+  | CLOSE_NOTIFICATION_DIALOG
+  | SET_ACTIVE_EASY_TO_USE_TOOL;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

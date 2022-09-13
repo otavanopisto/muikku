@@ -310,14 +310,22 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         <AnimateHeight duration={300} height={height}>
           <div className="evaluation-modal__event-literal-assessment rich-text rich-text--evaluation-literal">
             {/*
-             * Its possible that string content containg html as string is not valid
-             * and can't be processed by CkeditorLoader, so in those cases just put content
-             * inside of "valid" html tags and go with it
-             */}
-            {isStringHTML(text) ? (
-              <CkeditorContentLoader html={text} />
+              Cancelled event's text property can be null,
+              so thats why this check
+              */}
+            {text !== null ? (
+              /*
+               * Its possible that string content containg html as string is not valid
+               * and can't be processed by CkeditorLoader, so in those cases just put content
+               * inside of "valid" html tags and go with it
+               */
+              isStringHTML(text) ? (
+                <CkeditorContentLoader html={text} />
+              ) : (
+                <CkeditorContentLoader html={`<p>${text}</p>`} />
+              )
             ) : (
-              <CkeditorContentLoader html={`<p>${text}</p>`} />
+              <p></p>
             )}
           </div>
         </AnimateHeight>

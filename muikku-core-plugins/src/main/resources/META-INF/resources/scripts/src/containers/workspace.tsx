@@ -69,6 +69,8 @@ import {
 import { registerLocale } from "react-datepicker";
 import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
+import EasyToUseToolDrawer from "~/components/easy-to-use-reading-functions/easy-to-use-tool-drawer";
+import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1235,6 +1237,7 @@ export default class Workspace extends React.Component<
         <div id="root">
           <Notifications></Notifications>
           <DisconnectedWarningDialog />
+          <EasyToUseFunctions />
           <Route
             exact
             path="/workspace/:workspaceUrl/"

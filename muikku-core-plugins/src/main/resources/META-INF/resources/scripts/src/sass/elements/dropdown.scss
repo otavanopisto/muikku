@@ -151,6 +151,12 @@
   }
 }
 
+.dropdown--color-picker {
+  .dropdown__container {
+    z-index: 12000;
+  }
+}
+
 .dropdown--instructions {
   .dropdown__container {
     max-width: 500px;
