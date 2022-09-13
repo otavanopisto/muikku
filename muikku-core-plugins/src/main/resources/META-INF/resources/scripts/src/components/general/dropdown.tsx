@@ -525,7 +525,6 @@ export default class Dropdown extends React.Component<
     portalProps.closeOnOutsideClick = closeOnOutsideClick;
     portalProps.closeOnScroll = !persistent;
     portalProps.closeOnClick = closeOnClick;
-    console.log("portalProps::>", portalProps);
 
     return (
       <Portal
