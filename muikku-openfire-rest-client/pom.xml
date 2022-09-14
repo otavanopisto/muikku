@@ -14,29 +14,6 @@
   </parent>
 
   <dependencies>
-  
-    <!-- check -->
-  
-<!--     <dependency> -->
-<!--       <groupId>org.jboss.resteasy</groupId> -->
-<!--       <artifactId>resteasy-jaxrs</artifactId> -->
-<!--       <scope>provided</scope> -->
-<!--     </dependency> -->
-    
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jackson2-provider</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- check -->
-  
     <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
@@ -47,6 +24,12 @@
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
       <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxb-provider</artifactId>
       <scope>provided</scope>
     </dependency>
 
