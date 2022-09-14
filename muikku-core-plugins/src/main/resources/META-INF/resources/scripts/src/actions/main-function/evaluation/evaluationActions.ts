@@ -5,6 +5,7 @@ import {
   AssignmentEvaluationGradeRequest,
   AssignmentEvaluationSupplementationRequest,
   WorkspaceEvaluationSaveReturn,
+  EvaluationBasePriceById,
 } from "../../../@types/evaluation";
 import { StateType } from "../../../reducers/index";
 import mApi from "~/lib/mApi";
@@ -80,7 +81,10 @@ export type UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE =
     EvaluationStateType
   >;
 
-export type SET_BASE_PRICE = SpecificActionType<"SET_BASE_PRICE", object>;
+export type SET_BASE_PRICE = SpecificActionType<
+  "SET_BASE_PRICE",
+  EvaluationBasePriceById
+>;
 
 export type SET_IMPORTANT_ASSESSMENTS = SpecificActionType<
   "SET_IMPORTANT_ASSESSMENTS",
@@ -1955,7 +1959,7 @@ const loadBasePriceFromServer: LoadBasePrice =
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
     ) => {
-      let basePrice: object | undefined = undefined;
+      let basePrice: EvaluationBasePriceById | undefined = undefined;
 
       dispatch({
         type: "UPDATE_BASE_PRICE_STATE",
@@ -1969,7 +1973,7 @@ const loadBasePriceFromServer: LoadBasePrice =
         "callback"
       )().then(
         (data) => {
-          basePrice = data as object;
+          basePrice = data as EvaluationBasePriceById;
         },
         () => {
           basePrice = undefined;

@@ -1,4 +1,5 @@
 import { ActionType } from "~/actions";
+import { Reducer } from "redux";
 
 /**
  * ErrorType
@@ -9,19 +10,29 @@ export interface ErrorType {
 }
 
 /**
- * error
+ * initialErrorState
+ */
+const initialErrorState: ErrorType = {
+  title: null,
+  description: null,
+};
+
+/**
+ * Reducer function for error
+ *
  * @param state state
  * @param action action
+ * @returns State of error
  */
-export default function error(
-  state: ErrorType = {
-    title: null,
-    description: null,
-  },
+export const error: Reducer<ErrorType> = (
+  state = initialErrorState,
   action: ActionType
-): ErrorType {
-  if (action.type === "UPDATE_ERROR") {
-    return action.payload;
+) => {
+  switch (action.type) {
+    case "UPDATE_ERROR":
+      return action.payload;
+
+    default:
+      return state;
   }
-  return state;
-}
+};
