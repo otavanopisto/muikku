@@ -3,7 +3,7 @@ import * as React from "react";
 import { Provider, Store } from "react-redux";
 import { createStore, applyMiddleware, Reducer } from "redux";
 import { render } from "react-dom";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { composeWithDevTools } from "@redux-devtools/extension";
 import { StateType } from "~/reducers";
 
 //TODO screw ie11 >:(
