@@ -104,9 +104,7 @@ class AssignmentEditor extends SessionStateComponent<
       (gSystem) => gSystem.active
     );
 
-    const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
-
-    let grade = defaultGrade;
+    let grade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
 
     // If we have existing evaluation
     if (materialEvaluation) {
@@ -186,9 +184,7 @@ class AssignmentEditor extends SessionStateComponent<
     const { evaluationGradeSystem } = this.props.evaluations;
     const { activeGradeSystems } = this.state;
 
-    const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
-
-    let grade = defaultGrade;
+    let grade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
 
     // If we have existing evaluation
     if (materialEvaluation) {
