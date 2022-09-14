@@ -150,3 +150,9 @@
     overflow-y: auto;
   }
 }
+
+.dropdown--color-picker {
+  .dropdown__container {
+    z-index: 12000;
+  }
+}

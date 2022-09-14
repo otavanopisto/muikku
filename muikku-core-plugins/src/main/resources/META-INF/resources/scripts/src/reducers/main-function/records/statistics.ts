@@ -1,4 +1,5 @@
 import { ActionType } from "actions";
+import { Reducer } from "redux";
 
 export type StatisticsStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
@@ -20,25 +21,38 @@ export interface StatisticsType {
 }
 
 /**
- * statistics
+ * initialState
+ */
+const initialState: StatisticsType = {
+  status: "WAIT",
+  value: null,
+};
+
+/**
+ * Reducer function for statistic
+ *
  * @param state state
  * @param action action
+ * @returns State of statistic
  */
-export default function statistics(
-  state: StatisticsType = {
-    status: "WAIT",
-    value: null,
-  },
+export const statistics: Reducer<StatisticsType> = (
+  state = initialState,
   action: ActionType
-): StatisticsType {
-  if (action.type === "UPDATE_STUDIES_STATISTICS_STATUS") {
-    return Object.assign({}, state, {
-      status: action.payload,
-    });
-  } else if (action.type === "UPDATE_STUDIES_STATISTICS") {
-    return Object.assign({}, state, {
-      value: action.payload,
-    });
+) => {
+  switch (action.type) {
+    case "UPDATE_STUDIES_STATISTICS_STATUS":
+      return {
+        ...state,
+        status: action.payload,
+      };
+
+    case "UPDATE_STUDIES_STATISTICS":
+      return {
+        ...state,
+        value: action.payload,
+      };
+
+    default:
+      return state;
   }
-  return state;
-}
+};

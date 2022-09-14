@@ -1,6 +1,7 @@
+import { EasyToUseFunctionState } from "./easy-to-use-functions/index";
 import { i18nType } from "./base/i18n";
 import { LocaleListType } from "./base/locales";
-import { NotificationListType, NotificationState } from "./base/notifications";
+import { NotificationState } from "./base/notifications";
 import { CredentialsType } from "./base/credentials";
 import { StatusType } from "./base/status";
 import { WebsocketStateType } from "./util/websocket";
@@ -65,4 +66,5 @@ export interface StateType {
   evaluations?: EvaluationState;
   ceepos?: CeeposState;
   calendar?: Calendar;
+  easyToUse?: EasyToUseFunctionState;
 }
