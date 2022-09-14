@@ -253,17 +253,16 @@ public class CommunicatorTestsBase extends AbstractUITest {
   public void communicatorAddLabelTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    MockStudent student2 = new MockStudent(3l, 3l, "Larry", "Laramie", "student2@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121202-1211", Sex.MALE, TestUtilities.toDate(2012, 1, 2), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).mockLogin(admin).build();
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       long recipient = fetchUserIdByEmail(admin.getEmail());
       long sender = fetchUserIdByEmail(student.getEmail());
-      long sender2 = fetchUserIdByEmail(student2.getEmail());
       try{
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(recipient, "test");
+        sleep(1000);
         createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
         
         navigate("/communicator", false);
