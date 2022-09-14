@@ -288,7 +288,7 @@ class WorkspaceEditor extends SessionStateComponent<
   loadExistingBilledPrice = async (
     assessmentIdentifier: string
   ): Promise<BilledPrice | undefined> => {
-    const { selectedWorkspaceId } = this.props.evaluations;
+    const { workspaceEntityId } = this.props.selectedAssessment;
 
     let existingBilledPriceObject = undefined;
     /**
@@ -296,7 +296,7 @@ class WorkspaceEditor extends SessionStateComponent<
      */
     await promisify(
       mApi().worklist.billedPrice.read({
-        workspaceEntityId: selectedWorkspaceId,
+        workspaceEntityId: workspaceEntityId,
         assessmentIdentifier,
       }),
       "callback"
