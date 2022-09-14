@@ -78,6 +78,8 @@ interface ManagementPanelState {
   workspaceType: string;
   workspaceStartDate: Date | null;
   workspaceEndDate: Date | null;
+  workspaceSignupStartDate: Date | null;
+  workspaceSignupEndDate: Date | null;
   workspaceProducers: Array<WorkspaceProducerType>;
   workspaceDescription: string;
   workspaceLicense: string;
@@ -120,6 +122,8 @@ class ManagementPanel extends React.Component<
       workspaceType: null,
       workspaceStartDate: null,
       workspaceEndDate: null,
+      workspaceSignupStartDate: null,
+      workspaceSignupEndDate: null,
       workspaceProducers: null,
       workspaceDescription: "",
       workspaceLicense: "",
@@ -140,6 +144,8 @@ class ManagementPanel extends React.Component<
     this.setWorkspaceChatTo = this.setWorkspaceChatTo.bind(this);
     this.updateStartDate = this.updateStartDate.bind(this);
     this.updateEndDate = this.updateEndDate.bind(this);
+    this.updateSignupStartDate = this.updateSignupStartDate.bind(this);
+    this.updateSignupEndDate = this.updateSignupEndDate.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.updateWorkspaceExtension = this.updateWorkspaceExtension.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
@@ -189,6 +195,18 @@ class ManagementPanel extends React.Component<
         nextProps.workspace && nextProps.workspace.details
           ? nextProps.workspace.details.endDate !== null
             ? moment(nextProps.workspace.details.endDate).toDate()
+            : null
+          : null,
+      workspaceSignupStartDate:
+        nextProps.workspace && nextProps.workspace.details
+          ? nextProps.workspace.details.signupStart !== null
+            ? moment(nextProps.workspace.details.signupStart).toDate()
+            : null
+          : null,
+      workspaceSignupEndDate:
+        nextProps.workspace && nextProps.workspace.details
+          ? nextProps.workspace.details.signupEnd !== null
+            ? moment(nextProps.workspace.details.signupEnd).toDate()
             : null
           : null,
       workspaceProducers:
@@ -271,6 +289,26 @@ class ManagementPanel extends React.Component<
   updateWorkspaceType(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setState({
       workspaceType: e.target.value,
+    });
+  }
+
+  /**
+   * updateStartDate
+   * @param newDate newDate
+   */
+  updateSignupStartDate(newDate: Date) {
+    this.setState({
+      workspaceSignupStartDate: newDate,
+    });
+  }
+
+  /**
+   * updateEndDate
+   * @param newDate newDate
+   */
+  updateSignupEndDate(newDate: Date) {
+    this.setState({
+      workspaceSignupEndDate: newDate,
     });
   }
 
@@ -565,15 +603,25 @@ class ManagementPanel extends React.Component<
     const workspaceDetails: WorkspaceDetailsType = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.state.workspaceType,
-      beginDate: this.state.workspaceStartDate
-        ? this.state.workspaceStartDate.toISOString()
-        : null,
-      endDate: this.state.workspaceEndDate
-        ? this.state.workspaceEndDate.toISOString()
-        : null,
+      beginDate:
+        this.state.workspaceStartDate !== null
+          ? this.state.workspaceStartDate.toISOString()
+          : null,
+      endDate:
+        this.state.workspaceEndDate !== null
+          ? this.state.workspaceEndDate.toISOString()
+          : null,
       rootFolderId: this.props.workspace.details.rootFolderId,
       helpFolderId: this.props.workspace.details.helpFolderId,
       indexFolderId: this.props.workspace.details.indexFolderId,
+      signupStart:
+        this.state.workspaceSignupStartDate !== null
+          ? this.state.workspaceSignupStartDate.toISOString()
+          : null,
+      signupEnd:
+        this.state.workspaceSignupEndDate !== null
+          ? this.state.workspaceSignupEndDate.toISOString()
+          : null,
     };
 
     const currentWorkspaceAsDetails: WorkspaceDetailsType = {
@@ -584,6 +632,10 @@ class ManagementPanel extends React.Component<
       rootFolderId: this.props.workspace.details.rootFolderId,
       helpFolderId: this.props.workspace.details.helpFolderId,
       indexFolderId: this.props.workspace.details.indexFolderId,
+      signupStart: moment(
+        this.props.workspace.details.signupStart
+      ).toISOString(),
+      signupEnd: moment(this.props.workspace.details.signupEnd).toISOString(),
     };
 
     if (!equals(workspaceDetails, currentWorkspaceAsDetails)) {
@@ -917,6 +969,66 @@ class ManagementPanel extends React.Component<
                         </div>
                       </div>
                     </fieldset>
+                  </div>
+                </div>
+              </div>
+              <h2 className="application-sub-panel__header">
+                {this.props.i18n.text.get(
+                  "plugin.workspace.management.workspaceSignupPeriod"
+                )}
+              </h2>
+              <div className="application-sub-panel__body">
+                <div className="form__row form__row--split">
+                  <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
+                    <label
+                      htmlFor="workspaceSignupStartDate"
+                      className="application-sub-panel__item-header"
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.management.additionalInfo.signupStartDate"
+                      )}
+                    </label>
+                    <DatePicker
+                      id="workspaceSignupStartDate"
+                      className="form-element__input"
+                      onChange={this.updateSignupStartDate}
+                      minDate={new Date()}
+                      maxDate={
+                        this.state.workspaceSignupEndDate !== null
+                          ? this.state.workspaceSignupEndDate
+                          : undefined
+                      }
+                      locale={outputCorrectDatePickerLocale(
+                        this.props.i18n.time.getLocale()
+                      )}
+                      selected={this.state.workspaceSignupStartDate}
+                      dateFormat="P"
+                    />
+                  </div>
+                  <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
+                    <label
+                      htmlFor="workspaceSignupEndDate"
+                      className="application-sub-panel__item-header"
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.management.additionalInfo.signupEndDate"
+                      )}
+                    </label>
+                    <DatePicker
+                      id="workspaceSignupEndDate"
+                      className="form-element__input"
+                      onChange={this.updateSignupEndDate}
+                      minDate={
+                        this.state.workspaceSignupStartDate !== null
+                          ? this.state.workspaceSignupStartDate
+                          : new Date()
+                      }
+                      locale={outputCorrectDatePickerLocale(
+                        this.props.i18n.time.getLocale()
+                      )}
+                      selected={this.state.workspaceSignupEndDate}
+                      dateFormat="P"
+                    />
                   </div>
                 </div>
               </div>

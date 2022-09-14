@@ -294,6 +294,8 @@ export interface UserSelectType {
 export interface WorkspaceDetailsType {
   beginDate: string;
   endDate: string;
+  signupStart: string;
+  signupEnd: string;
   externalViewUrl: string;
   typeId: string;
   rootFolderId: number;
