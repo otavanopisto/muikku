@@ -160,10 +160,15 @@
 .dropdown--instructions {
   .dropdown__container {
     max-width: 500px;
+    padding: 10px;
     text-align: initial;
   }
 
   p {
-    margin: 10px 0;
+    margin: 0 0 10px;
+
+    &:last-child {
+      margin: 0;
+    }
   }
 }
