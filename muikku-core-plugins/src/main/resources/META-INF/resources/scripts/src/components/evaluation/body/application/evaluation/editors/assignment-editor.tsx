@@ -99,13 +99,31 @@ class AssignmentEditor extends SessionStateComponent<
     const { materialEvaluation, compositeReplies, selectedAssessment } = props;
     const { evaluationGradeSystem } = props.evaluations;
 
-    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    const activeGradeSystems = evaluationGradeSystem.filter(
+      (gSystem) => gSystem.active
+    );
 
-    const grade = materialEvaluation
-      ? `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`
-      : compositeReplies.state === "INCOMPLETE"
-      ? ""
-      : defaultGrade;
+    const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
+
+    let grade = defaultGrade;
+
+    // If we have existing evaluation
+    if (materialEvaluation) {
+      // grade is old evaluation value
+      grade = `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`;
+
+      // Find what gradeSystem is selected when editing existing
+      const usedGradeSystem = evaluationGradeSystem.find(
+        (gSystem) => gSystem.id === materialEvaluation.gradeIdentifier
+      );
+
+      // Check if grade system is not active, then we are using unknownGradeSystem
+      if (usedGradeSystem && !usedGradeSystem.active) {
+        this.unknownGradeSystemIsUsed = usedGradeSystem;
+      }
+    } else if (compositeReplies.state === "INCOMPLETE") {
+      grade = "";
+    }
 
     const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
 
@@ -165,13 +183,31 @@ class AssignmentEditor extends SessionStateComponent<
     const { materialEvaluation, compositeReplies } = this.props;
     const { evaluationGradeSystem } = this.props.evaluations;
 
-    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    const activeGradeSystems = evaluationGradeSystem.filter(
+      (gSystem) => gSystem.active
+    );
 
-    const grade = materialEvaluation
-      ? `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`
-      : compositeReplies.state === "INCOMPLETE"
-      ? ""
-      : defaultGrade;
+    const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
+
+    let grade = defaultGrade;
+
+    // If we have existing evaluation
+    if (materialEvaluation) {
+      // grade is old evaluation value
+      grade = `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`;
+
+      // Find what gradeSystem is selected when editing existing
+      const usedGradeSystem = evaluationGradeSystem.find(
+        (gSystem) => gSystem.id === materialEvaluation.gradeIdentifier
+      );
+
+      // Check if grade system is not active, then we are using unknownGradeSystem
+      if (usedGradeSystem && !usedGradeSystem.active) {
+        this.unknownGradeSystemIsUsed = usedGradeSystem;
+      }
+    } else if (compositeReplies.state === "INCOMPLETE") {
+      grade = "";
+    }
 
     this.setState({
       ...this.getRecoverStoredState(
