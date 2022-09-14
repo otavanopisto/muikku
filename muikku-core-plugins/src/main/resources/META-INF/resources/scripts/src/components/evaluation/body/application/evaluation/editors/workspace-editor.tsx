@@ -60,6 +60,7 @@ interface WorkspaceEditorState {
   selectedPriceOption?: string;
   existingBilledPriceObject?: BilledPrice;
   locked: boolean;
+  activeGradeSystems: EvaluationGradeSystem[];
 }
 
 /**
@@ -161,6 +162,7 @@ class WorkspaceEditor extends SessionStateComponent<
           draftId
         ),
         locked: false,
+        activeGradeSystems,
       };
     } else {
       this.state = {
@@ -174,6 +176,7 @@ class WorkspaceEditor extends SessionStateComponent<
           draftId
         ),
         locked: false,
+        activeGradeSystems,
       };
     }
   }
@@ -205,10 +208,7 @@ class WorkspaceEditor extends SessionStateComponent<
   componentDidMount = async () => {
     const { evaluationAssessmentEvents, evaluationGradeSystem } =
       this.props.evaluations;
-
-    const activeGradeSystems = evaluationGradeSystem.filter(
-      (gSystem) => gSystem.active
-    );
+    const { activeGradeSystems } = this.state;
 
     // Default price is always first item from parsed price options list OR undefined if pricing is not enabled
     const defaultPrice = this.parsePriceOptions()[0].value.toString();
@@ -531,8 +531,8 @@ class WorkspaceEditor extends SessionStateComponent<
    * Handles deleting drafts
    */
   handleDeleteEditorDraft = () => {
-    const { evaluationAssessmentEvents, evaluationGradeSystem } =
-      this.props.evaluations;
+    const { evaluationAssessmentEvents } = this.props.evaluations;
+    const { activeGradeSystems } = this.state;
     const { type } = this.props;
 
     if (evaluationAssessmentEvents.data.length > 0) {
@@ -604,7 +604,7 @@ class WorkspaceEditor extends SessionStateComponent<
         this.setStateAndClear(
           {
             literalEvaluation: "",
-            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+            grade: `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`,
             selectedPriceOption: billingPrice,
           },
           this.state.draftId
@@ -614,7 +614,7 @@ class WorkspaceEditor extends SessionStateComponent<
       this.setStateAndClear(
         {
           literalEvaluation: "",
-          grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+          grade: `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`,
           selectedPriceOption: this.state.basePriceFromServer
             ? this.state.basePriceFromServer.toString()
             : undefined,
@@ -804,7 +804,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const { existingBilledPriceObject } = this.state;
+    const { existingBilledPriceObject, activeGradeSystems } = this.state;
 
     const options = this.renderSelectOptions();
 
@@ -814,25 +814,15 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * Grading scale and grade options.
      */
-    const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map(
-        (gScale) =>
-          gScale.active && (
-            <optgroup
-              key={`${gScale.dataSource}-${gScale.id}`}
-              label={gScale.name}
-            >
-              {gScale.grades.map((grade) => (
-                <option
-                  key={grade.id}
-                  value={`${gScale.dataSource}-${grade.id}`}
-                >
-                  {grade.name}
-                </option>
-              ))}
-            </optgroup>
-          )
-      );
+    const renderGradingOptions = activeGradeSystems.map((gScale) => (
+      <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
+        {gScale.grades.map((grade) => (
+          <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+            {grade.name}
+          </option>
+        ))}
+      </optgroup>
+    ));
 
     // IF evaluation uses some unknown grade system that is not normally showed, then we add it to options also
     if (this.unknownGradeSystemIsUsed) {
