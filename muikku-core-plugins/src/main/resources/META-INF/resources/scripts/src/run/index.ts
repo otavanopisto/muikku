@@ -6,8 +6,6 @@ import { render } from "react-dom";
 import { composeWithDevTools } from "@redux-devtools/extension";
 import { StateType } from "~/reducers";
 
-//TODO screw ie11 >:(
-import "babel-polyfill";
 import { logger } from "redux-logger";
 
 /**

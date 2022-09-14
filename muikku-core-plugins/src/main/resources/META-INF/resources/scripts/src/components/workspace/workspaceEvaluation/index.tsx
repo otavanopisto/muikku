@@ -35,12 +35,9 @@ export default class WorkspaceEvaluationBody extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const aside = <Aside />;
-
     return (
       <div>
         <WorkspaceNavbar
-          navigation={aside}
           activeTrail="workspace-evaluation"
           workspaceUrl={this.props.workspaceUrl}
         />
