@@ -47,6 +47,7 @@ import {
   loadDiscussionThreadsFromServer,
   loadDiscussionThreadFromServer,
   setDiscussionWorkpaceId,
+  loadSubscribedDiscussionThreadList,
 } from "~/actions/discussion";
 import { loadAnnouncement, loadAnnouncements } from "~/actions/announcements";
 import AnnouncementsBody from "../components/announcements/body";
@@ -408,6 +409,8 @@ export default class MainFunction extends React.Component<
    * @param location location
    */
   loadDiscussionData(location: string[]) {
+    this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
+
     if (location.length <= 2) {
       //The link is expected to be like # none, in this case it will collapse to null, page 1
       //Else it can be #1 in that case it will collapse to area 1, page 1

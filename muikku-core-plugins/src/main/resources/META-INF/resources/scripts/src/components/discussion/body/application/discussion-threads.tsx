@@ -25,6 +25,14 @@ import {
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import PagerV2 from "~/components/general/pagerV2";
+import { AnyActionType } from "~/actions/index";
+import { ButtonPill } from "~/components/general/button";
+import {
+  subscribeDiscussionThread,
+  unsubscribeDiscussionThread,
+  SubscribeDiscussionThread,
+  UnsubscribeDiscustionThread,
+} from "../../../../actions/discussion/index";
 
 /**
  * DiscussionThreadsProps
@@ -33,6 +41,8 @@ interface DiscussionThreadsProps {
   discussion: DiscussionType;
   i18n: i18nType;
   status: StatusType;
+  subscribeDiscussionThread: SubscribeDiscussionThread;
+  unsubscribeDiscussionThread: UnsubscribeDiscustionThread;
 }
 
 /**
@@ -49,7 +59,7 @@ class DDiscussionThreads extends React.Component<
 > {
   /**
    * Constructor method
-   * @param props
+   * @param props props
    */
   constructor(props: DiscussionThreadsProps) {
     super(props);
@@ -60,7 +70,6 @@ class DDiscussionThreads extends React.Component<
   /**
    * handles page changes,
    * sets selected page as currentPage to state
-   * @param event
    * @param selectedItem selectedItem
    * @param selectedItem.selected selected
    */
@@ -87,8 +96,31 @@ class DDiscussionThreads extends React.Component<
   };
 
   /**
+   * handleSubscribeOrUnsubscribeClick
+   * @param thread thread
+   * @param isSubscribed isSubscribed
+   */
+  handleSubscribeOrUnsubscribeClick =
+    (thread: DiscussionThreadType, isSubscribed: boolean) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.stopPropagation();
+      if (isSubscribed) {
+        this.props.unsubscribeDiscussionThread({
+          areaId: thread.forumAreaId,
+          threadId: thread.id,
+        });
+      } else {
+        console.log("handleSubscribeOrUnsubscribeClick --> subscribe to this");
+        this.props.subscribeDiscussionThread({
+          areaId: thread.forumAreaId,
+          threadId: thread.id,
+        });
+      }
+    };
+
+  /**
    * getToThread
-   * @param thread
+   * @param thread thread
    */
   getToThread(thread: DiscussionThreadType) {
     if (this.props.discussion.areaId === thread.forumAreaId) {
@@ -136,6 +168,11 @@ class DDiscussionThreads extends React.Component<
         <DiscussionThreads>
           {this.props.discussion.threads.map(
             (thread: DiscussionThreadType, index: number) => {
+              const isSubscribed =
+                this.props.discussion.subscribedThreads.findIndex(
+                  (sThread) => sThread.threadId === thread.id
+                ) !== -1;
+
               const user: DiscussionUserType = thread.creator;
 
               const userCategory =
@@ -173,16 +210,43 @@ class DDiscussionThreads extends React.Component<
                   avatar={avatar}
                 >
                   <DiscussionThreadHeader>
-                    {thread.locked ? (
-                      <div className="discussion__icon icon-lock"></div>
-                    ) : null}
-                    {thread.sticky ? (
-                      <div className="discussion__icon icon-pin"></div>
-                    ) : null}
-                    <div
-                      className={`discussion-category discussion-category--category-${threadCategory}`}
-                    >
-                      <span>{thread.title}</span>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {thread.locked ? (
+                        <div className="discussion__icon icon-lock"></div>
+                      ) : null}
+                      {thread.sticky ? (
+                        <div className="discussion__icon icon-pin"></div>
+                      ) : null}
+                      <div
+                        className={`discussion-category discussion-category--category-${threadCategory}`}
+                      >
+                        <span>{thread.title}</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      {isSubscribed ? (
+                        <ButtonPill
+                          icon="book"
+                          onClick={this.handleSubscribeOrUnsubscribeClick(
+                            thread,
+                            isSubscribed
+                          )}
+                          buttonModifiers={[
+                            "discussion-subscription",
+                            "active",
+                          ]}
+                        />
+                      ) : (
+                        <ButtonPill
+                          icon="book"
+                          onClick={this.handleSubscribeOrUnsubscribeClick(
+                            thread,
+                            isSubscribed
+                          )}
+                          buttonModifiers={["discussion-subscription"]}
+                        />
+                      )}
                     </div>
                   </DiscussionThreadHeader>
                   {thread.sticky ? (
@@ -250,7 +314,7 @@ class DDiscussionThreads extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -262,10 +326,13 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return {
+    subscribeDiscussionThread,
+    unsubscribeDiscussionThread,
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DDiscussionThreads);

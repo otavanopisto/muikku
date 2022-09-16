@@ -13,6 +13,15 @@ export interface DiscussionUserType {
 }
 
 /**
+ * DiscussionSubscribedThread
+ */
+export interface DiscussionSubscribedThread {
+  threadId: number;
+  userEntityId: number;
+  discussionThread: DiscussionThreadType;
+}
+
+/**
  * DiscussionThreadType
  */
 export interface DiscussionThreadType {
@@ -79,6 +88,7 @@ export type DiscussionAreaListType = Array<DiscussionAreaType>;
 export interface DiscussionType {
   state: DiscussionStateType;
   threads: DiscussionThreadListType;
+  subscribedThreads: DiscussionSubscribedThread[];
   page: number;
   areaId: number;
   workspaceId?: number;
@@ -115,6 +125,7 @@ export interface DiscussionPatchType {
 const initialDiscussionState: DiscussionType = {
   state: "LOADING",
   threads: [],
+  subscribedThreads: [],
   areaId: null,
   workspaceId: null,
   page: 1,

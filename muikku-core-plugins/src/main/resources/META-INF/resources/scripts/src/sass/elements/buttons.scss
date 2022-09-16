@@ -1999,6 +1999,21 @@
   }
 }
 
+.button-pill--discussion-subscription {
+  background: $color-button-disabled-background;
+  color: $color-default;
+
+  &:hover,
+  &.hover {
+    background: $color-fatal;
+  }
+
+  &:active,
+  &.active {
+    background: $color-fatal;
+  }
+}
+
 .button--wizard {
   background-color: $color-button-wizard-background;
   border: 0;
