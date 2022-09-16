@@ -884,9 +884,9 @@ public class ForumRESTService extends PluginRESTService {
    * returns a list of user's subscripted threads
    */
   @GET
-  @Path ("/subscriptions/threads/{USERID}")
+  @Path ("/subscriptionThreads/{USERID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listThreadSubscriptionsByUser(@PathParam ("USERID") Long userId) {
+  public Response listThreadSubscriptionsByUser(@PathParam("USERID") Long userId) {
     
     UserEntity userEntity = userEntityController.findUserEntityById(userId);
     
