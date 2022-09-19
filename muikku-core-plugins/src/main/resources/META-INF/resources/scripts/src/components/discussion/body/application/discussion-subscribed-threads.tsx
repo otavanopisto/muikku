@@ -21,10 +21,10 @@ import {
   DiscussionThreadHeader,
   DiscussionThreadBody,
   DiscussionThreadFooter,
+  DiscussionThreadsListHeader,
 } from "./threads/threads";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
-import PagerV2 from "~/components/general/pagerV2";
 import { AnyActionType } from "~/actions/index";
 import { ButtonPill } from "~/components/general/button";
 import { bindActionCreators } from "redux";
@@ -38,7 +38,7 @@ import {
 /**
  * DiscussionThreadsProps
  */
-interface DiscussionThreadsProps {
+interface DiscussionSubscribedThreadsProps {
   discussion: DiscussionType;
   i18n: i18nType;
   status: StatusType;
@@ -49,20 +49,20 @@ interface DiscussionThreadsProps {
 /**
  * DiscussionThreadsState
  */
-interface DiscussionThreadsState {}
+interface DiscussionSubscribedThreadsState {}
 
 /**
  * DDiscussionThreads
  */
-class DDiscussionThreads extends React.Component<
-  DiscussionThreadsProps,
-  DiscussionThreadsState
+class DiscussionSubscribedThreads extends React.Component<
+  DiscussionSubscribedThreadsProps,
+  DiscussionSubscribedThreadsState
 > {
   /**
    * Constructor method
    * @param props props
    */
-  constructor(props: DiscussionThreadsProps) {
+  constructor(props: DiscussionSubscribedThreadsProps) {
     super(props);
 
     this.getToThread = this.getToThread.bind(this);
@@ -150,36 +150,32 @@ class DDiscussionThreads extends React.Component<
           <span>{"ERROR"}</span>
         </div>
       );
-    } else if (
-      this.props.discussion.threads.length === 0 &&
-      !this.props.discussion.current
-    ) {
-      return (
-        <div className="empty">
-          <span>
-            {this.props.i18n.text.get("plugin.communicator.empty.topic")}
-          </span>
-        </div>
-      );
+    } else {
+      if (
+        this.props.discussion.subscribedThreadOnly &&
+        this.props.discussion.subscribedThreads.length === 0 &&
+        !this.props.discussion.current
+      ) {
+        return (
+          <div className="empty">
+            <span>Ei tilattuja viestejä</span>
+          </div>
+        );
+      }
     }
 
-    const threads = this.props.discussion.threads.map(
-      (thread: DiscussionThreadType, index: number) => {
-        const isSubscribed =
-          this.props.discussion.subscribedThreads.findIndex(
-            (sThread) => sThread.threadId === thread.id
-          ) !== -1;
+    const subscribedThreadsOnly = this.props.discussion.subscribedThreads.map(
+      (sThreads) => {
+        const subscribredThread = sThreads.thread;
 
-        const user: DiscussionUserType = thread.creator;
+        const user: DiscussionUserType = subscribredThread.creator;
 
-        const userCategory =
-          thread.creator.id > 10
-            ? (thread.creator.id % 10) + 1
-            : thread.creator.id;
+        const userCategory = user.id > 10 ? (user.id % 10) + 1 : user.id;
         const threadCategory =
-          thread.forumAreaId > 10
-            ? (thread.forumAreaId % 10) + 1
-            : thread.forumAreaId;
+          subscribredThread.forumAreaId > 10
+            ? (subscribredThread.forumAreaId % 10) + 1
+            : subscribredThread.forumAreaId;
+
         let avatar;
         if (!user) {
           //This is what it shows when the user is not ready
@@ -188,7 +184,7 @@ class DDiscussionThreads extends React.Component<
           //This is what it shows when the user is ready
           avatar = (
             <Avatar
-              key={thread.id}
+              key={subscribredThread.id}
               id={user.id}
               firstName={user.firstName}
               hasImage={user.hasImage}
@@ -202,54 +198,45 @@ class DDiscussionThreads extends React.Component<
 
         return (
           <DiscussionThread
-            key={thread.id}
-            onClick={this.getToThread.bind(this, thread)}
+            key={subscribredThread.id}
+            onClick={this.getToThread.bind(this, subscribredThread)}
             avatar={avatar}
           >
             <DiscussionThreadHeader>
               <div style={{ display: "flex", alignItems: "center" }}>
-                {thread.locked ? (
+                {subscribredThread.locked ? (
                   <div className="discussion__icon icon-lock"></div>
                 ) : null}
-                {thread.sticky ? (
+                {subscribredThread.sticky ? (
                   <div className="discussion__icon icon-pin"></div>
                 ) : null}
                 <div
                   className={`discussion-category discussion-category--category-${threadCategory}`}
                 >
-                  <span>{thread.title}</span>
+                  <span>{subscribredThread.title}</span>
                 </div>
               </div>
 
               <div>
-                {isSubscribed ? (
-                  <ButtonPill
-                    icon="book"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      thread,
-                      true
-                    )}
-                    buttonModifiers={["discussion-subscription active"]}
-                  />
-                ) : (
-                  <ButtonPill
-                    icon="book"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      thread,
-                      false
-                    )}
-                    buttonModifiers={["discussion-subscription"]}
-                  />
-                )}
+                <ButtonPill
+                  icon="book"
+                  onClick={this.handleSubscribeOrUnsubscribeClick(
+                    subscribredThread,
+                    true
+                  )}
+                  buttonModifiers={["discussion-subscription active"]}
+                />
               </div>
             </DiscussionThreadHeader>
-            {thread.sticky ? (
+            {subscribredThread.sticky ? (
               <DiscussionThreadBody>
                 <OverflowDetector
                   as="div"
                   classNameWhenOverflown="application-list__item-text-body--discussion-message-overflow"
                   className="application-list__item-text-body--discussion-message rich-text"
-                  dangerouslySetInnerHTML={{ __html: thread.message }}
+                  dangerouslySetInnerHTML={{
+                    __html: subscribredThread.message,
+                  }}
                 />
               </DiscussionThreadBody>
             ) : null}
@@ -261,7 +248,7 @@ class DDiscussionThreads extends React.Component<
                       user,
                       this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                     )}
-                  , {this.props.i18n.time.format(thread.created)}
+                  , {this.props.i18n.time.format(subscribredThread.created)}
                 </span>
               </div>
               <div className="application-list__item-footer-content-aside">
@@ -272,7 +259,7 @@ class DDiscussionThreads extends React.Component<
                     )}{" "}
                   </span>
                   <span className="application-list__item-counter">
-                    {thread.numReplies}
+                    {subscribredThread.numReplies}
                   </span>
                 </div>
                 <div className="application-list__item-date">
@@ -280,7 +267,7 @@ class DDiscussionThreads extends React.Component<
                     {this.props.i18n.text.get(
                       "plugin.discussion.titleText.lastMessage"
                     )}{" "}
-                    {this.props.i18n.time.format(thread.updated)}
+                    {this.props.i18n.time.format(subscribredThread.updated)}
                   </span>
                 </div>
               </div>
@@ -292,20 +279,13 @@ class DDiscussionThreads extends React.Component<
 
     return (
       <BodyScrollKeeper hidden={!!this.props.discussion.current}>
-        <DiscussionThreads>
-          {threads}
-
-          <PagerV2
-            previousLabel=""
-            nextLabel=""
-            breakLabel="..."
-            forcePage={this.props.discussion.page - 1}
-            marginPagesDisplayed={1}
-            pageCount={this.props.discussion.totalPages}
-            pageRangeDisplayed={2}
-            onPageChange={this.handlePageChange}
-          />
-        </DiscussionThreads>
+        <DiscussionThreadsListHeader>
+          Keskustelujen tilaukset
+        </DiscussionThreadsListHeader>
+        <DiscussionThreads>{subscribedThreadsOnly}</DiscussionThreads>
+        <DiscussionThreadsListHeader>
+          Työtilojen keskusteluiden tilaukset
+        </DiscussionThreadsListHeader>
       </BodyScrollKeeper>
     );
   }
@@ -337,4 +317,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DDiscussionThreads);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DiscussionSubscribedThreads);

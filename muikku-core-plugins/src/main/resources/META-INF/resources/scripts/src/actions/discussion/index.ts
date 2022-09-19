@@ -19,6 +19,11 @@ import { StateType } from "~/reducers";
 
 const MAX_LOADED_AT_ONCE = 30;
 
+export type UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS = SpecificActionType<
+  "UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS",
+  boolean
+>;
+
 export type UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES = SpecificActionType<
   "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
   DiscussionPatchType
@@ -82,6 +87,17 @@ export type UPDATE_SUBSCRIBED_THREAD_LIST = SpecificActionType<
   "UPDATE_SUBSCRIBED_THREAD_LIST",
   DiscussionSubscribedThread[]
 >;
+
+/**
+ * ShowOnlySubscribedThreads
+ */
+export interface ShowOnlySubscribedThreads {
+  (data: {
+    value: boolean;
+    success?: () => any;
+    fail?: () => any;
+  }): AnyActionType;
+}
 
 /**
  * SubscribeToDiscussionThread
@@ -214,6 +230,26 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
 }
 
 /**
+ * showOnlySubscribedThreads
+ * @param data data
+ * @returns dispatch
+ */
+const showOnlySubscribedThreads: ShowOnlySubscribedThreads =
+  function showOnlySubscribedThreads(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      dispatch({
+        type: "UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS",
+        payload: data.value,
+      });
+    };
+  };
+
+/**
  * subscribeDiscussionThread
  * @param data data
  * @returns dispatch
@@ -226,8 +262,6 @@ const subscribeDiscussionThread: SubscribeDiscussionThread =
     ) => {
       const state = getState();
 
-      console.log("whaaat?", data);
-
       try {
         const subscribedThread: DiscussionSubscribedThread = <
           DiscussionSubscribedThread
@@ -239,12 +273,7 @@ const subscribeDiscussionThread: SubscribeDiscussionThread =
           "callback"
         )();
 
-        console.log(
-          "subscribeDiscussionThread:::> subscribattu",
-          subscribedThread
-        );
-
-        const subscribedThreadList = state.discussion.subscribedThreads;
+        const subscribedThreadList = [...state.discussion.subscribedThreads];
 
         subscribedThreadList.push(subscribedThread);
 
@@ -284,7 +313,7 @@ const unsubscribeDiscussionThread: UnsubscribeDiscustionThread =
           "callback"
         )();
 
-        const subscribedThreadList = state.discussion.subscribedThreads;
+        const subscribedThreadList = [...state.discussion.subscribedThreads];
 
         const index = subscribedThreadList.findIndex(
           (sThread) => sThread.threadId === data.threadId
@@ -323,7 +352,7 @@ const loadSubscribedDiscussionThreadList: LoadSubscribedDiscussionThreadList =
         const subscribedThreadList: DiscussionSubscribedThread[] = <
           DiscussionSubscribedThread[]
         >await promisify(
-          mApi().forum.subscriptions.threads.read(state.status.userId),
+          mApi().forum.subscriptionThreads.read(state.status.userId),
           "callback"
         )();
 
@@ -376,8 +405,6 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
       ) {
         return;
       }
-
-      /* dispatch(loadSubscribedDiscussionThreadList({})); */
 
       //NOTE we reload the discussion areas every time we load the threads because we have absolutely no
       //idea if the amount of pages per thread change every time I select a page, data updates on the fly
@@ -1255,6 +1282,7 @@ const setDiscussionWorkpaceId: SetDiscussionWorkspaceIdTriggerType =
   };
 
 export {
+  showOnlySubscribedThreads,
   subscribeDiscussionThread,
   unsubscribeDiscussionThread,
   loadSubscribedDiscussionThreadList,

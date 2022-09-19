@@ -48,6 +48,7 @@ import {
   loadDiscussionThreadFromServer,
   setDiscussionWorkpaceId,
   loadSubscribedDiscussionThreadList,
+  showOnlySubscribedThreads,
 } from "~/actions/discussion";
 import { loadAnnouncement, loadAnnouncements } from "~/actions/announcements";
 import AnnouncementsBody from "../components/announcements/body";
@@ -409,6 +410,7 @@ export default class MainFunction extends React.Component<
    * @param location location
    */
   loadDiscussionData(location: string[]) {
+    // Load subscribed threads every time
     this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
 
     if (location.length <= 2) {

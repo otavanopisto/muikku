@@ -18,7 +18,7 @@ export interface DiscussionUserType {
 export interface DiscussionSubscribedThread {
   threadId: number;
   userEntityId: number;
-  discussionThread: DiscussionThreadType;
+  thread: DiscussionThreadType;
 }
 
 /**
@@ -89,6 +89,7 @@ export interface DiscussionType {
   state: DiscussionStateType;
   threads: DiscussionThreadListType;
   subscribedThreads: DiscussionSubscribedThread[];
+  subscribedThreadOnly: boolean;
   page: number;
   areaId: number;
   workspaceId?: number;
@@ -126,6 +127,7 @@ const initialDiscussionState: DiscussionType = {
   state: "LOADING",
   threads: [],
   subscribedThreads: [],
+  subscribedThreadOnly: false,
   areaId: null,
   workspaceId: null,
   page: 1,
@@ -232,6 +234,13 @@ export const discussion: Reducer<DiscussionType> = (
 
     case "SET_DISCUSSION_WORKSPACE_ID":
       return { ...state, workspaceId: action.payload };
+
+    case "UPDATE_SUBSCRIBED_THREAD_LIST": {
+      return { ...state, subscribedThreads: action.payload };
+    }
+
+    case "UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS":
+      return { ...state, subscribedThreadOnly: action.payload };
 
     default:
       return state;

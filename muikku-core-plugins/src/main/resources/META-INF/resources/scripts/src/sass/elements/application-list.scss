@@ -901,6 +901,12 @@
   margin: 0 0 10px;
 }
 
+.application-list__item-header--discussion-thread-list {
+  font-size: 1.5rem;
+  justify-content: space-between;
+  margin: 0 0 10px;
+}
+
 .application-list__item-text-body--discussion-message {
   font-size: $text-mobile-font-size;
   font-style: italic;

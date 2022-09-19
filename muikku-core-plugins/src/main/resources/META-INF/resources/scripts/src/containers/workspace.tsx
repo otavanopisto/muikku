@@ -51,6 +51,8 @@ import {
   loadDiscussionThreadsFromServer,
   loadDiscussionThreadFromServer,
   setDiscussionWorkpaceId,
+  loadSubscribedDiscussionThreadList,
+  showOnlySubscribedThreads,
 } from "~/actions/discussion";
 
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
@@ -267,7 +269,7 @@ export default class Workspace extends React.Component<
 
   /**
    * onWorkspaceMaterialsBodyActiveNodeIdChange
-   * @param newId
+   * @param newId newId
    */
   onWorkspaceMaterialsBodyActiveNodeIdChange(newId: number) {
     const state: StateType = this.props.store.getState();
@@ -342,7 +344,7 @@ export default class Workspace extends React.Component<
 
   /**
    * onWorkspaceHelpBodyActiveNodeIdChange
-   * @param newId
+   * @param newId newId
    */
   onWorkspaceHelpBodyActiveNodeIdChange(newId: number) {
     const state: StateType = this.props.store.getState();
@@ -439,7 +441,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceHelp
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceHelp(props: RouteComponentProps<any>) {
@@ -499,7 +501,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceDiscussions
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceDiscussions(props: RouteComponentProps<any>) {
@@ -530,9 +532,14 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setDiscussionWorkpaceId(state.status.currentWorkspaceId) as Action
       );
+
+      // Load subscribed threads every time
+      this.props.store.dispatch(
+        loadSubscribedDiscussionThreadList({}) as Action
+      );
+
       this.props.store.dispatch(
         loadDiscussionAreasFromServer(() => {
-          //here in the callback
           const currentLocation = window.location.hash
             .replace("#", "")
             .split("/");
@@ -552,7 +559,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceAnnouncements
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceAnnouncements(props: RouteComponentProps<any>) {
@@ -590,7 +597,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceAnnouncer
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceAnnouncer(props: RouteComponentProps<any>) {
@@ -646,7 +653,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceDiscussionData
-   * @param location
+   * @param location location
    */
   loadWorkspaceDiscussionData(location: string[]) {
     if (location.length <= 2) {
@@ -676,7 +683,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceAnnouncementsData
-   * @param announcementId
+   * @param announcementId announcementId
    */
   loadWorkspaceAnnouncementsData(announcementId: number) {
     this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
@@ -684,7 +691,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceAnnouncerData
-   * @param location
+   * @param location location
    */
   loadWorkspaceAnnouncerData(location: string[]) {
     const actualLocation = location.filter((l) => !!l);
@@ -709,7 +716,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceMaterialsData
-   * @param id
+   * @param id id
    */
   loadWorkspaceMaterialsData(id: number): void {
     if (id) {
@@ -721,7 +728,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceHelpData
-   * @param id
+   * @param id id
    */
   loadWorkspaceHelpData(id: number): void {
     if (id) {
@@ -733,7 +740,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceMaterials
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceMaterials(props: RouteComponentProps<any>) {
@@ -912,7 +919,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceUsers
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceUsers(props: RouteComponentProps<any>) {
@@ -989,7 +996,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceJournal
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceJournal(props: RouteComponentProps<any>) {
@@ -1057,7 +1064,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceManagement
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceManagement(props: RouteComponentProps<any>) {
@@ -1153,7 +1160,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceEvaluation
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceEvaluation(props: RouteComponentProps<any>) {

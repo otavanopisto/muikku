@@ -18,6 +18,12 @@ import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { ApplicationPanelToolbar } from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
+import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
+import {
+  ShowOnlySubscribedThreads,
+  showOnlySubscribedThreads,
+} from "../../../../actions/discussion/index";
 
 /**
  * DiscussionToolbarProps
@@ -26,6 +32,7 @@ interface DiscussionToolbarProps {
   i18n: i18nType;
   discussion: DiscussionType;
   status: StatusType;
+  showOnlySubscribedThreads: ShowOnlySubscribedThreads;
 }
 
 /**
@@ -42,7 +49,7 @@ class CommunicatorToolbar extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: DiscussionToolbarProps) {
     super(props);
@@ -52,14 +59,16 @@ class CommunicatorToolbar extends React.Component<
   }
 
   /**
-   * @param e
+   * onSelectChange
+   * @param e e
    */
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
     window.location.hash = e.target.value;
   }
 
   /**
-   * @param e
+   * onGoBackClick
+   * @param e e
    */
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
     //TODO this is a retarded way to do things if we ever update to a SPA
@@ -81,6 +90,15 @@ class CommunicatorToolbar extends React.Component<
       location.hash = splitted[0] + "/" + splitted[1];
     }
   }
+
+  /**
+   * handleShowSubscribedThreadsOnlyClick
+   */
+  handleShowSubscribedThreadsOnlyClick = () => {
+    this.props.showOnlySubscribedThreads({
+      value: !this.props.discussion.subscribedThreadOnly,
+    });
+  };
 
   /**
    * render
@@ -139,26 +157,33 @@ class CommunicatorToolbar extends React.Component<
             />
           </DeleteArea>
         ) : null}
-        <div className="form-element">
-          <label htmlFor="discussionAreaSelect" className="visually-hidden">
-            {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
-          </label>
-          <select
-            id="discussionAreaSelect"
-            className="form-element__select form-element__select--toolbar-selector"
-            onChange={this.onSelectChange}
-            value={this.props.discussion.areaId || ""}
-          >
-            <option value="">
-              {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
-            </option>
-            {this.props.discussion.areas.map((area) => (
-              <option key={area.id} value={area.id}>
-                {area.name}
+        {!this.props.discussion.subscribedThreadOnly && (
+          <div className="form-element">
+            <label htmlFor="discussionAreaSelect" className="visually-hidden">
+              {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
+            </label>
+            <select
+              id="discussionAreaSelect"
+              className="form-element__select form-element__select--toolbar-selector"
+              onChange={this.onSelectChange}
+              value={this.props.discussion.areaId || ""}
+            >
+              <option value="">
+                {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
               </option>
-            ))}
-          </select>
-        </div>
+              {this.props.discussion.areas.map((area) => (
+                <option key={area.id} value={area.id}>
+                  {area.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        <ButtonPill
+          onClick={this.handleShowSubscribedThreadsOnlyClick}
+          icon="book"
+          buttonModifiers={["discussion-toolbar"]}
+        />
       </ApplicationPanelToolbar>
     );
   }
@@ -180,8 +205,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    {
+      showOnlySubscribedThreads,
+    },
+    dispatch
+  );
 }
 
 export default connect(

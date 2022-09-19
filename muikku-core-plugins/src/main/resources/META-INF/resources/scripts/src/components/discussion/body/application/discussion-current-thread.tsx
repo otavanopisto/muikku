@@ -5,6 +5,7 @@ import {
   DiscussionUserType,
   DiscussionThreadReplyType,
   DiscussionThreadReplyListType,
+  DiscussionThreadType,
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
@@ -17,7 +18,7 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/discussion.scss";
 import {
-  DiscussionCurrentThread,
+  DiscussionCurrentThreadListContainer,
   DiscussionCurrentThreadElement,
   DiscussionThreadHeader,
   DiscussionThreadBody,
@@ -27,22 +28,34 @@ import ReplyThreadDrawer from "./reply-thread-drawer";
 import DiscussionThreadReply from "./discussion-thread-reply";
 import ModifyThreadDrawer from "./modify-thread-drawer";
 import PagerV2 from "~/components/general/pagerV2";
+import { AnyActionType } from "~/actions/index";
+import { bindActionCreators } from "redux";
+import {
+  SubscribeDiscussionThread,
+  subscribeDiscussionThread,
+  unsubscribeDiscussionThread,
+  UnsubscribeDiscustionThread,
+} from "../../../../actions/discussion/index";
+import { ButtonPill } from "~/components/general/button";
 
 /**
  * CurrentThreadProps
  */
-interface CurrentThreadProps {
+interface DiscussionCurrentThreadProps {
   discussion: DiscussionType;
   i18n: i18nType;
   userId: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissions: any;
   status: StatusType;
+  subscribeDiscussionThread: SubscribeDiscussionThread;
+  unsubscribeDiscussionThread: UnsubscribeDiscustionThread;
 }
 
 /**
  * CurrentThreadState
  */
-interface CurrentThreadState {
+interface DiscussionCurrentThreadState {
   hiddenParentsLists: number[];
   openReplyType?: "answer" | "modify" | "quote";
   openedReplyEditorId?: number;
@@ -51,15 +64,15 @@ interface CurrentThreadState {
 /**
  * CurrentThread
  */
-class CurrentThread extends React.Component<
-  CurrentThreadProps,
-  CurrentThreadState
+class DiscussionCurrentThread extends React.Component<
+  DiscussionCurrentThreadProps,
+  DiscussionCurrentThreadState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: CurrentThreadProps) {
+  constructor(props: DiscussionCurrentThreadProps) {
     super(props);
 
     this.state = {
@@ -69,7 +82,7 @@ class CurrentThread extends React.Component<
 
   /**
    * getToPage
-   * @param n
+   * @param n n
    */
   getToPage(n: number) {
     if (
@@ -95,7 +108,7 @@ class CurrentThread extends React.Component<
 
   /**
    * onHideShowSubReplies
-   * @param parentId
+   * @param parentId parentId
    * Adds or removes parent elements from/to list depending wheter it is already in list.
    */
   onHideShowSubRepliesClick = (parentId: number) => (e: React.MouseEvent) => {
@@ -118,7 +131,7 @@ class CurrentThread extends React.Component<
 
   /**
    * handleOnReplyClick
-   * @param type
+   * @param type type
    */
   handleOnReplyClick =
     (type: "answer" | "modify" | "quote") =>
@@ -140,7 +153,6 @@ class CurrentThread extends React.Component<
   /**
    * handles page changes,
    * sets selected page as currentPage to state
-   * @param event
    * @param selectedItem selectedItem
    * @param selectedItem.selected selected
    */
@@ -148,24 +160,56 @@ class CurrentThread extends React.Component<
     this.getToPage(selectedItem.selected + 1);
 
   /**
+   * handleSubscribeOrUnsubscribeClick
+   * @param thread thread
+   * @param isSubscribed isSubscribed
+   */
+  handleSubscribeOrUnsubscribeClick =
+    (thread: DiscussionThreadType, isSubscribed: boolean) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.stopPropagation();
+      if (isSubscribed) {
+        this.props.unsubscribeDiscussionThread({
+          areaId: thread.forumAreaId,
+          threadId: thread.id,
+        });
+      } else {
+        this.props.subscribeDiscussionThread({
+          areaId: thread.forumAreaId,
+          threadId: thread.id,
+        });
+      }
+    };
+
+  /**
    * render
-   * @returns
+   * @returns JSX.Element or null
    */
   render() {
     if (!this.props.discussion.current) {
       return null;
     }
+
+    const isSubscribed =
+      this.props.discussion.subscribedThreads.findIndex(
+        (sThread) => sThread.threadId === this.props.discussion.current.id
+      ) !== -1;
+
     const areaPermissions =
       this.props.permissions.AREA_PERMISSIONS[
         this.props.discussion.current.forumAreaId
       ] || {};
+
     const userCreator: DiscussionUserType =
       this.props.discussion.current.creator;
+
     const userCategory =
       this.props.discussion.current.creator.id > 10
         ? (this.props.discussion.current.creator.id % 10) + 1
         : this.props.discussion.current.creator.id;
+
     let avatar;
+
     if (!userCreator) {
       //This is what it shows when the user is not ready
       avatar = <div className="avatar avatar--category-1"></div>;
@@ -209,7 +253,7 @@ class CurrentThread extends React.Component<
     }
 
     return (
-      <DiscussionCurrentThread
+      <DiscussionCurrentThreadListContainer
         sticky={this.props.discussion.current.sticky}
         locked={this.props.discussion.current.locked}
         title={
@@ -225,10 +269,31 @@ class CurrentThread extends React.Component<
         >
           <DiscussionThreadHeader
             aside={
-              <span>
-                {this.props.i18n.time.format(
-                  this.props.discussion.current.created
+              <span style={{ display: "flex", alignItems: "center" }}>
+                {isSubscribed ? (
+                  <ButtonPill
+                    icon="book"
+                    onClick={this.handleSubscribeOrUnsubscribeClick(
+                      this.props.discussion.current,
+                      true
+                    )}
+                    buttonModifiers={["discussion-subscription active"]}
+                  />
+                ) : (
+                  <ButtonPill
+                    icon="book"
+                    onClick={this.handleSubscribeOrUnsubscribeClick(
+                      this.props.discussion.current,
+                      false
+                    )}
+                    buttonModifiers={["discussion-subscription"]}
+                  />
                 )}
+                <span>
+                  {this.props.i18n.time.format(
+                    this.props.discussion.current.created
+                  )}
+                </span>
               </span>
             }
           >
@@ -324,30 +389,22 @@ class CurrentThread extends React.Component<
 
         {this.props.discussion.currentReplies.map(
           (reply: DiscussionThreadReplyType) => {
-            /**
-             * user can be null in situtations where whole user is removed completely
-             * from muikku. Then there is no reply.creator to use.
-             */
+            // user can be null in situtations where whole user is removed completely
+            // from muikku. Then there is no reply.creator to use.
             const user: DiscussionUserType = reply.creator;
 
-            /**
-             * By default setting remove message is false
-             */
+            // By default setting remove message is false
             let canRemoveMessage = false;
 
-            /**
-             * By default setting edit message is false
-             */
+            // By default setting edit message is false
             let canEditMessage = false;
             let avatar;
 
             if (!user) {
-              /**
-               * This is what it shows when the user is not ready
-               * Also if reply creator is null aka deleted
-               * These situtations don't allow changing user specific color, so
-               * color is same for all of those cases
-               */
+              // This is what it shows when the user is not ready
+              // Also if reply creator is null aka deleted
+              // These situtations don't allow changing user specific color, so
+              // color is same for all of those cases
               avatar = <div className="avatar avatar--category-1"></div>;
             } else {
               const userCategory =
@@ -371,16 +428,12 @@ class CurrentThread extends React.Component<
               );
             }
 
-            /**
-             * Checks if element parent has hide its siblings
-             */
+            // Checks if element parent has hide its siblings
             const isHiddenElement = this.state.hiddenParentsLists.includes(
               reply.parentReplyId
             );
 
-            /**
-             * Checks if element has siblings that are hidden
-             */
+            // Checks if element has siblings that are hidden
             const parentHasHiddenSiblings =
               this.state.hiddenParentsLists.includes(reply.id);
 
@@ -413,15 +466,14 @@ class CurrentThread extends React.Component<
           pageRangeDisplayed={2}
           onPageChange={this.handlePagerChange}
         />
-      </DiscussionCurrentThread>
+      </DiscussionCurrentThreadListContainer>
     );
   }
 }
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -435,11 +487,19 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    {
+      subscribeDiscussionThread,
+      unsubscribeDiscussionThread,
+    },
+    dispatch
+  );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentThread);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DiscussionCurrentThread);
