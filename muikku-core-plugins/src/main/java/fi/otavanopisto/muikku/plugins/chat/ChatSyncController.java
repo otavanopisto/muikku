@@ -486,7 +486,7 @@ public class ChatSyncController {
         false,                    // includeHidden
         true,                     // onlyDefaultUsers
         0, 
-        Integer.MAX_VALUE,
+        10000,                    // 10000 is elastic max by default - should use another means to do this 
         false);                   // join groups and workspaces
     List<Map<String, Object>> results = result.getResults();
     for (Map<String, Object> o : results) {
