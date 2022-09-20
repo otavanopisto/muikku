@@ -708,7 +708,7 @@
 }
 
 .chat__message {
-  margin: 0 0 20px;
+  margin: 0 5px 20px;
   transition: opacity 0.6s ease;
 
   &:last-child {
@@ -765,7 +765,7 @@
 .chat__message-meta {
   align-items: center;
   display: flex;
-  margin: 0 4px 4px;
+  margin: 0 0 4px;
 }
 
 .chat__message-meta-sender {
