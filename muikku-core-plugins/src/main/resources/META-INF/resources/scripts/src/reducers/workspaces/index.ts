@@ -456,7 +456,7 @@ export interface WorkspaceOrganizationFilterType {
 }
 
 /**
- *
+ * WorkspaceStateFilterType
  */
 export interface WorkspaceStateFilterType {
   identifier: string;
@@ -655,7 +655,7 @@ export interface MaterialContentNodeType {
 }
 
 /**
- *
+ * MaterialAnswerType
  */
 export interface MaterialAnswerType {
   embedId: string;
@@ -665,6 +665,9 @@ export interface MaterialAnswerType {
   workspaceMaterialId: number;
 }
 
+/**
+ * MaterialCompositeRepliesStateType
+ */
 export type MaterialCompositeRepliesStateType =
   | "UNANSWERED"
   | "ANSWERED"
@@ -710,7 +713,7 @@ export type MaterialCompositeRepliesListType =
   Array<MaterialCompositeRepliesType>;
 
 /**
- *
+ * MaterialEvaluationType
  */
 export interface MaterialEvaluationType {
   id: number;
