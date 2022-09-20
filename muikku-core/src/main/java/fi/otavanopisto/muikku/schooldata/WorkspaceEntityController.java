@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.schooldata;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -264,20 +262,16 @@ public class WorkspaceEntityController {
           if (signupStartDouble != null) {
             long itemLong = (long) (signupStartDouble * 1000);
             Date signupStart = new Date(itemLong);
-            if (signupStart != null && !signupStart.equals(new Date())) {
-              if (signupStart.after(new Date())) {
-                return false;
-              }
+            if (signupStart.after(new Date())) {
+              return false;
             }
           }
           
           if (signupEndDouble != null) {
             long itemLong = (long) (signupEndDouble * 1000);
             Date signupEnd = new Date(itemLong);
-            if (signupEnd != null && !signupEnd.equals(new Date())) {
-              if (signupEnd.before(new Date())) {
-                return false;
-              }
+            if (signupEnd.before(new Date())) {
+              return false;
             }
           }
           
