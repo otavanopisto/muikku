@@ -18,6 +18,7 @@ import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-sub-panel.scss";
 import { SimpleActionExecutor } from "~/actions/executor";
+import { Strophe } from "strophe.js";
 
 /**
  * ChatSettingsProps

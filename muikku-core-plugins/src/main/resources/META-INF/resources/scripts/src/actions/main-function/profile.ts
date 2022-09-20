@@ -24,6 +24,10 @@ import {
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
 
+import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/records/summary";
+import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
+import { getUserChatId } from "~/helper-functions/chat";
+
 /**
  * LoadProfilePropertiesSetTriggerType
  */
@@ -518,7 +522,10 @@ const loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
  */
 const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
   function updateProfileChatSettings(data) {
-    return async (dispatch: (arg: AnyActionType) => any) => {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
       try {
         const request = await fetch("/rest/chat/settings", {
           method: "PUT",

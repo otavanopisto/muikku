@@ -28,6 +28,7 @@ interface IPrivateChatState {
   messageNotification: boolean;
   targetPrescense: "away" | "chat" | "dnd" | "xa";
   isStudent: boolean;
+  friends: string[];
   currentMessageToBeSent: string;
   loadingMessages: boolean;
   canLoadMoreMessages: boolean;
@@ -60,6 +61,7 @@ export class PrivateChat extends React.Component<
     this.state = {
       nick: null,
       messages: [],
+      friends: [],
       minimized: JSON.parse(
         window.sessionStorage.getItem("minimizedChats") || "[]"
       ).includes(props.jid),
@@ -117,9 +119,10 @@ export class PrivateChat extends React.Component<
       // this.onPrivateChatMessage(this.props.initializingStanza);
     }
 
-    this.requestPrescense();
     this.obtainNick();
     this.loadMessages();
+    this.requestPrescense();
+    this.getRoster();
   }
 
   /**
@@ -155,6 +158,59 @@ export class PrivateChat extends React.Component<
       })
     );
   }
+
+  subscribeToPresence = () => {
+    this.props.connection.send(
+      $pres({
+        from: this.props.connection.jid,
+        to: this.props.jid,
+        type: "subscribe",
+      })
+    );
+  };
+
+  allowSubscribeToPresence = () => {
+    this.props.connection.send(
+      $pres({
+        from: this.props.connection.jid,
+        to: this.props.jid,
+        type: "subscribed",
+      })
+    );
+  };
+
+  getRoster = () => {
+    const stanza = $iq({
+      from: this.props.connection.jid,
+      type: "get",
+    }).c("query", { xmlns: Strophe.NS.ROSTER });
+    const friendList: string[] = [];
+    this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
+      const roster = answerStanza.querySelectorAll("query item");
+
+      roster.forEach((r) => {
+        friendList.push(r.getAttribute("jid"));
+      });
+    });
+
+    this.setState({ friends: friendList });
+  };
+
+  /**
+   * setUserToRosterGroup sets user to a group in a roster
+   * @param groupName given group name
+   */
+  setUserToRosterGroup = (groupName: string) => {
+    const stanza = $iq({
+      from: this.props.connection.jid,
+      type: "set",
+    })
+      .c("query", { xmlns: Strophe.NS.ROSTER })
+      .c("item", { jid: this.props.jid })
+      .c("group", groupName);
+
+    this.props.connection.sendIQ(stanza);
+  };
 
   /**
    * onTextFieldFocus
@@ -217,6 +273,13 @@ export class PrivateChat extends React.Component<
         deleted: false,
         edited: null,
       };
+
+      if (!this.state.friends.includes(this.props.jid)) {
+        this.allowSubscribeToPresence();
+        this.subscribeToPresence();
+      }
+
+      // this.setUserToRosterGroup("test");
 
       this.setState(
         {
