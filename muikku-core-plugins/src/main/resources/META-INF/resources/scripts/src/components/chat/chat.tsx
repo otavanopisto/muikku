@@ -4,8 +4,7 @@ import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { Strophe } from "strophe.js";
-import { Room } from "./tabs/room";
-import { People } from "./tabs/people";
+import { Room } from "./room";
 import { Groupchat } from "./groupchat";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
@@ -18,7 +17,6 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-import Tabs, { Tab } from "../general/tabs";
 
 /**
  * IChatRoomType
@@ -116,7 +114,6 @@ interface IOpenChatJID {
 interface IChatState {
   connection: Strophe.Connection;
   connectionHostname: string;
-  activeTab: string;
   isInitialized: boolean;
   availableMucRooms: IAvailableChatRoomType[];
   showControlBox: boolean;
@@ -166,7 +163,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.state = {
       connection: null,
       connectionHostname: null,
-      activeTab: "rooms",
+
       isInitialized: false,
       availableMucRooms: [],
       showControlBox:
@@ -828,12 +825,17 @@ class Chat extends React.Component<IChatProps, IChatState> {
       return null;
     }
 
-    const chatTabs: Tab[] = [
-      {
-        id: "rooms",
-        type: "chat",
-        name: this.props.i18n.text.get("plugin.chat.tabs.label.rooms"),
-        component: (
+    return (
+      <div className="chat">
+        {/* Chat bubble */}
+        {this.state.showControlBox ? null : (
+          <div onClick={this.toggleControlBox} className="chat__bubble">
+            <span className="icon-chat"></span>
+          </div>
+        )}
+
+        {/* Chat controlbox */}
+        {this.state.showControlBox && (
           <div className="chat__panel chat__panel--controlbox">
             <div className="chat__panel-header chat__panel-header--controlbox">
               <Dropdown
@@ -997,94 +999,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
               )}
             </div>
           </div>
-        ),
-      },
-      {
-        id: "people",
-        type: "chat",
-        name: this.props.i18n.text.get("plugin.chat.tabs.label.people"),
-        component: (
-          <div className="chat__panel chat__panel--controlbox">
-            <div className="chat__panel-header chat__panel-header--controlbox">
-              <Dropdown
-                alignSelf="left"
-                modifier="chat"
-                items={this.setUserAvailabilityDropdown().map(
-                  (item) => (closeDropdown: () => any) =>
-                    (
-                      <Link
-                        className={`link link--full link--chat-dropdown link--chat-availability-${item.modifier}`}
-                        onClick={(...args: any[]) => {
-                          closeDropdown();
-                          item.onClick && item.onClick(...args);
-                        }}
-                      >
-                        <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{this.props.i18n.text.get(item.text)}</span>
-                      </Link>
-                    )
-                )}
-              >
-                <span
-                  className={`chat__button chat__button--availability chat__button--availability-${this.state.selectedUserPresence} icon-user`}
-                ></span>
-              </Dropdown>
-              <span
-                onClick={this.toggleControlBox}
-                className="chat__button chat__button--close icon-cross"
-              ></span>
-            </div>
-
-            <div className="chat__panel-body chat__panel-body--controlbox">
-              <div className="chat__controlbox-rooms-heading">
-                {this.props.i18n.text.get("plugin.chat.people.guider")}
-              </div>
-              <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
-                {this.getWorkspaceMucRooms().length > 0 ? (
-                  this.getWorkspaceMucRooms().map((chat, i) => (
-                    <People
-                      requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(
-                        this,
-                        chat
-                      )}
-                      modifier="workspace"
-                      toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(
-                        this,
-                        chat.roomJID
-                      )}
-                      key={i}
-                      chat={chat}
-                    />
-                  ))
-                ) : (
-                  <div className="chat__controlbox-room  chat__controlbox-room--empty">
-                    {this.props.i18n.text.get("plugin.chat.people.empty")}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        ),
-      },
-    ];
-
-    return (
-      <div className="chat">
-        {/* Chat bubble */}
-        {this.state.showControlBox ? null : (
-          <div onClick={this.toggleControlBox} className="chat__bubble">
-            <span className="icon-chat"></span>
-          </div>
-        )}
-
-        {/* Chat controlbox */}
-        {this.state.showControlBox && (
-          <Tabs
-            modifier="chat"
-            tabs={chatTabs}
-            onTabChange={(id: string) => this.setState({ activeTab: id })}
-            activeTab={this.state.activeTab}
-          ></Tabs>
         )}
 
         {/* Chatrooms */}
