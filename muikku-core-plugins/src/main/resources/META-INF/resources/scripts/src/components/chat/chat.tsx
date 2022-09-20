@@ -121,7 +121,7 @@ interface IChatState {
   isStudent: boolean;
   openRoomNumber: number;
   openChatsJIDS: IOpenChatJID[];
-  selectedUserPresence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
+  selectedUserPresence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2.1
   ready: boolean;
 
   roomNameField: string;
