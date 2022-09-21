@@ -11,6 +11,7 @@ import {
   DiscussionType,
   DiscussionThreadType,
   DiscussionUserType,
+  DiscussionSubscribedThread,
 } from "~/reducers/discussion";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { StateType } from "~/reducers";
@@ -34,6 +35,7 @@ import {
   SubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "../../../../actions/discussion/index";
+import { WorkspacesType } from "~/reducers/workspaces";
 
 /**
  * DiscussionThreadsProps
@@ -42,6 +44,7 @@ interface DiscussionSubscribedThreadsProps {
   discussion: DiscussionType;
   i18n: i18nType;
   status: StatusType;
+  workspaces: WorkspacesType;
   subscribeDiscussionThread: SubscribeDiscussionThread;
   unsubscribeDiscussionThread: UnsubscribeDiscustionThread;
 }
@@ -69,34 +72,6 @@ class DiscussionSubscribedThreads extends React.Component<
   }
 
   /**
-   * handles page changes,
-   * sets selected page as currentPage to state
-   * @param selectedItem selectedItem
-   * @param selectedItem.selected selected
-   */
-  handlePageChange = (selectedItem: { selected: number }) => {
-    window.location.hash =
-      (this.props.discussion.areaId || 0) + "/" + (selectedItem.selected + 1);
-  };
-
-  /**
-   * Creates aria-label for a tags depending if link is selected
-   * or not
-   * @param index link index
-   * @param selected if selected
-   * @returns label with correct locale string
-   */
-  handleAriaLabelBuilder = (index: number, selected: boolean): string => {
-    let label = this.props.i18n.text.get("plugin.wcag.pager.goToPage.label");
-
-    if (selected) {
-      label = this.props.i18n.text.get("plugin.wcag.pager.current.label");
-    }
-
-    return label;
-  };
-
-  /**
    * handleSubscribeOrUnsubscribeClick
    * @param thread thread
    * @param isSubscribed isSubscribed
@@ -120,20 +95,126 @@ class DiscussionSubscribedThreads extends React.Component<
 
   /**
    * getToThread
-   * @param thread thread
+   * @param subscribedThread subscribedThread
    */
-  getToThread(thread: DiscussionThreadType) {
-    if (this.props.discussion.areaId === thread.forumAreaId) {
-      window.location.hash =
-        thread.forumAreaId +
-        "/" +
-        this.props.discussion.page +
-        "/" +
-        thread.id +
-        "/1";
+  getToThread(subscribedThread: DiscussionSubscribedThread) {
+    const thread = subscribedThread.thread;
+    const relatedToWorkspace = !!subscribedThread.workspaceId;
+
+    const activeWorkspace = !!this.props.workspaces.currentWorkspace;
+    const inThatWorkspace =
+      !!this.props.workspaces.currentWorkspace &&
+      subscribedThread.workspaceId ===
+        this.props.workspaces.currentWorkspace.id;
+
+    // There is three different cases how subscribed current fetching can happen
+    // FIRST: subscribed thread is related to workspace and we are not in that workspace...
+    // so we create url by hand and open it to new tab with focus on that tab (To specific workspace)
+    if (relatedToWorkspace && !inThatWorkspace) {
+      const hashString = `${thread.forumAreaId}/1/${thread.id}/1`;
+
+      const url = `https://${window.location.hostname}/workspace/${subscribedThread.workspaceUrlName}/discussions#${hashString}`;
+      this.open(url);
     }
-    window.location.hash = thread.forumAreaId + "/1" + "/" + thread.id + "/1";
+    // SECOND: subscribed thread is not related to any workspace, but we are in some workspace...
+    // same procedure, create url and open it to new tab with focus on that tab. (To enviromental level)
+    else if (!relatedToWorkspace && activeWorkspace) {
+      const hashString = `${thread.forumAreaId}/1/${thread.id}/1`;
+
+      const url = `https://${window.location.hostname}/discussion#${hashString}`;
+      this.open(url);
+    }
+    // THIRD: thread is related to workspace and we are in that workspace OR...
+    // thread is not related to any workspace and we are not in any workspace...
+    // Follow normal procedure and mutate location hash value by latter conditions (Normal procedure)
+    else if (
+      (relatedToWorkspace && inThatWorkspace) ||
+      (!relatedToWorkspace && !inThatWorkspace)
+    ) {
+      // Opened area is where thread belongs to
+      if (this.props.discussion.areaId === thread.forumAreaId) {
+        window.location.hash =
+          thread.forumAreaId +
+          "/" +
+          this.props.discussion.page +
+          "/" +
+          thread.id +
+          "/1";
+      }
+      window.location.hash = thread.forumAreaId + "/1" + "/" + thread.id + "/1";
+    }
   }
+
+  /**
+   * open
+   * @param url url
+   */
+  open = (url: string) => {
+    const win = window.open(url, "_blank");
+    if (win != null) {
+      win.focus();
+    }
+  };
+
+  /**
+   * filterThreads
+   * @returns Filtered subscribed threads list
+   */
+  filterThreads = () => ({
+    enviromentalLevelThreads: this.props.discussion.subscribedThreads.filter(
+      (sThread) =>
+        sThread.workspaceId === undefined || sThread.workspaceId === null
+    ),
+    workspaceLevelThreads: this.props.discussion.subscribedThreads.filter(
+      (sThread) => sThread.workspaceId
+    ),
+  });
+
+  /**
+   * sortWorkspaceLevelThreads
+   * @param threads threads
+   */
+  sortWorkspaceLevelThreads = (threads: DiscussionSubscribedThread[]) => {
+    if (threads.length < 2) {
+      return threads;
+    }
+    // List we will return one all sortings has been done
+    let sortedThreads: DiscussionSubscribedThread[] = [];
+
+    // First sort all by workspaceId so latter sortings are easier to do
+    const updatedThreads = threads.sort(
+      (a, b) => a.workspaceId - b.workspaceId
+    );
+
+    // Helper object to include subscribed items by workspace id
+    const helperWorkspaceThreadObject: {
+      [id: number]: DiscussionSubscribedThread[];
+    } = {};
+
+    // initialize helper object with empty array for every workspace id list
+    for (let i = 0; i < updatedThreads.length; i++) {
+      const element = updatedThreads[i];
+      helperWorkspaceThreadObject[element.workspaceId] = [];
+    }
+
+    // Push every item to corresponding list
+    for (let i = 0; i < updatedThreads.length; i++) {
+      const element = updatedThreads[i];
+      helperWorkspaceThreadObject[element.workspaceId].push(element);
+    }
+
+    // Go through that object and sort every item list by areaId and push
+    // that list to sorted threads list once done
+    for (const property in helperWorkspaceThreadObject) {
+      const itemsByWorkspace = helperWorkspaceThreadObject[property].sort(
+        (a, b) => a.thread.forumAreaId - b.thread.forumAreaId
+      );
+
+      sortedThreads = sortedThreads.concat(itemsByWorkspace);
+    }
+
+    return sortedThreads;
+  };
 
   /**
    * Component render method
@@ -164,7 +245,10 @@ class DiscussionSubscribedThreads extends React.Component<
       }
     }
 
-    const subscribedThreadsOnly = this.props.discussion.subscribedThreads.map(
+    const { enviromentalLevelThreads, workspaceLevelThreads } =
+      this.filterThreads();
+
+    const enviromentalLevelThreadsItems = enviromentalLevelThreads.map(
       (sThreads) => {
         const subscribredThread = sThreads.thread;
 
@@ -199,7 +283,7 @@ class DiscussionSubscribedThreads extends React.Component<
         return (
           <DiscussionThread
             key={subscribredThread.id}
-            onClick={this.getToThread.bind(this, subscribredThread)}
+            onClick={this.getToThread.bind(this, sThreads)}
             avatar={avatar}
           >
             <DiscussionThreadHeader>
@@ -277,15 +361,138 @@ class DiscussionSubscribedThreads extends React.Component<
       }
     );
 
+    const workspaceLevelThreadsItems = this.sortWorkspaceLevelThreads(
+      workspaceLevelThreads
+    ).map((sThreads) => {
+      const subscribredThread = sThreads.thread;
+
+      const user: DiscussionUserType = subscribredThread.creator;
+
+      const userCategory = user.id > 10 ? (user.id % 10) + 1 : user.id;
+      const threadCategory =
+        subscribredThread.forumAreaId > 10
+          ? (subscribredThread.forumAreaId % 10) + 1
+          : subscribredThread.forumAreaId;
+
+      let avatar;
+      if (!user) {
+        //This is what it shows when the user is not ready
+        avatar = <div className="avatar avatar--category-1"></div>;
+      } else {
+        //This is what it shows when the user is ready
+        avatar = (
+          <Avatar
+            key={subscribredThread.id}
+            id={user.id}
+            firstName={user.firstName}
+            hasImage={user.hasImage}
+            userCategory={userCategory}
+            avatarAriaLabel={this.props.i18n.text.get(
+              "plugin.wcag.userAvatar.label"
+            )}
+          />
+        );
+      }
+
+      return (
+        <DiscussionThread
+          key={subscribredThread.id}
+          onClick={this.getToThread.bind(this, sThreads)}
+          avatar={avatar}
+        >
+          <DiscussionThreadHeader>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {subscribredThread.locked ? (
+                <div className="discussion__icon icon-lock"></div>
+              ) : null}
+              {subscribredThread.sticky ? (
+                <div className="discussion__icon icon-pin"></div>
+              ) : null}
+              <div
+                className={`discussion-category discussion-category--category-${threadCategory}`}
+              >
+                <span>{subscribredThread.title}</span>
+              </div>
+            </div>
+
+            <div>
+              <ButtonPill
+                icon="book"
+                onClick={this.handleSubscribeOrUnsubscribeClick(
+                  subscribredThread,
+                  true
+                )}
+                buttonModifiers={["discussion-subscription active"]}
+              />
+            </div>
+          </DiscussionThreadHeader>
+          {subscribredThread.sticky ? (
+            <DiscussionThreadBody>
+              <OverflowDetector
+                as="div"
+                classNameWhenOverflown="application-list__item-text-body--discussion-message-overflow"
+                className="application-list__item-text-body--discussion-message rich-text"
+                dangerouslySetInnerHTML={{
+                  __html: subscribredThread.message,
+                }}
+              />
+            </DiscussionThreadBody>
+          ) : null}
+          <DiscussionThreadFooter>
+            <div className="application-list__item-footer-content-main">
+              <span>
+                {user &&
+                  getName(
+                    user,
+                    this.props.status.permissions.FORUM_SHOW_FULL_NAMES
+                  )}
+                , {this.props.i18n.time.format(subscribredThread.created)}
+              </span>
+              {sThreads.workspaceName && <span>{sThreads.workspaceName}</span>}
+            </div>
+            <div className="application-list__item-footer-content-aside">
+              <div className="application-list__item-counter-container">
+                <span className="application-list__item-counter-title">
+                  {this.props.i18n.text.get(
+                    "plugin.discussion.titleText.replyCount"
+                  )}{" "}
+                </span>
+                <span className="application-list__item-counter">
+                  {subscribredThread.numReplies}
+                </span>
+              </div>
+              <div className="application-list__item-date">
+                <span>
+                  {this.props.i18n.text.get(
+                    "plugin.discussion.titleText.lastMessage"
+                  )}{" "}
+                  {this.props.i18n.time.format(subscribredThread.updated)}
+                </span>
+              </div>
+            </div>
+          </DiscussionThreadFooter>
+        </DiscussionThread>
+      );
+    });
+
     return (
       <BodyScrollKeeper hidden={!!this.props.discussion.current}>
         <DiscussionThreadsListHeader>
           Keskustelujen tilaukset
         </DiscussionThreadsListHeader>
-        <DiscussionThreads>{subscribedThreadsOnly}</DiscussionThreads>
+        <DiscussionThreads>
+          {enviromentalLevelThreadsItems.length > 0
+            ? enviromentalLevelThreadsItems
+            : "Ei tilauksia"}
+        </DiscussionThreads>
         <DiscussionThreadsListHeader>
           Työtilojen keskusteluiden tilaukset
         </DiscussionThreadsListHeader>
+        <DiscussionThreads>
+          {workspaceLevelThreadsItems.length > 0
+            ? workspaceLevelThreadsItems
+            : "Ei työtiloihin liittyviä tilauksia"}
+        </DiscussionThreads>
       </BodyScrollKeeper>
     );
   }
@@ -300,6 +507,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     discussion: state.discussion,
     status: state.status,
+    workspaces: state.workspaces,
   };
 }
 
