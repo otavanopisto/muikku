@@ -972,68 +972,72 @@ class ManagementPanel extends React.Component<
                   </div>
                 </div>
               </div>
-              <h2 className="application-sub-panel__header">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.management.workspaceSignupPeriod"
-                )}
-              </h2>
-              <div className="application-sub-panel__body">
-                <div className="form__row form__row--split">
-                  <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
-                    <label
-                      htmlFor="workspaceSignupStartDate"
-                      className="application-sub-panel__item-header"
-                    >
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.management.additionalInfo.signupStartDate"
-                      )}
-                    </label>
-                    <DatePicker
-                      id="workspaceSignupStartDate"
-                      className="form-element__input"
-                      onChange={this.updateSignupStartDate}
-                      minDate={new Date()}
-                      maxDate={
-                        this.state.workspaceSignupEndDate !== null
-                          ? this.state.workspaceSignupEndDate
-                          : undefined
-                      }
-                      locale={outputCorrectDatePickerLocale(
-                        this.props.i18n.time.getLocale()
-                      )}
-                      selected={this.state.workspaceSignupStartDate}
-                      dateFormat="P"
-                    />
-                  </div>
-                  <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
-                    <label
-                      htmlFor="workspaceSignupEndDate"
-                      className="application-sub-panel__item-header"
-                    >
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.management.additionalInfo.signupEndDate"
-                      )}
-                    </label>
-                    <DatePicker
-                      id="workspaceSignupEndDate"
-                      className="form-element__input"
-                      onChange={this.updateSignupEndDate}
-                      minDate={
-                        this.state.workspaceSignupStartDate !== null
-                          ? this.state.workspaceSignupStartDate
-                          : new Date()
-                      }
-                      locale={outputCorrectDatePickerLocale(
-                        this.props.i18n.time.getLocale()
-                      )}
-                      selected={this.state.workspaceSignupEndDate}
-                      dateFormat="P"
-                    />
-                  </div>
+            </div>
+          </section>
+
+          <section className="application-sub-panel application-sub-panel--workspace-settings">
+            <h2 className="application-sub-panel__header">
+              {this.props.i18n.text.get(
+                "plugin.workspace.management.workspaceSignupPeriod"
+              )}
+            </h2>
+            <div className="application-sub-panel__body">
+              <div className="form__row form__row--split">
+                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
+                  <label
+                    htmlFor="workspaceSignupStartDate"
+                    className="application-sub-panel__item-header"
+                  >
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.management.additionalInfo.signupStartDate"
+                    )}
+                  </label>
+                  <DatePicker
+                    id="workspaceSignupStartDate"
+                    className="form-element__input"
+                    onChange={this.updateSignupStartDate}
+                    minDate={new Date()}
+                    maxDate={
+                      this.state.workspaceSignupEndDate !== null
+                        ? this.state.workspaceSignupEndDate
+                        : undefined
+                    }
+                    locale={outputCorrectDatePickerLocale(
+                      this.props.i18n.time.getLocale()
+                    )}
+                    selected={this.state.workspaceSignupStartDate}
+                    dateFormat="P"
+                  />
+                </div>
+                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
+                  <label
+                    htmlFor="workspaceSignupEndDate"
+                    className="application-sub-panel__item-header"
+                  >
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.management.additionalInfo.signupEndDate"
+                    )}
+                  </label>
+                  <DatePicker
+                    id="workspaceSignupEndDate"
+                    className="form-element__input"
+                    onChange={this.updateSignupEndDate}
+                    minDate={
+                      this.state.workspaceSignupStartDate !== null
+                        ? this.state.workspaceSignupStartDate
+                        : new Date()
+                    }
+                    locale={outputCorrectDatePickerLocale(
+                      this.props.i18n.time.getLocale()
+                    )}
+                    selected={this.state.workspaceSignupEndDate}
+                    dateFormat="P"
+                  />
                 </div>
               </div>
             </div>
           </section>
+
           <section className="application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header">
               {this.props.i18n.text.get(
