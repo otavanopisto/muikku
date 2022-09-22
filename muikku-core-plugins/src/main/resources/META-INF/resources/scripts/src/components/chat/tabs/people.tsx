@@ -30,15 +30,18 @@ export class People extends React.Component<IPeopleProps, IPeopleState> {
    * render
    */
   render() {
+    const personModifier = this.props.modifier
+      ? "chat__controlbox-person--" + this.props.modifier
+      : "";
     const name = this.props.person.name
       ? this.props.person.name
       : this.props.person.nick
       ? this.props.person.nick
       : this.props.person.jid;
     return (
-      <div className="chat__controlbox-room">
+      <div className={`chat__controlbox-person ${personModifier}`}>
         <div
-          className="chat__controlbox-room-name"
+          className="chat__controlbox-person-name"
           onClick={this.props.toggleJoinLeavePrivateChatRoom}
         >
           {name}

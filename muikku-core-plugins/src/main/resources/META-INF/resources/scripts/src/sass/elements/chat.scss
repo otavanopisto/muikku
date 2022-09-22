@@ -8,7 +8,6 @@
 
   @include breakpoint($breakpoint-pad) {
     @include text;
-
     align-items: flex-end;
     bottom: 0;
     display: flex;
@@ -159,7 +158,6 @@
   border-radius: 2px 2px 0 0;
   border-top: 4px solid $color-default;
   bottom: 0;
-  box-shadow: 0 1px 5px $color-chat-controlbox-box-shadow;
   display: flex;
   flex-flow: column nowrap;
   height: 500px;
@@ -169,9 +167,7 @@
 }
 
 .chat__panel--controlbox {
-  border-top: 4px solid $color-chat-controlbox-main-color;
   margin: 0;
-  order: 2;
   width: 280px;
 }
 
@@ -195,7 +191,13 @@
   transition: box-shadow 0.3s ease-in-out;
 }
 
-.chat__panel-header {
+.chat__panel--active,
+.chat__panel--private {
+  box-shadow: 0 5px 5px 2px $color-chat-controlbox-box-shadow;
+}
+
+.chat__panel-header,
+.chat__controlbox-header {
   align-items: center;
   background-color: $color-default;
   border-radius: 2px 2px 0 0;
@@ -278,6 +280,7 @@
 
 // Controlbox specific icon colors
 .chat__panel-header--controlbox,
+.chat__controlbox-header,
 .chat__subpanel-header--new-room {
   box-shadow: none;
   justify-content: flex-end;
@@ -294,6 +297,8 @@
     color: $color-chat-controlbox-main-color;
   }
 }
+
+
 
 // Workspace room specific icon colors
 .chat__panel-header--workspace,
@@ -353,6 +358,33 @@
 }
 
 // Chat Controlbox Specific
+
+.chat__controlbox {
+  box-shadow: 0 5px 5px 2px $color-chat-controlbox-box-shadow;
+  order: 2;
+}
+
+.chat__controlbox-header {
+  align-items: center;
+  background-color: $color-default;
+  border-radius: 2px 2px 0 0;
+  border-bottom: 2px solid $color-chat-panel-header-shadow;
+  border-top: 4px solid $color-chat-controlbox-main-color;
+  color: $color-default-contrast;
+  display: flex;
+  flex-basis: 0;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+  justify-content: flex-end;
+  line-height: 1.125rem;
+  padding: 10px 5px;
+  z-index: 2;
+
+
+}
+
 .chat__controlbox-user-status {
   background: $color-default;
   border: 2px solid $color-default-separator-border;
@@ -378,17 +410,26 @@
   border-color: $color-chat-user-status-dnd;
 }
 
-.chat__controlbox-rooms-heading {
+.chat__controlbox-rooms-heading,
+.chat__controlbox-private-chat-heading {
   font-size: 0.875rem;
   margin: 0 0 5px;
   text-transform: uppercase;
+}
+
+
+
+.chat__controlbox-people-listing {
+  margin: 0 0 10px;
+  padding: 0 0 0 10px;
 }
 
 .chat__controlbox-rooms-listing {
   margin: 0 0 10px;
 }
 
-.chat__controlbox-room {
+.chat__controlbox-room,
+.chat__controlbox-person-name {
   align-items: center;
   display: flex;
   flex-flow: row wrap;

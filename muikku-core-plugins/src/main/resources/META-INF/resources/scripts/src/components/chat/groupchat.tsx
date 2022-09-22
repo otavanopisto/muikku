@@ -21,7 +21,11 @@ interface IGroupChatProps {
   chat: IAvailableChatRoomType;
   nick: string;
   leaveChatRoom: () => void;
-  joinPrivateChat: (jid: string) => void;
+  joinPrivateChat: (
+    jid: string,
+    group: string,
+    subscribeOnMessage: boolean
+  ) => void;
   onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
   requestExtraInfoAboutRoom: () => void;
   removeChatRoom: () => void;
@@ -1122,7 +1126,8 @@ export class Groupchat extends React.Component<
                         onClick={this.props.joinPrivateChat.bind(
                           null,
                           staffOccupant.occupant.jid,
-                          null
+                          null,
+                          false
                         )}
                         key={staffOccupant.occupant.userId}
                       >
@@ -1162,7 +1167,8 @@ export class Groupchat extends React.Component<
                             : this.props.joinPrivateChat.bind(
                                 this,
                                 studentOccupant.occupant.jid,
-                                null
+                                null,
+                                false
                               )
                         }
                         key={studentOccupant.occupant.userId}

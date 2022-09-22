@@ -24,7 +24,6 @@ import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
 import { getUserChatId } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
-
 export type tabs = "ROOMS" | "PEOPLE";
 
 /**
@@ -92,6 +91,7 @@ export interface IChatContact {
   name?: string;
   precense?: "away" | "chat" | "dnd" | "xa";
   group?: string;
+  studyProgramme?: string;
 }
 
 /**
@@ -124,6 +124,8 @@ export interface IBareMessageActionType {
  */
 interface IOpenChatJID {
   type: "muc" | "user";
+  group?: string;
+  subscribeOnMessage?: boolean;
   jid: string;
   initStanza?: Element;
 }
@@ -146,7 +148,7 @@ interface IChatState {
   openChatsJIDS: IOpenChatJID[];
   selectedUserPresence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
   ready: boolean;
-  guidanceCouncelors: SummaryStudentsGuidanceCouncelorsType[];
+  studyGuiders: SummaryStudentsGuidanceCouncelorsType[];
   roomNameField: string;
   roomDescField: string;
   // roomPersistent: boolean;
@@ -188,7 +190,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       connection: null,
       rosterLoaded: false,
       connectionHostname: null,
-      guidanceCouncelors: [],
+      studyGuiders: [],
       roster: [],
       activeTab: "ROOMS",
       isInitialized: false,
@@ -285,7 +287,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         );
       }
       this.setState({
-        guidanceCouncelors: studentsGuidanceCouncelors,
+        studyGuiders: studentsGuidanceCouncelors,
       });
     } catch (e) {
       this.props.displayNotification(
@@ -342,7 +344,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   };
 
   /**
-   * loadPersonList checks
+   * loadPersonList loads the person list subjectively
    */
   loadPersonList = () => {
     if (this.props.status.isStudent) {
@@ -538,7 +540,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
    * @param jid jid
    * @param initStanza initStanza
    */
-  public joinPrivateChat(jid: string, initStanza?: Element) {
+  public joinPrivateChat(
+    jid: string,
+    group: string,
+    subscribeOnMessage: boolean,
+    initStanza?: Element
+  ) {
     // already joined or self
     const userBaseJID = this.state.connection.jid.split("/")[0];
     const baseJID = jid.split("/")[0];
@@ -556,6 +563,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const newJoin: IOpenChatJID = {
       type: "user",
       jid,
+      group,
+      subscribeOnMessage,
       initStanza: initStanza || null,
     };
 
@@ -607,7 +616,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
    * Toggles between joining and leaving the chat room
    * @param roomJID
    */
-  public toggleJoinLeavePrivateChatRoom(jid: string) {
+  public toggleJoinLeavePrivateChatRoom(
+    jid: string,
+    group?: string,
+    subscribeOnMessage?: boolean
+  ) {
     // Check whether current roomJID is allready part of openChatList
     if (
       this.state.openChatsJIDS &&
@@ -615,7 +628,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     ) {
       this.leavePrivateChat(jid);
     } else {
-      this.joinPrivateChat(jid);
+      this.joinPrivateChat(jid, group, subscribeOnMessage);
     }
   }
 
@@ -766,10 +779,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
 
   /**
-   * @param status
-   * @param condition
+   * @param status strophe status
    */
-  onConnectionStatusChanged(status: Strophe.Status, condition: string) {
+  onConnectionStatusChanged(status: Strophe.Status) {
     if (status === Strophe.Status.ATTACHED) {
       // We are atached. Send presence to server so it knows we're online
       this.state.connection.send(
@@ -881,7 +893,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         (s) => s.jid !== userFrom && s.type === "user"
       )
     ) {
-      this.joinPrivateChat(userFrom, stanza);
+      this.joinPrivateChat(userFrom, null, null, stanza);
     }
 
     return true;
@@ -976,6 +988,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     );
   }
 
+  /**
+   * onTabChange driven on tab change
+   * @param id
+   */
   onTabChange = (id: tabs) => {
     this.setState({ activeTab: id });
   };
@@ -996,41 +1012,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
         component: (
           <div className="chat__panel chat__panel--controlbox">
             <div className="chat__panel-header chat__panel-header--controlbox">
-              <Dropdown
-                alignSelf="left"
-                modifier="chat"
-                items={this.setUserAvailabilityDropdown().map(
-                  (item) => (closeDropdown: () => any) =>
-                    (
-                      <Link
-                        className={`link link--full link--chat-dropdown link--chat-availability-${item.modifier}`}
-                        onClick={(...args: any[]) => {
-                          closeDropdown();
-                          item.onClick && item.onClick(...args);
-                        }}
-                      >
-                        <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{this.props.i18n.text.get(item.text)}</span>
-                      </Link>
-                    )
-                )}
-              >
-                <span
-                  className={`chat__button chat__button--availability chat__button--availability-${this.state.selectedUserPresence} icon-user`}
-                ></span>
-              </Dropdown>
-
               {!this.state.isStudent && (
                 <span
                   onClick={this.toggleCreateChatRoomForm}
                   className="chat__button chat__button--new-room icon-plus"
                 ></span>
               )}
-
-              <span
-                onClick={this.toggleControlBox}
-                className="chat__button chat__button--close icon-cross"
-              ></span>
             </div>
 
             <div className="chat__panel-body chat__panel-body--controlbox">
@@ -1166,7 +1153,87 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
         component: (
           <div className="chat__panel chat__panel--controlbox">
-            <div className="chat__panel-header chat__panel-header--controlbox">
+            <div className="chat__panel-body chat__panel-body--controlbox">
+              {this.props.status.isStudent ? (
+                <>
+                  <div className="chat__controlbox-private-chat-heading">
+                    {this.props.i18n.text.get("plugin.chat.people.guider")}
+                  </div>
+                  <div className="chat__controlbox-people-listing">
+                    {this.state.studyGuiders.length > 0 ? (
+                      this.state.studyGuiders.map((councelor) => {
+                        const person: IChatContact = {
+                          jid: getUserChatId(councelor.userEntityId, "staff"),
+                          name: getName(councelor, true),
+                          group: "STUDY_GUIDER",
+                        };
+                        return (
+                          <People
+                            modifier="chat"
+                            person={person}
+                            toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
+                              this,
+                              person.jid,
+                              person.group,
+                              true
+                            )}
+                            key={councelor.userEntityId}
+                          />
+                        );
+                      })
+                    ) : (
+                      <div className="chat__controlbox-room  chat__controlbox-room--empty">
+                        {this.props.i18n.text.get("plugin.chat.people.empty")}
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="chat__controlbox-private-chat-heading">
+                    {this.props.i18n.text.get("plugin.chat.people.students")}
+                  </div>
+                  <div className="chat__controlbox-people-listing">
+                    {this.state.roster.length > 0 ? (
+                      this.state.roster.map((person, index) => (
+                        <People
+                          modifier="chat"
+                          person={person}
+                          toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
+                            this,
+                            person.jid,
+                            null,
+                            true
+                          )}
+                          key={index}
+                        />
+                      ))
+                    ) : (
+                      <div className="chat__controlbox-people  chat__controlbox-people--empty">
+                        {this.props.i18n.text.get("plugin.chat.people.empty")}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        ),
+      },
+    ];
+
+    return (
+      <div className="chat">
+        {/* Chat bubble */}
+        {this.state.showControlBox ? null : (
+          <div onClick={this.toggleControlBox} className="chat__bubble">
+            <span className="icon-chat"></span>
+          </div>
+        )}
+        {/* Chat controlbox */}
+        {this.state.showControlBox && (
+          <div className="chat__controlbox">
+            <div className="chat__controlbox-header">
               <Dropdown
                 alignSelf="left"
                 modifier="chat"
@@ -1195,90 +1262,14 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 className="chat__button chat__button--close icon-cross"
               ></span>
             </div>
-
-            <div className="chat__panel-body chat__panel-body--controlbox">
-              {this.props.status.isStudent ? (
-                <>
-                  <div className="chat__controlbox-rooms-heading">
-                    {this.props.i18n.text.get("plugin.chat.people.guider")}
-                  </div>
-                  <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
-                    {this.state.guidanceCouncelors.length > 0 ? (
-                      this.state.guidanceCouncelors.map((councelor) => {
-                        const person: IChatContact = {
-                          jid: getUserChatId(councelor.userEntityId, "staff"),
-                          name: getName(councelor, true),
-                        };
-                        return (
-                          <People
-                            modifier="chat"
-                            person={person}
-                            toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
-                              this,
-                              person.jid
-                            )}
-                            key={councelor.userEntityId}
-                          />
-                        );
-                      })
-                    ) : (
-                      <div className="chat__controlbox-room  chat__controlbox-room--empty">
-                        {this.props.i18n.text.get("plugin.chat.people.empty")}
-                      </div>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="chat__controlbox-rooms-heading">
-                    {this.props.i18n.text.get("plugin.chat.people.students")}
-                  </div>
-                  <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
-                    {this.state.roster.length > 0 ? (
-                      this.state.roster.map((person, index) => (
-                        <People
-                          modifier="chat"
-                          person={person}
-                          toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
-                            this,
-                            person.jid
-                          )}
-                          key={index}
-                        />
-                      ))
-                    ) : (
-                      <div className="chat__controlbox-room  chat__controlbox-room--empty">
-                        {this.props.i18n.text.get("plugin.chat.people.empty")}
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        ),
-      },
-    ];
-
-    return (
-      <div className="chat">
-        {/* Chat bubble */}
-        {this.state.showControlBox ? null : (
-          <div onClick={this.toggleControlBox} className="chat__bubble">
-            <span className="icon-chat"></span>
+            <Tabs
+              modifier="chat"
+              tabs={chatTabs}
+              onTabChange={this.onTabChange}
+              activeTab={this.state.activeTab}
+            ></Tabs>
           </div>
         )}
-
-        {/* Chat controlbox */}
-        {this.state.showControlBox && (
-          <Tabs
-            modifier="chat"
-            tabs={chatTabs}
-            onTabChange={this.onTabChange}
-            activeTab={this.state.activeTab}
-          ></Tabs>
-        )}
-
         {/* Chatrooms */}
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat, i) =>
@@ -1311,6 +1302,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
               <PrivateChat
                 jid={pchat.jid}
                 initializingStanza={pchat.initStanza}
+                userRosterGroup={pchat.group}
+                subscribeOnMessage={pchat.subscribeOnMessage}
                 key={pchat.jid}
                 leaveChat={this.leavePrivateChat.bind(this, pchat.jid)}
                 connection={this.state.connection}

@@ -10,6 +10,7 @@
 }
 
 .tabs--chat {
+  margin-top: 0;
   order: 2;
 }
 
@@ -50,6 +51,10 @@
   @include breakpoint($breakpoint-pad) {
     display: flex;
   }
+}
+
+.tabs__tab-labels--chat {
+  border-bottom: none;
 }
 
 .tabs__tab-labels--application-panel {
@@ -104,6 +109,23 @@
     cursor: pointer;
   }
 }
+
+.tabs__tab--chat{
+  border-bottom: none;
+  border-left: none;
+  border-radius: 0;
+  border-right: none;
+  border-top: none;
+  margin: 0;
+
+  &.active {
+    margin-bottom: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+}
+
 
 .tabs__tab-data-container--mobile-tabs {
   display: flex;

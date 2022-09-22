@@ -15,6 +15,8 @@ interface IPrivateChatProps {
   leaveChat: () => void;
   connection: Strophe.Connection;
   jid: string;
+  userRosterGroup?: string;
+  subscribeOnMessage?: boolean;
   i18n: i18nType;
 }
 
@@ -159,6 +161,9 @@ export class PrivateChat extends React.Component<
     );
   }
 
+  /**
+   * Subscribe to another user's presence
+   */
   subscribeToPresence = () => {
     this.props.connection.send(
       $pres({
@@ -169,6 +174,9 @@ export class PrivateChat extends React.Component<
     );
   };
 
+  /**
+   * Allow another user's presence
+   */
   allowSubscribeToPresence = () => {
     this.props.connection.send(
       $pres({
@@ -274,9 +282,13 @@ export class PrivateChat extends React.Component<
         edited: null,
       };
 
-      if (!this.state.friends.includes(this.props.jid)) {
+      if (
+        !this.state.friends.includes(this.props.jid) &&
+        this.props.subscribeOnMessage
+      ) {
         this.allowSubscribeToPresence();
         this.subscribeToPresence();
+        this.setUserToRosterGroup(this.props.userRosterGroup);
       }
 
       // this.setUserToRosterGroup("test");
