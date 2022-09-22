@@ -172,7 +172,7 @@ class Announcements extends React.Component<
                       <NewEditAnnouncement announcement={announcement}>
                         <Link
                           tabIndex={0}
-                          className="link link--application-list-item-footer"
+                          className="link link--application-list"
                         >
                           {this.props.i18n.text.get(
                             "plugin.announcer.link.edit"
@@ -183,7 +183,7 @@ class Announcements extends React.Component<
                         <DeleteAnnouncementDialog announcement={announcement}>
                           <Link
                             tabIndex={0}
-                            className="link link--application-list-item-footer"
+                            className="link link--application-list"
                           >
                             {this.props.i18n.text.get(
                               "plugin.announcer.link.delete"

@@ -9,6 +9,8 @@ import {
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
+import ButtonIcon from "~/components/general/button";
+import Dropdown from "~/components/general/dropdown";
 import DeleteThreadComponent from "../../dialogs/delete-thread-component";
 import { getName } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
@@ -35,8 +37,7 @@ import {
   subscribeDiscussionThread,
   unsubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
-} from "../../../../actions/discussion/index";
-import { ButtonPill } from "~/components/general/button";
+} from "~/actions/discussion/index";
 
 /**
  * CurrentThreadProps
@@ -258,7 +259,46 @@ class DiscussionCurrentThread extends React.Component<
         locked={this.props.discussion.current.locked}
         title={
           <h2 className="application-list__title">
-            {this.props.discussion.current.title}
+            <span className="application-list__title-main">
+              {this.props.discussion.current.title}
+            </span>
+            <span className="application-list__title-aside">
+              {isSubscribed ? (
+                <Dropdown
+                  openByHover
+                  modifier="discussion-tooltip"
+                  content={this.props.i18n.text.get(
+                    "plugin.discussion.unsubscribe.thread"
+                  )}
+                >
+                  <ButtonIcon
+                    icon="bookmark-full"
+                    onClick={this.handleSubscribeOrUnsubscribeClick(
+                      this.props.discussion.current,
+                      true
+                    )}
+                    buttonModifiers={["discussion-action"]}
+                  />
+                </Dropdown>
+              ) : (
+                <Dropdown
+                  openByHover
+                  modifier="discussion-tooltip"
+                  content={this.props.i18n.text.get(
+                    "plugin.discussion.subscribe.thread"
+                  )}
+                >
+                  <ButtonIcon
+                    icon="bookmark-empty"
+                    onClick={this.handleSubscribeOrUnsubscribeClick(
+                      this.props.discussion.current,
+                      false
+                    )}
+                    buttonModifiers={["discussion-action"]}
+                  />
+                </Dropdown>
+              )}
+            </span>
           </h2>
         }
       >
@@ -270,25 +310,6 @@ class DiscussionCurrentThread extends React.Component<
           <DiscussionThreadHeader
             aside={
               <span style={{ display: "flex", alignItems: "center" }}>
-                {isSubscribed ? (
-                  <ButtonPill
-                    icon="book"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      this.props.discussion.current,
-                      true
-                    )}
-                    buttonModifiers={["discussion-subscription active"]}
-                  />
-                ) : (
-                  <ButtonPill
-                    icon="book"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      this.props.discussion.current,
-                      false
-                    )}
-                    buttonModifiers={["discussion-subscription"]}
-                  />
-                )}
                 <span>
                   {this.props.i18n.time.format(
                     this.props.discussion.current.created
@@ -331,7 +352,7 @@ class DiscussionCurrentThread extends React.Component<
                 <DiscussionThreadFooter hasActions>
                   {!threadLocked || !student ? (
                     <Link
-                      className="link link--application-list-item-footer"
+                      className="link link--application-list"
                       onClick={this.handleOnReplyClick("answer")}
                     >
                       {this.props.i18n.text.get(
@@ -341,7 +362,7 @@ class DiscussionCurrentThread extends React.Component<
                   ) : null}
                   {!threadLocked || !student ? (
                     <Link
-                      className="link link--application-list-item-footer"
+                      className="link link--application-list"
                       onClick={this.handleOnReplyClick("quote")}
                     >
                       {this.props.i18n.text.get(
@@ -351,7 +372,7 @@ class DiscussionCurrentThread extends React.Component<
                   ) : null}
                   {canEditThread ? (
                     <Link
-                      className="link link--application-list-item-footer"
+                      className="link link--application-list"
                       onClick={this.handleOnReplyClick("modify")}
                     >
                       {this.props.i18n.text.get("plugin.discussion.reply.edit")}
@@ -359,7 +380,7 @@ class DiscussionCurrentThread extends React.Component<
                   ) : null}
                   {canRemoveThread || studentCanRemoveThread ? (
                     <DeleteThreadComponent>
-                      <Link className="link link--application-list-item-footer">
+                      <Link className="link link--application-list">
                         {this.props.i18n.text.get(
                           "plugin.discussion.reply.delete"
                         )}

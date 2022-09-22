@@ -23,7 +23,7 @@ import { bindActionCreators } from "redux";
 import {
   ShowOnlySubscribedThreads,
   showOnlySubscribedThreads,
-} from "../../../../actions/discussion/index";
+} from "~/actions/discussion/index";
 
 /**
  * DiscussionToolbarProps

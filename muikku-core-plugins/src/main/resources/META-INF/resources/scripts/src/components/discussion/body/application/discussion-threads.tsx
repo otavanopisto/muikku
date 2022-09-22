@@ -15,6 +15,7 @@ import {
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { StateType } from "~/reducers";
 import OverflowDetector from "~/components/general/overflow-detector";
+import Dropdown from "~/components/general/dropdown";
 import {
   DiscussionThreads,
   DiscussionThread,
@@ -26,14 +27,14 @@ import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import PagerV2 from "~/components/general/pagerV2";
 import { AnyActionType } from "~/actions/index";
-import { ButtonPill } from "~/components/general/button";
+import ButtonIcon from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import {
   subscribeDiscussionThread,
   unsubscribeDiscussionThread,
   SubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
-} from "../../../../actions/discussion/index";
+} from "~/actions/discussion/index";
 
 /**
  * DiscussionThreadsProps
@@ -207,7 +208,7 @@ class DDiscussionThreads extends React.Component<
             avatar={avatar}
           >
             <DiscussionThreadHeader>
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <div className="application-list__item-header-main">
                 {thread.locked ? (
                   <div className="discussion__icon icon-lock"></div>
                 ) : null}
@@ -221,25 +222,41 @@ class DDiscussionThreads extends React.Component<
                 </div>
               </div>
 
-              <div>
+              <div className="application-list__item-header-aside">
                 {isSubscribed ? (
-                  <ButtonPill
-                    icon="book"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      thread,
-                      true
+                  <Dropdown
+                    openByHover
+                    modifier="discussion-tooltip"
+                    content={this.props.i18n.text.get(
+                      "plugin.discussion.unsubscribe.thread"
                     )}
-                    buttonModifiers={["discussion-subscription active"]}
-                  />
+                  >
+                    <ButtonIcon
+                      icon="bookmark-full"
+                      onClick={this.handleSubscribeOrUnsubscribeClick(
+                        thread,
+                        true
+                      )}
+                      buttonModifiers={["discussion-action"]}
+                    />
+                  </Dropdown>
                 ) : (
-                  <ButtonPill
-                    icon="book"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      thread,
-                      false
+                  <Dropdown
+                    openByHover
+                    modifier="discussion-tooltip"
+                    content={this.props.i18n.text.get(
+                      "plugin.discussion.subscribe.thread"
                     )}
-                    buttonModifiers={["discussion-subscription"]}
-                  />
+                  >
+                    <ButtonIcon
+                      icon="bookmark-empty"
+                      onClick={this.handleSubscribeOrUnsubscribeClick(
+                        thread,
+                        false
+                      )}
+                      buttonModifiers={["discussion-action"]}
+                    />
+                  </Dropdown>
                 )}
               </div>
             </DiscussionThreadHeader>
