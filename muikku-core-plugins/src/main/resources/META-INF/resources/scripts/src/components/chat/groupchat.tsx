@@ -263,7 +263,7 @@ export class Groupchat extends React.Component<
         {
           currentMessageToBeSent: "",
         },
-        this.scrollToBottom.bind(this, "smooth")
+        this.scrollToBottom.bind(this, "auto")
       );
     }
   }
@@ -488,7 +488,7 @@ export class Groupchat extends React.Component<
           messages: newMessagesList,
           processedMessages: this.processMessages(newMessagesList),
         },
-        this.scrollToBottom.bind(this, "smooth")
+        this.scrollToBottom.bind(this, "auto")
       );
     }
 
@@ -502,7 +502,6 @@ export class Groupchat extends React.Component<
    */
   onPresence(stanza: Element) {
     const from = stanza.getAttribute("from");
-    const fromBare = from.split("/")[0];
     const fromNick = from.split("/")[1];
 
     const show = stanza.querySelector("show");
@@ -714,10 +713,12 @@ export class Groupchat extends React.Component<
    */
   checkScrollDetachment(e: React.UIEvent<HTMLDivElement>) {
     if (this.chatRef.current) {
-      const isScrolledToBottom =
-        this.chatRef.current.scrollTop ===
-        this.chatRef.current.scrollHeight - this.chatRef.current.offsetHeight;
-      this.isScrollDetached = !isScrolledToBottom;
+      this.isScrollDetached =
+        Math.abs(
+          this.chatRef.current.scrollHeight -
+            this.chatRef.current.offsetHeight -
+            this.chatRef.current.scrollTop
+        ) > 64;
     }
 
     if (this.isScrolledToTop()) {
