@@ -27,7 +27,7 @@ import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import PagerV2 from "~/components/general/pagerV2";
 import { AnyActionType } from "~/actions/index";
-import ButtonIcon from "~/components/general/button";
+import { IconButton } from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import {
   subscribeDiscussionThread,
@@ -231,13 +231,13 @@ class DDiscussionThreads extends React.Component<
                       "plugin.discussion.unsubscribe.thread"
                     )}
                   >
-                    <ButtonIcon
+                    <IconButton
                       icon="bookmark-full"
                       onClick={this.handleSubscribeOrUnsubscribeClick(
                         thread,
                         true
                       )}
-                      buttonModifiers={["discussion-action"]}
+                      buttonModifiers={["discussion-action-active"]}
                     />
                   </Dropdown>
                 ) : (
@@ -248,7 +248,7 @@ class DDiscussionThreads extends React.Component<
                       "plugin.discussion.subscribe.thread"
                     )}
                   >
-                    <ButtonIcon
+                    <IconButton
                       icon="bookmark-empty"
                       onClick={this.handleSubscribeOrUnsubscribeClick(
                         thread,
@@ -272,7 +272,7 @@ class DDiscussionThreads extends React.Component<
             ) : null}
             <DiscussionThreadFooter>
               <div className="application-list__item-footer-content-main">
-                <span>
+                <span className="application-list__item-footer-meta">
                   {user &&
                     getName(
                       user,

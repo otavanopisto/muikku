@@ -9,7 +9,7 @@ import {
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
-import ButtonIcon from "~/components/general/button";
+import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import DeleteThreadComponent from "../../dialogs/delete-thread-component";
 import { getName } from "~/util/modifiers";
@@ -271,13 +271,13 @@ class DiscussionCurrentThread extends React.Component<
                     "plugin.discussion.unsubscribe.thread"
                   )}
                 >
-                  <ButtonIcon
+                  <IconButton
                     icon="bookmark-full"
                     onClick={this.handleSubscribeOrUnsubscribeClick(
                       this.props.discussion.current,
                       true
                     )}
-                    buttonModifiers={["discussion-action"]}
+                    buttonModifiers={["discussion-action-active"]}
                   />
                 </Dropdown>
               ) : (
@@ -288,7 +288,7 @@ class DiscussionCurrentThread extends React.Component<
                     "plugin.discussion.subscribe.thread"
                   )}
                 >
-                  <ButtonIcon
+                  <IconButton
                     icon="bookmark-empty"
                     onClick={this.handleSubscribeOrUnsubscribeClick(
                       this.props.discussion.current,

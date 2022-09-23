@@ -720,7 +720,10 @@
 }
 
 .application-list__item-footer-content-main {
+  align-items: center;
+  display: flex;
   flex-basis: 100%;
+  flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 0;
   font-size: 0.8125rem;
@@ -732,6 +735,10 @@
     flex-shrink: 1;
     padding: 0;
   }
+}
+
+.application-list__item-footer-meta {
+  margin: 0 10px 0 0;
 }
 
 .application-list__item-date {
@@ -916,7 +923,7 @@
 }
 
 .application-list__item-header--discussion-thread-list {
-  font-size: 1.5rem;
+  font-size: 1.1875rem;
   justify-content: space-between;
   margin: 0 0 10px;
 }

@@ -769,6 +769,14 @@
   color: $color-info;
 }
 
+.button-icon--discussion-action {
+  color: $color-default-contrast;
+}
+
+.button-icon--discussion-action-active {
+  color: $color-info;
+}
+
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);

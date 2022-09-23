@@ -7,6 +7,7 @@ import "~/sass/elements/loaders.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/discussion.scss";
 import "~/sass/elements/avatar.scss";
+import "~/sass/elements/label.scss";
 import {
   DiscussionType,
   DiscussionThreadType,
@@ -24,17 +25,18 @@ import {
   DiscussionThreadFooter,
   DiscussionThreadsListHeader,
 } from "./threads/threads";
+import Dropdown from "~/components/general/dropdown";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { AnyActionType } from "~/actions/index";
-import { ButtonPill } from "~/components/general/button";
+import { IconButton } from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import {
   subscribeDiscussionThread,
   unsubscribeDiscussionThread,
   SubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
-} from "../../../../actions/discussion/index";
+} from "~/actions/discussion/index";
 import { WorkspacesType } from "~/reducers/workspaces";
 
 /**
@@ -301,16 +303,22 @@ class DiscussionSubscribedThreads extends React.Component<
                 </div>
               </div>
 
-              <div>
-                <ButtonPill
-                  icon="book"
+              <Dropdown
+                openByHover
+                modifier="discussion-tooltip"
+                content={this.props.i18n.text.get(
+                  "plugin.discussion.unsubscribe.thread"
+                )}
+              >
+                <IconButton
+                  icon="bookmark-full"
                   onClick={this.handleSubscribeOrUnsubscribeClick(
                     subscribredThread,
                     true
                   )}
                   buttonModifiers={["discussion-subscription active"]}
                 />
-              </div>
+              </Dropdown>
             </DiscussionThreadHeader>
             {subscribredThread.sticky ? (
               <DiscussionThreadBody>
@@ -326,7 +334,7 @@ class DiscussionSubscribedThreads extends React.Component<
             ) : null}
             <DiscussionThreadFooter>
               <div className="application-list__item-footer-content-main">
-                <span>
+                <span className="application-list__item-footer-meta">
                   {user &&
                     getName(
                       user,
@@ -415,16 +423,22 @@ class DiscussionSubscribedThreads extends React.Component<
               </div>
             </div>
 
-            <div>
-              <ButtonPill
-                icon="book"
+            <Dropdown
+              openByHover
+              modifier="discussion-tooltip"
+              content={this.props.i18n.text.get(
+                "plugin.discussion.unsubscribe.thread"
+              )}
+            >
+              <IconButton
+                icon="bookmark-full"
                 onClick={this.handleSubscribeOrUnsubscribeClick(
                   subscribredThread,
                   true
                 )}
                 buttonModifiers={["discussion-subscription active"]}
               />
-            </div>
+            </Dropdown>
           </DiscussionThreadHeader>
           {subscribredThread.sticky ? (
             <DiscussionThreadBody>
@@ -440,7 +454,7 @@ class DiscussionSubscribedThreads extends React.Component<
           ) : null}
           <DiscussionThreadFooter>
             <div className="application-list__item-footer-content-main">
-              <span>
+              <span className="application-list__item-footer-meta">
                 {user &&
                   getName(
                     user,
@@ -448,7 +462,13 @@ class DiscussionSubscribedThreads extends React.Component<
                   )}
                 , {this.props.i18n.time.format(subscribredThread.created)}
               </span>
-              {sThreads.workspaceName && <span>{sThreads.workspaceName}</span>}
+              {sThreads.workspaceName && (
+                <span className="label">
+                  <span className="label__icon label__icon--workspace icon-books"></span>
+                  <span className="label__text label__text--workspace"></span>
+                  {sThreads.workspaceName}
+                </span>
+              )}
             </div>
             <div className="application-list__item-footer-content-aside">
               <div className="application-list__item-counter-container">
@@ -478,20 +498,28 @@ class DiscussionSubscribedThreads extends React.Component<
     return (
       <BodyScrollKeeper hidden={!!this.props.discussion.current}>
         <DiscussionThreadsListHeader>
-          Keskustelujen tilaukset
+          {this.props.i18n.text.get(
+            "plugin.discussion.browseareas.subscribtions.environment.title"
+          )}
         </DiscussionThreadsListHeader>
         <DiscussionThreads>
           {enviromentalLevelThreadsItems.length > 0
             ? enviromentalLevelThreadsItems
-            : "Ei tilauksia"}
+            : this.props.i18n.text.get(
+                "plugin.discussion.browseareas.subscribtions.enmpty.title"
+              )}
         </DiscussionThreads>
         <DiscussionThreadsListHeader>
-          Työtilojen keskusteluiden tilaukset
+          {this.props.i18n.text.get(
+            "plugin.discussion.browseareas.subscribtions.workspace.title"
+          )}
         </DiscussionThreadsListHeader>
         <DiscussionThreads>
           {workspaceLevelThreadsItems.length > 0
             ? workspaceLevelThreadsItems
-            : "Ei työtiloihin liittyviä tilauksia"}
+            : this.props.i18n.text.get(
+                "plugin.discussion.browseareas.subscribtions.enmpty.title"
+              )}
         </DiscussionThreads>
       </BodyScrollKeeper>
     );
