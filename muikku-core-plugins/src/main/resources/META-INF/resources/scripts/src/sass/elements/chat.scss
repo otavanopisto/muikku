@@ -381,8 +381,10 @@
   line-height: 1.125rem;
   padding: 10px 5px;
   z-index: 2;
+}
 
-
+.chat__controlbox-person-name {
+  cursor: pointer;
 }
 
 .chat__controlbox-user-status {

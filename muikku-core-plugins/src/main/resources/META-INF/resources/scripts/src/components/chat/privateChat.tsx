@@ -163,28 +163,110 @@ export class PrivateChat extends React.Component<
 
   /**
    * Subscribe to another user's presence
+   * @param type should you subscribe or unsubscribe from the presence
    */
-  subscribeToPresence = () => {
-    this.props.connection.send(
-      $pres({
-        from: this.props.connection.jid,
-        to: this.props.jid,
-        type: "subscribe",
-      })
+  handlePresenceSubscribe = async (
+    type: "subscribe" | "unsubscribe"
+  ): Promise<void> => {
+    await new Promise((resolve) =>
+      resolve(
+        this.props.connection.send(
+          $pres({
+            from: this.props.connection.jid,
+            to: this.props.jid,
+            type: type,
+          })
+        )
+      )
     );
   };
 
   /**
    * Allow another user's presence
+   * @param type should allow or unallow other person's subscription
    */
-  allowSubscribeToPresence = () => {
-    this.props.connection.send(
-      $pres({
-        from: this.props.connection.jid,
-        to: this.props.jid,
-        type: "subscribed",
-      })
+  handlePresenceSubscribed = async (
+    type: "subscribed" | "unsubscribed"
+  ): Promise<void> => {
+    await new Promise((resolve) =>
+      resolve(
+        this.props.connection.send(
+          $pres({
+            from: this.props.connection.jid,
+            to: this.props.jid,
+            type: "type",
+          })
+        )
+      )
     );
+  };
+
+  // handleSubscriptions = async (): Promise<void> => {
+  //   const subscribe = new Promise((resolve) =>
+  //     resolve(
+  //       this.props.connection.send(
+  //         $pres({
+  //           from: this.props.connection.jid,
+  //           to: this.props.jid,
+  //           type: "subscribe",
+  //         })
+  //       )
+  //     )
+  //   );
+
+  //   const subscribed = new Promise((resolve) =>
+  //     resolve(
+  //       this.props.connection.send(
+  //         $pres({
+  //           from: this.props.connection.jid,
+  //           to: this.props.jid,
+  //           type: "subscribed",
+  //         })
+  //       )
+  //     )
+  //   );
+
+  //   await Promise.all([subscribe, subscribed]);
+  // };
+
+  /**
+   * setUserToRosterGroup sets user to a group in a roster
+   * @param groupName given group name
+   * @return Element stanza
+   */
+  setUserToRosterGroup = async (groupName: string): Promise<Element> => {
+    const stanza = $iq({
+      from: this.props.connection.jid,
+      type: "set",
+    })
+      .c("query", { xmlns: Strophe.NS.ROSTER })
+      .c("item", { jid: this.props.jid })
+      .c("group", groupName);
+
+    const answer: Element = await new Promise((resolve) =>
+      this.props.connection.sendIQ(stanza, (answerStanza: Element) =>
+        resolve(answerStanza)
+      )
+    );
+
+    return answer;
+  };
+
+  handleMessageSend = async (text: string): Promise<void> => {
+    await new Promise((resolve) => {
+      resolve(
+        this.props.connection.send(
+          $msg({
+            from: this.props.connection.jid,
+            to: this.props.jid,
+            type: "chat",
+          })
+            .c("body", text)
+            .up()
+            .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
+        )
+      );
+    });
   };
 
   getRoster = () => {
@@ -202,22 +284,6 @@ export class PrivateChat extends React.Component<
     });
 
     this.setState({ friends: friendList });
-  };
-
-  /**
-   * setUserToRosterGroup sets user to a group in a roster
-   * @param groupName given group name
-   */
-  setUserToRosterGroup = (groupName: string) => {
-    const stanza = $iq({
-      from: this.props.connection.jid,
-      type: "set",
-    })
-      .c("query", { xmlns: Strophe.NS.ROSTER })
-      .c("item", { jid: this.props.jid })
-      .c("group", groupName);
-
-    this.props.connection.sendIQ(stanza);
   };
 
   /**
@@ -259,16 +325,17 @@ export class PrivateChat extends React.Component<
     const text = this.state.currentMessageToBeSent.trim();
 
     if (text) {
-      this.props.connection.send(
-        $msg({
-          from: this.props.connection.jid,
-          to: this.props.jid,
-          type: "chat",
-        })
-          .c("body", text)
-          .up()
-          .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
-      );
+      this.handleMessageSend(text);
+      if (
+        !this.state.friends.includes(this.props.jid) &&
+        this.props.subscribeOnMessage
+      ) {
+        this.handlePresenceSubscribe("subscribe");
+        this.handlePresenceSubscribed("subscribed");
+      }
+
+      this.props.userRosterGroup &&
+        this.setUserToRosterGroup(this.props.userRosterGroup);
 
       const newMessage: IBareMessageType = {
         nick: null,
@@ -281,15 +348,6 @@ export class PrivateChat extends React.Component<
         deleted: false,
         edited: null,
       };
-
-      if (
-        !this.state.friends.includes(this.props.jid) &&
-        this.props.subscribeOnMessage
-      ) {
-        this.allowSubscribeToPresence();
-        this.subscribeToPresence();
-        this.setUserToRosterGroup(this.props.userRosterGroup);
-      }
 
       // this.setUserToRosterGroup("test");
 
