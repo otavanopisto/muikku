@@ -79,6 +79,7 @@ class DisconnectedWarningDialog extends React.Component<
         content={content}
         footer={footer}
         modifier={["disconnect-warning"]}
+        closeOnOverlayClick={false}
       />
     );
   }

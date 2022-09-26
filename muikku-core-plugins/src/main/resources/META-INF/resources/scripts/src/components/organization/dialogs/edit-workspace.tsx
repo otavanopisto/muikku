@@ -590,6 +590,8 @@ class OrganizationEditWorkspace extends React.Component<
     const detailsUpdate: WorkspaceDetailsType = {
       beginDate: this.props.currentWorkspace.details.beginDate,
       endDate: this.props.currentWorkspace.details.endDate,
+      signupStart: this.props.currentWorkspace.details.signupStart,
+      signupEnd: this.props.currentWorkspace.details.signupEnd,
       externalViewUrl: this.props.currentWorkspace.details.externalViewUrl,
       typeId: this.props.currentWorkspace.details.typeId,
       rootFolderId: this.props.currentWorkspace.details.rootFolderId,

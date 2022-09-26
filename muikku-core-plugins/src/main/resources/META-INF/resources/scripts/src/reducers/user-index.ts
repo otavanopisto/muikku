@@ -1,5 +1,6 @@
 import { ActionType } from "~/actions";
 import { PagingUserListType } from "~/reducers/main-function/users";
+import { Reducer } from "redux";
 export type ManipulateType = "UPDATE" | "CREATE";
 
 /**
@@ -111,6 +112,7 @@ export interface UserStaffType {
   email: string;
   firstName: string;
   lastName: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: any;
   userEntityId: number;
   hasImage: boolean;
@@ -257,6 +259,7 @@ export interface StudentUserAddressType {
  */
 export interface StudentUserProfileChatType {
   userIdentifier: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   visibility: any;
 }
 
@@ -271,11 +274,62 @@ export interface LastLoginStudentDataType {
 }
 
 /**
+ * initialUserIndexState
+ */
+const initialUserIndexState: UserIndexType = {
+  users: {},
+  groups: {},
+  usersBySchoolData: {},
+};
+
+/**
+ * Reducer function for userIndex
+ *
+ * @param state state
+ * @param action action
+ * @returns State of userIndex
+ */
+export const userIndex: Reducer<UserIndexType> = (
+  state = initialUserIndexState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "SET_USER_INDEX": {
+      const prop: { [index: number]: UserType } = {};
+      prop[action.payload.index] = action.payload.value;
+      return Object.assign({}, state, {
+        users: Object.assign({}, state.users, prop),
+      });
+    }
+
+    case "SET_USER_GROUP_INDEX": {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const prop: { [index: number]: any } = {}; //TODO change to the user group type
+      prop[action.payload.index] = action.payload.value;
+      return Object.assign({}, state, {
+        groups: Object.assign({}, state.groups, prop),
+      });
+    }
+
+    case "SET_USER_BY_SCHOOL_DATA_INDEX": {
+      const prop: { [index: string]: UserType } = {};
+      prop[action.payload.index] = action.payload.value;
+      return Object.assign({}, state, {
+        usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop),
+      });
+    }
+
+    default:
+      return state;
+  }
+};
+
+/**
  * userIndex
  * @param state state
  * @param action action
  */
-export default function userIndex(
+/* export default function userIndex(
   state: UserIndexType = {
     users: {},
     groups: {},
@@ -304,4 +358,4 @@ export default function userIndex(
   }
 
   return state;
-}
+} */

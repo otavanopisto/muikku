@@ -15,6 +15,7 @@ import {
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { PurchaseType, PurchaseProductType } from "../profile";
 import { LoadingState } from "~/@types/shared";
+import { Reducer } from "redux";
 /**
  * GuiderUserLabelType
  */
@@ -175,7 +176,7 @@ export interface GuiderType {
   availableFilters: GuiderFiltersType;
   hasMore: boolean;
   toolbarLock: boolean;
-  currentStudent: GuiderStudentUserProfileType;
+  currentStudent: GuiderStudentUserProfileType | null;
   currentStudentState: GuiderCurrentStudentStateType;
   selectedStudents: GuiderStudentListType;
   selectedStudentsIds: Array<string>;
@@ -237,390 +238,455 @@ function sortOrders(a: PurchaseType, b: PurchaseType) {
 }
 
 /**
- * guider reducer function
- * @param state app state
- * @param action redux action
- * @returns new app state
+ * InitialGuiderState
  */
-export default function guider(
-  state: GuiderType = {
-    studentsState: "LOADING",
-    currentStudentState: "LOADING",
-    availableFilters: {
-      labels: [],
-      workspaces: [],
-      userGroups: [],
-    },
-    activeFilters: {
-      workspaceFilters: [],
-      labelFilters: [],
-      userGroupFilters: [],
-      query: "",
-    },
-    availablePurchaseProducts: [],
-    students: [],
-    hasMore: false,
-    toolbarLock: false,
-    selectedStudents: [],
-    selectedStudentsIds: [],
-    toggleAllStudentsActive: false,
-    currentStudent: {
-      contactLogState: "LOADING",
-      currentWorkspacesState: "LOADING",
-      pastWorkspacesState: "LOADING",
-      activityLogState: "LOADING",
-      basic: null,
-      labels: [],
-      emails: [],
-      phoneNumbers: [],
-      addresses: [],
-      files: [],
-      usergroups: [],
-      hops: null,
-      notifications: null,
-      contactLogs: null,
-      currentWorkspaces: [],
-      pastWorkspaces: [],
-      activityLogs: [],
-      purchases: [],
-      hopsAvailable: false,
-    },
+const initialGuiderState: GuiderType = {
+  studentsState: "LOADING",
+  currentStudentState: "LOADING",
+  availableFilters: {
+    labels: [],
+    workspaces: [],
+    userGroups: [],
   },
-  action: ActionType
-): GuiderType {
-  if (action.type === "LOCK_TOOLBAR") {
-    return Object.assign({}, state, {
-      toolbarLock: true,
-    });
-  } else if (action.type === "UNLOCK_TOOLBAR") {
-    return Object.assign({}, state, {
-      toolbarLock: false,
-    });
-  } else if (action.type === "UPDATE_GUIDER_ACTIVE_FILTERS") {
-    return Object.assign({}, state, {
-      activeFilters: action.payload,
-    });
-  } else if (action.type === "UPDATE_GUIDER_ALL_PROPS") {
-    return Object.assign({}, state, action.payload);
-  } else if (action.type === "UPDATE_GUIDER_STATE") {
-    return Object.assign({}, state, {
-      studentsState: action.payload,
-    });
-  } else if (action.type === "ADD_TO_GUIDER_SELECTED_STUDENTS") {
-    const student: GuiderStudentType = action.payload;
-    return Object.assign({}, state, {
-      selectedStudents: state.selectedStudents.concat([student]),
-      selectedStudentsIds: state.selectedStudentsIds.concat([student.id]),
-    });
-  } else if (action.type === "REMOVE_FROM_GUIDER_SELECTED_STUDENTS") {
-    const student: GuiderStudentType = action.payload;
-    return Object.assign({}, state, {
-      selectedStudents: state.selectedStudents.filter(
-        (s) => s.id !== student.id
-      ),
-      selectedStudentsIds: state.selectedStudentsIds.filter(
-        (id) => id !== student.id
-      ),
-    });
-  } else if (action.type === "SET_CURRENT_GUIDER_STUDENT") {
-    return Object.assign({}, state, {
-      currentStudent: action.payload,
-    });
-  } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD") {
-    return Object.assign({}, state, {
-      currentStudent: {},
-      currentStudentState: "LOADING",
-    });
-  } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP") {
-    const updatedCurrentStudent = {
-      ...state.currentStudent,
-      [action.payload.property]: action.payload.value,
-    };
-    return Object.assign({}, state, {
-      currentStudent: updatedCurrentStudent,
-    });
-  } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_STATE") {
-    return Object.assign({}, state, {
-      currentStudentState: action.payload,
-    });
-  } else if (
-    action.type === "ADD_GUIDER_LABEL_TO_USER" ||
-    action.type === "REMOVE_GUIDER_LABEL_FROM_USER"
-  ) {
-    let newCurrent: GuiderStudentUserProfileType;
+  activeFilters: {
+    workspaceFilters: [],
+    labelFilters: [],
+    userGroupFilters: [],
+    query: "",
+  },
+  availablePurchaseProducts: [],
+  students: [],
+  hasMore: false,
+  toolbarLock: false,
+  selectedStudents: [],
+  selectedStudentsIds: [],
+  toggleAllStudentsActive: false,
+  currentStudent: {
+    contactLogState: "LOADING",
+    currentWorkspacesState: "LOADING",
+    pastWorkspacesState: "LOADING",
+    activityLogState: "LOADING",
+    basic: null,
+    labels: [],
+    emails: [],
+    phoneNumbers: [],
+    addresses: [],
+    files: [],
+    usergroups: [],
+    hops: null,
+    notifications: null,
+    contactLogs: null,
+    currentWorkspaces: [],
+    pastWorkspaces: [],
+    activityLogs: [],
+    purchases: [],
+    hopsAvailable: false,
+  },
+};
 
-    if (action.type === "ADD_GUIDER_LABEL_TO_USER") {
-      newCurrent =
+/**
+ * guider2
+ * @param state state
+ * @param action action
+ * @returns Guider state
+ */
+export const guider: Reducer<GuiderType> = (
+  state = initialGuiderState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "LOCK_TOOLBAR":
+      return {
+        ...state,
+        toolbarLock: true,
+      };
+
+    case "UNLOCK_TOOLBAR":
+      return {
+        ...state,
+        toolbarLock: false,
+      };
+
+    case "UPDATE_GUIDER_ACTIVE_FILTERS":
+      return {
+        ...state,
+        activeFilters: action.payload,
+      };
+
+    case "UPDATE_GUIDER_ALL_PROPS":
+      return Object.assign({}, state, action.payload);
+
+    case "UPDATE_GUIDER_STATE":
+      return {
+        ...state,
+        studentsState: action.payload,
+      };
+
+    case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
+      const student: GuiderStudentType = action.payload;
+
+      return {
+        ...state,
+        selectedStudents: state.selectedStudents.concat([student]),
+        selectedStudentsIds: state.selectedStudentsIds.concat([student.id]),
+      };
+    }
+    case "REMOVE_FROM_GUIDER_SELECTED_STUDENTS": {
+      const student: GuiderStudentType = action.payload;
+
+      return {
+        ...state,
+        selectedStudents: state.selectedStudents.filter(
+          (s) => s.id !== student.id
+        ),
+        selectedStudentsIds: state.selectedStudentsIds.filter(
+          (id) => id !== student.id
+        ),
+      };
+    }
+
+    case "SET_CURRENT_GUIDER_STUDENT":
+      return {
+        ...state,
+        currentStudent: action.payload,
+      };
+
+    case "SET_CURRENT_GUIDER_STUDENT_PROP": {
+      const updatedCurrentStudent = {
+        ...state.currentStudent,
+        [action.payload.property]: action.payload.value,
+      };
+
+      return {
+        ...state,
+        currentStudent: updatedCurrentStudent,
+      };
+    }
+    case "UPDATE_CURRENT_GUIDER_STUDENT_STATE":
+      return {
+        ...state,
+        currentStudentState: action.payload,
+      };
+
+    case "ADD_GUIDER_LABEL_TO_USER": {
+      const newCurrent: GuiderStudentUserProfileType =
         state.currentStudent && Object.assign({}, state.currentStudent);
+
       if (newCurrent && newCurrent.labels) {
         newCurrent.labels = newCurrent.labels.concat([action.payload.label]);
       }
-    } else {
-      newCurrent =
+
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      const mapFn = function (student: GuiderStudentType) {
+        if (student.id === action.payload.studentId) {
+          return Object.assign({}, student, {
+            flags: student.flags.concat([action.payload.label]),
+          });
+        }
+
+        return student;
+      };
+
+      return {
+        ...state,
+        students: state.students.map(mapFn),
+        selectedStudents: state.selectedStudents.map(mapFn),
+        currentStudent: newCurrent,
+      };
+    }
+
+    case "REMOVE_GUIDER_LABEL_FROM_USER": {
+      const newCurrent: GuiderStudentUserProfileType =
         state.currentStudent && Object.assign({}, state.currentStudent);
+
       if (newCurrent && newCurrent.labels) {
         newCurrent.labels = newCurrent.labels.filter(
           (label) => label.id !== action.payload.label.id
         );
       }
-    }
 
-    /**
-     * mapFn
-     * @param student student
-     */
-    const mapFn = function (student: GuiderStudentType) {
-      if (student.id === action.payload.studentId) {
-        if (action.type === "ADD_GUIDER_LABEL_TO_USER") {
-          return Object.assign({}, student, {
-            flags: student.flags.concat([action.payload.label]),
-          });
-        } else {
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      const mapFn = function (student: GuiderStudentType) {
+        if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
             flags: student.flags.filter(
               (label) => label.id !== action.payload.label.id
             ),
           });
         }
+        return student;
+      };
+
+      return {
+        ...state,
+        students: state.students.map(mapFn),
+        selectedStudents: state.selectedStudents.map(mapFn),
+        currentStudent: newCurrent,
+      };
+    }
+
+    case "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS": {
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      const mapFnStudentLabel = function (
+        label: GuiderStudentUserProfileLabelType
+      ) {
+        if (label.flagId === action.payload.labelId) {
+          return Object.assign({}, label, action.payload.update);
+        }
+        return label;
+      };
+
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      const mapFn = function (student: GuiderStudentType) {
+        return Object.assign({}, student, {
+          flags: student.flags.map(mapFnStudentLabel),
+        });
+      };
+
+      let newCurrent = state.currentStudent;
+      if (newCurrent) {
+        newCurrent = Object.assign({}, state.currentStudent, {
+          labels: state.currentStudent.labels.map(mapFnStudentLabel),
+        });
       }
-      return student;
-    };
 
-    return Object.assign({}, state, {
-      students: state.students.map(mapFn),
-      selectedStudents: state.selectedStudents.map(mapFn),
-      currentStudent: newCurrent,
-    });
-  } else if (action.type === "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS") {
-    /**
-     * mapFnStudentLabel
-     * @param label label
-     */
-    const mapFnStudentLabel = function (
-      label: GuiderStudentUserProfileLabelType
-    ) {
-      if (label.flagId === action.payload.labelId) {
-        return Object.assign({}, label, action.payload.update);
-      }
-      return label;
-    };
-
-    /**
-     * mapFn
-     * @param student student
-     */
-    const mapFn = function (student: GuiderStudentType) {
-      return Object.assign({}, student, {
-        flags: student.flags.map(mapFnStudentLabel),
-      });
-    };
-
-    let newCurrent = state.currentStudent;
-    if (newCurrent) {
-      newCurrent = Object.assign({}, state.currentStudent, {
-        labels: state.currentStudent.labels.map(mapFnStudentLabel),
+      return Object.assign({}, state, {
+        students: state.students.map(mapFn),
+        selectedStudents: state.selectedStudents.map(mapFn),
+        currentStudent: newCurrent,
       });
     }
 
-    return Object.assign({}, state, {
-      students: state.students.map(mapFn),
-      selectedStudents: state.selectedStudents.map(mapFn),
-      currentStudent: newCurrent,
-    });
-  } else if (action.type === "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS") {
-    /**
-     * filterFnStudentLabel
-     * @param label label
-     */
-    const filterFnStudentLabel = function (
-      label: GuiderStudentUserProfileLabelType
-    ) {
-      return label.flagId !== action.payload;
-    };
-    /**
-     * mapFn
-     * @param student student
-     */
-    const mapFn = function (student: GuiderStudentType) {
-      return Object.assign({}, student, {
-        flags: student.flags.filter(filterFnStudentLabel),
-      });
-    };
+    case "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS": {
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      const filterFnStudentLabel = function (
+        label: GuiderStudentUserProfileLabelType
+      ) {
+        return label.flagId !== action.payload;
+      };
 
-    let newCurrent = state.currentStudent;
-    if (newCurrent) {
-      newCurrent = Object.assign({}, state.currentStudent, {
-        labels: state.currentStudent.labels.filter(filterFnStudentLabel),
-      });
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      const mapFn = function (student: GuiderStudentType) {
+        return Object.assign({}, student, {
+          flags: student.flags.filter(filterFnStudentLabel),
+        });
+      };
+
+      let newCurrent = state.currentStudent;
+      if (newCurrent) {
+        newCurrent = Object.assign({}, state.currentStudent, {
+          labels: state.currentStudent.labels.filter(filterFnStudentLabel),
+        });
+      }
+
+      return {
+        ...state,
+        students: state.students.map(mapFn),
+        selectedStudents: state.selectedStudents.map(mapFn),
+        currentStudent: newCurrent,
+      };
     }
 
-    return Object.assign({}, state, {
-      students: state.students.map(mapFn),
-      selectedStudents: state.selectedStudents.map(mapFn),
-      currentStudent: newCurrent,
-    });
-  } else if (action.type === "ADD_FILE_TO_CURRENT_STUDENT") {
-    return Object.assign({}, state, {
-      currentStudent: Object.assign({}, state.currentStudent, {
-        files: state.currentStudent.files.concat([action.payload]),
-      }),
-    });
-  } else if (action.type === "REMOVE_FILE_FROM_CURRENT_STUDENT") {
-    return Object.assign({}, state, {
-      currentStudent: Object.assign({}, state.currentStudent, {
-        files: state.currentStudent.files.filter(
-          (f) => f.id !== action.payload.id
-        ),
-      }),
-    });
-  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS") {
-    return Object.assign({}, state, {
-      availableFilters: Object.assign({}, state.availableFilters, {
-        labels: action.payload.sort(sortLabels),
-      }),
-    });
-  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES") {
-    return Object.assign({}, state, {
-      availableFilters: Object.assign({}, state.availableFilters, {
-        workspaces: action.payload,
-      }),
-    });
-  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS") {
-    return Object.assign({}, state, {
-      availableFilters: Object.assign({}, state.availableFilters, {
-        userGroups: action.payload,
-      }),
-    });
-  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL") {
-    return Object.assign({}, state, {
-      availableFilters: Object.assign({}, state.availableFilters, {
-        labels: state.availableFilters.labels
-          .concat([action.payload])
-          .sort(sortLabels),
-      }),
-    });
-  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTER_LABEL") {
-    return Object.assign({}, state, {
-      availableFilters: Object.assign({}, state.availableFilters, {
-        labels: state.availableFilters.labels
-          .map((label) => {
-            if (label.id === action.payload.labelId) {
-              return Object.assign({}, label, action.payload.update);
+    case "ADD_FILE_TO_CURRENT_STUDENT":
+      return {
+        ...state,
+        currentStudent: Object.assign({}, state.currentStudent, {
+          files: state.currentStudent.files.concat([action.payload]),
+        }),
+      };
+
+    case "REMOVE_FILE_FROM_CURRENT_STUDENT":
+      return {
+        ...state,
+        currentStudent: Object.assign({}, state.currentStudent, {
+          files: state.currentStudent.files.filter(
+            (f) => f.id !== action.payload.id
+          ),
+        }),
+      };
+
+    case "UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS":
+      return {
+        ...state,
+        availableFilters: Object.assign({}, state.availableFilters, {
+          labels: action.payload.sort(sortLabels),
+        }),
+      };
+
+    case "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES":
+      return {
+        ...state,
+        availableFilters: Object.assign({}, state.availableFilters, {
+          workspaces: action.payload,
+        }),
+      };
+
+    case "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS":
+      return {
+        ...state,
+        availableFilters: Object.assign({}, state.availableFilters, {
+          userGroups: action.payload,
+        }),
+      };
+
+    case "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL":
+      return {
+        ...state,
+        availableFilters: Object.assign({}, state.availableFilters, {
+          labels: state.availableFilters.labels
+            .concat([action.payload])
+            .sort(sortLabels),
+        }),
+      };
+
+    case "UPDATE_GUIDER_AVAILABLE_FILTER_LABEL":
+      return {
+        ...state,
+        availableFilters: Object.assign({}, state.availableFilters, {
+          labels: state.availableFilters.labels
+            .map((label) => {
+              if (label.id === action.payload.labelId) {
+                return Object.assign({}, label, action.payload.update);
+              }
+              return label;
+            })
+            .sort(sortLabels),
+        }),
+      };
+
+    case "DELETE_GUIDER_AVAILABLE_FILTER_LABEL":
+      return {
+        ...state,
+        availableFilters: Object.assign({}, state.availableFilters, {
+          labels: state.availableFilters.labels.filter(
+            (label) => label.id !== action.payload
+          ),
+        }),
+      };
+
+    case "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE":
+      return {
+        ...state,
+        currentStudent: {
+          ...state.currentStudent,
+          hopsPhase: action.payload.value,
+        },
+      };
+
+    case "UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS":
+      return {
+        ...state,
+        availablePurchaseProducts: action.payload,
+      };
+
+    case "UPDATE_GUIDER_INSERT_PURCHASE_ORDER": {
+      const newOrders = [...state.currentStudent.purchases, action.payload];
+
+      return {
+        ...state,
+        currentStudent: {
+          ...state.currentStudent,
+          purchases: newOrders.sort(sortOrders),
+        },
+      };
+    }
+
+    case "DELETE_GUIDER_PURCHASE_ORDER":
+      return {
+        ...state,
+        currentStudent: {
+          ...state.currentStudent,
+          purchases: state.currentStudent.purchases.filter(
+            (purchace: PurchaseType) => purchace.id !== action.payload.id
+          ),
+        },
+      };
+
+    case "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER":
+      return {
+        ...state,
+        currentStudent: {
+          ...state.currentStudent,
+          purchases: state.currentStudent.purchases.map(
+            (purchace: PurchaseType) => {
+              if (purchace.id == action.payload.id) {
+                return Object.assign({}, purchace, action.payload);
+              }
+              return purchace;
             }
-            return label;
-          })
-          .sort(sortLabels),
-      }),
-    });
-  } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE") {
-    return Object.assign({}, state, {
-      currentStudent: {
-        ...state.currentStudent,
-        hopsPhase: action.payload.value,
-      },
-    });
-  } else if (action.type === "DELETE_GUIDER_AVAILABLE_FILTER_LABEL") {
-    return Object.assign({}, state, {
-      availableFilters: Object.assign({}, state.availableFilters, {
-        labels: state.availableFilters.labels.filter(
-          (label) => label.id !== action.payload
-        ),
-      }),
-    });
-  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS") {
-    return Object.assign({}, state, {
-      availablePurchaseProducts: action.payload,
-    });
-  } else if (action.type === "UPDATE_GUIDER_INSERT_PURCHASE_ORDER") {
-    const newOrders = [...state.currentStudent.purchases, action.payload];
-    return Object.assign({}, state, {
-      currentStudent: {
-        ...state.currentStudent,
-        purchases: newOrders.sort(sortOrders),
-      },
-    });
-  } else if (action.type === "DELETE_GUIDER_PURCHASE_ORDER") {
-    return Object.assign({}, state, {
-      currentStudent: {
-        ...state.currentStudent,
-        purchases: state.currentStudent.purchases.filter(
-          (purchace: PurchaseType) => purchace.id !== action.payload.id
-        ),
-      },
-    });
-  } else if (action.type === "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER") {
-    return Object.assign({}, state, {
-      currentStudent: {
-        ...state.currentStudent,
-        purchases: state.currentStudent.purchases.map(
-          (purchace: PurchaseType) => {
-            if (purchace.id == action.payload.id) {
-              return Object.assign({}, purchace, action.payload);
-            }
-            return purchace;
-          }
-        ),
-      },
-    });
-  } else if (action.type === "TOGGLE_ALL_STUDENTS") {
-    return Object.assign({}, state, {
-      toggleAllStudentsActive: !state.toggleAllStudentsActive,
-      selectedStudents: !state.toggleAllStudentsActive ? state.students : [],
-      selectedStudentsIds: !state.toggleAllStudentsActive
-        ? state.students.map((student) => student.id)
-        : [],
-    });
-  } else if (action.type === "DELETE_CONTACT_EVENT") {
-    const contactLogs = state.currentStudent.contactLogs;
-    const newContactLogsResults = contactLogs.results.filter(
-      (log) => log.id !== action.payload
-    );
-    const newContactLogs = contactLogs;
-    newContactLogs.results = newContactLogsResults;
+          ),
+        },
+      };
 
-    return {
-      ...state,
-      currentStudent: { ...state.currentStudent, contactLogs: newContactLogs },
-    };
-  } else if (action.type === "DELETE_CONTACT_EVENT_COMMENT") {
-    // Make a deep copy of the contact logs natively since there are no complex types involved
+    case "TOGGLE_ALL_STUDENTS":
+      return {
+        ...state,
+        toggleAllStudentsActive: !state.toggleAllStudentsActive,
+        selectedStudents: !state.toggleAllStudentsActive ? state.students : [],
+        selectedStudentsIds: !state.toggleAllStudentsActive
+          ? state.students.map((student) => student.id)
+          : [],
+      };
 
-    const contactLogs = JSON.parse(
-      JSON.stringify(state.currentStudent.contactLogs)
-    ) as ContactLogData;
+    case "DELETE_CONTACT_EVENT": {
+      const contactLogs = state.currentStudent.contactLogs;
+      const newContactLogsResults = contactLogs.results.filter(
+        (log) => log.id !== action.payload
+      );
+      const newContactLogs = contactLogs;
+      newContactLogs.results = newContactLogsResults;
 
-    const contactLogsResults = contactLogs.results;
+      return {
+        ...state,
+        currentStudent: {
+          ...state.currentStudent,
+          contactLogs: newContactLogs,
+        },
+      };
+    }
 
-    // Find the current contact log
-    const currentContactLogResult = contactLogsResults.find(
-      (log) => log.id === action.payload.contactLogEntryId
-    );
+    case "DELETE_CONTACT_EVENT_COMMENT": {
+      // Make a deep copy of the contact logs natively since there are no complex types involved
 
-    // Get the array index for the current contact log
-    const currentContactLogIndex = contactLogsResults.findIndex(
-      (log) => log.id === currentContactLogResult.id
-    );
-    // Get the index of the comment to be deleted from the current contact log
-    const contactLogCommentIndex = currentContactLogResult.comments.findIndex(
-      (comment) => comment.id === action.payload.commentId
-    );
+      const contactLogs = JSON.parse(
+        JSON.stringify(state.currentStudent.contactLogs)
+      ) as ContactLogData;
 
-    // Remove the comment by index
-    currentContactLogResult.comments.splice(contactLogCommentIndex, 1);
+      const contactLogsResults = contactLogs.results;
 
-    // Replace the the contact log entry with the new one
-    contactLogsResults.splice(
-      currentContactLogIndex,
-      1,
-      currentContactLogResult
-    );
+      // Find the current contact log
+      const currentContactLogResult = contactLogsResults.find(
+        (log) => log.id === action.payload.contactLogEntryId
+      );
 
-    contactLogs.results = contactLogsResults;
+      // Get the array index for the current contact log
+      const currentContactLogIndex = contactLogsResults.findIndex(
+        (log) => log.id === currentContactLogResult.id
+      );
+      // Get the index of the comment to be deleted from the current contact log
+      const contactLogCommentIndex = currentContactLogResult.comments.findIndex(
+        (comment) => comment.id === action.payload.commentId
+      );
 
-    return {
-      ...state,
-      currentStudent: { ...state.currentStudent, contactLogs: contactLogs },
-    };
+      // Remove the comment by index
+      currentContactLogResult.comments.splice(contactLogCommentIndex, 1);
+
+      // Replace the the contact log entry with the new one
+      contactLogsResults.splice(
+        currentContactLogIndex,
+        1,
+        currentContactLogResult
+      );
+
+      contactLogs.results = contactLogsResults;
+
+      return {
+        ...state,
+        currentStudent: { ...state.currentStudent, contactLogs: contactLogs },
+      };
+    }
+
+    default:
+      return state;
   }
-  return state;
-}
+};

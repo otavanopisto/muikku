@@ -113,6 +113,7 @@ import {
 } from "~/actions/main-function/ceepos";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
+import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1081,6 +1082,7 @@ export default class MainFunction extends React.Component<
         <div id="root">
           <Notifications></Notifications>
           <DisconnectedWarningDialog />
+          <EasyToUseFunctions />
           <Route exact path="/" render={this.renderIndexBody} />
           <Route
             path="/organization"

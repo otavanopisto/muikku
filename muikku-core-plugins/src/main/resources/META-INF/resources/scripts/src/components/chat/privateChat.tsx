@@ -477,11 +477,14 @@ export class PrivateChat extends React.Component<
    */
   checkScrollDetachment(e: React.UIEvent<HTMLDivElement>) {
     if (this.chatRef.current) {
-      const isScrolledToBottom =
-        this.chatRef.current.scrollTop ===
-        this.chatRef.current.scrollHeight - this.chatRef.current.offsetHeight;
-      this.isScrollDetached = !isScrolledToBottom;
+      this.isScrollDetached =
+        Math.abs(
+          this.chatRef.current.scrollHeight -
+            this.chatRef.current.offsetHeight -
+            this.chatRef.current.scrollTop
+        ) > 64;
     }
+
     if (this.isScrolledToTop()) {
       this.loadMessages();
     }
