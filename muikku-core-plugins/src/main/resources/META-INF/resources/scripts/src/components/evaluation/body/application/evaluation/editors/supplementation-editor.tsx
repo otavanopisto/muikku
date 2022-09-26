@@ -7,7 +7,6 @@ import { AnyActionType } from "~/actions/index";
 import { StatusType } from "~/reducers/base/status";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import SessionStateComponent from "~/components/general/session-state-component";
-import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
 import Button from "~/components/general/button";
 import {
   UpdateWorkspaceSupplementation,
@@ -210,17 +209,17 @@ class SupplementationEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
+          /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId); */
 
-          /**
-           * Removes "new" items from localstorage
-           */
-          this.setStateAndClear(
+          /* this.setStateAndClear(
             {
               literalEvaluation: "",
             },
             this.state.draftId
-          );
+          ); */
+
+          // Removes "new" items from localstorage
+          this.justClear(["literalEvaluation"], this.state.draftId);
 
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
 
@@ -270,17 +269,21 @@ class SupplementationEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
+          /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId); */
 
           /**
            * Removes "edit" items from localstorage
            */
-          this.setStateAndClear(
+          /* this.setStateAndClear(
             {
               literalEvaluation: "",
             },
             this.state.draftId
-          );
+          ); */
+
+          // Removes "new" items from localstorage
+          this.justClear(["literalEvaluation"], this.state.draftId);
+
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
 
           this.setState({ locked: false });

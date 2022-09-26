@@ -11,7 +11,6 @@ import {
   updateWorkspaceEvaluationToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
-import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
 import Button from "~/components/general/button";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
@@ -394,11 +393,17 @@ class WorkspaceEditor extends SessionStateComponent<
            * onSuccess
            */
           onSuccess: () => {
-            cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
+            /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
               {
                 literalEvaluation: "",
               },
+              this.state.draftId
+            ); */
+
+            // Clears localstorage on success
+            this.justClear(
+              ["literalEvaluation", "grade", "selectedPriceOption"],
               this.state.draftId
             );
 
@@ -452,11 +457,17 @@ class WorkspaceEditor extends SessionStateComponent<
            * onSuccess
            */
           onSuccess: () => {
-            cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
+            /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
               {
                 literalEvaluation: "",
               },
+              this.state.draftId
+            ); */
+
+            // Clears localstorage on success
+            this.justClear(
+              ["literalEvaluation", "grade", "selectedPriceOption"],
               this.state.draftId
             );
 
@@ -505,11 +516,17 @@ class WorkspaceEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
+          /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
           this.setStateAndClear(
             {
               literalEvaluation: "",
             },
+            this.state.draftId
+          ); */
+
+          // Clears localstorage on success
+          this.justClear(
+            ["literalEvaluation", "grade", "selectedPriceOption"],
             this.state.draftId
           );
 
