@@ -503,11 +503,17 @@ class DiscussionSubscribedThreads extends React.Component<
           )}
         </DiscussionThreadsListHeader>
         <DiscussionThreads>
-          {enviromentalLevelThreadsItems.length > 0
-            ? enviromentalLevelThreadsItems
-            : this.props.i18n.text.get(
-                "plugin.discussion.browseareas.subscribtions.enmpty.title"
-              )}
+          {enviromentalLevelThreadsItems.length > 0 ? (
+            enviromentalLevelThreadsItems
+          ) : (
+            <div className="empty">
+              <span>
+                {this.props.i18n.text.get(
+                  "plugin.discussion.browseareas.subscribtions.empty.title"
+                )}
+              </span>
+            </div>
+          )}
         </DiscussionThreads>
         <DiscussionThreadsListHeader>
           {this.props.i18n.text.get(
@@ -515,11 +521,17 @@ class DiscussionSubscribedThreads extends React.Component<
           )}
         </DiscussionThreadsListHeader>
         <DiscussionThreads>
-          {workspaceLevelThreadsItems.length > 0
-            ? workspaceLevelThreadsItems
-            : this.props.i18n.text.get(
-                "plugin.discussion.browseareas.subscribtions.enmpty.title"
-              )}
+          {workspaceLevelThreadsItems.length > 0 ? (
+            workspaceLevelThreadsItems
+          ) : (
+            <div className="empty">
+              <span>
+                {this.props.i18n.text.get(
+                  "plugin.discussion.browseareas.subscribtions.empty.title"
+                )}
+              </span>
+            </div>
+          )}
         </DiscussionThreads>
       </BodyScrollKeeper>
     );
