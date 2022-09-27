@@ -32,15 +32,13 @@ class AnnouncementsApplication extends React.Component<AnnouncementsApplicationP
   render() {
     const title = this.props.i18n.text.get("plugin.announcements.pageTitle");
     return (
-      <div className="reading-panel-wrapper">
-        <ReadingPanel
-          modifier="announcement"
-          title={title}
-          asideAfter={this.props.aside}
-        >
-          <Announcements />
-        </ReadingPanel>
-      </div>
+      <ReadingPanel
+        modifier="announcement"
+        title={title}
+        asideAfter={this.props.aside}
+      >
+        <Announcements />
+      </ReadingPanel>
     );
   }
 }

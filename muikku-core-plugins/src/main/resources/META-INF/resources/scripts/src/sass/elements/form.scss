@@ -460,15 +460,6 @@ legend {
   width: 100%;
 }
 
-// Communicator Message Search
-.form-element--communicator-message-search {
-  display: none;
-
-  @include breakpoint($breakpoint-pad) {
-    display: flex;
-  }
-}
-
 // TEXTFIELD DECORATION
 .form-element__input-decoration {
   border-radius: 2px;

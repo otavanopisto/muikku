@@ -3,6 +3,7 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+// THE component
 .application-panel {
   align-items: center;
   display: flex;
@@ -17,22 +18,12 @@
   }
 }
 
-// This removes the unnecessary top-padding in studies and profile view as there is no toolbar present
-.application-panel--studies,
-.application-panel--profile {
-  .application-panel__content {
-    padding: 10px 0;
-  }
-}
-
-.application-panel--workspace-journal {
+// Component when used within tabs within dialog
+.application-panel--tabs-with-dialog {
   padding: 0;
-
-  @include breakpoint($breakpoint-pad) {
-    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
-  }
 }
 
+// Component's wrapper
 .application-panel__container {
   @include text;
 
@@ -41,36 +32,7 @@
   width: 100%;
 }
 
-.application-panel__body {
-  @include panel-body;
-
-  background-color: $color-application-panel-box-background;
-  box-shadow: 0 2px 3px $color-panel-shadow;
-  display: flex;
-  flex-direction: column;
-
-  @include breakpoint($breakpoint-pad) {
-    border: solid 1px $color-application-panel-box-border;
-    box-shadow: none;
-  }
-}
-
-.application-panel__body--guider-student {
-  @include breakpoint($breakpoint-pad) {
-    border: none;
-  }
-}
-
-.application-panel__body--tabs {
-  @include breakpoint($breakpoint-pad) {
-    border-bottom: solid 1px $color-application-panel-box-border;
-    border-left: solid 1px $color-application-panel-box-border;
-    border-right: solid 1px $color-application-panel-box-border;
-    border-top: 0;
-    box-shadow: none;
-  }
-}
-
+// Component's header that acts as view title
 .application-panel__header {
   display: none;
 
@@ -89,6 +51,7 @@
   }
 }
 
+// Component's actual title (h1 level element)
 .application-panel__header-title {
   display: none;
 
@@ -105,6 +68,7 @@
   }
 }
 
+// Component's header's actions at the header level (ie. signature feature)
 .application-panel__header-actions {
   display: none;
 
@@ -117,6 +81,36 @@
   }
 }
 
+// Component's body that has .application-panel__actions and .application-panel__content as childs
+.application-panel__body {
+  @include panel-body;
+
+  background-color: $color-application-panel-box-background;
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  display: flex;
+  flex-direction: column;
+
+  @include breakpoint($breakpoint-pad) {
+    border: solid 1px $color-application-panel-box-border;
+    box-shadow: none;
+  }
+}
+
+// Component body when used within tabs within dialog
+.application-panel__body--tabs-with-dialog {
+  @include breakpoint($breakpoint-pad) {
+    border: none;
+  }
+}
+
+// Component's body which is used inside tabs
+.application-panel__body--tabs {
+  @include breakpoint($breakpoint-pad) {
+    border-top: 0;
+  }
+}
+
+// Component's actions row that has .application-panel__actions-aside and .application-panel__actions-main as childs
 .application-panel__actions {
   background: $color-default;
   left: 0;
@@ -137,6 +131,7 @@
   }
 }
 
+// Component's actions row which is used inside tabs
 .application-panel__actions--tabs {
   position: static;
 
@@ -145,6 +140,49 @@
   }
 }
 
+// Component's actions aside used for primary functions (ie. new message)
+.application-panel__actions-aside {
+  display: none;
+  height: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    border-bottom: 1px solid $color-main-function-application-panel-actions-border;
+    display: flex;
+    flex-basis: 220px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: $navbar-desktop-height;
+    margin: 0;
+    padding: 12px;
+    z-index: 1;
+  }
+}
+
+// Component's actions main container which contains the .application-panel__toolbar
+.application-panel__actions-main {
+  background: $color-default;
+  border-bottom: 2px solid $color-main-function-application-panel-actions-border;
+  flex-basis: auto;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  height: $navbar-mobile-height;
+  margin: 0;
+  min-width: 0;
+  padding: 10px;
+  position: relative;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    background: transparent;
+    border-width: 1px;
+    height: $navbar-desktop-height;
+    padding: 12px;
+  }
+}
+
+// Component's toolbar that has .application-panel__toolbar-actions-main and .application-panel__toolbar-actions-aside as childs
 .application-panel__toolbar {
   align-items: center;
   display: flex;
@@ -152,39 +190,13 @@
   width: 100%;
 }
 
-.application-panel__tool--current-folder {
-  align-items: center;
+// Component's toolbar's actions aside (usually on the right side with prev and next buttons)
+.application-panel__toolbar-actions-aside {
   display: flex;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-weight: 400;
-  overflow: hidden;
-  position: relative;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  @include breakpoint($breakpoint-pad) {
-    display: none;
-  }
+  justify-content: flex-end;
 }
 
-.application-panel__tool-icon {
-  font-size: 1rem;
-  height: auto;
-  padding: 0 5px 0 0;
-  width: 22px;
-}
-
-.application-panel__tool-title {
-  display: inline-block;
-  font-size: 1rem;
-  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
+// Component's toolbar's actions main that has prominent actions and buttons
 .application-panel__toolbar-actions-main {
   align-items: center;
   display: flex;
@@ -193,18 +205,20 @@
   flex-shrink: 1;
 }
 
-.application-panel__tools-container {
+// Component's toolbar's additional container used primarily for search fields
+.application-panel__toolbar-tools-container {
   display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  margin: 0 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0;
+  }
 }
 
-.application-panel__toolbar-actions-aside {
-  display: flex;
-  justify-content: flex-end;
-}
-
+// Component's content row that has .application-panel__content-aside and .application-panel__content-main as childs
 .application-panel__content {
   padding: $navbar-mobile-height 0 0;
 
@@ -215,10 +229,7 @@
   }
 }
 
-.application-panel__content--tabs {
-  padding: 1.5rem 0 0;
-}
-
+// Component's content header (h2 level header)
 .application-panel__content-header {
   font-size: 1.25rem;
   font-weight: 300;
@@ -231,9 +242,8 @@
   }
 }
 
-// Helper containers
-
-.application-panel__helper-container {
+// Component's content aside used for filters, folders and subnavigations
+.application-panel__content-aside {
   display: none;
   height: auto;
 
@@ -255,28 +265,13 @@
   }
 }
 
-// Helper container's sticky position for Profile and Studies view has different height and top property values
-.application-panel__helper-container--profile,
-.application-panel__helper-container--studies {
-  @include breakpoint($breakpoint-pad) {
-    height: calc(100vh - 97px); // 100 View-port height - top offset which is 77px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
-    top: 77px;
-  }
-}
-
-.application-panel__helper-container--main-action {
-  align-items: center;
-  border-bottom: 1px solid $color-main-function-application-panel-actions-border;
-  height: $navbar-desktop-height;
-  margin: 0;
-}
-
-.application-panel__helper-container--guider-student {
+// Component's content aside used for filters, folders and subnavigations, this is special version to be used in dialogs within tabs
+.application-panel__content-aside--tabs-with-dialog {
   padding: 0 12px 0 0;
 }
 
-// Main containers
-.application-panel__main-container {
+// Component's content main container for the primary data
+.application-panel__content-main {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -291,39 +286,35 @@
   }
 }
 
-.application-panel__main-container--actions {
-  background: $color-default;
-  border-bottom: 2px solid $color-main-function-application-panel-actions-border;
-  flex-direction: row;
-  height: $navbar-mobile-height;
-  padding: 10px;
+.application-panel__mobile-current-folder {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  overflow: hidden;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   @include breakpoint($breakpoint-pad) {
-    background: transparent;
-    border-width: 1px;
-    height: $navbar-desktop-height;
-    padding: 12px;
+    display: none;
   }
 }
 
-.application-panel__main-container--workspace-journal {
-  display: none;
-
-  @include breakpoint($breakpoint-pad) {
-    display: block;
-  }
+.application-panel__mobile-current-folder-icon {
+  font-size: 1rem;
+  height: auto;
+  padding: 0 5px 0 0;
+  width: 22px;
 }
 
-.application-panel__main-container--guider-student {
-  padding: 0 0 0 12px;
-}
-
-.application-panel__main-container--header {
-  justify-content: flex-end;
-}
-
-.application-panel__main-container--content-full {
-  @include breakpoint($breakpoint-pad) {
-    padding-left: 0;
-  }
+.application-panel__mobile-current-folder-title {
+  display: inline-block;
+  font-size: 1rem;
+  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
