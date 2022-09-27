@@ -265,7 +265,7 @@
   }
 }
 
-// Component's content aside used for filters, folders and subnavigations, this is special version to be used in dialogs within tabs
+// Component's content aside when used within tabs within dialog
 .application-panel__content-aside--tabs-with-dialog {
   padding: 0 12px 0 0;
 }
@@ -286,6 +286,7 @@
   }
 }
 
+// Component's mobile folder container
 .application-panel__mobile-current-folder {
   align-items: center;
   display: flex;
@@ -303,6 +304,7 @@
   }
 }
 
+// Component's mobile folder's icon
 .application-panel__mobile-current-folder-icon {
   font-size: 1rem;
   height: auto;
@@ -310,6 +312,7 @@
   width: 22px;
 }
 
+// Component's mobile folder's title
 .application-panel__mobile-current-folder-title {
   display: inline-block;
   font-size: 1rem;
