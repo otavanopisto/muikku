@@ -1014,9 +1014,13 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) ||
         !isEqualDateTime(workspace.getEndDate(), payload.getEndDate()) ||
+        !isEqualDateTime(workspace.getSignupStart(), payload.getSignupStart()) ||
+        !isEqualDateTime(workspace.getSignupEnd(), payload.getSignupEnd()) ||
         !Objects.equals(typeIdentifier, workspace.getWorkspaceTypeId())) {
       workspace.setBeginDate(payload.getBeginDate());
       workspace.setEndDate(payload.getEndDate());
+      workspace.setSignupStart(payload.getSignupStart());
+      workspace.setSignupEnd(payload.getSignupEnd());
       workspace.setWorkspaceTypeId(typeIdentifier);
       workspaceController.updateWorkspace(workspace);
     }

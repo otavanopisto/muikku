@@ -1,4 +1,5 @@
 import { ActionType } from "actions";
+import { Reducer } from "redux";
 
 export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
@@ -73,65 +74,96 @@ export interface YOMatriculationSubjectType {
 }
 
 /**
- * yo
- * @param state state
- * @param action action
+ * intialState
  */
-export default function yo(
-  state: YOType = {
-    status: "WAIT",
-    enrollment: null,
-    subjects: null,
-    eligibility: null,
-    eligibilityStatus: null,
-  },
-  action: ActionType
-): YOType {
-  if (action.type === "UPDATE_STUDIES_YO_STATUS") {
-    return Object.assign({}, state, {
-      status: action.payload,
-    });
-  } else if (action.type === "UPDATE_STUDIES_YO") {
-    return Object.assign({}, state, {
-      enrollment: action.payload,
-    });
-  } else if (action.type === "UPDATE_STUDIES_YO_SUBJECTS") {
-    return Object.assign({}, state, {
-      subjects: action.payload,
-    });
-  } else if (action.type === "UPDATE_STUDIES_YO_ELIGIBILITY_STATUS") {
-    return Object.assign({}, state, {
-      eligibilityStatus: action.payload,
-    });
-  } else if (action.type === "UPDATE_STUDIES_YO_ELIGIBILITY") {
-    return Object.assign({}, state, {
-      eligibility: action.payload,
-    });
-  }
-  return state;
-}
+const initialState: YOType = {
+  status: "WAIT",
+  enrollment: null,
+  subjects: null,
+  eligibility: null,
+  eligibilityStatus: null,
+};
 
 /**
- * eligibilitySubjects
+ * Reducer function for yo
+ *
  * @param state state
  * @param action action
+ * @returns State of yo
  */
-export function eligibilitySubjects(
-  state: SubjectEligibilitySubjectsType = {
-    status: "WAIT",
-    subjects: [],
-  },
+export const yo: Reducer<YOType> = (
+  state = initialState,
   action: ActionType
-): SubjectEligibilitySubjectsType {
-  if (action.type === "UPDATE_STUDIES_SUBJECT_ELIGIBILITY") {
-    return Object.assign({}, state, {
-      subjects: action.payload,
-    });
+) => {
+  switch (action.type) {
+    case "UPDATE_STUDIES_YO_STATUS":
+      return {
+        ...state,
+        status: action.payload,
+      };
+
+    case "UPDATE_STUDIES_YO":
+      return {
+        ...state,
+        enrollment: action.payload,
+      };
+
+    case "UPDATE_STUDIES_YO_SUBJECTS":
+      return {
+        ...state,
+        subjects: action.payload,
+      };
+
+    case "UPDATE_STUDIES_YO_ELIGIBILITY_STATUS":
+      return {
+        ...state,
+        eligibilityStatus: action.payload,
+      };
+
+    case "UPDATE_STUDIES_YO_ELIGIBILITY":
+      return {
+        ...state,
+        eligibility: action.payload,
+      };
+
+    default:
+      return state;
   }
-  if (action.type === "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS") {
-    return Object.assign({}, state, {
-      status: action.payload,
-    });
+};
+
+/**
+ * initialStateEligibilitySubjects
+ */
+const initialStateEligibilitySubjects: SubjectEligibilitySubjectsType = {
+  status: "WAIT",
+  subjects: [],
+};
+
+/**
+ * Reducer function for eligibility subjects
+ *
+ * @param state state
+ * @param action action
+ * @returns State of eligibilitySubjects
+ */
+export const eligibilitySubjects: Reducer<SubjectEligibilitySubjectsType> = (
+  state = initialStateEligibilitySubjects,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "UPDATE_STUDIES_SUBJECT_ELIGIBILITY":
+      return {
+        ...state,
+        subjects: action.payload,
+      };
+
+    case "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS":
+      return {
+        ...state,
+        status: action.payload,
+      };
+
+    default:
+      return state;
   }
-  return state;
-}
+};

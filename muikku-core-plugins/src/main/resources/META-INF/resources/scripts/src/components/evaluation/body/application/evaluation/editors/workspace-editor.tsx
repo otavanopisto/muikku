@@ -60,6 +60,7 @@ interface WorkspaceEditorState {
   selectedPriceOption?: string;
   existingBilledPriceObject?: BilledPrice;
   locked: boolean;
+  activeGradeSystems: EvaluationGradeSystem[];
 }
 
 /**
@@ -84,9 +85,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @param props props
    */
   constructor(props: WorkspaceEditorProps) {
-    /**
-     * This is wierd one, setting namespace and identificated type for it from props...
-     */
+    // This is wierd one, setting namespace and identificated type for it from props...
     super(props, `workspace-editor-${props.type ? props.type : "new"}`);
 
     const { evaluationAssessmentEvents, basePrice, evaluationGradeSystem } =
@@ -97,23 +96,21 @@ class WorkspaceEditor extends SessionStateComponent<
 
     const { userEntityId, workspaceEntityId } = selectedAssessment;
 
-    /**
-     * When there is not existing event data we use only user id and workspace id as
-     * draft id. There must be at least user id and workspace id, so if making changes to multiple workspace
-     * that have same user evaluations, so draft won't class together
-     */
+    // When there is not existing event data we use only user id and workspace id as
+    // draft id. There must be at least user id and workspace id, so if making changes to multiple workspace
+    // that have same user evaluations, so draft won't class together
     let draftId = `${userEntityId}-${workspaceEntityId}-${workspaceSubjectToBeEvaluatedIdentifier}`;
 
-    /**
-     * Workspace basePriceId
-     */
+    // Workspace basePriceId
     const basePriceSubjectId = workspaceSubjectToBeEvaluatedIdentifier;
 
-    /**
-     * If we have evaluation data or we have data and editing existing event
-     * then we use the longer version of draft id. This is because possible
-     * existing price object that must be also deleted when saving
-     */
+    const activeGradeSystems = evaluationGradeSystem.filter(
+      (gSystem) => gSystem.active
+    );
+
+    // If we have evaluation data or we have data and editing existing event
+    // then we use the longer version of draft id. This is because possible
+    // existing price object that must be also deleted when saving
     if (
       (evaluationAssessmentEvents.data.length > 0 && props.type !== "new") ||
       (evaluationAssessmentEvents.data.length > 0 && props.type === "edit")
@@ -123,9 +120,7 @@ class WorkspaceEditor extends SessionStateComponent<
           evaluationAssessmentEvents.data.length - 1
         ];
 
-      /**
-       * If editing existing event, we need to find that specific event from event list by its' id
-       */
+      // If editing existing event, we need to find that specific event from event list by its' id
       if (this.props.eventId) {
         latestEvent = evaluationAssessmentEvents.data.find(
           (eItem) => eItem.identifier === this.props.eventId
@@ -137,9 +132,7 @@ class WorkspaceEditor extends SessionStateComponent<
           ? latestEvent.identifier
           : "empty";
 
-      /**
-       * Find what gradeSystem is selected when editing existing
-       */
+      // Find what gradeSystem is selected when editing existing
       const usedGradeSystem = evaluationGradeSystem.find(
         (gSystem) =>
           gSystem.id === latestEvent.gradeIdentifier.split("@")[0].split("-")[1]
@@ -149,17 +142,13 @@ class WorkspaceEditor extends SessionStateComponent<
         this.unknownGradeSystemIsUsed = usedGradeSystem;
       }
 
-      /**
-       * Find what grade is selected when editing existing
-       */
+      // Find what grade is selected when editing existing
       const usedGrade = usedGradeSystem.grades.find(
         (grade) =>
           grade.id === latestEvent.gradeIdentifier.split("@")[1].split("-")[1]
       );
 
-      /**
-       * As default but + latest event id
-       */
+      // As default but + latest event id
       draftId = `${userEntityId}-${workspaceEntityId}-${workspaceSubjectToBeEvaluatedIdentifier}-${eventId}`;
 
       this.state = {
@@ -173,6 +162,7 @@ class WorkspaceEditor extends SessionStateComponent<
           draftId
         ),
         locked: false,
+        activeGradeSystems,
       };
     } else {
       this.state = {
@@ -181,11 +171,12 @@ class WorkspaceEditor extends SessionStateComponent<
             literalEvaluation: "",
             draftId,
             basePriceFromServer: basePrice.data[basePriceSubjectId],
-            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+            grade: `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`,
           },
           draftId
         ),
         locked: false,
+        activeGradeSystems,
       };
     }
   }
@@ -217,99 +208,70 @@ class WorkspaceEditor extends SessionStateComponent<
   componentDidMount = async () => {
     const { evaluationAssessmentEvents, evaluationGradeSystem } =
       this.props.evaluations;
+    const { activeGradeSystems } = this.state;
 
-    /**
-     * Default price is always first item from parsed price options list OR undefined if pricing is not enabled
-     */
+    // Default price is always first item from parsed price options list OR undefined if pricing is not enabled
     const defaultPrice = this.parsePriceOptions()[0].value.toString();
 
-    if (evaluationAssessmentEvents.data.length > 0) {
-      /**
-       * Latest event data
-       */
+    // if editing...
+    if (
+      evaluationAssessmentEvents.data.length > 0 &&
+      this.props.type === "edit"
+    ) {
+      // Latest event data
       let latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
         ];
 
-      /**
-       * if editing...
-       */
-      if (this.props.type === "edit") {
-        /**
-         * If editing existing event, we need to find that specific event from event list by its' id
-         */
-        if (this.props.eventId) {
-          latestEvent = evaluationAssessmentEvents.data.find(
-            (eItem) => eItem.identifier === this.props.eventId
-          );
-        }
-
-        let existingBilledPriceObject: BilledPrice | undefined = undefined;
-
-        /**
-         * ...we need load existing billed price to check
-         * whether billing was enabled latter, so if old event  didn't have
-         * billing enabled we don't show any pricing options etc...
-         */
-        existingBilledPriceObject = await this.loadExistingBilledPrice(
-          latestEvent.identifier
-        );
-
-        /**
-         * Find what gradeSystem is selected when editing existing
-         */
-        const usedGradeSystem = evaluationGradeSystem.find(
-          (gSystem) =>
-            gSystem.id ===
-            latestEvent.gradeIdentifier.split("@")[0].split("-")[1]
-        );
-
-        /**
-         * Find what grade is selected when editing existing
-         */
-        const usedGrade = usedGradeSystem.grades.find(
-          (grade) =>
-            grade.id === latestEvent.gradeIdentifier.split("@")[1].split("-")[1]
-        );
-
-        this.setState(
-          this.getRecoverStoredState(
-            {
-              literalEvaluation: latestEvent.text,
-              grade: `${usedGrade.dataSource}-${usedGrade.id}`,
-              existingBilledPriceObject,
-              selectedPriceOption: existingBilledPriceObject
-                ? existingBilledPriceObject.price.toString()
-                : undefined,
-            },
-            this.state.draftId
-          )
-        );
-      } else {
-        /**
-         * Else, aka creating "new"
-         */
-        this.setState(
-          this.getRecoverStoredState(
-            {
-              literalEvaluation: "",
-              grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
-              selectedPriceOption: defaultPrice,
-            },
-            this.state.draftId
-          )
+      // If editing existing event, we need to find that specific event from event list by its' id
+      if (this.props.eventId) {
+        latestEvent = evaluationAssessmentEvents.data.find(
+          (eItem) => eItem.identifier === this.props.eventId
         );
       }
+
+      let existingBilledPriceObject: BilledPrice | undefined = undefined;
+
+      //...we need load existing billed price to check
+      // whether billing was enabled latter, so if old event  didn't have
+      // billing enabled we don't show any pricing options etc...
+      existingBilledPriceObject = await this.loadExistingBilledPrice(
+        latestEvent.identifier
+      );
+
+      // Find what gradeSystem is selected when editing existing
+      const usedGradeSystem = evaluationGradeSystem.find(
+        (gSystem) =>
+          gSystem.id === latestEvent.gradeIdentifier.split("@")[0].split("-")[1]
+      );
+
+      // Find what grade is selected when editing existing
+      const usedGrade = usedGradeSystem.grades.find(
+        (grade) =>
+          grade.id === latestEvent.gradeIdentifier.split("@")[1].split("-")[1]
+      );
+
+      this.setState(
+        this.getRecoverStoredState(
+          {
+            literalEvaluation: latestEvent.text,
+            grade: `${usedGrade.dataSource}-${usedGrade.id}`,
+            existingBilledPriceObject,
+            selectedPriceOption: existingBilledPriceObject
+              ? existingBilledPriceObject.price.toString()
+              : undefined,
+          },
+          this.state.draftId
+        )
+      );
     } else {
-      /**
-       * Else, aka creating "new"
-       */
+      // Else, aka creating "new"
       this.setState(
         this.getRecoverStoredState(
           {
             literalEvaluation: "",
-            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+            grade: `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`,
             selectedPriceOption: defaultPrice,
           },
           this.state.draftId
@@ -326,7 +288,7 @@ class WorkspaceEditor extends SessionStateComponent<
   loadExistingBilledPrice = async (
     assessmentIdentifier: string
   ): Promise<BilledPrice | undefined> => {
-    const { selectedWorkspaceId } = this.props.evaluations;
+    const { workspaceEntityId } = this.props.selectedAssessment;
 
     let existingBilledPriceObject = undefined;
     /**
@@ -334,7 +296,7 @@ class WorkspaceEditor extends SessionStateComponent<
      */
     await promisify(
       mApi().worklist.billedPrice.read({
-        workspaceEntityId: selectedWorkspaceId,
+        workspaceEntityId: workspaceEntityId,
         assessmentIdentifier,
       }),
       "callback"
@@ -569,8 +531,8 @@ class WorkspaceEditor extends SessionStateComponent<
    * Handles deleting drafts
    */
   handleDeleteEditorDraft = () => {
-    const { evaluationAssessmentEvents, evaluationGradeSystem } =
-      this.props.evaluations;
+    const { evaluationAssessmentEvents } = this.props.evaluations;
+    const { activeGradeSystems } = this.state;
     const { type } = this.props;
 
     if (evaluationAssessmentEvents.data.length > 0) {
@@ -642,7 +604,7 @@ class WorkspaceEditor extends SessionStateComponent<
         this.setStateAndClear(
           {
             literalEvaluation: "",
-            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+            grade: `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`,
             selectedPriceOption: billingPrice,
           },
           this.state.draftId
@@ -652,7 +614,7 @@ class WorkspaceEditor extends SessionStateComponent<
       this.setStateAndClear(
         {
           literalEvaluation: "",
-          grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+          grade: `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`,
           selectedPriceOption: this.state.basePriceFromServer
             ? this.state.basePriceFromServer.toString()
             : undefined,
@@ -842,7 +804,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const { existingBilledPriceObject } = this.state;
+    const { existingBilledPriceObject, activeGradeSystems } = this.state;
 
     const options = this.renderSelectOptions();
 
@@ -852,25 +814,15 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * Grading scale and grade options.
      */
-    const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map(
-        (gScale) =>
-          gScale.active && (
-            <optgroup
-              key={`${gScale.dataSource}-${gScale.id}`}
-              label={gScale.name}
-            >
-              {gScale.grades.map((grade) => (
-                <option
-                  key={grade.id}
-                  value={`${gScale.dataSource}-${grade.id}`}
-                >
-                  {grade.name}
-                </option>
-              ))}
-            </optgroup>
-          )
-      );
+    const renderGradingOptions = activeGradeSystems.map((gScale) => (
+      <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
+        {gScale.grades.map((grade) => (
+          <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+            {grade.name}
+          </option>
+        ))}
+      </optgroup>
+    ));
 
     // IF evaluation uses some unknown grade system that is not normally showed, then we add it to options also
     if (this.unknownGradeSystemIsUsed) {

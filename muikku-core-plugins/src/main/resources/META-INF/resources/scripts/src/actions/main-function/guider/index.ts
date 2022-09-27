@@ -70,10 +70,7 @@ export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT",
   GuiderStudentUserProfileType
 >;
-export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<
-  "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD",
-  null
->;
+
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT_PROP",
   { property: keyof GuiderStudentUserProfileType; value: any }
@@ -81,7 +78,7 @@ export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<
 
 export type UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE = SpecificActionType<
   "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
-  { property: "hopsPhase"; value: number }
+  { property: "hopsPhase"; value: string }
 >;
 
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<
@@ -1549,7 +1546,7 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
 const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
   function updateCurrentStudentHopsPhase(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {

@@ -78,6 +78,7 @@ interface AssignmentEditorState {
   grade: string;
   draftId: string;
   locked: boolean;
+  activeGradeSystems: EvaluationGradeSystem[];
 }
 
 /**
@@ -99,13 +100,29 @@ class AssignmentEditor extends SessionStateComponent<
     const { materialEvaluation, compositeReplies, selectedAssessment } = props;
     const { evaluationGradeSystem } = props.evaluations;
 
-    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    const activeGradeSystems = evaluationGradeSystem.filter(
+      (gSystem) => gSystem.active
+    );
 
-    const grade = materialEvaluation
-      ? `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`
-      : compositeReplies.state === "INCOMPLETE"
-      ? ""
-      : defaultGrade;
+    let grade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
+
+    // If we have existing evaluation
+    if (materialEvaluation) {
+      // grade is old evaluation value
+      grade = `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`;
+
+      // Find what gradeSystem is selected when editing existing
+      const usedGradeSystem = evaluationGradeSystem.find(
+        (gSystem) => gSystem.id === materialEvaluation.gradeIdentifier
+      );
+
+      // Check if grade system is not active, then we are using unknownGradeSystem
+      if (usedGradeSystem && !usedGradeSystem.active) {
+        this.unknownGradeSystemIsUsed = usedGradeSystem;
+      }
+    } else if (compositeReplies.state === "INCOMPLETE") {
+      grade = "";
+    }
 
     const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
 
@@ -134,6 +151,7 @@ class AssignmentEditor extends SessionStateComponent<
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
       locked: false,
+      activeGradeSystems,
     };
   }
 
@@ -164,14 +182,27 @@ class AssignmentEditor extends SessionStateComponent<
   componentDidMount = () => {
     const { materialEvaluation, compositeReplies } = this.props;
     const { evaluationGradeSystem } = this.props.evaluations;
+    const { activeGradeSystems } = this.state;
 
-    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    let grade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
 
-    const grade = materialEvaluation
-      ? `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`
-      : compositeReplies.state === "INCOMPLETE"
-      ? ""
-      : defaultGrade;
+    // If we have existing evaluation
+    if (materialEvaluation) {
+      // grade is old evaluation value
+      grade = `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`;
+
+      // Find what gradeSystem is selected when editing existing
+      const usedGradeSystem = evaluationGradeSystem.find(
+        (gSystem) => gSystem.id === materialEvaluation.gradeIdentifier
+      );
+
+      // Check if grade system is not active, then we are using unknownGradeSystem
+      if (usedGradeSystem && !usedGradeSystem.active) {
+        this.unknownGradeSystemIsUsed = usedGradeSystem;
+      }
+    } else if (compositeReplies.state === "INCOMPLETE") {
+      grade = "";
+    }
 
     this.setState({
       ...this.getRecoverStoredState(
@@ -373,12 +404,12 @@ class AssignmentEditor extends SessionStateComponent<
   handleSaveAssignment = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
-    const { evaluationGradeSystem } = this.props.evaluations;
-    const { grade } = this.state;
+    /* const { evaluationGradeSystem } = this.props.evaluations; */
+    const { grade, activeGradeSystems } = this.state;
     const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
 
     const usedGradeSystem = this.getUsedGradingScaleByGradeId(grade);
-    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
 
     /**
      * Backend endpoint is different for normal grade evalution and supplementation
@@ -424,7 +455,7 @@ class AssignmentEditor extends SessionStateComponent<
    */
   handleDeleteEditorDraft = () => {
     const { compositeReplies, materialEvaluation } = this.props;
-    const { evaluationGradeSystem } = this.props.evaluations;
+    const { activeGradeSystems } = this.state;
 
     if (
       compositeReplies.evaluationInfo &&
@@ -435,7 +466,7 @@ class AssignmentEditor extends SessionStateComponent<
           literalEvaluation: compositeReplies.evaluationInfo.text,
           grade:
             compositeReplies.evaluationInfo.type === "INCOMPLETE"
-              ? `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`
+              ? `${activeGradeSystems[0].dataSource}-${activeGradeSystems[0].grades[0].id}`
               : `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`,
           assignmentEvaluationType:
             compositeReplies.evaluationInfo.type === "INCOMPLETE"
@@ -448,7 +479,7 @@ class AssignmentEditor extends SessionStateComponent<
       this.setStateAndClear(
         {
           literalEvaluation: "",
-          grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+          grade: `${activeGradeSystems[0].dataSource}-${activeGradeSystems[0].grades[0].id}`,
           assignmentEvaluationType: "GRADED",
         },
         this.state.draftId
@@ -476,9 +507,9 @@ class AssignmentEditor extends SessionStateComponent<
   handleAssignmentEvaluationChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const { evaluationGradeSystem } = this.props.evaluations;
+    const { activeGradeSystems } = this.state;
 
-    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
 
     this.setStateAndStore(
       {
@@ -517,25 +548,15 @@ class AssignmentEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map(
-        (gScale) =>
-          gScale.active && (
-            <optgroup
-              key={`${gScale.dataSource}-${gScale.id}`}
-              label={gScale.name}
-            >
-              {gScale.grades.map((grade) => (
-                <option
-                  key={grade.id}
-                  value={`${gScale.dataSource}-${grade.id}`}
-                >
-                  {grade.name}
-                </option>
-              ))}
-            </optgroup>
-          )
-      );
+    const renderGradingOptions = this.state.activeGradeSystems.map((gScale) => (
+      <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
+        {gScale.grades.map((grade) => (
+          <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+            {grade.name}
+          </option>
+        ))}
+      </optgroup>
+    ));
 
     // IF evaluation uses some unknown grade system that is not normally showed, then we add it to options also
     if (this.unknownGradeSystemIsUsed) {
