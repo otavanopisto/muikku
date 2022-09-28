@@ -213,6 +213,11 @@
   flex-shrink: 1;
   margin: 0 0 0 10px;
 
+  // When this container is the first element it usually is the only element as in course picker and we don't want margins then
+  &:first-child {
+    margin: 0;
+  }
+
   @include breakpoint($breakpoint-pad) {
     margin: 0;
   }
