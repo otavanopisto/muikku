@@ -462,11 +462,17 @@ legend {
   border-right: 2px solid $color-main-function-input-field-decoration-background;
   border-top: 2px solid $color-main-function-input-field-border;
   width: 100%;
+}
 
-  &:focus {
-    position: fixed;
-    right: 46px;
-    width: calc(100% - 56px);
+.form-element__input--search:focus {
+  position: fixed;
+  right: 46px;
+  width: calc(100% - 56px);
+
+  @include breakpoint($breakpoint-pad) {
+    position: relative;
+    right: unset;
+    width: 100%;
   }
 }
 
