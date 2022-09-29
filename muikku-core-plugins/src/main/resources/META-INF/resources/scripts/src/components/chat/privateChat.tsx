@@ -6,13 +6,23 @@ import { IBareMessageType } from "./chat";
 import { ChatMessage } from "./chatMessage";
 import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
+import Dropdown from "~/components/general/dropdown";
+import {
+  requestPrescense,
+  handleRosterDelete,
+  handlePresenceSubscribe,
+  handlePresenceSubscribed,
+} from "~/helper-functions/chat";
+import { IChatContact } from "./chat";
 
 /**
  * IPrivateChatProps
  */
 interface IPrivateChatProps {
   initializingStanza: Element;
+  roster: IChatContact[];
   leaveChat: () => void;
+  onAddFriend: (person: IChatContact) => void;
   connection: Strophe.Connection;
   jid: string;
   userRosterGroup?: string;
@@ -30,7 +40,6 @@ interface IPrivateChatState {
   messageNotification: boolean;
   targetPrescense: "away" | "chat" | "dnd" | "xa";
   isStudent: boolean;
-  friends: string[];
   currentMessageToBeSent: string;
   loadingMessages: boolean;
   canLoadMoreMessages: boolean;
@@ -63,7 +72,6 @@ export class PrivateChat extends React.Component<
     this.state = {
       nick: null,
       messages: [],
-      friends: [],
       minimized: JSON.parse(
         window.sessionStorage.getItem("minimizedChats") || "[]"
       ).includes(props.jid),
@@ -89,7 +97,6 @@ export class PrivateChat extends React.Component<
     this.onTextFieldFocus = this.onTextFieldFocus.bind(this);
     this.onTextFieldBlur = this.onTextFieldBlur.bind(this);
     this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
-    this.requestPrescense = this.requestPrescense.bind(this);
     this.isScrolledToTop = this.isScrolledToTop.bind(this);
     this.loadMessages = this.loadMessages.bind(this);
   }
@@ -123,8 +130,7 @@ export class PrivateChat extends React.Component<
 
     this.obtainNick();
     this.loadMessages();
-    this.requestPrescense();
-    this.getRoster();
+    requestPrescense(this.props.jid, this.props.connection);
   }
 
   /**
@@ -148,58 +154,62 @@ export class PrivateChat extends React.Component<
     });
   }
 
-  /**
-   * requestPrescense
-   */
-  requestPrescense() {
-    this.props.connection.send(
-      $pres({
-        from: this.props.connection.jid,
-        to: this.props.jid,
-        type: "probe",
-      })
-    );
-  }
+  // /**
+  //  * requestPrescense
+  //  */
+  // async requestPrescense() {
+  //   await new Promise((resolve) => {
+  //     resolve(
+  //       this.props.connection.send(
+  //         $pres({
+  //           from: this.props.connection.jid,
+  //           to: this.props.jid,
+  //           type: "probe",
+  //         })
+  //       )
+  //     );
+  //   });
+  // }
 
-  /**
-   * Subscribe to another user's presence
-   * @param type should you subscribe or unsubscribe from the presence
-   */
-  handlePresenceSubscribe = async (
-    type: "subscribe" | "unsubscribe"
-  ): Promise<void> => {
-    await new Promise((resolve) =>
-      resolve(
-        this.props.connection.send(
-          $pres({
-            from: this.props.connection.jid,
-            to: this.props.jid,
-            type: type,
-          })
-        )
-      )
-    );
-  };
+  // /**
+  //  * Subscribe to another user's presence
+  //  * @param type should you subscribe or unsubscribe from the presence
+  //  */
+  // handlePresenceSubscribe = async (
+  //   type: "subscribe" | "unsubscribe"
+  // ): Promise<void> => {
+  //   await new Promise((resolve) =>
+  //     resolve(
+  //       this.props.connection.send(
+  //         $pres({
+  //           from: this.props.connection.jid,
+  //           to: this.props.jid,
+  //           type: type,
+  //         })
+  //       )
+  //     )
+  //   );
+  // };
 
-  /**
-   * Allow another user's presence
-   * @param type should allow or unallow other person's subscription
-   */
-  handlePresenceSubscribed = async (
-    type: "subscribed" | "unsubscribed"
-  ): Promise<void> => {
-    await new Promise((resolve) =>
-      resolve(
-        this.props.connection.send(
-          $pres({
-            from: this.props.connection.jid,
-            to: this.props.jid,
-            type: "type",
-          })
-        )
-      )
-    );
-  };
+  // /**
+  //  * Allow another user's presence
+  //  * @param type should allow or unallow other person's subscription
+  //  */
+  // handlePresenceSubscribed = async (
+  //   type: "subscribed" | "unsubscribed"
+  // ): Promise<void> => {
+  //   await new Promise((resolve) =>
+  //     resolve(
+  //       this.props.connection.send(
+  //         $pres({
+  //           from: this.props.connection.jid,
+  //           to: this.props.jid,
+  //           type: "type",
+  //         })
+  //       )
+  //     )
+  //   );
+  // };
 
   // handleSubscriptions = async (): Promise<void> => {
   //   const subscribe = new Promise((resolve) =>
@@ -269,22 +279,33 @@ export class PrivateChat extends React.Component<
     });
   };
 
-  getRoster = () => {
-    const stanza = $iq({
-      from: this.props.connection.jid,
-      type: "get",
-    }).c("query", { xmlns: Strophe.NS.ROSTER });
-    const friendList: string[] = [];
-    this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
-      const roster = answerStanza.querySelectorAll("query item");
+  addToRoster = () => {
+    handlePresenceSubscribe(this.props.jid, this.props.connection, "subscribe");
+    handlePresenceSubscribed(
+      this.props.jid,
+      this.props.connection,
+      "subscribed"
+    );
 
-      roster.forEach((r) => {
-        friendList.push(r.getAttribute("jid"));
-      });
-    });
-
-    this.setState({ friends: friendList });
+    this.props.onAddFriend({ jid: this.props.jid, nick: this.state.nick });
   };
+
+  // getRoster = () => {
+  //   const stanza = $iq({
+  //     from: this.props.connection.jid,
+  //     type: "get",
+  //   }).c("query", { xmlns: Strophe.NS.ROSTER });
+  //   const friendList: string[] = [];
+  //   this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
+  //     const roster = answerStanza.querySelectorAll("query item");
+
+  //     roster.forEach((r) => {
+  //       friendList.push(r.getAttribute("jid"));
+  //     });
+  //   });
+
+  //   this.setState({ friends: friendList });
+  // };
 
   /**
    * onTextFieldFocus
@@ -326,13 +347,6 @@ export class PrivateChat extends React.Component<
 
     if (text) {
       this.handleMessageSend(text);
-      if (
-        !this.state.friends.includes(this.props.jid) &&
-        this.props.subscribeOnMessage
-      ) {
-        this.handlePresenceSubscribe("subscribe");
-        this.handlePresenceSubscribed("subscribed");
-      }
 
       this.props.userRosterGroup &&
         this.setUserToRosterGroup(this.props.userRosterGroup);
@@ -501,6 +515,9 @@ export class PrivateChat extends React.Component<
     return false;
   }
 
+  existsInFriends = (roster: IChatContact[], person: string) =>
+    roster.some((contact) => contact.jid === person);
+
   /**
    * loadMessages
    */
@@ -647,6 +664,21 @@ export class PrivateChat extends React.Component<
                 ></span>
                 <span className="chat__target-nickname">{this.state.nick}</span>
               </div>
+              {this.existsInFriends(this.props.roster, this.props.jid) &&
+              this.props.jid.includes("student") ? (
+                <div className="chat__button chat__button--add-friend icon-plus disabled"></div>
+              ) : (
+                <Dropdown
+                  openByHover
+                  modifier="private-chat"
+                  content={this.props.i18n.text.get("plugin.chat.addContact")}
+                >
+                  <div
+                    onClick={this.addToRoster}
+                    className="chat__button chat__button--add-friend icon-plus"
+                  ></div>
+                </Dropdown>
+              )}
               <div
                 onClick={this.toggleMinimizeChats}
                 className="chat__button chat__button--minimize icon-minus"

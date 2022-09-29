@@ -355,6 +355,13 @@
   .chat__button--close {
     color: $color-chat-private-main-color;
   }
+
+  .chat__button--add-friend {
+    color: $color-chat-private-main-color;
+    &.disabled {
+      color: $color-disabled
+    }
+  }
 }
 
 // Chat Controlbox Specific
@@ -382,8 +389,18 @@
   padding: 10px 5px;
   z-index: 2;
 }
+.chat__controlbox-person {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 .chat__controlbox-person-name {
+  cursor: pointer;
+}
+
+.chat__controlbox-action {
+  color: $color-chat-controlbox-main-color;
   cursor: pointer;
 }
 

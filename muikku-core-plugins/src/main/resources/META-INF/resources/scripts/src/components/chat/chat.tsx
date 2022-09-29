@@ -24,6 +24,11 @@ import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
 import { getUserChatId } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
+import {
+  handlePresenceSubscribe,
+  handlePresenceSubscribed,
+  handleRosterDelete,
+} from "~/helper-functions/chat";
 export type tabs = "ROOMS" | "PEOPLE";
 
 /**
@@ -349,6 +354,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   loadPersonList = () => {
     if (this.props.status.isStudent) {
       this.loadStudentCouncelors();
+      this.getRoster();
     } else {
       this.getRoster();
     }
@@ -613,8 +619,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
 
   /**
-   * Toggles between joining and leaving the chat room
-   * @param roomJID
+   * toggleJoinLeavePrivateChatRoom toggles between joining and leaving the chat room
+   * @param jid private chat recipient jid
+   * @param group roster group of a personModifier
+   * @param subscribeOnMessage should there be subscriptions
    */
   public toggleJoinLeavePrivateChatRoom(
     jid: string,
@@ -891,13 +899,15 @@ class Chat extends React.Component<IChatProps, IChatState> {
    */
   public onMessageReceived(stanza: Element) {
     const userFrom = stanza.getAttribute("from").split("/")[0];
+    // This is temporary. As it stands, study guiders should always subscribe to students who send messages to them.
 
+    const shouldSubscribe = !this.props.status.isStudent;
     if (
       !this.state.openChatsJIDS.find(
         (s) => s.jid !== userFrom && s.type === "user"
       )
     ) {
-      this.joinPrivateChat(userFrom, null, null, stanza);
+      this.joinPrivateChat(userFrom, null, true, stanza);
     }
 
     return true;
@@ -1173,7 +1183,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         };
                         return (
                           <People
-                            modifier="chat"
+                            modifier="guider"
                             person={person}
                             toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
                               this,
@@ -1201,8 +1211,17 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     {this.state.roster.length > 0 ? (
                       this.state.roster.map((person, index) => (
                         <People
-                          modifier="chat"
+                          modifier="student"
                           person={person}
+                          connection={this.state.connection}
+                          removable
+                          removePerson={() =>
+                            this.setState({
+                              roster: this.state.roster.filter(
+                                (p) => p.jid !== person.jid
+                              ),
+                            })
+                          }
                           toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
                             this,
                             person.jid,
@@ -1305,6 +1324,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
             .map((pchat) => (
               <PrivateChat
                 jid={pchat.jid}
+                roster={this.state.roster}
+                onAddFriend={(person: IChatContact) =>
+                  this.setState({ roster: [...this.state.roster, ...[person]] })
+                }
                 initializingStanza={pchat.initStanza}
                 userRosterGroup={pchat.group}
                 subscribeOnMessage={pchat.subscribeOnMessage}
