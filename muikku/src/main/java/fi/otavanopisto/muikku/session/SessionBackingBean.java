@@ -156,5 +156,5 @@ public class SessionBackingBean {
   private EnvironmentRoleArchetype loggedUserRoleArchetype;
   private String loggedUserName;
   private boolean hasFees;
- 
+
 }
