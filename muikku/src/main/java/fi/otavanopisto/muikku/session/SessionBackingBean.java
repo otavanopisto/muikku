@@ -1,8 +1,6 @@
 package fi.otavanopisto.muikku.session;
 
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
@@ -18,7 +16,6 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -50,7 +47,6 @@ public class SessionBackingBean {
     loggedUserName = null;
     loggedUserId = null;
     loggedUser = null;
-    studyProgrammeIdentifiers = new HashSet<>();
 
     if (sessionController.isLoggedIn()) {
       UserEntity loggedUser = sessionController.getLoggedUserEntity();
@@ -68,8 +64,6 @@ public class SessionBackingBean {
           if (!loggedUserRoleArchetype.equals(EnvironmentRoleArchetype.STUDENT)) {
             loggedUserName = String.format("%s %s (%s)", user.getFirstName(), user.getLastName(),
                 resolveLoggedUserRoleText());
-            studyProgrammeIdentifiers = user.getStudyProgrammeIdentifiers();
-            System.out.println("Ja näin niitä on täällä " + studyProgrammeIdentifiers.size() + "kpl");
           }
           else if (user.getNickName() != null) {
             loggedUserName = String.format("%s %s (%s)", user.getNickName(), user.getLastName(),
@@ -157,15 +151,10 @@ public class SessionBackingBean {
     }
   }
 
-  public Set<SchoolDataIdentifier> getStudyProgrammeIdentifiers() {
-    return studyProgrammeIdentifiers;
-  }
-
   private String loggedUser;
   private Long loggedUserId;
   private EnvironmentRoleArchetype loggedUserRoleArchetype;
   private String loggedUserName;
   private boolean hasFees;
-  private Set<SchoolDataIdentifier> studyProgrammeIdentifiers;
-
+ 
 }
