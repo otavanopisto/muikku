@@ -92,12 +92,18 @@ class CommunicatorToolbar extends React.Component<
   }
 
   /**
-   * handleShowSubscribedThreadsOnlyClick
+   * selectValue
    */
-  handleShowSubscribedThreadsOnlyClick = () => {
-    this.props.showOnlySubscribedThreads({
-      value: !this.props.discussion.subscribedThreadOnly,
-    });
+  selectValue = () => {
+    const location = window.location.hash.replace("#", "").split("/");
+
+    if (location.includes("subs")) {
+      return "subs";
+    } else if (this.props.discussion.areaId) {
+      return this.props.discussion.areaId;
+    } else {
+      return "";
+    }
   };
 
   /**
@@ -175,15 +181,12 @@ class CommunicatorToolbar extends React.Component<
             id="discussionAreaSelect"
             className="form-element__select form-element__select--toolbar-selector"
             onChange={this.onSelectChange}
-            value={this.props.discussion.areaId || ""}
+            value={this.selectValue()}
           >
             <option value="">
               {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
             </option>
-            <option
-              value="subs"
-              onClick={this.handleShowSubscribedThreadsOnlyClick}
-            >
+            <option value="subs">
               {this.props.i18n.text.get(
                 "plugin.discussion.browseareas.subscribtions"
               )}

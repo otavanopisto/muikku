@@ -360,12 +360,20 @@ const loadSubscribedDiscussionThreadList: LoadSubscribedDiscussionThreadList =
           type: "UPDATE_SUBSCRIBED_THREAD_LIST",
           payload: subscribedThreadList,
         });
+
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: "READY",
+        });
+
+        data.success && data.success();
       } catch (err) {
         dispatch(notificationActions.displayNotification(err.message, "error"));
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
-          payload: <DiscussionStateType>"ERROR",
+          payload: "ERROR",
         });
+        data.fail && data.fail();
       }
     };
   };
