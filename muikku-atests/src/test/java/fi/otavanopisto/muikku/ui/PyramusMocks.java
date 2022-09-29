@@ -213,7 +213,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
 
     StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, (long) 1, null, "Test", "Staff1member", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables, new HashSet<>());
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
     
@@ -233,7 +233,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, (long) 1, null, "Test", "Staff2member", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables, new HashSet<>());
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember2);
     stubFor(get(urlEqualTo("/1/staff/members/3"))
@@ -252,7 +252,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, (long) 1, null, "Test", "Administrator", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables, new HashSet<>());
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember3);
     
@@ -502,7 +502,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
-        role, tags, variables);
+        role, tags, variables, new HashSet<>());
       
     String staffMemberJson = objectMapper.writeValueAsString(staffMember);
     
@@ -678,7 +678,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
         
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, (long) 1, null, "Test", "Administrator", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables, new HashSet<>());
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember3);
     
