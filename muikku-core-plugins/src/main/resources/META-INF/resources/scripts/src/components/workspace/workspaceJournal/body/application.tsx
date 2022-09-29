@@ -2,8 +2,8 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import HoverButton from "~/components/general/hover-button";
-import Toolbar from "./application/toolbar";
-import WorkspaceJournals from "./application/journals";
+import Toolbar from "./application/workspace-journals-toolbar";
+import WorkspaceJournalsList from "./application/workspace-journals-list";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
@@ -14,17 +14,20 @@ import { StatusType } from "~/reducers/base/status";
 import { getName } from "~/util/modifiers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
-import {
-  loadCurrentWorkspaceJournalsFromServer,
-  LoadCurrentWorkspaceJournalsFromServerTriggerType,
-} from "~/actions/workspaces";
 import NewJournal from "~/components/workspace/workspaceJournal/dialogs/new-edit-journal";
+import { AnyActionType } from "~/actions";
+import {
+  LoadCurrentWorkspaceJournalsFromServerTriggerType,
+  loadCurrentWorkspaceJournalsFromServer,
+} from "~/actions/workspaces/journals";
+import WorkspaceJournalView from "./application/workspace-journal-view";
 
 /**
  * WorkspaceJournalApplicationProps
  */
 interface WorkspaceJournalApplicationProps {
-  aside: React.ReactElement<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  aside?: React.ReactElement<any>;
   i18n: i18nType;
   workspace: WorkspaceType;
   status: StatusType;
@@ -130,7 +133,8 @@ class WorkspaceJournalApplication extends React.Component<
           title={title}
           primaryOption={primaryOption}
         >
-          <WorkspaceJournals />
+          <WorkspaceJournalView />
+          <WorkspaceJournalsList />
         </ApplicationPanel>
         {this.props.status.isStudent ? (
           <NewJournal>
@@ -158,7 +162,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { loadCurrentWorkspaceJournalsFromServer },
     dispatch

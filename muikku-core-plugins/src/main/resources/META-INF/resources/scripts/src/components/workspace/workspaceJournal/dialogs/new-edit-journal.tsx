@@ -11,11 +11,11 @@ import Button from "~/components/general/button";
 import equals = require("deep-equal");
 import { WorkspaceJournalType } from "~/reducers/workspaces";
 import {
-  createWorkspaceJournalForCurrentWorkspace,
-  updateWorkspaceJournalInCurrentWorkspace,
   CreateWorkspaceJournalForCurrentWorkspaceTriggerType,
+  createWorkspaceJournalForCurrentWorkspace,
   UpdateWorkspaceJournalInCurrentWorkspaceTriggerType,
-} from "~/actions/workspaces";
+  updateWorkspaceJournalInCurrentWorkspace,
+} from "~/actions/workspaces/journals";
 
 /**
  * NewEditJournalProps

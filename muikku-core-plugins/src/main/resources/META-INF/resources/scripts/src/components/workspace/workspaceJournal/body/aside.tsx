@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
@@ -12,15 +11,14 @@ import Navigation, {
 import { WorkspaceType } from "~/reducers/workspaces/index";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
-import {
-  loadStudentsOfWorkspace,
-  loadCurrentWorkspaceJournalsFromServer,
-} from "~/actions/workspaces";
-import {
-  LoadUsersOfWorkspaceTriggerType,
-  LoadCurrentWorkspaceJournalsFromServerTriggerType,
-} from "~/actions/workspaces/index";
+import { loadStudentsOfWorkspace } from "~/actions/workspaces";
+import { LoadUsersOfWorkspaceTriggerType } from "~/actions/workspaces/index";
 import { WorkspaceStudentListType } from "~/reducers/user-index";
+import { AnyActionType } from "~/actions";
+import {
+  LoadCurrentWorkspaceJournalsFromServerTriggerType,
+  loadCurrentWorkspaceJournalsFromServer,
+} from "~/actions/workspaces/journals";
 
 /**
  * NavigationAsideProps
@@ -63,7 +61,13 @@ class NavigationAside extends React.Component<
    * Handles student changes and loads specific students journals to global state
    * @param id id
    */
-  handleOnStudentClick = (id: number | null) => () => {
+  handleNavigationElementClick = (id: number | null) => () => {
+    if (id) {
+      window.location.hash = id.toString();
+    } else {
+      window.location.hash = "all";
+    }
+
     this.props.loadCurrentWorkspaceJournalsFromServer(id);
   };
 
@@ -104,28 +108,18 @@ class NavigationAside extends React.Component<
      */
     const filteredStudents = this.filterStudents(workspace.students);
 
-    /**
-     * If all student is showed
-     */
-    const allSelected =
-      workspace !== null &&
-      workspace.journals !== null &&
-      workspace.journals.userEntityId === null;
-
-    const navigationElementList: JSX.Element[] = [];
-
-    navigationElementList.push(
+    const navigationElementList: JSX.Element[] = [
       <NavigationElement
         key="showAll"
-        isActive={allSelected}
+        isActive={window.location.hash.split("#")[1] === "all"}
         icon="user"
-        onClick={this.handleOnStudentClick(null)}
+        onClick={this.handleNavigationElementClick(null)}
       >
         {this.props.i18n.text.get(
           "plugin.workspace.journal.studentFilter.showAll"
         )}
-      </NavigationElement>
-    );
+      </NavigationElement>,
+    ];
 
     filteredStudents.length > 0 &&
       filteredStudents.map((student) =>
@@ -134,10 +128,10 @@ class NavigationAside extends React.Component<
             key={student.userEntityId}
             isActive={
               student.userEntityId ===
-              this.props.workspace.journals.userEntityId
+              parseInt(window.location.hash.split("#")[1])
             }
             icon="user"
-            onClick={this.handleOnStudentClick(student.userEntityId)}
+            onClick={this.handleNavigationElementClick(student.userEntityId)}
           >
             {`${student.firstName} ${student.lastName}`}
           </NavigationElement>
@@ -178,7 +172,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStudents: loadStudentsOfWorkspace,

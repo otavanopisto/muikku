@@ -13,7 +13,7 @@ import { WorkspaceJournalType } from "~/reducers/workspaces";
 import {
   deleteWorkspaceJournalInCurrentWorkspace,
   DeleteWorkspaceJournalInCurrentWorkspaceTriggerType,
-} from "~/actions/workspaces";
+} from "~/actions/workspaces/journals";
 
 /**
  * DeleteJournalProps

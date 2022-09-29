@@ -6,22 +6,23 @@ import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/journal.scss";
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
-import Journal from "./journals/journal";
+import WorkspaceJournalsListItem from "./workspace-journals-list-item";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
-import {
-  loadMoreCurrentWorkspaceJournalsFromServer,
-  LoadMoreCurrentWorkspaceJournalsFromServerTriggerType,
-} from "~/actions/workspaces";
 import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
+import { AnyActionType } from "~/actions";
+import {
+  LoadMoreCurrentWorkspaceJournalsFromServerTriggerType,
+  loadMoreCurrentWorkspaceJournalsFromServer,
+} from "~/actions/workspaces/journals";
 
 /**
  * WorkspaceJournalsProps
  */
-interface WorkspaceJournalsProps {
+interface WorkspaceJournalsListProps {
   i18n: i18nType;
   workspaceJournalsState: WorkspacesStateType;
   workspaceJournalsHasMore: boolean;
@@ -33,20 +34,20 @@ interface WorkspaceJournalsProps {
 /**
  * WorkspaceJournalsState
  */
-interface WorkspaceJournalsState {}
+interface WorkspaceJournalsListState {}
 
 /**
  * WorkspaceJournals
  */
-class WorkspaceJournals extends BodyScrollLoader<
-  WorkspaceJournalsProps,
-  WorkspaceJournalsState
+class WorkspaceJournalsList extends BodyScrollLoader<
+  WorkspaceJournalsListProps,
+  WorkspaceJournalsListState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: WorkspaceJournalsProps) {
+  constructor(props: WorkspaceJournalsListProps) {
     super(props);
 
     //once this is in state READY only then a loading more event can be triggered
@@ -65,7 +66,9 @@ class WorkspaceJournals extends BodyScrollLoader<
     if (
       !this.props.workspace ||
       !this.props.workspace.journals ||
-      this.props.workspaceJournalsState === "LOADING"
+      this.props.workspaceJournalsState === "LOADING" ||
+      (this.props.workspace.journals &&
+        this.props.workspace.journals.currentJournal)
     ) {
       return null;
     } else if (this.props.workspaceJournalsState === "ERROR") {
@@ -92,7 +95,12 @@ class WorkspaceJournals extends BodyScrollLoader<
     return (
       <ApplicationList>
         {this.props.workspace.journals.journals.map((journal) => (
-          <Journal key={journal.id} journal={journal} />
+          <WorkspaceJournalsListItem
+            key={journal.id}
+            journal={journal}
+            showCommentList={false}
+            asCurrent={false}
+          />
         ))}
         {this.props.workspaceJournalsState === "LOADING_MORE" ? (
           <ApplicationListItem className="loader-empty" />
@@ -126,11 +134,14 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { loadMoreCurrentWorkspaceJournalsFromServer },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournals);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WorkspaceJournalsList);

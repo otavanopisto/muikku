@@ -3511,7 +3511,13 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private WorkspaceJournalCommentRESTModel toRestModel(WorkspaceEntity workspaceEntity, WorkspaceJournalComment workspaceJournalComment) {
     UserEntity author = userEntityController.findUserEntityById(workspaceJournalComment.getCreator());
-    User user = author == null ? null : userController.findUserByUserEntityDefaults(author);
+    User user = null;
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      user = author == null ? null : userController.findUserByUserEntityDefaults(author);
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
     WorkspaceJournalCommentRESTModel result = new WorkspaceJournalCommentRESTModel();
     result.setId(workspaceJournalComment.getId());
     result.setJournalEntryId(workspaceJournalComment.getJournalEntry().getId());

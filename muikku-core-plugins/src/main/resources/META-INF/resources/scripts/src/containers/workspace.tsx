@@ -1,16 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Notifications from "../components/base/notifications";
 import DisconnectedWarningDialog from "../components/base/disconnect-warning";
 import { BrowserRouter, Route } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
-
 import { Store } from "react-redux";
 import { StateType } from "~/reducers";
 import { Action } from "redux";
 import Websocket from "~/util/websocket";
-
 import titleActions from "~/actions/base/title";
-
 import WorkspaceHomeBody from "~/components/workspace/workspaceHome";
 import WorkspaceHelpBody from "~/components/workspace/workspaceHelp";
 import WorkspaceDiscussionBody from "~/components/workspace/workspaceDiscussions";
@@ -21,9 +19,7 @@ import WorkspaceJournalBody from "~/components/workspace/workspaceJournal";
 import WorkspaceManagementBody from "~/components/workspace/workspaceManagement";
 import WorkspaceUsersBody from "~/components/workspace/workspaceUsers";
 import WorkspacePermissionsBody from "~/components/workspace/workspacePermissions";
-
 import Chat from "../components/chat/chat";
-
 import { RouteComponentProps } from "react-router";
 import {
   setCurrentWorkspace,
@@ -33,7 +29,6 @@ import {
   loadWorkspaceCompositeMaterialReplies,
   updateLastWorkspace,
   loadStudentsOfWorkspace,
-  loadCurrentWorkspaceJournalsFromServer,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadCurrentWorkspaceUserGroupPermissions,
@@ -52,7 +47,6 @@ import {
   loadDiscussionThreadFromServer,
   setDiscussionWorkpaceId,
 } from "~/actions/discussion";
-
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { displayNotification } from "~/actions/base/notifications";
 import { loadProfileChatSettings } from "~/actions/main-function/profile";
@@ -70,6 +64,7 @@ import { registerLocale } from "react-datepicker";
 import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
+import { loadCurrentWorkspaceJournalsFromServer } from "~/actions/workspaces/journals";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -140,6 +135,7 @@ export default class Workspace extends React.Component<
       this.loadWorkspaceAnnouncerData.bind(this);
     this.loadWorkspaceMaterialsData =
       this.loadWorkspaceMaterialsData.bind(this);
+    this.loadWorkspaceJournalData = this.loadWorkspaceJournalData.bind(this);
     this.loadWorkspaceHelpData = this.loadWorkspaceHelpData.bind(this);
     this.closeEnrollmentDialog = this.closeEnrollmentDialog.bind(this);
     this.closeSignupDialog = this.closeSignupDialog.bind(this);
@@ -254,6 +250,10 @@ export default class Workspace extends React.Component<
           );
         }
       }
+    } else if (window.location.pathname.includes("/journal")) {
+      const location = window.location.hash.replace("#", "").split("/");
+
+      this.loadWorkspaceJournalData(location);
     }
   }
 
@@ -274,7 +274,7 @@ export default class Workspace extends React.Component<
 
   /**
    * onWorkspaceMaterialsBodyActiveNodeIdChange
-   * @param newId
+   * @param newId newId
    */
   onWorkspaceMaterialsBodyActiveNodeIdChange(newId: number) {
     const state: StateType = this.props.store.getState();
@@ -349,7 +349,7 @@ export default class Workspace extends React.Component<
 
   /**
    * onWorkspaceHelpBodyActiveNodeIdChange
-   * @param newId
+   * @param newId newId
    */
   onWorkspaceHelpBodyActiveNodeIdChange(newId: number) {
     const state: StateType = this.props.store.getState();
@@ -446,7 +446,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceHelp
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceHelp(props: RouteComponentProps<any>) {
@@ -506,7 +506,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceDiscussions
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceDiscussions(props: RouteComponentProps<any>) {
@@ -559,7 +559,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceAnnouncements
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceAnnouncements(props: RouteComponentProps<any>) {
@@ -597,7 +597,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceAnnouncer
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceAnnouncer(props: RouteComponentProps<any>) {
@@ -653,7 +653,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceDiscussionData
-   * @param location
+   * @param location location
    */
   loadWorkspaceDiscussionData(location: string[]) {
     if (location.length <= 2) {
@@ -683,7 +683,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceAnnouncementsData
-   * @param announcementId
+   * @param announcementId announcementId
    */
   loadWorkspaceAnnouncementsData(announcementId: number) {
     this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
@@ -691,7 +691,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceAnnouncerData
-   * @param location
+   * @param location location
    */
   loadWorkspaceAnnouncerData(location: string[]) {
     const actualLocation = location.filter((l) => !!l);
@@ -716,7 +716,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceMaterialsData
-   * @param id
+   * @param id id
    */
   loadWorkspaceMaterialsData(id: number): void {
     if (id) {
@@ -728,7 +728,7 @@ export default class Workspace extends React.Component<
 
   /**
    * loadWorkspaceHelpData
-   * @param id
+   * @param id id
    */
   loadWorkspaceHelpData(id: number): void {
     if (id) {
@@ -739,8 +739,23 @@ export default class Workspace extends React.Component<
   }
 
   /**
+   * loadWorkspaceJournalData
+   * @param location location
+   */
+  loadWorkspaceJournalData(location: string[]): void {
+    /* const showAllActive = location.includes("all");
+    const studentFilter = !location[1];
+    const journalOpen = location[2]; */
+    /* this.props.store.dispatch(
+      loadCurrentWorkspaceJournalsFromServer() as Action
+    ); */
+    /*     console.log("journal hash changed location", location);
+     */
+  }
+
+  /**
    * renderWorkspaceMaterials
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceMaterials(props: RouteComponentProps<any>) {
@@ -919,7 +934,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceUsers
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceUsers(props: RouteComponentProps<any>) {
@@ -996,7 +1011,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceJournal
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceJournal(props: RouteComponentProps<any>) {
@@ -1039,12 +1054,22 @@ export default class Workspace extends React.Component<
               );
             }
             if (!workspace.journals) {
+              //here in the callback
+              const currentLocation = window.location.hash
+                .replace("#", "")
+                .split("/");
+
+              /*               console.log(currentLocation);
+               */
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
+                // This happens if teacher/admin uses diary
                 this.props.store.dispatch(
                   loadCurrentWorkspaceJournalsFromServer() as Action
                 );
               } else {
-                this.props.store.dispatch(
+                // This happens if student uses workspcae diary???
+                /*                 console.log("student", state.status.userId);
+                 */ this.props.store.dispatch(
                   loadCurrentWorkspaceJournalsFromServer(
                     state.status.userId
                   ) as Action
@@ -1064,7 +1089,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceManagement
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceManagement(props: RouteComponentProps<any>) {
@@ -1160,7 +1185,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceEvaluation
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceEvaluation(props: RouteComponentProps<any>) {
