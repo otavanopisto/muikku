@@ -25,6 +25,7 @@ import Button from "~/components/general/button";
 import { unstable_batchedUpdates } from "react-dom";
 import Avatar from "~/components/general/avatar";
 import { IconButton } from "../../../../general/button";
+import DeleteJournalComment from "../../dialogs/delete-journal-comment";
 
 /**
  * WorkspaceJournalCommentListProps
@@ -161,58 +162,65 @@ export const WorkspaceJournalCommentList: React.FC<
       </div>
 
       <AnimateHeight height={showComments ? "auto" : 0}>
-        {!journalComments.isLoading &&
-          journalComments.comments &&
-          journalComments.comments.length > 0 &&
-          journalComments.comments.map((comment) => (
-            <WorkspaceJournalCommentListItem
-              key={comment.id}
-              journalComment={comment}
-              status={props.status}
-              workspaceEntityId={props.currentWorkspace.id}
-              isSaving={journalComments.isSaving}
-              onUpdate={updateComment}
-              onDelete={deleteComment}
-            />
-          ))}
+        <div>
+          {!journalComments.isLoading &&
+            journalComments.comments &&
+            journalComments.comments.length > 0 &&
+            journalComments.comments.map((comment) => (
+              <WorkspaceJournalCommentListItem
+                key={comment.id}
+                journalComment={comment}
+                status={props.status}
+                workspaceEntityId={props.currentWorkspace.id}
+                isSaving={journalComments.isSaving}
+                onUpdate={updateComment}
+                onDelete={deleteComment}
+              />
+            ))}
 
-        {!journalComments.isLoading &&
-          !journalComments.isSaving &&
-          journalComments.comments &&
-          journalComments.comments.length === 0 && <div>Tyhjä</div>}
+          {!journalComments.isLoading &&
+            !journalComments.isSaving &&
+            journalComments.comments &&
+            journalComments.comments.length === 0 && <div>Tyhjä</div>}
 
-        {(journalComments.isLoading || journalComments.isSaving) && (
-          <div className="loader-empty" />
-        )}
-      </AnimateHeight>
-
-      {!showEditor && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button onClick={handleCreateNewCommentClick}>Uusi kommentti</Button>
+          {(journalComments.isLoading || journalComments.isSaving) && (
+            <div className="loader-empty" />
+          )}
         </div>
-      )}
 
-      <AnimateHeight
-        height={showEditor ? "auto" : 0}
-        duration={300}
-        onAnimationEnd={handleNewEditorTransitionEnd}
-        style={{ padding: "10px 0" }}
-      >
-        {createNewActive && (
-          <WorkspaceJournalCommentEditor
-            type="new"
-            diaryEventId={props.currentWorkspace.journals.currentJournal.id}
-            userEntityId={
-              props.currentWorkspace.journals.currentJournal.userEntityId
-            }
-            workspaceEntityId={
-              props.currentWorkspace.journals.currentJournal.workspaceEntityId
-            }
-            locked={journalComments.isSaving}
-            onSave={handleSaveNewCommentClick}
-            onClose={handleCancelNewCommentClick}
-          />
-        )}
+        <div>
+          {!showEditor && (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Button onClick={handleCreateNewCommentClick}>
+                Uusi kommentti
+              </Button>
+            </div>
+          )}
+
+          <AnimateHeight
+            height={showEditor ? "auto" : 0}
+            duration={300}
+            onAnimationEnd={handleNewEditorTransitionEnd}
+            style={{ padding: "10px 0" }}
+          >
+            {createNewActive && (
+              <WorkspaceJournalCommentEditor
+                type="new"
+                diaryEventId={props.currentWorkspace.journals.currentJournal.id}
+                userEntityId={
+                  props.currentWorkspace.journals.currentJournal.userEntityId
+                }
+                workspaceEntityId={
+                  props.currentWorkspace.journals.currentJournal
+                    .workspaceEntityId
+                }
+                locked={journalComments.isSaving}
+                onSave={handleSaveNewCommentClick}
+                onClose={handleCancelNewCommentClick}
+              />
+            )}
+          </AnimateHeight>
+        </div>
       </AnimateHeight>
     </div>
   );
@@ -322,13 +330,6 @@ export const WorkspaceJournalCommentListItem: React.FC<
     });
   };
 
-  /**
-   * handleDeleteCommentClick
-   */
-  const handleDeleteCommentClick = () => {
-    onDelete && onDelete({ id: id, journalEntryId: journalEntryId });
-  };
-
   const creatorIsMe = status.userId === authorId;
   const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
   const formatedDate = `${moment(created).format("l")} - ${moment(
@@ -364,7 +365,12 @@ export const WorkspaceJournalCommentListItem: React.FC<
         {creatorIsMe && !editing && (
           <div style={{ display: "flex" }}>
             <IconButton icon="pencil" onClick={handleEditCommentClick} />
-            <IconButton icon="trash" onClick={handleDeleteCommentClick} />
+            <DeleteJournalComment
+              journalComment={journalComment}
+              onDelete={onDelete}
+            >
+              <IconButton icon="trash" />
+            </DeleteJournalComment>
           </div>
         )}
       </div>

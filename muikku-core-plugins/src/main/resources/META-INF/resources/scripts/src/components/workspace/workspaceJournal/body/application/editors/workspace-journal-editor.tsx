@@ -149,7 +149,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
             },
             this.state.draftId,
             () => {
-              this.justClear(["title", "text"], this.state.draftId);
+              this.justClear(["title", "content"], this.state.draftId);
               this.props.onClose();
             }
           );
@@ -177,7 +177,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
             },
             this.props.journal.id,
             () => {
-              this.justClear(["title", "text"], this.state.draftId);
+              this.justClear(["title", "content"], this.state.draftId);
               this.props.onClose();
             }
           );

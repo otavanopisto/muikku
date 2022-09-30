@@ -246,13 +246,6 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
             </div>
           </div>
         </div>
-        <div className="evaluation-modal__item-functions">
-          <ButtonPill
-            buttonModifiers={["evaluate"]}
-            icon="book"
-            onClick={handleCreateNewComment}
-          />
-        </div>
       </div>
 
       <AnimateHeight duration={400} height={showContent ? "auto" : 0}>
@@ -270,40 +263,55 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
             alignItems: "center",
           }}
         >
-          {showComments ? "Piilota kommentit (XX)" : "Näytä kommentit (XX)"}
+          <span>Kommentit: (XX)</span>
           <div className={arrowClasses + "icon-arrow-right"} />
         </div>
 
         <AnimateHeight duration={420} height={showComments ? "auto" : 0}>
-          {!journalComments.isLoading &&
-            journalComments.comments &&
-            journalComments.comments.length > 0 &&
-            journalComments.comments.map((comment) => {
-              const editingIsActive =
-                commentToEdit && commentToEdit.id === comment.id;
+          <div>
+            {!journalComments.isLoading &&
+              journalComments.comments &&
+              journalComments.comments.length > 0 &&
+              journalComments.comments.map((comment) => {
+                const editingIsActive =
+                  commentToEdit && commentToEdit.id === comment.id;
 
-              return (
-                <EvaluationJournalEventComment
-                  key={comment.id}
-                  journalComment={comment}
-                  canDelete={!editingIsActive}
-                  workspaceEntityId={workspaceEntityId}
-                  userEntityId={userEntityId}
-                  onEditClick={handleEditComment}
-                  onDelete={deleteComment}
-                  isSaving={journalComments.isSaving}
-                />
-              );
-            })}
+                return (
+                  <EvaluationJournalEventComment
+                    key={comment.id}
+                    journalComment={comment}
+                    canDelete={!editingIsActive}
+                    workspaceEntityId={workspaceEntityId}
+                    userEntityId={userEntityId}
+                    onEditClick={handleEditComment}
+                    onDelete={deleteComment}
+                    isSaving={journalComments.isSaving}
+                  />
+                );
+              })}
 
-          {(journalComments.isLoading || journalComments.isSaving) && (
-            <div className="loader-empty" />
-          )}
+            {(journalComments.isLoading || journalComments.isSaving) && (
+              <div className="loader-empty" />
+            )}
 
-          {!journalComments.isLoading &&
-            !journalComments.isSaving &&
-            journalComments.comments &&
-            journalComments.comments.length === 0 && <div>Tyhjä</div>}
+            {!journalComments.isLoading &&
+              !journalComments.isSaving &&
+              journalComments.comments &&
+              journalComments.comments.length === 0 && <div>Tyhjä</div>}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ButtonPill
+              buttonModifiers={["evaluate"]}
+              icon="book"
+              onClick={handleCreateNewComment}
+            />
+          </div>
         </AnimateHeight>
       </AnimateHeight>
 

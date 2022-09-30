@@ -249,7 +249,6 @@ export const useJournalComments = (
           setJournalComments((journalComments) => ({
             ...journalComments,
             isSaving: false,
-            journalComments: [],
           }));
         }
       }
@@ -309,7 +308,7 @@ export const useJournalComments = (
         if (componentMounted.current) {
           setJournalComments((journalComments) => ({
             ...journalComments,
-            journalComments: journalCommentsUpdated,
+            comments: journalCommentsUpdated,
           }));
 
           if (onSuccess) {

@@ -12,6 +12,7 @@ import {
 } from "~/actions/base/notifications";
 import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
+import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
 
 /**
  * EvaluationEventContentCardProps
@@ -43,24 +44,10 @@ const EvaluationJournalEventComment: React.FC<
 > = (props) => {
   const { journalComment, status, onDelete, onEditClick, canDelete } = props;
 
-  const {
-    comment,
-    created,
-    id,
-    firstName,
-    lastName,
-    journalEntryId,
-    authorId,
-  } = journalComment;
+  const { comment, created, id, firstName, lastName, authorId } =
+    journalComment;
 
   const myRef = React.useRef<HTMLDivElement>(null);
-
-  /**
-   * handleDeleteCommentClick
-   */
-  const handleDeleteCommentClick = () => {
-    onDelete && onDelete({ id: id, journalEntryId: journalEntryId });
-  };
 
   /**
    * handleEditCommentClick
@@ -120,12 +107,12 @@ const EvaluationJournalEventComment: React.FC<
           )}
 
           {canDelete && creatorIsMe && (
-            <a
-              onClick={handleDeleteCommentClick}
-              style={{ marginRight: "5px" }}
+            <DeleteJournalComment
+              journalComment={journalComment}
+              onDelete={onDelete}
             >
-              Poista
-            </a>
+              <a style={{ marginRight: "5px" }}>Poista</a>
+            </DeleteJournalComment>
           )}
         </div>
       </div>
