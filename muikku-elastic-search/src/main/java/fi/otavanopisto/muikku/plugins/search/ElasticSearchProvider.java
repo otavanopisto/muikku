@@ -670,7 +670,7 @@ public class ElasticSearchProvider implements SearchProvider {
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
     
-    query.must(rangeQuery("signupEnd").lt(OffsetDateTime.now().toEpochSecond()));
+    query.must(rangeQuery("signupEnd").lt(OffsetDateTime.now().minusDays(1).toEpochSecond()));
 
     SearchRequestBuilder requestBuilder = elasticClient
       .prepareSearch(IndexedWorkspace.INDEX_NAME)
