@@ -89,7 +89,8 @@ class People extends React.Component<IPeopleProps, IPeopleState> {
         {this.props.removable ? (
           <PromptDialog
             title={this.props.i18n.text.get(
-              "plugin.chat.people.delete.prompt.title"
+              "plugin.chat.people.delete.prompt.title",
+              name
             )}
             content={this.props.i18n.text.get(
               "plugin.chat.people.delete.prompt.content"

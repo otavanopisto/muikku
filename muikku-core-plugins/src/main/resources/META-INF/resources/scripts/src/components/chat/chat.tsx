@@ -22,11 +22,7 @@ import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
 import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/records/summary";
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
-import {
-  getUserChatId,
-  handlePresenceSubscribe,
-  handlePresenceSubscribed,
-} from "~/helper-functions/chat";
+import { getUserChatId } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
 
 export type tabs = "ROOMS" | "PEOPLE";

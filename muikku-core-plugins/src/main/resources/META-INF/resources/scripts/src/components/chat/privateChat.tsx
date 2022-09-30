@@ -7,11 +7,7 @@ import { ChatMessage } from "./chatMessage";
 import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
-import {
-  requestPrescense,
-  handlePresenceSubscribe,
-  handlePresenceSubscribed,
-} from "~/helper-functions/chat";
+import { requestPrescense } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
 
 /**
