@@ -9,7 +9,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import {
   requestPrescense,
-  handleRosterDelete,
   handlePresenceSubscribe,
   handlePresenceSubscribed,
 } from "~/helper-functions/chat";
@@ -262,30 +261,20 @@ export class PrivateChat extends React.Component<
     return answer;
   };
 
-  handleMessageSend = async (text: string): Promise<void> => {
-    await new Promise((resolve) => {
-      resolve(
-        this.props.connection.send(
-          $msg({
-            from: this.props.connection.jid,
-            to: this.props.jid,
-            type: "chat",
-          })
-            .c("body", text)
-            .up()
-            .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
-        )
-      );
-    });
-  };
-
   addToRoster = () => {
-    handlePresenceSubscribe(this.props.jid, this.props.connection, "subscribe");
-    handlePresenceSubscribed(
-      this.props.jid,
-      this.props.connection,
-      "subscribed"
-    );
+    const subscribe = $pres({
+      from: this.props.connection.jid,
+      to: this.props.jid,
+      type: "subscribe",
+    });
+    const subscribed = $pres({
+      from: this.props.connection.jid,
+      to: this.props.jid,
+      type: "subscribed",
+    });
+
+    this.props.connection.send(subscribe);
+    this.props.connection.send(subscribed);
 
     this.props.onAddFriend({ jid: this.props.jid, nick: this.state.nick });
   };
@@ -346,10 +335,19 @@ export class PrivateChat extends React.Component<
     const text = this.state.currentMessageToBeSent.trim();
 
     if (text) {
-      this.handleMessageSend(text);
+      this.props.connection.send(
+        $msg({
+          from: this.props.connection.jid,
+          to: this.props.jid,
+          type: "chat",
+        })
+          .c("body", text)
+          .up()
+          .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
+      );
 
-      this.props.userRosterGroup &&
-        this.setUserToRosterGroup(this.props.userRosterGroup);
+      // this.props.userRosterGroup &&
+      //   this.setUserToRosterGroup(this.props.userRosterGroup);
 
       const newMessage: IBareMessageType = {
         nick: null,
@@ -626,6 +624,7 @@ export class PrivateChat extends React.Component<
    * render
    */
   render() {
+    const role = roleNode.getAttribute("value");
     return (
       <div
         className={`chat__panel-wrapper ${
@@ -664,21 +663,22 @@ export class PrivateChat extends React.Component<
                 ></span>
                 <span className="chat__target-nickname">{this.state.nick}</span>
               </div>
-              {this.existsInFriends(this.props.roster, this.props.jid) &&
-              this.props.jid.includes("student") ? (
-                <div className="chat__button chat__button--add-friend icon-plus disabled"></div>
-              ) : (
-                <Dropdown
-                  openByHover
-                  modifier="private-chat"
-                  content={this.props.i18n.text.get("plugin.chat.addContact")}
-                >
-                  <div
-                    onClick={this.addToRoster}
-                    className="chat__button chat__button--add-friend icon-plus"
-                  ></div>
-                </Dropdown>
-              )}
+              {role !== "STUDENT" ? (
+                this.existsInFriends(this.props.roster, this.props.jid) ? (
+                  <div className="chat__button chat__button--add-friend icon-plus disabled"></div>
+                ) : (
+                  <Dropdown
+                    openByHover
+                    modifier="private-chat"
+                    content={this.props.i18n.text.get("plugin.chat.addContact")}
+                  >
+                    <div
+                      onClick={this.addToRoster}
+                      className="chat__button chat__button--add-friend icon-plus"
+                    ></div>
+                  </Dropdown>
+                )
+              ) : null}
               <div
                 onClick={this.toggleMinimizeChats}
                 className="chat__button chat__button--minimize icon-minus"

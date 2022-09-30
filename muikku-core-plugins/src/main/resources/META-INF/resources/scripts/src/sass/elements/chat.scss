@@ -14,7 +14,7 @@
     justify-content: flex-end;
     position: fixed;
     right: 15px;
-    z-index: 9999;
+    z-index: 9989;
   }
 }
 
@@ -36,7 +36,7 @@
   transform: rotate(-15deg);
   transition: transform 0.2s ease-in-out;
   width: 55px;
-  z-index: 9999;
+  z-index: 9989;
 
   &:hover {
     transform: rotate(0deg);

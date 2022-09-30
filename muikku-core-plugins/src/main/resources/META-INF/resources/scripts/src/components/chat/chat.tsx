@@ -6,7 +6,7 @@ import { connect, Dispatch } from "react-redux";
 import { Strophe } from "strophe.js";
 import { StatusType } from "~/reducers/base/status";
 import { Room } from "./tabs/room";
-import { People } from "./tabs/people";
+import People from "./tabs/people";
 import { Groupchat } from "./groupchat";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
@@ -22,13 +22,13 @@ import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
 import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/records/summary";
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
-import { getUserChatId } from "~/helper-functions/chat";
-import { getName } from "~/util/modifiers";
 import {
+  getUserChatId,
   handlePresenceSubscribe,
   handlePresenceSubscribed,
-  handleRosterDelete,
 } from "~/helper-functions/chat";
+import { getName } from "~/util/modifiers";
+
 export type tabs = "ROOMS" | "PEOPLE";
 
 /**
@@ -549,7 +549,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   public joinPrivateChat(
     jid: string,
     group: string,
-    subscribeOnMessage: boolean,
+    subscribeToUser: boolean,
     initStanza?: Element
   ) {
     // already joined or self
@@ -570,7 +570,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       type: "user",
       jid,
       group,
-      subscribeOnMessage,
       initStanza: initStanza || null,
     };
 
@@ -590,6 +589,22 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.setState({
       openChatsJIDS: newJIDS,
     });
+
+    if (subscribeToUser) {
+      const subscribe = $pres({
+        from: this.state.connection.jid,
+        to: jid,
+        type: "subscribe",
+      });
+      const subscribed = $pres({
+        from: this.state.connection.jid,
+        to: jid,
+        type: "subscribed",
+      });
+
+      this.state.connection.send(subscribe);
+      // this.state.connection.send(subscribed);
+    }
   }
 
   /**
@@ -627,7 +642,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   public toggleJoinLeavePrivateChatRoom(
     jid: string,
     group?: string,
-    subscribeOnMessage?: boolean
+    subscribeToUser?: boolean
   ) {
     // Check whether current roomJID is allready part of openChatList
     if (
@@ -636,7 +651,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     ) {
       this.leavePrivateChat(jid);
     } else {
-      this.joinPrivateChat(jid, group, subscribeOnMessage);
+      this.joinPrivateChat(jid, group, subscribeToUser);
     }
   }
 
@@ -743,7 +758,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
    * @param newStatus newStatus
    */
   setUserAvailability(newStatus: string) {
-    this.state.connection.send($pres().c("show", {}, newStatus));
+    this.state.connection.send(
+      $pres({ from: this.state.connection.jid }).c("show", {}, newStatus)
+    );
     this.setState({
       selectedUserPresence: newStatus as any,
     });
