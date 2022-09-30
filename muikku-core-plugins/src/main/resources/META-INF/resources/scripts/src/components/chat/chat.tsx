@@ -603,7 +603,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       });
 
       this.state.connection.send(subscribe);
-      // this.state.connection.send(subscribed);
+      this.state.connection.send(subscribed);
     }
   }
 

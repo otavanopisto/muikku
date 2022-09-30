@@ -45,7 +45,15 @@ class People extends React.Component<IPeopleProps, IPeopleState> {
    * handleRemove handles the removing the person from the roster
    */
   handleRemove = () => {
-    handleRosterDelete(this.props.person.jid, this.props.connection);
+    const stanza = $iq({
+      from: this.props.connection.jid,
+      type: "set",
+    })
+      .c("query", { xmlns: Strophe.NS.ROSTER })
+      .c("item", { jid: this.props.person.jid, subscription: "remove" });
+
+    this.props.connection.sendIQ(stanza);
+
     this.props.removePerson && this.props.removePerson();
   };
 
