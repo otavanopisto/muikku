@@ -12,69 +12,71 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import { LocaleListType } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
-import { DiaryComment } from "../hooks/useDiaryComments";
+import { JournalComment } from "~/@types/journal";
 
 /**
  * SupplementationEditorProps
  */
-interface DiaryCommentEditorProps {
+interface JournalCommentEditorProps {
   i18n: i18nType;
   status: StatusType;
   locale: LocaleListType;
-  comment?: DiaryComment;
+  journalComment?: JournalComment;
   locked: boolean;
-  diaryEventId: number;
+  journalEventId: number;
   userEntityId: number;
   workspaceEntityId: number;
   type?: "new" | "edit";
   editorLabel?: string;
   modifiers?: string[];
-  onSave: (comment: string, callback?: () => void) => void;
+  onSave: (journalComment: string, callback?: () => void) => void;
   onClose?: () => void;
 }
 
 /**
  * SupplementationEditorState
  */
-interface DiaryCommentEditorState {
-  comment: string;
+interface JournalCommentEditorState {
+  journalCommentText: string;
   draftId: string;
 }
 
 /**
  * SupplementationEditor
  */
-class DiaryCommentEditor extends SessionStateComponent<
-  DiaryCommentEditorProps,
-  DiaryCommentEditorState
+class JournalCommentEditor extends SessionStateComponent<
+  JournalCommentEditorProps,
+  JournalCommentEditorState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: DiaryCommentEditorProps) {
+  constructor(props: JournalCommentEditorProps) {
     /**
      * This is wierd one, setting namespace and identificated type for it from props...
      */
-    super(props, `diary-comment-${props.type ? props.type : "new"}`);
+    super(props, `diary-journalComment-${props.type ? props.type : "new"}`);
 
-    const { userEntityId, workspaceEntityId, diaryEventId } = props;
+    const { userEntityId, workspaceEntityId, journalEventId } = props;
 
     /**
      * When there is not existing event data we use only user id and workspace id as
      * draft id. There must be at least user id and workspace id, so if making changes to multiple workspace
      * that have same user evaluations, so draft won't class together
      */
-    let draftId = `${userEntityId}-${workspaceEntityId}-${diaryEventId}`;
+    let draftId = `${userEntityId}-${workspaceEntityId}-${journalEventId}`;
 
-    if (props.comment) {
-      draftId = `${userEntityId}-${workspaceEntityId}-${diaryEventId}-${props.comment.id}`;
+    if (props.journalComment) {
+      draftId = `${userEntityId}-${workspaceEntityId}-${journalEventId}-${props.journalComment.id}`;
     }
 
     this.state = {
       ...this.getRecoverStoredState(
         {
-          comment: props.comment ? props.comment.comment : "",
+          journalCommentText: props.journalComment
+            ? props.journalComment.comment
+            : "",
           draftId,
         },
         draftId
@@ -89,7 +91,9 @@ class DiaryCommentEditor extends SessionStateComponent<
     this.setState(
       this.getRecoverStoredState(
         {
-          comment: this.props.comment ? this.props.comment.comment : "",
+          journalCommentText: this.props.journalComment
+            ? this.props.journalComment.comment
+            : "",
         },
         this.state.draftId
       )
@@ -101,8 +105,8 @@ class DiaryCommentEditor extends SessionStateComponent<
    */
   handleSaveClick = () => {
     this.props.onSave &&
-      this.props.onSave(this.state.comment, () =>
-        this.justClear(["comment"], this.state.draftId)
+      this.props.onSave(this.state.journalCommentText, () =>
+        this.justClear(["journalComment"], this.state.draftId)
       );
   };
 
@@ -111,7 +115,7 @@ class DiaryCommentEditor extends SessionStateComponent<
    * @param e e
    */
   handleCKEditorChange = (e: string) => {
-    this.setStateAndStore({ comment: e }, this.state.draftId);
+    this.setStateAndStore({ journalCommentText: e }, this.state.draftId);
   };
 
   /**
@@ -120,7 +124,8 @@ class DiaryCommentEditor extends SessionStateComponent<
   handleDeleteEditorDraft = () => {
     this.setStateAndClear(
       {
-        comment: "",
+        journalCommentText:
+          this.props.journalComment && this.props.journalComment.comment,
       },
       this.state.draftId
     );
@@ -141,7 +146,7 @@ class DiaryCommentEditor extends SessionStateComponent<
               onChange={this.handleCKEditorChange}
               configuration={CKEditorConfig(this.props.locale.current)}
             >
-              {this.state.comment}
+              {this.state.journalCommentText}
             </CKEditor>
           </div>
         </div>
@@ -202,4 +207,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiaryCommentEditor);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(JournalCommentEditor);

@@ -2,7 +2,7 @@ import * as React from "react";
 import * as moment from "moment";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { DiaryComment, DiaryCommentDelete } from "./hooks/useDiaryComments";
+import { JournalComment, JournalCommentDelete } from "~/@types/journal";
 import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
@@ -17,16 +17,16 @@ import { StatusType } from "~/reducers/base/status";
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventCommentProps {
-  diaryComment: DiaryComment;
+  journalComment: JournalComment;
   userEntityId: number;
   workspaceEntityId: number;
   displayNotification: DisplayNotificationTriggerType;
   isSaving: boolean;
   status: StatusType;
   canDelete: boolean;
-  onEditClick: (comment: DiaryComment) => void;
+  onEditClick: (comment: JournalComment) => void;
   onDelete: (
-    deleteComment: DiaryCommentDelete,
+    deleteComment: JournalCommentDelete,
     onSuccess?: () => void,
     onFail?: () => void
   ) => Promise<void>;
@@ -38,10 +38,10 @@ interface EvaluationDiaryEventCommentProps {
  * @param props props
  * @returns JSX.Element
  */
-const EvaluationDiaryEventComment: React.FC<
+const EvaluationJournalEventComment: React.FC<
   EvaluationDiaryEventCommentProps
 > = (props) => {
-  const { diaryComment, status, onDelete, onEditClick, canDelete } = props;
+  const { journalComment, status, onDelete, onEditClick, canDelete } = props;
 
   const {
     comment,
@@ -51,7 +51,7 @@ const EvaluationDiaryEventComment: React.FC<
     lastName,
     journalEntryId,
     authorId,
-  } = diaryComment;
+  } = journalComment;
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
@@ -66,7 +66,7 @@ const EvaluationDiaryEventComment: React.FC<
    * handleEditCommentClick
    */
   const handleEditCommentClick = () => {
-    onEditClick(diaryComment);
+    onEditClick(journalComment);
     handleExecuteScrollToElement();
   };
 
@@ -113,10 +113,13 @@ const EvaluationDiaryEventComment: React.FC<
             fontSize: "0.8rem",
           }}
         >
-          <a onClick={handleEditCommentClick} style={{ marginRight: "5px" }}>
-            Muokkaa
-          </a>
-          {canDelete && (
+          {creatorIsMe && (
+            <a onClick={handleEditCommentClick} style={{ marginRight: "5px" }}>
+              Muokkaa
+            </a>
+          )}
+
+          {canDelete && creatorIsMe && (
             <a
               onClick={handleDeleteCommentClick}
               style={{ marginRight: "5px" }}
@@ -127,12 +130,10 @@ const EvaluationDiaryEventComment: React.FC<
         </div>
       </div>
 
-      {creatorIsMe && (
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span>{creatorName}</span>
-          <span>{formatedDate}</span>
-        </div>
-      )}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span>{creatorName}</span>
+        <span>{formatedDate}</span>
+      </div>
     </div>
   );
 };
@@ -158,4 +159,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EvaluationDiaryEventComment);
+)(EvaluationJournalEventComment);

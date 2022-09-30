@@ -1,7 +1,7 @@
 /**
  * DiaryComment
  */
-export interface DiaryComment {
+export interface JournalComment {
   id: number;
   journalEntryId: number;
   parentCommentId: number;
@@ -18,7 +18,7 @@ export interface DiaryComment {
 /**
  * DiaryCommentNew
  */
-export interface DiaryCommentCreate {
+export interface JournalCommentCreate {
   journalEntryId: number;
   comment: string;
 }
@@ -26,7 +26,7 @@ export interface DiaryCommentCreate {
 /**
  * DiaryCommentUpdate
  */
-export interface DiaryCommentUpdate {
+export interface JournalCommentUpdate {
   id: number;
   journalEntryId: number;
   comment: string;
@@ -35,7 +35,7 @@ export interface DiaryCommentUpdate {
 /**
  * DiaryCommentDelete
  */
-export interface DiaryCommentDelete {
+export interface JournalCommentDelete {
   id: number;
   journalEntryId: number;
 }

@@ -1,16 +1,16 @@
 import * as moment from "moment";
 import * as React from "react";
 import {
-  DiaryComment,
-  DiaryCommentCreate,
-  DiaryCommentDelete,
-  DiaryCommentUpdate,
+  JournalComment,
+  JournalCommentCreate,
+  JournalCommentDelete,
+  JournalCommentUpdate,
 } from "~/@types/journal";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-import { useDiaryComments } from "~/components/evaluation/body/application/evaluation/hooks/useDiaryComments";
+import { useJournalComments } from "~/hooks/useJournalComments";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
@@ -44,12 +44,12 @@ export const WorkspaceJournalCommentList: React.FC<
   WorkspaceJournalCommentListProps
 > = (props) => {
   const {
-    diaryComments,
-    loadDiaryComments,
+    journalComments,
+    loadJournalComments,
     deleteComment,
     createComment,
     updateComment,
-  } = useDiaryComments(
+  } = useJournalComments(
     props.currentWorkspace && props.currentWorkspace.id,
     props.currentWorkspace &&
       props.currentWorkspace.journals &&
@@ -65,16 +65,16 @@ export const WorkspaceJournalCommentList: React.FC<
   React.useEffect(() => {
     if (
       showComments &&
-      !diaryComments.isLoading &&
-      !diaryComments.diaryComments
+      !journalComments.isLoading &&
+      !journalComments.comments
     ) {
-      loadDiaryComments();
+      loadJournalComments();
     }
   }, [
     showComments,
-    loadDiaryComments,
-    diaryComments.isLoading,
-    diaryComments.diaryComments,
+    loadJournalComments,
+    journalComments.isLoading,
+    journalComments.comments,
   ]);
 
   /**
@@ -120,7 +120,7 @@ export const WorkspaceJournalCommentList: React.FC<
     comment: string,
     callback?: () => void
   ) => {
-    const newComment: DiaryCommentCreate = {
+    const newComment: JournalCommentCreate = {
       journalEntryId:
         props.currentWorkspace.journals &&
         props.currentWorkspace.journals.currentJournal &&
@@ -161,26 +161,29 @@ export const WorkspaceJournalCommentList: React.FC<
       </div>
 
       <AnimateHeight height={showComments ? "auto" : 0}>
-        {!diaryComments.isLoading &&
-          diaryComments.diaryComments &&
-          diaryComments.diaryComments.length > 0 &&
-          diaryComments.diaryComments.map((dComment) => (
+        {!journalComments.isLoading &&
+          journalComments.comments &&
+          journalComments.comments.length > 0 &&
+          journalComments.comments.map((comment) => (
             <WorkspaceJournalCommentListItem
-              key={dComment.id}
-              diaryComment={dComment}
+              key={comment.id}
+              journalComment={comment}
               status={props.status}
               workspaceEntityId={props.currentWorkspace.id}
+              isSaving={journalComments.isSaving}
               onUpdate={updateComment}
               onDelete={deleteComment}
             />
           ))}
 
-        {!diaryComments.isLoading &&
-          !diaryComments.isSaving &&
-          diaryComments.diaryComments &&
-          diaryComments.diaryComments.length === 0 && <div>Tyhjä</div>}
+        {!journalComments.isLoading &&
+          !journalComments.isSaving &&
+          journalComments.comments &&
+          journalComments.comments.length === 0 && <div>Tyhjä</div>}
 
-        {diaryComments.isLoading && <div className="loader-empty" />}
+        {(journalComments.isLoading || journalComments.isSaving) && (
+          <div className="loader-empty" />
+        )}
       </AnimateHeight>
 
       {!showEditor && (
@@ -205,7 +208,7 @@ export const WorkspaceJournalCommentList: React.FC<
             workspaceEntityId={
               props.currentWorkspace.journals.currentJournal.workspaceEntityId
             }
-            locked={diaryComments.isSaving}
+            locked={journalComments.isSaving}
             onSave={handleSaveNewCommentClick}
             onClose={handleCancelNewCommentClick}
           />
@@ -246,17 +249,18 @@ export default connect(
  * WorkspaceJournalCommentListProps
  */
 interface WorkspaceJournalCommentListItemProps {
-  diaryComment: DiaryComment;
+  journalComment: JournalComment;
   workspaceEntityId: number;
   status: StatusType;
+  isSaving: boolean;
   /* onSave: (comment: string, callback?: () => void) => void; */
   onUpdate: (
-    updatedComment: DiaryCommentUpdate,
+    updatedComment: JournalCommentUpdate,
     onSuccess?: () => void,
     onFail?: () => void
   ) => Promise<void>;
   onDelete: (
-    deleteComment: DiaryCommentDelete,
+    deleteComment: JournalCommentDelete,
     onSuccess?: () => void,
     onFail?: () => void
   ) => Promise<void>;
@@ -269,7 +273,7 @@ interface WorkspaceJournalCommentListItemProps {
 export const WorkspaceJournalCommentListItem: React.FC<
   WorkspaceJournalCommentListItemProps
 > = (props): JSX.Element => {
-  const { onDelete, diaryComment, status, onUpdate } = props;
+  const { onDelete, journalComment, status, onUpdate } = props;
 
   const {
     id,
@@ -279,7 +283,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
     firstName,
     lastName,
     created,
-  } = diaryComment;
+  } = journalComment;
 
   const [editing, setEditing] = React.useState(false);
 
@@ -306,7 +310,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
     editedComment: string,
     callback?: () => void
   ) => {
-    const newComment: DiaryCommentUpdate = {
+    const newComment: JournalCommentUpdate = {
       id: id,
       journalEntryId: journalEntryId,
       comment: editedComment,
@@ -369,11 +373,11 @@ export const WorkspaceJournalCommentListItem: React.FC<
         <div>
           <WorkspaceJournalCommentEditor
             type="edit"
-            comment={diaryComment}
-            diaryEventId={props.diaryComment.journalEntryId}
-            userEntityId={props.diaryComment.journalEntryId}
+            journalComment={journalComment}
+            diaryEventId={journalComment.journalEntryId}
+            userEntityId={journalComment.journalEntryId}
             workspaceEntityId={props.workspaceEntityId}
-            locked={false}
+            locked={props.isSaving}
             onSave={handleSaveEditedCommentClick}
             onClose={handleCancelEditingCommentClick}
           />

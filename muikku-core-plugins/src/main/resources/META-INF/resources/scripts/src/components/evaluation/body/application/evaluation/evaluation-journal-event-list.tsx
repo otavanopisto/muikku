@@ -7,7 +7,7 @@ import { displayNotification } from "~/actions/base/notifications";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
-import EvaluationDiaryEvent from "./evaluation-diary-event";
+import EvaluationJournalEvent from "./evaluation-journal-event";
 import Link from "~/components/general/link";
 
 /**
@@ -24,7 +24,7 @@ interface EvaluationDiaryEventProps {
  * @param props props
  * @returns JSX.Element
  */
-const EvaluationDiaryEventList: React.FC<EvaluationDiaryEventProps> = (
+const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
   props
 ) => {
   const { evaluation, i18n } = props;
@@ -95,7 +95,7 @@ const EvaluationDiaryEventList: React.FC<EvaluationDiaryEventProps> = (
         const isOpen = listOfDiaryIds.includes(item.id);
 
         return (
-          <EvaluationDiaryEvent
+          <EvaluationJournalEvent
             key={item.id}
             open={isOpen}
             {...item}
@@ -167,4 +167,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EvaluationDiaryEventList);
+)(EvaluationJournalEventList);

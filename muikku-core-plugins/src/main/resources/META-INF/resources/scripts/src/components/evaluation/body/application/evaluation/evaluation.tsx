@@ -32,7 +32,7 @@ import {
   MaterialCompositeRepliesType,
   WorkspaceType,
 } from "~/reducers/workspaces";
-import EvaluationDiaryEventList from "./evaluation-diary-event-list";
+import EvaluationJournalEventList from "./evaluation-journal-event-list";
 import EvaluationAssessmentList from "./evaluation-assessment-list";
 
 /**
@@ -640,7 +640,7 @@ export class Evaluation extends React.Component<
               workspaces={workspaces}
               selectedAssessment={this.props.selectedAssessment}
             />
-            <EvaluationDiaryEventList />
+            <EvaluationJournalEventList />
           </div>
         </section>
         <section className="evaluation-modal__container">

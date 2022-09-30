@@ -11,7 +11,7 @@ import "~/sass/elements/evaluation.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import { LocaleListType } from "~/reducers/base/locales";
-import { DiaryComment } from "~/@types/journal";
+import { JournalComment } from "~/@types/journal";
 
 /**
  * SupplementationEditorProps
@@ -20,7 +20,7 @@ interface WorkspaceJournalCommentEditorProps {
   i18n: i18nType;
   status: StatusType;
   locale: LocaleListType;
-  comment?: DiaryComment;
+  journalComment?: JournalComment;
   locked: boolean;
   diaryEventId: number;
   userEntityId: number;
@@ -36,7 +36,7 @@ interface WorkspaceJournalCommentEditorProps {
  * SupplementationEditorState
  */
 interface WorkspaceJournalCommentEditorState {
-  comment: string;
+  journalCommentText: string;
   draftId: string;
 }
 
@@ -66,14 +66,16 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
      */
     let draftId = `${userEntityId}-${workspaceEntityId}-${diaryEventId}`;
 
-    if (props.comment) {
-      draftId = `${userEntityId}-${workspaceEntityId}-${diaryEventId}-${props.comment.id}`;
+    if (props.journalComment) {
+      draftId = `${userEntityId}-${workspaceEntityId}-${diaryEventId}-${props.journalComment.id}`;
     }
 
     this.state = {
       ...this.getRecoverStoredState(
         {
-          comment: props.comment ? props.comment.comment : "",
+          journalCommentText: props.journalComment
+            ? props.journalComment.comment
+            : "",
           draftId,
         },
         draftId
@@ -88,7 +90,9 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
     this.setState(
       this.getRecoverStoredState(
         {
-          comment: this.props.comment ? this.props.comment.comment : "",
+          journalCommentText: this.props.journalComment
+            ? this.props.journalComment.comment
+            : "",
         },
         this.state.draftId
       )
@@ -100,7 +104,7 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
    */
   handleSaveClick = () => {
     this.props.onSave &&
-      this.props.onSave(this.state.comment, () =>
+      this.props.onSave(this.state.journalCommentText, () =>
         this.justClear(["comment"], this.state.draftId)
       );
   };
@@ -110,7 +114,7 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
    * @param e e
    */
   handleCKEditorChange = (e: string) => {
-    this.setStateAndStore({ comment: e }, this.state.draftId);
+    this.setStateAndStore({ journalCommentText: e }, this.state.draftId);
   };
 
   /**
@@ -119,7 +123,9 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
   handleDeleteEditorDraft = () => {
     this.setStateAndClear(
       {
-        comment: this.props.comment ? this.props.comment.comment : "",
+        journalCommentText: this.props.journalComment
+          ? this.props.journalComment.comment
+          : "",
       },
       this.state.draftId
     );
@@ -137,7 +143,7 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
             {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
 
             <CKEditor onChange={this.handleCKEditorChange}>
-              {this.state.comment}
+              {this.state.journalCommentText}
             </CKEditor>
           </div>
         </div>

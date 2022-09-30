@@ -61,13 +61,7 @@ class NavigationAside extends React.Component<
    * Handles student changes and loads specific students journals to global state
    * @param id id
    */
-  handleNavigationElementClick = (id: number | null) => () => {
-    if (id) {
-      window.location.hash = id.toString();
-    } else {
-      window.location.hash = "all";
-    }
-
+  handleOnStudentClick = (id: number | null) => () => {
     this.props.loadCurrentWorkspaceJournalsFromServer(id);
   };
 
@@ -108,18 +102,28 @@ class NavigationAside extends React.Component<
      */
     const filteredStudents = this.filterStudents(workspace.students);
 
-    const navigationElementList: JSX.Element[] = [
+    /**
+     * If all student is showed
+     */
+    const allSelected =
+      workspace !== null &&
+      workspace.journals !== null &&
+      workspace.journals.userEntityId === null;
+
+    const navigationElementList: JSX.Element[] = [];
+
+    navigationElementList.push(
       <NavigationElement
         key="showAll"
-        isActive={window.location.hash.split("#")[1] === "all"}
+        isActive={allSelected}
         icon="user"
-        onClick={this.handleNavigationElementClick(null)}
+        onClick={this.handleOnStudentClick(null)}
       >
         {this.props.i18n.text.get(
           "plugin.workspace.journal.studentFilter.showAll"
         )}
-      </NavigationElement>,
-    ];
+      </NavigationElement>
+    );
 
     filteredStudents.length > 0 &&
       filteredStudents.map((student) =>
@@ -128,10 +132,10 @@ class NavigationAside extends React.Component<
             key={student.userEntityId}
             isActive={
               student.userEntityId ===
-              parseInt(window.location.hash.split("#")[1])
+              this.props.workspace.journals.userEntityId
             }
             icon="user"
-            onClick={this.handleNavigationElementClick(student.userEntityId)}
+            onClick={this.handleOnStudentClick(student.userEntityId)}
           >
             {`${student.firstName} ${student.lastName}`}
           </NavigationElement>
@@ -139,7 +143,7 @@ class NavigationAside extends React.Component<
       );
 
     return (
-      <Navigation>
+      <Navigation key="journal-navigation-11">
         {!this.props.status.isStudent && (
           <NavigationTopic
             name={this.props.i18n.text.get(

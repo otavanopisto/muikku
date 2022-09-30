@@ -47,6 +47,18 @@ class WorkspaceJournalsToolbar extends React.Component<
    * render
    */
   render() {
+    if (this.props.currentJournal) {
+      return (
+        <div className="application-panel__toolbar">
+          <ButtonPill
+            buttonModifiers="go-back"
+            onClick={this.handleCloseCurrentJournal}
+            icon="back"
+          />
+        </div>
+      );
+    }
+
     return (
       <ApplicationPanelToolbar>
         {this.props.currentJournal && (

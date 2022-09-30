@@ -3,56 +3,20 @@ import mApi from "~/lib/mApi";
 import { sleep } from "~/helper-functions/shared";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-
-/**
- * DiaryComment
- */
-export interface DiaryComment {
-  id: number;
-  journalEntryId: number;
-  parentCommentId: number;
-  depth: number;
-  authorId: number;
-  firstName: string;
-  lastName: string;
-  comment: string;
-  created: Date;
-  editable: boolean;
-  archivable: boolean;
-}
-
-/**
- * DiaryCommentNew
- */
-export interface DiaryCommentCreate {
-  journalEntryId: number;
-  comment: string;
-}
-
-/**
- * DiaryCommentUpdate
- */
-export interface DiaryCommentUpdate {
-  id: number;
-  journalEntryId: number;
-  comment: string;
-}
-
-/**
- * DiaryCommentDelete
- */
-export interface DiaryCommentDelete {
-  id: number;
-  journalEntryId: number;
-}
+import {
+  JournalComment,
+  JournalCommentCreate,
+  JournalCommentDelete,
+  JournalCommentUpdate,
+} from "~/@types/journal";
 
 /**
  * UseStudentActivityState
  */
-export interface UseDiaryCommentsState {
+export interface UseJournalCommentsState {
   isLoading: boolean;
   isSaving: boolean;
-  diaryComments?: DiaryComment[];
+  comments?: JournalComment[];
 }
 
 /**
@@ -61,13 +25,13 @@ export interface UseDiaryCommentsState {
  * @param journalEntryId journalEntryId
  * @param displayNotification displayNotification
  */
-export const useDiaryComments = (
+export const useJournalComments = (
   workspaceId: number,
   journalEntryId: number,
   displayNotification: DisplayNotificationTriggerType
 ) => {
-  const [diaryComments, setDiaryComments] =
-    React.useState<UseDiaryCommentsState>({
+  const [journalComments, setJournalComments] =
+    React.useState<UseJournalCommentsState>({
       isLoading: false,
       isSaving: false,
     });
@@ -80,19 +44,19 @@ export const useDiaryComments = (
    * This is because when websocket handler catches, it always have latest
    * state changes to use
    */
-  const ref = React.useRef(diaryComments);
+  const ref = React.useRef(journalComments);
 
   React.useEffect(() => {
-    ref.current = diaryComments;
-  }, [diaryComments]);
+    ref.current = journalComments;
+  }, [journalComments]);
 
   /**
    * loadStudentActivityListData
    * Loads student activity data
    * @param studentId of student
    */
-  const loadDiaryComments = React.useCallback(async () => {
-    setDiaryComments((studentActivity) => ({
+  const loadJournalComments = React.useCallback(async () => {
+    setJournalComments((studentActivity) => ({
       ...studentActivity,
       isLoading: true,
     }));
@@ -106,7 +70,7 @@ export const useDiaryComments = (
       /**
        * Loaded and filtered student activity
        */
-      const [diaryCommentsLoaded] = await Promise.all([
+      const [journalCommentsLoaded] = await Promise.all([
         (async () => {
           const diaryCommentList = (await promisify(
             mApi().workspace.workspaces.journal.comments.read(
@@ -114,7 +78,7 @@ export const useDiaryComments = (
               journalEntryId
             ),
             "callback"
-          )()) as DiaryComment[];
+          )()) as JournalComment[];
 
           return diaryCommentList;
         })(),
@@ -122,19 +86,19 @@ export const useDiaryComments = (
       ]);
 
       if (componentMounted.current) {
-        setDiaryComments({
+        setJournalComments({
           isLoading: false,
           isSaving: false,
-          diaryComments: diaryCommentsLoaded,
+          comments: journalCommentsLoaded,
         });
       }
     } catch (err) {
       if (componentMounted.current) {
         displayNotification(`Loading diary comments:, ${err.message}`, "error");
-        setDiaryComments({
+        setJournalComments({
           isLoading: false,
           isSaving: false,
-          diaryComments: [],
+          comments: [],
         });
       }
     }
@@ -147,12 +111,12 @@ export const useDiaryComments = (
    */
   const createComment = React.useCallback(
     async (
-      payload: DiaryCommentCreate,
+      payload: JournalCommentCreate,
       onSucces?: () => void,
       onFail?: () => void
     ) => {
-      setDiaryComments((diaryComments) => ({
-        ...diaryComments,
+      setJournalComments((journalComments) => ({
+        ...journalComments,
         isLoading: false,
         isSaving: true,
       }));
@@ -166,7 +130,7 @@ export const useDiaryComments = (
         /**
          * Loaded and filtered student activity
          */
-        const [diaryCommentsUpdated] = await Promise.all([
+        const [journalCommentsUpdated] = await Promise.all([
           (async () => {
             const newComment = (await promisify(
               mApi().workspace.workspaces.journal.comments.create(
@@ -175,9 +139,9 @@ export const useDiaryComments = (
                 payload
               ),
               "callback"
-            )()) as DiaryComment;
+            )()) as JournalComment;
 
-            const updatedCommentList = [...diaryComments.diaryComments];
+            const updatedCommentList = [...journalComments.comments];
 
             updatedCommentList.push(newComment);
 
@@ -187,10 +151,10 @@ export const useDiaryComments = (
         ]);
 
         if (componentMounted.current) {
-          setDiaryComments({
+          setJournalComments({
             isLoading: false,
             isSaving: false,
-            diaryComments: diaryCommentsUpdated,
+            comments: journalCommentsUpdated,
           });
 
           if (onSucces) {
@@ -200,10 +164,10 @@ export const useDiaryComments = (
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(`Create diary comment:, ${err.message}`, "error");
-          setDiaryComments({
+          setJournalComments({
             isLoading: false,
             isSaving: false,
-            diaryComments: [],
+            comments: [],
           });
 
           if (onFail) {
@@ -212,12 +176,7 @@ export const useDiaryComments = (
         }
       }
     },
-    [
-      displayNotification,
-      journalEntryId,
-      workspaceId,
-      diaryComments.diaryComments,
-    ]
+    [displayNotification, journalEntryId, workspaceId, journalComments.comments]
   );
 
   /**
@@ -227,13 +186,13 @@ export const useDiaryComments = (
    */
   const updateComment = React.useCallback(
     async (
-      payload: DiaryCommentUpdate,
+      payload: JournalCommentUpdate,
       onSuccess?: () => void,
       onFail?: () => void
     ) => {
-      setDiaryComments((diaryComments) => ({
-        ...diaryComments,
-        isLoading: true,
+      setJournalComments((journalComments) => ({
+        ...journalComments,
+        isSaving: true,
       }));
 
       try {
@@ -245,7 +204,7 @@ export const useDiaryComments = (
         /**
          * Loaded and filtered student activity
          */
-        const [diaryCommentsUpdated] = await Promise.all([
+        const [journalCommentsUpdated] = await Promise.all([
           (async () => {
             const updatedComment = (await promisify(
               mApi().workspace.workspaces.journal.comments.update(
@@ -255,9 +214,9 @@ export const useDiaryComments = (
                 payload
               ),
               "callback"
-            )()) as DiaryComment;
+            )()) as JournalComment;
 
-            const updatedCommentList = [...diaryComments.diaryComments];
+            const updatedCommentList = [...journalComments.comments];
 
             const commentIndex = updatedCommentList.findIndex(
               (uC) => uC.id === updatedComment.id
@@ -271,11 +230,11 @@ export const useDiaryComments = (
         ]);
 
         if (componentMounted.current) {
-          setDiaryComments({
-            isLoading: false,
+          setJournalComments((journalComments) => ({
+            ...journalComments,
             isSaving: false,
-            diaryComments: diaryCommentsUpdated,
-          });
+            comments: journalCommentsUpdated,
+          }));
 
           if (onSuccess) {
             onSuccess();
@@ -287,20 +246,15 @@ export const useDiaryComments = (
             `Updating diary comment:, ${err.message}`,
             "error"
           );
-          setDiaryComments({
-            isLoading: false,
+          setJournalComments((journalComments) => ({
+            ...journalComments,
             isSaving: false,
-            diaryComments: [],
-          });
+            journalComments: [],
+          }));
         }
       }
     },
-    [
-      displayNotification,
-      journalEntryId,
-      workspaceId,
-      diaryComments.diaryComments,
-    ]
+    [displayNotification, journalEntryId, workspaceId, journalComments.comments]
   );
 
   /**
@@ -310,13 +264,13 @@ export const useDiaryComments = (
    */
   const deleteCommentById = React.useCallback(
     async (
-      payload: DiaryCommentDelete,
+      payload: JournalCommentDelete,
       onSuccess?: () => void,
       onFail?: () => void
     ) => {
-      setDiaryComments((diaryComments) => ({
-        ...diaryComments,
-        isLoading: true,
+      setJournalComments((journalComments) => ({
+        ...journalComments,
+        isLoading: false,
       }));
 
       try {
@@ -328,7 +282,7 @@ export const useDiaryComments = (
         /**
          * Loaded and filtered student activity
          */
-        const [diaryCommentsUpdated] = await Promise.all([
+        const [journalCommentsUpdated] = await Promise.all([
           (async () => {
             await promisify(
               mApi().workspace.workspaces.journal.comments.del(
@@ -339,7 +293,7 @@ export const useDiaryComments = (
               "callback"
             )();
 
-            const updatedCommentList = [...diaryComments.diaryComments];
+            const updatedCommentList = [...journalComments.comments];
 
             const commentIndex = updatedCommentList.findIndex(
               (uC) => uC.id === payload.id
@@ -353,11 +307,10 @@ export const useDiaryComments = (
         ]);
 
         if (componentMounted.current) {
-          setDiaryComments({
-            isLoading: false,
-            isSaving: false,
-            diaryComments: diaryCommentsUpdated,
-          });
+          setJournalComments((journalComments) => ({
+            ...journalComments,
+            journalComments: journalCommentsUpdated,
+          }));
 
           if (onSuccess) {
             onSuccess();
@@ -369,29 +322,23 @@ export const useDiaryComments = (
             `Updating diary comment:, ${err.message}`,
             "error"
           );
-          setDiaryComments({
-            isLoading: false,
-            isSaving: false,
-            diaryComments: [],
-          });
+
+          setJournalComments((journalComments) => ({
+            ...journalComments,
+          }));
         }
       }
     },
-    [
-      displayNotification,
-      journalEntryId,
-      workspaceId,
-      diaryComments.diaryComments,
-    ]
+    [displayNotification, journalEntryId, workspaceId, journalComments.comments]
   );
 
   return {
-    diaryComments,
+    journalComments,
 
     /**
      * loadDiaryComments
      */
-    loadDiaryComments: () => loadDiaryComments(),
+    loadJournalComments: () => loadJournalComments(),
     /**
      * createComment
      * @param newComment newComment
@@ -399,7 +346,7 @@ export const useDiaryComments = (
      * @param onFail onFail
      */
     createComment: (
-      newComment: DiaryCommentCreate,
+      newComment: JournalCommentCreate,
       onSuccess?: () => void,
       onFail?: () => void
     ) => createComment(newComment, onSuccess, onFail),
@@ -410,7 +357,7 @@ export const useDiaryComments = (
      * @param onFail onFail
      */
     updateComment: (
-      updatedComment: DiaryCommentUpdate,
+      updatedComment: JournalCommentUpdate,
       onSuccess?: () => void,
       onFail?: () => void
     ) => updateComment(updatedComment, onSuccess, onFail),
@@ -421,7 +368,7 @@ export const useDiaryComments = (
      * @param onFail onFail
      */
     deleteComment: (
-      deleteComment: DiaryCommentDelete,
+      deleteComment: JournalCommentDelete,
       onSuccess?: () => void,
       onFail?: () => void
     ) => deleteCommentById(deleteComment, onSuccess, onFail),

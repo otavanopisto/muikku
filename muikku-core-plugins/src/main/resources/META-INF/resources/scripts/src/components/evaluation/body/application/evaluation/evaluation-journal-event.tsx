@@ -4,12 +4,7 @@ import AnimateHeight from "react-animate-height";
 import { WorkspaceJournalType } from "~/reducers/workspaces/index";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import {
-  useDiaryComments,
-  DiaryCommentCreate,
-  DiaryComment,
-  DiaryCommentUpdate,
-} from "./hooks/useDiaryComments";
+import { useJournalComments } from "../../../../../hooks/useJournalComments";
 import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
@@ -19,11 +14,16 @@ import {
 } from "~/actions/base/notifications";
 import { connect } from "react-redux";
 import { ButtonPill } from "~/components/general/button";
-import DiaryCommentEditor from "./editors/diary-comment-editor";
+import JournalCommentEditor from "./editors/journal-comment-editor";
 import SlideDrawer from "./slide-drawer";
-import EvaluationDiaryEventComment from "./evaluation-diary-event-comment";
+import EvaluationJournalEventComment from "./evaluation-journal-event-comment";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import {
+  JournalComment,
+  JournalCommentCreate,
+  JournalCommentUpdate,
+} from "~/@types/journal";
 
 /**
  * EvaluationEventContentCardProps
@@ -40,7 +40,7 @@ interface EvaluationDiaryEventProps extends WorkspaceJournalType {
  * @param props props
  * @returns JSX.Element
  */
-const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
+const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   const {
     title,
     content,
@@ -54,12 +54,12 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   } = props;
 
   const {
-    diaryComments,
-    loadDiaryComments,
+    journalComments,
+    loadJournalComments,
     createComment,
     updateComment,
     deleteComment,
-  } = useDiaryComments(workspaceEntityId, id, displayNotification);
+  } = useJournalComments(workspaceEntityId, id, displayNotification);
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
@@ -67,7 +67,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   const [showComments, setShowComments] = React.useState(false);
   const [showContent, setShowContent] = React.useState(false);
   const [commentToEdit, setCommentToEdit] = React.useState<
-    DiaryComment | undefined
+    JournalComment | undefined
   >(undefined);
 
   React.useEffect(() => {
@@ -79,17 +79,17 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   React.useEffect(() => {
     if (
       createNewActive &&
-      !diaryComments.isLoading &&
-      diaryComments.diaryComments === undefined
+      !journalComments.isLoading &&
+      journalComments.comments === undefined
     ) {
-      loadDiaryComments();
+      loadJournalComments();
       setShowComments(true);
     }
   }, [
-    loadDiaryComments,
+    loadJournalComments,
     createNewActive,
-    diaryComments.isLoading,
-    diaryComments.diaryComments,
+    journalComments.isLoading,
+    journalComments.comments,
   ]);
 
   React.useEffect(() => {
@@ -113,8 +113,8 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
    * Shows and loads comments list
    */
   const handleShowCommentsClick = () => {
-    if (!showComments && diaryComments.diaryComments === undefined) {
-      loadDiaryComments();
+    if (!showComments && journalComments.comments === undefined) {
+      loadJournalComments();
     }
     setShowComments(!showComments);
   };
@@ -159,7 +159,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
    * If there is existing new comment editor open -> closes it
    * @param diaryComment diaryComment
    */
-  const handleEditComment = (diaryComment: DiaryComment) => {
+  const handleEditComment = (diaryComment: JournalComment) => {
     unstable_batchedUpdates(() => {
       setCommentToEdit(diaryComment);
       createNewActive && setCreateNewActive(false);
@@ -190,7 +190,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
    * @param callback callback to do on success save. In this case deleting drafts
    */
   const handleNewCommentSave = (comment: string, callback?: () => void) => {
-    const newComment: DiaryCommentCreate = {
+    const newComment: JournalCommentCreate = {
       journalEntryId: id,
       comment: comment,
     };
@@ -207,7 +207,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
    * @param callback callback
    */
   const handleCommentEditSave = (comment: string, callback?: () => void) => {
-    const updatedComment: DiaryCommentUpdate = {
+    const updatedComment: JournalCommentUpdate = {
       id: commentToEdit.id,
       journalEntryId: commentToEdit.journalEntryId,
       comment: comment,
@@ -275,35 +275,35 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
         </div>
 
         <AnimateHeight duration={420} height={showComments ? "auto" : 0}>
-          {!diaryComments.isLoading &&
-            diaryComments.diaryComments &&
-            diaryComments.diaryComments.length > 0 &&
-            diaryComments.diaryComments.map((dComment) => {
+          {!journalComments.isLoading &&
+            journalComments.comments &&
+            journalComments.comments.length > 0 &&
+            journalComments.comments.map((comment) => {
               const editingIsActive =
-                commentToEdit && commentToEdit.id === dComment.id;
+                commentToEdit && commentToEdit.id === comment.id;
 
               return (
-                <EvaluationDiaryEventComment
-                  key={dComment.id}
-                  diaryComment={dComment}
+                <EvaluationJournalEventComment
+                  key={comment.id}
+                  journalComment={comment}
                   canDelete={!editingIsActive}
                   workspaceEntityId={workspaceEntityId}
                   userEntityId={userEntityId}
                   onEditClick={handleEditComment}
                   onDelete={deleteComment}
-                  isSaving={diaryComments.isSaving}
+                  isSaving={journalComments.isSaving}
                 />
               );
             })}
 
-          {(diaryComments.isLoading || diaryComments.isSaving) && (
+          {(journalComments.isLoading || journalComments.isSaving) && (
             <div className="loader-empty" />
           )}
 
-          {!diaryComments.isLoading &&
-            !diaryComments.isSaving &&
-            diaryComments.diaryComments &&
-            diaryComments.diaryComments.length === 0 && <div>Tyhjä</div>}
+          {!journalComments.isLoading &&
+            !journalComments.isSaving &&
+            journalComments.comments &&
+            journalComments.comments.length === 0 && <div>Tyhjä</div>}
         </AnimateHeight>
       </AnimateHeight>
 
@@ -312,14 +312,14 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
         title={title}
         onClose={handleNewCommentCancel}
       >
-        <DiaryCommentEditor
+        <JournalCommentEditor
           type="new"
-          diaryEventId={id}
+          journalEventId={id}
           userEntityId={userEntityId}
           workspaceEntityId={workspaceEntityId}
           onSave={handleNewCommentSave}
           onClose={handleNewCommentCancel}
-          locked={diaryComments.isSaving}
+          locked={journalComments.isSaving}
         />
       </SlideDrawer>
 
@@ -328,15 +328,15 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
         title={title}
         onClose={handleNewCommentCancel}
       >
-        <DiaryCommentEditor
+        <JournalCommentEditor
           type="edit"
-          diaryEventId={id}
           userEntityId={userEntityId}
           workspaceEntityId={workspaceEntityId}
-          comment={commentToEdit}
+          journalEventId={id}
+          journalComment={commentToEdit}
           onSave={handleCommentEditSave}
           onClose={handleEditCancel}
-          locked={diaryComments.isSaving}
+          locked={journalComments.isSaving}
         />
       </SlideDrawer>
     </div>
@@ -362,4 +362,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EvaluationDiaryEvent);
+)(EvaluationJournalEvent);
