@@ -662,6 +662,37 @@ public class ElasticSearchProvider implements SearchProvider {
       return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
   }
+  
+  @Override
+  public SearchResult searchWorkspacesSignupEnd() {
+
+    BoolQueryBuilder query = boolQuery();
+    query.must(termQuery("published", Boolean.TRUE));
+    query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
+    
+    query.must(rangeQuery("signupEnd").lt(OffsetDateTime.now().toEpochSecond()));
+
+    SearchRequestBuilder requestBuilder = elasticClient
+      .prepareSearch(IndexedWorkspace.INDEX_NAME)
+      .setTypes(IndexedWorkspace.TYPE_NAME)
+      .setFrom(0)
+      .setSize(50)
+      .setQuery(query);
+
+    SearchResponse response = requestBuilder.execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHits searchHits = response.getHits();
+    SearchHit[] results = searchHits.getHits();
+    long totalHits = searchHits.getTotalHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
+      searchResults.add(hitSource);
+    }
+
+    SearchResult result = new SearchResult(0, searchResults, totalHits);
+    return result;
+  }
 
   @Override
   public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(

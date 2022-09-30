@@ -294,6 +294,8 @@ export interface UserSelectType {
 export interface WorkspaceDetailsType {
   beginDate: string;
   endDate: string;
+  signupStart: string;
+  signupEnd: string;
   externalViewUrl: string;
   typeId: string;
   rootFolderId: number;
@@ -456,7 +458,7 @@ export interface WorkspaceOrganizationFilterType {
 }
 
 /**
- *
+ * WorkspaceStateFilterType
  */
 export interface WorkspaceStateFilterType {
   identifier: string;
@@ -655,7 +657,7 @@ export interface MaterialContentNodeType {
 }
 
 /**
- *
+ * MaterialAnswerType
  */
 export interface MaterialAnswerType {
   embedId: string;
@@ -665,6 +667,9 @@ export interface MaterialAnswerType {
   workspaceMaterialId: number;
 }
 
+/**
+ * MaterialCompositeRepliesStateType
+ */
 export type MaterialCompositeRepliesStateType =
   | "UNANSWERED"
   | "ANSWERED"
@@ -710,7 +715,7 @@ export type MaterialCompositeRepliesListType =
   Array<MaterialCompositeRepliesType>;
 
 /**
- *
+ * MaterialEvaluationType
  */
 export interface MaterialEvaluationType {
   id: number;
