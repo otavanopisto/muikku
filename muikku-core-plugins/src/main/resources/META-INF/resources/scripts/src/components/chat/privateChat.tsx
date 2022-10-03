@@ -7,7 +7,7 @@ import { ChatMessage } from "./chatMessage";
 import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
-import { requestPrescense, subscribeToUser } from "~/helper-functions/chat";
+import { requestPrescense } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
 
 /**
@@ -172,10 +172,10 @@ export class PrivateChat extends React.Component<
     return answer;
   };
 
-  addToRoster = () => {
-    subscribeToUser(this.props.jid, this.props.connection);
-    this.props.onAddFriend({ jid: this.props.jid, nick: this.state.nick });
-  };
+  // sendFriendRequest = () => {
+  //   handleSubscription(this.props.jid, this.props.connection, "subscribe");
+  //   this.props.onAddFriend({ jid: this.props.jid, nick: this.state.nick });
+  // };
 
   /**
    * onTextFieldFocus
@@ -544,22 +544,6 @@ export class PrivateChat extends React.Component<
                 ></span>
                 <span className="chat__target-nickname">{this.state.nick}</span>
               </div>
-              {role !== "STUDENT" ? (
-                this.existsInFriends(this.props.roster, this.props.jid) ? (
-                  <div className="chat__button chat__button--add-friend icon-plus disabled"></div>
-                ) : (
-                  <Dropdown
-                    openByHover
-                    modifier="private-chat"
-                    content={this.props.i18n.text.get("plugin.chat.addContact")}
-                  >
-                    <div
-                      onClick={this.addToRoster}
-                      className="chat__button chat__button--add-friend icon-plus"
-                    ></div>
-                  </Dropdown>
-                )
-              ) : null}
               <div
                 onClick={this.toggleMinimizeChats}
                 className="chat__button chat__button--minimize icon-minus"

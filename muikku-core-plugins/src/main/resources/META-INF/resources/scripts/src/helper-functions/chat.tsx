@@ -24,30 +24,25 @@ export const getUserChatId = (userId: number, type: "staff" | "student") => {
  * subscribeToUser adds user to roster ( subscribes and is subscribed()
  * @param toJId stanza recipient JId
  * @param connection strophe connection
+ * @param type subscription type
  */
-export const subscribeToUser = (
+export const handleSubscription = (
   toJId: string,
-  connection: Strophe.Connection
+  connection: Strophe.Connection,
+  type: "subscribe" | "subscribed" | "unsubscribe" | "unsubscribed"
 ) => {
   const subscribe = $pres({
     from: connection.jid,
     to: toJId,
-    type: "subscribe",
-  });
-  const subscribed = $pres({
-    from: connection.jid,
-    to: toJId,
-    type: "subscribed",
+    type: type,
   });
   connection.send(subscribe);
-  connection.send(subscribed);
 };
 
 /**
  * handleRosterDelete manipulates roster
  * @param toJId stanza recipient JId
  * @param connection strophe connection
- *
  * @returns an answer stanza element
  */
 export const handleRosterDelete = async (

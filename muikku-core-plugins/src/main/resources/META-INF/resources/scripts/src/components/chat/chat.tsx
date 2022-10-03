@@ -22,7 +22,7 @@ import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
 import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/records/summary";
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
-import { getUserChatId, subscribeToUser } from "~/helper-functions/chat";
+import { getUserChatId } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
 
 export type tabs = "ROOMS" | "PEOPLE";
@@ -587,10 +587,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.setState({
       openChatsJIDS: newJIDS,
     });
-
-    if (subscribeTo) {
-      subscribeToUser(jid, this.state.connection);
-    }
   }
 
   /**
