@@ -125,7 +125,6 @@ export interface IBareMessageActionType {
  */
 interface IOpenChatJID {
   type: "muc" | "user";
-  group?: string;
   jid: string;
   initStanza?: Element;
 }
