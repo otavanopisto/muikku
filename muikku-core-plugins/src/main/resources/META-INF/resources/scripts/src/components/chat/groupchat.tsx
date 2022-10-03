@@ -21,11 +21,7 @@ interface IGroupChatProps {
   chat: IAvailableChatRoomType;
   nick: string;
   leaveChatRoom: () => void;
-  joinPrivateChat: (
-    jid: string,
-    group: string,
-    subscribeOnMessage: boolean
-  ) => void;
+  joinPrivateChat: (jid: string) => void;
   onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
   requestExtraInfoAboutRoom: () => void;
   removeChatRoom: () => void;

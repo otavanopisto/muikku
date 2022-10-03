@@ -20,7 +20,6 @@ interface IPrivateChatProps {
   onAddFriend: (person: IChatContact) => void;
   connection: Strophe.Connection;
   jid: string;
-  userRosterGroup?: string;
   subscribeOnMessage?: boolean;
   i18n: i18nType;
 }
@@ -148,35 +147,6 @@ export class PrivateChat extends React.Component<
       nick: user.name,
     });
   }
-
-  /**
-   * setUserToRosterGroup sets user to a group in a roster
-   * @param groupName given group name
-   * @return Element stanza
-   */
-  setUserToRosterGroup = async (groupName: string): Promise<Element> => {
-    const stanza = $iq({
-      from: this.props.connection.jid,
-      type: "set",
-    })
-      .c("query", { xmlns: Strophe.NS.ROSTER })
-      .c("item", { jid: this.props.jid })
-      .c("group", groupName);
-
-    const answer: Element = await new Promise((resolve) =>
-      this.props.connection.sendIQ(stanza, (answerStanza: Element) =>
-        resolve(answerStanza)
-      )
-    );
-
-    return answer;
-  };
-
-  // sendFriendRequest = () => {
-  //   handleSubscription(this.props.jid, this.props.connection, "subscribe");
-  //   this.props.onAddFriend({ jid: this.props.jid, nick: this.state.nick });
-  // };
-
   /**
    * onTextFieldFocus
    */
@@ -226,10 +196,6 @@ export class PrivateChat extends React.Component<
           .up()
           .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
       );
-
-      // this.props.userRosterGroup &&
-      //   this.setUserToRosterGroup(this.props.userRosterGroup);
-
       const newMessage: IBareMessageType = {
         nick: null,
         message: text,
@@ -241,8 +207,6 @@ export class PrivateChat extends React.Component<
         deleted: false,
         edited: null,
       };
-
-      // this.setUserToRosterGroup("test");
 
       this.setState(
         {

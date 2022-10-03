@@ -126,7 +126,6 @@ export interface IBareMessageActionType {
 interface IOpenChatJID {
   type: "muc" | "user";
   group?: string;
-  subscribeOnMessage?: boolean;
   jid: string;
   initStanza?: Element;
 }
@@ -540,16 +539,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
   /**
    * joinPrivateChat
    * @param jid jid
-   * @param group group to add the user to
-   * @param subscribeTo should the user be subscribed to or not (subscribe + subscribed)
    * @param initStanza initStanza
    */
-  public joinPrivateChat(
-    jid: string,
-    group: string,
-    subscribeTo: boolean,
-    initStanza?: Element
-  ) {
+  public joinPrivateChat(jid: string, initStanza?: Element) {
     // already joined or self
     const userBaseJID = this.state.connection.jid.split("/")[0];
     const baseJID = jid.split("/")[0];
@@ -567,7 +559,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const newJoin: IOpenChatJID = {
       type: "user",
       jid,
-      group,
       initStanza: initStanza || null,
     };
 
@@ -618,14 +609,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
   /**
    * toggleJoinLeavePrivateChatRoom toggles between joining and leaving the chat room
    * @param jid private chat recipient jid
-   * @param group roster group of a personModifier
-   * @param subscribeToUser should there be subscriptions
    */
-  public toggleJoinLeavePrivateChatRoom(
-    jid: string,
-    group?: string,
-    subscribeToUser?: boolean
-  ) {
+  public toggleJoinLeavePrivateChatRoom(jid: string) {
     // Check whether current roomJID is allready part of openChatList
     if (
       this.state.openChatsJIDS &&
@@ -633,7 +618,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     ) {
       this.leavePrivateChat(jid);
     } else {
-      this.joinPrivateChat(jid, group, subscribeToUser);
+      this.joinPrivateChat(jid);
     }
   }
 
@@ -903,7 +888,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         (s) => s.jid !== userFrom && s.type === "user"
       )
     ) {
-      this.joinPrivateChat(userFrom, null, true, stanza);
+      this.joinPrivateChat(userFrom, stanza);
     }
 
     return true;
@@ -1175,7 +1160,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         const person: IChatContact = {
                           jid: getUserChatId(councelor.userEntityId, "staff"),
                           name: getName(councelor, true),
-                          group: "STUDY_GUIDER",
                         };
                         return (
                           <People
@@ -1184,7 +1168,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
                             toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
                               this,
                               person.jid,
-                              person.group,
                               true
                             )}
                             key={councelor.userEntityId}
@@ -1325,8 +1308,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
                   this.setState({ roster: [...this.state.roster, ...[person]] })
                 }
                 initializingStanza={pchat.initStanza}
-                userRosterGroup={pchat.group}
-                subscribeOnMessage={pchat.subscribeOnMessage}
                 key={pchat.jid}
                 leaveChat={this.leavePrivateChat.bind(this, pchat.jid)}
                 connection={this.state.connection}
