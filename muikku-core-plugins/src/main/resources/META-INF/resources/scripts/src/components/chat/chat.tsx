@@ -22,7 +22,7 @@ import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
 import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/records/summary";
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
-import { getUserChatId } from "~/helper-functions/chat";
+import { getUserChatId, subscribeToUser } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
 
 export type tabs = "ROOMS" | "PEOPLE";
@@ -545,7 +545,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   public joinPrivateChat(
     jid: string,
     group: string,
-    subscribeToUser: boolean,
+    subscribeTo: boolean,
     initStanza?: Element
   ) {
     // already joined or self
@@ -586,20 +586,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
       openChatsJIDS: newJIDS,
     });
 
-    if (subscribeToUser) {
-      const subscribe = $pres({
-        from: this.state.connection.jid,
-        to: jid,
-        type: "subscribe",
-      });
-      const subscribed = $pres({
-        from: this.state.connection.jid,
-        to: jid,
-        type: "subscribed",
-      });
-
-      this.state.connection.send(subscribe);
-      this.state.connection.send(subscribed);
+    if (subscribeTo) {
+      subscribeToUser(jid, this.state.connection);
     }
   }
 

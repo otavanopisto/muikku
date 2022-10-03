@@ -21,30 +21,26 @@ export const getUserChatId = (userId: number, type: "staff" | "student") => {
 };
 
 /**
- * addUserToRoster adds user to roster and subscribes and is subscribed
+ * subscribeToUser adds user to roster ( subscribes and is subscribed()
  * @param toJId stanza recipient JId
  * @param connection strophe connection
- * @param groupName group to add user to
- * @returns an answer stanza element
  */
-export const addUserToRoster = async (
+export const subscribeToUser = (
   toJId: string,
-  connection: Strophe.Connection,
-  groupName: string
-): Promise<Element> => {
-  const stanza = $iq({
+  connection: Strophe.Connection
+) => {
+  const subscribe = $pres({
     from: connection.jid,
-    type: "set",
-  })
-    .c("query", { xmlns: Strophe.NS.ROSTER })
-    .c("item", { jid: toJId, subscription: "both" })
-    .c("group", groupName);
-
-  const answer: Element = await new Promise((resolve) =>
-    connection.sendIQ(stanza, (answerStanza: Element) => resolve(answerStanza))
-  );
-
-  return answer;
+    to: toJId,
+    type: "subscribe",
+  });
+  const subscribed = $pres({
+    from: connection.jid,
+    to: toJId,
+    type: "subscribed",
+  });
+  connection.send(subscribe);
+  connection.send(subscribed);
 };
 
 /**
@@ -82,7 +78,6 @@ export const handleRosterDelete = async (
  */
 export const setUserToRosterGroup = async (
   groupName: string,
-  // fromJId: string,
   toJId: string,
   connection: Strophe.Connection
 ): Promise<Element> => {
@@ -106,19 +101,15 @@ export const setUserToRosterGroup = async (
  * @param toJId stanza recipient
  * @param connection strophe connection
  */
-export const requestPrescense = async (
+export const requestPrescense = (
   toJId: string,
   connection: Strophe.Connection
-): Promise<void> => {
-  await new Promise((resolve) => {
-    resolve(
-      connection.send(
-        $pres({
-          from: connection.jid,
-          to: toJId,
-          type: "probe",
-        })
-      )
-    );
-  });
+) => {
+  connection.send(
+    $pres({
+      from: connection.jid,
+      to: toJId,
+      type: "probe",
+    })
+  );
 };

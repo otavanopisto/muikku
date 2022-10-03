@@ -7,7 +7,7 @@ import { ChatMessage } from "./chatMessage";
 import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
-import { requestPrescense } from "~/helper-functions/chat";
+import { requestPrescense, subscribeToUser } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
 
 /**
@@ -149,91 +149,6 @@ export class PrivateChat extends React.Component<
     });
   }
 
-  // /**
-  //  * requestPrescense
-  //  */
-  // async requestPrescense() {
-  //   await new Promise((resolve) => {
-  //     resolve(
-  //       this.props.connection.send(
-  //         $pres({
-  //           from: this.props.connection.jid,
-  //           to: this.props.jid,
-  //           type: "probe",
-  //         })
-  //       )
-  //     );
-  //   });
-  // }
-
-  // /**
-  //  * Subscribe to another user's presence
-  //  * @param type should you subscribe or unsubscribe from the presence
-  //  */
-  // handlePresenceSubscribe = async (
-  //   type: "subscribe" | "unsubscribe"
-  // ): Promise<void> => {
-  //   await new Promise((resolve) =>
-  //     resolve(
-  //       this.props.connection.send(
-  //         $pres({
-  //           from: this.props.connection.jid,
-  //           to: this.props.jid,
-  //           type: type,
-  //         })
-  //       )
-  //     )
-  //   );
-  // };
-
-  // /**
-  //  * Allow another user's presence
-  //  * @param type should allow or unallow other person's subscription
-  //  */
-  // handlePresenceSubscribed = async (
-  //   type: "subscribed" | "unsubscribed"
-  // ): Promise<void> => {
-  //   await new Promise((resolve) =>
-  //     resolve(
-  //       this.props.connection.send(
-  //         $pres({
-  //           from: this.props.connection.jid,
-  //           to: this.props.jid,
-  //           type: "type",
-  //         })
-  //       )
-  //     )
-  //   );
-  // };
-
-  // handleSubscriptions = async (): Promise<void> => {
-  //   const subscribe = new Promise((resolve) =>
-  //     resolve(
-  //       this.props.connection.send(
-  //         $pres({
-  //           from: this.props.connection.jid,
-  //           to: this.props.jid,
-  //           type: "subscribe",
-  //         })
-  //       )
-  //     )
-  //   );
-
-  //   const subscribed = new Promise((resolve) =>
-  //     resolve(
-  //       this.props.connection.send(
-  //         $pres({
-  //           from: this.props.connection.jid,
-  //           to: this.props.jid,
-  //           type: "subscribed",
-  //         })
-  //       )
-  //     )
-  //   );
-
-  //   await Promise.all([subscribe, subscribed]);
-  // };
-
   /**
    * setUserToRosterGroup sets user to a group in a roster
    * @param groupName given group name
@@ -258,39 +173,9 @@ export class PrivateChat extends React.Component<
   };
 
   addToRoster = () => {
-    const subscribe = $pres({
-      from: this.props.connection.jid,
-      to: this.props.jid,
-      type: "subscribe",
-    });
-    const subscribed = $pres({
-      from: this.props.connection.jid,
-      to: this.props.jid,
-      type: "subscribed",
-    });
-
-    this.props.connection.send(subscribe);
-    this.props.connection.send(subscribed);
-
+    subscribeToUser(this.props.jid, this.props.connection);
     this.props.onAddFriend({ jid: this.props.jid, nick: this.state.nick });
   };
-
-  // getRoster = () => {
-  //   const stanza = $iq({
-  //     from: this.props.connection.jid,
-  //     type: "get",
-  //   }).c("query", { xmlns: Strophe.NS.ROSTER });
-  //   const friendList: string[] = [];
-  //   this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
-  //     const roster = answerStanza.querySelectorAll("query item");
-
-  //     roster.forEach((r) => {
-  //       friendList.push(r.getAttribute("jid"));
-  //     });
-  //   });
-
-  //   this.setState({ friends: friendList });
-  // };
 
   /**
    * onTextFieldFocus
