@@ -900,9 +900,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
    */
   public onMessageReceived(stanza: Element) {
     const userFrom = stanza.getAttribute("from").split("/")[0];
-    // This is temporary. As it stands, study guiders should always subscribe to students who send messages to them.
-
-    const shouldSubscribe = !this.props.status.isStudent;
     if (
       !this.state.openChatsJIDS.find(
         (s) => s.jid !== userFrom && s.type === "user"
