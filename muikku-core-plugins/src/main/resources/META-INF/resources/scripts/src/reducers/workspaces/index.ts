@@ -624,12 +624,21 @@ export interface MaterialContentNodeProducerType {
 }
 
 /**
+ * MaterialViewRestriction
+ */
+export enum MaterialViewRestriction {
+  NONE = "NONE",
+  LOGGED_IN = "LOGGED_IN",
+  WORKSPACE_MEMBERS = "WORKSPACE_MEMBERS",
+}
+
+/**
  * MaterialContentNodeType
  */
 export interface MaterialContentNodeType {
   title: string;
   license: string;
-  viewRestrict: string;
+  viewRestrict: MaterialViewRestriction;
   html: string;
   contentType: string;
 
