@@ -540,6 +540,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
   /**
    * joinPrivateChat
    * @param jid jid
+   * @param group group to add the user to
+   * @param subscribeTo should the user be subscribed to or not (subscribe + subscribed)
    * @param initStanza initStanza
    */
   public joinPrivateChat(
@@ -621,7 +623,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
    * toggleJoinLeavePrivateChatRoom toggles between joining and leaving the chat room
    * @param jid private chat recipient jid
    * @param group roster group of a personModifier
-   * @param subscribeOnMessage should there be subscriptions
+   * @param subscribeToUser should there be subscriptions
    */
   public toggleJoinLeavePrivateChatRoom(
     jid: string,
