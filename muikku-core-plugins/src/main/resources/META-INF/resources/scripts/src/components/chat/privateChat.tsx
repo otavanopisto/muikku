@@ -17,10 +17,8 @@ interface IPrivateChatProps {
   initializingStanza: Element;
   roster: IChatContact[];
   leaveChat: () => void;
-  onAddFriend: (person: IChatContact) => void;
   connection: Strophe.Connection;
   jid: string;
-  subscribeOnMessage?: boolean;
   i18n: i18nType;
 }
 
