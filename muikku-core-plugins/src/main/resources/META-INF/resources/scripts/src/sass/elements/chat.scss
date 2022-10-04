@@ -298,8 +298,6 @@
   }
 }
 
-
-
 // Workspace room specific icon colors
 .chat__panel-header--workspace,
 .chat__subpanel-header--room-settings-workspace {
@@ -374,8 +372,8 @@
 .chat__controlbox-header {
   align-items: center;
   background-color: $color-default;
-  border-radius: 2px 2px 0 0;
   border-bottom: 2px solid $color-chat-panel-header-shadow;
+  border-radius: 2px 2px 0 0;
   border-top: 4px solid $color-chat-controlbox-main-color;
   color: $color-default-contrast;
   display: flex;
@@ -389,6 +387,7 @@
   padding: 10px 5px;
   z-index: 2;
 }
+
 .chat__controlbox-person {
   display: flex;
   justify-content: space-between;
@@ -435,8 +434,6 @@
   margin: 0 0 5px;
   text-transform: uppercase;
 }
-
-
 
 .chat__controlbox-people-listing {
   margin: 0 0 10px;
