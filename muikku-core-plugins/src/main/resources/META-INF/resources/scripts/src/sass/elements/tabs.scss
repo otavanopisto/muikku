@@ -110,7 +110,7 @@
   }
 }
 
-.tabs__tab--chat{
+.tabs__tab--chat {
   border-bottom: none;
   border-left: none;
   border-radius: 0;
@@ -119,13 +119,12 @@
   margin: 0;
 
   &.active {
-    margin-bottom: none;
     border-left: none;
     border-right: none;
     border-top: none;
+    margin-bottom: none;
   }
 }
-
 
 .tabs__tab-data-container--mobile-tabs {
   display: flex;
