@@ -588,9 +588,6 @@ class WorkspaceMaterials extends React.Component<
         if (isSectionViewRestricted) {
           return;
         }
-        const materialIsViewRestricted =
-          node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
-          node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
 
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
@@ -683,9 +680,7 @@ class WorkspaceMaterials extends React.Component<
                 materialContentNode={node}
                 workspace={this.props.workspace}
                 compositeReplies={compositeReplies}
-                isViewRestricted={
-                  materialIsViewRestricted && hideRestrictedMaterial
-                }
+                isViewRestricted={false}
                 showEvenIfHidden={showEvenIfHidden}
               />
             </ContentPanelItem>
