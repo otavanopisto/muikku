@@ -405,28 +405,25 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       >
         {this.state.materials.map((node, nodeIndex) => {
           const isSectionViewRestricted =
-            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
-              !this.props.isLoggedIn) ||
-            (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
-              this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT);
+            node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
+            node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
 
           const isSectionViewRestrictedVisible =
-            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
-              node.viewRestrict ===
-                MaterialViewRestriction.WORKSPACE_MEMBERS) &&
-            !this.props.isStudent;
+            isSectionViewRestricted && !this.props.isStudent;
 
           const icon: string = isSectionViewRestrictedVisible
             ? "restriction"
             : null;
 
-          const iconTitle: string = !this.props.isStudent
-            ? this.buildViewRestrictionLocaleString(node.viewRestrict)
-            : null;
+          const iconTitle: string =
+            isSectionViewRestricted && !this.props.isStudent
+              ? this.buildViewRestrictionLocaleString(node.viewRestrict)
+              : null;
 
-          const className: string = !this.props.isStudent
-            ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
-            : "toc__section-container";
+          const className: string =
+            isSectionViewRestricted && !this.props.isStudent
+              ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
+              : "toc__section-container";
 
           const topic = (
             <TocTopic
@@ -448,11 +445,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     return null;
                   }
                   const isViewRestrictedVisible =
-                    (subnode.viewRestrict ===
+                    subnode.viewRestrict ===
                       MaterialViewRestriction.LOGGED_IN ||
-                      subnode.viewRestrict ===
-                        MaterialViewRestriction.WORKSPACE_MEMBERS) &&
-                    !this.props.isStudent;
+                    subnode.viewRestrict ===
+                      MaterialViewRestriction.WORKSPACE_MEMBERS;
 
                   const isAssignment = subnode.assignmentType === "EVALUATED";
                   const isExercise = subnode.assignmentType === "EXERCISE";
@@ -464,22 +460,25 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     ? "exercise"
                     : null;
 
-                  const icon: string = isViewRestrictedVisible
-                    ? "restriction"
-                    : null;
+                  const icon: string =
+                    isViewRestrictedVisible && !this.props.isStudent
+                      ? "restriction"
+                      : null;
 
-                  const iconTitle: string = !this.props.isStudent
-                    ? this.buildViewRestrictionLocaleString(
-                        subnode.viewRestrict
-                      )
-                    : null;
+                  const iconTitle: string =
+                    isViewRestrictedVisible && !this.props.isStudent
+                      ? this.buildViewRestrictionLocaleString(
+                          subnode.viewRestrict
+                        )
+                      : null;
 
-                  const className: string = !this.props.isStudent
-                    ? this.buildViewRestrictionModifiers(
-                        subnode.viewRestrict,
-                        false
-                      )
-                    : null;
+                  const className: string =
+                    isViewRestrictedVisible && !this.props.isStudent
+                      ? this.buildViewRestrictionModifiers(
+                          subnode.viewRestrict,
+                          false
+                        )
+                      : null;
 
                   const pageElement = (
                     <TocElement

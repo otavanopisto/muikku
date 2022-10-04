@@ -429,6 +429,30 @@ class WorkspaceMaterials extends React.Component<
   }
 
   /**
+   * buildViewRestrictionLocaleString
+   * @param viewRestrict viewRestrict
+   * @returns locale string
+   */
+  buildViewRestrictionLocaleString = (
+    viewRestrict: MaterialViewRestriction
+  ) => {
+    switch (viewRestrict) {
+      case MaterialViewRestriction.LOGGED_IN:
+        return this.props.i18n.text.get(
+          "plugin.workspace.materialViewRestricted"
+        );
+
+      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        return this.props.i18n.text.get(
+          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  /**
    * render
    */
   render() {
@@ -471,13 +495,16 @@ class WorkspaceMaterials extends React.Component<
       ) : null;
 
     const results: any = [];
+
+    const hideRestrictedMaterial =
+      (this.props.isStudent &&
+        !this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT) ||
+      !this.props.isLoggedIn;
+
     this.props.materials.forEach((section, index) => {
       const isSectionViewRestricted =
-        section.viewRestrict ===
-          (MaterialViewRestriction.LOGGED_IN ||
-            section.viewRestrict ===
-              MaterialViewRestriction.WORKSPACE_MEMBERS) &&
-        !this.props.isLoggedIn;
+        section.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
+        section.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
 
       if (index === 0 && isEditable) {
         results.push(
@@ -562,10 +589,8 @@ class WorkspaceMaterials extends React.Component<
           return;
         }
         const materialIsViewRestricted =
-          (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
-            !this.props.isLoggedIn) ||
-          (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
-            !this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT);
+          node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
+          node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
 
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
@@ -659,7 +684,7 @@ class WorkspaceMaterials extends React.Component<
                 workspace={this.props.workspace}
                 compositeReplies={compositeReplies}
                 isViewRestricted={
-                  materialIsViewRestricted && this.props.isStudent
+                  materialIsViewRestricted && hideRestrictedMaterial
                 }
                 showEvenIfHidden={showEvenIfHidden}
               />
@@ -729,13 +754,12 @@ class WorkspaceMaterials extends React.Component<
               {section.title}
             </div>
           </h2>
-          {isSectionViewRestricted ? (
+
+          {isSectionViewRestricted && hideRestrictedMaterial ? (
             <div className="content-panel__item">
               <article className="material-page">
                 <div className="material-page__content material-page__content--view-restricted">
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.materialViewRestricted"
-                  )}
+                  {this.buildViewRestrictionLocaleString(section.viewRestrict)}
                 </div>
               </article>
             </div>
