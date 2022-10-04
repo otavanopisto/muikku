@@ -2,6 +2,7 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Base from "~/components/base/material-loader/base";
 import BinaryMaterialLoader from "~/components/base/material-loader/binary";
+import { MaterialViewRestriction } from "~/reducers/workspaces";
 
 /**
  * MaterialLoaderContentProps
@@ -82,12 +83,30 @@ function onModification(props: MaterialLoaderContentProps) {
  */
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
   if (props.isViewRestricted) {
+    let restrictionMsg = null;
+
+    switch (props.material.viewRestrict) {
+      case MaterialViewRestriction.LOGGED_IN:
+        restrictionMsg = props.i18n.text.get(
+          "plugin.workspace.materialViewRestricted"
+        );
+        break;
+      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        restrictionMsg = props.i18n.text.get(
+          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
+        );
+        break;
+      default:
+        restrictionMsg = null;
+        break;
+    }
+
     return (
       <div
         className="material-page__content material-page__content--view-restricted"
         onClick={stopPropagation}
       >
-        {props.i18n.text.get("plugin.workspace.materialViewRestricted")}
+        {restrictionMsg}
       </div>
     );
   }

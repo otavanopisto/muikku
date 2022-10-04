@@ -13,6 +13,7 @@ import {
   MaterialContentNodeListType,
   MaterialContentNodeType,
   WorkspaceEditModeStateType,
+  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 import ContentPanel, {
   ContentPanelItem,
@@ -31,12 +32,14 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * HelpMaterialsProps
  */
 interface HelpMaterialsProps {
   i18n: i18nType;
+  status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
   navigation: React.ReactElement<any>;
@@ -460,7 +463,11 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     const results: any = [];
     this.props.materials.forEach((section, index) => {
       const isSectionViewRestricted =
-        section.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn;
+        section.viewRestrict ===
+          (MaterialViewRestriction.LOGGED_IN ||
+            section.viewRestrict ===
+              MaterialViewRestriction.WORKSPACE_MEMBERS) &&
+        !this.props.isLoggedIn;
 
       if (index === 0 && isEditable) {
         results.push(
@@ -545,7 +552,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           return;
         }
         const materialIsViewRestricted =
-          node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn;
+          (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+            !this.props.isLoggedIn) ||
+          (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+            !this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT);
 
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
@@ -732,6 +742,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    status: state.status,
     workspace: state.workspaces.currentWorkspace,
     materials: state.workspaces.currentHelp,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,

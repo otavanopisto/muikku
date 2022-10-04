@@ -29,12 +29,14 @@ import {
 } from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
 import { AnyActionType } from "~/actions";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * ContentProps
  */
 interface ContentProps {
   i18n: i18nType;
+  status: StatusType;
   materials: MaterialContentNodeListType;
   activeNodeId: number;
   workspace: WorkspaceType;
@@ -403,10 +405,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       >
         {this.state.materials.map((node, nodeIndex) => {
           const isSectionViewRestricted =
-            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
-              node.viewRestrict ===
-                MaterialViewRestriction.WORKSPACE_MEMBERS) &&
-            !this.props.isStudent;
+            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+              !this.props.isLoggedIn) ||
+            (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+              this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT);
 
           const isSectionViewRestrictedVisible =
             (node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
@@ -580,6 +582,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    status: state.status,
     materials: state.workspaces.currentHelp,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspace: state.workspaces.currentWorkspace,

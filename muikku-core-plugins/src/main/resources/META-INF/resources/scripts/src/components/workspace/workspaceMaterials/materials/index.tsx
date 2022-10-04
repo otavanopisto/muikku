@@ -14,6 +14,7 @@ import {
   MaterialContentNodeType,
   MaterialCompositeRepliesListType,
   WorkspaceEditModeStateType,
+  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 
 import ContentPanel, {
@@ -36,12 +37,14 @@ import {
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
 import DisconnectedWarningDialog from "~/components/base/disconnect-warning";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * WorkspaceMaterialsProps
  */
 interface WorkspaceMaterialsProps {
   i18n: i18nType;
+  status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
   materialReplies: MaterialCompositeRepliesListType;
@@ -469,7 +472,11 @@ class WorkspaceMaterials extends React.Component<
     const results: any = [];
     this.props.materials.forEach((section, index) => {
       const isSectionViewRestricted =
-        section.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn;
+        section.viewRestrict ===
+          (MaterialViewRestriction.LOGGED_IN ||
+            section.viewRestrict ===
+              MaterialViewRestriction.WORKSPACE_MEMBERS) &&
+        !this.props.isLoggedIn;
 
       if (index === 0 && isEditable) {
         results.push(
@@ -554,7 +561,10 @@ class WorkspaceMaterials extends React.Component<
           return;
         }
         const materialIsViewRestricted =
-          node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn;
+          (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+            !this.props.isLoggedIn) ||
+          (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+            !this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT);
 
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
@@ -773,6 +783,7 @@ class WorkspaceMaterials extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    status: state.status,
     workspace: state.workspaces.currentWorkspace,
     materials: state.workspaces.currentMaterials,
     materialReplies: state.workspaces.currentMaterialsReplies,
