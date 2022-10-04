@@ -6,7 +6,7 @@ import { connect, Dispatch } from "react-redux";
 import { Strophe } from "strophe.js";
 import { StatusType } from "~/reducers/base/status";
 import { Room } from "./tabs/room";
-import People from "./tabs/people";
+import Person from "./tabs/person";
 import { Groupchat } from "./groupchat";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
@@ -1161,7 +1161,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                           name: getName(councelor, true),
                         };
                         return (
-                          <People
+                          <Person
                             modifier="councelor"
                             person={person}
                             toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
@@ -1188,7 +1188,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                   <div className="chat__controlbox-people-listing">
                     {this.state.roster.length > 0 ? (
                       this.state.roster.map((person, index) => (
-                        <People
+                        <Person
                           modifier="student"
                           person={person}
                           connection={this.state.connection}
@@ -1210,7 +1210,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         />
                       ))
                     ) : (
-                      <div className="chat__controlbox-people  chat__controlbox-people--empty">
+                      <div className="chat__controlbox-people chat__controlbox-people--empty">
                         {this.props.i18n.text.get("plugin.chat.people.empty")}
                       </div>
                     )}

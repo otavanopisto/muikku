@@ -1,17 +1,17 @@
 import * as React from "react";
 import "~/sass/elements/chat.scss";
 import { IChatContact } from "../chat";
-import PromptDialog, {
-  PromptDialogButtons,
-} from "~/components/general/prompt-dialog";
+// import PromptDialog, {
+//   PromptDialogButtons,
+// } from "~/components/general/prompt-dialog";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 
 /**
- * IPeopleProps
+ * IPersonProps
  */
-interface IPeopleProps {
+interface IPersonProps {
   i18n: i18nType;
   modifier?: string;
   person: IChatContact;
@@ -24,19 +24,19 @@ interface IPeopleProps {
 }
 
 /**
- * IPeopleState
+ * IPersonState
  */
-interface IPeopleState {}
+interface IPersonState {}
 
 /**
- * People
+ * Person
  */
-class People extends React.Component<IPeopleProps, IPeopleState> {
+class Person extends React.Component<IPersonProps, IPersonState> {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: IPeopleProps) {
+  constructor(props: IPersonProps) {
     super(props);
   }
 
@@ -118,4 +118,4 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-export default connect(mapStateToProps)(People);
+export default connect(mapStateToProps)(Person);
