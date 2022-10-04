@@ -205,7 +205,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
@@ -274,6 +274,13 @@ public class ElasticSearchProvider implements SearchProvider {
           .collect(Collectors.toSet());
       if (CollectionUtils.isNotEmpty(organizationIdentifiers)) {
         query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifiers.toArray()));
+      }
+      
+      // #6250: Limit search to given study programmes only (note that the search should only be about students in this case)
+      
+      if (studyProgrammeIdentifiers != null && !studyProgrammeIdentifiers.isEmpty()) {
+        Set<String> studyProgrammeStrings = studyProgrammeIdentifiers.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toSet());
+        query.must(termsQuery("studyProgrammeIdentifier.untouched", studyProgrammeStrings.toArray()));
       }
 
       // #6170: If both group and workspace filters have been provided, possibly treat them as a join rather than an intersection
@@ -393,28 +400,28 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore, boolean joinGroupsAndWorkspaces) {
-    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
         onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null, joinGroupsAndWorkspaces);
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, boolean joinGroupsAndWorkspaces) {
-    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
         onlyDefaultUsers, start, maxResults, null, null, null, joinGroupsAndWorkspaces);
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields,
       boolean joinGroupsAndWorkspaces) {
-    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
         onlyDefaultUsers, start, maxResults, fields, null, null, joinGroupsAndWorkspaces);
   }
 
