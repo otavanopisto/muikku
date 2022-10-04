@@ -1122,9 +1122,7 @@ export class Groupchat extends React.Component<
                         className="chat__occupants-item chat__occupants-item--has-access-to-pm"
                         onClick={this.props.joinPrivateChat.bind(
                           null,
-                          staffOccupant.occupant.jid,
-                          null,
-                          false
+                          staffOccupant.occupant.jid
                         )}
                         key={staffOccupant.occupant.userId}
                       >
@@ -1163,9 +1161,7 @@ export class Groupchat extends React.Component<
                             ? null
                             : this.props.joinPrivateChat.bind(
                                 this,
-                                studentOccupant.occupant.jid,
-                                null,
-                                false
+                                studentOccupant.occupant.jid
                               )
                         }
                         key={studentOccupant.occupant.userId}
