@@ -2,7 +2,6 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Base from "~/components/base/material-loader/base";
 import BinaryMaterialLoader from "~/components/base/material-loader/binary";
-import { MaterialViewRestriction } from "~/reducers/workspaces";
 
 /**
  * MaterialLoaderContentProps

@@ -464,17 +464,23 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
 
           const iconTopic: string =
-            isSectionViewRestricted && !this.props.isStudent
+            isSectionViewRestricted &&
+            !this.props.isStudent &&
+            this.props.isLoggedIn
               ? "restriction"
               : null;
 
           const iconTitleTopic: string =
-            isSectionViewRestricted && !this.props.isStudent
+            isSectionViewRestricted &&
+            !this.props.isStudent &&
+            this.props.isLoggedIn
               ? this.buildViewRestrictionLocaleString(node.viewRestrict)
               : null;
 
           const classNameTopic: string =
-            isSectionViewRestricted && !this.props.isStudent
+            isSectionViewRestricted &&
+            !this.props.isStudent &&
+            this.props.isLoggedIn
               ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
               : "toc__section-container";
 
@@ -583,7 +589,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     }
                   }
 
-                  if (isViewRestrictedVisible && !this.props.isStudent) {
+                  if (
+                    isViewRestrictedVisible &&
+                    !this.props.isStudent &&
+                    this.props.isLoggedIn
+                  ) {
                     icon = "restriction";
                     className = this.buildViewRestrictionModifiers(
                       subnode.viewRestrict,
