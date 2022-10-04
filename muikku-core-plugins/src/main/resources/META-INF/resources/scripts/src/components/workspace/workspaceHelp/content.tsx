@@ -28,6 +28,7 @@ import {
   SetWholeWorkspaceMaterialsTriggerType,
 } from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
+import { AnyActionType } from "~/actions";
 
 /**
  * ContentProps
@@ -113,6 +114,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps: ContentProps) {
     this.setState({
       materials: nextProps.materials,
@@ -591,7 +593,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceHelp },
     dispatch
