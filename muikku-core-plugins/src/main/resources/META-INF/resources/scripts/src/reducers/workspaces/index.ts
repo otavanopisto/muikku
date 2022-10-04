@@ -641,7 +641,7 @@ export interface MaterialContentNodeType {
   viewRestrict: MaterialViewRestriction;
   html: string;
   contentType: string;
-
+  contentHiddenForUser: boolean;
   //Standard Fields (only available when loaded through materials rest endpoint)
   id?: number;
 

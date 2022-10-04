@@ -82,37 +82,16 @@ function onModification(props: MaterialLoaderContentProps) {
  * @param props props
  */
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
-  if (props.isViewRestricted) {
-    let restrictionMsg = null;
+  let className = "material-page__content-wrapper";
 
-    switch (props.material.viewRestrict) {
-      case MaterialViewRestriction.LOGGED_IN:
-        restrictionMsg = props.i18n.text.get(
-          "plugin.workspace.materialViewRestricted"
-        );
-        break;
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
-        restrictionMsg = props.i18n.text.get(
-          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
-        );
-        break;
-      default:
-        restrictionMsg = null;
-        break;
-    }
-
-    return (
-      <div
-        className="material-page__content material-page__content--view-restricted"
-        onClick={stopPropagation}
-      >
-        {restrictionMsg}
-      </div>
-    );
+  if (props.material.contentHiddenForUser) {
+    className =
+      "material-page__content material-page__content--view-restricted";
   }
+
   return (
     <>
-      <div className="material-page__content-wrapper" onClick={stopPropagation}>
+      <div className={className} onClick={stopPropagation}>
         {props.loadCompositeReplies &&
         typeof props.compositeReplies === "undefined" ? null : (
           <Base
