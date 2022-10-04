@@ -298,8 +298,10 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   private static StaffMember mockStaffMember(Long personId, Long staffMemberId, Long organizationId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
+    Set<Long> staffStudyProgrammes = new HashSet<>();
+    staffStudyProgrammes.add(1l);
     StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
-        role, tags, variables, new HashSet<>());
+        role, tags, variables, staffStudyProgrammes);
       
     String staffMemberJson = objectMapper.writeValueAsString(staffMember);
     
