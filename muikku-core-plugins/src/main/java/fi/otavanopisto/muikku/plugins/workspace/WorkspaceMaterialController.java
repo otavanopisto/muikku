@@ -915,7 +915,8 @@ public class WorkspaceMaterialController {
       ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", null,
           rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(),
           nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null,
-          workspaceFolder.getPath(), null, Collections.emptyList(), workspaceFolder.getViewRestrict());
+          workspaceFolder.getPath(), null, Collections.emptyList(), workspaceFolder.getViewRestrict(), 
+          false);
       List<WorkspaceNode> children = includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
           : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
       List<FlattenedWorkspaceNode> flattenedChildren;
@@ -936,7 +937,7 @@ public class WorkspaceMaterialController {
           contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null,
               child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(),
               child.hidden, null, child.node.getPath(), null, Collections.emptyList(),
-              MaterialViewRestrict.NONE);
+              MaterialViewRestrict.NONE, false);
         }
         else {
           contentNode = createContentNode(child.node, child.level, includeHidden, child.nextSibling);
@@ -952,13 +953,16 @@ public class WorkspaceMaterialController {
           : material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContentType() : null;
 
       String html;
+      boolean materialContentHiddenForUser;
       
       switch (material.getViewRestrict()) {
         case LOGGED_IN:
           if (sessionController.isLoggedIn()) {
+            materialContentHiddenForUser = false;
             html = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml() : null;
           }
           else {
+            materialContentHiddenForUser = true;
             html = String.format("<p class=\"content-view-restricted-message\">%s</p>",
                 localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestricted"));
           }
@@ -975,14 +979,17 @@ public class WorkspaceMaterialController {
             );
 
           if (hasWorkspaceMemberVisibility) {
+            materialContentHiddenForUser = false;
             html = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml() : null;
           }
           else {
+            materialContentHiddenForUser = true;
             html = String.format("<p class=\"content-view-restricted-message\">%s</p>",
                 localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestrictedToWorkspaceMembers"));
           }
         break;
         default:
+          materialContentHiddenForUser = false;
           html = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml() : null;
         break;
       }
@@ -993,7 +1000,8 @@ public class WorkspaceMaterialController {
           material.getId(), level, workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(),
           workspaceMaterial.getParent().getId(), nextSibling == null ? null : nextSibling.getId(),
           workspaceMaterial.getHidden(), html, workspaceMaterial.getPath(),
-          material.getLicense(), createRestModel(materialController.listMaterialProducers(material)), material.getViewRestrict());
+          material.getLicense(), createRestModel(materialController.listMaterialProducers(material)), 
+          material.getViewRestrict(), materialContentHiddenForUser);
     default:
       return null;
     }
