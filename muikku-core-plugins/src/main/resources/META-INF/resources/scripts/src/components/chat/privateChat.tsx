@@ -6,7 +6,6 @@ import { IBareMessageType } from "./chat";
 import { ChatMessage } from "./chatMessage";
 import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
-import Dropdown from "~/components/general/dropdown";
 import { requestPrescense } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
 
@@ -355,9 +354,6 @@ export class PrivateChat extends React.Component<
 
     return false;
   }
-
-  existsInFriends = (roster: IChatContact[], person: string) =>
-    roster.some((contact) => contact.jid === person);
 
   /**
    * loadMessages
