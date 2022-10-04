@@ -8,6 +8,7 @@
 
   @include breakpoint($breakpoint-pad) {
     @include text;
+
     align-items: flex-end;
     bottom: 0;
     display: flex;
@@ -356,8 +357,9 @@
 
   .chat__button--add-friend {
     color: $color-chat-private-main-color;
+
     &.disabled {
-      color: $color-disabled
+      color: $color-disabled;
     }
   }
 }
@@ -389,9 +391,9 @@
 }
 
 .chat__controlbox-person {
+  align-items: center;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .chat__controlbox-person-name {
