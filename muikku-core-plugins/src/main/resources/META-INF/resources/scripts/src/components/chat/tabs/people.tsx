@@ -4,7 +4,6 @@ import { IChatContact } from "../chat";
 import PromptDialog, {
   PromptDialogButtons,
 } from "~/components/general/prompt-dialog";
-import { handleRosterDelete } from "~/helper-functions/chat";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
@@ -86,6 +85,8 @@ class People extends React.Component<IPeopleProps, IPeopleState> {
         >
           {name}
         </div>
+        {/* Removed for later
+
         {this.props.removable ? (
           <PromptDialog
             title={this.props.i18n.text.get(
@@ -101,7 +102,7 @@ class People extends React.Component<IPeopleProps, IPeopleState> {
           >
             <div className="chat__controlbox-action chat__controlbox-action--remove-user icon-trash"></div>
           </PromptDialog>
-        ) : null}
+        ) : null} */}
       </div>
     );
   }
