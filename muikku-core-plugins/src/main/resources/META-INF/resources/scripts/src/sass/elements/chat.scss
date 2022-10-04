@@ -446,17 +446,13 @@
   margin: 0 0 10px;
 }
 
-.chat__controlbox-room,
-.chat__controlbox-person-name {
+.chat__controlbox-empty-item {
   align-items: center;
   display: flex;
   flex-flow: row wrap;
-  padding: 5px 0;
-}
-
-.chat__controlbox-room--empty {
   font-style: italic;
   font-weight: 300;
+  padding: 5px 0;
 }
 
 .chat__controlbox-room-action {

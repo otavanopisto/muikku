@@ -1035,7 +1035,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     />
                   ))
                 ) : (
-                  <div className="chat__controlbox-room chat__controlbox-room--empty">
+                  <div className="chat__controlbox-empty-item">
                     {this.props.i18n.text.get("plugin.chat.rooms.empty")}
                   </div>
                 )}
@@ -1062,7 +1062,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     />
                   ))
                 ) : (
-                  <div className="chat__controlbox-room  chat__controlbox-room--empty">
+                  <div className="chat__controlbox-empty-item">
                     {this.props.i18n.text.get("plugin.chat.rooms.empty")}
                   </div>
                 )}
@@ -1174,7 +1174,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         );
                       })
                     ) : (
-                      <div className="chat__controlbox-room  chat__controlbox-room--empty">
+                      <div className="chat__controlbox-empty-item">
                         {this.props.i18n.text.get("plugin.chat.people.empty")}
                       </div>
                     )}
@@ -1210,7 +1210,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         />
                       ))
                     ) : (
-                      <div className="chat__controlbox-people chat__controlbox-people--empty">
+                      <div className="chat__controlbox-empty-item">
                         {this.props.i18n.text.get("plugin.chat.people.empty")}
                       </div>
                     )}
