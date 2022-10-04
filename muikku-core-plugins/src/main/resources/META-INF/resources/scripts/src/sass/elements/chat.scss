@@ -187,14 +187,15 @@
   width: 400px;
 }
 
+.chat__panel--other,
+.chat__panel--private,
+.chat__panel--workspace  {
+  box-shadow: 0 5px 5px 2px $color-chat-controlbox-box-shadow;
+}
+
 .chat__panel--active {
   box-shadow: 0 0 15px $color-chat-controlbox-box-shadow;
   transition: box-shadow 0.3s ease-in-out;
-}
-
-.chat__panel--active,
-.chat__panel--private {
-  box-shadow: 0 5px 5px 2px $color-chat-controlbox-box-shadow;
 }
 
 .chat__panel-header,
@@ -444,6 +445,13 @@
 
 .chat__controlbox-rooms-listing {
   margin: 0 0 10px;
+}
+
+.chat__controlbox-room {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px 0;
 }
 
 .chat__controlbox-empty-item {
