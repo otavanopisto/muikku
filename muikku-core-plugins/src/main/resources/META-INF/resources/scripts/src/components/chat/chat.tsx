@@ -1303,9 +1303,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
               <PrivateChat
                 jid={pchat.jid}
                 roster={this.state.roster}
-                onAddFriend={(person: IChatContact) =>
-                  this.setState({ roster: [...this.state.roster, ...[person]] })
-                }
                 initializingStanza={pchat.initStanza}
                 key={pchat.jid}
                 leaveChat={this.leavePrivateChat.bind(this, pchat.jid)}
