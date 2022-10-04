@@ -44,6 +44,7 @@ import { StatusType } from "~/reducers/base/status";
  */
 interface WorkspaceMaterialsProps {
   i18n: i18nType;
+  isStudent: boolean;
   status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
@@ -657,7 +658,9 @@ class WorkspaceMaterials extends React.Component<
                 materialContentNode={node}
                 workspace={this.props.workspace}
                 compositeReplies={compositeReplies}
-                isViewRestricted={materialIsViewRestricted}
+                isViewRestricted={
+                  materialIsViewRestricted && this.props.isStudent
+                }
                 showEvenIfHidden={showEvenIfHidden}
               />
             </ContentPanelItem>
@@ -790,6 +793,7 @@ function mapStateToProps(state: StateType) {
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
     isLoggedIn: state.status.loggedIn,
+    isStudent: state.status.loggedIn && state.status.isStudent,
   };
 }
 

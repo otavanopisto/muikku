@@ -39,6 +39,7 @@ import { StatusType } from "~/reducers/base/status";
  */
 interface HelpMaterialsProps {
   i18n: i18nType;
+  isStudent: boolean;
   status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
@@ -632,7 +633,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                 folder={section}
                 materialContentNode={node}
                 workspace={this.props.workspace}
-                isViewRestricted={materialIsViewRestricted}
+                isViewRestricted={
+                  materialIsViewRestricted && this.props.isStudent
+                }
               />
             </ContentPanelItem>
           );
@@ -748,6 +751,7 @@ function mapStateToProps(state: StateType) {
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
     isLoggedIn: state.status.loggedIn,
+    isStudent: state.status.loggedIn && state.status.isStudent,
   };
 }
 
