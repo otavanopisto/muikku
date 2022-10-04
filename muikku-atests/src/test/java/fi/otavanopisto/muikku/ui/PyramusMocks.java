@@ -214,6 +214,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
 
     Set<Long> staffStudyProgrammes = new HashSet<>();
     staffStudyProgrammes.add(1l);
+    staffStudyProgrammes.add(2l);
     StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, (long) 1, null, "Test", "Staff1member", null, 
       fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables, staffStudyProgrammes);
     
@@ -505,6 +506,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
 
     Set<Long> staffStudyProgrammes = new HashSet<>();
     staffStudyProgrammes.add(1l);
+    staffStudyProgrammes.add(2l);
     StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
         role, tags, variables, staffStudyProgrammes);
       
@@ -683,6 +685,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         
     Set<Long> staffStudyProgrammes = new HashSet<>();
     staffStudyProgrammes.add(1l);
+    staffStudyProgrammes.add(2l);
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, (long) 1, null, "Test", "Administrator", null, 
       fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables, staffStudyProgrammes);
     

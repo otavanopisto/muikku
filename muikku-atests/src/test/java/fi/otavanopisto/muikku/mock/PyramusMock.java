@@ -775,6 +775,7 @@ public class PyramusMock {
         for (MockStaffMember mockStaffMember : pmock.staffMembers) {
           Set<Long> staffStudyProgrammes = new HashSet<>();
           staffStudyProgrammes.add(1l);
+          staffStudyProgrammes.add(2l);
           StaffMember staffMember = new StaffMember(mockStaffMember.getId(), mockStaffMember.getPersonId(), mockStaffMember.getOrganizationId(), null, mockStaffMember.getFirstName(), mockStaffMember.getLastName(), null, mockStaffMember.getRole(), tags, variables, staffStudyProgrammes);
 
           stubFor(get(urlEqualTo(String.format("/1/staff/members/%d", staffMember.getId())))
