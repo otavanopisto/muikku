@@ -463,7 +463,6 @@ export class PrivateChat extends React.Component<
    * render
    */
   render() {
-    const role = roleNode.getAttribute("value");
     return (
       <div
         className={`chat__panel-wrapper ${
