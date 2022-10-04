@@ -69,14 +69,14 @@ class People extends React.Component<IPeopleProps, IPeopleState> {
       ? this.props.person.nick
       : this.props.person.jid;
 
-    const buttons: PromptDialogButtons = {
-      execute: this.props.i18n.text.get(
-        "plugin.chat.people.delete.prompt.execute"
-      ),
-      cancel: this.props.i18n.text.get(
-        "plugin.chat.people.delete.prompt.cancel"
-      ),
-    };
+    // const buttons: PromptDialogButtons = {
+    //   execute: this.props.i18n.text.get(
+    //     "plugin.chat.people.delete.prompt.execute"
+    //   ),
+    //   cancel: this.props.i18n.text.get(
+    //     "plugin.chat.people.delete.prompt.cancel"
+    //   ),
+    // };
     return (
       <div className={`chat__controlbox-person ${personModifier}`}>
         <div

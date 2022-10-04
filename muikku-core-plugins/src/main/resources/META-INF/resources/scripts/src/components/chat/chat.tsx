@@ -1151,7 +1151,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               {this.props.status.isStudent ? (
                 <>
                   <div className="chat__controlbox-private-chat-heading">
-                    {this.props.i18n.text.get("plugin.chat.people.guider")}
+                    {this.props.i18n.text.get("plugin.chat.people.councelors")}
                   </div>
                   <div className="chat__controlbox-people-listing">
                     {this.state.studyGuiders.length > 0 ? (
@@ -1162,7 +1162,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         };
                         return (
                           <People
-                            modifier="guider"
+                            modifier="councelor"
                             person={person}
                             toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
                               this,
