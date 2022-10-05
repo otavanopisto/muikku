@@ -11,7 +11,7 @@ import { UserFileType } from "~/reducers/user-index";
 import Workspaces from "../workspaces";
 import MainChart from "~/components/general/graph/main-chart";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
-import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
+import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Navigation, { NavigationElement } from "~/components/general/navigation";
 import {
   AddFileToCurrentStudentTriggerType,
@@ -206,9 +206,9 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   };
 
   return (
-    <ApplicationPanelBody modifier="guider-student" asideBefore={aside}>
+    <ApplicationPanel modifier="tabs-with-dialog" asideBefore={aside}>
       {studyHistoryContent()}
-    </ApplicationPanelBody>
+    </ApplicationPanel>
   );
 };
 

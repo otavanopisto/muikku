@@ -49,6 +49,7 @@ import {
   ApplicationPanelToolbar,
   ApplicationPanelToolbarActionsMain,
   ApplicationPanelToolbarActionsAside,
+  ApplicationPanelToolsContainer,
 } from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
 import { SearchFormElement } from "~/components/general/form-element";
@@ -279,12 +280,12 @@ class CommunicatorToolbar extends React.Component<
               onClick={this.onGoBackClick}
             />
 
-            <div className="application-panel__tool--current-folder">
+            <div className="application-panel__mobile-current-folder">
               <span
-                className={`glyph application-panel__tool-icon icon-${currentLocation.icon}`}
+                className={`glyph application-panel__mobile-current-folder-icon icon-${currentLocation.icon}`}
                 style={{ color: currentLocation.color }}
               />
-              <span className="application-panel__tool-title">
+              <span className="application-panel__mobile-current-folder-title">
                 {"  " + currentLocation.text(this.props.i18n)}
               </span>
               {currentLocation.type === "label" ? (
@@ -441,12 +442,12 @@ class CommunicatorToolbar extends React.Component<
 
     return (
       <ApplicationPanelToolbar>
-        <div className="application-panel__tool--current-folder">
+        <div className="application-panel__mobile-current-folder">
           <span
-            className={`glyph application-panel__tool-icon icon-${currentLocation.icon}`}
+            className={`glyph application-panel__mobile-current-folder-icon icon-${currentLocation.icon}`}
             style={{ color: currentLocation.color }}
           />
-          <span className="application-panel__tool-title">
+          <span className="application-panel__mobile-current-folder-title">
             {"  " + currentLocation.text(this.props.i18n)}
           </span>
           {currentLocation.type === "label" ? (
@@ -577,19 +578,19 @@ class CommunicatorToolbar extends React.Component<
             }
           />
         ) : null}
-
-        <SearchFormElement
-          updateField={this.updateSearchWithQuery}
-          name="message-search"
-          id="searchMessages"
-          modifiers="communicator-message-search"
-          onFocus={this.onInputFocus}
-          onBlur={this.onInputBlur}
-          placeholder={this.props.i18n.text.get(
-            "plugin.communicator.search.placeholder"
-          )}
-          value={this.state.searchquery}
-        />
+        <ApplicationPanelToolsContainer>
+          <SearchFormElement
+            updateField={this.updateSearchWithQuery}
+            name="message-search"
+            id="searchMessages"
+            onFocus={this.onInputFocus}
+            onBlur={this.onInputBlur}
+            placeholder={this.props.i18n.text.get(
+              "plugin.communicator.search.placeholder"
+            )}
+            value={this.state.searchquery}
+          />
+        </ApplicationPanelToolsContainer>
       </ApplicationPanelToolbar>
     );
   }

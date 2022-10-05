@@ -834,11 +834,10 @@
 }
 
 .application-list__item-content-header--journal-entry {
-  padding: 10px;
+  padding: 20px 0 0;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
-    padding: 10px 0;
   }
 }
 

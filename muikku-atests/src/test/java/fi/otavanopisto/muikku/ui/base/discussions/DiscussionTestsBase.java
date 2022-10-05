@@ -40,7 +40,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
       try {
         navigate("/discussion", false);
-        waitAndClick(".application-panel__helper-container--main-action .button--primary-function");
+        waitAndClick(".application-panel__actions-aside .button--primary-function");
         waitAndClick("input.env-dialog__input--new-discussion-thread-title");
         sendKeys("input.env-dialog__input--new-discussion-thread-title", "Test title for discussion");
         addTextToCKEditor("Test text for discussion.");
@@ -160,8 +160,8 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitForVisible(".dialog--delete-area .button--standard-ok");
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--delete-area");
-        waitForVisible(".application-panel__content .application-panel__main-container.loader-empty");
-        assertTextIgnoreCase(".application-panel__content .application-panel__main-container.loader-empty .empty span", "Ei viestejä");
+        waitForVisible(".application-panel__content .application-panel__content-main.loader-empty");
+        assertTextIgnoreCase(".application-panel__content .application-panel__content-main.loader-empty .empty span", "Ei viestejä");
     } finally {
       deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
       deleteDiscussion(discussionGroup.getId(), discussion.getId());
