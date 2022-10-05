@@ -35,17 +35,17 @@ public interface SearchProvider {
   public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(String queryString, long senderId, IndexedCommunicatorMessageSender sender, List<IndexedCommunicatorMessageRecipient> recipients, Date created, Set<Long> tags, int start, int maxResults, List<Sort> sorts);
 
   public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive);
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
       Boolean onlyDefaultUsers, int start, int maxResults, boolean joinGroupsAndWorkspaces);
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
       Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, boolean joinGroupsAndWorkspaces);
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
       Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
       Date startedStudiesBefore, boolean joinGroupsAndWorkspaces);
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore,

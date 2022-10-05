@@ -90,6 +90,11 @@ public class PyramusSchoolDataEntityFactory {
   
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
     SchoolDataIdentifier organizationIdentifier = identifierMapper.getOrganizationIdentifier(staffMember.getOrganizationId());
+    Set<SchoolDataIdentifier> studyProgrammeIdentifiers = new HashSet<>();
+    Set<Long> studyProgrammeIds = staffMember.getStudyProgrammeIds();
+    for (Long studyProgrammeId : studyProgrammeIds) {
+      studyProgrammeIdentifiers.add(identifierMapper.getStudyProgrammeIdentifier(studyProgrammeId));
+    }
     return new PyramusUser(
         identifierMapper.getStaffIdentifier(staffMember.getId()).getIdentifier(),
         staffMember.getFirstName(),
@@ -110,7 +115,8 @@ public class PyramusSchoolDataEntityFactory {
         null, //studyTimeEnded
         false, // evaluationFees
         false, // hidden
-        false ); // matriculationEligibility
+        false, // matriculationEligibility
+        studyProgrammeIdentifiers);
   }
 
   public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
@@ -160,7 +166,8 @@ public class PyramusSchoolDataEntityFactory {
         studyTimeEnd,
         evaluationFees,
         hidden, 
-        matriculationEligibility);
+        matriculationEligibility,
+        new HashSet<>());
   }
   
   public StudyProgramme createEntity(fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme) {
