@@ -149,6 +149,7 @@ class CommunicatorToolbar extends React.Component<
           {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ? (
             <NewArea>
               <ButtonPill
+                disabled={this.props.discussion.subscribedThreadOnly}
                 icon="plus"
                 buttonModifiers={["discussion-toolbar"]}
               />
@@ -157,7 +158,10 @@ class CommunicatorToolbar extends React.Component<
           {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ? (
             <ModifyArea>
               <ButtonPill
-                disabled={!this.props.discussion.areaId}
+                disabled={
+                  !this.props.discussion.areaId ||
+                  this.props.discussion.subscribedThreadOnly
+                }
                 icon="pencil"
                 buttonModifiers={["discussion-toolbar"]}
               />
@@ -166,7 +170,10 @@ class CommunicatorToolbar extends React.Component<
           {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? (
             <DeleteArea>
               <ButtonPill
-                disabled={!this.props.discussion.areaId}
+                disabled={
+                  !this.props.discussion.areaId ||
+                  this.props.discussion.subscribedThreadOnly
+                }
                 icon="trash"
                 buttonModifiers={["discussion-toolbar"]}
               />
@@ -180,10 +187,15 @@ class CommunicatorToolbar extends React.Component<
               id="discussionAreaSelect"
               className="form-element__select form-element__select--toolbar-selector"
               onChange={this.onSelectChange}
-              value={this.props.discussion.areaId || ""}
+              value={this.selectValue()}
             >
               <option value="">
                 {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
+              </option>
+              <option value="subs">
+                {this.props.i18n.text.get(
+                  "plugin.discussion.browseareas.subscribtions"
+                )}
               </option>
               {this.props.discussion.areas.map((area) => (
                 <option key={area.id} value={area.id}>
