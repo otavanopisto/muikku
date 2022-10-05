@@ -269,22 +269,24 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 if (
                   !studentsGuidanceCouncelors.some(
                     (existingStudentCouncelor) =>
-                      existingStudentCouncelor.userEntityId ==
+                      existingStudentCouncelor.userEntityId ===
                       studentsGuidanceCouncelor.userEntityId
                   )
                 ) {
                   studentsGuidanceCouncelors.push(studentsGuidanceCouncelor);
-                  studentsGuidanceCouncelors.sort((x, y) => {
-                    const a = x.lastName.toUpperCase(),
-                      b = y.lastName.toUpperCase();
-                    return a == b ? 0 : a > b ? 1 : -1;
-                  });
                 }
               });
             });
           })
         );
       }
+
+      studentsGuidanceCouncelors.sort((x, y) => {
+        const a = x.lastName.toUpperCase(),
+          b = y.lastName.toUpperCase();
+        return a == b ? 0 : a > b ? 1 : -1;
+      });
+
       this.setState({
         studyGuiders: studentsGuidanceCouncelors,
       });
@@ -331,8 +333,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
             "callback"
           )().then((user: IChatContact) => {
             chatRoster.push({
-              ...{ jid: contact.jid },
               ...user,
+              jid: contact.jid,
             });
           });
         })
@@ -770,6 +772,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
 
   /**
+   * onConnectionStatusChanged the strophe connection status change function
    * @param status strophe status
    */
   onConnectionStatusChanged(status: Strophe.Status) {
