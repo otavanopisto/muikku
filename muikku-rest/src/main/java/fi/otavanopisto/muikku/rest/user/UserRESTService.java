@@ -442,8 +442,21 @@ public class UserRESTService extends AbstractRESTService {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
       
-      SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults, false);
+      SearchResult result = elasticSearchProvider.searchUsers(
+          Arrays.asList(organization),
+          null, // study programme identifiers (TODO Where is this endpoint used - should this be enforced?)
+          searchString,
+          fields,
+          Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
+          userGroupFilters,
+          workspaceFilters,
+          userIdentifiers,
+          includeInactiveStudents,
+          true,
+          false,
+          firstResult,
+          maxResults,
+          false);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -1307,6 +1320,7 @@ public class UserRESTService extends AbstractRESTService {
 
       SearchResult result = elasticSearchProvider.searchUsers(
           Arrays.asList(organization),
+          null, // study programme identifiers (TODO Where is this endpoint used - should this be enforced?) 
           searchString, 
           fields, 
           roleArchetype != null ? Arrays.asList(roleArchetype) : null, 
@@ -1828,6 +1842,7 @@ public class UserRESTService extends AbstractRESTService {
       
       SearchResult result = elasticSearchProvider.searchUsers(
           organizations,
+          null, // study programme identifiers
           searchString, 
           fields, 
           nonStudentArchetypes, 
