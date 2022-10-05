@@ -6,12 +6,15 @@ import { IBareMessageType } from "./chat";
 import { ChatMessage } from "./chatMessage";
 import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
+import { requestPrescense } from "~/helper-functions/chat";
+import { IChatContact } from "./chat";
 
 /**
  * IPrivateChatProps
  */
 interface IPrivateChatProps {
   initializingStanza: Element;
+  roster: IChatContact[];
   leaveChat: () => void;
   connection: Strophe.Connection;
   jid: string;
@@ -85,7 +88,6 @@ export class PrivateChat extends React.Component<
     this.onTextFieldFocus = this.onTextFieldFocus.bind(this);
     this.onTextFieldBlur = this.onTextFieldBlur.bind(this);
     this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
-    this.requestPrescense = this.requestPrescense.bind(this);
     this.isScrolledToTop = this.isScrolledToTop.bind(this);
     this.loadMessages = this.loadMessages.bind(this);
   }
@@ -117,9 +119,9 @@ export class PrivateChat extends React.Component<
       // this.onPrivateChatMessage(this.props.initializingStanza);
     }
 
-    this.requestPrescense();
     this.obtainNick();
     this.loadMessages();
+    requestPrescense(this.props.jid, this.props.connection);
   }
 
   /**
@@ -142,20 +144,6 @@ export class PrivateChat extends React.Component<
       nick: user.name,
     });
   }
-
-  /**
-   * requestPrescense
-   */
-  requestPrescense() {
-    this.props.connection.send(
-      $pres({
-        from: this.props.connection.jid,
-        to: this.props.jid,
-        type: "probe",
-      })
-    );
-  }
-
   /**
    * onTextFieldFocus
    */
@@ -205,7 +193,6 @@ export class PrivateChat extends React.Component<
           .up()
           .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
       );
-
       const newMessage: IBareMessageType = {
         nick: null,
         message: text,

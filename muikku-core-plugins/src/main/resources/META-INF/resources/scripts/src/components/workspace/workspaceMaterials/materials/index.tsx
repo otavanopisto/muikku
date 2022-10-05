@@ -746,22 +746,18 @@ class WorkspaceMaterials extends React.Component<
       ) : null;
 
     return (
-      <div className="content-panel-wrapper">
-        <ContentPanel
-          aside={progressData}
-          onOpenNavigation={this.onOpenNavigation}
-          modifier="materials"
-          navigation={this.props.navigation}
-          title={this.props.i18n.text.get(
-            "plugin.workspace.materials.pageTitle"
-          )}
-          ref="content-panel"
-        >
-          {results}
-          {emptyMessage}
-          {createSectionElementWhenEmpty}
-        </ContentPanel>
-      </div>
+      <ContentPanel
+        aside={progressData}
+        onOpenNavigation={this.onOpenNavigation}
+        modifier="materials"
+        navigation={this.props.navigation}
+        title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")}
+        ref="content-panel"
+      >
+        {results}
+        {emptyMessage}
+        {createSectionElementWhenEmpty}
+      </ContentPanel>
     );
   }
 }

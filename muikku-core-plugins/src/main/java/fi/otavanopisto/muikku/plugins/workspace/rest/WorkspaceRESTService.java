@@ -1195,6 +1195,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizationEntityController.listUnarchived(),            // organizations
+        null,                                                     // study programme identifiers
         searchString,                                             // search string
         fields,                                                   // fields
         null,                                                     // environment role
@@ -1297,6 +1298,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizationEntityController.listUnarchived(),            // organizations
+        null,                                                     // study programme identifiers
         null,                                                     // search string
         null,                                                     // fields
         environmentRoleArchetypes,                                // all staff archetypes
@@ -2831,6 +2833,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizations,                                            // organizations
+        null,                                                     // study programme identifiers
         null,                                                     // search string
         null,                                                     // fields
         null,                                                     // environment roles

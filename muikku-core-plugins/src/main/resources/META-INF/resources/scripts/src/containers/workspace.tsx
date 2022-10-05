@@ -142,6 +142,7 @@ export default class Workspace extends React.Component<
       this.loadWorkspaceAnnouncerData.bind(this);
     this.loadWorkspaceMaterialsData =
       this.loadWorkspaceMaterialsData.bind(this);
+    this.loadWorkspaceUsersData = this.loadWorkspaceUsersData.bind(this);
     this.loadWorkspaceHelpData = this.loadWorkspaceHelpData.bind(this);
     this.closeEnrollmentDialog = this.closeEnrollmentDialog.bind(this);
     this.closeSignupDialog = this.closeSignupDialog.bind(this);
@@ -256,6 +257,8 @@ export default class Workspace extends React.Component<
           );
         }
       }
+    } else if (window.location.pathname.includes("/users")) {
+      this.loadWorkspaceUsersData();
     }
   }
 
@@ -746,6 +749,54 @@ export default class Workspace extends React.Component<
   }
 
   /**
+   * loadWorkspaceUsersData
+   */
+  loadWorkspaceUsersData(): void {
+    const state = this.props.store.getState();
+
+    this.props.store.dispatch(
+      setCurrentWorkspace({
+        workspaceId: state.status.currentWorkspaceId,
+        /**
+         * success
+         * @param workspace workspace
+         */
+        success: (workspace) => {
+          if (!workspace.staffMembers && state.status.loggedIn) {
+            this.props.store.dispatch(
+              loadStaffMembersOfWorkspace({ workspace }) as Action
+            );
+          }
+          if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
+            this.props.store.dispatch(
+              loadStudentsOfWorkspace({
+                workspace,
+                payload: {
+                  q: "",
+                  firstResult: 0,
+                  maxResults: 10,
+                  active: true,
+                },
+              }) as Action
+            );
+            this.props.store.dispatch(
+              loadStudentsOfWorkspace({
+                workspace,
+                payload: {
+                  q: "",
+                  firstResult: 0,
+                  maxResults: 10,
+                  active: false,
+                },
+              }) as Action
+            );
+          }
+        },
+      }) as Action
+    );
+  }
+
+  /**
    * renderWorkspaceMaterials
    * @param props props
    * @returns JSX.Element
@@ -949,50 +1000,7 @@ export default class Workspace extends React.Component<
           state.i18n.text.get("plugin.workspace.users.pageTitle")
         )
       );
-      this.props.store.dispatch(
-        setCurrentWorkspace({
-          workspaceId: state.status.currentWorkspaceId,
-          /**
-           * success
-           * @param workspace workspace
-           */
-          success: (workspace) => {
-            if (!workspace.staffMembers && state.status.loggedIn) {
-              this.props.store.dispatch(
-                loadStaffMembersOfWorkspace({ workspace }) as Action
-              );
-            }
-            if (
-              !workspace.students &&
-              state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS
-            ) {
-              this.props.store.dispatch(
-                loadStudentsOfWorkspace({
-                  workspace,
-                  payload: {
-                    q: "",
-                    firstResult: 0,
-                    maxResults: 10,
-                    active: true,
-                  },
-                }) as Action
-              );
-              this.props.store.dispatch(
-                loadStudentsOfWorkspace({
-                  workspace,
-                  payload: {
-                    q: "",
-                    firstResult: 0,
-                    maxResults: 10,
-                    active: false,
-                  },
-                }) as Action
-              );
-            }
-          },
-        }) as Action
-      );
-
+      this.loadWorkspaceUsersData();
       this.loadChatSettings();
     }
 

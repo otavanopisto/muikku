@@ -37,7 +37,7 @@ public class WorkspaceSignupScheduler {
   @Inject
   private WorkspaceIndexer workspaceIndexer;
   
-  @Schedule (dayOfWeek="*") 
+  @Schedule (dayOfWeek="*", persistent = false)
   public void cleanup() {
     
     SearchProvider elasticSearchProvider = null;
