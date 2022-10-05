@@ -121,7 +121,7 @@ interface IChatState {
   isStudent: boolean;
   openRoomNumber: number;
   openChatsJIDS: IOpenChatJID[];
-  selectedUserPresence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
+  selectedUserPresence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2.1
   ready: boolean;
 
   roomNameField: string;
@@ -253,7 +253,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
   /**
    * updateRoomNameField
-   * @param ee
+   * @param e e
    */
   public updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
@@ -612,10 +612,14 @@ class Chat extends React.Component<IChatProps, IChatState> {
    */
   onConnectionStatusChanged(status: Strophe.Status, condition: string) {
     if (status === Strophe.Status.ATTACHED) {
-      // We are atached. Send presence to server so it knows we're online
-      this.state.connection.send(
-        $pres().c("show", {}, this.state.selectedUserPresence)
-      );
+      setTimeout(() => {
+        // We are atached. Send presence to server so it knows we're online
+        // #6239: One second delay as first user after server restart loses these for some reason
+        this.state.connection.send(
+          $pres().c("show", {}, this.state.selectedUserPresence)
+        );
+        this.listExistantChatRooms();
+      }, 1000);
     }
     // I believe strophe retries automatically so disconnected does not need to be tried
     return true;
@@ -811,8 +815,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
             this.onConnectionStatusChanged
           );
         }
-
-        this.listExistantChatRooms();
       }
     );
   }

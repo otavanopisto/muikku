@@ -597,6 +597,7 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  min-width: 0;
 }
 
 .application-list__item-content-main--workspace-user {
@@ -803,6 +804,7 @@
   @include breakpoint($breakpoint-pad) {
     font-size: 1rem;
     font-weight: 400;
+    padding: 0 20px 0 0;
   }
 }
 
@@ -840,7 +842,8 @@
   }
 }
 
-.application-list__item-content-body--journal-entry {
+.application-list__item-content-body--journal-entry,
+.application-list__item-content-body--discussion {
   padding: 0;
 }
 

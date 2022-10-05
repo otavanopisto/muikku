@@ -1,4 +1,5 @@
 import { ActionType } from "actions";
+import { Reducer } from "redux";
 
 /**
  * VOPSRowItemType
@@ -45,25 +46,32 @@ export interface VOPSType {
 }
 
 /**
- * vops
+ * initialVopsState
+ */
+const initialVopsState: VOPSType = {
+  status: "WAIT",
+  value: null,
+};
+
+/**
+ * Reducer function for vops
+ *
  * @param state state
  * @param action action
+ * @returns State of vops
  */
-export default function vops(
-  state: VOPSType = {
-    status: "WAIT",
-    value: null,
-  },
+export const vops: Reducer<VOPSType> = (
+  state = initialVopsState,
   action: ActionType
-): VOPSType {
-  if (action.type === "UPDATE_VOPS_STATUS") {
-    return Object.assign({}, state, {
-      status: action.payload,
-    });
-  } else if (action.type === "UPDATE_VOPS") {
-    return Object.assign({}, state, {
-      value: action.payload,
-    });
+) => {
+  switch (action.type) {
+    case "UPDATE_VOPS_STATUS":
+      return { ...state, status: action.payload };
+
+    case "UPDATE_VOPS":
+      return { ...state, value: action.payload };
+
+    default:
+      return state;
   }
-  return state;
-}
+};

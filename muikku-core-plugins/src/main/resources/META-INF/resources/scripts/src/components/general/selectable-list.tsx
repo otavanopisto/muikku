@@ -12,7 +12,7 @@ interface SelectableItem {
   checkboxClassName?: string;
   checkboxId?: string;
   key: any;
-  contents: (checkbox: React.ReactElement<any>) => any;
+  contents: (checkbox: React.ReactElement<HTMLInputElement>) => any;
   notSelectable?: boolean;
   notSelectableModifier?: string;
   notSelectableClassName?: string;

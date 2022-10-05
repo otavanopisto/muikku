@@ -1,5 +1,6 @@
 import { ActionType } from "~/actions";
 import { UserGroupType, UserType } from "~/reducers/user-index";
+import { Reducer } from "redux";
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType =
   | "WAIT"
@@ -153,11 +154,54 @@ export type UpdateUserGroupStateType =
 // Do not delete, this is for organization
 
 /**
+ * initializeUsersState
+ */
+const initializeUsersState: UsersType = {
+  students: {
+    results: [],
+    totalHitCount: null,
+  },
+  staff: {
+    results: [],
+    totalHitCount: null,
+  },
+};
+
+/**
+ * Reducer function for users
+ *
+ * @param state state
+ * @param action action
+ * @returns State of users
+ */
+export const organizationUsers: Reducer<UsersType> = (
+  state = initializeUsersState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "UPDATE_STUDENT_USERS":
+      return {
+        ...state,
+        students: action.payload,
+      };
+
+    case "UPDATE_STAFF_USERS":
+      return {
+        ...state,
+        staff: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+/**
  * users
  * @param state state
  * @param action action
  */
-export default function users(
+/* export default function users(
   state: UsersType = {
     students: {
       results: [],
@@ -181,13 +225,78 @@ export default function users(
   }
   return state;
 }
+ */
+/**
+ * initialUserGroupsState
+ */
+const initialUserGroupsState: UserGroupsType = {
+  list: [],
+  currentUserGroup: null,
+  state: "LOADING",
+  hasMore: false,
+  searchString: "",
+  currentPayload: null,
+};
+
+/**
+ * Reducer function for user groups
+ *
+ * @param state state
+ * @param action action
+ * @returns State of user groups
+ */
+export const userGroups: Reducer<UserGroupsType> = (
+  state = initialUserGroupsState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "UPDATE_USER_GROUPS":
+      return {
+        ...state,
+        list: action.payload,
+      };
+
+    case "LOAD_MORE_USER_GROUPS":
+      return {
+        ...state,
+        list: state.list.concat(action.payload),
+      };
+
+    case "UPDATE_CURRENT_USER_GROUP":
+      return {
+        ...state,
+        currentUserGroup: action.payload,
+      };
+
+    case "UPDATE_USER_GROUPS_STATE":
+      return {
+        ...state,
+        state: action.payload,
+      };
+
+    case "UPDATE_HAS_MORE_USERGROUPS":
+      return {
+        ...state,
+        hasMore: action.payload,
+      };
+
+    case "SET_CURRENT_PAYLOAD":
+      return {
+        ...state,
+        currentPayload: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
 
 /**
  * userGroups
  * @param state state
  * @param action action
  */
-export function userGroups(
+/* export function userGroups(
   state: UserGroupsType = {
     list: [],
     currentUserGroup: null,
@@ -224,14 +333,61 @@ export function userGroups(
     });
   }
   return state;
-}
+} */
+
+/**
+ * initialUserSelectState
+ */
+const initialUserSelectState: UsersSelectType = {
+  students: [],
+  staff: [],
+  userGroups: [],
+};
+
+/**
+ * Reducer function for user Select
+ *
+ * @param state state
+ * @param action action
+ * @returns State of user Select
+ */
+export const userSelect: Reducer<UsersSelectType> = (
+  state = initialUserSelectState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "UPDATE_STUDENT_SELECTOR":
+      return {
+        ...state,
+        students: action.payload,
+      };
+
+    case "UPDATE_STAFF_SELECTOR":
+      return {
+        ...state,
+        staff: action.payload,
+      };
+
+    case "UPDATE_GROUP_SELECTOR":
+      return {
+        ...state,
+        userGroups: action.payload,
+      };
+
+    case "CLEAR_USER_SELECTOR":
+      return Object.assign({}, state, action.payload);
+
+    default:
+      return state;
+  }
+};
 
 /**
  * userSelect
  * @param state state
  * @param action action
  */
-export function userSelect(
+/* export function userSelect(
   state: UsersSelectType = {
     students: [],
     staff: [],
@@ -256,7 +412,44 @@ export function userSelect(
   }
 
   return state;
-}
+} */
+
+/**
+ * initialStudyProgrammesState
+ */
+const initialStudyProgrammesState: StudyprogrammeTypes = {
+  list: [],
+  status: "WAIT",
+};
+
+/**
+ * Reducer function for study programmes
+ *
+ * @param state state
+ * @param action action
+ * @returns State of evaluation
+ */
+export const studyprogrammes: Reducer<StudyprogrammeTypes> = (
+  state = initialStudyProgrammesState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "UPDATE_STUDYPROGRAMME_TYPES":
+      return {
+        ...state,
+        list: action.payload,
+      };
+
+    case "UPDATE_STUDYPROGRAMME_STATUS_TYPE":
+      return {
+        ...state,
+        status: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
 
 // These are here, because they are needed in the creation of a new user.
 // Not sure if they should actually be here, but changing their location is easy
@@ -267,7 +460,7 @@ export function userSelect(
  * @param state state
  * @param action action
  */
-export function studyprogrammes(
+/* export function studyprogrammes(
   state: StudyprogrammeTypes = {
     list: [],
     status: "WAIT",
@@ -285,4 +478,4 @@ export function studyprogrammes(
     });
   }
   return state;
-}
+} */

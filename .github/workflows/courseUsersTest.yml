@@ -18,7 +18,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}-${{ secrets.GA_CACHE_KEY }}
       - name: Prepare maven settings
         run: python prepare-maven.py
       - name: Build with Maven

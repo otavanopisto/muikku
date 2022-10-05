@@ -166,14 +166,14 @@
   margin: 0 0 12px;
 }
 
-.item-list__user-name {
-  font-weight: 600;
-}
-
-.item-list__user-contact-me {
+.item-list__user-actions {
   align-items: center;
   display: flex;
   margin: 4px 0;
+}
+
+.item-list__user-name {
+  font-weight: 600;
 }
 
 .item-list__user-email,

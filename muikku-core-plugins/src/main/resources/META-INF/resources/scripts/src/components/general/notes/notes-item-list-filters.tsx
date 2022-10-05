@@ -62,7 +62,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
       <div className="notes__toolbar-section">
         <NotesItemFilterChip
           label={props.i18n.text.get(
-            "plugin.records.notes.priority.high.label"
+            "plugin.records.tasks.priority.high.label"
           )}
           modifier="note-priority-high"
           activeModifier={filters.high ? "active" : null}
@@ -71,7 +71,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
         />
         <NotesItemFilterChip
           label={props.i18n.text.get(
-            "plugin.records.notes.priority.normal.label"
+            "plugin.records.tasks.priority.normal.label"
           )}
           modifier="note-priority-normal"
           activeModifier={filters.normal ? "active" : null}
@@ -79,7 +79,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
           onChipClick={handleFilterChipClick}
         />
         <NotesItemFilterChip
-          label={props.i18n.text.get("plugin.records.notes.priority.low.label")}
+          label={props.i18n.text.get("plugin.records.tasks.priority.low.label")}
           modifier="note-priority-low"
           activeModifier={filters.low ? "active" : null}
           name="low"
@@ -92,7 +92,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
             items={[
               <div key="filterTitle" className="filter-category">
                 <div className="filter-category__label">
-                  {props.i18n.text.get("plugin.records.notes.filter.label")}
+                  {props.i18n.text.get("plugin.records.tasks.filter.label")}
                 </div>
               </div>,
 
@@ -108,7 +108,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
                   className="filter-item__label"
                 >
                   {props.i18n.text.get(
-                    "plugin.records.notes.filter.createdbyme"
+                    "plugin.records.tasks.filter.createdbyme"
                   )}
                 </label>
               </div>,
@@ -125,7 +125,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
                   className="filter-item__label"
                 >
                   {props.i18n.text.get(
-                    "plugin.records.notes.filter.createdbyguidanceCounselor"
+                    "plugin.records.tasks.filter.createdbyguidanceCounselor"
                   )}
                 </label>
               </div>,

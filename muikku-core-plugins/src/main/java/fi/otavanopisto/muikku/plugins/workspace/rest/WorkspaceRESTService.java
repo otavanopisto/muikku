@@ -817,6 +817,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       Map<String, Object> result = new HashMap<>();
       result.put("beginDate", workspace.getBeginDate());
       result.put("endDate", workspace.getEndDate());
+      result.put("signupStart", workspace.getSignupStart());
+      result.put("signupEnd", workspace.getSignupEnd());
       result.put("viewLink", workspace.getViewLink());
       result.put("workspaceTypeId", typeId);
       result.put("educationType", educationTypeObject);
@@ -864,6 +866,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(new WorkspaceDetails(typeId,
         workspace.getBeginDate(),
         workspace.getEndDate(),
+        workspace.getSignupStart(),
+        workspace.getSignupEnd(),
         workspace.getViewLink(),
         rootFolder.getId(),
         helpFolder.getId(),
@@ -1010,9 +1014,13 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) ||
         !isEqualDateTime(workspace.getEndDate(), payload.getEndDate()) ||
+        !isEqualDateTime(workspace.getSignupStart(), payload.getSignupStart()) ||
+        !isEqualDateTime(workspace.getSignupEnd(), payload.getSignupEnd()) ||
         !Objects.equals(typeIdentifier, workspace.getWorkspaceTypeId())) {
       workspace.setBeginDate(payload.getBeginDate());
       workspace.setEndDate(payload.getEndDate());
+      workspace.setSignupStart(payload.getSignupStart());
+      workspace.setSignupEnd(payload.getSignupEnd());
       workspace.setWorkspaceTypeId(typeIdentifier);
       workspaceController.updateWorkspace(workspace);
     }
@@ -1027,6 +1035,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         typeId,
         workspace.getBeginDate(),
         workspace.getEndDate(),
+        workspace.getSignupStart(),
+        workspace.getSignupEnd(),
         workspace.getViewLink(),
         payload.getRootFolderId(),
         helpFolder.getId(),
@@ -1185,6 +1195,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizationEntityController.listUnarchived(),            // organizations
+        null,                                                     // study programme identifiers
         searchString,                                             // search string
         fields,                                                   // fields
         null,                                                     // environment role
@@ -1287,6 +1298,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizationEntityController.listUnarchived(),            // organizations
+        null,                                                     // study programme identifiers
         null,                                                     // search string
         null,                                                     // fields
         environmentRoleArchetypes,                                // all staff archetypes
@@ -2821,6 +2833,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizations,                                            // organizations
+        null,                                                     // study programme identifiers
         null,                                                     // search string
         null,                                                     // fields
         null,                                                     // environment roles

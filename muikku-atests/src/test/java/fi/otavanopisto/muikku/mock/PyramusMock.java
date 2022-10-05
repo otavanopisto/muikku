@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -772,7 +773,10 @@ public class PyramusMock {
         List<String> tags = new ArrayList<>();
         List<StaffMember> staffs = new ArrayList<>();
         for (MockStaffMember mockStaffMember : pmock.staffMembers) {
-          StaffMember staffMember = new StaffMember(mockStaffMember.getId(), mockStaffMember.getPersonId(), mockStaffMember.getOrganizationId(), null, mockStaffMember.getFirstName(), mockStaffMember.getLastName(), null, mockStaffMember.getRole(), tags, variables);
+          Set<Long> staffStudyProgrammes = new HashSet<>();
+          staffStudyProgrammes.add(1l);
+          staffStudyProgrammes.add(2l);
+          StaffMember staffMember = new StaffMember(mockStaffMember.getId(), mockStaffMember.getPersonId(), mockStaffMember.getOrganizationId(), null, mockStaffMember.getFirstName(), mockStaffMember.getLastName(), null, mockStaffMember.getRole(), tags, variables, staffStudyProgrammes);
 
           stubFor(get(urlEqualTo(String.format("/1/staff/members/%d", staffMember.getId())))
             .willReturn(aResponse()

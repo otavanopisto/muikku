@@ -57,6 +57,10 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
     @IndexableFieldOption (
       name = "organizationIdentifier",
       type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "studyProgrammeIdentifier",
+      type = IndexableFieldType.KEYWORD
     )
   }
 )

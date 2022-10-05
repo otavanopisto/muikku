@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
+
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.AbstractUser;
@@ -27,7 +29,8 @@ public class PyramusUser extends AbstractUser implements User {
                      OffsetDateTime studyTimeEnd,
                      boolean evaluationFees,
                      boolean hidden,
-                     boolean matriculationEligibility) {
+                     boolean matriculationEligibility,
+                     Set<SchoolDataIdentifier> studyProgrammeIdentifiers) {
     
     super(identifier, 
         firstName, 
@@ -48,7 +51,8 @@ public class PyramusUser extends AbstractUser implements User {
         evaluationFees,
         curriculumIdentifier,
         organizationIdentifier,
-        matriculationEligibility);
+        matriculationEligibility,
+        studyProgrammeIdentifiers);
   }
 
   @Override

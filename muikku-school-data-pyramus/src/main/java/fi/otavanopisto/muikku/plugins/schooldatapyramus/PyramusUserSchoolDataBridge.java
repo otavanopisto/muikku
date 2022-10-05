@@ -123,10 +123,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   
   @Inject
   private UserEntityFileController userEntityFileController;
-  
+
   @Inject
   private UserEntityController userEntityController;
- 
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
@@ -1324,7 +1323,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
               contactLogEntry.setCreatorId(toUserEntityId(contactLogEntry.getCreatorId()));
               
               UserEntity userEntity = userEntityController.findUserEntityById(contactLogEntry.getCreatorId());
-              hasImage = userEntityFileController.hasProfilePicture(userEntity);
+              
+              if (userEntity != null) {
+                hasImage = userEntityFileController.hasProfilePicture(userEntity);
+              }
             }
             contactLogEntry.setHasImage(hasImage);
   
@@ -1333,8 +1335,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             for (StudentContactLogEntryCommentRestModel comment : comments) {
               boolean hasProfileImage = false;
               if (comment.getCreatorId() != null) {
-                UserEntity userEntity = userEntityController.findUserEntityById(contactLogEntry.getCreatorId());
-                hasProfileImage = userEntityFileController.hasProfilePicture(userEntity);
+                UserEntity userEntity = userEntityController.findUserEntityById(comment.getCreatorId());
+                
+                if (userEntity != null) {
+                  hasProfileImage = userEntityFileController.hasProfilePicture(userEntity);
+                }
               }
               comment.setHasImage(hasProfileImage);
             }
@@ -1343,6 +1348,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           studentContactLogEntryBatch.setFirstResult(response.getEntity().getFirstResult());
           studentContactLogEntryBatch.setResults(contactLogEntries);
           studentContactLogEntryBatch.setTotalHitCount(response.getEntity().getTotalHitCount());
+          studentContactLogEntryBatch.setAllPrivileges(response.getEntity().getAllPrivileges());
         }
       }
       return new BridgeResponse<StudentContactLogEntryBatch>(response.getStatusCode(), studentContactLogEntryBatch);
@@ -1367,15 +1373,13 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
 
       boolean hasImage = false;
-
-      UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+      UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
       
       if (userEntity != null) {
         hasImage = userEntityFileController.hasProfilePicture(userEntity);
       }
         
       response.getEntity().setHasImage(hasImage);
-
     }
 
     return response;
@@ -1394,8 +1398,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     if (response.getEntity() != null) {
       if (response.getEntity().getCreatorId() != null) {
         response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
-        
-        UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+
+        UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
         hasImage = userEntityFileController.hasProfilePicture(userEntity);
       }
       response.getEntity().setHasImage(hasImage);
@@ -1429,12 +1433,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
       boolean hasImage = false;
           
-      UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+      UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
       if (userEntity != null) {
         hasImage = userEntityFileController.hasProfilePicture(userEntity);
       }
       response.getEntity().setHasImage(hasImage);
-      
     }
 
     return response;
@@ -1455,13 +1458,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
       boolean hasImage = false;
       
-      UserEntity userEntity = userEntityController.findUserEntityById(toUserEntityId(response.getEntity().getCreatorId()));
+      UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
       if (userEntity != null) {  
         hasImage = userEntityFileController.hasProfilePicture(userEntity);
       }
       
       response.getEntity().setHasImage(hasImage);
-
     }
     return response;
   }

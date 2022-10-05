@@ -212,8 +212,11 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(studentArrayJson)
         .withStatus(200)));
 
+    Set<Long> staffStudyProgrammes = new HashSet<>();
+    staffStudyProgrammes.add(1l);
+    staffStudyProgrammes.add(2l);
     StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, (long) 1, null, "Test", "Staff1member", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables, staffStudyProgrammes);
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
     
@@ -233,7 +236,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, (long) 1, null, "Test", "Staff2member", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables, staffStudyProgrammes);
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember2);
     stubFor(get(urlEqualTo("/1/staff/members/3"))
@@ -252,7 +255,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, (long) 1, null, "Test", "Administrator", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables, staffStudyProgrammes);
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember3);
     
@@ -501,8 +504,11 @@ public class PyramusMocks extends AbstractPyramusMocks {
   private static StaffMember mockStaffMember(Long personId, Long staffMemberId, Long organizationId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
+    Set<Long> staffStudyProgrammes = new HashSet<>();
+    staffStudyProgrammes.add(1l);
+    staffStudyProgrammes.add(2l);
     StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
-        role, tags, variables);
+        role, tags, variables, staffStudyProgrammes);
       
     String staffMemberJson = objectMapper.writeValueAsString(staffMember);
     
@@ -579,6 +585,8 @@ public class PyramusMocks extends AbstractPyramusMocks {
     OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+    OffsetDateTime signupStart = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
+    OffsetDateTime signupEnd = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
 
     Set<CourseModule> courseModules = new HashSet<>();
     Subject subject = new Subject(1L, null, null, null, null);
@@ -593,7 +601,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     );
     
     Course course = new Course(id, name, created, created, description, false,
-      (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
+      (long) 25, begin, end, signupStart, signupEnd, "test extension", (double) 15, (double) 45, (double) 45,
       (double) 15, (double) 45, (double) 45, end, (long) 1,
       (long) 1, null, (long) 1, (long) 1, (long) 1, 
       null, null, 1L, false, 1L, 1L, courseModules);
@@ -675,8 +683,11 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(personArrayJson)
         .withStatus(200)));
         
+    Set<Long> staffStudyProgrammes = new HashSet<>();
+    staffStudyProgrammes.add(1l);
+    staffStudyProgrammes.add(2l);
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, (long) 1, null, "Test", "Administrator", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables, staffStudyProgrammes);
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember3);
     

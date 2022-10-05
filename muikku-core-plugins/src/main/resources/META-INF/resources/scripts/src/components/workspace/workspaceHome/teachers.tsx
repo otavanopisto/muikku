@@ -4,7 +4,7 @@ import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { getName } from "~/util/modifiers";
-import Button from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
@@ -13,7 +13,7 @@ import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
-import { WhatsappLink } from "~/components/general/whatsapp-link";
+import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 
 /**
  * WorkspaceTeachersProps
@@ -136,7 +136,7 @@ class WorkspaceTeachers extends React.Component<
                           </div>
                         )}
 
-                      <div className="item-list__user-contact-me">
+                      <div className="item-list__user-actions">
                         <CommunicatorNewMessage
                           extraNamespace="workspace-teachers"
                           initialSelectedItems={[
@@ -160,18 +160,48 @@ class WorkspaceTeachers extends React.Component<
                             true
                           )}
                         >
-                          <Button buttonModifiers={["info", "contact-teacher"]}>
-                            {this.props.i18n.text.get(
-                              "plugin.workspace.index.message.label"
+                          <ButtonPill
+                            aria-label={this.props.i18n.text.get(
+                              "plugin.workspace.index.newMessage.label"
                             )}
-                          </Button>
+                            icon="envelope"
+                            title={this.props.i18n.text.get(
+                              "plugin.workspace.index.newMessage.label"
+                            )}
+                            buttonModifiers={[
+                              "new-message",
+                              "new-message-to-staff",
+                            ]}
+                          ></ButtonPill>
                         </CommunicatorNewMessage>
                         {teacher.properties["profile-phone"] !== undefined &&
                           teacher.properties["profile-phone"] !== null &&
                           teacher.properties["profile-whatsapp"] === "true" && (
-                            <WhatsappLink
+                            <WhatsappButtonLink
                               i18n={this.props.i18n}
                               mobileNumber={teacher.properties["profile-phone"]}
+                            />
+                          )}
+
+                        {teacher.properties["profile-appointmentCalendar"] !==
+                          undefined &&
+                          teacher.properties["profile-appointmentCalendar"] !==
+                            null && (
+                            <ButtonPill
+                              aria-label={this.props.i18n.text.get(
+                                "plugin.workspace.index.appointmentCalendar.label"
+                              )}
+                              title={this.props.i18n.text.get(
+                                "plugin.workspace.index.appointmentCalendar.label"
+                              )}
+                              icon="clock"
+                              buttonModifiers="appointment-calendar"
+                              openInNewTab="_blank"
+                              href={
+                                teacher.properties[
+                                  "profile-appointmentCalendar"
+                                ]
+                              }
                             />
                           )}
                       </div>

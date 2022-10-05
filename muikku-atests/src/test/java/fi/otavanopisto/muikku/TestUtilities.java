@@ -141,6 +141,8 @@ public class TestUtilities {
         (long) 25,                      // maxParticipantCount
         mockCourse.getBegin(),          // beginDate
         mockCourse.getEnd(),            // endDate
+        mockCourse.getSignupStart(),    // signupStart
+        mockCourse.getSignupEnd(),      // signupEnd
         "test extension",               // nameExtension
         (double) 15,                    // localTeachingDays
         (double) 45,                    // teachingHours

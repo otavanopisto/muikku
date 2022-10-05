@@ -13,6 +13,7 @@ export enum EvaluationEnum {
   EVALUATION_IMPROVED = "EVALUATION_IMPROVED",
   EVALUATION_REQUEST = "EVALUATION_REQUEST",
   SUPPLEMENTATION_REQUEST = "SUPPLEMENTATION_REQUEST",
+  EVALUATION_REQUEST_CANCELLED = "EVALUATION_REQUEST_CANCELLED",
 }
 
 /**
@@ -33,7 +34,7 @@ export interface EvaluationEvent {
   gradeIdentifier: string | null;
   identifier: string;
   student: string;
-  text: string;
+  text: string | null;
   type: EvaluationEnum;
   workspaceSubjectIdentifier: string | null;
 }

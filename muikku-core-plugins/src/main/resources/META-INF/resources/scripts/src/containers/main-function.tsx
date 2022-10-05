@@ -1,4 +1,5 @@
 import Notifications from "../components/base/notifications";
+import DisconnectedWarningDialog from "../components/base/disconnect-warning";
 import { BrowserRouter, Route } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
@@ -93,7 +94,6 @@ import {
 } from "~/actions/main-function/records/yo";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
-import { loadCalendarEvents } from "~/actions/main-function/calendar";
 import Chat from "../components/chat/chat";
 import EvaluationBody from "../components/evaluation/body";
 import CeeposDone from "../components/ceepos/done";
@@ -113,6 +113,7 @@ import {
 } from "~/actions/main-function/ceepos";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
+import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -585,17 +586,8 @@ export default class MainFunction extends React.Component<
           this.props.store.getState().i18n.text.get("plugin.site.title")
         )
       );
-      this.props.store.dispatch(
-        loadCalendarEvents(
-          this.props.store.getState().status.userId,
-          moment().day(0).format(),
-          moment().day(5).format(),
-          "guidance"
-        ) as Action
-      );
       this.loadChatSettings();
     }
-
     return <IndexBody />;
   }
 
@@ -1089,6 +1081,8 @@ export default class MainFunction extends React.Component<
       <BrowserRouter>
         <div id="root">
           <Notifications></Notifications>
+          <DisconnectedWarningDialog />
+          <EasyToUseFunctions />
           <Route exact path="/" render={this.renderIndexBody} />
           <Route
             path="/organization"

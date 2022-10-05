@@ -1,10 +1,5 @@
 package fi.otavanopisto.muikku.plugins.notes;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,72 +21,35 @@ public class NotesController {
   private NoteDAO noteDAO;
   
   public List<Note> listByOwner(Long owner, Boolean listArchived) {
-    List<Note> noteList = noteDAO.listByOwnerAndArchived(owner, listArchived);
-    
-    // Notes whose dueDate is gone should be archived automatically
-    List<Note> filteredNoteList = new ArrayList<>();
-    for (Note note : noteList) {
-      
-      // Check if dueDate is already gone but note isn't archived yet
-      if (note.getDueDate() != null && note.getArchived().equals(Boolean.FALSE)) {
-        OffsetDateTime dueDate = toOffsetDateTime(note.getDueDate());
-        // Archive note if dueDate is earlier than yesterday
-        if (dueDate.isBefore(OffsetDateTime.now().minusDays(1))) {
-          toggleArchived(note);
-        } else {
-          filteredNoteList.add(note);
-        }
-      } else {
-        filteredNoteList.add(note);
-      }
-    }
-    return filteredNoteList; 
+    return noteDAO.listByOwnerAndArchived(owner, listArchived);
   }
   
   public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Date startDate, Date dueDate) {
-    NoteStatus status = NoteStatus.ONGOING;
-    Boolean archived = false;
-    if (dueDate != null) {
-      OffsetDateTime dueDateOffset = toOffsetDateTime(dueDate);
-      // Archive note if dueDate is earlier than yesterday
-      if (dueDateOffset.isBefore(OffsetDateTime.now().minusDays(1))) {
-        archived = true;
-      }
-    }
-    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId(), startDate, dueDate, status, archived);
-    
-    return note;
+    return noteDAO.create(
+        title,
+        description,
+        type,
+        priority,
+        pinned,
+        owner,
+        sessionController.getLoggedUserEntity().getId(),
+        sessionController.getLoggedUserEntity().getId(),
+        startDate,
+        dueDate,
+        NoteStatus.ONGOING,
+        Boolean.FALSE);
   }
   
   public Note updateNote(Note note, String title, String description, NotePriority priority, Boolean pinned, Date startDate,  Date dueDate, NoteStatus status) {
-    Long lastModifier = sessionController.getLoggedUserEntity().getId();
-    Boolean archived = false;
-    
-    if (dueDate != null) {
-      OffsetDateTime dueDateOffset = toOffsetDateTime(dueDate);
-      
-      if (dueDateOffset.isBefore(OffsetDateTime.now().minusDays(1))) {
-        archived = true;
-      }
-    }
-    Note updatedNote = noteDAO.update(note, title, description, priority, pinned, lastModifier, startDate, dueDate, status, archived);
-    
-    return updatedNote;
+    return noteDAO.update(note, title, description, priority, pinned, sessionController.getLoggedUserEntity().getId(), startDate, dueDate, status, note.getArchived());
   }
   
   public Note toggleArchived(Note note) {
-    Note updatedNote = noteDAO.toggleArchived(note, !note.getArchived());
-    return updatedNote;
+    return noteDAO.setArchived(note, !note.getArchived());
   }
   
   public Note findNoteById(Long id) {
     return noteDAO.findById(id);
   }
-  
-  private OffsetDateTime toOffsetDateTime(Date date) {
-    Instant instant = date.toInstant();
-    ZoneId systemId = ZoneId.systemDefault();
-    ZoneOffset offset = systemId.getRules().getOffset(instant);
-    return date.toInstant().atOffset(offset);
-  }
+
 }

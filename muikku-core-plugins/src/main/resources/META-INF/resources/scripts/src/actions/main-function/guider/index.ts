@@ -26,12 +26,15 @@ import {
   GuiderUserLabelListType,
   GuiderWorkspaceListType,
   GuiderUserGroupListType,
+  ContactLogEvent,
+  ContactLogData,
+  ContactLogEventComment,
+  ContactTypes,
 } from "~/reducers/main-function/guider";
 import {
   WorkspaceListType,
   WorkspaceForumStatisticsType,
   ActivityLogType,
-  WorkspaceStudentActivityType,
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
@@ -41,6 +44,7 @@ import {
   PurchaseProductType,
   PurchaseType,
 } from "~/reducers/main-function/profile";
+import { LoadingState } from "~/@types/shared";
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -66,10 +70,7 @@ export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT",
   GuiderStudentUserProfileType
 >;
-export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<
-  "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD",
-  null
->;
+
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT_PROP",
   { property: keyof GuiderStudentUserProfileType; value: any }
@@ -77,7 +78,7 @@ export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<
 
 export type UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE = SpecificActionType<
   "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
-  { property: "hopsPhase"; value: number }
+  { property: "hopsPhase"; value: string }
 >;
 
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<
@@ -174,106 +175,218 @@ export type TOGGLE_ALL_STUDENTS = SpecificActionType<
   undefined
 >;
 
+export type DELETE_CONTACT_EVENT = SpecificActionType<
+  "DELETE_CONTACT_EVENT",
+  number
+>;
+
+export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
+  "DELETE_CONTACT_EVENT_COMMENT",
+  { contactLogEntryId: number; commentId: number }
+>;
 /**
- * LoadStudentsTriggerType
+ * LoadStudentsTriggerType action creator type
  */
 export interface LoadStudentsTriggerType {
   (filters: GuiderActiveFiltersType): AnyActionType;
 }
-
 /**
- * LoadMoreStudentsTriggerType
+ * LoadMoreStudentsTriggerType action creator type
  */
 export interface LoadMoreStudentsTriggerType {
   (): AnyActionType;
 }
-
 /**
- * LoadStudentTriggerType
+ * LoadStudentTriggerType action creator type
  */
 export interface LoadStudentTriggerType {
   (id: string, forceLoad?: boolean): AnyActionType;
 }
+/**
+ * action creator type
+ */
+export interface LoadStudentDataTriggerType {
+  (id: number, forceLoad?: boolean): AnyActionType;
+}
 
 /**
- * AddToGuiderSelectedStudentsTriggerType
+ * action creator type
+ */
+export interface LoadContactLogsTriggerType {
+  (
+    id: number,
+    resultsPerPage: number,
+    page: number,
+    forceLoad?: boolean
+  ): AnyActionType;
+}
+/**
+ * action creator type
+ */
+export interface CreateContactLogEventTriggerType {
+  (
+    userEntityId: number,
+    payload: {
+      text: string;
+      entryDate: string;
+      type: ContactTypes;
+    },
+    onSuccess?: () => void,
+    onFail?: () => void
+  ): AnyActionType;
+}
+
+/**
+ * DeleteContactLogEventTriggerType action creator type
+ */
+export interface DeleteContactLogEventTriggerType {
+  (
+    studentUserEntityId: number,
+    contactLogEntryId: number,
+    onSuccess?: () => void,
+    onFail?: () => void
+  ): AnyActionType;
+}
+/**
+ * EditContactLogEventTriggerType action creator type
+ */
+export interface EditContactLogEventTriggerType {
+  (
+    userEntityId: number,
+    contactLogEntryId: number,
+    payload: {
+      text: string;
+      entryDate: string;
+      type: ContactTypes;
+      creatorId: number;
+    },
+    onSuccess?: () => void,
+    onFail?: () => void
+  ): AnyActionType;
+}
+/**
+ * CreateContactLogEventCommentTriggerType action creator type
+ */
+export interface CreateContactLogEventCommentTriggerType {
+  (
+    userEntityId: number,
+    contactLogEntryId: number,
+    payload: {
+      text: string;
+      commentDate: string;
+    },
+    onSuccess?: () => void,
+    onFail?: () => void
+  ): AnyActionType;
+}
+/**
+ * DeleteContactLogEventCommentTriggerType action creator type
+ */
+export interface DeleteContactLogEventCommentTriggerType {
+  (
+    studentUserEntityId: number,
+    contactLogEntryId: number,
+    commentId: number,
+    onSuccess?: () => void,
+    onFail?: () => void
+  ): AnyActionType;
+}
+/**
+ * EditContactLogEventCommentTriggerType action creator type
+ */
+export interface EditContactLogEventCommentTriggerType {
+  (
+    userEntityId: number,
+    contactLogEntryId: number,
+    commentId: number,
+    payload: {
+      text: string;
+      commentDate: string;
+      creatorId: number;
+    },
+    onSuccess?: () => void,
+    onFail?: () => void
+  ): AnyActionType;
+}
+
+/**
+ * AddToGuiderSelectedStudentsTriggerType action creator type
  */
 export interface AddToGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType;
 }
 
 /**
- * RemoveFromGuiderSelectedStudentsTriggerType
+ * RemoveFromGuiderSelectedStudentsTriggerType action creator type
  */
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType;
 }
 
 /**
- * AddGuiderLabelToCurrentUserTriggerType
+ * AddGuiderLabelToCurrentUserTriggerType action creator type
  */
 export interface AddGuiderLabelToCurrentUserTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
 /**
- * RemoveGuiderLabelFromCurrentUserTriggerType
+ * RemoveGuiderLabelFromCurrentUserTriggerType action creator type
  */
 export interface RemoveGuiderLabelFromCurrentUserTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
-
 /**
- * AddGuiderLabelToSelectedUsersTriggerType
+ * AddGuiderLabelToSelectedUsersTriggerType action creator type
  */
 export interface AddGuiderLabelToSelectedUsersTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
 /**
- * RemoveGuiderLabelFromSelectedUsersTriggerType
+ * RemoveGuiderLabelFromSelectedUsersTriggerType action creator type
  */
 export interface RemoveGuiderLabelFromSelectedUsersTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
 /**
- * AddFileToCurrentStudentTriggerType
+ * AddFileToCurrentStudentTriggerType action creator type
  */
 export interface AddFileToCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType;
 }
 
 /**
- * RemoveFileFromCurrentStudentTriggerType
+ * RemoveFileFromCurrentStudentTriggerType action creator type
  */
 export interface RemoveFileFromCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType;
 }
 
 /**
- * UpdateLabelFiltersTriggerType
+ * UpdateLabelFiltersTriggerType action creator type
  */
 export interface UpdateLabelFiltersTriggerType {
   (): AnyActionType;
 }
 
 /**
- * UpdateWorkspaceFiltersTriggerType
+ * UpdateWorkspaceFiltersTriggerType action creator type
  */
 export interface UpdateWorkspaceFiltersTriggerType {
   (): AnyActionType;
 }
 
 /**
- * CreateGuiderFilterLabelTriggerType
+ * CreateGuiderFilterLabelTriggerType action creator type
  */
 export interface CreateGuiderFilterLabelTriggerType {
   (name: string): AnyActionType;
 }
 
 /**
- * UpdateGuiderFilterLabelTriggerType
+ * UpdateGuiderFilterLabelTriggerType action creator type
  */
 export interface UpdateGuiderFilterLabelTriggerType {
   (data: {
@@ -281,52 +394,52 @@ export interface UpdateGuiderFilterLabelTriggerType {
     name: string;
     description: string;
     color: string;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
 /**
- * UpdateCurrentStudentHopsPhaseTriggerType
+ * UpdateCurrentStudentHopsPhaseTriggerType action creator type
  */
 export interface UpdateCurrentStudentHopsPhaseTriggerType {
   (data: { value: string }): AnyActionType;
 }
 
 /**
- * RemoveGuiderFilterLabelTriggerType
+ * RemoveGuiderFilterLabelTriggerType action creator type
  */
 export interface RemoveGuiderFilterLabelTriggerType {
   (data: {
     label: GuiderUserLabelType;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
 /**
- * UpdateAvailablePurchaseProductsTriggerType
+ * UpdateAvailablePurchaseProductsTriggerType action creator type
  */
 export interface UpdateAvailablePurchaseProductsTriggerType {
   (): AnyActionType;
 }
 
 /**
- * DoOrderForCurrentStudentTriggerType
+ * DoOrderForCurrentStudentTriggerType action creator type
  */
 export interface DoOrderForCurrentStudentTriggerType {
   (order: PurchaseProductType): AnyActionType;
 }
 
 /**
- * DeleteOrderFromCurrentStudentTriggerType
+ * DeleteOrderFromCurrentStudentTriggerType action creator type
  */
 export interface DeleteOrderFromCurrentStudentTriggerType {
   (order: PurchaseType): AnyActionType;
 }
 
 /**
- * CompleteOrderFromCurrentStudentTriggerType
+ * CompleteOrderFromCurrentStudentTriggerType action creator type
  */
 export interface CompleteOrderFromCurrentStudentTriggerType {
   (order: PurchaseType): AnyActionType;
@@ -340,7 +453,8 @@ export interface ToggleAllStudentsTriggerType {
 }
 
 /**
- * toggleAllStudents
+ * toggleAllStudents thunk action creator
+ * @returns a thunk function for toggling all students selection
  */
 const toggleAllStudents: ToggleAllStudentsTriggerType =
   function toggleAllStudents() {
@@ -351,8 +465,9 @@ const toggleAllStudents: ToggleAllStudentsTriggerType =
   };
 
 /**
- * addFileToCurrentStudent
- * @param file file
+ * addFileToCurrentStudent thunk action creator
+ * @param file file to be added
+ * @returns thunk action for adding a file to a student
  */
 const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
   function addFileToCurrentStudent(file) {
@@ -363,8 +478,9 @@ const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
   };
 
 /**
- * removeFileFromCurrentStudent
- * @param file file
+ * removeFileFromCurrentStudent thunk action creator
+ * @param file file to be removed
+ * @returns a thunk function for removing a file from a student
  */
 const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
   function removeFileFromCurrentStudent(file) {
@@ -393,17 +509,18 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
       }
     };
   };
-
 /**
- * loadStudents
- * @param filters filters
+ * loadStudents thunk action creator
+ * @param filters filters to be applied
+ * @returns a thunk function through helper to load students
  */
 const loadStudents: LoadStudentsTriggerType = function loadStudents(filters) {
   return loadStudentsHelper.bind(this, filters, true);
 };
 
 /**
- * loadMoreStudents
+ * loadMoreStudents thunk action creator
+ * @returns a thunk function for loading more students
  */
 const loadMoreStudents: LoadMoreStudentsTriggerType =
   function loadMoreStudents() {
@@ -411,8 +528,9 @@ const loadMoreStudents: LoadMoreStudentsTriggerType =
   };
 
 /**
- * addToGuiderSelectedStudents
- * @param student student
+ * addToGuiderSelectedStudents thunk action creator
+ * @param student student to be added
+ * @returns a thunk function for selecting a student
  */
 const addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
   function addToGuiderSelectedStudents(student) {
@@ -423,8 +541,9 @@ const addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
   };
 
 /**
- * removeFromGuiderSelectedStudents
- * @param student student
+ * removeFromGuiderSelectedStudents thunk action creator
+ * @param student student to be removed
+ * @returns a thunk function for removing from student selection
  */
 const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType =
   function removeFromGuiderSelectedStudents(student) {
@@ -435,8 +554,9 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
   };
 
 /**
- * loadStudent
- * @param id id
+ * loadStudent thunk action creator
+ * @param id student id
+ * @returns a thunk function for loading the student data
  */
 const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   return async (
@@ -571,7 +691,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           });
         }),
         promisify(
-          mApi().guider.students.workspaces.read(id),
+          mApi().guider.students.workspaces.read(id, { active: true }),
           "callback"
         )().then(async (workspaces: WorkspaceListType) => {
           if (workspaces && workspaces.length) {
@@ -610,11 +730,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "currentWorkspaces", value: workspaces },
-          });
-
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "pastWorkspaces", value: workspaces },
           });
         }),
         canListUserOrders &&
@@ -662,16 +777,17 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 };
 
 /**
- * loadStudentHistory thunk function
+ * loadStudentHistory thunk action creator
  * @param id student id
  * @param forceLoad should the history load be forced
+ * @returns a thunk function for loading the student history tab
  */
 const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
   id,
   forceLoad
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     try {
@@ -683,8 +799,11 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
       });
 
       dispatch({
-        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
-        payload: <GuiderCurrentStudentStateType>"LOADING",
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "activityLogState",
+          value: <LoadingState>"LOADING",
+        },
       });
 
       const promises = [
@@ -699,29 +818,77 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "activityLogs", value: activityLogs },
           });
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "activityLogState",
+              value: <LoadingState>"READY",
+            },
+          });
         }),
       ];
-
-      if (!historyLoaded) {
+      if (!historyLoaded || forceLoad) {
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "pastWorkspacesState",
+            value: <LoadingState>"LOADING",
+          },
+        });
         promises.push(
           promisify(
-            mApi().guider.students.workspaces.read(id),
+            mApi().guider.students.workspaces.read(id, { active: false }),
             "callback"
           )().then(async (workspaces: WorkspaceListType) => {
+            if (workspaces && workspaces.length) {
+              await Promise.all([
+                Promise.all(
+                  workspaces.map(async (workspace, index) => {
+                    const statistics: WorkspaceForumStatisticsType = <
+                      WorkspaceForumStatisticsType
+                    >await promisify(
+                      mApi().workspace.workspaces.forumStatistics.read(
+                        workspace.id,
+                        { userIdentifier: id }
+                      ),
+                      "callback"
+                    )();
+                    workspaces[index].forumStatistics = statistics;
+                  })
+                ),
+                Promise.all(
+                  workspaces.map(async (workspace, index) => {
+                    const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
+                      await promisify(
+                        mApi().activitylogs.user.workspace.read(id, {
+                          workspaceEntityId: workspace.id,
+                          from: new Date(new Date().getFullYear() - 2, 0),
+                          to: new Date(),
+                        }),
+                        "callback"
+                      )()
+                    );
+                    workspaces[index].activityLogs = activityLogs;
+                  })
+                ),
+              ]);
+            }
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "pastWorkspaces", value: workspaces },
+            });
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "pastWorkspacesState",
+                value: <LoadingState>"READY",
+              },
             });
           })
         );
       }
 
       await Promise.all([promises]);
-
-      dispatch({
-        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
-        payload: <GuiderCurrentStudentStateType>"READY",
-      });
 
       dispatch({
         type: "UNLOCK_TOOLBAR",
@@ -738,9 +905,17 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         )
       );
       dispatch({
-        type: "UPDATE_GUIDER_ALL_PROPS",
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
         payload: {
-          currentState: <GuiderCurrentStudentStateType>"ERROR",
+          property: "pastWorkspacesState",
+          value: <LoadingState>"ERROR",
+        },
+      });
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "activityLogState",
+          value: <LoadingState>"ERROR",
         },
       });
       dispatch({
@@ -752,6 +927,618 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
 };
 
 /**
+ * loadStudentContactLogs thunk action creator
+ * @param id student id
+ * @param resultsPerPage results per page
+ * @param page results per page
+ * @param forceLoad forces the load
+ * @returns a thunk function for loading guidance relations tab
+ */
+const loadStudentContactLogs: LoadContactLogsTriggerType =
+  function loadStudentContactLogs(id, resultsPerPage, page, forceLoad) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        const contactLogsLoaded =
+          getState().guider.currentStudent.contactLogState === "READY";
+
+        if (contactLogsLoaded && !forceLoad) {
+          return;
+        }
+
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "contactLogState",
+            value: <LoadingState>"LOADING",
+          },
+        });
+        await promisify(
+          mApi().guider.users.contactLog.read(id, { resultsPerPage, page }),
+          "callback"
+        )().then((contactLogs: ContactLogData) => {
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: { property: "contactLogs", value: contactLogs },
+          });
+        });
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "contactLogState",
+            value: <LoadingState>"READY",
+          },
+        });
+
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            "error"
+          )
+        );
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "contactLogState",
+            value: <LoadingState>"ERROR",
+          },
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      }
+    };
+  };
+
+/**
+ * createContactLogEvent thunk action creator
+ * @param studentUserEntityId id for the student in subject
+ * @param payload event data payload
+ * @param onSuccess callback
+ * @param onFail callback
+ * @returns a thunk function for creating a contact log event
+ */
+const createContactLogEvent: CreateContactLogEventTriggerType =
+  function createContactLogEvent(
+    studentUserEntityId,
+    payload,
+    onSuccess,
+    onFail
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+        const contactLogs = JSON.parse(
+          JSON.stringify(getState().guider.currentStudent.contactLogs)
+        ) as ContactLogData;
+
+        await promisify(
+          mApi().guider.student.contactLog.create(studentUserEntityId, payload),
+          "callback"
+        )().then((contactLog: ContactLogEvent) => {
+          contactLogs.results = [...[contactLog], ...contactLogs.results];
+          contactLogs.totalHitCount = contactLogs.totalHitCount + 1;
+
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "contactLogs",
+              value: contactLogs,
+            },
+          });
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLog.onCreate"
+            ),
+            "success"
+          )
+        );
+        onSuccess && onSuccess();
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.errorMessage.contactLogs.contactLog.onCreate"
+            ),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        onFail && onFail();
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      }
+    };
+  };
+
+/**
+ * deleteContactLogEvent thunk action creator
+ * @param studentUserEntityId id for the user in subject
+ * @param contactLogEntryId contact log entry to be deleted
+ * @param onSuccess callback
+ * @param onFail callback
+ * @returns a thunk function for deleting a contact log event
+ */
+const deleteContactLogEvent: DeleteContactLogEventTriggerType =
+  function deleteContactLogEvent(
+    studentUserEntityId,
+    contactLogEntryId,
+    onSuccess,
+    onFail
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        await promisify(
+          mApi().guider.student.contactLog.del(
+            studentUserEntityId,
+            contactLogEntryId
+          ),
+          "callback"
+        )();
+
+        dispatch({
+          type: "DELETE_CONTACT_EVENT",
+          payload: contactLogEntryId,
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLog.onDelete"
+            ),
+            "success"
+          )
+        );
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.errorMessage.contactLogs.contactLog.onDelete"
+            ),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        onFail && onFail();
+      }
+    };
+  };
+
+/**
+ * editContactLogEvent thunk action creator
+ * @param studentUserEntityId student user id
+ * @param contactLogEntryId id of the edited contact log
+ * @param payload edit payload
+ * @param onSuccess callback
+ * @param onFail callback
+ * @returns a thunk function for editing a contact log event
+ */
+const editContactLogEvent: EditContactLogEventTriggerType =
+  function editContactLogEvent(
+    studentUserEntityId,
+    contactLogEntryId,
+    payload,
+    onSuccess,
+    onFail
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+
+        await promisify(
+          mApi().guider.student.contactLog.update(
+            studentUserEntityId,
+            contactLogEntryId,
+            payload
+          ),
+          "callback"
+        )().then((contactLog: ContactLogEvent) => {
+          // Make a deep copy of the current state of contactLogs
+          const contactLogs = JSON.parse(
+            JSON.stringify(getState().guider.currentStudent.contactLogs)
+          ) as ContactLogData;
+
+          // Find the index of the edited contactLog
+          const contactLogIndex = contactLogs.results.findIndex(
+            (log) => log.id === contactLog.id
+          );
+
+          // Replace the edited contactLog with the new one
+          contactLogs.results.splice(contactLogIndex, 1, contactLog);
+
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "contactLogs",
+              value: contactLogs,
+            },
+          });
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLog.onEdit"
+            ),
+            "success"
+          )
+        );
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLog.onEdit"
+            ),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+        onFail && onFail();
+      }
+    };
+  };
+
+/**
+ * createContactLogEventComment thunk action creator
+ * @param studentUserEntityId id for the user in subject
+ * @param contactLogEntryId id for the parent entry
+ * @param payload event data payload
+ * @param onSuccess callback
+ * @param onFail callback
+ * @returns a thunk function for creating a contact log event comment
+ */
+const createContactLogEventComment: CreateContactLogEventCommentTriggerType =
+  function createContactLogEventComment(
+    studentUserEntityId,
+    contactLogEntryId,
+    payload,
+    onSuccess,
+    onFail
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+
+        await promisify(
+          mApi().guider.student.contactLog.comments.create(
+            studentUserEntityId,
+            contactLogEntryId,
+            payload
+          ),
+          "callback"
+        )().then((comment: ContactLogEventComment) => {
+          // Make a deep copy of the current state contactLogs
+
+          const contactLogs = JSON.parse(
+            JSON.stringify(getState().guider.currentStudent.contactLogs)
+          ) as ContactLogData;
+
+          const contactLogResults = contactLogs.results;
+
+          // Add the new comment to the current contactEvent
+          const contactEvent = contactLogResults.find(
+            (log) => log.id === comment.entry
+          );
+          contactEvent.comments.push(comment);
+
+          // Find the index of the updated contactevent
+          const contactEventIndex = contactLogResults.findIndex(
+            (log) => log.id === contactEvent.id
+          );
+
+          // Replace the existing contactEvent at the correct index
+          contactLogResults.splice(contactEventIndex, 1, contactEvent);
+
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "contactLogs",
+              value: contactLogs,
+            },
+          });
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLogComment.onCreate"
+            ),
+            "success"
+          )
+        );
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.errorMessage.contactLogs.contactLogComment.onCreate"
+            ),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+        onFail && onFail();
+      }
+    };
+  };
+
+/**
+ * deleteContactLogEventComment thunk action creator
+ * @param studentUserEntityId id for the user in subject
+ * @param contactLogEntryId id of the parent entry
+ * @param commentId id for the comment
+ * @param onSuccess callback
+ * @param onFail callback
+ * @returns a thunk function for deleting a contact log event comment
+ */
+const deleteContactLogEventComment: DeleteContactLogEventCommentTriggerType =
+  function deleteContactLogEventComment(
+    studentUserEntityId,
+    contactLogEntryId,
+    commentId,
+    onSuccess,
+    onFail
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        await promisify(
+          mApi().guider.student.contactLog.comments.del(
+            studentUserEntityId,
+            contactLogEntryId,
+            commentId
+          ),
+          "callback"
+        )();
+
+        dispatch({
+          type: "DELETE_CONTACT_EVENT_COMMENT",
+          payload: { contactLogEntryId, commentId },
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLogComment.onDelete"
+            ),
+            "success"
+          )
+        );
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.errorMessage.contactLogs.contactLogComment.onDelete"
+            ),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        onFail && onFail();
+      }
+    };
+  };
+
+/**
+ * editContactLogEventComment thunk action creator
+ * @param studentUserEntityId id for the user in subject
+ * @param contactLogEntryId id for the parent entry
+ * @param commentId id for the comment to be edited
+ * @param payload event data payload
+ * @param onSuccess callback
+ * @param onFail callback
+ * @returns a thunk function for editing a contact log event
+ */
+const editContactLogEventComment: EditContactLogEventCommentTriggerType =
+  function editContactLogEventComment(
+    studentUserEntityId,
+    contactLogEntryId,
+    commentId,
+    payload,
+    onSuccess,
+    onFail
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+        await promisify(
+          mApi().guider.student.contactLog.comments.update(
+            studentUserEntityId,
+            contactLogEntryId,
+            commentId,
+            payload
+          ),
+          "callback"
+        )().then((comment: ContactLogEventComment) => {
+          // Make a deep copy of the current state contactLogs
+
+          const contactLogs = JSON.parse(
+            JSON.stringify(getState().guider.currentStudent.contactLogs)
+          ) as ContactLogData;
+
+          const contactLogsResults = [...contactLogs.results];
+
+          // find the current contactEvent
+          const contactEvent = contactLogsResults.find(
+            (log) => log.id === comment.entry
+          );
+
+          // get the index number of the comment inside the contactEvent
+          const commmentIndex = contactEvent.comments.findIndex(
+            (c) => c.id === comment.id
+          );
+
+          // replace the comment with the updated comment
+          contactEvent.comments.splice(commmentIndex, 1, comment);
+
+          // find the index of the current contactEvent
+          const contactEventIndex = contactLogsResults.findIndex(
+            (log) => log.id === contactEvent.id
+          );
+
+          // Replace the existing contactEvent at the correct index
+          contactLogsResults.splice(contactEventIndex, 1, contactEvent);
+
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "contactLogs",
+              value: contactLogs,
+            },
+          });
+
+          dispatch(
+            notificationActions.displayNotification(
+              getState().i18n.text.get(
+                "plugin.guider.successMessage.contactLogs.contactLogComment.onEdit"
+              ),
+              "success"
+            )
+          );
+          onSuccess && onSuccess();
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.errormessage.contactLogs.contactLogComment.onEdit"
+            ),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+        onFail && onFail();
+      }
+    };
+  };
+
+/**
+ *
  * Updates and return hops phase for current student
  *
  * @param data data
@@ -759,7 +1546,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
 const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
   function updateCurrentStudentHopsPhase(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -794,12 +1581,12 @@ const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
   };
 
 /**
- * removeLabelFromUserUtil
+ * removeLabelFromUserUtil utility function
  * @param student student
- * @param flags flags
- * @param label label
- * @param dispatch dispatch
- * @param getState getState
+ * @param flags student flags
+ * @param label flags to be remover
+ * @param dispatch action dispatch function
+ * @param getState getstate method
  */
 async function removeLabelFromUserUtil(
   student: GuiderStudentType,
@@ -839,12 +1626,12 @@ async function removeLabelFromUserUtil(
 }
 
 /**
- * addLabelToUserUtil
+ * addLabelToUserUtil util function
  * @param student student
- * @param flags flags
- * @param label label
- * @param dispatch dispatch
- * @param getState getState
+ * @param flags student flags
+ * @param label flags to be remover
+ * @param dispatch action dispatch function
+ * @param getState getstate method
  */
 async function addLabelToUserUtil(
   student: GuiderStudentType,
@@ -889,8 +1676,9 @@ async function addLabelToUserUtil(
 }
 
 /**
- * addGuiderLabelToCurrentUser
- * @param label label
+ * addGuiderLabelToCurrentUser thunk action creator
+ * @param label to be added
+ * @returns a thunk function for adding labels to a user
  */
 const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
   function addGuiderLabelToCurrentUser(label) {
@@ -911,8 +1699,9 @@ const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
   };
 
 /**
- * removeGuiderLabelFromCurrentUser
- * @param label label
+ * removeGuiderLabelFromCurrentUser thunk action creator
+ * @param label label to be removed
+ * @returns a thunk function for removing the label
  */
 const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType =
   function removeGuiderLabelFromCurrentUser(label) {
@@ -933,8 +1722,9 @@ const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerT
   };
 
 /**
- * addGuiderLabelToSelectedUsers
- * @param label label
+ * addGuiderLabelToSelectedUsers thunk action creator
+ * @param label label to be added
+ * @returns a thunk function for adding a label
  */
 const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
   function addGuiderLabelToSelectedUsers(label) {
@@ -948,10 +1738,10 @@ const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
       });
     };
   };
-
 /**
- * removeGuiderLabelFromSelectedUsers
- * @param label label
+ * removeGuiderLabelFromSelectedUsers thunk action creator
+ * @param label to be added
+ * @returns a thunk function for deleting a label
  */
 const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType =
   function removeGuiderLabelFromSelectedUsers(label) {
@@ -973,7 +1763,8 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
   };
 
 /**
- * updateLabelFilters
+ *updateLabelFilters thunk action creator
+ * @returns a thunk function for updating the label filters
  */
 const updateLabelFilters: UpdateLabelFiltersTriggerType =
   function updateLabelFilters() {
@@ -1007,7 +1798,8 @@ const updateLabelFilters: UpdateLabelFiltersTriggerType =
   };
 
 /**
- * updateWorkspaceFilters
+ * updateWorkspaceFilters thunk action creator
+ * @returns a thunk function for updating the workspace filters
  */
 const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
   function updateWorkspaceFilters() {
@@ -1044,7 +1836,8 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
   };
 
 /**
- * updateUserGroupFilters
+ * updateUserGroupFilters thunk action creator
+ * @returns a thunk function for updating the usergroup filters
  */
 const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
   function updateUserGroupFilters() {
@@ -1079,8 +1872,9 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
   };
 
 /**
- * createGuiderFilterLabel
- * @param name name
+ * createGuiderFilterLabel thunk action creator
+ * @param name label name
+ * @returns thunk function for the flag creation
  */
 const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
   function createGuiderFilterLabel(name) {
@@ -1133,8 +1927,9 @@ const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
   };
 
 /**
- * updateGuiderFilterLabel
- * @param data data
+ * updateGuiderFilterLabel thunk action creator
+ * @param data data object
+ * @returns a thunk function for the label updating
  */
 const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
   function updateGuiderFilterLabel(data) {
@@ -1203,8 +1998,9 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
   };
 
 /**
- * removeGuiderFilterLabel
- * @param data data
+ * removeGuiderFilterLabel thunk action creator
+ * @param data data object
+ * @returns a thunk function to remove the label
  */
 const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
   function removeGuiderFilterLabel(data) {
@@ -1239,7 +2035,8 @@ const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
   };
 
 /**
- * updateAvailablePurchaseProducts
+ * updateAvailablePurchaseProducts thunk action creator
+ * @returns a thunk function to load the products
  */
 const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerType =
   function updateAvailablePurchaseProducts() {
@@ -1251,7 +2048,7 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
         const value: PurchaseProductType[] = (await promisify(
           mApi().ceepos.products.read(),
           "callback"
-        )()) as any;
+        )()) as PurchaseProductType[];
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS",
           payload: value,
@@ -1271,10 +2068,10 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
       }
     };
   };
-
 /**
- * doOrderForCurrentStudent
- * @param order order
+ * doOrderForCurrentStudent thunk action creator
+ * @param order the ordered product
+ * @returns a thunk function for creating the order
  */
 const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
   function doOrderForCurrentStudent(order: PurchaseProductType) {
@@ -1290,7 +2087,7 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
             product: order,
           }),
           "callback"
-        )()) as any;
+        )()) as PurchaseType;
         dispatch({
           type: "UPDATE_GUIDER_INSERT_PURCHASE_ORDER",
           payload: value,
@@ -1312,8 +2109,9 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
   };
 
 /**
- * deleteOrderFromCurrentStudent
- * @param order order
+ * deleteOrderFromCurrentStudent thunk action creator
+ * @param order order to be deleted
+ * @returns a thunk function for order deletion
  */
 const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
   function deleteOrderFromCurrentStudent(order: PurchaseType) {
@@ -1342,8 +2140,9 @@ const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
   };
 
 /**
- * completeOrderFromCurrentStudent
- * @param order order
+ * completeOrderFromCurrentStudent action creator
+ * @param order order to be completed
+ * @returns a thunk function for order completion
  */
 const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType =
   function completeOrderFromCurrentStudent(order: PurchaseType) {
@@ -1355,7 +2154,7 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
         const value: PurchaseType = (await promisify(
           mApi().ceepos.manualCompletion.create(order.id),
           "callback"
-        )()) as any;
+        )()) as PurchaseType;
 
         dispatch({
           type: "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER",
@@ -1382,6 +2181,14 @@ export {
   loadMoreStudents,
   loadStudent,
   loadStudentHistory,
+  // loadStudentGuiderRelations,
+  loadStudentContactLogs,
+  createContactLogEvent,
+  deleteContactLogEvent,
+  editContactLogEvent,
+  createContactLogEventComment,
+  deleteContactLogEventComment,
+  editContactLogEventComment,
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser,

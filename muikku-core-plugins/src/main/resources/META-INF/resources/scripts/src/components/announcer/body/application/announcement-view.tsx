@@ -16,6 +16,8 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { AnnouncementsType } from "~/reducers/announcements";
 import { UserIndexType } from "~/reducers/user-index";
+import { AnyActionType } from "~/actions/index";
+import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 
 /**
  * MessageViewProps
@@ -133,7 +135,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

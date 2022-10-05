@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
+import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
@@ -10,7 +11,7 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
 import { getName } from "~/util/modifiers";
-import Workspaces from "./workspaces";
+import Workspaces from "../workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import CeeposButton from "./state-of-studies/ceepos-button";
 import { StatusType } from "~/reducers/base/status";
@@ -18,8 +19,6 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-
-import { StateType } from "~/reducers";
 import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
@@ -27,25 +26,20 @@ import {
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
-import GuiderToolbarLabels from "./toolbar/labels";
+import GuiderToolbarLabels from "../../../body/application/toolbar/labels";
 import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import Avatar from "~/components/general/avatar";
-import Notes from "~/components/general/notes/notes";
-
-// import GuidanceEvent from "../../dialogs/guidance-event";
-// import { CalendarEvent } from "~/reducers/main-function/calendar";
-// import { ResourceTimeline } from "../../../general/resource-timeline";
-// import { ExternalEventType } from "../../../general/resource-timeline";
 import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
-import StudySuggestionMatrix from "./study-suggestion-matrix";
-import { AnyActionType } from "~/actions";
+import StudySuggestionMatrix from "./state-of-studies/study-suggestion-matrix";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
+import { AnyActionType } from "~/actions";
+import Notes from "~/components/general/notes/notes";
 
 /**
  * StateOfStudiesProps
@@ -55,8 +49,8 @@ interface StateOfStudiesProps {
   guider: GuiderType;
   status: StatusType;
 
-  displayNotification: DisplayNotificationTriggerType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -78,7 +72,6 @@ class StateOfStudies extends React.Component<
   constructor(props: StateOfStudiesProps) {
     super(props);
   }
-
   /**
    * handleHopsPhaseChange
    * @param e e
@@ -97,7 +90,6 @@ class StateOfStudies extends React.Component<
     if (this.props.guider.currentStudent === null) {
       return null;
     }
-
     //Note that some properties are not available until later, that's because it does
     //step by step loading, make sure to show this in the way this is represented, ensure to have
     //a case where the property is not available
@@ -123,55 +115,59 @@ class StateOfStudies extends React.Component<
       this.props.guider.currentStudent.emails &&
       this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
 
+    const avatar = (
+      <Avatar
+        id={
+          this.props.guider.currentStudent.basic &&
+          this.props.guider.currentStudent.basic.userEntityId
+        }
+        hasImage={
+          this.props.guider.currentStudent.basic &&
+          this.props.guider.currentStudent.basic.hasImage
+        }
+        firstName={
+          this.props.guider.currentStudent.basic &&
+          this.props.guider.currentStudent.basic.firstName
+        }
+      ></Avatar>
+    );
+
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
-      <ApplicationSubPanel.Header>
-        <Avatar
-          id={this.props.guider.currentStudent.basic.userEntityId}
-          hasImage={this.props.guider.currentStudent.basic.hasImage}
-          firstName={this.props.guider.currentStudent.basic.firstName}
-        ></Avatar>
-        <ApplicationSubPanelViewHeader
-          title={getName(this.props.guider.currentStudent.basic, true)}
-          titleDetail={
-            (defaultEmailAddress && defaultEmailAddress.address) ||
-            this.props.i18n.text.get(
-              "plugin.guider.user.details.label.unknown.email"
-            )
-          }
-        >
-          {this.props.guider.currentStudent.basic &&
-          IsStudentPartOfProperStudyProgram(
-            this.props.guider.currentStudent.basic.studyProgrammeName
-          ) ? (
-            <CeeposButton />
-          ) : null}
-          <NewMessage
-            extraNamespace="student-view"
-            initialSelectedItems={[
-              {
-                type: "user",
-                value: {
-                  id: this.props.guider.currentStudent.basic.userEntityId,
-                  name: getName(this.props.guider.currentStudent.basic, true),
-                },
+      <ApplicationSubPanelViewHeader
+        decoration={avatar}
+        title={getName(this.props.guider.currentStudent.basic, true)}
+        titleDetail={
+          (defaultEmailAddress && defaultEmailAddress.address) ||
+          this.props.i18n.text.get(
+            "plugin.guider.user.details.label.unknown.email"
+          )
+        }
+      >
+        {this.props.guider.currentStudent.basic &&
+        IsStudentPartOfProperStudyProgram(
+          this.props.guider.currentStudent.basic.studyProgrammeName
+        ) ? (
+          <CeeposButton />
+        ) : null}
+        <NewMessage
+          extraNamespace="student-view"
+          initialSelectedItems={[
+            {
+              type: "user",
+              value: {
+                id: this.props.guider.currentStudent.basic.userEntityId,
+                name: getName(this.props.guider.currentStudent.basic, true),
               },
-            ]}
-          >
-            <ButtonPill
-              icon="envelope"
-              buttonModifiers={["new-message", "guider-student"]}
-            />
-          </NewMessage>
-          {/* Not implemented yet
-          <GuidanceEvent>
-            <ButtonPill
-              icon="bubbles"
-              buttonModifiers={["new-message", "guider-student"]}
-            />
-          </GuidanceEvent> */}
-          <GuiderToolbarLabels />
-        </ApplicationSubPanelViewHeader>
-      </ApplicationSubPanel.Header>
+            },
+          ]}
+        >
+          <ButtonPill
+            icon="envelope"
+            buttonModifiers={["new-message", "guider-student"]}
+          />
+        </NewMessage>
+        <GuiderToolbarLabels />
+      </ApplicationSubPanelViewHeader>
     );
 
     const studentLabels =
@@ -189,7 +185,7 @@ class StateOfStudies extends React.Component<
       );
 
     const studentBasicInfo = this.props.guider.currentStudent.basic && (
-      <div className="application-sub-panel__body">
+      <ApplicationSubPanel.Body>
         <ApplicationSubPanelItem
           title={this.props.i18n.text.get(
             "plugin.guider.user.details.label.studyStartDateTitle"
@@ -234,21 +230,30 @@ class StateOfStudies extends React.Component<
             title={this.props.i18n.text.get(
               "plugin.guider.user.details.label.email"
             )}
+            modifier="currentstudent-emails-list"
           >
-            <ApplicationSubPanelItem.Content>
-              {this.props.guider.currentStudent.emails.length
-                ? this.props.guider.currentStudent.emails.map(
-                    (email, index) => (
-                      <React.Fragment key={index}>
-                        {email.defaultAddress ? `*` : null} {email.address} (
-                        {email.type})
-                      </React.Fragment>
-                    )
-                  )
-                : this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.unknown.email"
-                  )}
-            </ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.emails.length ? (
+              this.props.guider.currentStudent.emails.map((email, index) => {
+                const emailString = `${email.defaultAddress ? "*" : ""}${
+                  email.address
+                } (${email.type})`;
+
+                return (
+                  <ApplicationSubPanelItem.Content
+                    key={`email-${index}-${email.studentIdentifier}`}
+                    modifier="currentstudent-email-item"
+                  >
+                    {emailString}
+                  </ApplicationSubPanelItem.Content>
+                );
+              })
+            ) : (
+              <ApplicationSubPanelItem.Content>
+                {this.props.i18n.text.get(
+                  "plugin.guider.user.details.label.unknown.email"
+                )}
+              </ApplicationSubPanelItem.Content>
+            )}
           </ApplicationSubPanelItem>
         )}
         {this.props.guider.currentStudent.phoneNumbers && (
@@ -256,21 +261,32 @@ class StateOfStudies extends React.Component<
             title={this.props.i18n.text.get(
               "plugin.guider.user.details.label.phoneNumber"
             )}
+            modifier="currentstudent-phonenumbers-list"
           >
-            <ApplicationSubPanelItem.Content>
-              {this.props.guider.currentStudent.phoneNumbers.length
-                ? this.props.guider.currentStudent.phoneNumbers.map(
-                    (phone, index) => (
-                      <React.Fragment key={index}>
-                        {phone.defaultNumber ? `*` : null} {phone.number} (
-                        {phone.type})
-                      </React.Fragment>
-                    )
-                  )
-                : this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.unknown.phoneNumber"
-                  )}
-            </ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.phoneNumbers.length ? (
+              this.props.guider.currentStudent.phoneNumbers.map(
+                (phone, index) => {
+                  const phoneString = `${phone.defaultNumber ? "*" : ""}${
+                    phone.number
+                  } (${phone.type})`;
+
+                  return (
+                    <ApplicationSubPanelItem.Content
+                      key={`phone-${index}-${phone.studentIdentifier}`}
+                      modifier="currentstudent-phonenumber-item"
+                    >
+                      {phoneString}
+                    </ApplicationSubPanelItem.Content>
+                  );
+                }
+              )
+            ) : (
+              <ApplicationSubPanelItem.Content>
+                {this.props.i18n.text.get(
+                  "plugin.guider.user.details.label.unknown.phoneNumber"
+                )}
+              </ApplicationSubPanelItem.Content>
+            )}
           </ApplicationSubPanelItem>
         )}
         <ApplicationSubPanelItem
@@ -290,20 +306,24 @@ class StateOfStudies extends React.Component<
             title={this.props.i18n.text.get(
               "plugin.guider.user.details.label.studentgroups"
             )}
+            modifier="currentstudent-usergroups-list"
           >
-            <ApplicationSubPanelItem.Content>
-              {this.props.guider.currentStudent.usergroups.length
-                ? this.props.guider.currentStudent.usergroups.map(
-                    (usergroup, index) => (
-                      <React.Fragment key={index}>
-                        {usergroup.name}{" "}
-                      </React.Fragment>
-                    )
-                  )
-                : this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.nostudentgroups"
-                  )}
-            </ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.usergroups.length ? (
+              this.props.guider.currentStudent.usergroups.map((usergroup) => (
+                <ApplicationSubPanelItem.Content
+                  key={`group-${usergroup.id}`}
+                  modifier="currentstudent-usergroup-item"
+                >
+                  {`${usergroup.name} `}
+                </ApplicationSubPanelItem.Content>
+              ))
+            ) : (
+              <ApplicationSubPanelItem.Content>
+                {this.props.i18n.text.get(
+                  "plugin.guider.user.details.label.nostudentgroups"
+                )}
+              </ApplicationSubPanelItem.Content>
+            )}
           </ApplicationSubPanelItem>
         )}
         {this.props.guider.currentStudent.basic && (
@@ -322,7 +342,6 @@ class StateOfStudies extends React.Component<
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
-
         {this.props.guider.currentStudent.notifications &&
           Object.keys(this.props.guider.currentStudent.notifications).map(
             (notification: keyof GuiderNotificationStudentsDataType) => {
@@ -341,7 +360,7 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanelItem>;
             }
           )}
-      </div>
+      </ApplicationSubPanel.Body>
     );
 
     const studentWorkspaces = (
@@ -352,20 +371,6 @@ class StateOfStudies extends React.Component<
         }
       />
     );
-
-    // const headerToolbar = {
-    //   left: "today prev,next",
-    //   center: "title",
-    //   right: "resourceTimelineMonth,resourceTimelineYear",
-    // };
-
-    // const externalEvents: ExternalEventType[] =
-    //   this.props.guider.currentStudent.currentWorkspaces &&
-    //   this.props.guider.currentStudent.currentWorkspaces.map((workspace) => ({
-    //     id: workspace.id,
-    //     title: workspace.name,
-    //     duration: "36:00:00",
-    //   }));
 
     return (
       <>
@@ -438,11 +443,10 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel>
               </ApplicationSubPanel>
             ) : null}
-
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>
-                  {this.props.i18n.text.get("plugin.guider.user.details.notes")}
+                  {this.props.i18n.text.get("plugin.guider.user.details.tasks")}
                 </ApplicationSubPanel.Header>
                 <ApplicationSubPanel.Body>
                   <Notes

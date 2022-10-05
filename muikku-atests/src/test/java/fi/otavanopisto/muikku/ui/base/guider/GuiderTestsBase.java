@@ -214,7 +214,9 @@ public class GuiderTestsBase extends AbstractUITest {
       OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
+      OffsetDateTime signupStart = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
+      OffsetDateTime signupEnd = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
+      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end, signupStart, signupEnd);
       
       CourseActivity ca = new CourseActivity();
       ca.setCourseId(course1.getId());
@@ -269,18 +271,34 @@ public class GuiderTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(admin);
         login();
-
+        
         mockBuilder
         .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, true)
         .mockStaffCompositeCourseAssessmentRequests()
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date);
       
+        // First test the course listing in the "situation"-tab
         mockBuilder.mockCourseAssessments(course1, courseStudent, admin);          
-
         navigate("/guider", false);
         waitAndClick(".application-list__header-primary>span");
         waitForPresent(".application-list__header-secondary .application-list__indicator-badge");
         assertText(".application-list__header-secondary .application-list__indicator-badge", "E");
+        // Then archive the student from the workspace
+        navigate(String.format("/workspace/%s/users", workspace.getUrlName()), false);
+        waitAndClick(".application-list--workspace-users .application-list__item-content-actions .icon-trash");
+        waitForVisible(".button--standard-ok");
+        waitUntilAnimationIsDone(".dialog--deactivate-reactivate-user");
+        sleep(1000);
+        waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".dialog--deactivate-reactivate-user", 3, 2000);
+        waitForPresent(".application-list__item-content-main--workspace-user .application-list__item-content-primary-data>span");
+        assertText(".application-list__item-content-main--workspace-user .application-list__item-content-primary-data>span", "Student Tester");
+        // Then test the history - tab
+        navigate("/guider", false);
+        waitAndClick(".application-list__header-primary>span");
+        waitAndClick("#STUDY_HISTORY");      
+        waitForPresent(".application-list__header-secondary .application-list__indicator-badge");
+        assertText(".application-list__header-secondary .application-list__indicator-badge", "E");
+        
       }finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());

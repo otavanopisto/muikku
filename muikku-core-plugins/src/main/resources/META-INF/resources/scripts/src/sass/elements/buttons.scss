@@ -32,11 +32,6 @@
     background-color: $color-button-disabled-background;
     cursor: not-allowed;
   }
-
-  > [class^="icon-"],
-  > [class*=" icon-"] {
-    margin-right: 5px;
-  }
 }
 
 .button__icon {
@@ -226,6 +221,14 @@
   &.active {
     background-color: darken($color-button-cancel-background, 20%);
   }
+}
+
+.button--disconnect-warning {
+  background-color: transparent;
+  border: 1px solid $color-default;
+  border-radius: 3px;
+  color: $color-default;
+  font-size: 1rem;
 }
 
 .button--loading {
@@ -493,7 +496,7 @@
 }
 
 .button--frontpage-bubble {
-  height: auto;
+  height: 40px;
   letter-spacing: 1px;
   overflow-wrap: break-word;
   padding-bottom: 5px;
@@ -650,7 +653,8 @@
   color: $color-button-primary-text;
   display: inline-flex;
   font-size: 0.75rem;
-  margin: 5px 10px 5px 0;
+  margin: 5px 2.5px;
+  min-width: fit-content;
   padding: 4px 10px;
 }
 
@@ -666,7 +670,6 @@
   border: 2px solid $color-next;
   color: $color-next;
   font-weight: 600;
-  margin: 5px 0 5px 10px;
 }
 
 .button-icon {
@@ -718,6 +721,16 @@
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
   }
+}
+
+.button__icon--left {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+.button__icon--right {
+  margin-left: 5px;
+  margin-right: 0;
 }
 
 .button-icon--notes-action {
@@ -800,6 +813,14 @@
     opacity: 0%;
     position: absolute;
     width: 100%;
+  }
+
+  // This needs to be added here as we place external-link-indicator
+  // automatically to every button and anchor element that opens up a new tab/window.
+  // This way we only hide the indicator in button-pill element and avoid making
+  // unnecessary conditional to the button and/or link component.
+  .external-link-indicator {
+    display: none;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -938,6 +959,7 @@
 .button-pill--toggle,
 .button-pill--restore,
 .button-pill--edit,
+.button-pill--create-contact-log-entry,
 .button-pill--new-message,
 .button-pill--filter,
 .button-pill--add-note {
@@ -1375,6 +1397,14 @@
     &:last-of-type {
       margin: 0 0 0 0.3rem;
     }
+  }
+
+  // This needs to be added here as we place external-link-indicator
+  // automatically to every button and anchor element that opens up a new tab/window.
+  // This way we only hide the indicator in button-social element and avoid making
+  // unnecessary conditional to the button and/or link component.
+  .external-link-indicator {
+    display: none;
   }
 }
 
@@ -1912,6 +1942,63 @@
   }
 }
 
+.button-pill--new-message-to-staff {
+  background: $color-info;
+  color: $color-default;
+  font-size: 1.125rem;
+  height: 2rem;
+  margin: 0 10px 0 0;
+  width: 2rem;
+
+  &:hover,
+  &.hover {
+    background: darken($color-info, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-info, 10%);
+  }
+}
+
+.button-pill--whatsapp-me {
+  background: $color-whatsapp-dark;
+  color: $color-default;
+  font-size: 1.25rem;
+  height: 2rem;
+  margin: 0 10px 0 0;
+  width: 2rem;
+
+  &:hover,
+  &.hover {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+}
+
+.button-pill--appointment-calendar {
+  background: $color-appointment-calendar-button-background;
+  color: $color-default;
+  font-size: 1.25rem;
+  height: 2rem;
+  margin: 0 10px 0 0;
+  width: 2rem;
+
+  &:hover,
+  &.hover {
+    background: darken($color-appointment-calendar-button-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-appointment-calendar-button-background, 10%);
+  }
+}
+
 .button--wizard {
   background-color: $color-button-wizard-background;
   border: 0;
@@ -2011,7 +2098,6 @@
 .button--whatsapp-me {
   background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
   color: $color-default;
-  font-size: 0.75rem;
   margin: 0 0 0 10px;
 }
 
@@ -2063,6 +2149,36 @@
   color: $color-disabled;
 }
 
+.button-icon--reading-ruler {
+  border-radius: 100%;
+  color: $color-default-contrast;
+
+  &.disabled,
+  &.disabled:hover,
+  &.disabled:active {
+    background-color: transparent;
+    color: $color-disabled;
+  }
+}
+
+.button-icon--reading-ruler-active {
+  background: $color-default-contrast;
+  border-radius: 100%;
+  color: $color-default;
+  height: 2rem;
+  margin: 0 4px;
+  width: 2rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: $color-default-contrast;
+    border-radius: 100%;
+    color: $color-default;
+  }
+}
+
 .button--modify-hops {
   background-color: $color-info;
   color: $color-default;
@@ -2073,4 +2189,9 @@
   background-color: $color-fatal;
   color: $color-default;
   margin-right: 10px;
+}
+
+.button--reading-ruler-preset-active {
+  background-color: $color-default-contrast;
+  color: $color-default;
 }

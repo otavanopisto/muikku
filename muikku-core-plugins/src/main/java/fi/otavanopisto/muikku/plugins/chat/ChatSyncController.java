@@ -476,6 +476,7 @@ public class ChatSyncController {
     roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
     SearchResult result = searchProvider.searchUsers(
         organizations,
+        null,                     // study programme identifiers
         null,                     // searchString 
         null,                     // fields 
         roleArchetypeFilter, 

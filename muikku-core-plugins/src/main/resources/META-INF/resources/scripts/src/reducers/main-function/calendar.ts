@@ -1,4 +1,5 @@
 import { ActionType } from "~/actions";
+import { Reducer } from "redux";
 
 /**
  *  Participant
@@ -80,70 +81,29 @@ export const evaluateEvents = (
 };
 
 /**
+ * initialCalendarState
+ */
+const initialCalendarState: Calendar = {
+  state: "LOADING",
+  guidanceEvents: [],
+};
+
+/**
  * Reducer function for calendar
  *
- * @param state
- * @param action
- * @returns returns state
+ * @param state state
+ * @param action action
+ * @returns State of calendar
  */
-export default function calendar(
-  state: Calendar = {
-    state: "LOADING",
-    guidanceEvents: [],
-  },
+export const calendar: Reducer<Calendar> = (
+  state = initialCalendarState,
   action: ActionType
-): Calendar {
+) => {
   switch (action.type) {
-    case "UPDATE_CALENDAR_EVENTS_STATUS": {
-      const newState: EventsState = action.payload;
-      return Object.assign({}, state, { state: newState });
-    }
-    case "LOAD_CALENDAR_GUIDANCE_EVENTS": {
-      const newEvents: CalendarEvent[] = action.payload;
-      const newEventsFiltered = newEvents.filter((event) =>
-        evaluateEvents(event, state.guidanceEvents)
-      );
+    case "UPDATE_CALENDAR_EVENTS_STATUS":
+      return { ...state, state: action.payload };
 
-      return Object.assign({}, state, {
-        guidanceEvents: [...state.guidanceEvents, ...newEventsFiltered],
-      });
-    }
-    case "ADD_CALENDAR_GUIDANCE_EVENT": {
-      const newEvent: CalendarEvent[] = [action.payload];
-      return Object.assign({}, state, {
-        guidanceEvents: [...state.guidanceEvents, ...newEvent],
-      });
-    }
-    case "UPDATE_CALENDAR_GUIDANCE_EVENT": {
-      const updateEvent: CalendarEvent[] = [action.payload];
-      const filteredState = state.guidanceEvents.filter(
-        (event) => event.id !== action.payload.id
-      );
-
-      return Object.assign({}, state, {
-        guidanceEvents: [...filteredState, ...updateEvent],
-      });
-    }
-    case "DELETE_CALENDAR_GUIDANCE_EVENT": {
-      if (typeof action.payload === "number") {
-        return Object.assign({}, state, {
-          guidanceEvents: state.guidanceEvents.filter(
-            (event: CalendarEvent) => event.id !== (action.payload as number)
-          ),
-        });
-      }
-      const guidanceEvents = state.guidanceEvents;
-      const currentEventObject = action.payload as CalendarEvent;
-      const currentEventIndex = guidanceEvents.findIndex(
-        (event) => event.id === currentEventObject.id
-      );
-      guidanceEvents[currentEventIndex] = currentEventObject;
-
-      return Object.assign({}, state, {
-        guidanceEvents: guidanceEvents,
-      });
-    }
     default:
       return state;
   }
-}
+};

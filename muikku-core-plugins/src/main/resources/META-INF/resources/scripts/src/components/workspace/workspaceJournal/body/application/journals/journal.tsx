@@ -21,6 +21,7 @@ import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
 import DeleteJournal from "~/components/workspace/workspaceJournal/dialogs/delete-journal";
 import EditJournal from "~/components/workspace/workspaceJournal/dialogs/new-edit-journal";
+import CkeditorContentLoader from "../../../../../base/ckeditor-loader/content";
 
 /**
  * JournalProps
@@ -87,10 +88,9 @@ class Journal extends React.Component<JournalProps, JournalState> {
               </header>
             ) : null
           ) : null}
-          <article
-            className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
-            dangerouslySetInnerHTML={{ __html: this.props.journal.content }}
-          ></article>
+          <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text">
+            <CkeditorContentLoader html={this.props.journal.content} />
+          </article>
         </ApplicationListItemBody>
         {this.props.journal.userEntityId === this.props.status.userId ? (
           <ApplicationListItemFooter className="application-list__item-footer--journal-entry">

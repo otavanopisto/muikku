@@ -136,7 +136,7 @@ public interface GradingSchoolDataBridge {
 
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier);
 
-  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier, String studentIdentifier);
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier, String studentIdentifier, Boolean archived);
 
   public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String studentIdentifier);
   

@@ -26,9 +26,12 @@ import {
  * EvaluateDialogProps
  */
 interface EvaluateDialogProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpen?: (jotan: any) => any;
   i18n: i18nType;
   status: StatusType;
@@ -100,6 +103,7 @@ class EvaluateDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const content = (closeDialog: () => any) => (
       <Evaluation
         onClose={closeDialog}

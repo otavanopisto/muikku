@@ -14,6 +14,30 @@
   }
 }
 
+.application-sub-panel--guidance-relation-contact-info {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 400px;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+}
+
+.application-sub-panel--guidance-relation-contact-events {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    flex-grow: 2;
+    flex-shrink: 1;
+  }
+}
+
+.application-sub-panel--guidance-relation-guidance-events {
+  flex-basis: 100%;
+}
+
 .application-sub-panel--header-main {
   align-items: flex-start;
   border-bottom: none;
@@ -179,8 +203,11 @@
   flex-flow: column wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  margin-left: 15px;
   text-transform: none;
+
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
 
   @include breakpoint($breakpoint-desktop) {
     align-items: center;
@@ -282,6 +309,11 @@
   @include breakpoint($breakpoint-pad) {
     flex-direction: row;
   }
+}
+
+.application-sub-panel__body--guidance-relation {
+  display: flex;
+  flex-flow: wrap;
 }
 
 .application-sub-panel__notification-item {
@@ -798,7 +830,7 @@
 }
 
 .application-sub-panel__item--workspace-start-date {
-  flex-basis: 0;
+  flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 1;
 }
@@ -1230,6 +1262,18 @@
 
 .application-sub-panel__item--course-activity {
   padding: 10px 0;
+}
+
+.application-sub-panel__item-data-container--currentstudent-emails-list,
+.application-sub-panel__item-data-container--currentstudent-phonenumbers-list,
+.application-sub-panel__item-data-container--currentstudent-usergroups-list {
+  flex-wrap: wrap;
+}
+
+.application-sub-panel__item-data--currentstudent-email-item,
+.application-sub-panel__item-data--currentstudent-phonenumber-item,
+.application-sub-panel__item-data--currentstudent-usergroup-item {
+  width: 100%;
 }
 
 // This is related to matriculation enrollment and needs to be done different when Studies view gets integrated to devel

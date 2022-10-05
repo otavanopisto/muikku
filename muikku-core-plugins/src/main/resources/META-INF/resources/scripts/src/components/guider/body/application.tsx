@@ -10,7 +10,7 @@ import { StateType } from "~/reducers";
  * GuiderApplicationProps
  */
 interface GuiderApplicationProps {
-  aside: React.ReactElement<any>;
+  aside: JSX.Element;
   i18n: i18nType;
 }
 
