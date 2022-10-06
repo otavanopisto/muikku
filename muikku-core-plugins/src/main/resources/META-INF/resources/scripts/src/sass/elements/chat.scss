@@ -708,11 +708,20 @@
 }
 
 .chat__message {
-  margin: 0 0 20px;
+  margin: 0 5px 20px;
+  transition: opacity 0.6s ease;
 
   &:last-child {
     margin: 0 0 10px;
   }
+}
+
+.chat__message--loading {
+  opacity: 0%;
+}
+
+.chat__message--loaded {
+  opacity: 100%;
 }
 
 .chat__message--deleted {

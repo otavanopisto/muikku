@@ -16,6 +16,6 @@ interface InstructionsProps extends Omit<DropdownProps, "children"> {}
  */
 export const Instructions = (props: InstructionsProps) => (
   <Dropdown {...props}>
-    <ButtonPill>?</ButtonPill>
+    <ButtonPill icon="question" buttonModifiers={["instructions"]} />
   </Dropdown>
 );

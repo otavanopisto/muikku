@@ -366,7 +366,7 @@ class OrganizationNewWorkspace extends React.Component<
    * @param date date
    */
   getLocaledDate(date: any) {
-    return date.locale(this.props.i18n.time.getLocale()).format("L");
+    return this.props.i18n.time.getLocalizedMoment(date).format("L");
   }
 
   /**

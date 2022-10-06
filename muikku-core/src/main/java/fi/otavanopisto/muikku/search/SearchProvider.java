@@ -27,6 +27,8 @@ public interface SearchProvider {
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
   public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber);
 
+  public SearchResult searchWorkspacesSignupEnd();
+
   public SearchResult findWorkspace(SchoolDataIdentifier identifier);
   public IndexedCommunicatorMessage findCommunicatorMessage(Long communicatorMessageId);
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();
@@ -77,6 +79,7 @@ public interface SearchProvider {
       DESC
     }
   }
+
 
 
 
