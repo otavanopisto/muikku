@@ -45,8 +45,6 @@ interface ContentProps {
   workspaceEditMode: WorkspaceEditModeStateType;
   doNotSetHashes?: boolean;
   enableTouch?: boolean;
-  isLoggedIn: boolean;
-  isStudent: boolean;
 }
 
 /**
@@ -410,20 +408,20 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
           const isSectionViewRestrictedVisible =
             isSectionViewRestricted &&
-            !this.props.isStudent &&
-            this.props.isLoggedIn;
+            !this.props.status.isStudent &&
+            this.props.status.loggedIn;
 
           const icon: string = isSectionViewRestrictedVisible
             ? "restriction"
             : null;
 
           const iconTitle: string =
-            isSectionViewRestricted && !this.props.isStudent
+            isSectionViewRestricted && !this.props.status.isStudent
               ? this.buildViewRestrictionLocaleString(node.viewRestrict)
               : null;
 
           const className: string =
-            isSectionViewRestricted && !this.props.isStudent
+            isSectionViewRestricted && !this.props.status.isStudent
               ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
               : "toc__section-container";
 
@@ -464,15 +462,15 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
                   const icon: string =
                     isViewRestrictedVisible &&
-                    !this.props.isStudent &&
-                    this.props.isLoggedIn
+                    !this.props.status.isStudent &&
+                    this.props.status.loggedIn
                       ? "restriction"
                       : null;
 
                   const iconTitle: string =
                     isViewRestrictedVisible &&
-                    !this.props.isStudent &&
-                    this.props.isLoggedIn
+                    !this.props.status.isStudent &&
+                    this.props.status.loggedIn
                       ? this.buildViewRestrictionLocaleString(
                           subnode.viewRestrict
                         )
@@ -480,8 +478,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
                   const className: string =
                     isViewRestrictedVisible &&
-                    !this.props.isStudent &&
-                    this.props.isLoggedIn
+                    !this.props.status.isStudent &&
+                    this.props.status.loggedIn
                       ? this.buildViewRestrictionModifiers(
                           subnode.viewRestrict,
                           false
@@ -594,8 +592,6 @@ function mapStateToProps(state: StateType) {
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
-    isLoggedIn: state.status.loggedIn,
-    isStudent: state.status.loggedIn && state.status.isStudent,
   };
 }
 

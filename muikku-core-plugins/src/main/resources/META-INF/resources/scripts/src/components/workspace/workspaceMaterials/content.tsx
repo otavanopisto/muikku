@@ -53,8 +53,6 @@ interface ContentProps {
   workspaceEditMode: WorkspaceEditModeStateType;
   doNotSetHashes?: boolean;
   enableTouch?: boolean;
-  isLoggedIn: boolean;
-  isStudent: boolean;
 }
 
 /**
@@ -465,22 +463,22 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
           const iconTopic: string =
             isSectionViewRestricted &&
-            !this.props.isStudent &&
-            this.props.isLoggedIn
+            !this.props.status.isStudent &&
+            this.props.status.loggedIn
               ? "restriction"
               : null;
 
           const iconTitleTopic: string =
             isSectionViewRestricted &&
-            !this.props.isStudent &&
-            this.props.isLoggedIn
+            !this.props.status.isStudent &&
+            this.props.status.loggedIn
               ? this.buildViewRestrictionLocaleString(node.viewRestrict)
               : null;
 
           const classNameTopic: string =
             isSectionViewRestricted &&
-            !this.props.isStudent &&
-            this.props.isLoggedIn
+            !this.props.status.isStudent &&
+            this.props.status.loggedIn
               ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
               : "toc__section-container";
 
@@ -591,8 +589,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
                   if (
                     isViewRestrictedVisible &&
-                    !this.props.isStudent &&
-                    this.props.isLoggedIn
+                    !this.props.status.isStudent &&
+                    this.props.status.loggedIn
                   ) {
                     icon = "restriction";
                     className = this.buildViewRestrictionModifiers(
@@ -716,8 +714,6 @@ function mapStateToProps(state: StateType) {
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
-    isLoggedIn: state.status.loggedIn,
-    isStudent: state.status.loggedIn && state.status.isStudent,
   };
 }
 
