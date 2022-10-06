@@ -16,6 +16,7 @@ import {
   DiscussionSubscribedThread,
 } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
+import { Dispatch } from "react-redux";
 
 const MAX_LOADED_AT_ONCE = 30;
 
@@ -237,11 +238,9 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
 const showOnlySubscribedThreads: ShowOnlySubscribedThreads =
   function showOnlySubscribedThreads(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       dispatch({
         type: "UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS",
         payload: data.value,
@@ -257,7 +256,7 @@ const showOnlySubscribedThreads: ShowOnlySubscribedThreads =
 const subscribeDiscussionThread: SubscribeDiscussionThread =
   function subscribeDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -299,7 +298,7 @@ const subscribeDiscussionThread: SubscribeDiscussionThread =
 const unsubscribeDiscussionThread: UnsubscribeDiscustionThread =
   function unsubscribeDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -343,7 +342,7 @@ const unsubscribeDiscussionThread: UnsubscribeDiscustionThread =
 const loadSubscribedDiscussionThreadList: LoadSubscribedDiscussionThreadList =
   function loadSubscribedDiscussionThreadList(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -386,7 +385,7 @@ const loadSubscribedDiscussionThreadList: LoadSubscribedDiscussionThreadList =
 const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerType =
   function loadDiscussionThreadsFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       //Remove the current message
@@ -512,7 +511,7 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
 const createDiscussionThread: CreateDiscussionThreadTriggerType =
   function createDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!data.title) {
@@ -601,7 +600,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
 const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
   function modifyDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!data.title) {
@@ -684,7 +683,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
 const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType =
   function loadDiscussionThreadFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -816,7 +815,7 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
 const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType =
   function replyToDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const payload: any = {
@@ -876,7 +875,7 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
 const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
   function deleteCurrentDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -994,7 +993,7 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
 const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
   function modifyReplyFromCurrentThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1055,7 +1054,7 @@ export interface LoadDiscussionAreasFromServerTriggerType {
 const loadDiscussionAreasFromServer: LoadDiscussionAreasFromServerTriggerType =
   function loadDiscussionAreasFromServer(callback) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const discussion: DiscussionType = getState().discussion;
@@ -1103,7 +1102,7 @@ export interface CreateDiscussionAreaTriggerType {
 const createDiscussionArea: CreateDiscussionAreaTriggerType =
   function createDiscussionArea(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!data.name) {
@@ -1172,7 +1171,7 @@ export interface UpdateDiscussionAreaTriggerType {
 const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
   function updateDiscussionArea(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!data.name) {
@@ -1239,7 +1238,7 @@ export interface DeleteDiscussionAreaTriggerType {
 const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
   function deleteDiscussionArea(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
