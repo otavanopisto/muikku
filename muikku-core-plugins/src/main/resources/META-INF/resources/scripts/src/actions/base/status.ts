@@ -209,23 +209,6 @@ async function loadForumIsAvailable(
 }
 
 /**
- * loadHopsEnabled
- * @param dispatch dispatch
- */
-async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
-  const value = <any>(
-    await promisify(mApi().user.property.read("hops.enabled"), "callback")()
-  );
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      hopsEnabled: value.value,
-    },
-  });
-}
-
-/**
  * loadWorkspacePermissions
  * @param workspaceId workspaceId
  * @param dispatch dispatch
@@ -332,7 +315,6 @@ const loadStatus: LoadStatusType = function loadStatus(
       loadChatAvailable(dispatch);
       loadWorklistAvailable(dispatch);
       loadForumIsAvailable(dispatch, getState().status.profile.permissions);
-      loadHopsEnabled(dispatch);
     } else {
       loadWhoAMI(dispatch, whoAmIReadyCb);
     }
