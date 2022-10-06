@@ -84,6 +84,8 @@ export interface DropdownProps {
   onClick?: () => any;
 }
 
+const offsetValue = 5;
+
 /**
  * DropdownState
  */
@@ -173,44 +175,45 @@ export default class Dropdown extends React.Component<
     const spaceLeftInTop = position.top;
     const spaceLeftInBottom = windowHeight - position.top - position.height;
     const notEnoughSpaceInBottom =
-      spaceLeftInBottom < $dropdown.outerHeight() + 5;
+      spaceLeftInBottom < $dropdown.outerHeight() + offsetValue;
 
-    const notEnoughSpaceInTop = spaceLeftInTop < $dropdown.outerHeight() + 5;
+    const notEnoughSpaceInTop =
+      spaceLeftInTop < $dropdown.outerHeight() + offsetValue;
 
     let top = null;
     let arrowTop = null;
     let reverseArrow = false;
 
     if (notEnoughSpaceInBottom) {
-      top = position.top - 5 - $dropdown.outerHeight();
+      top = position.top - offsetValue - $dropdown.outerHeight();
     } else {
-      top = position.top + $target.outerHeight() + 5;
+      top = position.top + $target.outerHeight() + offsetValue;
     }
 
     switch (this.props.alignSelfVertically) {
       case "top":
-        top = position.top - 5 - $dropdown.outerHeight();
+        top = position.top - offsetValue - $dropdown.outerHeight();
         arrowTop = $dropdown.outerHeight();
         reverseArrow = true;
         if (notEnoughSpaceInTop) {
-          top = position.top + $target.outerHeight() + 5;
+          top = position.top + $target.outerHeight() + offsetValue;
           arrowTop = null;
           reverseArrow = false;
         }
         break;
 
       case "bottom":
-        top = position.top + $target.outerHeight() + 5;
+        top = position.top + $target.outerHeight() + offsetValue;
         if (notEnoughSpaceInBottom) {
-          top = position.top - 5 - $dropdown.outerHeight();
+          top = position.top - offsetValue - $dropdown.outerHeight();
           arrowTop = $dropdown.outerHeight();
           reverseArrow = true;
         }
         break;
       default:
-        top = position.top + $target.outerHeight() + 5;
+        top = position.top + $target.outerHeight() + offsetValue;
         if (notEnoughSpaceInBottom) {
-          top = position.top - 5 - $dropdown.outerHeight();
+          top = position.top - offsetValue - $dropdown.outerHeight();
           arrowTop = $dropdown.outerHeight();
           reverseArrow = true;
         }
@@ -256,9 +259,10 @@ export default class Dropdown extends React.Component<
     const spaceLeftInTop = position.top;
     const spaceLeftInBottom = windowHeight - position.top - position.height;
     const notEnoughSpaceInBottom =
-      spaceLeftInBottom < $dropdown.outerHeight() + 5;
+      spaceLeftInBottom < $dropdown.outerHeight() + offsetValue;
 
-    const notEnoughSpaceInTop = spaceLeftInTop < $dropdown.outerHeight() + 5;
+    const notEnoughSpaceInTop =
+      spaceLeftInTop < $dropdown.outerHeight() + offsetValue;
 
     let left = null;
     if (this.props.alignSelf === "left") {
@@ -287,29 +291,29 @@ export default class Dropdown extends React.Component<
 
     switch (this.props.alignSelfVertically) {
       case "top":
-        top = position.top - 5 - $dropdown.outerHeight();
+        top = position.top - offsetValue - $dropdown.outerHeight();
         arrowTop = $dropdown.outerHeight();
         reverseArrow = true;
 
         if (notEnoughSpaceInTop) {
-          top = position.top + $target.outerHeight() + 5;
+          top = position.top + $target.outerHeight() + offsetValue;
           arrowTop = null;
           reverseArrow = false;
         }
         break;
 
       case "bottom":
-        top = position.top + $target.outerHeight() + 5;
+        top = position.top + $target.outerHeight() + offsetValue;
         if (notEnoughSpaceInBottom) {
-          top = position.top - 5 - $dropdown.outerHeight();
+          top = position.top - offsetValue - $dropdown.outerHeight();
           arrowTop = $dropdown.outerHeight();
           reverseArrow = true;
         }
         break;
       default:
-        top = position.top + $target.outerHeight() + 5;
+        top = position.top + $target.outerHeight() + offsetValue;
         if (notEnoughSpaceInBottom) {
-          top = position.top - 5 - $dropdown.outerHeight();
+          top = position.top - offsetValue - $dropdown.outerHeight();
           arrowTop = $dropdown.outerHeight();
           reverseArrow = true;
         }
