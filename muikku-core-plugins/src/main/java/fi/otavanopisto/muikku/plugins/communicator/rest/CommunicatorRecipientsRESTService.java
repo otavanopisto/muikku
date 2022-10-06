@@ -164,6 +164,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
 
       SearchResult result = searchProvider.searchUsers(
           organizations,
+          null, // study programme identifiers
           searchString, 
           fields, 
           roleArchetypeFilter, 

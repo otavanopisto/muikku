@@ -42,8 +42,9 @@ public class NoPassedCoursesNotificationController {
     
     return searchProvider.searchUsers(
         activeOrganizations,
-        null, 
-        null, 
+        null, // study programme identifiers
+        null, // text
+        null, // text fields
         Collections.singleton(EnvironmentRoleArchetype.STUDENT), 
         groups, 
         null, 

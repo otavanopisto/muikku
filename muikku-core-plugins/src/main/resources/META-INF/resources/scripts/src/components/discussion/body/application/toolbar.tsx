@@ -16,7 +16,10 @@ import ModifyArea from "../../dialogs/modify-area";
 import DeleteArea from "../../dialogs/delete-area";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-import { ApplicationPanelToolbar } from "~/components/general/application-panel/application-panel";
+import {
+  ApplicationPanelToolbar,
+  ApplicationPanelToolbarActionsMain,
+} from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
@@ -115,89 +118,93 @@ class CommunicatorToolbar extends React.Component<
         (area) => area.id === this.props.discussion.current.forumAreaId
       );
       return (
-        <div className="application-panel__toolbar">
-          <ButtonPill
-            buttonModifiers="go-back"
-            onClick={this.onGoBackClick}
-            icon="back"
-          />
-          <div className="breadcrumb">
-            <div
-              className={`breadcrumb__item breadcrumb__item--area-${currentArea.id}`}
-            >
-              {currentArea.name}
+        <ApplicationPanelToolbar>
+          <ApplicationPanelToolbarActionsMain>
+            <ButtonPill
+              buttonModifiers="go-back"
+              onClick={this.onGoBackClick}
+              icon="back"
+            />
+            <div className="breadcrumb">
+              <div
+                className={`breadcrumb__item breadcrumb__item--area-${currentArea.id}`}
+              >
+                {currentArea.name}
+              </div>
+              <div className="breadcrumb__arrow">
+                <span className="icon-arrow-right"></span>
+              </div>
+              <div className="breadcrumb__item">
+                {this.props.discussion.current.title}
+              </div>
             </div>
-            <div className="breadcrumb__arrow">
-              <span className="icon-arrow-right"></span>
-            </div>
-            <div className="breadcrumb__item">
-              {this.props.discussion.current.title}
-            </div>
-          </div>
-        </div>
+          </ApplicationPanelToolbarActionsMain>
+        </ApplicationPanelToolbar>
       );
     }
 
     return (
       <ApplicationPanelToolbar>
-        {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ? (
-          <NewArea>
-            <ButtonPill
-              disabled={this.props.discussion.subscribedThreadOnly}
-              icon="plus"
-              buttonModifiers={["discussion-toolbar"]}
-            />
-          </NewArea>
-        ) : null}
-        {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ? (
-          <ModifyArea>
-            <ButtonPill
-              disabled={
-                !this.props.discussion.areaId ||
-                this.props.discussion.subscribedThreadOnly
-              }
-              icon="pencil"
-              buttonModifiers={["discussion-toolbar"]}
-            />
-          </ModifyArea>
-        ) : null}
-        {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? (
-          <DeleteArea>
-            <ButtonPill
-              disabled={
-                !this.props.discussion.areaId ||
-                this.props.discussion.subscribedThreadOnly
-              }
-              icon="trash"
-              buttonModifiers={["discussion-toolbar"]}
-            />
-          </DeleteArea>
-        ) : null}
-        <div className="form-element">
-          <label htmlFor="discussionAreaSelect" className="visually-hidden">
-            {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
-          </label>
-          <select
-            id="discussionAreaSelect"
-            className="form-element__select form-element__select--toolbar-selector"
-            onChange={this.onSelectChange}
-            value={this.selectValue()}
-          >
-            <option value="">
-              {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
-            </option>
-            <option value="subs">
-              {this.props.i18n.text.get(
-                "plugin.discussion.browseareas.subscribtions"
-              )}
-            </option>
-            {this.props.discussion.areas.map((area) => (
-              <option key={area.id} value={area.id}>
-                {area.name}
+        <ApplicationPanelToolbarActionsMain>
+          {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ? (
+            <NewArea>
+              <ButtonPill
+                disabled={this.props.discussion.subscribedThreadOnly}
+                icon="plus"
+                buttonModifiers={["discussion-toolbar"]}
+              />
+            </NewArea>
+          ) : null}
+          {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ? (
+            <ModifyArea>
+              <ButtonPill
+                disabled={
+                  !this.props.discussion.areaId ||
+                  this.props.discussion.subscribedThreadOnly
+                }
+                icon="pencil"
+                buttonModifiers={["discussion-toolbar"]}
+              />
+            </ModifyArea>
+          ) : null}
+          {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? (
+            <DeleteArea>
+              <ButtonPill
+                disabled={
+                  !this.props.discussion.areaId ||
+                  this.props.discussion.subscribedThreadOnly
+                }
+                icon="trash"
+                buttonModifiers={["discussion-toolbar"]}
+              />
+            </DeleteArea>
+          ) : null}
+          <div className="form-element">
+            <label htmlFor="discussionAreaSelect" className="visually-hidden">
+              {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
+            </label>
+            <select
+              id="discussionAreaSelect"
+              className="form-element__select form-element__select--toolbar-selector"
+              onChange={this.onSelectChange}
+              value={this.selectValue()}
+            >
+              <option value="">
+                {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
               </option>
-            ))}
-          </select>
-        </div>
+              <option value="subs">
+                {this.props.i18n.text.get(
+                  "plugin.discussion.browseareas.subscribtions"
+                )}
+              </option>
+              {this.props.discussion.areas.map((area) => (
+                <option key={area.id} value={area.id}>
+                  {area.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>
     );
   }

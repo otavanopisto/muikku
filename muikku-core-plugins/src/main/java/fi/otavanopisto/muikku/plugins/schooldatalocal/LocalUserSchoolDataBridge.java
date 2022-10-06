@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.schooldatalocal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
@@ -482,7 +483,8 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           null,
           null,
           null, 
-          false);
+          false,
+          new HashSet<>());
     }
 
     return null;
