@@ -117,9 +117,9 @@ public class GuiderTestsBase extends AbstractUITest {
         .build();
     try {
       navigate("/guider", false);
-      waitAndClick("div.application-panel__helper-container a.menu__item-link");
-      waitUntilAnimationIsDone(".application-panel__main-container");
-      clickAndConfirmElementCount("div.application-panel__helper-container a.menu__item-link", ".application-list .user--guider", 1);
+      waitAndClick(".application-panel__content-aside a.menu__item-link");
+      waitUntilAnimationIsDone(".application-panel__content-main");
+      clickAndConfirmElementCount(".application-panel__content-aside a.menu__item-link", ".application-list .user--guider", 1);
       waitUntilElementCount(".application-list .user--guider", 1);
       waitForPresent(".application-list__item-header .application-list__header-primary span");
       assertTextIgnoreCase(".application-list__item-header .application-list__header-primary span", "Second User");

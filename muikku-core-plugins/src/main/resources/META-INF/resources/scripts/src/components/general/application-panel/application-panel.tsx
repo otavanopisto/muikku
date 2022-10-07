@@ -67,14 +67,14 @@ export default class ApplicationPanel extends React.Component<
               : ""
           }`}
         >
-          <h1
-            className={`application-panel__header   ${
-              this.props.modifier
-                ? "application-panel__header--" + this.props.modifier
-                : ""
-            }`}
-          >
-            {this.props.title ? (
+          {this.props.title ? (
+            <h1
+              className={`application-panel__header   ${
+                this.props.modifier
+                  ? "application-panel__header--" + this.props.modifier
+                  : ""
+              }`}
+            >
               <span
                 className={`application-panel__header-title ${
                   this.props.modifier
@@ -84,20 +84,20 @@ export default class ApplicationPanel extends React.Component<
               >
                 {this.props.title}
               </span>
-            ) : null}
-            {this.props.icon ? (
-              <span
-                className={`application-panel__header-actions ${
-                  this.props.modifier
-                    ? "application-panele__header-actions--" +
-                      this.props.modifier
-                    : ""
-                }`}
-              >
-                {this.props.icon}
-              </span>
-            ) : null}
-          </h1>
+              {this.props.icon ? (
+                <span
+                  className={`application-panel__header-actions ${
+                    this.props.modifier
+                      ? "application-panele__header-actions--" +
+                        this.props.modifier
+                      : ""
+                  }`}
+                >
+                  {this.props.icon}
+                </span>
+              ) : null}
+            </h1>
+          ) : null}
           {this.props.panelTabs ? (
             <Tabs
               modifier="application-panel"
@@ -242,7 +242,7 @@ export class ApplicationPanelToolsContainer extends React.Component<
    */
   render() {
     return (
-      <div className="application-panel__tools-container">
+      <div className="application-panel__toolbar-tools-container">
         {this.props.children}
       </div>
     );

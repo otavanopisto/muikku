@@ -62,10 +62,9 @@ class DiscussionApplication extends React.Component<
       ) : null;
 
     return (
-      <div className="application-panel-wrapper">
+      <>
         <ApplicationPanel
           title={title}
-          modifier="discussion"
           primaryOption={primaryOption}
           toolbar={toolbar}
         >
@@ -73,7 +72,7 @@ class DiscussionApplication extends React.Component<
           <CurrentThread />
         </ApplicationPanel>
         {primaryOptionMobile}
-      </div>
+      </>
     );
   }
 }

@@ -50,9 +50,8 @@ class AnnouncerApplication extends React.Component<
 
     //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
     return (
-      <div className="application-panel-wrapper">
+      <>
         <ApplicationPanel
-          modifier="announcer"
           toolbar={toolbar}
           title={title}
           primaryOption={primaryOption}
@@ -64,7 +63,7 @@ class AnnouncerApplication extends React.Component<
         <NewEditAnnouncement>
           <HoverButton icon="plus" modifier="new-announcement" />
         </NewEditAnnouncement>
-      </div>
+      </>
     );
   }
 }

@@ -205,7 +205,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
@@ -274,6 +274,13 @@ public class ElasticSearchProvider implements SearchProvider {
           .collect(Collectors.toSet());
       if (CollectionUtils.isNotEmpty(organizationIdentifiers)) {
         query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifiers.toArray()));
+      }
+      
+      // #6250: Limit search to given study programmes only (note that the search should only be about students in this case)
+      
+      if (studyProgrammeIdentifiers != null && !studyProgrammeIdentifiers.isEmpty()) {
+        Set<String> studyProgrammeStrings = studyProgrammeIdentifiers.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toSet());
+        query.must(termsQuery("studyProgrammeIdentifier.untouched", studyProgrammeStrings.toArray()));
       }
 
       // #6170: If both group and workspace filters have been provided, possibly treat them as a join rather than an intersection
@@ -393,28 +400,28 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore, boolean joinGroupsAndWorkspaces) {
-    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
         onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null, joinGroupsAndWorkspaces);
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, boolean joinGroupsAndWorkspaces) {
-    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
         onlyDefaultUsers, start, maxResults, null, null, null, joinGroupsAndWorkspaces);
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields,
       boolean joinGroupsAndWorkspaces) {
-    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
         onlyDefaultUsers, start, maxResults, fields, null, null, joinGroupsAndWorkspaces);
   }
 
@@ -661,6 +668,37 @@ public class ElasticSearchProvider implements SearchProvider {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
       return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
+  }
+  
+  @Override
+  public SearchResult searchWorkspacesSignupEnd() {
+
+    BoolQueryBuilder query = boolQuery();
+    query.must(termQuery("published", Boolean.TRUE));
+    query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
+    
+    query.must(rangeQuery("signupEnd").lt(OffsetDateTime.now().minusDays(1).toEpochSecond()));
+
+    SearchRequestBuilder requestBuilder = elasticClient
+      .prepareSearch(IndexedWorkspace.INDEX_NAME)
+      .setTypes(IndexedWorkspace.TYPE_NAME)
+      .setFrom(0)
+      .setSize(50)
+      .setQuery(query);
+
+    SearchResponse response = requestBuilder.execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHits searchHits = response.getHits();
+    SearchHit[] results = searchHits.getHits();
+    long totalHits = searchHits.getTotalHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
+      searchResults.add(hitSource);
+    }
+
+    SearchResult result = new SearchResult(0, searchResults, totalHits);
+    return result;
   }
 
   @Override

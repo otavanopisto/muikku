@@ -173,11 +173,7 @@ class StudiesApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const title = (
-      <h1 className="application-panel__header-title">
-        {this.props.i18n.text.get("plugin.records.pageTitle")}
-      </h1>
-    );
+    const title = this.props.i18n.text.get("plugin.records.pageTitle");
 
     let panelTabs: Tab[] = [
       {
@@ -241,7 +237,6 @@ class StudiesApplication extends React.Component<
 
     return (
       <ApplicationPanel
-        modifier="studies"
         title={title}
         onTabChange={this.onTabChange}
         activeTab={this.state.activeTab}
