@@ -1,5 +1,8 @@
 package fi.otavanopisto.muikku.mock.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -17,6 +20,9 @@ public class MockStaffMember extends MockLoggable{
     this.socialSecurityNumber = socialSecurityNumber;
     this.email = email;
     this.sex = sex;
+    this.staffStudyProgrammes = new HashSet<>();
+    staffStudyProgrammes.add(1l);
+    staffStudyProgrammes.add(2l);
   }
   
   public Long getId() {
@@ -89,6 +95,14 @@ public class MockStaffMember extends MockLoggable{
     this.organizationId = organizationId;
   }
 
+  public Set<Long> getStaffStudyProgrammes() {
+      return this.staffStudyProgrammes;
+    }
+  
+  public void setStaffStudyProgrammes(Set<Long> staffStudyProgrammes) {
+    this.staffStudyProgrammes = staffStudyProgrammes;
+  }
+  
   private Long id;
   private Long personId;
   private Long organizationId;
@@ -98,5 +112,6 @@ public class MockStaffMember extends MockLoggable{
   private String socialSecurityNumber;
   private Sex sex;
   private String email;
+  private Set<Long> staffStudyProgrammes;
 }
 
