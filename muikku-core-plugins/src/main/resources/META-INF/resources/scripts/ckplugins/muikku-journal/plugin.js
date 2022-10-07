@@ -45,7 +45,7 @@
           // CKEditor UI representation
           
           var fakeElement = editor.createFakeElement(object, 'muikku-journal', 'object');
-          fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-journal') + 'gfx/muikku-placeholder-memofield.gif'); 
+          fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-journal') + 'gfx/muikku-placeholder-journalfield.gif'); 
           fakeElement.setAttribute('title', editor.lang['muikku-journal'].uiElement);
           editor.insertElement(fakeElement);
         }
