@@ -9,6 +9,7 @@ import FileField from "../fields/file-field";
 import ConnectField from "../fields/connect-field";
 import OrganizerField from "../fields/organizer-field";
 import AudioField from "../fields/audio-field";
+import Journal from "../fields/journal";
 import SorterField from "../fields/sorter-field";
 import { StatusType } from "~/reducers/base/status";
 import Image from "../static/image";
@@ -41,6 +42,7 @@ const objects: { [key: string]: any } = {
   "application/vnd.muikku.field.audio": AudioField,
   "application/vnd.muikku.field.sorter": SorterField,
   "application/vnd.muikku.field.mathexercise": MathField,
+  "application/vnd.muikku.field.journal": Journal,
 };
 
 // Wheteher the object can check or not for an answer

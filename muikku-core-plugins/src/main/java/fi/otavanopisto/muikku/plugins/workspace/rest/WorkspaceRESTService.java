@@ -3240,6 +3240,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceController.findWorkspaceEntityById(workspaceEntityId),
         sessionController.getLoggedUserEntity(),
         restModel.getContent(),
+        null,
         restModel.getTitle());
     return Response.ok(toRestModel(workspaceJournalEntry)).build();
 
