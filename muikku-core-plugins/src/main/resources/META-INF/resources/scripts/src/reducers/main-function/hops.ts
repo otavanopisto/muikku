@@ -70,6 +70,9 @@ export const hops: Reducer<HOPSType> = (
     case "UPDATE_HOPS_STATUS":
       return { ...state, status: action.payload };
 
+    case "SET_HOPS_PHASE":
+      return { ...state, hopsPhase: action.payload };
+
     case "UPDATE_HOPS":
       return { ...state, value: action.payload };
 

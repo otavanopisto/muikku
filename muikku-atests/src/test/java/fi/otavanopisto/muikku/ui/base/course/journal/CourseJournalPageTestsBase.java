@@ -33,8 +33,8 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
-        waitForPresent(".application-panel--workspace-journal select.form-element__select");
-        assertVisible(".application-panel--workspace-journal select.form-element__select");
+        waitForPresent(".application-panel__actions-aside select.form-element__select");
+        assertVisible(".application-panel__actions-aside select.form-element__select");
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -65,7 +65,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitAndClick(".application-panel--workspace-journal .button--primary-function");
+        waitAndClick(".application-panel__actions-aside .button--primary-function");
         addTextToCKEditor("content");
         sendKeys(".env-dialog__input--new-edit-journal-title", "title");
         click(".button--dialog-execute");
@@ -104,7 +104,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitAndClick(".application-panel--workspace-journal .button--primary-function");
+        waitAndClick(".application-panel__actions-aside .button--primary-function");
         addTextToCKEditor("content");
         sendKeys(".env-dialog__input--new-edit-journal-title", "title");
         click(".button--dialog-execute");
@@ -147,7 +147,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitAndClick(".application-panel--workspace-journal .button--primary-function");
+        waitAndClick(".application-panel__actions-aside .button--primary-function");
         addTextToCKEditor("content");
         sendKeys(".env-dialog__input--new-edit-journal-title", "title");
         click(".button--dialog-execute");

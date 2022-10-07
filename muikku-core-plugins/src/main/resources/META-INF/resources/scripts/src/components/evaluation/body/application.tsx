@@ -66,11 +66,7 @@ class EvaluationApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const title = (
-      <h1 className="application-panel__header-title">
-        {this.props.i18n.text.get("plugin.evaluation.title")}
-      </h1>
-    );
+    const title = this.props.i18n.text.get("plugin.evaluation.title");
     const currentWorkspace = this.props.currentWorkspace;
 
     const workspaces = [...this.props.evaluations.evaluationWorkspaces];
@@ -135,19 +131,16 @@ class EvaluationApplication extends React.Component<
     const toolBar = <EvaluationToolbar title="" />;
 
     return (
-      <div className="application-panel-wrapper">
-        <ApplicationPanel
-          modifier=""
-          title={title}
-          primaryOption={primaryOption}
-          toolbar={toolBar}
-        >
-          <EvaluationSorters />
-          <div className="evaluation-cards-wrapper">
-            <EvaluationList />
-          </div>
-        </ApplicationPanel>
-      </div>
+      <ApplicationPanel
+        title={title}
+        primaryOption={primaryOption}
+        toolbar={toolBar}
+      >
+        <EvaluationSorters />
+        <div className="evaluation-cards-wrapper">
+          <EvaluationList />
+        </div>
+      </ApplicationPanel>
     );
   }
 }

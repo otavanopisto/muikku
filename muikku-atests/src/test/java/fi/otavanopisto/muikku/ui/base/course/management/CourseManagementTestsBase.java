@@ -148,8 +148,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForVisible(".notification-queue__items");
         sleep(500);
         navigate("/coursepicker", false);
-        waitForPresent(".application-panel__content .application-panel__main-container");
-        assertClassPresent(".application-panel__content .application-panel__main-container", "loader-empty");
+        waitForPresent(".application-panel__content .application-panel__content-main");
+        assertClassPresent(".application-panel__content .application-panel__content-main", "loader-empty");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -444,10 +444,10 @@ public class CourseManagementTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate("/coursepicker", false);
-        waitForVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
+        waitForVisible(".application-panel__actions-aside ");
 //        refresh();
-        waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-        waitAndClick("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        waitForVisible(".application-panel__content-main.loader-empty .application-list__item-header--course");
+        waitAndClick(".application-panel__content-main.loader-empty .application-list__item-header--course");
         waitAndClick(".button--coursepicker-course-action:nth-of-type(2)");
         assertPresent(".dialog--workspace-signup-dialog .button--standard-ok");
       }finally{

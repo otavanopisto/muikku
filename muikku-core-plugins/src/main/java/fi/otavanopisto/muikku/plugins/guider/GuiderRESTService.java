@@ -84,6 +84,7 @@ import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
+import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
@@ -108,6 +109,9 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private Logger logger;
+
+  @Inject
+  private CurrentUserSession currentUserSession;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -217,6 +221,12 @@ public class GuiderRESTService extends PluginRESTService {
     }
 
     List<fi.otavanopisto.muikku.rest.model.Student> students = new ArrayList<>();
+    
+    // #6250: If the current user has no study programmes defined, the search cannot return anything
+
+    if (currentUserSession.getStudyProgrammeIdentifiers() == null || currentUserSession.getStudyProgrammeIdentifiers().isEmpty()) {
+      return Response.ok(students).build();
+    }
 
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
 
@@ -335,8 +345,21 @@ public class GuiderRESTService extends PluginRESTService {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
 
-      SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT),
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults, joinGroupsAndWorkspaces);
+      SearchResult result = elasticSearchProvider.searchUsers(
+          Arrays.asList(organization),
+          currentUserSession.getStudyProgrammeIdentifiers(),
+          searchString,
+          fields,
+          Arrays.asList(EnvironmentRoleArchetype.STUDENT),
+          userGroupFilters,
+          workspaceFilters,
+          userIdentifiers,
+          includeInactiveStudents,
+          true,
+          false,
+          firstResult,
+          maxResults,
+          joinGroupsAndWorkspaces);
 
       List<Map<String, Object>> results = result.getResults();
 

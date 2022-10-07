@@ -249,6 +249,8 @@ legend {
 .form-element--add-producer,
 .form-element--search {
   @include form-element-toolbar;
+
+  justify-content: flex-end;
 }
 
 .form-element--search {
@@ -455,17 +457,22 @@ legend {
 .form-element__input--add-producer,
 .form-element__input--add-material-producer {
   background-color: $color-default;
-  border: 2px solid $color-main-function-input-field-border;
-  margin-right: -2px; // Hides the right border and border-radius effect to provide more unified look
+  border-bottom: 2px solid $color-main-function-input-field-border;
+  border-left: 2px solid $color-main-function-input-field-border;
+  border-right: 2px solid $color-main-function-input-field-decoration-background;
+  border-top: 2px solid $color-main-function-input-field-border;
   width: 100%;
 }
 
-// Communicator Message Search
-.form-element--communicator-message-search {
-  display: none;
+.form-element__input--search:focus {
+  position: fixed;
+  right: 46px;
+  width: calc(100% - 56px);
 
   @include breakpoint($breakpoint-pad) {
-    display: flex;
+    position: relative;
+    right: unset;
+    width: 100%;
   }
 }
 

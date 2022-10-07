@@ -45,6 +45,7 @@ interface IChatMessageState {
   messageDeleted: boolean;
   messageIsInEditMode: boolean;
   deleteMessageDialogOpen: boolean;
+  isLoaded: boolean;
 }
 
 /**
@@ -72,6 +73,7 @@ export class ChatMessage extends React.Component<
       messageDeleted: false,
       deleteMessageDialogOpen: false,
       messageIsInEditMode: false,
+      isLoaded: false,
     };
 
     this.contentEditableRef = React.createRef();
@@ -124,6 +126,15 @@ export class ChatMessage extends React.Component<
    */
   componentWillUnmount() {
     this.unmounted = true;
+  }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    this.setState({
+      isLoaded: true,
+    });
   }
 
   /**
@@ -246,6 +257,9 @@ export class ChatMessage extends React.Component<
    * render
    */
   render() {
+    const messageLoadingClassName = !this.state.isLoaded
+      ? "chat__message--loading"
+      : "chat__message--loaded";
     const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
     const messageDeletedClass = this.props.message.deleted
       ? "chat__message--deleted"
@@ -253,7 +267,7 @@ export class ChatMessage extends React.Component<
 
     return (
       <div
-        className={`chat__message chat__message--${senderClass} ${messageDeletedClass}`}
+        className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
       >
         <div className="chat__message-meta">
           <span

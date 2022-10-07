@@ -16,7 +16,10 @@ import ModifyArea from "../../dialogs/modify-area";
 import DeleteArea from "../../dialogs/delete-area";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-import { ApplicationPanelToolbar } from "~/components/general/application-panel/application-panel";
+import {
+  ApplicationPanelToolbar,
+  ApplicationPanelToolbarActionsMain,
+} from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
 
 /**
@@ -116,49 +119,54 @@ class CommunicatorToolbar extends React.Component<
 
     return (
       <ApplicationPanelToolbar>
-        {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ? (
-          <NewArea>
-            <ButtonPill icon="plus" buttonModifiers={["discussion-toolbar"]} />
-          </NewArea>
-        ) : null}
-        {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ? (
-          <ModifyArea>
-            <ButtonPill
-              disabled={!this.props.discussion.areaId}
-              icon="pencil"
-              buttonModifiers={["discussion-toolbar"]}
-            />
-          </ModifyArea>
-        ) : null}
-        {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? (
-          <DeleteArea>
-            <ButtonPill
-              disabled={!this.props.discussion.areaId}
-              icon="trash"
-              buttonModifiers={["discussion-toolbar"]}
-            />
-          </DeleteArea>
-        ) : null}
-        <div className="form-element">
-          <label htmlFor="discussionAreaSelect" className="visually-hidden">
-            {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
-          </label>
-          <select
-            id="discussionAreaSelect"
-            className="form-element__select form-element__select--toolbar-selector"
-            onChange={this.onSelectChange}
-            value={this.props.discussion.areaId || ""}
-          >
-            <option value="">
-              {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
-            </option>
-            {this.props.discussion.areas.map((area) => (
-              <option key={area.id} value={area.id}>
-                {area.name}
+        <ApplicationPanelToolbarActionsMain>
+          {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ? (
+            <NewArea>
+              <ButtonPill
+                icon="plus"
+                buttonModifiers={["discussion-toolbar"]}
+              />
+            </NewArea>
+          ) : null}
+          {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ? (
+            <ModifyArea>
+              <ButtonPill
+                disabled={!this.props.discussion.areaId}
+                icon="pencil"
+                buttonModifiers={["discussion-toolbar"]}
+              />
+            </ModifyArea>
+          ) : null}
+          {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? (
+            <DeleteArea>
+              <ButtonPill
+                disabled={!this.props.discussion.areaId}
+                icon="trash"
+                buttonModifiers={["discussion-toolbar"]}
+              />
+            </DeleteArea>
+          ) : null}
+          <div className="form-element">
+            <label htmlFor="discussionAreaSelect" className="visually-hidden">
+              {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
+            </label>
+            <select
+              id="discussionAreaSelect"
+              className="form-element__select form-element__select--toolbar-selector"
+              onChange={this.onSelectChange}
+              value={this.props.discussion.areaId || ""}
+            >
+              <option value="">
+                {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
               </option>
-            ))}
-          </select>
-        </div>
+              {this.props.discussion.areas.map((area) => (
+                <option key={area.id} value={area.id}>
+                  {area.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>
     );
   }
