@@ -1091,6 +1091,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceEntity,
         userEntity,
         payload.getHtml(),
+        null,
         payload.getTitle());
     return Response.ok(createRestEntity(workspaceJournalEntry)).build();
 
