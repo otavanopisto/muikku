@@ -39,7 +39,6 @@ import { StatusType } from "~/reducers/base/status";
  */
 interface HelpMaterialsProps {
   i18n: i18nType;
-  isStudent: boolean;
   status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
@@ -48,8 +47,6 @@ interface HelpMaterialsProps {
   workspaceEditMode: WorkspaceEditModeStateType;
   onActiveNodeIdChange: (activeNodeId: number) => any;
   onOpenNavigation: () => any;
-  isLoggedIn: boolean;
-
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -486,9 +483,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       ) : null;
 
     const hideRestrictedMaterial =
-      (this.props.isStudent &&
+      (this.props.status.isStudent &&
         !this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT) ||
-      !this.props.isLoggedIn;
+      !this.props.status.loggedIn;
 
     const results: any = [];
     this.props.materials.forEach((section, index) => {
@@ -768,8 +765,6 @@ function mapStateToProps(state: StateType) {
     materials: state.workspaces.currentHelp,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
-    isLoggedIn: state.status.loggedIn,
-    isStudent: state.status.loggedIn && state.status.isStudent,
   };
 }
 

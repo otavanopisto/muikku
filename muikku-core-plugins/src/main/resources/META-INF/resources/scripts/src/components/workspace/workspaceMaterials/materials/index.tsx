@@ -36,7 +36,6 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
-import DisconnectedWarningDialog from "~/components/base/disconnect-warning";
 import { StatusType } from "~/reducers/base/status";
 
 /**
@@ -44,7 +43,6 @@ import { StatusType } from "~/reducers/base/status";
  */
 interface WorkspaceMaterialsProps {
   i18n: i18nType;
-  isStudent: boolean;
   status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
@@ -54,8 +52,6 @@ interface WorkspaceMaterialsProps {
   workspaceEditMode: WorkspaceEditModeStateType;
   onActiveNodeIdChange: (activeNodeId: number) => any;
   onOpenNavigation: () => any;
-  isLoggedIn: boolean;
-
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -497,9 +493,9 @@ class WorkspaceMaterials extends React.Component<
     const results: any = [];
 
     const hideRestrictedMaterial =
-      (this.props.isStudent &&
+      (this.props.status.isStudent &&
         !this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT) ||
-      !this.props.isLoggedIn;
+      !this.props.status.loggedIn;
 
     this.props.materials.forEach((section, index) => {
       const isSectionViewRestricted =
@@ -811,8 +807,6 @@ function mapStateToProps(state: StateType) {
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
-    isLoggedIn: state.status.loggedIn,
-    isStudent: state.status.loggedIn && state.status.isStudent,
   };
 }
 
