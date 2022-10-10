@@ -27,6 +27,7 @@ interface PortalProps {
   closeOnEsc?: boolean;
   closeOnOutsideClick?: boolean;
   closeOnScroll?: boolean;
+  closeOnClick?: boolean;
   onOpen?: (e: HTMLElement) => any;
   onClose?: () => any;
   beforeClose?: (e: HTMLElement, resetPortalState: () => any) => any;
@@ -144,7 +145,11 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     e.preventDefault();
     e.stopPropagation();
     if (this.state.active) {
-      return;
+      if (this.props.closeOnClick) {
+        this.closePortal();
+      } else {
+        return;
+      }
     }
     this.openPortal();
   }
