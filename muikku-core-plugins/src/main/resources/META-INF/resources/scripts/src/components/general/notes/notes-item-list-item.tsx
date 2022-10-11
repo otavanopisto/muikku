@@ -180,7 +180,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
     }
 
-    if (overdue) {
+    if (overdue && status !== NotesItemStatus.APPROVED) {
       updatedModifiers.push("overdue");
     }
 
@@ -246,7 +246,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const renderStatus = () => {
       const statuses: JSX.Element[] = [];
 
-      if (overdue) {
+      if (overdue && status !== NotesItemStatus.APPROVED) {
         statuses.push(
           <div
             key="note-overdue"

@@ -13,7 +13,7 @@ public class ContentNode {
   public ContentNode(String title, String type, String contentType, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Long nextSiblingId, Boolean hidden, String html,  String path,
-      String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict) {
+      String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict, Boolean contentHiddenForUser) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -32,6 +32,7 @@ public class ContentNode {
     this.license = license;
     this.viewRestrict = viewRestrict;
     this.producers = producers;
+    this.contentHiddenForUser = contentHiddenForUser;
   }
 
   public void addChild(ContentNode child) {
@@ -146,6 +147,14 @@ public class ContentNode {
     this.nextSiblingId = nextSiblingId;
   }
 
+  public Boolean getContentHiddenForUser() {
+    return contentHiddenForUser;
+  }
+
+  public void setContentHiddenForUser(Boolean contentHiddenForUser) {
+    this.contentHiddenForUser = contentHiddenForUser;
+  }
+
   private String title;
   private String type;
   private String contentType;
@@ -163,5 +172,6 @@ public class ContentNode {
   private String license;
   private MaterialViewRestrict viewRestrict;
   private List<MaterialProducer> producers;
+  private Boolean contentHiddenForUser;
 
 }

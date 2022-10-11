@@ -137,7 +137,7 @@ export function toSVG(
       mjOut.setAttribute("xmlns", "http://www.w3.org/2000/svg");
       newImage.src =
         "data:image/svg+xml;base64," +
-        window.btoa(decodeURIComponent(encodeURIComponent(mjOut.outerHTML)));
+        window.btoa(unescape(encodeURIComponent(mjOut.outerHTML)));
     } else {
       newImage.src = errorSrc;
     }

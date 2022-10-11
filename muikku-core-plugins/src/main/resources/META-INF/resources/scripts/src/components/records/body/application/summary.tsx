@@ -15,7 +15,6 @@ import { HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
-import Button from "~/components/general/button";
 import { ButtonPill } from "~/components/general/button";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
@@ -30,6 +29,7 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import Notes from "~/components/general/notes/notes";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * SummaryProps
@@ -329,6 +329,23 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   {this.props.i18n.text.get(
                     "plugin.records.tasks.sectionTitle"
                   )}
+                  <Instructions
+                    modifier="instructions"
+                    alignSelfVertically="top"
+                    openByHover={false}
+                    closeOnClick={true}
+                    closeOnOutsideClick={false}
+                    persistent
+                    content={
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: this.props.i18n.text.get(
+                            "plugin.records.tasks.instructions"
+                          ),
+                        }}
+                      />
+                    }
+                  />
                 </div>
                 <Notes
                   usePlace="records"

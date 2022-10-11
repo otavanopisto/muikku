@@ -122,10 +122,9 @@ class WorkspaceJournalApplication extends React.Component<
     }
 
     return (
-      <div className="application-panel-wrapper">
+      <>
         <ApplicationPanel
           asideBefore={this.props.aside}
-          modifier="workspace-journal"
           toolbar={toolbar}
           title={title}
           primaryOption={primaryOption}
@@ -137,7 +136,7 @@ class WorkspaceJournalApplication extends React.Component<
             <HoverButton icon="plus" modifier="new-message" />
           </NewJournal>
         ) : null}
-      </div>
+      </>
     );
   }
 }

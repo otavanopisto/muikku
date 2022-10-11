@@ -769,6 +769,14 @@
   color: $color-info;
 }
 
+.button-icon--discussion-action {
+  color: $color-default-contrast;
+}
+
+.button-icon--discussion-action-active {
+  color: $color-info;
+}
+
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
@@ -827,6 +835,27 @@
     font-size: $button-pill-desktop-font-size;
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
+  }
+}
+
+.button-pill--instructions {
+  background: lighten($color-tertiary, 30%);
+  border: 1px solid lighten($color-tertiary, 20%);
+  color: darken($color-info, 10%);
+  font-size: 0.7rem;
+  height: 1.25rem;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  width: 1.25rem;
+
+  &:hover,
+  &.hover {
+    background: lighten($color-tertiary, 20%);
+  }
+
+  &:active,
+  &.active {
+    background: lighten($color-tertiary, 20%);
   }
 }
 
@@ -1748,6 +1777,16 @@
   }
 }
 
+.button-pill--material-editor-members-only {
+  background: $color-tertiary;
+  border-color: $color-tertiary;
+
+  &:hover {
+    background: $color-tertiary;
+    border-color: $color-tertiary;
+  }
+}
+
 .button-pill--material-editor-always-show {
   background: $color-material-page-admin-panel-always-show-answers-color;
   border-color: $color-material-page-admin-panel-always-show-answers-color;
@@ -1996,6 +2035,21 @@
   &:active,
   &.active {
     background: darken($color-appointment-calendar-button-background, 10%);
+  }
+}
+
+.button-pill--discussion-subscription {
+  background: $color-button-disabled-background;
+  color: $color-default;
+
+  &:hover,
+  &.hover {
+    background: $color-fatal;
+  }
+
+  &:active,
+  &.active {
+    background: $color-fatal;
   }
 }
 

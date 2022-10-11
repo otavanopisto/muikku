@@ -1,6 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/chat.scss";
-import { IAvailableChatRoomType } from "./chat";
+import { IAvailableChatRoomType } from "../chat";
 
 /**
  * IRoomProps

@@ -63,10 +63,8 @@ export default class ApplicationPanelBody extends React.Component<
         >
           {primaryOption ? (
             <div
-              className={`application-panel__helper-container application-panel__helper-container--main-action ${
-                modifier
-                  ? "application-panel__helper-container--" + modifier
-                  : ""
+              className={`application-panel__actions-aside ${
+                modifier ? "application-panel__actions-aside--" + modifier : ""
               }`}
             >
               {primaryOption}
@@ -74,8 +72,8 @@ export default class ApplicationPanelBody extends React.Component<
           ) : null}
           {toolbar ? (
             <div
-              className={`application-panel__main-container application-panel__main-container--actions ${
-                modifier ? "application-panel__main-container--" + modifier : ""
+              className={`application-panel__actions-main ${
+                modifier ? "application-panel__actions-main--" + modifier : ""
               }`}
             >
               {toolbar}
@@ -89,24 +87,20 @@ export default class ApplicationPanelBody extends React.Component<
         >
           {asideBefore ? (
             <div
-              className={`application-panel__helper-container ${
-                modifier
-                  ? "application-panel__helper-container--" + modifier
-                  : ""
+              className={`application-panel__content-aside ${
+                modifier ? "application-panel__content-aside--" + modifier : ""
               }`}
             >
               {asideBefore}
             </div>
           ) : null}
-          <div className={`application-panel__main-container loader-empty`}>
+          <div className={`application-panel__content-main loader-empty`}>
             {children}
           </div>
           {asideAfter ? (
             <div
-              className={`application-panel__helper-container ${
-                modifier
-                  ? "application-panel__helper-container--" + modifier
-                  : ""
+              className={`application-panel__content-aside ${
+                modifier ? "application-panel__content-aside--" + modifier : ""
               }`}
             >
               {asideAfter}

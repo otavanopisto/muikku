@@ -22,12 +22,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}-${{ secrets.GA_CACHE_KEY }}
       - name: Prepare maven settings
         run: python prepare-maven.py
       - name: Build with Maven
-        run: mvn clean install --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
+        run: mvn clean install --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,timed-notifications-plugin,pyramus-plugins
       - name: Deploy snapshot
-        run: mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
+        run: mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,timed-notifications-plugin,pyramus-plugins
       - name: Webhook to staging
         run: curl -X POST https://${{ secrets.STAGING_WEBHOOK_USER }}:${{ secrets.STAGING_WEBHOOK_USER_PASS }}@${{ secrets.STAGING_WEBHOOK_URL }}

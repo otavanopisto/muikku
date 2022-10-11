@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
@@ -9,7 +10,8 @@ public abstract class AbstractUser implements User {
   public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
       String studyProgrammeName, String studyProgrammeEducationType, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility) {
+      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility,
+      Set<SchoolDataIdentifier> studyProgrammeIdentifiers) {
     super();
     this.identifier = identifier;
     this.firstName = firstName;
@@ -31,6 +33,7 @@ public abstract class AbstractUser implements User {
     this.curriculumIdentifier = curriculumIdentifier;
     this.organizationIdentifier = organizationIdentifier;
     this.matriculationEligibility = matriculationEligibility;
+    this.setStudyProgrammeIdentifiers(studyProgrammeIdentifiers);
   }
 
   @Override
@@ -189,6 +192,14 @@ public abstract class AbstractUser implements User {
     this.matriculationEligibility = matriculationEligibility;
   }
 
+  public Set<SchoolDataIdentifier> getStudyProgrammeIdentifiers() {
+    return studyProgrammeIdentifiers;
+  }
+
+  public void setStudyProgrammeIdentifiers(Set<SchoolDataIdentifier> studyProgrammeIdentifiers) {
+    this.studyProgrammeIdentifiers = studyProgrammeIdentifiers;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;
@@ -209,4 +220,5 @@ public abstract class AbstractUser implements User {
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
   private boolean matriculationEligibility;
+  private Set<SchoolDataIdentifier> studyProgrammeIdentifiers;
 }

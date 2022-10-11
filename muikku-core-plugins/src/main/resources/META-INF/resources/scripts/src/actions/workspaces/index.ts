@@ -51,7 +51,6 @@ import {
 import equals = require("deep-equal");
 import $ from "~/lib/jquery";
 import { UploadingValue } from "~/@types/shared";
-import { Role } from "../../reducers/base/status";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
