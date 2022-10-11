@@ -15,7 +15,7 @@ interface StudyPlanProps {
 
 /**
  * StudyPlan component
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 const StudyPlan: React.FC<StudyPlanProps> = (props) => {

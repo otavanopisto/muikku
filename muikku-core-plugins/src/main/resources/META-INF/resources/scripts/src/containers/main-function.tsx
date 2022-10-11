@@ -87,7 +87,6 @@ import {
   setLocationToInfoInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
-import { updateVops } from "~/actions/main-function/vops";
 import { updateHops } from "~/actions/main-function/hops";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
 import {
@@ -320,11 +319,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords() as Action
       );
-    } else if (givenLocation === "vops") {
-      this.props.store.dispatch(
-        setLocationToVopsInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(updateVops() as Action);
     } else if (givenLocation === "hops") {
       this.props.store.dispatch(
         setLocationToHopsInTranscriptOfRecords() as Action
