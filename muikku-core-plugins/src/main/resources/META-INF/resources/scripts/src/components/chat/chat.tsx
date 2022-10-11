@@ -255,37 +255,37 @@ class Chat extends React.Component<IChatProps, IChatState> {
         const councelGroups = studentsUserGroups.filter(
           (studentsUserGroup) => studentsUserGroup.isGuidanceGroup == true
         );
-
-        await Promise.all(
-          councelGroups.map(async (studentsUserGroup) => {
-            await promisify(
-              mApi().usergroup.groups.staffMembers.read(studentsUserGroup.id, {
-                properties:
-                  "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
-              }),
-              "callback"
-            )().then((result: SummaryStudentsGuidanceCouncelorsType[]) => {
-              result.forEach((studentsGuidanceCouncelor) => {
-                if (
-                  !studentsGuidanceCouncelors.some(
-                    (existingStudentCouncelor) =>
-                      existingStudentCouncelor.userEntityId ===
-                      studentsGuidanceCouncelor.userEntityId
-                  )
-                ) {
-                  studentsGuidanceCouncelors.push(studentsGuidanceCouncelor);
-                }
-              });
-            });
-          })
-        );
+        // This is removed on the request from councelors. Will be implemented later
+        // await Promise.all(
+        //   councelGroups.map(async (studentsUserGroup) => {
+        //     await promisify(
+        //       mApi().usergroup.groups.staffMembers.read(studentsUserGroup.id, {
+        //         properties:
+        //           "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
+        //       }),
+        //       "callback"
+        //     )().then((result: SummaryStudentsGuidanceCouncelorsType[]) => {
+        //       result.forEach((studentsGuidanceCouncelor) => {
+        //         if (
+        //           !studentsGuidanceCouncelors.some(
+        //             (existingStudentCouncelor) =>
+        //               existingStudentCouncelor.userEntityId ===
+        //               studentsGuidanceCouncelor.userEntityId
+        //           )
+        //         ) {
+        //           studentsGuidanceCouncelors.push(studentsGuidanceCouncelor);
+        //         }
+        //       });
+        //     });
+        //   })
+        // );
       }
 
-      studentsGuidanceCouncelors.sort((x, y) => {
-        const a = x.lastName.toUpperCase(),
-          b = y.lastName.toUpperCase();
-        return a == b ? 0 : a > b ? 1 : -1;
-      });
+      // studentsGuidanceCouncelors.sort((x, y) => {
+      //   const a = x.lastName.toUpperCase(),
+      //     b = y.lastName.toUpperCase();
+      //   return a == b ? 0 : a > b ? 1 : -1;
+      // });
 
       this.setState({
         studyGuiders: studentsGuidanceCouncelors,
