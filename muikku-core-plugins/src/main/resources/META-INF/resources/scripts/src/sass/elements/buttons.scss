@@ -1769,6 +1769,16 @@
   }
 }
 
+.button-pill--material-editor-members-only {
+  background: $color-tertiary;
+  border-color: $color-tertiary;
+
+  &:hover {
+    background: $color-tertiary;
+    border-color: $color-tertiary;
+  }
+}
+
 .button-pill--material-editor-always-show {
   background: $color-material-page-admin-panel-always-show-answers-color;
   border-color: $color-material-page-admin-panel-always-show-answers-color;

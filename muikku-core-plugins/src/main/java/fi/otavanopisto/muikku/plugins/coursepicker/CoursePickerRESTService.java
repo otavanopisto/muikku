@@ -649,13 +649,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   
 
   private boolean getIsAlreadyOnWorkspace(WorkspaceEntity workspaceEntity) {
-    if (sessionController.isLoggedIn()) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-      return workspaceUserEntity != null;
-    }
-    else {
-      return false;
-    }
+    return sessionController.isLoggedIn() ? workspaceUserEntityController.isWorkspaceMember(sessionController.getLoggedUser(), workspaceEntity) : false;
   }
   
   private boolean getCanSignup(WorkspaceEntity workspaceEntity) {
