@@ -156,7 +156,8 @@ export const WorkspaceJournalCommentList: React.FC<
             alignItems: "center",
           }}
         >
-          {showComments ? "Piilota kommentit (XX)" : "Näytä kommentit (XX)"}
+          {props.i18n.text.get("plugin.workspace.journal.entry.comments.title")}{" "}
+          (666)
           <div className="icon-arrow-right" />
         </div>
       </div>
