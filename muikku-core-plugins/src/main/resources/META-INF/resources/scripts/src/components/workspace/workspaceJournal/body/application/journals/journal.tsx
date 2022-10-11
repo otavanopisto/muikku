@@ -95,20 +95,14 @@ class Journal extends React.Component<JournalProps, JournalState> {
         {this.props.journal.userEntityId === this.props.status.userId ? (
           <ApplicationListItemFooter className="application-list__item-footer--journal-entry">
             <EditJournal journal={this.props.journal}>
-              <Link
-                as="span"
-                className="link link--application-list-item-footer"
-              >
+              <Link as="span" className="link link--application-list">
                 {this.props.i18n.text.get(
                   "plugin.workspace.journal.editEntryButton.label"
                 )}
               </Link>
             </EditJournal>
             <DeleteJournal journal={this.props.journal}>
-              <Link
-                as="span"
-                className="link link--application-list-item-footer"
-              >
+              <Link as="span" className="link link--application-list">
                 {this.props.i18n.text.get(
                   "plugin.workspace.journal.deleteEntryButton.label"
                 )}

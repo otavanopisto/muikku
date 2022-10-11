@@ -138,10 +138,17 @@
   }
 }
 
-.toc__section-container--view-restricted .toc__section-title,
-.toc__item--view-restricted {
+.toc__section-container--view-restricted-to-logged-in .toc__section-title,
+.toc__item--view-restricted-to-logged-in {
   .toc__icon {
     background: $color-view-restricted;
+  }
+}
+
+.toc__section-container--view-restricted-to-members .toc__section-title,
+.toc__item--view-restricted-to-members {
+  .toc__icon {
+    background: $color-tertiary;
   }
 }
 

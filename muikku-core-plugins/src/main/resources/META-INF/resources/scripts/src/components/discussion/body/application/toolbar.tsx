@@ -21,6 +21,12 @@ import {
   ApplicationPanelToolbarActionsMain,
 } from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
+import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
+import {
+  ShowOnlySubscribedThreads,
+  showOnlySubscribedThreads,
+} from "~/actions/discussion/index";
 
 /**
  * DiscussionToolbarProps
@@ -29,6 +35,7 @@ interface DiscussionToolbarProps {
   i18n: i18nType;
   discussion: DiscussionType;
   status: StatusType;
+  showOnlySubscribedThreads: ShowOnlySubscribedThreads;
 }
 
 /**
@@ -45,7 +52,7 @@ class CommunicatorToolbar extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: DiscussionToolbarProps) {
     super(props);
@@ -55,14 +62,16 @@ class CommunicatorToolbar extends React.Component<
   }
 
   /**
-   * @param e
+   * onSelectChange
+   * @param e e
    */
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
     window.location.hash = e.target.value;
   }
 
   /**
-   * @param e
+   * onGoBackClick
+   * @param e e
    */
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
     //TODO this is a retarded way to do things if we ever update to a SPA
@@ -86,6 +95,21 @@ class CommunicatorToolbar extends React.Component<
   }
 
   /**
+   * selectValue
+   */
+  selectValue = () => {
+    const location = window.location.hash.replace("#", "").split("/");
+
+    if (location.includes("subs")) {
+      return "subs";
+    } else if (this.props.discussion.areaId) {
+      return this.props.discussion.areaId;
+    } else {
+      return "";
+    }
+  };
+
+  /**
    * render
    */
   render() {
@@ -94,26 +118,28 @@ class CommunicatorToolbar extends React.Component<
         (area) => area.id === this.props.discussion.current.forumAreaId
       );
       return (
-        <div className="application-panel__toolbar">
-          <ButtonPill
-            buttonModifiers="go-back"
-            onClick={this.onGoBackClick}
-            icon="back"
-          />
-          <div className="breadcrumb">
-            <div
-              className={`breadcrumb__item breadcrumb__item--area-${currentArea.id}`}
-            >
-              {currentArea.name}
+        <ApplicationPanelToolbar>
+          <ApplicationPanelToolbarActionsMain>
+            <ButtonPill
+              buttonModifiers="go-back"
+              onClick={this.onGoBackClick}
+              icon="back"
+            />
+            <div className="breadcrumb">
+              <div
+                className={`breadcrumb__item breadcrumb__item--area-${currentArea.id}`}
+              >
+                {currentArea.name}
+              </div>
+              <div className="breadcrumb__arrow">
+                <span className="icon-arrow-right"></span>
+              </div>
+              <div className="breadcrumb__item">
+                {this.props.discussion.current.title}
+              </div>
             </div>
-            <div className="breadcrumb__arrow">
-              <span className="icon-arrow-right"></span>
-            </div>
-            <div className="breadcrumb__item">
-              {this.props.discussion.current.title}
-            </div>
-          </div>
-        </div>
+          </ApplicationPanelToolbarActionsMain>
+        </ApplicationPanelToolbar>
       );
     }
 
@@ -123,6 +149,7 @@ class CommunicatorToolbar extends React.Component<
           {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ? (
             <NewArea>
               <ButtonPill
+                disabled={this.props.discussion.subscribedThreadOnly}
                 icon="plus"
                 buttonModifiers={["discussion-toolbar"]}
               />
@@ -131,7 +158,10 @@ class CommunicatorToolbar extends React.Component<
           {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ? (
             <ModifyArea>
               <ButtonPill
-                disabled={!this.props.discussion.areaId}
+                disabled={
+                  !this.props.discussion.areaId ||
+                  this.props.discussion.subscribedThreadOnly
+                }
                 icon="pencil"
                 buttonModifiers={["discussion-toolbar"]}
               />
@@ -140,7 +170,10 @@ class CommunicatorToolbar extends React.Component<
           {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? (
             <DeleteArea>
               <ButtonPill
-                disabled={!this.props.discussion.areaId}
+                disabled={
+                  !this.props.discussion.areaId ||
+                  this.props.discussion.subscribedThreadOnly
+                }
                 icon="trash"
                 buttonModifiers={["discussion-toolbar"]}
               />
@@ -154,10 +187,15 @@ class CommunicatorToolbar extends React.Component<
               id="discussionAreaSelect"
               className="form-element__select form-element__select--toolbar-selector"
               onChange={this.onSelectChange}
-              value={this.props.discussion.areaId || ""}
+              value={this.selectValue()}
             >
               <option value="">
                 {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
+              </option>
+              <option value="subs">
+                {this.props.i18n.text.get(
+                  "plugin.discussion.browseareas.subscribtions"
+                )}
               </option>
               {this.props.discussion.areas.map((area) => (
                 <option key={area.id} value={area.id}>
@@ -188,8 +226,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    {
+      showOnlySubscribedThreads,
+    },
+    dispatch
+  );
 }
 
 export default connect(

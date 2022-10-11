@@ -51,6 +51,8 @@ import {
   loadDiscussionThreadsFromServer,
   loadDiscussionThreadFromServer,
   setDiscussionWorkpaceId,
+  loadSubscribedDiscussionThreadList,
+  showOnlySubscribedThreads,
 } from "~/actions/discussion";
 
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
@@ -277,7 +279,7 @@ export default class Workspace extends React.Component<
 
   /**
    * onWorkspaceMaterialsBodyActiveNodeIdChange
-   * @param newId
+   * @param newId newId
    */
   onWorkspaceMaterialsBodyActiveNodeIdChange(newId: number) {
     const state: StateType = this.props.store.getState();
@@ -352,7 +354,7 @@ export default class Workspace extends React.Component<
 
   /**
    * onWorkspaceHelpBodyActiveNodeIdChange
-   * @param newId
+   * @param newId newId
    */
   onWorkspaceHelpBodyActiveNodeIdChange(newId: number) {
     const state: StateType = this.props.store.getState();
@@ -449,7 +451,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceHelp
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceHelp(props: RouteComponentProps<any>) {
@@ -509,7 +511,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceDiscussions
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceDiscussions(props: RouteComponentProps<any>) {
@@ -540,9 +542,14 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setDiscussionWorkpaceId(state.status.currentWorkspaceId) as Action
       );
+
+      // Load subscribed threads every time
+      this.props.store.dispatch(
+        loadSubscribedDiscussionThreadList({}) as Action
+      );
+
       this.props.store.dispatch(
         loadDiscussionAreasFromServer(() => {
-          //here in the callback
           const currentLocation = window.location.hash
             .replace("#", "")
             .split("/");

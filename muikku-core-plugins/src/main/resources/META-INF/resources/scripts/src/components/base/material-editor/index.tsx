@@ -19,6 +19,7 @@ import {
   WorkspaceMaterialEditorType,
   WorkspaceType,
   MaterialContentNodeType,
+  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -37,6 +38,7 @@ import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import { PageLocation, UploadingValue } from "~/@types/shared";
+import { AnyActionType } from "~/actions";
 
 /**
  * MaterialEditorProps
@@ -226,8 +228,8 @@ class MaterialEditor extends React.Component<
   constructor(props: MaterialEditorProps) {
     super(props);
     this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
-    this.toggleViewRestrictionStatus =
-      this.toggleViewRestrictionStatus.bind(this);
+    this.cycleViewRestrictionStatus =
+      this.cycleViewRestrictionStatus.bind(this);
     this.cycleAssignmentType = this.cycleAssignmentType.bind(this);
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
@@ -310,17 +312,23 @@ class MaterialEditor extends React.Component<
   }
 
   /**
-   * toggleViewRestrictionStatus
+   * cycleViewRestrictionStatus
    */
-  toggleViewRestrictionStatus() {
+  cycleViewRestrictionStatus() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
         viewRestrict:
-          this.props.editorState.currentDraftNodeValue.viewRestrict === "NONE"
-            ? "LOGGED_IN"
-            : "NONE",
+          this.props.editorState.currentDraftNodeValue.viewRestrict ===
+          MaterialViewRestriction.NONE
+            ? MaterialViewRestriction.WORKSPACE_MEMBERS
+            : this.props.editorState.currentDraftNodeValue.viewRestrict ===
+              MaterialViewRestriction.WORKSPACE_MEMBERS
+            ? MaterialViewRestriction.LOGGED_IN
+            : this.props.editorState.currentDraftNodeValue.viewRestrict ===
+                MaterialViewRestriction.LOGGED_IN &&
+              MaterialViewRestriction.NONE,
       },
       isDraft: true,
     });
@@ -520,30 +528,66 @@ class MaterialEditor extends React.Component<
   /**
    * Builds locale string depending what page component is used
    * and if page is already view restricted
-   * @param isRestricted isRestricted
+   * @param viewRestriction viewRestriction
    * @returns localeString
    */
-  buildRestrictViewLocale = (isRestricted: boolean): string => {
+  buildRestrictViewLocale = (
+    viewRestriction: MaterialViewRestriction
+  ): string => {
     let localeString: string;
     switch (this.props.locationPage) {
-      case "Help":
-        localeString = isRestricted
-          ? this.props.i18n.text.get(
+      case "Help": {
+        switch (viewRestriction) {
+          case MaterialViewRestriction.NONE:
+            localeString = this.props.i18n.text.get(
+              "plugin.workspace.helpManagement.enableViewRestrictionToMembersPageTooltip"
+            );
+            break;
+
+          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+            localeString = this.props.i18n.text.get(
+              "plugin.workspace.helpManagement.enableViewRestrictionToLoggedInPageTooltip"
+            );
+            break;
+
+          case MaterialViewRestriction.LOGGED_IN:
+            localeString = this.props.i18n.text.get(
               "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
-            )
-          : this.props.i18n.text.get(
-              "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip"
             );
+            break;
+
+          default:
+            break;
+        }
+
         break;
-      case "Materials":
-        localeString = isRestricted
-          ? this.props.i18n.text.get(
+      }
+      case "Materials": {
+        switch (viewRestriction) {
+          case MaterialViewRestriction.NONE:
+            localeString = this.props.i18n.text.get(
+              "plugin.workspace.materialsManagement.enableViewRestrictionToMembersPageTooltip"
+            );
+            break;
+
+          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+            localeString = this.props.i18n.text.get(
+              "plugin.workspace.materialsManagement.enableViewRestrictionToLoggedInPageTooltip"
+            );
+            break;
+
+          case MaterialViewRestriction.LOGGED_IN:
+            localeString = this.props.i18n.text.get(
               "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
-            )
-          : this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip"
             );
+            break;
+
+          default:
+            break;
+        }
+
         break;
+      }
       default:
         localeString = "";
         break;
@@ -689,12 +733,17 @@ class MaterialEditor extends React.Component<
       "type",
       "viewRestrict",
     ];
+
     let canPublish = false;
     for (const point of comparerPoints) {
       if (
         !equals(
-          (this.props.editorState.currentNodeValue as any)[point],
-          (this.props.editorState.currentDraftNodeValue as any)[point]
+          this.props.editorState.currentNodeValue[
+            point as keyof MaterialContentNodeType
+          ],
+          this.props.editorState.currentDraftNodeValue[
+            point as keyof MaterialContentNodeType
+          ]
         )
       ) {
         canPublish = true;
@@ -726,16 +775,26 @@ class MaterialEditor extends React.Component<
       hideShowButtonModifiers.push("material-editor-enabled");
     }
 
-    const isViewRestricted =
-      this.props.editorState.currentDraftNodeValue.viewRestrict === "LOGGED_IN";
     const viewRestrictionButtonModifiers = [
       "material-editor-restrict-page",
       "material-editor",
     ];
-    if (isViewRestricted) {
-      viewRestrictionButtonModifiers.push("material-editor-disabled");
-    } else {
-      viewRestrictionButtonModifiers.push("material-editor-enabled");
+
+    switch (this.props.editorState.currentDraftNodeValue.viewRestrict) {
+      case MaterialViewRestriction.NONE:
+        viewRestrictionButtonModifiers.push("material-editor-enabled");
+        break;
+
+      case MaterialViewRestriction.LOGGED_IN:
+        viewRestrictionButtonModifiers.push("material-editor-disabled");
+        break;
+
+      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        viewRestrictionButtonModifiers.push("material-editor-members-only");
+        break;
+
+      default:
+        break;
     }
 
     const exerciseRevealType =
@@ -767,8 +826,9 @@ class MaterialEditor extends React.Component<
             "plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"
           );
 
-    const canRestrictViewLocale =
-      this.buildRestrictViewLocale(isViewRestricted);
+    const canRestrictViewLocale = this.buildRestrictViewLocale(
+      this.props.editorState.currentDraftNodeValue.viewRestrict
+    );
 
     const editorButtonSet = (
       <div className="material-editor__buttonset">
@@ -805,7 +865,7 @@ class MaterialEditor extends React.Component<
               <ButtonPill
                 buttonModifiers={viewRestrictionButtonModifiers}
                 icon="restriction"
-                onClick={this.toggleViewRestrictionStatus}
+                onClick={this.cycleViewRestrictionStatus}
               />
             </Dropdown>
           ) : null}
@@ -1037,9 +1097,6 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),
-        /**
-         * component
-         */
         component: (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
@@ -1126,7 +1183,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,
