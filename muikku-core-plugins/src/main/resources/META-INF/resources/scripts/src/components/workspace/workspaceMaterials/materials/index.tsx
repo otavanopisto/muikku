@@ -14,6 +14,7 @@ import {
   MaterialContentNodeType,
   MaterialCompositeRepliesListType,
   WorkspaceEditModeStateType,
+  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 
 import ContentPanel, {
@@ -35,13 +36,14 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
-import DisconnectedWarningDialog from "~/components/base/disconnect-warning";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * WorkspaceMaterialsProps
  */
 interface WorkspaceMaterialsProps {
   i18n: i18nType;
+  status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
   materialReplies: MaterialCompositeRepliesListType;
@@ -50,8 +52,6 @@ interface WorkspaceMaterialsProps {
   workspaceEditMode: WorkspaceEditModeStateType;
   onActiveNodeIdChange: (activeNodeId: number) => any;
   onOpenNavigation: () => any;
-  isLoggedIn: boolean;
-
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -425,6 +425,30 @@ class WorkspaceMaterials extends React.Component<
   }
 
   /**
+   * buildViewRestrictionLocaleString
+   * @param viewRestrict viewRestrict
+   * @returns locale string
+   */
+  buildViewRestrictionLocaleString = (
+    viewRestrict: MaterialViewRestriction
+  ) => {
+    switch (viewRestrict) {
+      case MaterialViewRestriction.LOGGED_IN:
+        return this.props.i18n.text.get(
+          "plugin.workspace.materialViewRestricted"
+        );
+
+      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        return this.props.i18n.text.get(
+          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  /**
    * render
    */
   render() {
@@ -467,9 +491,16 @@ class WorkspaceMaterials extends React.Component<
       ) : null;
 
     const results: any = [];
+
+    const hideRestrictedMaterial =
+      (this.props.status.isStudent &&
+        !this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT) ||
+      !this.props.status.loggedIn;
+
     this.props.materials.forEach((section, index) => {
       const isSectionViewRestricted =
-        section.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn;
+        section.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
+        section.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
 
       if (index === 0 && isEditable) {
         results.push(
@@ -553,8 +584,6 @@ class WorkspaceMaterials extends React.Component<
         if (isSectionViewRestricted) {
           return;
         }
-        const materialIsViewRestricted =
-          node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn;
 
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
@@ -647,7 +676,7 @@ class WorkspaceMaterials extends React.Component<
                 materialContentNode={node}
                 workspace={this.props.workspace}
                 compositeReplies={compositeReplies}
-                isViewRestricted={materialIsViewRestricted}
+                isViewRestricted={false}
                 showEvenIfHidden={showEvenIfHidden}
               />
             </ContentPanelItem>
@@ -716,13 +745,12 @@ class WorkspaceMaterials extends React.Component<
               {section.title}
             </div>
           </h2>
-          {isSectionViewRestricted ? (
+
+          {isSectionViewRestricted && hideRestrictedMaterial ? (
             <div className="content-panel__item">
               <article className="material-page">
                 <div className="material-page__content material-page__content--view-restricted">
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.materialViewRestricted"
-                  )}
+                  {this.buildViewRestrictionLocaleString(section.viewRestrict)}
                 </div>
               </article>
             </div>
@@ -746,22 +774,18 @@ class WorkspaceMaterials extends React.Component<
       ) : null;
 
     return (
-      <div className="content-panel-wrapper">
-        <ContentPanel
-          aside={progressData}
-          onOpenNavigation={this.onOpenNavigation}
-          modifier="materials"
-          navigation={this.props.navigation}
-          title={this.props.i18n.text.get(
-            "plugin.workspace.materials.pageTitle"
-          )}
-          ref="content-panel"
-        >
-          {results}
-          {emptyMessage}
-          {createSectionElementWhenEmpty}
-        </ContentPanel>
-      </div>
+      <ContentPanel
+        aside={progressData}
+        onOpenNavigation={this.onOpenNavigation}
+        modifier="materials"
+        navigation={this.props.navigation}
+        title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")}
+        ref="content-panel"
+      >
+        {results}
+        {emptyMessage}
+        {createSectionElementWhenEmpty}
+      </ContentPanel>
     );
   }
 }
@@ -773,12 +797,12 @@ class WorkspaceMaterials extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    status: state.status,
     workspace: state.workspaces.currentWorkspace,
     materials: state.workspaces.currentMaterials,
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
-    isLoggedIn: state.status.loggedIn,
   };
 }
 

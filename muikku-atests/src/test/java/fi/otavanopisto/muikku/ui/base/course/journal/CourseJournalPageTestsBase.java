@@ -33,8 +33,8 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
-        waitForPresent(".application-panel--workspace-journal select.form-element__select");
-        assertVisible(".application-panel--workspace-journal select.form-element__select");
+        waitForPresent(".application-panel__actions-aside select.form-element__select");
+        assertVisible(".application-panel__actions-aside select.form-element__select");
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -65,7 +65,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitAndClick(".application-panel--workspace-journal .button--primary-function");
+        waitAndClick(".application-panel__actions-aside .button--primary-function");
         addTextToCKEditor("content");
         sendKeys(".env-dialog__input--new-edit-journal-title", "title");
         click(".button--dialog-execute");
@@ -73,8 +73,8 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
         assertText(".application-list__item-header-main-content--journal-entry-title", "title");
         waitForPresent(".application-list__item-content-body--journal-entry>p");
         assertText(".application-list__item-content-body--journal-entry>p", "content");
-        waitForVisibleXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Muokkaa')]");
-        waitForVisibleXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Poista')]");
+        waitForVisibleXPath("//span[@class='link link--application-list' and contains(text(),'Muokkaa')]");
+        waitForVisibleXPath("//span[@class='link link--application-list' and contains(text(),'Poista')]");
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -104,7 +104,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitAndClick(".application-panel--workspace-journal .button--primary-function");
+        waitAndClick(".application-panel__actions-aside .button--primary-function");
         addTextToCKEditor("content");
         sendKeys(".env-dialog__input--new-edit-journal-title", "title");
         click(".button--dialog-execute");
@@ -113,7 +113,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-content-body--journal-entry>p");
         assertText(".application-list__item-content-body--journal-entry>p", "content");
         waitForNotPresent(".env-dialog--new-edit-journal .env-dialog__wrapper");
-        waitAndClickXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Poista')]");
+        waitAndClickXPath("//span[@class='link link--application-list' and contains(text(),'Poista')]");
         waitForVisible(".dialog--delete-journal");
         waitAndClick(".dialog--delete-journal .button--standard-ok");
         waitForNotVisible(".dialog--delete-journal");
@@ -147,7 +147,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitAndClick(".application-panel--workspace-journal .button--primary-function");
+        waitAndClick(".application-panel__actions-aside .button--primary-function");
         addTextToCKEditor("content");
         sendKeys(".env-dialog__input--new-edit-journal-title", "title");
         click(".button--dialog-execute");
@@ -156,7 +156,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-content-body--journal-entry>p");
         assertText(".application-list__item-content-body--journal-entry>p", "content");
         waitForNotPresent(".env-dialog--new-edit-journal .env-dialog__wrapper");
-        waitAndClickXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Muokkaa')]");
+        waitAndClickXPath("//span[@class='link link--application-list' and contains(text(),'Muokkaa')]");
         addToEndCKEditor(" More text.");
         click(".button--dialog-execute");
         waitForNotVisible(".env-dialog__wrapper");

@@ -110,17 +110,14 @@ class CoursepickerApplication extends React.Component<
       </div>
     );
     return (
-      <div className="application-panel-wrapper">
-        <ApplicationPanel
-          modifier="coursepicker"
-          toolbar={toolbar}
-          title={title}
-          asideBefore={this.props.aside}
-          primaryOption={primaryOption}
-        >
-          <CoursepickerWorkspaces />
-        </ApplicationPanel>
-      </div>
+      <ApplicationPanel
+        toolbar={toolbar}
+        title={title}
+        asideBefore={this.props.aside}
+        primaryOption={primaryOption}
+      >
+        <CoursepickerWorkspaces />
+      </ApplicationPanel>
     );
   }
 }

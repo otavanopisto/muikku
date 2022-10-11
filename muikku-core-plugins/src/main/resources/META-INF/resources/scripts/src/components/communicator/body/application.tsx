@@ -109,9 +109,8 @@ class CommunicatorApplication extends React.Component<
 
     //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
     return (
-      <div className="application-panel-wrapper">
+      <>
         <ApplicationPanel
-          modifier="communicator"
           toolbar={toolbar}
           title={title}
           icon={icon}
@@ -128,7 +127,7 @@ class CommunicatorApplication extends React.Component<
         <NewMessage>
           <HoverButton icon="plus" modifier="new-message" />
         </NewMessage>
-      </div>
+      </>
     );
   }
 }

@@ -1014,9 +1014,13 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) ||
         !isEqualDateTime(workspace.getEndDate(), payload.getEndDate()) ||
+        !isEqualDateTime(workspace.getSignupStart(), payload.getSignupStart()) ||
+        !isEqualDateTime(workspace.getSignupEnd(), payload.getSignupEnd()) ||
         !Objects.equals(typeIdentifier, workspace.getWorkspaceTypeId())) {
       workspace.setBeginDate(payload.getBeginDate());
       workspace.setEndDate(payload.getEndDate());
+      workspace.setSignupStart(payload.getSignupStart());
+      workspace.setSignupEnd(payload.getSignupEnd());
       workspace.setWorkspaceTypeId(typeIdentifier);
       workspaceController.updateWorkspace(workspace);
     }
@@ -1191,6 +1195,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizationEntityController.listUnarchived(),            // organizations
+        null,                                                     // study programme identifiers
         searchString,                                             // search string
         fields,                                                   // fields
         null,                                                     // environment role
@@ -1293,6 +1298,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizationEntityController.listUnarchived(),            // organizations
+        null,                                                     // study programme identifiers
         null,                                                     // search string
         null,                                                     // fields
         environmentRoleArchetypes,                                // all staff archetypes
@@ -2827,6 +2833,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizations,                                            // organizations
+        null,                                                     // study programme identifiers
         null,                                                     // search string
         null,                                                     // fields
         null,                                                     // environment roles

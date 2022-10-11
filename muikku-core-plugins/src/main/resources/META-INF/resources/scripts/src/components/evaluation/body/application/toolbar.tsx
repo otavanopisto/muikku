@@ -5,7 +5,10 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/evaluation.scss";
 import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import { ApplicationPanelToolbar } from "~/components/general/application-panel/application-panel";
+import {
+  ApplicationPanelToolbar,
+  ApplicationPanelToolbarActionsMain,
+} from "~/components/general/application-panel/application-panel";
 import { SearchFormElement } from "~/components/general/form-element";
 import { bindActionCreators } from "redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
@@ -138,18 +141,22 @@ class EvaluationToolbar extends React.Component<
 
     return (
       <ApplicationPanelToolbar>
-        <SearchFormElement
-          updateField={this.handleSearchFormElementChange}
-          name="guider-search"
-          id="searchUsers"
-          placeholder={this.props.i18n.text.get("plugin.evaluation.freeSearch")}
-          value={this.props.evaluations.evaluationSearch}
-        />
-        {this.props.evaluations.selectedWorkspaceId ? (
-          <Dropdown items={checkboxes}>
-            <ButtonPill buttonModifiers="filter" icon="filter" />
-          </Dropdown>
-        ) : null}
+        <ApplicationPanelToolbarActionsMain>
+          <SearchFormElement
+            updateField={this.handleSearchFormElementChange}
+            name="guider-search"
+            id="searchUsers"
+            placeholder={this.props.i18n.text.get(
+              "plugin.evaluation.freeSearch"
+            )}
+            value={this.props.evaluations.evaluationSearch}
+          />
+          {this.props.evaluations.selectedWorkspaceId ? (
+            <Dropdown items={checkboxes}>
+              <ButtonPill buttonModifiers="filter" icon="filter" />
+            </Dropdown>
+          ) : null}
+        </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>
     );
   }

@@ -43,7 +43,9 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 // TODO Should probably be split or renamed WorkspaceNodeController
 public class WorkspaceMaterialController {
@@ -60,6 +62,9 @@ public class WorkspaceMaterialController {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+  
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
 
@@ -904,14 +909,14 @@ public class WorkspaceMaterialController {
 
   private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean includeHidden,
       WorkspaceNode nextSibling) throws WorkspaceMaterialException {
-    boolean viewRestricted = false;
     switch (rootMaterialNode.getType()) {
     case FOLDER:
       WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
       ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", null,
           rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(),
           nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null,
-          workspaceFolder.getPath(), null, Collections.emptyList(), workspaceFolder.getViewRestrict());
+          workspaceFolder.getPath(), null, Collections.emptyList(), workspaceFolder.getViewRestrict(), 
+          false);
       List<WorkspaceNode> children = includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
           : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
       List<FlattenedWorkspaceNode> flattenedChildren;
@@ -932,7 +937,7 @@ public class WorkspaceMaterialController {
           contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null,
               child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(),
               child.hidden, null, child.node.getPath(), null, Collections.emptyList(),
-              MaterialViewRestrict.NONE);
+              MaterialViewRestrict.NONE, false);
         }
         else {
           contentNode = createContentNode(child.node, child.level, includeHidden, child.nextSibling);
@@ -948,22 +953,55 @@ public class WorkspaceMaterialController {
           : material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContentType() : null;
 
       String html;
-      viewRestricted = !sessionController.isLoggedIn() && material.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
-      if (!viewRestricted) {
-        html = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml() : null;
-      }
-      else {
-        html = String.format("<p class=\"content-view-restricted-message\">%s</p>",
-            localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestricted"));
-      }
+      boolean materialContentHiddenForUser;
+      
+      switch (material.getViewRestrict()) {
+        case LOGGED_IN:
+          if (sessionController.isLoggedIn()) {
+            materialContentHiddenForUser = false;
+            html = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml() : null;
+          }
+          else {
+            materialContentHiddenForUser = true;
+            html = String.format("<p class=\"content-view-restricted-message\">%s</p>",
+                localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestricted"));
+          }
+        break;
+        case WORKSPACE_MEMBERS:
+          /**
+           * Workspace members visibility: show when the logged user is a member of the workspace 
+           * (implies logged in) or if the logged user is able to manage materials.
+           */
+          boolean hasWorkspaceMemberVisibility = sessionController.isLoggedIn() && 
+            (
+                workspaceUserEntityController.isWorkspaceMember(sessionController.getLoggedUser(), findWorkspaceEntityByNode(workspaceMaterial)) ||
+                sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)
+            );
 
+          if (hasWorkspaceMemberVisibility) {
+            materialContentHiddenForUser = false;
+            html = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml() : null;
+          }
+          else {
+            materialContentHiddenForUser = true;
+            html = String.format("<p class=\"content-view-restricted-message\">%s</p>",
+                localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestrictedToWorkspaceMembers"));
+          }
+        break;
+        default:
+          materialContentHiddenForUser = false;
+          html = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml() : null;
+        break;
+      }
+      
       nextSibling = findWorkspaceNodeNextSibling(workspaceMaterial);
 
       return new ContentNode(workspaceMaterial.getTitle(), material.getType(), contentType, rootMaterialNode.getId(),
           material.getId(), level, workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(),
           workspaceMaterial.getParent().getId(), nextSibling == null ? null : nextSibling.getId(),
           workspaceMaterial.getHidden(), html, workspaceMaterial.getPath(),
-          material.getLicense(), createRestModel(materialController.listMaterialProducers(material)), material.getViewRestrict());
+          material.getLicense(), createRestModel(materialController.listMaterialProducers(material)), 
+          material.getViewRestrict(), materialContentHiddenForUser);
     default:
       return null;
     }

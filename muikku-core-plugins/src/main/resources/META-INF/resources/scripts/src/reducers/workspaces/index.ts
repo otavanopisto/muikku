@@ -295,6 +295,8 @@ export interface UserSelectType {
 export interface WorkspaceDetailsType {
   beginDate: string;
   endDate: string;
+  signupStart: string;
+  signupEnd: string;
   externalViewUrl: string;
   typeId: string;
   rootFolderId: number;
@@ -623,15 +625,24 @@ export interface MaterialContentNodeProducerType {
 }
 
 /**
+ * MaterialViewRestriction
+ */
+export enum MaterialViewRestriction {
+  NONE = "NONE",
+  LOGGED_IN = "LOGGED_IN",
+  WORKSPACE_MEMBERS = "WORKSPACE_MEMBERS",
+}
+
+/**
  * MaterialContentNodeType
  */
 export interface MaterialContentNodeType {
   title: string;
   license: string;
-  viewRestrict: string;
+  viewRestrict: MaterialViewRestriction;
   html: string;
   contentType: string;
-
+  contentHiddenForUser: boolean;
   //Standard Fields (only available when loaded through materials rest endpoint)
   id?: number;
 

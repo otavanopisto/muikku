@@ -702,13 +702,13 @@ export const messages: Reducer<MessagesType> = (
     }
 
     case "UPDATE_MESSAGES_SIGNATURE": {
-      if (!state.currentThread) {
-        return state;
-      }
       return { ...state, signature: action.payload };
     }
 
-    case "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD":
+    case "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD": {
+      if (!state.currentThread) {
+        return state;
+      }
       return {
         ...state,
         currentThread: {
@@ -716,6 +716,7 @@ export const messages: Reducer<MessagesType> = (
           messages: state.currentThread.messages.concat([action.payload]),
         },
       };
+    }
 
     case "TOGGLE_ALL_MESSAGE_ITEMS":
       return {

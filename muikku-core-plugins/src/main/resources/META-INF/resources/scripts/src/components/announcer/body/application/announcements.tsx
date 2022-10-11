@@ -140,8 +140,8 @@ class Announcements extends React.Component<
                           if (announcement.workspaces.length !== 0) {
                             return (
                               <span className="label" key={workspace.id}>
-                                <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                                <span className="label__text label__text--announcement-workspace">
+                                <span className="label__icon label__icon--workspace icon-books"></span>
+                                <span className="label__text label__text--workspace">
                                   {workspace.name}{" "}
                                   {workspace.nameExtension
                                     ? "(" + workspace.nameExtension + ")"
@@ -172,7 +172,7 @@ class Announcements extends React.Component<
                       <NewEditAnnouncement announcement={announcement}>
                         <Link
                           tabIndex={0}
-                          className="link link--application-list-item-footer"
+                          className="link link--application-list"
                         >
                           {this.props.i18n.text.get(
                             "plugin.announcer.link.edit"
@@ -183,7 +183,7 @@ class Announcements extends React.Component<
                         <DeleteAnnouncementDialog announcement={announcement}>
                           <Link
                             tabIndex={0}
-                            className="link link--application-list-item-footer"
+                            className="link link--application-list"
                           >
                             {this.props.i18n.text.get(
                               "plugin.announcer.link.delete"

@@ -238,6 +238,18 @@ public class WorkspaceUserEntityController {
     return findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userSchoolDataIdentifier);
   }
 
+  /**
+   * Returns true if given userIdentifier is a user who is a member of given workspaceEntity.
+   * 
+   * @param userIdentifier user
+   * @param workspaceEntity workspace
+   * @return true if user is member of workspace, otherwise false
+   */
+  public boolean isWorkspaceMember(SchoolDataIdentifier userIdentifier, WorkspaceEntity workspaceEntity) {
+    WorkspaceUserEntity workspaceUserEntity = findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userIdentifier);
+    return workspaceUserEntity != null;
+  }
+  
   public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
     SchoolDataIdentifier schoolDataIdentifier = toSchoolDataIdentifier(userEntity);
     List<WorkspaceEntity> result = new ArrayList<>();

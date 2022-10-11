@@ -2,7 +2,7 @@
   body {
     /* stylelint-disable declaration-no-important */
     background-color: $color-default !important;
-    /* stylelint-ensable declaration-no-important */
+    /* stylelint-enable declaration-no-important */
   }
 
   .content-panel__navigation-open,
@@ -15,15 +15,23 @@
     display: none;
   }
 
+  .content-panel__item .material-page,
+  .content-panel__chapter .content-panel__chapter-title {
+    border: 1px solid $color-default;
+  }
+
   .navbar,
   .application-panel__actions {
     position: relative;
   }
 
-  .application-panel-wrapper .application-panel,
-  .reading-panel-wrapper .reading-panel,
-  .content-panel-wrapper .content-panel {
-    padding: 1rem 0 0;
+  .application-panel,
+  .reading-panel,
+  .content-panel {
+
+    /* stylelint-disable declaration-no-important */
+    padding: 1rem 0 0 !important;
+    /* stylelint-ensable declaration-no-important */
   }
 
   .screen-container .screen-container__wrapper {

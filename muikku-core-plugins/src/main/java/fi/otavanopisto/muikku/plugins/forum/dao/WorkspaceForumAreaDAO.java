@@ -67,4 +67,21 @@ public class WorkspaceForumAreaDAO extends CorePluginsDAO<WorkspaceForumArea> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public WorkspaceForumArea findByAreaId(Long areaId) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceForumArea> criteria = criteriaBuilder.createQuery(WorkspaceForumArea.class);
+    Root<WorkspaceForumArea> root = criteria.from(WorkspaceForumArea.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceForumArea_.id), areaId),
+            criteriaBuilder.equal(root.get(WorkspaceForumArea_.archived), Boolean.FALSE)
+        )
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
 }

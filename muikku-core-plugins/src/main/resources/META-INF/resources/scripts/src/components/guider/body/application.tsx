@@ -57,17 +57,14 @@ class GuiderApplication extends React.Component<
       </div>
     );
     return (
-      <div className="application-panel-wrapper">
-        <ApplicationPanel
-          modifier="guider"
-          primaryOption={primaryOption}
-          toolbar={toolbar}
-          title={title}
-          asideBefore={this.props.aside}
-        >
-          <Students />
-        </ApplicationPanel>
-      </div>
+      <ApplicationPanel
+        primaryOption={primaryOption}
+        toolbar={toolbar}
+        title={title}
+        asideBefore={this.props.aside}
+      >
+        <Students />
+      </ApplicationPanel>
     );
   }
 }
