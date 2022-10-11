@@ -811,10 +811,12 @@
 .application-list__item-header-main-content--journal-entry-title {
   font-size: 0.875rem;
   font-weight: 600;
+  padding: 0 0 10px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.25rem;
     font-weight: 400;
+    padding: 0 10px 0 0;
   }
 }
 
