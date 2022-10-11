@@ -50,7 +50,7 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.CurrentUserSession;
@@ -97,6 +97,9 @@ public class ForumRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
   /**
    * GET mapi().forum.isAvailable
@@ -921,11 +924,9 @@ public class ForumRESTService extends PluginRESTService {
       if (workspaceForumArea != null) {
         WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForumArea.getWorkspace());
         if (workspaceEntity != null) {
-          Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-        
           workspaceEntityId = workspaceEntity.getId();
           workspaceUrlName = workspaceEntity.getUrlName();
-          workspaceName = workspace.getName();
+          workspaceName = workspaceEntityController.getName(workspaceEntity);
         }
       }
     }
