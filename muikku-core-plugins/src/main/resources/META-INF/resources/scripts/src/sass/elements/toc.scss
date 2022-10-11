@@ -115,6 +115,10 @@
   border-color: $color-assignment;
 }
 
+.toc__item--journal {
+  border-color: $color-tertiary;
+}
+
 .toc__item--submitted {
   .toc__icon {
     background: $color-submitted;

@@ -178,7 +178,7 @@ const CKEditorConfig = (
         "muikku-organizerfield",
         "muikku-sorterfield",
         "muikku-mathexercisefield",
-		"muikku-journal",
+        "muikku-journal",
       ],
     },
     {
@@ -330,17 +330,31 @@ class MaterialEditor extends React.Component<
    * cycleAssignmentType
    */
   cycleAssignmentType() {
+    /**
+     * cycleType
+     * @returns assignment type
+     */
+    const cycleType = (): "EXERCISE" | "EVALUATED" | "JOURNAL" | null => {
+      switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
+        case "EXERCISE":
+          return "EVALUATED";
+
+        case "EVALUATED":
+          return "JOURNAL";
+
+        case "JOURNAL":
+          return null;
+
+        default:
+          return "EXERCISE";
+      }
+    };
+
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
-        assignmentType: !this.props.editorState.currentDraftNodeValue
-          .assignmentType
-          ? "EXERCISE"
-          : this.props.editorState.currentDraftNodeValue.assignmentType ===
-            "EXERCISE"
-          ? "EVALUATED"
-          : null,
+        assignmentType: cycleType(),
       },
       isDraft: true,
     });
@@ -620,6 +634,29 @@ class MaterialEditor extends React.Component<
   }
 
   /**
+   * assignmentPageType
+   * @returns assignment page type
+   */
+  assignmentPageType = () => {
+    if (this.props.editorState.currentDraftNodeValue.assignmentType) {
+      switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
+        case "EXERCISE":
+          return "exercise";
+
+        case "EVALUATED":
+          return "assignment";
+
+        case "JOURNAL":
+          return "journal";
+
+        default:
+          return "textual";
+      }
+    }
+    return "textual";
+  };
+
+  /**
    * render
    */
   render() {
@@ -635,13 +672,9 @@ class MaterialEditor extends React.Component<
         />
       );
     }
-    const materialPageType = this.props.editorState.currentDraftNodeValue
-      .assignmentType
-      ? this.props.editorState.currentDraftNodeValue.assignmentType ===
-        "EXERCISE"
-        ? "exercise"
-        : "assignment"
-      : "textual";
+
+    const materialPageType = this.assignmentPageType();
+
     const assignmentPageType = "material-editor-" + materialPageType;
 
     const comparerPoints = [

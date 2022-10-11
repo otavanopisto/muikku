@@ -1695,6 +1695,17 @@
   }
 }
 
+.button-pill--material-editor-journal {
+  background: $color-tertiary;
+  border-color: $color-tertiary;
+  color: $color-default;
+
+  &:hover {
+    background: $color-tertiary;
+    border-color: $color-tertiary;
+  }
+}
+
 .button-pill--material-editor-publish-page {
   background: $color-button-success-background;
   border-color: $color-button-success-background;

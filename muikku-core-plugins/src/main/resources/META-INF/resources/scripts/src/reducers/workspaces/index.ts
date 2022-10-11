@@ -642,7 +642,7 @@ export interface MaterialContentNodeType {
   workspaceMaterialId?: number;
   materialId?: number;
   level?: number;
-  assignmentType?: "EXERCISE" | "EVALUATED";
+  assignmentType?: "EXERCISE" | "EVALUATED" | "JOURNAL";
   correctAnswers?: MaterialCorrectAnswersType;
   hidden?: boolean;
   parentId?: number;

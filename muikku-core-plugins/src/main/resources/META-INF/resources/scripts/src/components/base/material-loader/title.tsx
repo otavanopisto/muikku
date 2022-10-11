@@ -32,14 +32,30 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
     );
   }
 
+  /**
+   * returnMaterialPageType
+   * @returns page type
+   */
+  const returnMaterialPageType = () => {
+    switch (props.material.assignmentType) {
+      case "EXERCISE":
+        return "exercise";
+
+      case "EVALUATED":
+        return "assignment";
+
+      case "JOURNAL":
+        return "journal";
+
+      default:
+        return "textual";
+    }
+  };
+
   /*   const modifiers: Array<string> =
     typeof props.modifiers === "string" ? [props.modifiers] : props.modifiers; */
 
-  const materialPageType = props.material.assignmentType
-    ? props.material.assignmentType === "EXERCISE"
-      ? "exercise"
-      : "assignment"
-    : "textual";
+  const materialPageType = returnMaterialPageType();
 
   return (
     <>
