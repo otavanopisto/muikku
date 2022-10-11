@@ -918,16 +918,14 @@ public class ForumRESTService extends PluginRESTService {
     String workspaceUrlName = null;
     String workspaceName = null;
     
-    if (entity.getForumThread() != null) {
-      WorkspaceForumArea workspaceForumArea = forumController.findByAreaId(entity.getForumThread().getForumArea().getId());
-      
-      if (workspaceForumArea != null) {
-        WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForumArea.getWorkspace());
-        if (workspaceEntity != null) {
-          workspaceEntityId = workspaceEntity.getId();
-          workspaceUrlName = workspaceEntity.getUrlName();
-          workspaceName = workspaceEntityController.getName(workspaceEntity);
-        }
+    WorkspaceForumArea workspaceForumArea = forumController.findByAreaId(entity.getForumThread().getForumArea().getId());
+
+    if (workspaceForumArea != null) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForumArea.getWorkspace());
+      if (workspaceEntity != null) {
+        workspaceEntityId = workspaceEntity.getId();
+        workspaceUrlName = workspaceEntity.getUrlName();
+        workspaceName = workspaceEntityController.getName(workspaceEntity);
       }
     }
     ForumThreadRESTModel threadRest = restModels.restModel(entity.getForumThread());
