@@ -40,6 +40,7 @@ import StudySuggestionMatrix from "./state-of-studies/study-suggestion-matrix";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * StateOfStudiesProps
@@ -447,6 +448,23 @@ class StateOfStudies extends React.Component<
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>
                   {this.props.i18n.text.get("plugin.guider.user.details.tasks")}
+                  <Instructions
+                    modifier="instructions"
+                    alignSelfVertically="top"
+                    openByHover={false}
+                    closeOnClick={true}
+                    closeOnOutsideClick={false}
+                    persistent
+                    content={
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: this.props.i18n.text.get(
+                            "plugin.guider.user.details.tasks.instructions"
+                          ),
+                        }}
+                      />
+                    }
+                  />
                 </ApplicationSubPanel.Header>
                 <ApplicationSubPanel.Body>
                   <Notes

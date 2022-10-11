@@ -27,19 +27,64 @@ type itemType2 = (closeDropdown: () => any) => any;
 /**
  * DropdownProps
  */
-interface DropdownProps {
+export interface DropdownProps {
   modifier?: string;
   children?: React.ReactNode;
+  /**
+   * Using item list as content
+   */
   items?: Array<React.ReactNode | itemType2>;
+  /**
+   * Content to show
+   */
   content?: any;
+  /**
+   * Open content when hovering. If set to false
+   * opens popper when clicking element
+   */
   openByHover?: boolean;
+  /**
+   * Click to show content. Extends hover opening with click also
+   */
   openByHoverIsClickToo?: boolean;
+  /**
+   * Closes popper when clicking outside
+   * @default true
+   */
+  closeOnOutsideClick?: boolean;
+  /**
+   * Closes popper onClick
+   * @default false
+   */
+  closeOnClick?: boolean;
+  /**
+   * Scroll don't close popper. Popper keeps its position
+   * if scrolled
+   */
   persistent?: boolean;
-  onOpen?: () => any;
-  onClose?: () => any;
-  onClick?: () => any;
+  /**
+   * Aligns popper by value horizontally
+   */
   alignSelf?: "left" | "center" | "right";
+  /**
+   * Alings popper content by value vertically
+   */
+  alignSelfVertically?: "top" | "bottom";
+  /**
+   * onOpen
+   */
+  onOpen?: () => any;
+  /**
+   * onClose
+   */
+  onClose?: () => any;
+  /**
+   * onClick
+   */
+  onClick?: () => any;
 }
+
+const offsetValue = 5;
 
 /**
  * DropdownState
@@ -64,6 +109,7 @@ export default class Dropdown extends React.Component<
 > {
   private id: string;
   private isUnmounted = false;
+  private originalPositionTop: number;
 
   /**
    * constructor
@@ -92,11 +138,101 @@ export default class Dropdown extends React.Component<
   }
 
   /**
+   * componentDidMount
+   */
+  componentDidMount(): void {
+    this.props.persistent &&
+      window.addEventListener("scroll", this.handleScroll);
+  }
+
+  /**
    * componentWillUnmount
    */
   componentWillUnmount() {
     this.isUnmounted = true;
+    this.props.persistent &&
+      window.removeEventListener("scroll", this.handleScroll);
   }
+
+  /**
+   * handleScroll
+   * @param event event
+   */
+  handleScroll = (event: WheelEvent) => {
+    if (this.isUnmounted) {
+      return;
+    }
+
+    let activator: any = this.refs["activator"];
+    if (!(activator instanceof HTMLElement)) {
+      activator = findDOMNode(activator);
+    }
+
+    const $target = $(activator);
+    const $dropdown = $(this.refs["dropdown"]);
+    const position = activator.getBoundingClientRect();
+    const windowHeight = $(window).height();
+    const spaceLeftInTop = position.top;
+    const spaceLeftInBottom = windowHeight - position.top - position.height;
+    const notEnoughSpaceInBottom =
+      spaceLeftInBottom < $dropdown.outerHeight() + offsetValue;
+
+    const notEnoughSpaceInTop =
+      spaceLeftInTop < $dropdown.outerHeight() + offsetValue;
+
+    let top = null;
+    let arrowTop = null;
+    let reverseArrow = false;
+
+    if (notEnoughSpaceInBottom) {
+      top = position.top - offsetValue - $dropdown.outerHeight();
+    } else {
+      top = position.top + $target.outerHeight() + offsetValue;
+    }
+
+    switch (this.props.alignSelfVertically) {
+      case "top":
+        top = position.top - offsetValue - $dropdown.outerHeight();
+        arrowTop = $dropdown.outerHeight();
+        reverseArrow = true;
+        if (notEnoughSpaceInTop) {
+          top = position.top + $target.outerHeight() + offsetValue;
+          arrowTop = null;
+          reverseArrow = false;
+        }
+        break;
+
+      case "bottom":
+        top = position.top + $target.outerHeight() + offsetValue;
+        if (notEnoughSpaceInBottom) {
+          top = position.top - offsetValue - $dropdown.outerHeight();
+          arrowTop = $dropdown.outerHeight();
+          reverseArrow = true;
+        }
+        break;
+      default:
+        top = position.top + $target.outerHeight() + offsetValue;
+        if (notEnoughSpaceInBottom) {
+          top = position.top - offsetValue - $dropdown.outerHeight();
+          arrowTop = $dropdown.outerHeight();
+          reverseArrow = true;
+        }
+        break;
+    }
+
+    this.originalPositionTop = window.scrollY;
+
+    const calculation = top - (this.originalPositionTop - window.scrollY);
+
+    this.setState(
+      {
+        top: calculation,
+        arrowTop,
+        reverseArrow,
+      },
+      this.props.onOpen
+    );
+  };
 
   /**
    * onOpen
@@ -120,9 +256,13 @@ export default class Dropdown extends React.Component<
     const moreSpaceInTheLeftSide = windowWidth - position.left < position.left;
     const targetIsWiderThanDropdown =
       $target.outerWidth() > $dropdown.outerWidth();
+    const spaceLeftInTop = position.top;
     const spaceLeftInBottom = windowHeight - position.top - position.height;
     const notEnoughSpaceInBottom =
-      spaceLeftInBottom < $dropdown.outerHeight() + 5;
+      spaceLeftInBottom < $dropdown.outerHeight() + offsetValue;
+
+    const notEnoughSpaceInTop =
+      spaceLeftInTop < $dropdown.outerHeight() + offsetValue;
 
     let left = null;
     if (this.props.alignSelf === "left") {
@@ -144,16 +284,41 @@ export default class Dropdown extends React.Component<
     }
 
     let top = null;
-    if (notEnoughSpaceInBottom) {
-      top = position.top - 5 - $dropdown.outerHeight();
-    } else {
-      top = position.top + $target.outerHeight() + 5;
-    }
-
     let arrowLeft = null;
     let arrowRight = null;
     let arrowTop = null;
     let reverseArrow = false;
+
+    switch (this.props.alignSelfVertically) {
+      case "top":
+        top = position.top - offsetValue - $dropdown.outerHeight();
+        arrowTop = $dropdown.outerHeight();
+        reverseArrow = true;
+
+        if (notEnoughSpaceInTop) {
+          top = position.top + $target.outerHeight() + offsetValue;
+          arrowTop = null;
+          reverseArrow = false;
+        }
+        break;
+
+      case "bottom":
+        top = position.top + $target.outerHeight() + offsetValue;
+        if (notEnoughSpaceInBottom) {
+          top = position.top - offsetValue - $dropdown.outerHeight();
+          arrowTop = $dropdown.outerHeight();
+          reverseArrow = true;
+        }
+        break;
+      default:
+        top = position.top + $target.outerHeight() + offsetValue;
+        if (notEnoughSpaceInBottom) {
+          top = position.top - offsetValue - $dropdown.outerHeight();
+          arrowTop = $dropdown.outerHeight();
+          reverseArrow = true;
+        }
+        break;
+    }
 
     if (this.props.alignSelf === "left") {
       arrowLeft = $target.outerWidth() / 2 - $arrow.outerWidth() / 2;
@@ -169,11 +334,6 @@ export default class Dropdown extends React.Component<
       } else {
         arrowLeft = $target.outerWidth() / 2 - $arrow.outerWidth() / 2;
       }
-    }
-
-    if (notEnoughSpaceInBottom) {
-      arrowTop = $dropdown.outerHeight();
-      reverseArrow = true;
     }
 
     let forcedWidth: number = null;
@@ -331,18 +491,28 @@ export default class Dropdown extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const {
+      closeOnOutsideClick = true,
+      closeOnClick = false,
+      persistent,
+      openByHoverIsClickToo,
+      children,
+      openByHover,
+      onClick,
+    } = this.props;
+
     let elementCloned: React.ReactElement<any> = React.cloneElement(
-      this.props.children as any,
+      children as any,
       { ref: "activator" }
     );
     const portalProps: any = {};
-    if (!this.props.openByHover) {
+    if (!openByHover) {
       portalProps.openByClickOn = elementCloned;
     } else {
-      if (this.props.onClick) {
-        elementCloned = React.cloneElement(this.props.children as any, {
+      if (onClick) {
+        elementCloned = React.cloneElement(children as any, {
           ref: "activator",
-          onClick: this.props.onClick,
+          onClick: onClick,
           id: this.id + "-button",
           role: "combobox",
           "aria-autocomplete": "list",
@@ -352,12 +522,13 @@ export default class Dropdown extends React.Component<
         });
       }
       portalProps.openByHoverOn = elementCloned;
-      portalProps.openByHoverIsClickToo = this.props.openByHoverIsClickToo;
+      portalProps.openByHoverIsClickToo = openByHoverIsClickToo;
     }
 
     portalProps.closeOnEsc = true;
-    portalProps.closeOnOutsideClick = true;
-    portalProps.closeOnScroll = !this.props.persistent;
+    portalProps.closeOnOutsideClick = closeOnOutsideClick;
+    portalProps.closeOnScroll = !persistent;
+    portalProps.closeOnClick = closeOnClick;
 
     return (
       <Portal
@@ -388,7 +559,7 @@ export default class Dropdown extends React.Component<
               left: this.state.arrowLeft,
               right: this.state.arrowRight,
               top: this.state.arrowTop,
-              transform: this.state.reverseArrow ? "scaleY(-1)" : null,
+              transform: this.state.reverseArrow ? "scaleY(-1)" : "",
             }}
           ></span>
           <div className="dropdown__container">

@@ -838,6 +838,27 @@
   }
 }
 
+.button-pill--instructions {
+  background: lighten($color-tertiary, 30%);
+  border: 1px solid lighten($color-tertiary, 20%);
+  color: darken($color-info, 10%);
+  font-size: 0.7rem;
+  height: 1.25rem;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  width: 1.25rem;
+
+  &:hover,
+  &.hover {
+    background: lighten($color-tertiary, 20%);
+  }
+
+  &:active,
+  &.active {
+    background: lighten($color-tertiary, 20%);
+  }
+}
+
 .button-pill--workspace-users-contact {
   background-color: transparent;
   color: $color-icon-button-text;
