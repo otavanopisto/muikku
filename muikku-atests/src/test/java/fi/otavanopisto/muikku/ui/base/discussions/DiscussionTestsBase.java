@@ -116,7 +116,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       try{
         navigate("/discussion", false);
         waitAndClick(".application-list__item-header--discussion span");
-        waitAndClick(".link--application-list-item-footer:nth-child(1)");
+        waitAndClick(".link--application-list:nth-child(1)");
         addTextToCKEditor("Test reply for test.");
         waitAndClick(".env-dialog__actions .button--dialog-execute");
         waitForVisible(".application-list__item--discussion-reply .application-list__item-body p");
@@ -156,7 +156,7 @@ public class DiscussionTestsBase extends AbstractUITest {
         navigate("/discussion", false);
         selectFinnishLocale();
         waitAndClick(".application-list__item-header--discussion span");
-        waitAndClick(".link--application-list-item-footer:nth-child(4)");
+        waitAndClick(".link--application-list:nth-child(4)");
         waitForVisible(".dialog--delete-area .button--standard-ok");
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--delete-area");
@@ -198,11 +198,11 @@ public class DiscussionTestsBase extends AbstractUITest {
         try {
         navigate("/discussion", false);
         waitAndClick(".application-list__item-header .discussion-category>span");
-        waitAndClick(".link--application-list-item-footer:nth-child(1)");
+        waitAndClick(".link--application-list:nth-child(1)");
         addTextToCKEditor("Test reply for test.");
         click(".button--dialog-execute");
         waitForVisible(".application-list .application-list__item--discussion-reply");
-        waitAndClick(".application-list .application-list__item--discussion-reply .link--application-list-item-footer:nth-child(1)");
+        waitAndClick(".application-list .application-list__item--discussion-reply .link--application-list:nth-child(1)");
         addTextToCKEditor("Test reply to reply.");
         click(".button--dialog-execute");
         waitForVisible(".application-list__item--discussion-reply-of-reply .application-list__item-body .rich-text>p");
@@ -244,7 +244,7 @@ public class DiscussionTestsBase extends AbstractUITest {
         try {
           navigate("/discussion", false);
           waitAndClick(".application-list__item-header .discussion-category>span");
-          waitAndClick(".link--application-list-item-footer:nth-child(2)");
+          waitAndClick(".link--application-list:nth-child(2)");
           addToEndCKEditor("Test with quote.");
           waitAndClick(".button--dialog-execute");
           waitForPresent(".application-list__item--discussion-reply .rich-text blockquote p strong");
@@ -289,14 +289,13 @@ public class DiscussionTestsBase extends AbstractUITest {
           navigate("/discussion", false);
           selectFinnishLocale();
           waitAndClick(".application-list__item-header .discussion-category>span");
-          waitAndClick(".link--application-list-item-footer:nth-child(3)");
+          waitAndClick(".link--application-list:nth-child(3)");
           waitAndClick("input.env-dialog__input--new-discussion-thread-title");
           sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
           addToEndCKEditor("ing");
           waitAndClick(".button--dialog-execute");
-          waitAndClick(".application-list__item-header .discussion-category");
           waitForVisible(".application-list__title");
-          assertText(".application-list__title", "Testinging");
+          assertText(".application-list__title-main", "Testinging");
           waitForPresent(".application-list__item-content-main .application-list__item-body .rich-text>p");
           assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body .rich-text>p", "Testing testing daa daaing");
           waitForPresent(".application-list__item-edited");

@@ -47,6 +47,8 @@ import {
   loadDiscussionThreadsFromServer,
   loadDiscussionThreadFromServer,
   setDiscussionWorkpaceId,
+  loadSubscribedDiscussionThreadList,
+  showOnlySubscribedThreads,
 } from "~/actions/discussion";
 import { loadAnnouncement, loadAnnouncements } from "~/actions/announcements";
 import AnnouncementsBody from "../components/announcements/body";
@@ -114,6 +116,7 @@ import {
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
+import { DiscussionPatchType } from "~/reducers/discussion";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -407,28 +410,54 @@ export default class MainFunction extends React.Component<
    * @param location location
    */
   loadDiscussionData(location: string[]) {
-    if (location.length <= 2) {
-      //The link is expected to be like # none, in this case it will collapse to null, page 1
-      //Else it can be #1 in that case it will collapse to area 1, page 1
-      //Or otherwise #1/2 in that case it will collapse to area 1 page 2
+    const state = this.props.store.getState();
+
+    // Load subscribed threads every time
+    this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
+    if (location.includes("subs")) {
+      const payload: DiscussionPatchType = {
+        current: undefined,
+      };
+
+      state.discussion.current &&
+        this.props.store.dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+          payload,
+        });
 
       this.props.store.dispatch(
-        loadDiscussionThreadsFromServer({
-          areaId: parseInt(location[0]) || null,
-          page: parseInt(location[1]) || 1,
-        }) as Action
+        showOnlySubscribedThreads({ value: true }) as Action
       );
     } else {
-      //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
-      //and there can be a page as #1/2/3/4
-      this.props.store.dispatch(
-        loadDiscussionThreadFromServer({
-          areaId: parseInt(location[0]),
-          page: parseInt(location[1]),
-          threadId: parseInt(location[2]),
-          threadPage: parseInt(location[3]) || 1,
-        }) as Action
-      );
+      state.discussion.subscribedThreadOnly &&
+        this.props.store.dispatch(
+          showOnlySubscribedThreads({ value: false }) as Action
+        );
+
+      if (location.length <= 2) {
+        //The link is expected to be like # none, in this case it will collapse to null, page 1
+        //Else it can be #1 in that case it will collapse to area 1, page 1
+        //Or otherwise #1/2 in that case it will collapse to area 1 page 2
+
+        this.props.store.dispatch(
+          loadDiscussionThreadsFromServer({
+            areaId: parseInt(location[0]) || null,
+            page: parseInt(location[1]) || 1,
+            forceRefresh: true,
+          }) as Action
+        );
+      } else {
+        //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
+        //and there can be a page as #1/2/3/4
+        this.props.store.dispatch(
+          loadDiscussionThreadFromServer({
+            areaId: parseInt(location[0]),
+            page: parseInt(location[1]),
+            threadId: parseInt(location[2]),
+            threadPage: parseInt(location[3]) || 1,
+          }) as Action
+        );
+      }
     }
   }
 
