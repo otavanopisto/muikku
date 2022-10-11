@@ -181,7 +181,7 @@ class WorkspaceJournalsListItem extends React.Component<
               <>
                 <Link
                   as="span"
-                  className="link link--application-list-item-footer"
+                  className="link link--application-list"
                   onClick={this.handleJournalEditClick}
                 >
                   {this.props.i18n.text.get(
@@ -190,10 +190,7 @@ class WorkspaceJournalsListItem extends React.Component<
                 </Link>
 
                 <DeleteJournal journal={this.props.journal}>
-                  <Link
-                    as="span"
-                    className="link link--application-list-item-footer"
-                  >
+                  <Link as="span" className="link link--application-list">
                     {this.props.i18n.text.get(
                       "plugin.workspace.journal.deleteEntryButton.label"
                     )}
