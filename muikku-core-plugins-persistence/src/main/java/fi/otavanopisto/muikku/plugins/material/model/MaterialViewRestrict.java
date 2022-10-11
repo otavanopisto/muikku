@@ -4,6 +4,8 @@ public enum MaterialViewRestrict {
  
   NONE,
   
-  LOGGED_IN
+  LOGGED_IN,
+  
+  WORKSPACE_MEMBERS
   
 }

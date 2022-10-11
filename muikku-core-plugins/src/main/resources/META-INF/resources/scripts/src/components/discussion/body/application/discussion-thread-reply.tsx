@@ -168,7 +168,7 @@ class DiscussionThreadReply extends React.Component<
                   <Link
                     tabIndex={0}
                     as="span"
-                    className="link link--application-list-item-footer"
+                    className="link link--application-list"
                     onClick={this.handleOnReplyClick("answer")}
                   >
                     {this.props.i18n.text.get(
@@ -180,7 +180,7 @@ class DiscussionThreadReply extends React.Component<
                   <Link
                     tabIndex={0}
                     as="span"
-                    className="link link--application-list-item-footer"
+                    className="link link--application-list"
                     onClick={this.handleOnReplyClick("quote")}
                   >
                     {this.props.i18n.text.get("plugin.discussion.reply.quote")}
@@ -190,7 +190,7 @@ class DiscussionThreadReply extends React.Component<
                   <Link
                     tabIndex={0}
                     as="span"
-                    className="link link--application-list-item-footer"
+                    className="link link--application-list"
                     onClick={this.handleOnReplyClick("modify")}
                   >
                     {this.props.i18n.text.get("plugin.discussion.reply.edit")}
@@ -201,7 +201,7 @@ class DiscussionThreadReply extends React.Component<
                     <Link
                       tabIndex={0}
                       as="span"
-                      className="link link--application-list-item-footer"
+                      className="link link--application-list"
                     >
                       {this.props.i18n.text.get(
                         "plugin.discussion.reply.delete"
@@ -214,7 +214,7 @@ class DiscussionThreadReply extends React.Component<
                     tabIndex={0}
                     as="span"
                     onClick={onHideShowSubRepliesClick(discussionItem.id)}
-                    className="link link--application-list-item-footer"
+                    className="link link--application-list"
                   >
                     {parentHasHiddenSiblings
                       ? this.props.i18n.text.get(

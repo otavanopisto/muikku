@@ -769,6 +769,14 @@
   color: $color-info;
 }
 
+.button-icon--discussion-action {
+  color: $color-default-contrast;
+}
+
+.button-icon--discussion-action-active {
+  color: $color-info;
+}
+
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
@@ -1769,6 +1777,16 @@
   }
 }
 
+.button-pill--material-editor-members-only {
+  background: $color-tertiary;
+  border-color: $color-tertiary;
+
+  &:hover {
+    background: $color-tertiary;
+    border-color: $color-tertiary;
+  }
+}
+
 .button-pill--material-editor-always-show {
   background: $color-material-page-admin-panel-always-show-answers-color;
   border-color: $color-material-page-admin-panel-always-show-answers-color;
@@ -2017,6 +2035,21 @@
   &:active,
   &.active {
     background: darken($color-appointment-calendar-button-background, 10%);
+  }
+}
+
+.button-pill--discussion-subscription {
+  background: $color-button-disabled-background;
+  color: $color-default;
+
+  &:hover,
+  &.hover {
+    background: $color-fatal;
+  }
+
+  &:active,
+  &.active {
+    background: $color-fatal;
   }
 }
 

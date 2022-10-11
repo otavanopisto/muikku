@@ -7,7 +7,6 @@ import { StatusType } from "./base/status";
 import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsType } from "./announcements";
 import { HOPSType } from "./main-function/hops";
-import { VOPSType } from "./main-function/vops";
 import { MessagesType } from "./main-function/messages";
 import { WorkspacesType } from "./workspaces";
 import {
@@ -47,7 +46,6 @@ export interface StateType {
   credentials?: CredentialsType;
   announcements?: AnnouncementsType;
   hops?: HOPSType;
-  vops?: VOPSType;
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesType;
