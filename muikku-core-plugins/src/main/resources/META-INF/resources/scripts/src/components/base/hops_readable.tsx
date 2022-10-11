@@ -7,6 +7,7 @@ import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 
 import "~/sass/elements/form.scss";
+import { AnyActionType } from "~/actions";
 
 /**
  * HopsProps
@@ -44,6 +45,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps: HopsProps) {
     const nextData = nextProps.data || nextProps.defaultData;
     if (nextData !== this.state.hops) {
@@ -324,7 +326,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
