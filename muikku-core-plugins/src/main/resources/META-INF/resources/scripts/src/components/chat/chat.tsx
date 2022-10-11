@@ -24,6 +24,7 @@ import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
 import { getUserChatId } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
+import { BrowserTabNotification } from "~/util/browser-tab-notification";
 
 export type tabs = "ROOMS" | "PEOPLE";
 
@@ -136,6 +137,7 @@ interface IChatState {
   connection: Strophe.Connection;
   rosterLoaded: boolean;
   connectionHostname: string;
+  tabNotificationActive: boolean;
   activeTab: string;
   isInitialized: boolean;
   availableMucRooms: IAvailableChatRoomType[];
@@ -173,6 +175,7 @@ const roleNode = document.querySelector('meta[name="muikku:role"]');
  */
 class Chat extends React.Component<IChatProps, IChatState> {
   private messagesListenerHandler: any = null;
+  private tabNotification = new BrowserTabNotification();
 
   /**
    * constructor
@@ -189,6 +192,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       connection: null,
       rosterLoaded: false,
       connectionHostname: null,
+      tabNotificationActive: false,
       studyGuiders: [],
       roster: [],
       activeTab: "ROOMS",
@@ -236,6 +240,14 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.setUserAvailabilityDropdown =
       this.setUserAvailabilityDropdown.bind(this);
   }
+
+  onTabNotification = (newTitle?: string) => {
+    if (newTitle) {
+      this.tabNotification.on(newTitle);
+    } else {
+      this.tabNotification.off();
+    }
+  };
 
   /**
    * loadStudentCouncelors
@@ -891,6 +903,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
       )
     ) {
       this.joinPrivateChat(userFrom, stanza);
+      if (document.hidden) {
+        this.tabNotification.on("New onMessageReceived");
+      }
     }
 
     return true;
@@ -1304,6 +1319,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
             .filter((r) => r.type === "user")
             .map((pchat) => (
               <PrivateChat
+                notification={this.onTabNotification}
                 jid={pchat.jid}
                 roster={this.state.roster}
                 initializingStanza={pchat.initStanza}

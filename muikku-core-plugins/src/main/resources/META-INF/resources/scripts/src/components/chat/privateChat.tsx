@@ -8,12 +8,13 @@ import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
 import { requestPrescense } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
-
+import { IBrowserTabNotification } from "~/util/browser-tab-notification";
 /**
  * IPrivateChatProps
  */
 interface IPrivateChatProps {
   initializingStanza: Element;
+  notification: (NewTabTitle?: string) => void;
   roster: IChatContact[];
   leaveChat: () => void;
   connection: Strophe.Connection;
@@ -26,6 +27,7 @@ interface IPrivateChatProps {
  */
 interface IPrivateChatState {
   nick: string;
+  showNotification: boolean;
   messages: IBareMessageType[];
   minimized: boolean;
   messageNotification: boolean;
@@ -52,7 +54,6 @@ export class PrivateChat extends React.Component<
   private messagesEnd: React.RefObject<HTMLDivElement>;
   private isScrollDetached = false;
   private chatRef: React.RefObject<HTMLDivElement>;
-
   /**
    * constructor
    * @param props props
@@ -62,6 +63,7 @@ export class PrivateChat extends React.Component<
 
     this.state = {
       nick: null,
+      showNotification: false,
       messages: [],
       minimized: JSON.parse(
         window.sessionStorage.getItem("minimizedChats") || "[]"
@@ -205,8 +207,11 @@ export class PrivateChat extends React.Component<
         edited: null,
       };
 
+      this.props.notification();
+
       this.setState(
         {
+          showNotification: false,
           currentMessageToBeSent: "",
           messages: [...this.state.messages, newMessage],
         },
@@ -239,7 +244,7 @@ export class PrivateChat extends React.Component<
       const date = new Date();
       const userId = from.split("@")[0];
       const stanzaId: string = null;
-
+      let notifcationOn = false;
       const messageReceived: IBareMessageType = {
         nick: fromNick,
         message: content,
@@ -253,9 +258,17 @@ export class PrivateChat extends React.Component<
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
+
+      this.props.notification("New onPrivateChatMessage");
+
+      if (document.hidden) {
+        notifcationOn = true;
+      }
+
       this.setState(
         {
           messages: newMessagesList,
+          showNotification: notifcationOn,
           messageNotification:
             this.state.messageNotification || !this.isFocused,
         },
