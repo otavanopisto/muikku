@@ -134,6 +134,7 @@ class WorkspaceJournalsListItem extends React.Component<
         <ApplicationListItemHeader
           onClick={this.handleJournalItemClick}
           className="application-list__item-header--journal-entry"
+          tabIndex={0}
         >
           {!this.props.status.isStudent ? (
             student ? (

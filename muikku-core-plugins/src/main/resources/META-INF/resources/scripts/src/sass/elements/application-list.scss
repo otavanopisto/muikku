@@ -849,6 +849,7 @@
 
 // Journal
 .application-list__item-header--journal-entry {
+  cursor: pointer;
   flex-flow: row wrap;
 
   @include breakpoint($breakpoint-pad) {
