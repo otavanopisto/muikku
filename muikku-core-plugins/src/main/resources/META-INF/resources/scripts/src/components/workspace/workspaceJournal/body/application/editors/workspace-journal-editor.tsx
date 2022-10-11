@@ -211,70 +211,91 @@ class WorkspaceJournalEditor extends SessionStateComponent<
 
     return (
       <div className="form" role="form">
-        <div className="env-dialog__row" key="2">
-          <div className="env-dialog__form-element-container">
-            <label htmlFor="journalTitle" className="env-dialog__label">
-              {this.props.i18n.text.get(
-                "plugin.workspace.journal.entry.title.label"
-              )}
-            </label>
-            <input
-              id="journalTitle"
-              type="text"
-              className="env-dialog__input env-dialog__input--new-edit-journal-title"
-              value={this.state.title}
-              onChange={this.handleTitleChange}
-              autoFocus={!this.props.journal}
-              maxLength={255}
-            />
-          </div>
-        </div>
+        <div className="env-dialog env-dialog--mainfunction env-dialog--edit-journal-entry">
+          <section className="env-dialog__wrapper">
+            <div className="env-dialog__content">
+              <header className="env-dialog__header">
+                {this.props.i18n.text.get(
+                  "plugin.workspace.journal.editEntry.title"
+                )}
+              </header>
+              <section className="env-dialog__body">
+                <div
+                  className="env-dialog__row env-dialog__row--titles"
+                  key="2"
+                >
+                  <div className="env-dialog__form-element-container">
+                    <label htmlFor="journalTitle" className="env-dialog__label">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.journal.entry.title.label"
+                      )}
+                    </label>
+                    <input
+                      id="journalTitle"
+                      type="text"
+                      className="env-dialog__input env-dialog__input--new-edit-journal-title"
+                      value={this.state.title}
+                      onChange={this.handleTitleChange}
+                      autoFocus={!this.props.journal}
+                      maxLength={255}
+                    />
+                  </div>
+                </div>
 
-        <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
-          <div className="env-dialog__form-element-container">
-            <label className="env-dialog__label">
-              {this.props.i18n.text.get(
-                "plugin.workspace.journal.entry.content.label"
-              )}
-            </label>
-            <CKEditor
-              editorTitle={editorTitle}
-              onChange={this.handleCKEditorChange}
-            >
-              {this.state.text}
-            </CKEditor>
-          </div>
-        </div>
-        <div className="form__buttons form__buttons--evaluation">
-          <Button
-            buttonModifiers="evaluate-supplementation"
-            onClick={this.handleSaveJournalClick}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
-          </Button>
-          <Button
-            onClick={this.props.onClose}
-            disabled={this.state.locked}
-            buttonModifiers="evaluate-cancel"
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-            )}
-          </Button>
-          {this.recovered && (
-            <Button
-              buttonModifiers="evaluate-remove-draft"
-              disabled={this.state.locked}
-              onClick={this.handleDeleteEditorDraft}
-            >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
-            </Button>
-          )}
+                <div
+                  className="env-dialog__row env-dialog__row--ckeditor"
+                  key="3"
+                >
+                  <div className="env-dialog__form-element-container">
+                    <label className="env-dialog__label">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.journal.entry.content.label"
+                      )}
+                    </label>
+                    <CKEditor
+                      editorTitle={editorTitle}
+                      onChange={this.handleCKEditorChange}
+                    >
+                      {this.state.text}
+                    </CKEditor>
+                  </div>
+                </div>
+              </section>
+              <footer className="env-dialog__footer">
+                <div className="env-dialog__actions">
+                  <Button
+                    buttonModifiers="dialog-execute"
+                    onClick={this.handleSaveJournalClick}
+                    disabled={this.state.locked}
+                  >
+                    {this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
+                    )}
+                  </Button>
+                  <Button
+                    onClick={this.props.onClose}
+                    disabled={this.state.locked}
+                    buttonModifiers="dialog-cancel"
+                  >
+                    {this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+                    )}
+                  </Button>
+                  {this.recovered && (
+                    <Button
+                      buttonModifiers="dialog-clear"
+                      disabled={this.state.locked}
+                      onClick={this.handleDeleteEditorDraft}
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
+                      )}
+                    </Button>
+                  )}
+                </div>
+              </footer>
+            </div>
+          </section>
         </div>
       </div>
     );
