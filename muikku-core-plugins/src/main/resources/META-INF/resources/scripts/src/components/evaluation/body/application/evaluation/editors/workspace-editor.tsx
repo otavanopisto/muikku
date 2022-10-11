@@ -432,13 +432,18 @@ class WorkspaceEditor extends SessionStateComponent<
           );
         }
 
+        const { existingBilledPriceObject } = this.state;
+
+        const billingPriceDisabled =
+          existingBilledPriceObject && !existingBilledPriceObject.editable;
+
         /**
-         * Updating price if "billingPrice" is not undefined
+         * Updating price if "billingPrice" is not undefined or is not disabled
          * otherwise just updates evaluation
          */
         this.props.updateWorkspaceEvaluationToServer({
           type: "edit",
-          billingPrice,
+          billingPrice: !billingPriceDisabled && billingPrice,
           workspaceEvaluation: {
             identifier: latestEvent.identifier,
             assessorIdentifier: status.userSchoolDataIdentifier,
