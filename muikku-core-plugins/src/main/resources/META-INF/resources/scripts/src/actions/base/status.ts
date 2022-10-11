@@ -1,3 +1,4 @@
+import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
@@ -42,7 +43,7 @@ export interface LoadWorkspaceStatusInfoType {
  * @param whoAmIReadyCb whoAmIReadyCb
  */
 async function loadWhoAMI(
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   whoAmIReadyCb: () => void
 ) {
   const whoAmI = <WhoAmIType>(
@@ -117,7 +118,9 @@ async function loadWhoAMI(
  * loadChatActive
  * @param dispatch dispatch
  */
-async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
+async function loadChatActive(
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+) {
   const isActive = <boolean>(
     await promisify(mApi().chat.isActive.read(), "callback")()
   );
@@ -137,7 +140,9 @@ async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
  * loadChatAvailable
  * @param dispatch dispatch
  */
-async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
+async function loadChatAvailable(
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+) {
   const isAvailable = <boolean>(
     await promisify(mApi().chat.isAvailable.read(), "callback")()
   );
@@ -156,7 +161,9 @@ async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
  * loadWorklistAvailable
  * @param dispatch dispatch
  */
-async function loadWorklistAvailable(dispatch: (arg: AnyActionType) => any) {
+async function loadWorklistAvailable(
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+) {
   const isAvailable = <boolean>(
     await promisify(mApi().worklist.isAvailable.read(), "callback")()
   );
@@ -177,14 +184,15 @@ async function loadWorklistAvailable(dispatch: (arg: AnyActionType) => any) {
  * @param permissions permissions
  */
 async function loadForumIsAvailable(
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   permissions: string[]
 ) {
   const isAvailable = <boolean>(
     await promisify(mApi().forum.isAvailable.read(), "callback")()
   );
   const areaPermissions = isAvailable
-    ? <any>(
+    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      <any>(
         await promisify(
           mApi().forum.environmentAreaPermissions.read(),
           "callback"
@@ -216,7 +224,7 @@ async function loadForumIsAvailable(
  */
 async function loadWorkspacePermissions(
   workspaceId: number,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   readyCb: () => void
 ) {
   const permissions = <string[]>(
@@ -306,7 +314,7 @@ const loadStatus: LoadStatusType = function loadStatus(
   whoAmIReadyCb: () => void
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     if (getState().status.loggedIn) {
@@ -328,7 +336,7 @@ const loadStatus: LoadStatusType = function loadStatus(
 const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
   function loadWorkspaceStatusInfo(readyCb: () => void) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const worspaceId = getState().status.currentWorkspaceId;
