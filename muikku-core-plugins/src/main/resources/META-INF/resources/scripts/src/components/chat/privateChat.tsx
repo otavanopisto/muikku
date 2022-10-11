@@ -8,7 +8,7 @@ import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
 import { requestPrescense } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
-import { IBrowserTabNotification } from "~/util/browser-tab-notification";
+import { obtainNick } from "~/helper-functions/chat";
 /**
  * IPrivateChatProps
  */
@@ -121,7 +121,7 @@ export class PrivateChat extends React.Component<
       // this.onPrivateChatMessage(this.props.initializingStanza);
     }
 
-    this.obtainNick();
+    this.setContactName();
     this.loadMessages();
     requestPrescense(this.props.jid, this.props.connection);
   }
@@ -135,15 +135,12 @@ export class PrivateChat extends React.Component<
   }
 
   /**
-   * obtainNick
+   * setContactName
    */
-  async obtainNick() {
-    const user: any = (await promisify(
-      mApi().chat.userInfo.read(this.props.jid.split("@")[0], {}),
-      "callback"
-    )()) as any;
+  async setContactName() {
+    const user = await obtainNick(this.props.jid);
     this.setState({
-      nick: user.name,
+      nick: user.name ? user.name : user.nick,
     });
   }
   /**
@@ -258,8 +255,12 @@ export class PrivateChat extends React.Component<
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
-
-      this.props.notification("New onPrivateChatMessage");
+      this.props.notification(
+        this.props.i18n.text.get(
+          "plugin.chat.notification.newMessage",
+          this.state.nick
+        )
+      );
 
       if (document.hidden) {
         notifcationOn = true;

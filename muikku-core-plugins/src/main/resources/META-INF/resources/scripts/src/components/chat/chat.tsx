@@ -22,7 +22,7 @@ import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
 import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/records/summary";
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
-import { getUserChatId } from "~/helper-functions/chat";
+import { getUserChatId, obtainNick } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
 import { BrowserTabNotification } from "~/util/browser-tab-notification";
 
@@ -895,8 +895,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
    * onMessageReceived
    * @param stanza stanza
    */
-  public onMessageReceived(stanza: Element) {
+  public async onMessageReceived(stanza: Element) {
     const userFrom = stanza.getAttribute("from").split("/")[0];
+    const userInfo = await obtainNick(userFrom);
+    const userName = userInfo.name ? userInfo.name : userInfo.nick;
+
     if (
       !this.state.openChatsJIDS.find(
         (s) => s.jid !== userFrom && s.type === "user"
@@ -904,7 +907,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
     ) {
       this.joinPrivateChat(userFrom, stanza);
       if (document.hidden) {
-        this.tabNotification.on("New onMessageReceived");
+        this.tabNotification.on(
+          this.props.i18n.text.get(
+            "plugin.chat.notification.newMessage",
+            userName
+          )
+        );
       }
     }
 
