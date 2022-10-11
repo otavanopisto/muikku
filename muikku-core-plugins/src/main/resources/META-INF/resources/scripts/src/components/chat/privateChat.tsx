@@ -1,10 +1,8 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
 import "~/sass/elements/chat.scss";
 import "~/sass/elements/wcag.scss";
 import { IBareMessageType } from "./chat";
 import { ChatMessage } from "./chatMessage";
-import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
 import { requestPrescense } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
