@@ -1,12 +1,4 @@
 /**
- * Interface for the class
- */
-export interface IBrowserTabNotification {
-  on: (newTitle: string) => void;
-  off: () => void;
-}
-
-/**
  * Blinking notification for browser tab
  */
 export class BrowserTabNotification {
@@ -25,10 +17,6 @@ export class BrowserTabNotification {
         document.title =
           this.currentTitle === document.title ? newTitle : this.currentTitle;
       }, 4000);
-
-      let test = this.interval;
-
-      // for(let i = 0; i < this.interval.ref; i++;) {}
     }
   };
 
