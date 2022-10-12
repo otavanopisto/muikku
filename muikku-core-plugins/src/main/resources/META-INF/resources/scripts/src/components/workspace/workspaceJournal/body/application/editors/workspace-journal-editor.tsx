@@ -269,7 +269,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
                     disabled={this.state.locked}
                   >
                     {this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
+                      "plugin.workspace.journal.save.button.label"
                     )}
                   </Button>
                   <Button
@@ -278,7 +278,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
                     buttonModifiers="dialog-cancel"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+                      "plugin.workspace.journal.cancel.button.label"
                     )}
                   </Button>
                   {this.recovered && (
@@ -288,7 +288,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
                       onClick={this.handleDeleteEditorDraft}
                     >
                       {this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
+                        "plugin.workspace.journal.deleteDraft.button.label"
                       )}
                     </Button>
                   )}

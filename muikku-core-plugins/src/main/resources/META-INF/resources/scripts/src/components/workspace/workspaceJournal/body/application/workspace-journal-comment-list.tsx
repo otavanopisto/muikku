@@ -24,8 +24,14 @@ import Button from "~/components/general/button";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import Avatar from "~/components/general/avatar";
-import { IconButton } from "../../../../general/button";
+import Link from "~/components/general/link";
 import DeleteJournalComment from "../../dialogs/delete-journal-comment";
+import {
+  ApplicationListItem,
+  ApplicationListItemHeader,
+  ApplicationListItemBody,
+  ApplicationListItemFooter,
+} from "~/components/general/application-list";
 
 /**
  * WorkspaceJournalCommentListProps
@@ -144,22 +150,19 @@ export const WorkspaceJournalCommentList: React.FC<
   }
 
   return (
-    <div style={{ width: "100%" }}>
-      <div style={{ display: "flex" }}>
-        <div
+    <>
+      <div className="application-list__header application-list__header--journal">
+        <h2
+          className="application-list__title"
           onClick={handleShowCommentsClick}
-          style={{
-            fontWeight: "bold",
-            fontSize: "1rem",
-            padding: "10px 0",
-            display: "flex",
-            alignItems: "center",
-          }}
         >
-          {props.i18n.text.get("plugin.workspace.journal.entry.comments.title")}{" "}
-          (666)
-          <div className="icon-arrow-right" />
-        </div>
+          <span className="application-list__title-main">
+            {props.i18n.text.get(
+              "plugin.workspace.journal.entry.comments.title"
+            )}{" "}
+            (666)
+          </span>
+        </h2>
       </div>
 
       <AnimateHeight height={showComments ? "auto" : 0}>
@@ -223,7 +226,7 @@ export const WorkspaceJournalCommentList: React.FC<
           </AnimateHeight>
         </div>
       </AnimateHeight>
-    </div>
+    </>
   );
 };
 
@@ -338,72 +341,65 @@ export const WorkspaceJournalCommentListItem: React.FC<
   ).format("LT")}`;
 
   return (
-    <div style={{ marginBottom: "20px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "5px",
-        }}
+    <ApplicationListItem className="journal journal--comment">
+      <ApplicationListItemHeader
+        className="application-list__item-header--journal-comment"
+        tabIndex={0}
       >
-        <div style={{ display: "flex" }}>
-          <Avatar id={authorId} firstName={firstName} hasImage={false} />
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginLeft: "5px",
-            }}
-          >
-            <span style={{ fontWeight: "bold", fontSize: "1.25rem" }}>
-              {creatorName}
-            </span>
-            <span>{formatedDate}</span>
-          </div>
+        <Avatar
+          id={authorId}
+          firstName={firstName}
+          hasImage={status.hasImage}
+        />
+        <div className="application-list__item-header-main application-list__item-header-main--journal-comment">
+          <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-comment-creator">
+            {creatorName}
+          </span>
         </div>
-
-        {creatorIsMe && !editing && (
-          <div style={{ display: "flex" }}>
-            <IconButton icon="pencil" onClick={handleEditCommentClick} />
-            <DeleteJournalComment
-              journalComment={journalComment}
-              onDelete={onDelete}
-            >
-              <IconButton icon="trash" />
-            </DeleteJournalComment>
-          </div>
-        )}
-      </div>
+        <div className="application-list__item-header-aside application-list__item-header-aside--journal-comment">
+          {formatedDate}
+        </div>
+      </ApplicationListItemHeader>
 
       {editing ? (
-        <div>
-          <WorkspaceJournalCommentEditor
-            type="edit"
-            journalComment={journalComment}
-            diaryEventId={journalComment.journalEntryId}
-            userEntityId={journalComment.journalEntryId}
-            workspaceEntityId={props.workspaceEntityId}
-            locked={props.isSaving}
-            onSave={handleSaveEditedCommentClick}
-            onClose={handleCancelEditingCommentClick}
-          />
-        </div>
+        <WorkspaceJournalCommentEditor
+          type="edit"
+          journalComment={journalComment}
+          diaryEventId={journalComment.journalEntryId}
+          userEntityId={journalComment.journalEntryId}
+          workspaceEntityId={props.workspaceEntityId}
+          locked={props.isSaving}
+          onSave={handleSaveEditedCommentClick}
+          onClose={handleCancelEditingCommentClick}
+        />
       ) : (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            backgroundColor: "#daf3fe",
-            padding: "5px 0",
-            borderRadius: "10px 0px",
-          }}
-        >
-          <div style={{ padding: "5px" }}>
+        <ApplicationListItemBody modifiers={["journal-comment"]}>
+          <article className="application-list__item-content-body application-list__item-content-body--journal-comment rich-text">
             <CkeditorContentLoader html={comment} />
-          </div>
-        </div>
+          </article>
+
+          {creatorIsMe && !editing && (
+            <ApplicationListItemFooter className="application-list__item-footer--journal-comment">
+              <Link
+                as="span"
+                className="link link--application-list"
+                onClick={handleEditCommentClick}
+              >
+                Muokkaa (LOKALISOINTI!)
+              </Link>
+
+              <DeleteJournalComment
+                journalComment={journalComment}
+                onDelete={onDelete}
+              >
+                <Link as="span" className="link link--application-list">
+                  Poista (LOKALISOINTI!)
+                </Link>
+              </DeleteJournalComment>
+            </ApplicationListItemFooter>
+          )}
+        </ApplicationListItemBody>
       )}
-    </div>
+    </ApplicationListItem>
   );
 };

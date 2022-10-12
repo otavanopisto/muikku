@@ -797,17 +797,23 @@
   }
 }
 
-.application-list__item-header-main-content--journal-entry-creator {
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 0 0 0 15px;
+.application-list__item-header-aside {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: right;
+}
 
-  @include breakpoint($breakpoint-pad) {
-    font-size: 1.125rem;
-    font-weight: 400;
+.application-list--open {
+  overflow: -moz-scrollbars-none;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
+// Journal
 .application-list__item-header-main-content--journal-entry-title {
   font-size: 0.875rem;
   font-weight: 600;
@@ -831,29 +837,31 @@
   }
 }
 
-.application-list__item-header-aside {
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  justify-content: right;
+.application-list__header--journal {
+  border-top: 3px solid $color-default-item-separator-border;
+  padding: 15px 0 0;
 }
 
-.application-list--open {
-  overflow: -moz-scrollbars-none;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-// Journal
-.application-list__item-header--journal-entry {
+.application-list__item-header--journal-entry,
+.application-list__item-header--journal-comment {
   cursor: pointer;
   flex-flow: row wrap;
+  margin: 0 0 15px;
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row nowrap;
+  }
+}
+
+.application-list__item-header-main-content--journal-entry-creator,
+.application-list__item-header-main-content--journal-comment-creator {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0 0 0 15px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    font-weight: 400;
   }
 }
 
@@ -865,7 +873,14 @@
   }
 }
 
+.application-list__item-body--journal-comment {
+  background: lighten($color-tertiary, 30%);
+  border-radius: 3px;
+  padding: 5px 20px;
+}
+
 .application-list__item-content-body--journal-entry,
+.application-list__item-content-body--journal-comment,
 .application-list__item-content-body--discussion {
   padding: 0;
 }
@@ -875,8 +890,12 @@
   margin: 10px 0 0;
 }
 
-// User
+.application-list__item-footer--journal-comment {
+  flex-flow: row wrap;
+  margin: 10px 0;
+}
 
+// User
 .application-list__item-content-aside--user {
   padding: 0 16px 0 0;
 }
@@ -893,7 +912,7 @@
   padding: 10px 0;
 }
 
-// Discussion
+// Workspace users
 .application-list__header--workspace-users {
   padding: 10px;
 
@@ -1066,8 +1085,7 @@
   padding: 10px;
 }
 
-// Coursepicker - TODO: these should be moved to course.scss ?
-
+// Coursepicker
 .application-list__item-header--course {
   cursor: pointer;
   padding: 10px 0;

@@ -138,46 +138,66 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
   render() {
     return (
       <div className="form" role="form">
-        <div className="form__row">
-          <div className="form-element">
-            {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
-
-            <CKEditor onChange={this.handleCKEditorChange}>
-              {this.state.journalCommentText}
-            </CKEditor>
-          </div>
-        </div>
-
-        <div className="form__buttons form__buttons--evaluation">
-          <Button
-            buttonModifiers="evaluate-supplementation"
-            onClick={this.handleSaveClick}
-            disabled={this.props.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
-          </Button>
-          <Button
-            onClick={this.props.onClose}
-            disabled={this.props.locked}
-            buttonModifiers="evaluate-cancel"
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-            )}
-          </Button>
-          {this.recovered && (
-            <Button
-              buttonModifiers="evaluate-remove-draft"
-              disabled={this.props.locked}
-              onClick={this.handleDeleteEditorDraft}
-            >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
-            </Button>
-          )}
+        <div className="env-dialog env-dialog--mainfunction env-dialog--edit-journal-entry">
+          <section className="env-dialog__wrapper">
+            <div className="env-dialog__content">
+              <header className="env-dialog__header">
+                {this.props.i18n.text.get(
+                  "plugin.workspace.journal.editComment.title"
+                )}
+              </header>
+              <section className="env-dialog__body">
+                <div
+                  className="env-dialog__row env-dialog__row--ckeditor"
+                  key="3"
+                >
+                  <div className="env-dialog__form-element-container">
+                    <label className="env-dialog__label">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.journal.entry.content.label"
+                      )}
+                    </label>
+                    <CKEditor onChange={this.handleCKEditorChange}>
+                      {this.state.journalCommentText}
+                    </CKEditor>
+                  </div>
+                </div>
+              </section>
+              <footer className="env-dialog__footer">
+                <div className="env-dialog__actions">
+                  <Button
+                    buttonModifiers="dialog-execute"
+                    onClick={this.handleSaveClick}
+                    disabled={this.props.locked}
+                  >
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.journal.save.button.label"
+                    )}
+                  </Button>
+                  <Button
+                    onClick={this.props.onClose}
+                    disabled={this.props.locked}
+                    buttonModifiers="dialog-cancel"
+                  >
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.journal.cancel.button.label"
+                    )}
+                  </Button>
+                  {this.recovered && (
+                    <Button
+                      buttonModifiers="dialog-clear"
+                      disabled={this.props.locked}
+                      onClick={this.handleDeleteEditorDraft}
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.journal.deleteDraft.button.label"
+                      )}
+                    </Button>
+                  )}
+                </div>
+              </footer>
+            </div>
+          </section>
         </div>
       </div>
     );

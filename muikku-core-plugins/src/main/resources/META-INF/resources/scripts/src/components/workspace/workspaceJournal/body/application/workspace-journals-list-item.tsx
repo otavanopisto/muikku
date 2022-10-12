@@ -130,79 +130,85 @@ class WorkspaceJournalsListItem extends React.Component<
     }
 
     return (
-      <ApplicationListItem className="journal">
-        <ApplicationListItemHeader
-          onClick={this.handleJournalItemClick}
-          className="application-list__item-header--journal-entry"
-          tabIndex={0}
-        >
-          {!this.props.status.isStudent ? (
-            student ? (
-              <Avatar
-                id={student.userEntityId}
-                firstName={student.firstName}
-                hasImage={student.hasImage}
-              />
-            ) : null
-          ) : null}
-          <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+      <>
+        <ApplicationListItem className="journal">
+          <ApplicationListItemHeader
+            onClick={this.handleJournalItemClick}
+            className="application-list__item-header--journal-entry"
+            tabIndex={0}
+          >
             {!this.props.status.isStudent ? (
-              <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-creator">
-                {student ? getName(student, true) : this.props.journal.title}
+              student ? (
+                <Avatar
+                  id={student.userEntityId}
+                  firstName={student.firstName}
+                  hasImage={student.hasImage}
+                />
+              ) : null
+            ) : null}
+            <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+              {!this.props.status.isStudent ? (
+                <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-creator">
+                  {student ? getName(student, true) : this.props.journal.title}
+                </span>
+              ) : (
+                <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
+                  {this.props.journal.title}
+                </span>
+              )}
+            </div>
+            <div className="application-list__item-header-aside">
+              <span>
+                {this.props.i18n.time.format(
+                  this.props.journal.created,
+                  "L LT"
+                )}
               </span>
-            ) : (
-              <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                {this.props.journal.title}
-              </span>
-            )}
-          </div>
-          <div className="application-list__item-header-aside">
-            <span>
-              {this.props.i18n.time.format(this.props.journal.created, "L LT")}
-            </span>
-          </div>
-        </ApplicationListItemHeader>
-        <ApplicationListItemBody className="application-list__item-body">
-          {!this.props.status.isStudent ? (
-            student ? (
-              <header className="application-list__item-content-header application-list__item-content-header--journal-entry">
-                {this.props.journal.title}
-              </header>
-            ) : null
-          ) : null}
-          <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text">
-            <CkeditorContentLoader html={this.props.journal.content} />
-          </article>
-        </ApplicationListItemBody>
+            </div>
+          </ApplicationListItemHeader>
+          <ApplicationListItemBody className="application-list__item-body">
+            {!this.props.status.isStudent ? (
+              student ? (
+                <header className="application-list__item-content-header application-list__item-content-header--journal-entry">
+                  {this.props.journal.title}
+                </header>
+              ) : null
+            ) : null}
+            <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text">
+              <CkeditorContentLoader html={this.props.journal.content} />
+            </article>
+          </ApplicationListItemBody>
 
-        {(this.props.journal.userEntityId === this.props.status.userId ||
-          this.props.showCommentList) && (
-          <ApplicationListItemFooter className="application-list__item-footer--journal-entry">
-            {this.props.journal.userEntityId === this.props.status.userId && (
-              <>
-                <Link
-                  as="span"
-                  className="link link--application-list"
-                  onClick={this.handleJournalEditClick}
-                >
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.journal.editEntryButton.label"
-                  )}
-                </Link>
-
-                <DeleteJournal journal={this.props.journal}>
-                  <Link as="span" className="link link--application-list">
+          {(this.props.journal.userEntityId === this.props.status.userId ||
+            this.props.showCommentList) && (
+            <ApplicationListItemFooter className="application-list__item-footer--journal-entry">
+              {this.props.journal.userEntityId === this.props.status.userId && (
+                <>
+                  <Link
+                    as="span"
+                    className="link link--application-list"
+                    onClick={this.handleJournalEditClick}
+                  >
                     {this.props.i18n.text.get(
-                      "plugin.workspace.journal.deleteEntryButton.label"
+                      "plugin.workspace.journal.editEntryButton.label"
                     )}
                   </Link>
-                </DeleteJournal>
-              </>
-            )}
-            {this.props.showCommentList && <WorkspaceJournalCommentList />}
-          </ApplicationListItemFooter>
-        )}
-      </ApplicationListItem>
+
+                  <DeleteJournal journal={this.props.journal}>
+                    <Link as="span" className="link link--application-list">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.journal.deleteEntryButton.label"
+                      )}
+                    </Link>
+                  </DeleteJournal>
+                </>
+              )}
+            </ApplicationListItemFooter>
+          )}
+        </ApplicationListItem>
+
+        {this.props.showCommentList && <WorkspaceJournalCommentList />}
+      </>
     );
   }
 }
