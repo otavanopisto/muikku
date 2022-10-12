@@ -99,6 +99,12 @@
   }
 }
 
+.application-list__footer {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+}
+
 .application-list__footer--organization {
   align-items: center;
   display: flex;
