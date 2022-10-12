@@ -366,16 +366,17 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
   };
 
+  handleVisibilityChange = () => {
+    if(document.visibilityState === "visible") {
+      this.onTabNotification();
+    }
+  }
+
   /**
    * componentDidMount
    */
   componentDidMount() {
-    if (
-      this.props.settings &&
-      this.props.settings.visibility === "VISIBLE_TO_ALL"
-    ) {
-      this.initialize();
-    }
+    document.addEventListener("visibilitychange", this.handleVisibilityChange, false );
   }
 
   /**
@@ -384,6 +385,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   componentWillUnmount() {
     this.state.connection &&
       this.state.connection.deleteHandler(this.messagesListenerHandler);
+      window.removeEventListener("visibilitychange", this.handleVisibilityChange);
   }
 
   /**
@@ -405,6 +407,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       !this.state.isInitialized
     ) {
       this.initialize();
+
     }
   }
 

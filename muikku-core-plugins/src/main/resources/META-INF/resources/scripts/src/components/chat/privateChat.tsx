@@ -139,6 +139,7 @@ export class PrivateChat extends React.Component<
       nick: user.name ? user.name : user.nick,
     });
   }
+
   /**
    * onTextFieldFocus
    */
@@ -199,8 +200,6 @@ export class PrivateChat extends React.Component<
         deleted: false,
         edited: null,
       };
-
-      this.props.notification();
 
       this.setState(
         {
