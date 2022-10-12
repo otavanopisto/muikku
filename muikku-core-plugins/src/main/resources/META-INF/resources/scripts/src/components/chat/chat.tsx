@@ -239,7 +239,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
       this.setUserAvailabilityDropdown.bind(this);
   }
 
-  onTabNotification = (newTitle?: string) => {
+  /**
+   * handleTabNotification sets notification on or off
+   * @param newTitle optional title message to show
+   */
+  handleTabNotification = (newTitle?: string) => {
     if (newTitle) {
       this.tabNotification.on(newTitle);
     } else {
@@ -367,16 +371,20 @@ class Chat extends React.Component<IChatProps, IChatState> {
   };
 
   handleVisibilityChange = () => {
-    if(document.visibilityState === "visible") {
+    if (document.visibilityState === "visible") {
       this.onTabNotification();
     }
-  }
+  };
 
   /**
    * componentDidMount
    */
   componentDidMount() {
-    document.addEventListener("visibilitychange", this.handleVisibilityChange, false );
+    document.addEventListener(
+      "visibilitychange",
+      this.handleVisibilityChange,
+      false
+    );
   }
 
   /**
@@ -385,7 +393,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   componentWillUnmount() {
     this.state.connection &&
       this.state.connection.deleteHandler(this.messagesListenerHandler);
-      window.removeEventListener("visibilitychange", this.handleVisibilityChange);
+    window.removeEventListener("visibilitychange", this.handleVisibilityChange);
   }
 
   /**
@@ -407,7 +415,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       !this.state.isInitialized
     ) {
       this.initialize();
-
     }
   }
 
@@ -1328,7 +1335,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
             .filter((r) => r.type === "user")
             .map((pchat) => (
               <PrivateChat
-                notification={this.onTabNotification}
+                setTabNotification={this.handleTabNotification}
                 jid={pchat.jid}
                 roster={this.state.roster}
                 initializingStanza={pchat.initStanza}

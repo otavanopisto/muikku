@@ -12,7 +12,7 @@ import { obtainNick } from "~/helper-functions/chat";
  */
 interface IPrivateChatProps {
   initializingStanza: Element;
-  notification: (NewTabTitle?: string) => void;
+  setTabNotification: (NewTabTitle?: string) => void;
   roster: IChatContact[];
   leaveChat: () => void;
   connection: Strophe.Connection;
@@ -248,7 +248,7 @@ export class PrivateChat extends React.Component<
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
-      this.props.notification(
+      this.props.setTabNotification(
         this.props.i18n.text.get(
           "plugin.chat.notification.newMessage",
           this.state.nick
