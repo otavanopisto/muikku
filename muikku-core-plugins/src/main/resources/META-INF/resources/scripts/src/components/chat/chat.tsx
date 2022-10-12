@@ -137,7 +137,6 @@ interface IChatState {
   connection: Strophe.Connection;
   rosterLoaded: boolean;
   connectionHostname: string;
-  tabNotificationActive: boolean;
   activeTab: string;
   isInitialized: boolean;
   availableMucRooms: IAvailableChatRoomType[];
@@ -192,7 +191,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       connection: null,
       rosterLoaded: false,
       connectionHostname: null,
-      tabNotificationActive: false,
       studyGuiders: [],
       roster: [],
       activeTab: "ROOMS",

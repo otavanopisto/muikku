@@ -25,7 +25,6 @@ interface IPrivateChatProps {
  */
 interface IPrivateChatState {
   nick: string;
-  showNotification: boolean;
   messages: IBareMessageType[];
   minimized: boolean;
   messageNotification: boolean;
@@ -61,7 +60,6 @@ export class PrivateChat extends React.Component<
 
     this.state = {
       nick: null,
-      showNotification: false,
       messages: [],
       minimized: JSON.parse(
         window.sessionStorage.getItem("minimizedChats") || "[]"
@@ -206,7 +204,6 @@ export class PrivateChat extends React.Component<
 
       this.setState(
         {
-          showNotification: false,
           currentMessageToBeSent: "",
           messages: [...this.state.messages, newMessage],
         },
@@ -239,7 +236,6 @@ export class PrivateChat extends React.Component<
       const date = new Date();
       const userId = from.split("@")[0];
       const stanzaId: string = null;
-      let notifcationOn = false;
       const messageReceived: IBareMessageType = {
         nick: fromNick,
         message: content,
@@ -260,14 +256,9 @@ export class PrivateChat extends React.Component<
         )
       );
 
-      if (document.hidden) {
-        notifcationOn = true;
-      }
-
       this.setState(
         {
           messages: newMessagesList,
-          showNotification: notifcationOn,
           messageNotification:
             this.state.messageNotification || !this.isFocused,
         },
