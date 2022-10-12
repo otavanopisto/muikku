@@ -372,7 +372,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
   handleVisibilityChange = () => {
     if (document.visibilityState === "visible") {
-      this.onTabNotification();
+      this.handleTabNotification();
     }
   };
 
