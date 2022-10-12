@@ -10,7 +10,6 @@
  */
 export class BrowserTabNotification {
   private currentTitle = document.title;
-  // private currentTimeOut = window.
   private interval: NodeJS.Timeout = null;
 
   /**
