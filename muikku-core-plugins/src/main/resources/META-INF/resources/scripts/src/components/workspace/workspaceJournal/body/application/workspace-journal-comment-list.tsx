@@ -1,37 +1,29 @@
-import * as moment from "moment";
 import * as React from "react";
-import {
-  JournalComment,
-  JournalCommentCreate,
-  JournalCommentDelete,
-  JournalCommentUpdate,
-} from "~/@types/journal";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-import { useJournalComments } from "~/hooks/useJournalComments";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
-import { WorkspaceJournalType, WorkspaceType } from "~/reducers/workspaces";
-import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
+import { WorkspaceType } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import AnimateHeight from "react-animate-height";
 import WorkspaceJournalCommentEditor from "./editors/workspace-journal-comment-editor";
-import Button from "~/components/general/button";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import Avatar from "~/components/general/avatar";
 import Link from "~/components/general/link";
-import DeleteJournalComment from "../../dialogs/delete-journal-comment";
 import {
-  ApplicationListItem,
-  ApplicationListItemHeader,
-  ApplicationListItemBody,
-  ApplicationListItemFooter,
-} from "~/components/general/application-list";
+  JournalsState,
+  WorkspaceJournalWithComments,
+} from "~/reducers/workspaces/journals";
+import { bindActionCreators } from "redux";
+import {
+  createWorkspaceJournalComment,
+  CreateWorkspaceJournalCommentTriggerType,
+} from "../../../../../actions/workspaces/journals";
+import WorkspaceJournalCommentListItem from "./workspace-journal-comment-list-item";
 
 /**
  * WorkspaceJournalCommentListProps
@@ -39,8 +31,10 @@ import {
 interface WorkspaceJournalCommentListProps {
   i18n: i18nType;
   status: StatusType;
+  journalsState: JournalsState;
   currentWorkspace: WorkspaceType;
-  currentJournal: WorkspaceJournalType;
+  currentJournal: WorkspaceJournalWithComments;
+  createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -51,36 +45,17 @@ interface WorkspaceJournalCommentListProps {
 export const WorkspaceJournalCommentList: React.FC<
   WorkspaceJournalCommentListProps
 > = (props) => {
-  const {
-    journalComments,
-    loadJournalComments,
-    deleteComment,
-    createComment,
-    updateComment,
-  } = useJournalComments(
-    props.currentWorkspace && props.currentWorkspace.id,
-    props.currentJournal && props.currentJournal.id,
-    props.displayNotification
-  );
+  const { currentJournal, journalsState } = props;
 
   const [showComments, setShowComments] = React.useState(false);
   const [createNewActive, setCreateNewActive] = React.useState(false);
   const [showEditor, setShowEditor] = React.useState(false);
 
+  const editorRef = React.useRef<HTMLElement>(null);
+
   React.useEffect(() => {
-    if (
-      showComments &&
-      !journalComments.isLoading &&
-      !journalComments.comments
-    ) {
-      loadJournalComments();
-    }
-  }, [
-    showComments,
-    loadJournalComments,
-    journalComments.isLoading,
-    journalComments.comments,
-  ]);
+    setShowComments(true);
+  }, []);
 
   /**
    * handleShowCommentsClick
@@ -98,6 +73,11 @@ export const WorkspaceJournalCommentList: React.FC<
       setCreateNewActive(true);
       setShowEditor(true);
     });
+
+    setTimeout(() => {
+      editorRef.current &&
+        editorRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 300);
   };
 
   /**
@@ -125,20 +105,29 @@ export const WorkspaceJournalCommentList: React.FC<
     comment: string,
     callback?: () => void
   ) => {
-    const newComment: JournalCommentCreate = {
-      journalEntryId: props.currentJournal && props.currentJournal.id,
-      comment: comment,
-    };
-
-    createComment(newComment, () => {
-      callback();
-      setShowEditor(false);
+    props.createWorkspaceJournalComment({
+      newCommentPayload: {
+        journalEntryId: props.currentJournal.id,
+        comment: comment,
+      },
+      journalEntryId: props.currentJournal.id,
+      workspaceEntityId: props.currentJournal.workspaceEntityId,
+      /**
+       * success
+       */
+      success: () => {
+        callback();
+        setCreateNewActive(false);
+        setShowEditor(false);
+      },
     });
   };
 
   if (!props.currentWorkspace || !props.currentJournal) {
     return null;
   }
+
+  const isLoading = !journalsState.commentsLoaded.includes(currentJournal.id);
 
   return (
     <>
@@ -150,42 +139,33 @@ export const WorkspaceJournalCommentList: React.FC<
           <span className="application-list__title-main">
             {props.i18n.text.get(
               "plugin.workspace.journal.entry.comments.title"
-            )}{" "}
-            (666)
+            )}
+            ({props.currentJournal.commentCount})
           </span>
         </h2>
       </div>
 
       <AnimateHeight height={showComments ? "auto" : 0}>
         <>
-          {!journalComments.isLoading &&
-            journalComments.comments &&
-            journalComments.comments.length > 0 &&
-            journalComments.comments.map((comment) => (
+          {isLoading ? (
+            <div className="loader-empty" />
+          ) : currentJournal.comments &&
+            currentJournal.comments.length === 0 ? (
+            <div className="empty">
+              <span>
+                {props.i18n.text.get("plugin.workspace.journal.noComments")}
+              </span>
+            </div>
+          ) : (
+            currentJournal.comments.length > 0 &&
+            currentJournal.comments.map((comment) => (
               <WorkspaceJournalCommentListItem
                 key={comment.id}
                 journalComment={comment}
                 status={props.status}
                 workspaceEntityId={props.currentWorkspace.id}
-                isSaving={journalComments.isSaving}
-                onUpdate={updateComment}
-                onDelete={deleteComment}
               />
-            ))}
-
-          {!journalComments.isLoading &&
-            !journalComments.isSaving &&
-            journalComments.comments &&
-            journalComments.comments.length === 0 && (
-              <div className="empty">
-                <span>
-                  {props.i18n.text.get("plugin.workspace.journal.noComments")}
-                </span>
-              </div>
-            )}
-
-          {(journalComments.isLoading || journalComments.isSaving) && (
-            <div className="loader-empty" />
+            ))
           )}
         </>
 
@@ -215,7 +195,7 @@ export const WorkspaceJournalCommentList: React.FC<
                 diaryEventId={props.currentJournal.id}
                 userEntityId={props.currentJournal.userEntityId}
                 workspaceEntityId={props.currentJournal.workspaceEntityId}
-                locked={journalComments.isSaving}
+                locked={false}
                 onSave={handleSaveNewCommentClick}
                 onClose={handleCancelNewCommentClick}
               />
@@ -235,6 +215,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
+    journalsState: state.journals,
     currentWorkspace: state.workspaces && state.workspaces.currentWorkspace,
     currentJournal: state.journals && state.journals.currentJournal,
   };
@@ -245,159 +226,16 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {
-    displayNotification,
-  };
+  return bindActionCreators(
+    {
+      displayNotification,
+      createWorkspaceJournalComment,
+    },
+    dispatch
+  );
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(WorkspaceJournalCommentList);
-
-/**
- * WorkspaceJournalCommentListProps
- */
-interface WorkspaceJournalCommentListItemProps {
-  journalComment: JournalComment;
-  workspaceEntityId: number;
-  status: StatusType;
-  isSaving: boolean;
-  /* onSave: (comment: string, callback?: () => void) => void; */
-  onUpdate: (
-    updatedComment: JournalCommentUpdate,
-    onSuccess?: () => void,
-    onFail?: () => void
-  ) => Promise<void>;
-  onDelete: (
-    deleteComment: JournalCommentDelete,
-    onSuccess?: () => void,
-    onFail?: () => void
-  ) => Promise<void>;
-}
-
-/**
- * WorkspaceJournalCommentList
- * @param props props
- */
-export const WorkspaceJournalCommentListItem: React.FC<
-  WorkspaceJournalCommentListItemProps
-> = (props): JSX.Element => {
-  const { onDelete, journalComment, status, onUpdate } = props;
-
-  const {
-    id,
-    authorId,
-    journalEntryId,
-    comment,
-    firstName,
-    lastName,
-    created,
-  } = journalComment;
-
-  const [editing, setEditing] = React.useState(false);
-
-  /**
-   * handleStartEditClick
-   */
-  const handleEditCommentClick = () => {
-    setEditing(true);
-  };
-
-  /**
-   * handleCancelNewComment
-   */
-  const handleCancelEditingCommentClick = () => {
-    setEditing(false);
-  };
-
-  /**
-   * handleSaveNewCommentClick
-   * @param editedComment editedComment
-   * @param callback callback
-   */
-  const handleSaveEditedCommentClick = (
-    editedComment: string,
-    callback?: () => void
-  ) => {
-    const newComment: JournalCommentUpdate = {
-      id: id,
-      journalEntryId: journalEntryId,
-      comment: editedComment,
-    };
-
-    onUpdate(newComment, () => {
-      callback();
-      setEditing(false);
-    });
-  };
-
-  const creatorIsMe = status.userId === authorId;
-  const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
-  const formatedDate = `${moment(created).format("l")} - ${moment(
-    created
-  ).format("LT")}`;
-
-  return (
-    <ApplicationListItem className="journal journal--comment">
-      <ApplicationListItemHeader
-        className="application-list__item-header--journal-comment"
-        tabIndex={0}
-      >
-        <Avatar
-          id={authorId}
-          firstName={firstName}
-          hasImage={status.hasImage}
-        />
-        <div className="application-list__item-header-main application-list__item-header-main--journal-comment">
-          <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-comment-creator">
-            {creatorName}
-          </span>
-        </div>
-        <div className="application-list__item-header-aside application-list__item-header-aside--journal-comment">
-          {formatedDate}
-        </div>
-      </ApplicationListItemHeader>
-
-      {editing ? (
-        <WorkspaceJournalCommentEditor
-          type="edit"
-          journalComment={journalComment}
-          diaryEventId={journalComment.journalEntryId}
-          userEntityId={journalComment.journalEntryId}
-          workspaceEntityId={props.workspaceEntityId}
-          locked={props.isSaving}
-          onSave={handleSaveEditedCommentClick}
-          onClose={handleCancelEditingCommentClick}
-        />
-      ) : (
-        <ApplicationListItemBody modifiers={["journal-comment"]}>
-          <article className="application-list__item-content-body application-list__item-content-body--journal-comment rich-text">
-            <CkeditorContentLoader html={comment} />
-          </article>
-
-          {creatorIsMe && !editing && (
-            <ApplicationListItemFooter className="application-list__item-footer--journal-comment">
-              <Link
-                as="span"
-                className="link link--application-list"
-                onClick={handleEditCommentClick}
-              >
-                Muokkaa (LOKALISOINTI!)
-              </Link>
-
-              <DeleteJournalComment
-                journalComment={journalComment}
-                onDelete={onDelete}
-              >
-                <Link as="span" className="link link--application-list">
-                  Poista (LOKALISOINTI!)
-                </Link>
-              </DeleteJournalComment>
-            </ApplicationListItemFooter>
-          )}
-        </ApplicationListItemBody>
-      )}
-    </ApplicationListItem>
-  );
-};
