@@ -84,7 +84,7 @@ const EvaluationJournalEventComment: React.FC<
       </div>
       {creatorIsMe && (
         <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-comment">
-          <Link className="link link--full" onClick={handleEditCommentClick}>
+          <Link className="link" onClick={handleEditCommentClick}>
             LOCALE: plugin.evaluation.evaluationModal.journalComments.editButton
           </Link>
 
@@ -93,7 +93,7 @@ const EvaluationJournalEventComment: React.FC<
               journalComment={journalComment}
               onDelete={onDelete}
             >
-              <Link className="link link--full">
+              <Link className="link">
                 LOCALE:
                 plugin.evaluation.evaluationModal.journalComments.deleteButton
               </Link>

@@ -8,12 +8,12 @@ import { useJournalComments } from "../../../../../hooks/useJournalComments";
 import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
+import Link from "~/components/general/link";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { connect } from "react-redux";
-import { ButtonPill } from "~/components/general/button";
 import JournalCommentEditor from "./editors/journal-comment-editor";
 import SlideDrawer from "./slide-drawer";
 import EvaluationJournalEventComment from "./evaluation-journal-event-comment";
@@ -303,11 +303,9 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
                 )}
             </>
             <div>
-              <ButtonPill
-                buttonModifiers={["evaluate"]}
-                icon="book"
-                onClick={handleCreateNewComment}
-              />
+              <Link className="link" onClick={handleCreateNewComment}>
+                plugin.evaluation.evaluationModal.journalComments.newCommentButton
+              </Link>
             </div>
           </AnimateHeight>
         </>
