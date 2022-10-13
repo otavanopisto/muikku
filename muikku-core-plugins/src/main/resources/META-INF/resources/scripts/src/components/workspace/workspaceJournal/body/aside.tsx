@@ -15,6 +15,7 @@ import { loadStudentsOfWorkspace } from "~/actions/workspaces";
 import { LoadUsersOfWorkspaceTriggerType } from "~/actions/workspaces/index";
 import { WorkspaceStudentListType } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions";
+import { JournalsState } from "../../../../reducers/workspaces/journals";
 import {
   LoadCurrentWorkspaceJournalsFromServerTriggerType,
   loadCurrentWorkspaceJournalsFromServer,
@@ -26,6 +27,7 @@ import {
 interface NavigationAsideProps {
   i18n: i18nType;
   workspace: WorkspaceType;
+  journalsState: JournalsState;
   status: StatusType;
   loadStudents: LoadUsersOfWorkspaceTriggerType;
   loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType;
@@ -91,7 +93,7 @@ class NavigationAside extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { workspace } = this.props;
+    const { workspace, journalsState } = this.props;
 
     if (!workspace) {
       return null;
@@ -106,9 +108,9 @@ class NavigationAside extends React.Component<
      * If all student is showed
      */
     const allSelected =
-      workspace !== null &&
-      workspace.journals !== null &&
-      workspace.journals.userEntityId === null;
+      journalsState !== null &&
+      journalsState.journals !== null &&
+      journalsState.userEntityId === null;
 
     const navigationElementList: JSX.Element[] = [];
 
@@ -130,10 +132,7 @@ class NavigationAside extends React.Component<
         navigationElementList.push(
           <NavigationElement
             key={student.userEntityId}
-            isActive={
-              student.userEntityId ===
-              this.props.workspace.journals.userEntityId
-            }
+            isActive={student.userEntityId === journalsState.userEntityId}
             icon="user"
             onClick={this.handleOnStudentClick(student.userEntityId)}
           >
@@ -167,6 +166,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
+    journalsState: state.journals,
     status: state.status,
   };
 }

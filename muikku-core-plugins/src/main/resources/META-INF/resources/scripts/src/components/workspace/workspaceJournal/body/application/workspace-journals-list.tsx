@@ -18,6 +18,7 @@ import {
   LoadMoreCurrentWorkspaceJournalsFromServerTriggerType,
   loadMoreCurrentWorkspaceJournalsFromServer,
 } from "~/actions/workspaces/journals";
+import { JournalsState } from "~/reducers/workspaces/journals";
 
 /**
  * WorkspaceJournalsProps
@@ -28,6 +29,7 @@ interface WorkspaceJournalsListProps {
   workspaceJournalsHasMore: boolean;
   loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType;
   workspace: WorkspaceType;
+  journalsState: JournalsState;
   status: StatusType;
 }
 
@@ -65,13 +67,12 @@ class WorkspaceJournalsList extends BodyScrollLoader<
   render() {
     if (
       !this.props.workspace ||
-      !this.props.workspace.journals ||
-      this.props.workspaceJournalsState === "LOADING" ||
-      (this.props.workspace.journals &&
-        this.props.workspace.journals.currentJournal)
+      !this.props.journalsState ||
+      this.props.journalsState.state === "LOADING" ||
+      (this.props.journalsState && this.props.journalsState.currentJournal)
     ) {
       return null;
-    } else if (this.props.workspaceJournalsState === "ERROR") {
+    } else if (this.props.journalsState.state === "ERROR") {
       //TODO ERRORMSG: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return (
@@ -79,7 +80,7 @@ class WorkspaceJournalsList extends BodyScrollLoader<
           <span>{"ERROR"}</span>
         </div>
       );
-    } else if (this.props.workspace.journals.journals.length === 0) {
+    } else if (this.props.journalsState.journals.length === 0) {
       return (
         <div className="empty">
           <span>
@@ -94,7 +95,7 @@ class WorkspaceJournalsList extends BodyScrollLoader<
     }
     return (
       <ApplicationList>
-        {this.props.workspace.journals.journals.map((journal) => (
+        {this.props.journalsState.journals.map((journal) => (
           <WorkspaceJournalsListItem
             key={journal.id}
             journal={journal}
@@ -117,15 +118,10 @@ class WorkspaceJournalsList extends BodyScrollLoader<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspaceJournalsState:
-      state.workspaces.currentWorkspace &&
-      state.workspaces.currentWorkspace.journals &&
-      state.workspaces.currentWorkspace.journals.state,
-    workspaceJournalsHasMore:
-      state.workspaces.currentWorkspace &&
-      state.workspaces.currentWorkspace.journals &&
-      state.workspaces.currentWorkspace.journals.hasMore,
+    workspaceJournalsState: state.journals && state.journals.state,
+    workspaceJournalsHasMore: state.journals && state.journals.hasMore,
     workspace: state.workspaces.currentWorkspace,
+    journalsState: state.journals,
     status: state.status,
   };
 }

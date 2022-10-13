@@ -21,6 +21,7 @@ import {
   loadCurrentWorkspaceJournalsFromServer,
 } from "~/actions/workspaces/journals";
 import WorkspaceJournalView from "./application/workspace-journal-view";
+import { JournalsState } from "~/reducers/workspaces/journals";
 
 /**
  * WorkspaceJournalApplicationProps
@@ -30,6 +31,7 @@ interface WorkspaceJournalApplicationProps {
   aside?: React.ReactElement<any>;
   i18n: i18nType;
   workspace: WorkspaceType;
+  journalsState: JournalsState;
   status: StatusType;
   loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType;
 }
@@ -78,7 +80,7 @@ class WorkspaceJournalApplication extends React.Component<
     if (this.props.workspace) {
       primaryOption =
         !this.props.status.isStudent &&
-        this.props.workspace.journals &&
+        this.props.journalsState &&
         this.props.workspace.students ? (
           <div className="form-element form-element--main-action">
             <label htmlFor="selectJournal" className="visually-hidden">
@@ -87,7 +89,7 @@ class WorkspaceJournalApplication extends React.Component<
             <select
               id="selectJournal"
               className="form-element__select form-element__select--main-action"
-              value={this.props.workspace.journals.userEntityId || ""}
+              value={this.props.journalsState.userEntityId || ""}
               onChange={this.onWorkspaceJournalFilterChange}
             >
               <option value="">
@@ -153,6 +155,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
+    journalsState: state.journals,
     status: state.status,
   };
 }

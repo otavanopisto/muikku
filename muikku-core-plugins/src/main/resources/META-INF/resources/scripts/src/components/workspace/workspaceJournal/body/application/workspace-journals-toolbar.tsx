@@ -81,11 +81,7 @@ class WorkspaceJournalsToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    currentJournal:
-      state.workspaces &&
-      state.workspaces.currentWorkspace &&
-      state.workspaces.currentWorkspace.journals &&
-      state.workspaces.currentWorkspace.journals.currentJournal,
+    currentJournal: state.journals && state.journals.currentJournal,
   };
 }
 

@@ -11,6 +11,11 @@ import {
   WorkspaceListType,
   WorkspaceJournalListType,
 } from "~/reducers/workspaces";
+import {
+  ReducerStateType,
+  WorkspaceJournalType,
+} from "~/reducers/workspaces/journals";
+import { Dispatch } from "react";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
@@ -239,13 +244,14 @@ export async function loadWorkspacesHelper(
 export async function loadCurrentWorkspaceJournalsHelper(
   userEntityId: number | null,
   initial: boolean,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
   const state: StateType = getState();
-  let currentWorkspace = state.workspaces.currentWorkspace;
+  const currentWorkspace = state.workspaces.currentWorkspace;
 
-  let journalNextstate: WorkspacesStateType;
+  let currentJournalState = state.journals;
+  let journalNextstate: ReducerStateType;
   //If it's for the first time
   if (initial) {
     //We set this state to loading
@@ -255,14 +261,21 @@ export async function loadCurrentWorkspaceJournalsHelper(
     journalNextstate = "LOADING_MORE";
   }
 
-  const currentJournals = currentWorkspace.journals
-    ? currentWorkspace.journals.journals
+  const currentJournalsList = currentJournalState.journals
+    ? currentJournalState.journals
     : [];
+
   dispatch({
-    type: "UPDATE_WORKSPACE",
+    type: "UPDATE_JOURNALS",
     payload: {
-      original: currentWorkspace,
-      update: {
+      original: currentJournalState,
+      updated: {
+        journals: currentJournalsList,
+        hasMore: (currentJournalState && currentJournalState.hasMore) || false,
+        userEntityId,
+        state: journalNextstate,
+      },
+      /* update: {
         journals: {
           journals: currentJournals,
           hasMore:
@@ -271,18 +284,14 @@ export async function loadCurrentWorkspaceJournalsHelper(
           userEntityId,
           state: journalNextstate,
         },
-      },
+      }, */
     },
   });
-
-  const workspaceId = currentWorkspace.id;
 
   const params: any = {
     firstResult: initial
       ? 0
-      : (currentWorkspace.journals &&
-          currentWorkspace.journals.journals.length) ||
-        0,
+      : (currentJournalState && currentJournalState.journals.length) || 0,
     maxResults: MAX_JOURNAL_LOADED_AT_ONCE + 1,
   };
 
@@ -291,15 +300,13 @@ export async function loadCurrentWorkspaceJournalsHelper(
   }
 
   try {
-    const journals: WorkspaceJournalListType = <WorkspaceJournalListType>(
-      await promisify(
-        mApi().workspace.workspaces.journal.read(workspaceId, params),
-        "callback"
-      )()
-    );
+    const journals = (await promisify(
+      mApi().workspace.workspaces.journal.read(currentWorkspace.id, params),
+      "callback"
+    )()) as WorkspaceJournalType[];
 
     //update current workspace again in case
-    currentWorkspace = getState().workspaces.currentWorkspace;
+    currentJournalState = getState().journals;
 
     const concat = !initial;
     const hasMore: boolean = journals.length === MAX_JOURNAL_LOADED_AT_ONCE + 1;
@@ -311,10 +318,18 @@ export async function loadCurrentWorkspaceJournalsHelper(
     }
 
     dispatch({
-      type: "UPDATE_WORKSPACE",
+      type: "UPDATE_JOURNALS",
       payload: {
-        original: currentWorkspace,
-        update: {
+        original: currentJournalState,
+        updated: {
+          journals: concat
+            ? currentJournalState.journals.concat(actualJournals)
+            : actualJournals,
+          hasMore,
+          userEntityId,
+          state: "READY",
+        },
+        /* update: {
           journals: {
             journals: concat
               ? currentJournals.concat(actualJournals)
@@ -323,7 +338,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
             userEntityId,
             state: <WorkspacesStateType>"READY",
           },
-        },
+        }, */
       },
     });
   } catch (err) {
@@ -331,7 +346,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
       throw err;
     }
     //update current workspace again in case
-    currentWorkspace = getState().workspaces.currentWorkspace;
+    currentJournalState = getState().journals;
 
     //Error :(
     dispatch(
@@ -343,10 +358,19 @@ export async function loadCurrentWorkspaceJournalsHelper(
       )
     );
     dispatch({
-      type: "UPDATE_WORKSPACE",
+      type: "UPDATE_JOURNALS",
       payload: {
-        original: currentWorkspace,
-        update: {
+        original: currentJournalState,
+        updated: {
+          journals: currentJournalState.journals
+            ? currentJournalState.journals
+            : [],
+          hasMore:
+            (currentJournalState && currentJournalState.hasMore) || false,
+          userEntityId,
+          state: "ERROR",
+        },
+        /* update: {
           journals: {
             journals: currentWorkspace.journals
               ? currentWorkspace.journals.journals
@@ -358,7 +382,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
             userEntityId,
             state: <WorkspacesStateType>"ERROR",
           },
-        },
+        }, */
       },
     });
   }

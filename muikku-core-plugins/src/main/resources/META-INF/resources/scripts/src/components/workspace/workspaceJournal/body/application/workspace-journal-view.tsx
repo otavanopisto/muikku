@@ -9,12 +9,14 @@ import { AnyActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
 import WorkspaceJournalsListItem from "./workspace-journals-list-item";
 import ApplicationList from "~/components/general/application-list";
+import { JournalsState } from "~/reducers/workspaces/journals";
 
 /**
  * MessageViewProps
  */
 interface WorkspaceJournalViewProps {
   currentWorkspace: WorkspaceType;
+  journalsState: JournalsState;
 }
 
 /**
@@ -24,8 +26,8 @@ interface WorkspaceJournalViewProps {
 const WorkspaceJournalView: React.FC<WorkspaceJournalViewProps> = (props) => {
   if (
     !props.currentWorkspace ||
-    !props.currentWorkspace.journals ||
-    !props.currentWorkspace.journals.currentJournal
+    !props.journalsState ||
+    !props.journalsState.currentJournal
   ) {
     return null;
   }
@@ -33,7 +35,7 @@ const WorkspaceJournalView: React.FC<WorkspaceJournalViewProps> = (props) => {
   return (
     <ApplicationList>
       <WorkspaceJournalsListItem
-        journal={props.currentWorkspace.journals.currentJournal}
+        journal={props.journalsState.currentJournal}
         showCommentList={true}
         asCurrent={true}
       />
@@ -48,6 +50,7 @@ const WorkspaceJournalView: React.FC<WorkspaceJournalViewProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     currentWorkspace: state.workspaces.currentWorkspace,
+    journalsState: state.journals,
   };
 }
 

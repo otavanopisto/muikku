@@ -1,11 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { loadCurrentWorkspaceJournalsHelper } from "./helpers";
-import { AnyActionType } from "~/actions";
+import { AnyActionType, SpecificActionType } from "~/actions";
 import { WorkspaceJournalType, WorkspaceType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import { displayNotification } from "../base/notifications";
+import { JournalsState } from "~/reducers/workspaces/journals";
+import { journals } from "../../reducers/workspaces/journals";
+
+export type UPDATE_JOURNALS = SpecificActionType<
+  "UPDATE_JOURNALS",
+  {
+    original: JournalsState;
+    updated: Partial<JournalsState>;
+  }
+>;
 
 // Workspace journal loading triggers
 
@@ -110,14 +120,19 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
           )()
         );
 
-        const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+        const currentJournalsState = getState().journals;
 
         dispatch({
-          type: "UPDATE_WORKSPACE",
+          type: "UPDATE_JOURNALS",
           payload: {
-            original: currentWorkspace,
-            update: {
+            original: currentJournalsState,
+            updated: {
+              journals: [newJournal].concat(currentJournalsState.journals),
+              hasMore: currentJournalsState.hasMore,
+              userEntityId: currentJournalsState.userEntityId,
+              state: currentJournalsState.state,
+            },
+            /* update: {
               journals: {
                 journals: [newJournal].concat(
                   currentWorkspace.journals.journals
@@ -126,7 +141,7 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
                 userEntityId: currentWorkspace.journals.userEntityId,
                 state: currentWorkspace.journals.state,
               },
-            },
+            }, */
           },
         });
 
@@ -174,14 +189,24 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
           "callback"
         )();
 
-        const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+        const currentJournalsState = getState().journals;
 
         dispatch({
-          type: "UPDATE_WORKSPACE",
+          type: "UPDATE_JOURNALS",
           payload: {
-            original: currentWorkspace,
-            update: {
+            original: currentJournalsState,
+            updated: {
+              journals: currentJournalsState.journals.map((j) => {
+                if (j.id === data.journal.id) {
+                  return { ...j, content: data.content, title: data.title };
+                }
+                return j;
+              }),
+              hasMore: currentJournalsState.hasMore,
+              userEntityId: currentJournalsState.userEntityId,
+              state: currentJournalsState.state,
+            },
+            /* update: {
               journals: {
                 journals: currentWorkspace.journals.journals.map((j) => {
                   if (j.id === data.journal.id) {
@@ -193,7 +218,7 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
                 userEntityId: currentWorkspace.journals.userEntityId,
                 state: currentWorkspace.journals.state,
               },
-            },
+            }, */
           },
         });
 
@@ -235,14 +260,21 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
           "callback"
         )();
 
-        const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+        const currentJournalsState = getState().journals;
 
         dispatch({
-          type: "UPDATE_WORKSPACE",
+          type: "UPDATE_JOURNALS",
           payload: {
-            original: currentWorkspace,
-            update: {
+            original: currentJournalsState,
+            updated: {
+              journals: currentJournalsState.journals.filter(
+                (j) => j.id !== data.journal.id
+              ),
+              hasMore: currentJournalsState.hasMore,
+              userEntityId: currentJournalsState.userEntityId,
+              state: currentJournalsState.state,
+            },
+            /* update: {
               journals: {
                 journals: currentWorkspace.journals.journals.filter(
                   (j) => j.id !== data.journal.id
@@ -251,7 +283,7 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
                 userEntityId: currentWorkspace.journals.userEntityId,
                 state: currentWorkspace.journals.state,
               },
-            },
+            }, */
           },
         });
 
@@ -283,18 +315,22 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const state: StateType = getState();
+      const currentJournalsState = getState().journals;
 
       dispatch({
-        type: "UPDATE_WORKSPACE",
+        type: "UPDATE_JOURNALS",
         payload: {
-          original: state.workspaces.currentWorkspace,
-          update: {
+          original: currentJournalsState,
+          updated: {
+            ...currentJournalsState,
+            currentJournal: data.currentJournal,
+          },
+          /* update: {
             journals: {
               ...state.workspaces.currentWorkspace.journals,
               currentJournal: data.currentJournal,
             },
-          },
+          }, */
         },
       });
     };

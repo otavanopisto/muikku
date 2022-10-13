@@ -14,7 +14,7 @@ import { useJournalComments } from "~/hooks/useJournalComments";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceJournalType, WorkspaceType } from "~/reducers/workspaces";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -40,6 +40,7 @@ interface WorkspaceJournalCommentListProps {
   i18n: i18nType;
   status: StatusType;
   currentWorkspace: WorkspaceType;
+  currentJournal: WorkspaceJournalType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -58,10 +59,7 @@ export const WorkspaceJournalCommentList: React.FC<
     updateComment,
   } = useJournalComments(
     props.currentWorkspace && props.currentWorkspace.id,
-    props.currentWorkspace &&
-      props.currentWorkspace.journals &&
-      props.currentWorkspace.journals.currentJournal &&
-      props.currentWorkspace.journals.currentJournal.id,
+    props.currentJournal && props.currentJournal.id,
     props.displayNotification
   );
 
@@ -128,10 +126,7 @@ export const WorkspaceJournalCommentList: React.FC<
     callback?: () => void
   ) => {
     const newComment: JournalCommentCreate = {
-      journalEntryId:
-        props.currentWorkspace.journals &&
-        props.currentWorkspace.journals.currentJournal &&
-        props.currentWorkspace.journals.currentJournal.id,
+      journalEntryId: props.currentJournal && props.currentJournal.id,
       comment: comment,
     };
 
@@ -141,11 +136,7 @@ export const WorkspaceJournalCommentList: React.FC<
     });
   };
 
-  if (
-    !props.currentWorkspace ||
-    !props.currentWorkspace.journals ||
-    !props.currentWorkspace.journals.currentJournal
-  ) {
+  if (!props.currentWorkspace || !props.currentJournal) {
     return null;
   }
 
@@ -210,14 +201,9 @@ export const WorkspaceJournalCommentList: React.FC<
             {createNewActive && (
               <WorkspaceJournalCommentEditor
                 type="new"
-                diaryEventId={props.currentWorkspace.journals.currentJournal.id}
-                userEntityId={
-                  props.currentWorkspace.journals.currentJournal.userEntityId
-                }
-                workspaceEntityId={
-                  props.currentWorkspace.journals.currentJournal
-                    .workspaceEntityId
-                }
+                diaryEventId={props.currentJournal.id}
+                userEntityId={props.currentJournal.userEntityId}
+                workspaceEntityId={props.currentJournal.workspaceEntityId}
                 locked={journalComments.isSaving}
                 onSave={handleSaveNewCommentClick}
                 onClose={handleCancelNewCommentClick}
@@ -238,7 +224,8 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    currentWorkspace: state.workspaces.currentWorkspace,
+    currentWorkspace: state.workspaces && state.workspaces.currentWorkspace,
+    currentJournal: state.journals && state.journals.currentJournal,
   };
 }
 
