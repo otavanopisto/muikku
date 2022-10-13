@@ -238,7 +238,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           <div className="evaluation-modal__item-meta">
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
-                Kirjoitettu
+                plugin.evaluation.evaluationModal.journalEntry.writtenLabel
               </span>
               <span className="evaluation-modal__item-meta-item-data">
                 {formatedDate}
@@ -259,7 +259,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
             onClick={handleShowCommentsClick}
           >
             <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
-              Kommentit: (XX)
+              plugin.evaluation.evaluationModal.journalComments.title: (666)
             </div>
             <div className={arrowClasses + "icon-arrow-right"} />
           </div>
@@ -294,7 +294,13 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
               {!journalComments.isLoading &&
                 !journalComments.isSaving &&
                 journalComments.comments &&
-                journalComments.comments.length === 0 && <div>Tyhjä</div>}
+                journalComments.comments.length === 0 && (
+                  <div className="empty">
+                    <span>
+                      plugin.evaluation.evaluationModal.journalComments.noComments
+                    </span>
+                  </div>
+                )}
             </>
             <div>
               <ButtonPill
