@@ -12,13 +12,13 @@ import {
   SetCurrentJournalTriggerType,
   setCurrentJournal,
 } from "../../../../../actions/workspaces/journals";
-import { WorkspaceJournalType } from "~/reducers/workspaces";
+import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 
 /**
  * WorkspaceJournalsToolbarProps
  */
 interface WorkspaceJournalsToolbarProps {
-  currentJournal: WorkspaceJournalType;
+  currentJournal: WorkspaceJournalWithComments;
   setCurrentJournal: SetCurrentJournalTriggerType;
 }
 

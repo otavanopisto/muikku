@@ -14,6 +14,7 @@ import {
   UpdateWorkspaceJournalInCurrentWorkspaceTriggerType,
   updateWorkspaceJournalInCurrentWorkspace,
 } from "~/actions/workspaces/journals";
+import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 
 /**
  * NewEditJournalProps
@@ -21,7 +22,7 @@ import {
 interface WorkspaceJournalEditorProps {
   type?: "new" | "edit";
   i18n: i18nType;
-  journal?: WorkspaceJournalType;
+  journal?: WorkspaceJournalWithComments;
   createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType;
   updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType;
   onClose?: () => void;

@@ -1,20 +1,70 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { loadCurrentWorkspaceJournalsHelper } from "./helpers";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { WorkspaceJournalType, WorkspaceType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import { displayNotification } from "../base/notifications";
-import { JournalsState } from "~/reducers/workspaces/journals";
-import { journals } from "../../reducers/workspaces/journals";
+import {
+  JournalsState,
+  WorkspaceJournalType,
+} from "~/reducers/workspaces/journals";
+import { Dispatch } from "react-redux";
+import {
+  JournalComment,
+  JournalCommentCreate,
+  JournalCommentDelete,
+  JournalCommentUpdate,
+} from "~/@types/journal";
+
+/**
+ * JournalActionUpdate
+ */
+interface JournalActionUpdate {
+  original: JournalsState;
+  updated: Partial<JournalsState>;
+}
 
 export type UPDATE_JOURNALS = SpecificActionType<
   "UPDATE_JOURNALS",
-  {
-    original: JournalsState;
-    updated: Partial<JournalsState>;
-  }
+  JournalActionUpdate
+>;
+
+export type JOURNALS_SET_CURRENT = SpecificActionType<
+  "JOURNALS_SET_CURRENT",
+  JournalActionUpdate
+>;
+
+// Journals
+export type JOURNALS_CREATE = SpecificActionType<
+  "JOURNALS_CREATE",
+  JournalActionUpdate
+>;
+
+export type JOURNALS_UPDATE = SpecificActionType<
+  "JOURNALS_UPDATE",
+  JournalActionUpdate
+>;
+
+export type JOURNALS_DELETE = SpecificActionType<
+  "JOURNALS_DELETE",
+  JournalActionUpdate
+>;
+
+// Journal comments
+export type JOURNALS_COMMENTS_CREATE = SpecificActionType<
+  "JOURNALS_COMMENTS_CREATE",
+  JournalActionUpdate
+>;
+
+export type JOURNALS_COMMENTS_UPDATE = SpecificActionType<
+  "JOURNALS_COMMENTS_CREATE",
+  JournalActionUpdate
+>;
+
+export type JOURNALS_COMMENTS_DELETE = SpecificActionType<
+  "JOURNALS_COMMENTS_CREATE",
+  JournalActionUpdate
 >;
 
 // Workspace journal loading triggers
@@ -31,6 +81,17 @@ export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
  */
 export interface LoadMoreCurrentWorkspaceJournalsFromServerTriggerType {
   (): AnyActionType;
+}
+
+/**
+ * LoadWorkspaceJournalCommentsFromServerTriggerType
+ */
+export interface LoadWorkspaceJournalCommentsFromServerTriggerType {
+  (data: {
+    workspaceId: number;
+    journalEntryId: number;
+    isCurrent: boolean;
+  }): AnyActionType;
 }
 
 // Workspace journal trigger types
@@ -72,6 +133,45 @@ export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
 }
 
 /**
+ * CreateWorkspaceJournalCommentInTriggerType
+ */
+export interface CreateWorkspaceJournalCommentTriggerType {
+  (data: {
+    newCommentPayload: JournalCommentCreate;
+    journalEntryId: number;
+    workspaceEntityId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * UpdateWorkspaceJournalCommentInTriggerType
+ */
+export interface UpdateWorkspaceJournalCommentTriggerType {
+  (data: {
+    updatedCommentPayload: JournalCommentUpdate;
+    journalEntryId: number;
+    workspaceEntityId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * DeleteWorkspaceJournalCommentInTriggerType
+ */
+export interface DeleteWorkspaceJournalCommentTriggerType {
+  (data: {
+    deleteCommentPayload: JournalCommentDelete;
+    journalEntryId: number;
+    workspaceEntityId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
  * SetCurrentJournal
  */
 export interface SetCurrentJournalTriggerType {
@@ -96,13 +196,73 @@ const loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJourna
   };
 
 /**
+ * loadWorkspaceJournalCommentsFromServer
+ * @param data data
+ */
+const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromServerTriggerType =
+  function loadWorkspaceJournalCommentsFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        const journalCommentList = (await promisify(
+          mApi().workspace.workspaces.journal.comments.read(
+            data.workspaceId,
+            data.journalEntryId
+          ),
+          "callback"
+        )()) as JournalComment[];
+
+        const currentJournalsState = getState().journals;
+
+        const index = currentJournalsState.journals.findIndex(
+          (j) => j.id === data.journalEntryId
+        );
+
+        const updatedJournalsList = [...currentJournalsState.journals];
+
+        updatedJournalsList[index].comments = journalCommentList;
+
+        dispatch({
+          type: "UPDATE_JOURNALS",
+          payload: {
+            original: currentJournalsState,
+            updated: {
+              journals: updatedJournalsList,
+              currentJournal: data.isCurrent && {
+                ...updatedJournalsList[index],
+              },
+              hasMore: currentJournalsState.hasMore,
+              userEntityId: currentJournalsState.userEntityId,
+              state: currentJournalsState.state,
+            },
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToCreateJournal"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
  * createWorkspaceJournalForCurrentWorkspace
  * @param data data
  */
 const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType =
   function createWorkspaceJournalForCurrentWorkspace(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -132,16 +292,6 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
               userEntityId: currentJournalsState.userEntityId,
               state: currentJournalsState.state,
             },
-            /* update: {
-              journals: {
-                journals: [newJournal].concat(
-                  currentWorkspace.journals.journals
-                ),
-                hasMore: currentWorkspace.journals.hasMore,
-                userEntityId: currentWorkspace.journals.userEntityId,
-                state: currentWorkspace.journals.state,
-              },
-            }, */
           },
         });
 
@@ -170,7 +320,7 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
 const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType =
   function updateWorkspaceJournalInCurrentWorkspace(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -206,19 +356,6 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
               userEntityId: currentJournalsState.userEntityId,
               state: currentJournalsState.state,
             },
-            /* update: {
-              journals: {
-                journals: currentWorkspace.journals.journals.map((j) => {
-                  if (j.id === data.journal.id) {
-                    return { ...j, content: data.content, title: data.title };
-                  }
-                  return j;
-                }),
-                hasMore: currentWorkspace.journals.hasMore,
-                userEntityId: currentWorkspace.journals.userEntityId,
-                state: currentWorkspace.journals.state,
-              },
-            }, */
           },
         });
 
@@ -247,7 +384,7 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
 const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWorkspaceTriggerType =
   function deleteWorkspaceJournalInCurrentWorkspace(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -274,16 +411,6 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
               userEntityId: currentJournalsState.userEntityId,
               state: currentJournalsState.state,
             },
-            /* update: {
-              journals: {
-                journals: currentWorkspace.journals.journals.filter(
-                  (j) => j.id !== data.journal.id
-                ),
-                hasMore: currentWorkspace.journals.hasMore,
-                userEntityId: currentWorkspace.journals.userEntityId,
-                state: currentWorkspace.journals.state,
-              },
-            }, */
           },
         });
 
@@ -312,7 +439,7 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
 const setCurrentJournal: SetCurrentJournalTriggerType =
   function setCurrentJournal(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const currentJournalsState = getState().journals;
@@ -325,22 +452,361 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
             ...currentJournalsState,
             currentJournal: data.currentJournal,
           },
-          /* update: {
-            journals: {
-              ...state.workspaces.currentWorkspace.journals,
-              currentJournal: data.currentJournal,
-            },
-          }, */
         },
       });
+
+      try {
+        // Loading comments if setting currentJournal and its comments are not already loaded
+        if (data.currentJournal) {
+          if (
+            !currentJournalsState.commentsLoaded.includes(
+              data.currentJournal.id
+            )
+          ) {
+            const journalCommentList = (await promisify(
+              mApi().workspace.workspaces.journal.comments.read(
+                data.currentJournal.workspaceEntityId,
+                data.currentJournal.id
+              ),
+              "callback"
+            )()) as JournalComment[];
+
+            const currentJournalsStateAfter = getState().journals;
+
+            const index = currentJournalsStateAfter.journals.findIndex(
+              (j) => j.id === data.currentJournal.id
+            );
+
+            const updatedJournalsList = [...currentJournalsStateAfter.journals];
+
+            updatedJournalsList[index].comments = journalCommentList;
+
+            dispatch({
+              type: "UPDATE_JOURNALS",
+              payload: {
+                original: currentJournalsStateAfter,
+                updated: {
+                  journals: updatedJournalsList,
+                  currentJournal: data.currentJournal,
+                  commentsLoaded: [
+                    ...currentJournalsStateAfter.commentsLoaded,
+                    data.currentJournal.id,
+                  ],
+                  hasMore: currentJournalsStateAfter.hasMore,
+                  userEntityId: currentJournalsStateAfter.userEntityId,
+                  state: currentJournalsStateAfter.state,
+                },
+              },
+            });
+          } else {
+            dispatch({
+              type: "UPDATE_JOURNALS",
+              payload: {
+                original: currentJournalsState,
+                updated: {
+                  ...currentJournalsState,
+                  currentJournal: data.currentJournal,
+                },
+              },
+            });
+          }
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToDeleteJournal"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * createWorkspaceJournalComment
+ * @param data data
+ */
+const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
+  function createWorkspaceJournalComment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const {
+        newCommentPayload,
+        journalEntryId,
+        workspaceEntityId,
+        fail,
+        success,
+      } = data;
+
+      const currentJournalsState = getState().journals;
+
+      try {
+        const [updated] = await Promise.all([
+          (async () => {
+            // New comment data
+            const newComment = (await promisify(
+              mApi().workspace.workspaces.journal.comments.create(
+                workspaceEntityId,
+                journalEntryId,
+                newCommentPayload
+              ),
+              "callback"
+            )()) as JournalComment;
+
+            // Find current journal index
+            const index = currentJournalsState.journals.findIndex(
+              (j) => j.id === journalEntryId
+            );
+
+            const updatedCurrentJournal = currentJournalsState.journals[index];
+
+            // Updated current journal data
+            updatedCurrentJournal.comments.push(newComment);
+            updatedCurrentJournal.commentCount++;
+
+            const updatedJournalsList = [...currentJournalsState.journals];
+
+            // Update also journal list with updated list item, which is current now
+            updatedJournalsList.splice(index, 1, updatedCurrentJournal);
+
+            return {
+              updatedCurrentJournal,
+              updatedJournalsList,
+            };
+          })(),
+        ]);
+
+        success && success();
+
+        dispatch({
+          type: "UPDATE_JOURNALS",
+          payload: {
+            original: currentJournalsState,
+            updated: {
+              ...currentJournalsState,
+              currentJournal: updated.updatedCurrentJournal,
+              journals: updated.updatedJournalsList,
+            },
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToDeleteJournal"
+            ),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
+ * createWorkspaceJournalComment
+ * @param data data
+ */
+const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
+  function updatedWorkspaceJournalComment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const {
+        updatedCommentPayload,
+        journalEntryId,
+        workspaceEntityId,
+        fail,
+        success,
+      } = data;
+
+      const currentJournalsState = getState().journals;
+
+      try {
+        const [updated] = await Promise.all([
+          (async () => {
+            // Updated comment data
+            const updatedComment = (await promisify(
+              mApi().workspace.workspaces.journal.comments.update(
+                workspaceEntityId,
+                journalEntryId,
+                updatedCommentPayload.id,
+                updatedCommentPayload
+              ),
+              "callback"
+            )()) as JournalComment;
+
+            // Find current journal index
+            const index = currentJournalsState.journals.findIndex(
+              (j) => j.id === journalEntryId
+            );
+
+            const updatedCurrentJournal = currentJournalsState.journals[index];
+
+            // Find updated comment index from list
+            const commentIndex = updatedCurrentJournal.comments.findIndex(
+              (c) => c.id === updatedCommentPayload.id
+            );
+
+            // Updated that list with new data
+            updatedCurrentJournal.comments.splice(
+              commentIndex,
+              1,
+              updatedComment
+            );
+
+            const updatedJournalsList = [...currentJournalsState.journals];
+
+            // Update also journal list with updated list item, which is current now
+            updatedJournalsList.splice(index, 1, updatedCurrentJournal);
+
+            return {
+              updatedCurrentJournal,
+              updatedJournalsList,
+            };
+          })(),
+        ]);
+
+        success && success();
+
+        dispatch({
+          type: "UPDATE_JOURNALS",
+          payload: {
+            original: currentJournalsState,
+            updated: {
+              ...currentJournalsState,
+              currentJournal: updated.updatedCurrentJournal,
+              journals: updated.updatedJournalsList,
+            },
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToDeleteJournal"
+            ),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
+ * createWorkspaceJournalComment
+ * @param data data
+ */
+const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
+  function updatedWorkspaceJournalComment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const {
+        deleteCommentPayload,
+        journalEntryId,
+        workspaceEntityId,
+        fail,
+        success,
+      } = data;
+
+      const currentJournalsState = getState().journals;
+
+      try {
+        const [updated] = await Promise.all([
+          (async () => {
+            await promisify(
+              mApi().workspace.workspaces.journal.comments.del(
+                workspaceEntityId,
+                journalEntryId,
+                deleteCommentPayload.id
+              ),
+              "callback"
+            )();
+
+            // Find current journal index
+            const index = currentJournalsState.journals.findIndex(
+              (j) => j.id === journalEntryId
+            );
+
+            const updatedCurrentJournal = currentJournalsState.journals[index];
+
+            // Find updated comment index from list
+            const commentIndex = updatedCurrentJournal.comments.findIndex(
+              (c) => c.id === deleteCommentPayload.id
+            );
+
+            // Updated that list with new data
+            updatedCurrentJournal.comments.splice(commentIndex, 1);
+            updatedCurrentJournal.commentCount--;
+
+            const updatedJournalsList = [...currentJournalsState.journals];
+
+            // Update also journal list with updated list item, which is current now
+            updatedJournalsList.splice(index, 1, updatedCurrentJournal);
+
+            return {
+              updatedCurrentJournal,
+              updatedJournalsList,
+            };
+          })(),
+        ]);
+
+        success && success();
+
+        dispatch({
+          type: "UPDATE_JOURNALS",
+          payload: {
+            original: currentJournalsState,
+            updated: {
+              ...currentJournalsState,
+              currentJournal: updated.updatedCurrentJournal,
+              journals: updated.updatedJournalsList,
+            },
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToDeleteJournal"
+            ),
+            "error"
+          )
+        );
+        fail && fail();
+      }
     };
   };
 
 export {
   loadCurrentWorkspaceJournalsFromServer,
   loadMoreCurrentWorkspaceJournalsFromServer,
+  loadWorkspaceJournalCommentsFromServer,
   createWorkspaceJournalForCurrentWorkspace,
   updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace,
   setCurrentJournal,
+  createWorkspaceJournalComment,
+  updatedWorkspaceJournalComment,
+  deleteWorkspaceJournalComment,
 };

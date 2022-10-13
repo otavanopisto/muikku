@@ -12,7 +12,7 @@ import {
   ApplicationListItemBody,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import { WorkspaceType, WorkspaceJournalType } from "~/reducers/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
 import DeleteJournal from "~/components/workspace/workspaceJournal/dialogs/delete-journal";
@@ -25,6 +25,7 @@ import {
 import { AnyActionType } from "~/actions";
 import WorkspaceJournalCommentList from "./workspace-journal-comment-list";
 import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
+import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 
 /**
  * JournalProps
@@ -32,7 +33,7 @@ import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
 interface WorkspaceJournalsListItemProps {
   i18n: i18nType;
   status: StatusType;
-  journal: WorkspaceJournalType;
+  journal: WorkspaceJournalWithComments;
   workspace: WorkspaceType;
   asCurrent: boolean;
   showCommentList: boolean;
@@ -71,22 +72,6 @@ class WorkspaceJournalsListItem extends React.Component<
   handleJournalItemClick = () => {
     !this.props.asCurrent &&
       this.props.setCurrentJournal({ currentJournal: this.props.journal });
-
-    /* let updatedHash;
-
-    const location = window.location.hash.replace("#", "").split("/");
-
-    if (location.includes("all")) {
-      console.log("showAll selection active");
-      updatedHash = `${location[0]}/${this.props.journal.userEntityId}/${this.props.journal.id}`;
-    } else {
-      console.log("student selection active");
-      updatedHash = `${this.props.journal.userEntityId}/${this.props.journal.id}`;
-    }
-
-    window.location.hash = updatedHash;
-
-    console.log("updatedHash", updatedHash); */
   };
 
   /**

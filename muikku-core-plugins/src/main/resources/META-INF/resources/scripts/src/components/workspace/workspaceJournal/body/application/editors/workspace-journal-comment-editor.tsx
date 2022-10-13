@@ -105,7 +105,7 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
   handleSaveClick = () => {
     this.props.onSave &&
       this.props.onSave(this.state.journalCommentText, () =>
-        this.justClear(["comment"], this.state.draftId)
+        this.justClear(["journalCommentText"], this.state.draftId)
       );
   };
 

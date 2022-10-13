@@ -16,6 +16,7 @@ import {
   UpdateWorkspaceJournalInCurrentWorkspaceTriggerType,
   updateWorkspaceJournalInCurrentWorkspace,
 } from "~/actions/workspaces/journals";
+import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 
 /**
  * NewEditJournalProps
@@ -23,7 +24,7 @@ import {
 interface NewEditJournalProps {
   children: React.ReactElement<any>;
   i18n: i18nType;
-  journal?: WorkspaceJournalType;
+  journal?: WorkspaceJournalWithComments;
   createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType;
   updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType;
 }

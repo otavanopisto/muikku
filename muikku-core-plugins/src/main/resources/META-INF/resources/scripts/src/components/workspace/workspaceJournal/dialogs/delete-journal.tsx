@@ -14,13 +14,14 @@ import {
   deleteWorkspaceJournalInCurrentWorkspace,
   DeleteWorkspaceJournalInCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces/journals";
+import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 
 /**
  * DeleteJournalProps
  */
 interface DeleteJournalProps {
   i18n: i18nType;
-  journal: WorkspaceJournalType;
+  journal: WorkspaceJournalWithComments;
   children: React.ReactElement<any>;
   deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWorkspaceTriggerType;
 }

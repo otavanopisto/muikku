@@ -275,16 +275,6 @@ export async function loadCurrentWorkspaceJournalsHelper(
         userEntityId,
         state: journalNextstate,
       },
-      /* update: {
-        journals: {
-          journals: currentJournals,
-          hasMore:
-            (currentWorkspace.journals && currentWorkspace.journals.hasMore) ||
-            false,
-          userEntityId,
-          state: journalNextstate,
-        },
-      }, */
     },
   });
 
@@ -329,16 +319,6 @@ export async function loadCurrentWorkspaceJournalsHelper(
           userEntityId,
           state: "READY",
         },
-        /* update: {
-          journals: {
-            journals: concat
-              ? currentJournals.concat(actualJournals)
-              : actualJournals,
-            hasMore,
-            userEntityId,
-            state: <WorkspacesStateType>"READY",
-          },
-        }, */
       },
     });
   } catch (err) {
@@ -370,19 +350,6 @@ export async function loadCurrentWorkspaceJournalsHelper(
           userEntityId,
           state: "ERROR",
         },
-        /* update: {
-          journals: {
-            journals: currentWorkspace.journals
-              ? currentWorkspace.journals.journals
-              : [],
-            hasMore:
-              (currentWorkspace.journals &&
-                currentWorkspace.journals.hasMore) ||
-              false,
-            userEntityId,
-            state: <WorkspacesStateType>"ERROR",
-          },
-        }, */
       },
     });
   }

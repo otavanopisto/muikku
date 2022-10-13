@@ -8,12 +8,12 @@ import { useJournalComments } from "../../../../../hooks/useJournalComments";
 import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
+import Link from "~/components/general/link";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { connect } from "react-redux";
-import { ButtonPill } from "~/components/general/button";
 import JournalCommentEditor from "./editors/journal-comment-editor";
 import SlideDrawer from "./slide-drawer";
 import EvaluationJournalEventComment from "./evaluation-journal-event-comment";
@@ -238,7 +238,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           <div className="evaluation-modal__item-meta">
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
-                Kirjoitettu
+                plugin.evaluation.evaluationModal.journalEntry.writtenLabel
               </span>
               <span className="evaluation-modal__item-meta-item-data">
                 {formatedDate}
@@ -253,66 +253,62 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           <CkeditorContentLoader html={content} />
         </div>
 
-        <div
-          onClick={handleShowCommentsClick}
-          style={{
-            fontWeight: "bold",
-            fontSize: "1rem",
-            padding: "10px 0",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <span>Kommentit: (XX)</span>
-          <div className={arrowClasses + "icon-arrow-right"} />
-        </div>
-
-        <AnimateHeight duration={420} height={showComments ? "auto" : 0}>
-          <div>
-            {!journalComments.isLoading &&
-              journalComments.comments &&
-              journalComments.comments.length > 0 &&
-              journalComments.comments.map((comment) => {
-                const editingIsActive =
-                  commentToEdit && commentToEdit.id === comment.id;
-
-                return (
-                  <EvaluationJournalEventComment
-                    key={comment.id}
-                    journalComment={comment}
-                    canDelete={!editingIsActive}
-                    workspaceEntityId={workspaceEntityId}
-                    userEntityId={userEntityId}
-                    onEditClick={handleEditComment}
-                    onDelete={deleteComment}
-                    isSaving={journalComments.isSaving}
-                  />
-                );
-              })}
-
-            {(journalComments.isLoading || journalComments.isSaving) && (
-              <div className="loader-empty" />
-            )}
-
-            {!journalComments.isLoading &&
-              !journalComments.isSaving &&
-              journalComments.comments &&
-              journalComments.comments.length === 0 && <div>Tyhjä</div>}
-          </div>
+        <>
           <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            className="evaluation-modal__item-subheader evaluation-modal__item-subheader--journal-comment"
+            onClick={handleShowCommentsClick}
           >
-            <ButtonPill
-              buttonModifiers={["evaluate"]}
-              icon="book"
-              onClick={handleCreateNewComment}
-            />
+            <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
+              plugin.evaluation.evaluationModal.journalComments.title: (666)
+            </div>
+            <div className={arrowClasses + "icon-arrow-right"} />
           </div>
-        </AnimateHeight>
+
+          <AnimateHeight duration={420} height={showComments ? "auto" : 0}>
+            <>
+              {!journalComments.isLoading &&
+                journalComments.comments &&
+                journalComments.comments.length > 0 &&
+                journalComments.comments.map((comment) => {
+                  const editingIsActive =
+                    commentToEdit && commentToEdit.id === comment.id;
+
+                  return (
+                    <EvaluationJournalEventComment
+                      key={comment.id}
+                      journalComment={comment}
+                      canDelete={!editingIsActive}
+                      workspaceEntityId={workspaceEntityId}
+                      userEntityId={userEntityId}
+                      onEditClick={handleEditComment}
+                      onDelete={deleteComment}
+                      isSaving={journalComments.isSaving}
+                    />
+                  );
+                })}
+
+              {(journalComments.isLoading || journalComments.isSaving) && (
+                <div className="loader-empty" />
+              )}
+
+              {!journalComments.isLoading &&
+                !journalComments.isSaving &&
+                journalComments.comments &&
+                journalComments.comments.length === 0 && (
+                  <div className="empty">
+                    <span>
+                      plugin.evaluation.evaluationModal.journalComments.noComments
+                    </span>
+                  </div>
+                )}
+            </>
+            <div>
+              <Link className="link" onClick={handleCreateNewComment}>
+                plugin.evaluation.evaluationModal.journalComments.newCommentButton
+              </Link>
+            </div>
+          </AnimateHeight>
+        </>
       </AnimateHeight>
 
       <SlideDrawer

@@ -9,19 +9,21 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
-import { JournalComment, JournalCommentDelete } from "~/@types/journal";
+import { JournalComment } from "~/@types/journal";
+import {
+  DeleteWorkspaceJournalCommentTriggerType,
+  deleteWorkspaceJournalComment,
+} from "../../../../actions/workspaces/journals";
 
 /**
  * DeleteJournalProps
  */
 interface DeleteJournalCommentProps {
   i18n: i18nType;
+  workspaceEntityId: number;
   journalComment: JournalComment;
-  onDelete: (
-    deleteComment: JournalCommentDelete,
-    onSuccess?: () => void,
-    onFail?: () => void
-  ) => Promise<void>;
+  deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
 }
@@ -60,7 +62,16 @@ class DeleteJournalComment extends React.Component<
    */
   deleteJournalComment(closeDialog: () => void) {
     this.setState({ locked: true });
-    this.props.onDelete(
+    this.props.deleteWorkspaceJournalComment({
+      deleteCommentPayload: {
+        id: this.props.journalComment.id,
+        journalEntryId: this.props.journalComment.journalEntryId,
+      },
+      journalEntryId: this.props.journalComment.journalEntryId,
+      workspaceEntityId: this.props.workspaceEntityId,
+    });
+
+    /* this.props.onDelete(
       {
         id: this.props.journalComment.id,
         journalEntryId: this.props.journalComment.journalEntryId,
@@ -72,7 +83,7 @@ class DeleteJournalComment extends React.Component<
       () => {
         this.setState({ locked: false });
       }
-    );
+    ); */
   }
 
   /**
@@ -147,7 +158,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ deleteWorkspaceJournalComment }, dispatch);
 }
 
 export default connect(

@@ -1,4 +1,5 @@
 import { Reducer } from "redux";
+import { JournalComment } from "~/@types/journal";
 import { ActionType } from "~/actions";
 
 export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
@@ -15,22 +16,34 @@ export interface WorkspaceJournalType {
   content: string;
   title: string;
   created: string;
+  commentCount: number;
+}
+
+/**
+ * WorkspaceJournalWithComments
+ */
+export interface WorkspaceJournalWithComments extends WorkspaceJournalType {
+  comments?: JournalComment[];
 }
 
 /**
  * WorkspaceJournalsType
  */
 export interface JournalsState {
-  journals: WorkspaceJournalType[];
-  currentJournal?: WorkspaceJournalType;
+  journals: WorkspaceJournalWithComments[];
+  currentJournal?: WorkspaceJournalWithComments;
   hasMore: boolean;
   userEntityId?: number;
+  commentsLoaded: number[];
+  commentsSaving: number[];
   state: ReducerStateType;
 }
 
 const initialJournalsState: JournalsState = {
   journals: [],
   hasMore: false,
+  commentsLoaded: [],
+  commentsSaving: [],
   state: "LOADING",
 };
 

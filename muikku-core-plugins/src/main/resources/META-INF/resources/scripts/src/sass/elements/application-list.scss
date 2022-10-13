@@ -848,9 +848,17 @@
   padding: 15px 0 0;
 }
 
-.application-list__item-header--journal-entry,
-.application-list__item-header--journal-comment {
+.application-list__item-header--journal-entry {
   cursor: pointer;
+  flex-flow: row wrap;
+  margin: 0 0 15px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+}
+
+.application-list__item-header--journal-comment {
   flex-flow: row wrap;
   margin: 0 0 15px;
 

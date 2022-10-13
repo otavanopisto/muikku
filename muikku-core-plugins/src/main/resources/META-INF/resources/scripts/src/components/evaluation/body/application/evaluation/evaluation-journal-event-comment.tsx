@@ -5,6 +5,7 @@ import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { JournalComment, JournalCommentDelete } from "~/@types/journal";
 import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
+import Link from "~/components/general/link";
 import { AnyActionType } from "~/actions";
 import {
   displayNotification,
@@ -67,7 +68,7 @@ const EvaluationJournalEventComment: React.FC<
   };
 
   const creatorIsMe = status.userId === authorId;
-  const creatorName = creatorIsMe ? `- Minä` : `- ${firstName} ${lastName}`;
+  const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
   const formatedDate = `${moment(created).format("l")} - ${moment(
     created
   ).format("LT")}`;
@@ -76,50 +77,33 @@ const EvaluationJournalEventComment: React.FC<
     <div
       ref={myRef}
       key={id}
-      style={{
-        marginBottom: "10px",
-      }}
+      className="evaluation-modal__item evaluation-modal__item--journal-comment"
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "#daf3fe",
-          padding: "5px 0",
-          borderRadius: "10px 0px",
-        }}
-      >
-        <div style={{ padding: "5px" }}>
-          <CkeditorContentLoader html={comment} />
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            padding: "0 5px",
-            fontSize: "0.8rem",
-          }}
-        >
-          {creatorIsMe && (
-            <a onClick={handleEditCommentClick} style={{ marginRight: "5px" }}>
-              Muokkaa
-            </a>
-          )}
+      <div className="evaluation-modal__item-body evaluation-modal__item-body--journal-comment rich-text">
+        <CkeditorContentLoader html={comment} />
+      </div>
+      {creatorIsMe && (
+        <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-comment">
+          <Link className="link" onClick={handleEditCommentClick}>
+            LOCALE: plugin.evaluation.evaluationModal.journalComments.editButton
+          </Link>
 
           {canDelete && creatorIsMe && (
             <DeleteJournalComment
               journalComment={journalComment}
               onDelete={onDelete}
             >
-              <a style={{ marginRight: "5px" }}>Poista</a>
+              <Link className="link">
+                LOCALE:
+                plugin.evaluation.evaluationModal.journalComments.deleteButton
+              </Link>
             </DeleteJournalComment>
           )}
         </div>
-      </div>
+      )}
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <span>{creatorName}</span>
-        <span>{formatedDate}</span>
+      <div className="evaluation-modal__item-footer evaluation-modal__item-footer--journal-comment">
+        {creatorName} - {formatedDate}
       </div>
     </div>
   );
