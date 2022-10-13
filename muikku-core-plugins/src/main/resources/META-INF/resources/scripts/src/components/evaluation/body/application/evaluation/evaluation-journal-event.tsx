@@ -253,66 +253,58 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           <CkeditorContentLoader html={content} />
         </div>
 
-        <div
-          onClick={handleShowCommentsClick}
-          style={{
-            fontWeight: "bold",
-            fontSize: "1rem",
-            padding: "10px 0",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <span>Kommentit: (XX)</span>
-          <div className={arrowClasses + "icon-arrow-right"} />
-        </div>
-
-        <AnimateHeight duration={420} height={showComments ? "auto" : 0}>
-          <div>
-            {!journalComments.isLoading &&
-              journalComments.comments &&
-              journalComments.comments.length > 0 &&
-              journalComments.comments.map((comment) => {
-                const editingIsActive =
-                  commentToEdit && commentToEdit.id === comment.id;
-
-                return (
-                  <EvaluationJournalEventComment
-                    key={comment.id}
-                    journalComment={comment}
-                    canDelete={!editingIsActive}
-                    workspaceEntityId={workspaceEntityId}
-                    userEntityId={userEntityId}
-                    onEditClick={handleEditComment}
-                    onDelete={deleteComment}
-                    isSaving={journalComments.isSaving}
-                  />
-                );
-              })}
-
-            {(journalComments.isLoading || journalComments.isSaving) && (
-              <div className="loader-empty" />
-            )}
-
-            {!journalComments.isLoading &&
-              !journalComments.isSaving &&
-              journalComments.comments &&
-              journalComments.comments.length === 0 && <div>Tyhjä</div>}
-          </div>
+        <>
           <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            className="evaluation-modal__item-subheader evaluation-modal__item-subheader--journal-comment"
+            onClick={handleShowCommentsClick}
           >
-            <ButtonPill
-              buttonModifiers={["evaluate"]}
-              icon="book"
-              onClick={handleCreateNewComment}
-            />
+            <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
+              Kommentit: (XX)
+            </div>
+            <div className={arrowClasses + "icon-arrow-right"} />
           </div>
-        </AnimateHeight>
+
+          <AnimateHeight duration={420} height={showComments ? "auto" : 0}>
+            <>
+              {!journalComments.isLoading &&
+                journalComments.comments &&
+                journalComments.comments.length > 0 &&
+                journalComments.comments.map((comment) => {
+                  const editingIsActive =
+                    commentToEdit && commentToEdit.id === comment.id;
+
+                  return (
+                    <EvaluationJournalEventComment
+                      key={comment.id}
+                      journalComment={comment}
+                      canDelete={!editingIsActive}
+                      workspaceEntityId={workspaceEntityId}
+                      userEntityId={userEntityId}
+                      onEditClick={handleEditComment}
+                      onDelete={deleteComment}
+                      isSaving={journalComments.isSaving}
+                    />
+                  );
+                })}
+
+              {(journalComments.isLoading || journalComments.isSaving) && (
+                <div className="loader-empty" />
+              )}
+
+              {!journalComments.isLoading &&
+                !journalComments.isSaving &&
+                journalComments.comments &&
+                journalComments.comments.length === 0 && <div>Tyhjä</div>}
+            </>
+            <div>
+              <ButtonPill
+                buttonModifiers={["evaluate"]}
+                icon="book"
+                onClick={handleCreateNewComment}
+              />
+            </div>
+          </AnimateHeight>
+        </>
       </AnimateHeight>
 
       <SlideDrawer

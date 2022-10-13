@@ -355,7 +355,6 @@ export const WorkspaceJournalCommentListItem: React.FC<
     <ApplicationListItem className="journal journal--comment">
       <ApplicationListItemHeader
         className="application-list__item-header--journal-comment"
-        tabIndex={0}
       >
         <Avatar
           id={authorId}
