@@ -70,20 +70,6 @@ class DeleteJournalComment extends React.Component<
       journalEntryId: this.props.journalComment.journalEntryId,
       workspaceEntityId: this.props.workspaceEntityId,
     });
-
-    /* this.props.onDelete(
-      {
-        id: this.props.journalComment.id,
-        journalEntryId: this.props.journalComment.journalEntryId,
-      },
-      () => {
-        this.setState({ locked: false });
-        closeDialog();
-      },
-      () => {
-        this.setState({ locked: false });
-      }
-    ); */
   }
 
   /**

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE } from "./main-function/guider/index";
 /**
  * SpecificActionType
@@ -291,7 +292,17 @@ import {
 // Guidance events are no longer being
 import { UPDATE_CALENDAR_EVENTS_STATUS } from "./main-function/calendar";
 import { SET_ACTIVE_EASY_TO_USE_TOOL } from "./easy-to-use-functions";
-import { UPDATE_JOURNALS } from "./workspaces/journals";
+import {
+  JOURNALS_COMMENTS_CREATE,
+  JOURNALS_COMMENTS_DELETE,
+  JOURNALS_COMMENTS_UPDATE,
+  JOURNALS_CREATE,
+  JOURNALS_DELETE,
+  JOURNALS_SET_CURRENT,
+  JOURNALS_UPDATE,
+  JOURNALS_LOAD,
+  JOURNALS_COMMENTS_LOAD,
+} from "./workspaces/journals";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD
@@ -506,6 +517,14 @@ export type ActionType =
   | OPEN_NOTIFICATION_DIALOG
   | CLOSE_NOTIFICATION_DIALOG
   | SET_ACTIVE_EASY_TO_USE_TOOL
-  | UPDATE_JOURNALS;
+  | JOURNALS_LOAD
+  | JOURNALS_COMMENTS_LOAD
+  | JOURNALS_SET_CURRENT
+  | JOURNALS_CREATE
+  | JOURNALS_UPDATE
+  | JOURNALS_DELETE
+  | JOURNALS_COMMENTS_CREATE
+  | JOURNALS_COMMENTS_UPDATE
+  | JOURNALS_COMMENTS_DELETE;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

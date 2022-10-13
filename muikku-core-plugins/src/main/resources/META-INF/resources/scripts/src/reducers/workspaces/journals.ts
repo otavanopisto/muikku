@@ -58,7 +58,63 @@ export const journals: Reducer<JournalsState> = (
   action: ActionType
 ) => {
   switch (action.type) {
-    case "UPDATE_JOURNALS": {
+    case "JOURNALS_LOAD": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_COMMENTS_LOAD": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_SET_CURRENT": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_CREATE": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_UPDATE": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_DELETE": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_COMMENTS_CREATE": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_COMMENTS_UPDATE": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_COMMENTS_DELETE": {
       return {
         ...state,
         ...action.payload.updated,
