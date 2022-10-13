@@ -25,13 +25,11 @@ interface JournalActionUpdate {
   updated: Partial<JournalsState>;
 }
 
-export type UPDATE_JOURNALS = SpecificActionType<
-  "UPDATE_JOURNALS",
-  JournalActionUpdate
->;
+// THIS MIGHT SEEMS THAT IT IS OVERKILL YEAH, but for development purposes
+// it is easier if you can see what specific action does by reading its name
 
-export type JOURNALS_SET_CURRENT = SpecificActionType<
-  "JOURNALS_SET_CURRENT",
+export type JOURNALS_LOAD = SpecificActionType<
+  "JOURNALS_LOAD",
   JournalActionUpdate
 >;
 
@@ -51,19 +49,29 @@ export type JOURNALS_DELETE = SpecificActionType<
   JournalActionUpdate
 >;
 
+export type JOURNALS_SET_CURRENT = SpecificActionType<
+  "JOURNALS_SET_CURRENT",
+  JournalActionUpdate
+>;
+
 // Journal comments
+export type JOURNALS_COMMENTS_LOAD = SpecificActionType<
+  "JOURNALS_COMMENTS_LOAD",
+  JournalActionUpdate
+>;
+
 export type JOURNALS_COMMENTS_CREATE = SpecificActionType<
   "JOURNALS_COMMENTS_CREATE",
   JournalActionUpdate
 >;
 
 export type JOURNALS_COMMENTS_UPDATE = SpecificActionType<
-  "JOURNALS_COMMENTS_CREATE",
+  "JOURNALS_COMMENTS_UPDATE",
   JournalActionUpdate
 >;
 
 export type JOURNALS_COMMENTS_DELETE = SpecificActionType<
-  "JOURNALS_COMMENTS_CREATE",
+  "JOURNALS_COMMENTS_DELETE",
   JournalActionUpdate
 >;
 
@@ -225,7 +233,7 @@ const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromSe
         updatedJournalsList[index].comments = journalCommentList;
 
         dispatch({
-          type: "UPDATE_JOURNALS",
+          type: "JOURNALS_COMMENTS_LOAD",
           payload: {
             original: currentJournalsState,
             updated: {
@@ -283,7 +291,7 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
         const currentJournalsState = getState().journals;
 
         dispatch({
-          type: "UPDATE_JOURNALS",
+          type: "JOURNALS_CREATE",
           payload: {
             original: currentJournalsState,
             updated: {
@@ -342,7 +350,7 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
         const currentJournalsState = getState().journals;
 
         dispatch({
-          type: "UPDATE_JOURNALS",
+          type: "JOURNALS_UPDATE",
           payload: {
             original: currentJournalsState,
             updated: {
@@ -400,7 +408,7 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
         const currentJournalsState = getState().journals;
 
         dispatch({
-          type: "UPDATE_JOURNALS",
+          type: "JOURNALS_DELETE",
           payload: {
             original: currentJournalsState,
             updated: {
@@ -445,7 +453,7 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
       const currentJournalsState = getState().journals;
 
       dispatch({
-        type: "UPDATE_JOURNALS",
+        type: "JOURNALS_SET_CURRENT",
         payload: {
           original: currentJournalsState,
           updated: {
@@ -482,7 +490,7 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
             updatedJournalsList[index].comments = journalCommentList;
 
             dispatch({
-              type: "UPDATE_JOURNALS",
+              type: "JOURNALS_COMMENTS_LOAD",
               payload: {
                 original: currentJournalsStateAfter,
                 updated: {
@@ -500,7 +508,7 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
             });
           } else {
             dispatch({
-              type: "UPDATE_JOURNALS",
+              type: "JOURNALS_SET_CURRENT",
               payload: {
                 original: currentJournalsState,
                 updated: {
@@ -586,7 +594,7 @@ const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
         success && success();
 
         dispatch({
-          type: "UPDATE_JOURNALS",
+          type: "JOURNALS_COMMENTS_CREATE",
           payload: {
             original: currentJournalsState,
             updated: {
@@ -681,7 +689,7 @@ const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
         success && success();
 
         dispatch({
-          type: "UPDATE_JOURNALS",
+          type: "JOURNALS_COMMENTS_UPDATE",
           payload: {
             original: currentJournalsState,
             updated: {
@@ -771,7 +779,7 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
         success && success();
 
         dispatch({
-          type: "UPDATE_JOURNALS",
+          type: "JOURNALS_COMMENTS_DELETE",
           payload: {
             original: currentJournalsState,
             updated: {

@@ -7,7 +7,6 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import { WorkspaceJournalType } from "~/reducers/workspaces";
 import {
   CreateWorkspaceJournalForCurrentWorkspaceTriggerType,
   createWorkspaceJournalForCurrentWorkspace,

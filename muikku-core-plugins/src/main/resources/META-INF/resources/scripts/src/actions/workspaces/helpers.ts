@@ -9,7 +9,6 @@ import {
   WorkspacesStateType,
   WorkspacesPatchType,
   WorkspaceListType,
-  WorkspaceJournalListType,
 } from "~/reducers/workspaces";
 import {
   ReducerStateType,
@@ -35,7 +34,7 @@ export async function loadWorkspacesHelper(
   initial: boolean,
   refresh: boolean,
   loadOrganizationWorkspaces: boolean,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
   const state: StateType = getState();
@@ -162,6 +161,7 @@ export async function loadWorkspacesHelper(
   }
 
   if (actualFilters.query) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (params as any).q = actualFilters.query;
   }
 
@@ -266,7 +266,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
     : [];
 
   dispatch({
-    type: "UPDATE_JOURNALS",
+    type: "JOURNALS_LOAD",
     payload: {
       original: currentJournalState,
       updated: {
@@ -278,6 +278,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const params: any = {
     firstResult: initial
       ? 0
@@ -308,7 +309,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
     }
 
     dispatch({
-      type: "UPDATE_JOURNALS",
+      type: "JOURNALS_LOAD",
       payload: {
         original: currentJournalState,
         updated: {
@@ -338,7 +339,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
       )
     );
     dispatch({
-      type: "UPDATE_JOURNALS",
+      type: "JOURNALS_LOAD",
       payload: {
         original: currentJournalState,
         updated: {
