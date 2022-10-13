@@ -136,6 +136,16 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const editorTitle = this.props.journalComment
+      ? this.props.i18n.text.get("plugin.workspace.journal.editComment.title") +
+        " - " +
+        this.props.i18n.text.get("plugin.workspace.journal.entry.content.label")
+      : this.props.i18n.text.get("plugin.workspace.journal.newComment.title") +
+        " - " +
+        this.props.i18n.text.get(
+          "plugin.workspace.journal.entry.content.label"
+        );
+
     return (
       <div className="form" role="form">
         <div className="env-dialog env-dialog--mainfunction env-dialog--edit-journal-entry">
@@ -157,7 +167,10 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
                         "plugin.workspace.journal.entry.content.label"
                       )}
                     </label>
-                    <CKEditor onChange={this.handleCKEditorChange}>
+                    <CKEditor
+                      onChange={this.handleCKEditorChange}
+                      editorTitle={editorTitle}
+                    >
                       {this.state.journalCommentText}
                     </CKEditor>
                   </div>

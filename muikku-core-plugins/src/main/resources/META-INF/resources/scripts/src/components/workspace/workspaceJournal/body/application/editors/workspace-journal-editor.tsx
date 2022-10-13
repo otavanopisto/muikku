@@ -200,13 +200,11 @@ class WorkspaceJournalEditor extends SessionStateComponent<
     const editorTitle = this.props.journal
       ? this.props.i18n.text.get("plugin.workspace.journal.editEntry.title") +
         " - " +
-        this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.content"
-        )
+        this.props.i18n.text.get("plugin.workspace.journal.entry.content.label")
       : this.props.i18n.text.get("plugin.workspace.journal.newEntry.title") +
         " - " +
         this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.content"
+          "plugin.workspace.journal.entry.content.label"
         );
 
     return (

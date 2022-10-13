@@ -157,7 +157,7 @@ export const WorkspaceJournalCommentList: React.FC<
       </div>
 
       <AnimateHeight height={showComments ? "auto" : 0}>
-        <div>
+        <>
           {!journalComments.isLoading &&
             journalComments.comments &&
             journalComments.comments.length > 0 &&
@@ -176,19 +176,30 @@ export const WorkspaceJournalCommentList: React.FC<
           {!journalComments.isLoading &&
             !journalComments.isSaving &&
             journalComments.comments &&
-            journalComments.comments.length === 0 && <div>Tyhjä</div>}
+            journalComments.comments.length === 0 && (
+              <div className="empty">
+                <span>
+                  {props.i18n.text.get("plugin.workspace.journal.noComments")}
+                </span>
+              </div>
+            )}
 
           {(journalComments.isLoading || journalComments.isSaving) && (
             <div className="loader-empty" />
           )}
-        </div>
+        </>
 
-        <div>
+        <>
           {!showEditor && (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button onClick={handleCreateNewCommentClick}>
-                Uusi kommentti
-              </Button>
+            <div className="application-list__footer">
+              <Link
+                onClick={handleCreateNewCommentClick}
+                className="link link--application-list"
+              >
+                {props.i18n.text.get(
+                  "plugin.workspace.journal.newCommentButton.label"
+                )}
+              </Link>
             </div>
           )}
 
@@ -210,7 +221,7 @@ export const WorkspaceJournalCommentList: React.FC<
               />
             )}
           </AnimateHeight>
-        </div>
+        </>
       </AnimateHeight>
     </>
   );
