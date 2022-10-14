@@ -1,18 +1,12 @@
 import * as React from "react";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
-import { WorkspaceJournalType } from "~/reducers/workspaces/index";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { useJournalComments } from "../../../../../hooks/useJournalComments";
 import { StateType } from "~/reducers";
-import { Dispatch } from "redux";
+import { bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import Link from "~/components/general/link";
-import {
-  displayNotification,
-  DisplayNotificationTriggerType,
-} from "~/actions/base/notifications";
 import { connect } from "react-redux";
 import JournalCommentEditor from "./editors/journal-comment-editor";
 import SlideDrawer from "./slide-drawer";
@@ -24,14 +18,33 @@ import {
   JournalCommentCreate,
   JournalCommentUpdate,
 } from "~/@types/journal";
+import { i18nType } from "~/reducers/base/i18n";
+import { EvaluationState } from "~/reducers/main-function/evaluation";
+import {
+  LoadEvaluationJournalCommentsFromServerTriggerType,
+  loadEvaluationJournalCommentsFromServer,
+} from "~/actions/main-function/evaluation/evaluationActions";
+import { EvaluationStudyDiaryEvent } from "~/@types/evaluation";
+import {
+  UpdateEvaluationJournalCommentTriggerType,
+  updateEvaluationJournalComment,
+} from "../../../../../actions/main-function/evaluation/evaluationActions";
+import {
+  CreateEvaluationJournalCommentTriggerType,
+  createEvaluationJournalComment,
+} from "../../../../../actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluationEventContentCardProps
  */
-interface EvaluationDiaryEventProps extends WorkspaceJournalType {
+interface EvaluationDiaryEventProps extends EvaluationStudyDiaryEvent {
+  i18n: i18nType;
   open: boolean;
   onClickOpen?: (diaryId: number) => void;
-  displayNotification: DisplayNotificationTriggerType;
+  evaluation: EvaluationState;
+  loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFromServerTriggerType;
+  createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType;
+  updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType;
 }
 
 /**
@@ -50,47 +63,28 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     userEntityId,
     workspaceEntityId,
     id,
-    displayNotification,
+    i18n,
+    commentCount,
+    createEvaluationJournalComment,
+    updateEvaluationJournalComment,
   } = props;
-
-  const {
-    journalComments,
-    loadJournalComments,
-    createComment,
-    updateComment,
-    deleteComment,
-  } = useJournalComments(workspaceEntityId, id, displayNotification);
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
-  const [createNewActive, setCreateNewActive] = React.useState(false);
-  const [showComments, setShowComments] = React.useState(false);
   const [showContent, setShowContent] = React.useState(false);
+  const [showComments, setShowComments] = React.useState(false);
+
+  const [createNewActive, setCreateNewActive] = React.useState(false);
   const [commentToEdit, setCommentToEdit] = React.useState<
     JournalComment | undefined
   >(undefined);
+  const [editorLocked, setEditorLocked] = React.useState(false);
 
   React.useEffect(() => {
     if (!createNewActive && commentToEdit === undefined) {
       setShowContent(open);
     }
   }, [open, createNewActive, commentToEdit]);
-
-  React.useEffect(() => {
-    if (
-      createNewActive &&
-      !journalComments.isLoading &&
-      journalComments.comments === undefined
-    ) {
-      loadJournalComments();
-      setShowComments(true);
-    }
-  }, [
-    loadJournalComments,
-    createNewActive,
-    journalComments.isLoading,
-    journalComments.comments,
-  ]);
 
   React.useEffect(() => {
     if (showContent && createNewActive) {
@@ -113,8 +107,13 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
    * Shows and loads comments list
    */
   const handleShowCommentsClick = () => {
-    if (!showComments && journalComments.comments === undefined) {
-      loadJournalComments();
+    if (
+      !props.evaluation.evaluationJournalComments.commentsLoaded.includes(id)
+    ) {
+      props.loadEvaluationJournalCommentsFromServer({
+        workspaceId: workspaceEntityId,
+        journalEntryId: id,
+      });
     }
     setShowComments(!showComments);
   };
@@ -190,14 +189,23 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
    * @param callback callback to do on success save. In this case deleting drafts
    */
   const handleNewCommentSave = (comment: string, callback?: () => void) => {
+    setEditorLocked(true);
+
     const newComment: JournalCommentCreate = {
       journalEntryId: id,
       comment: comment,
     };
 
-    createComment(newComment, () => {
-      callback();
-      setCreateNewActive(false);
+    createEvaluationJournalComment({
+      newCommentPayload: newComment,
+      journalEntryId: id,
+      workspaceEntityId: workspaceEntityId,
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      success: () => {
+        callback();
+        setCreateNewActive(false);
+        setEditorLocked(false);
+      },
     });
   };
 
@@ -207,15 +215,24 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
    * @param callback callback
    */
   const handleCommentEditSave = (comment: string, callback?: () => void) => {
+    setEditorLocked(true);
+
     const updatedComment: JournalCommentUpdate = {
       id: commentToEdit.id,
       journalEntryId: commentToEdit.journalEntryId,
       comment: comment,
     };
 
-    updateComment(updatedComment, () => {
-      callback();
-      setCommentToEdit(undefined);
+    updateEvaluationJournalComment({
+      updatedCommentPayload: updatedComment,
+      journalEntryId: id,
+      workspaceEntityId: workspaceEntityId,
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      success: () => {
+        callback();
+        setCommentToEdit(undefined);
+        setEditorLocked(false);
+      },
     });
   };
 
@@ -224,8 +241,13 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   ).format("LT")}`;
 
   const arrowClasses = !showComments
-    ? `evaluation-modal__event-arrow evaluation-modal__event-arrow--right `
+    ? `evaluation-modal__event-arrow evaluation-modal__event-arrow--right`
     : `evaluation-modal__event-arrow evaluation-modal__event-arrow--down `;
+
+  const isLoading =
+    !props.evaluation.evaluationJournalComments.commentsLoaded.includes(id);
+
+  const comments = props.evaluation.evaluationJournalComments.comments[id];
 
   return (
     <div className="evaluation-modal__item">
@@ -238,7 +260,9 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           <div className="evaluation-modal__item-meta">
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
-                plugin.evaluation.evaluationModal.journalEntry.writtenLabel
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.journalEntry.writtenLabel"
+                )}
               </span>
               <span className="evaluation-modal__item-meta-item-data">
                 {formatedDate}
@@ -259,52 +283,46 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
             onClick={handleShowCommentsClick}
           >
             <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
-              plugin.evaluation.evaluationModal.journalComments.title: (666)
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.journalComments.title"
+              )}
+              ({commentCount})
             </div>
             <div className={arrowClasses + "icon-arrow-right"} />
           </div>
 
           <AnimateHeight duration={420} height={showComments ? "auto" : 0}>
             <>
-              {!journalComments.isLoading &&
-                journalComments.comments &&
-                journalComments.comments.length > 0 &&
-                journalComments.comments.map((comment) => {
-                  const editingIsActive =
-                    commentToEdit && commentToEdit.id === comment.id;
-
-                  return (
-                    <EvaluationJournalEventComment
-                      key={comment.id}
-                      journalComment={comment}
-                      canDelete={!editingIsActive}
-                      workspaceEntityId={workspaceEntityId}
-                      userEntityId={userEntityId}
-                      onEditClick={handleEditComment}
-                      onDelete={deleteComment}
-                      isSaving={journalComments.isSaving}
-                    />
-                  );
-                })}
-
-              {(journalComments.isLoading || journalComments.isSaving) && (
+              {isLoading ? (
                 <div className="loader-empty" />
+              ) : comments && comments.length === 0 ? (
+                <div className="empty">
+                  <span>
+                    {i18n.text.get(
+                      "plugin.evaluation.evaluationModal.journalComments.noComments"
+                    )}
+                  </span>
+                </div>
+              ) : (
+                comments.length > 0 &&
+                comments.map((comment) => (
+                  <EvaluationJournalEventComment
+                    key={comment.id}
+                    journalComment={comment}
+                    canDelete={commentToEdit && commentToEdit.id === comment.id}
+                    workspaceEntityId={workspaceEntityId}
+                    userEntityId={userEntityId}
+                    onEditClick={handleEditComment}
+                  />
+                ))
               )}
-
-              {!journalComments.isLoading &&
-                !journalComments.isSaving &&
-                journalComments.comments &&
-                journalComments.comments.length === 0 && (
-                  <div className="empty">
-                    <span>
-                      plugin.evaluation.evaluationModal.journalComments.noComments
-                    </span>
-                  </div>
-                )}
             </>
+
             <div>
               <Link className="link" onClick={handleCreateNewComment}>
-                plugin.evaluation.evaluationModal.journalComments.newCommentButton
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.journalComments.newCommentButton"
+                )}
               </Link>
             </div>
           </AnimateHeight>
@@ -323,7 +341,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           workspaceEntityId={workspaceEntityId}
           onSave={handleNewCommentSave}
           onClose={handleNewCommentCancel}
-          locked={journalComments.isSaving}
+          locked={editorLocked}
         />
       </SlideDrawer>
 
@@ -340,7 +358,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           journalComment={commentToEdit}
           onSave={handleCommentEditSave}
           onClose={handleEditCancel}
-          locked={journalComments.isSaving}
+          locked={editorLocked}
         />
       </SlideDrawer>
     </div>
@@ -352,7 +370,10 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {};
+  return {
+    i18n: state.i18n,
+    evaluation: state.evaluations,
+  };
 }
 
 /**
@@ -360,7 +381,14 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return { displayNotification };
+  return bindActionCreators(
+    {
+      loadEvaluationJournalCommentsFromServer,
+      createEvaluationJournalComment,
+      updateEvaluationJournalComment,
+    },
+    dispatch
+  );
 }
 
 export default connect(

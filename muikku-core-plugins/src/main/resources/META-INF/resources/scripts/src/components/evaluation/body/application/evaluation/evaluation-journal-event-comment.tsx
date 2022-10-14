@@ -2,7 +2,7 @@ import * as React from "react";
 import * as moment from "moment";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { JournalComment, JournalCommentDelete } from "~/@types/journal";
+import { JournalComment } from "~/@types/journal";
 import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import Link from "~/components/general/link";
@@ -14,24 +14,25 @@ import {
 import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventCommentProps {
+  i18n: i18nType;
   journalComment: JournalComment;
   userEntityId: number;
   workspaceEntityId: number;
   displayNotification: DisplayNotificationTriggerType;
-  isSaving: boolean;
   status: StatusType;
   canDelete: boolean;
   onEditClick: (comment: JournalComment) => void;
-  onDelete: (
+  /* onDelete: (
     deleteComment: JournalCommentDelete,
     onSuccess?: () => void,
     onFail?: () => void
-  ) => Promise<void>;
+  ) => Promise<void>; */
 }
 
 /**
@@ -43,7 +44,7 @@ interface EvaluationDiaryEventCommentProps {
 const EvaluationJournalEventComment: React.FC<
   EvaluationDiaryEventCommentProps
 > = (props) => {
-  const { journalComment, status, onDelete, onEditClick, canDelete } = props;
+  const { journalComment, status, onEditClick, canDelete } = props;
 
   const { comment, created, id, firstName, lastName, authorId } =
     journalComment;
@@ -85,17 +86,17 @@ const EvaluationJournalEventComment: React.FC<
       {creatorIsMe && (
         <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-comment">
           <Link className="link" onClick={handleEditCommentClick}>
-            LOCALE: plugin.evaluation.evaluationModal.journalComments.editButton
+            {props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.journalComments.editButton"
+            )}
           </Link>
 
           {canDelete && creatorIsMe && (
-            <DeleteJournalComment
-              journalComment={journalComment}
-              onDelete={onDelete}
-            >
+            <DeleteJournalComment journalComment={journalComment}>
               <Link className="link">
-                LOCALE:
-                plugin.evaluation.evaluationModal.journalComments.deleteButton
+                {props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.journalComments.deleteButton"
+                )}
               </Link>
             </DeleteJournalComment>
           )}
@@ -115,6 +116,7 @@ const EvaluationJournalEventComment: React.FC<
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18n: state.i18n,
     status: state.status,
   };
 }

@@ -9,7 +9,11 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
-import { JournalComment, JournalCommentDelete } from "~/@types/journal";
+import { JournalComment } from "~/@types/journal";
+import {
+  DeleteEvaluationJournalCommentTriggerType,
+  deleteEvaluationJournalComment,
+} from "../../../actions/main-function/evaluation/evaluationActions";
 
 /**
  * DeleteJournalProps
@@ -17,11 +21,7 @@ import { JournalComment, JournalCommentDelete } from "~/@types/journal";
 interface DeleteJournalCommentProps {
   i18n: i18nType;
   journalComment: JournalComment;
-  onDelete: (
-    deleteComment: JournalCommentDelete,
-    onSuccess?: () => void,
-    onFail?: () => void
-  ) => Promise<void>;
+  deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
 }
@@ -60,19 +60,23 @@ class DeleteJournalComment extends React.Component<
    */
   deleteJournalComment(closeDialog: () => void) {
     this.setState({ locked: true });
-    this.props.onDelete(
-      {
+    this.props.deleteEvaluationJournalComment({
+      deleteCommentPayload: {
         id: this.props.journalComment.id,
         journalEntryId: this.props.journalComment.journalEntryId,
       },
-      () => {
+      journalEntryId: this.props.journalComment.journalEntryId,
+      workspaceEntityId: 1,
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      success: () => {
         this.setState({ locked: false });
         closeDialog();
       },
-      () => {
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      fail: () => {
         this.setState({ locked: false });
-      }
-    );
+      },
+    });
   }
 
   /**
@@ -147,7 +151,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ deleteEvaluationJournalComment }, dispatch);
 }
 
 export default connect(
