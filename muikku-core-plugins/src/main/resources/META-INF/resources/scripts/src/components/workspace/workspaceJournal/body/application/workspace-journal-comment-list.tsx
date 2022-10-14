@@ -50,6 +50,7 @@ export const WorkspaceJournalCommentList: React.FC<
   const [showComments, setShowComments] = React.useState(false);
   const [createNewActive, setCreateNewActive] = React.useState(false);
   const [showEditor, setShowEditor] = React.useState(false);
+  const [editorLocked, setEditorLocked] = React.useState(false);
 
   const editorRef = React.useRef<HTMLDivElement>(null);
 
@@ -106,6 +107,8 @@ export const WorkspaceJournalCommentList: React.FC<
     comment: string,
     callback?: () => void
   ) => {
+    setEditorLocked(true);
+
     props.createWorkspaceJournalComment({
       newCommentPayload: {
         journalEntryId: props.currentJournal.id,
@@ -118,8 +121,11 @@ export const WorkspaceJournalCommentList: React.FC<
        */
       success: () => {
         callback();
-        setCreateNewActive(false);
-        setShowEditor(false);
+        unstable_batchedUpdates(() => {
+          setCreateNewActive(false);
+          setShowEditor(false);
+          setEditorLocked(false);
+        });
       },
     });
   };
@@ -197,7 +203,7 @@ export const WorkspaceJournalCommentList: React.FC<
                   diaryEventId={props.currentJournal.id}
                   userEntityId={props.currentJournal.userEntityId}
                   workspaceEntityId={props.currentJournal.workspaceEntityId}
-                  locked={false}
+                  locked={editorLocked}
                   onSave={handleSaveNewCommentClick}
                   onClose={handleCancelNewCommentClick}
                 />

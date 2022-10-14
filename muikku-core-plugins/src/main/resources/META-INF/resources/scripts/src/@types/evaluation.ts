@@ -97,17 +97,10 @@ export interface EvaluationStudyDiaryEvent {
 }
 
 /**
- * EvaluationStudyDiaryCommentsByJournal
+ * EvaluationJournalCommentsByJournal
  */
-export interface EvaluationStudyDiaryCommentsByJournal {
+export interface EvaluationJournalCommentsByJournal {
   [journalEntryId: number]: JournalComment[];
-}
-
-/**
- * EvaluationStudyDiaryEventWithComments
- */
-export interface EvaluationStudyDiaryEventWithComments {
-  comments?: JournalComment;
 }
 
 /**

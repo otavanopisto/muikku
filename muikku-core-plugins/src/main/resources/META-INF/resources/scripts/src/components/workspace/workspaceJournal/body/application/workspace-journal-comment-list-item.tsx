@@ -19,6 +19,8 @@ import {
 import { bindActionCreators } from "redux";
 import { JournalComment } from "~/@types/journal";
 import { i18nType } from "~/reducers/base/i18n";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 import {
   UpdateWorkspaceJournalCommentTriggerType,
   updatedWorkspaceJournalComment,
@@ -47,6 +49,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
   const { authorId, comment, firstName, lastName, created } = journalComment;
 
   const [editing, setEditing] = React.useState(false);
+  const [editorLocked, setEditorLocked] = React.useState(false);
 
   /**
    * handleStartEditClick
@@ -71,6 +74,8 @@ export const WorkspaceJournalCommentListItem: React.FC<
     editedComment: string,
     callback?: () => void
   ) => {
+    setEditorLocked(true);
+
     props.updatedWorkspaceJournalComment({
       updatedCommentPayload: {
         comment: editedComment,
@@ -82,7 +87,11 @@ export const WorkspaceJournalCommentListItem: React.FC<
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
         callback();
-        setEditing(false);
+
+        unstable_batchedUpdates(() => {
+          setEditing(false);
+          setEditorLocked(false);
+        });
       },
     });
   };
@@ -121,7 +130,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
           diaryEventId={journalComment.journalEntryId}
           userEntityId={journalComment.journalEntryId}
           workspaceEntityId={props.workspaceEntityId}
-          locked={false}
+          locked={editorLocked}
           onSave={handleSaveEditedCommentClick}
           onClose={handleCancelEditingCommentClick}
         />

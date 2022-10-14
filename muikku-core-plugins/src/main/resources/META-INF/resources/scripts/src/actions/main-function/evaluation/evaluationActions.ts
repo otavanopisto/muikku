@@ -6,7 +6,7 @@ import {
   AssignmentEvaluationSupplementationRequest,
   WorkspaceEvaluationSaveReturn,
   EvaluationBasePriceById,
-  EvaluationStudyDiaryCommentsByJournal,
+  EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { StateType } from "../../../reducers/index";
 import mApi from "~/lib/mApi";
@@ -198,13 +198,13 @@ export type UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS = SpecificActionType<
 
 export type EVALUATION_JOURNAL_COMMENTS_INITIALIZED = SpecificActionType<
   "EVALUATION_JOURNAL_COMMENTS_INITIALIZED",
-  EvaluationStudyDiaryCommentsByJournal
+  EvaluationJournalCommentsByJournal
 >;
 
 export type EVALUATION_JOURNAL_COMMENTS_LOAD = SpecificActionType<
   "EVALUATION_JOURNAL_COMMENTS_LOAD",
   {
-    comments: EvaluationStudyDiaryCommentsByJournal;
+    comments: EvaluationJournalCommentsByJournal;
     commentsLoaded: number[];
   }
 >;
@@ -213,14 +213,14 @@ export type EVALUATION_JOURNAL_COMMENTS_CREATE = SpecificActionType<
   "EVALUATION_JOURNAL_COMMENTS_CREATE",
   {
     updatedJournalEntryList: EvaluationStudyDiaryEvent[];
-    updatedCommentsList: EvaluationStudyDiaryCommentsByJournal;
+    updatedCommentsList: EvaluationJournalCommentsByJournal;
   }
 >;
 
 export type EVALUATION_JOURNAL_COMMENTS_UPDATE = SpecificActionType<
   "EVALUATION_JOURNAL_COMMENTS_UPDATE",
   {
-    updatedCommentsList: EvaluationStudyDiaryCommentsByJournal;
+    updatedCommentsList: EvaluationJournalCommentsByJournal;
   }
 >;
 
@@ -228,7 +228,7 @@ export type EVALUATION_JOURNAL_COMMENTS_DELETE = SpecificActionType<
   "EVALUATION_JOURNAL_COMMENTS_DELETE",
   {
     updatedJournalEntryList: EvaluationStudyDiaryEvent[];
-    updatedCommentsList: EvaluationStudyDiaryCommentsByJournal;
+    updatedCommentsList: EvaluationJournalCommentsByJournal;
   }
 >;
 
@@ -1034,8 +1034,10 @@ const loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluation
           "callback"
         )()) as EvaluationStudyDiaryEvent[] | [];
 
-        const obj: EvaluationStudyDiaryCommentsByJournal =
-          studyDiaryEvents.reduce((o, key) => ({ ...o, [key.id]: [] }), {});
+        const obj: EvaluationJournalCommentsByJournal = studyDiaryEvents.reduce(
+          (o, key) => ({ ...o, [key.id]: [] }),
+          {}
+        );
 
         dispatch({
           type: "EVALUATION_JOURNAL_COMMENTS_INITIALIZED",
@@ -2134,7 +2136,7 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
             "callback"
           )()) as JournalComment[];
 
-          const updatedComments: EvaluationStudyDiaryCommentsByJournal = {
+          const updatedComments: EvaluationJournalCommentsByJournal = {
             ...evaluationJournalComments.comments,
           };
 
@@ -2157,7 +2159,8 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
           dispatch(
             displayNotification(
               getState().i18n.text.get(
-                "plugin.workspace.management.notification.failedToCreateJournal"
+                "plugin.evaluation.notifications.loadJournalComments.error",
+                err.message
               ),
               "error"
             )
@@ -2239,7 +2242,8 @@ const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType 
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToDeleteJournal"
+              "plugin.evaluation.notifications.createJournalComments.error",
+              err.message
             ),
             "error"
           )
@@ -2317,7 +2321,8 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToDeleteJournal"
+              "plugin.evaluation.notifications.updateJournalComments.error",
+              err.message
             ),
             "error"
           )
@@ -2411,7 +2416,8 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToDeleteJournal"
+              "plugin.evaluation.notifications.deleteJournalComments.error",
+              err.message
             ),
             "error"
           )
