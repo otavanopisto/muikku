@@ -47,7 +47,6 @@ const compareAll = (obj1: CarouselSuggestion, obj2: CarouselSuggestion) =>
 export const useCourseCarousel = (
   studentId: string,
   userEntityId: number,
-  isStudent: boolean,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   // This hook cannot be called for anyone else but students (without an error)
