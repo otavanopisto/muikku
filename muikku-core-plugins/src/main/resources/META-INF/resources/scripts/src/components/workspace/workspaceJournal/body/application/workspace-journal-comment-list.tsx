@@ -51,7 +51,7 @@ export const WorkspaceJournalCommentList: React.FC<
   const [createNewActive, setCreateNewActive] = React.useState(false);
   const [showEditor, setShowEditor] = React.useState(false);
 
-  const editorRef = React.useRef<HTMLElement>(null);
+  const editorRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     setShowComments(true);
@@ -75,9 +75,10 @@ export const WorkspaceJournalCommentList: React.FC<
     });
 
     setTimeout(() => {
-      editorRef.current &&
+      if (editorRef.current) {
         editorRef.current.scrollIntoView({ behavior: "smooth" });
-    }, 300);
+      }
+    }, 325);
   };
 
   /**
@@ -189,17 +190,19 @@ export const WorkspaceJournalCommentList: React.FC<
             onAnimationEnd={handleNewEditorTransitionEnd}
             style={{ padding: "10px 0" }}
           >
-            {createNewActive && (
-              <WorkspaceJournalCommentEditor
-                type="new"
-                diaryEventId={props.currentJournal.id}
-                userEntityId={props.currentJournal.userEntityId}
-                workspaceEntityId={props.currentJournal.workspaceEntityId}
-                locked={false}
-                onSave={handleSaveNewCommentClick}
-                onClose={handleCancelNewCommentClick}
-              />
-            )}
+            <div ref={editorRef}>
+              {createNewActive && (
+                <WorkspaceJournalCommentEditor
+                  type="new"
+                  diaryEventId={props.currentJournal.id}
+                  userEntityId={props.currentJournal.userEntityId}
+                  workspaceEntityId={props.currentJournal.workspaceEntityId}
+                  locked={false}
+                  onSave={handleSaveNewCommentClick}
+                  onClose={handleCancelNewCommentClick}
+                />
+              )}
+            </div>
           </AnimateHeight>
         </>
       </AnimateHeight>

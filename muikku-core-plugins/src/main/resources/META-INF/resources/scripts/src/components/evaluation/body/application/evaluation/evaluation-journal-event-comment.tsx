@@ -28,11 +28,6 @@ interface EvaluationDiaryEventCommentProps {
   status: StatusType;
   canDelete: boolean;
   onEditClick: (comment: JournalComment) => void;
-  /* onDelete: (
-    deleteComment: JournalCommentDelete,
-    onSuccess?: () => void,
-    onFail?: () => void
-  ) => Promise<void>; */
 }
 
 /**
