@@ -90,7 +90,7 @@ class DeleteJournalComment extends React.Component<
     const content = (closeDialog: () => void) => (
       <div>
         {this.props.i18n.text.get(
-          "plugin.workspace.journal.deleteEntry.dialog.description"
+          "plugin.workspace.journal.deleteComment.dialog.description"
         )}
       </div>
     );
@@ -107,7 +107,7 @@ class DeleteJournalComment extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.journal.deleteEntry.dialog.deleteButton"
+            "plugin.workspace.journal.deleteComment.dialog.deleteButton"
           )}
         </Button>
         <Button
@@ -115,7 +115,7 @@ class DeleteJournalComment extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.journal.deleteEntry.dialog.cancelButton"
+            "plugin.workspace.journal.deleteComment.dialog.cancelButton"
           )}
         </Button>
       </div>
@@ -125,7 +125,7 @@ class DeleteJournalComment extends React.Component<
       <Dialog
         modifier="delete-journal"
         title={this.props.i18n.text.get(
-          "plugin.workspace.journal.deleteEntry.dialog.title"
+          "plugin.workspace.journal.deleteComment.dialog.title"
         )}
         content={content}
         footer={footer}
