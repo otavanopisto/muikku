@@ -282,11 +282,11 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
             className="evaluation-modal__item-subheader evaluation-modal__item-subheader--journal-comment"
             onClick={handleShowCommentsClick}
           >
-            <div className={arrowClasses + "icon-arrow-right"} />
+            <div className={arrowClasses + " icon-arrow-right"} />
             <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.journalComments.title"
-              )}
+              )}{" "}
               ({commentCount})
             </div>
           </div>
