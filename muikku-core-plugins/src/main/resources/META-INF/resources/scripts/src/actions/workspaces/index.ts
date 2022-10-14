@@ -412,46 +412,6 @@ const loadLastWorkspaceFromServer: LoadLastWorkspaceFromServerTriggerType =
     };
   };
 
-
-  /**
- * loadLastWorkspaceFromServer
- */
-const loadSuggestedWorkspacesFromServer: LoadLastWorkspaceFromServerTriggerType =
-function loadSuggestedWorkspacesFromServer() {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      dispatch({
-        type: "UPDATE_LAST_WORKSPACE",
-        payload: <WorkspaceMaterialReferenceType>(
-          JSON.parse(
-            (
-              (await promisify(
-                mApi().user.property.read("last-workspace"),
-                "callback"
-              )()) as any
-            ).value
-          )
-        ),
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.errormessage.suggestedWorkspaceLoadFailed"
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
 /**
  * UpdateLastWorkspaceTriggerType
  */
