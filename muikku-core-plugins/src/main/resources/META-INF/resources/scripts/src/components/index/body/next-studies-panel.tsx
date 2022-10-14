@@ -55,11 +55,15 @@ const NextStudiesPanel: React.FC<NextStudiesPanelProps> = (props) => {
       </div>
       <div className="item-list__item-actions">
         <Button
-          aria-label={"check out " + workspace.name}
+          aria-label={
+            props.i18n.text.get(
+              "plugin.frontPage.suggestedWorkspaces.checkOut"
+            ) + workspace.name
+          }
           buttonModifiers={["primary-function-content", "frontpage-button"]}
           href={`/workspace/${workspace.urlName}`}
         >
-          Tutustu
+          {props.i18n.text.get("plugin.frontPage.suggestedWorkspaces.checkOut")}
         </Button>
         <WorkspaceSignup
           workspaceSignUpDetails={{
@@ -70,10 +74,14 @@ const NextStudiesPanel: React.FC<NextStudiesPanelProps> = (props) => {
           }}
         >
           <Button
-            aria-label={"subscribe" + workspace.name}
+            aria-label={
+              props.i18n.text.get(
+                "plugin.frontPage.suggestedWorkspaces.signUp"
+              ) + workspace.name
+            }
             buttonModifiers={["primary-function-content", "frontpage-button"]}
           >
-            Ilmoittaudu
+            {props.i18n.text.get("plugin.frontPage.suggestedWorkspaces.signUp")}
           </Button>
         </WorkspaceSignup>
       </div>
