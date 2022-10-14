@@ -2374,9 +2374,19 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
               ...evaluationState.evaluationDiaryEntries.data,
             ];
 
+            // Find index of deleted comment
+            const indexOfDeletedComment = updatedCommentsList[
+              journalEntryId
+            ].findIndex((c) => c.id === deleteCommentPayload.id);
+
+            // Splice it out
+            updatedCommentsList[journalEntryId].splice(
+              indexOfDeletedComment,
+              1
+            );
+
             // Update comment count and delete comment from list
             updatedJournalEntryList[updatedJournalIndex].commentCount--;
-            delete updatedCommentsList[deleteCommentPayload.id];
 
             return {
               updatedCommentsList,

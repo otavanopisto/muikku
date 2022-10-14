@@ -305,16 +305,20 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
                 </div>
               ) : (
                 comments.length > 0 &&
-                comments.map((comment) => (
-                  <EvaluationJournalEventComment
-                    key={comment.id}
-                    journalComment={comment}
-                    canDelete={commentToEdit && commentToEdit.id === comment.id}
-                    workspaceEntityId={workspaceEntityId}
-                    userEntityId={userEntityId}
-                    onEditClick={handleEditComment}
-                  />
-                ))
+                comments.map((comment) => {
+                  const editingIsActive =
+                    commentToEdit && commentToEdit.id === comment.id;
+                  return (
+                    <EvaluationJournalEventComment
+                      key={comment.id}
+                      journalComment={comment}
+                      canDelete={!editingIsActive}
+                      workspaceEntityId={workspaceEntityId}
+                      userEntityId={userEntityId}
+                      onEditClick={handleEditComment}
+                    />
+                  );
+                })
               )}
             </>
 
