@@ -139,7 +139,7 @@ export const WorkspaceJournalCommentList: React.FC<
           <span className="application-list__title-main">
             {props.i18n.text.get(
               "plugin.workspace.journal.entry.comments.title"
-            )}
+            )}{" "}
             ({props.currentJournal.commentCount})
           </span>
         </h2>
