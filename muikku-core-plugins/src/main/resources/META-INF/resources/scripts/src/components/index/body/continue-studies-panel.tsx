@@ -1,10 +1,19 @@
-import Link from "../../general/link";
 import * as React from "react";
-import { connect } from "react-redux";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceMaterialReferenceType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
+import { useCourseCarousel } from "~/components/general/carousel/hooks/use-course-carousel";
+import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
+import Link from "../../general/link";
+import Button from "~/components/general/button";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 
@@ -15,61 +24,45 @@ interface ContinueStudiesPanelProps {
   i18n: i18nType;
   status: StatusType;
   lastWorkspace: WorkspaceMaterialReferenceType;
+  displayNotification: DisplayNotificationTriggerType;
 }
-
-/**
- * ContinueStudiesPanelState
- */
-interface ContinueStudiesPanelState {}
 
 /**
  * ContinueStudiesPanel
  */
-class ContinueStudiesPanel extends React.Component<
-  ContinueStudiesPanelProps,
-  ContinueStudiesPanelState
-> {
-  /**
-   * render
-   */
-  render() {
-    if (!this.props.status.loggedIn) {
-      return null;
-    } else if (!this.props.lastWorkspace) {
-      return null;
-    } else if (!this.props.status.isStudent) {
-      return null;
-    }
-    return (
-      <div className="panel panel--continue-studies">
-        <div className="panel__header">
-          <div className="panel__header-icon panel__header-icon--continue-studies icon-forward"></div>
-          <h2 className="panel__header-title">
-            {this.props.i18n.text.get("plugin.frontPage.latestWorkspace.title")}
-          </h2>
+const ContinueStudiesPanel: React.FC<ContinueStudiesPanelProps> = (props) => {
+  if (!props.lastWorkspace) {
+    return null;
+  }
+  return (
+    <div className="panel panel--continue-studies">
+      <div className="panel__header">
+        <div className="panel__header-icon panel__header-icon--continue-studies icon-forward"></div>
+        <h2 className="panel__header-title">
+          {props.i18n.text.get("plugin.frontPage.latestWorkspace.title")}
+        </h2>
+      </div>
+      <div className="panel__body">
+        <div className="panel__body-title">
+          {props.lastWorkspace.workspaceName}
         </div>
-        <div className="panel__body">
-          <div className="panel__body-title">
-            {this.props.lastWorkspace.workspaceName}
-          </div>
-          <div className="panel__body-content panel__body-content--continue-studies">
-            {this.props.i18n.text.get(
-              "plugin.frontPage.latestWorkspace.material.part1"
-            )}{" "}
-            <span className="panel__body-highlight">
-              {this.props.lastWorkspace.materialName}.
-            </span>{" "}
-            <Link className="link" href={this.props.lastWorkspace.url}>
-              {this.props.i18n.text.get(
-                "plugin.frontPage.latestWorkspace.continueStudiesLink"
-              )}
-            </Link>
-          </div>
+        <div className="panel__body-content panel__body-content--continue-studies">
+          {props.i18n.text.get(
+            "plugin.frontPage.latestWorkspace.material.part1"
+          )}{" "}
+          <span className="panel__body-highlight">
+            {props.lastWorkspace.materialName}.
+          </span>{" "}
+          <Link className="link" href={props.lastWorkspace.url}>
+            {props.i18n.text.get(
+              "plugin.frontPage.latestWorkspace.continueStudiesLink"
+            )}
+          </Link>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 /**
  * mapStateToProps
@@ -86,8 +79,8 @@ function mapStateToProps(state: StateType) {
 /**
  * mapDispatchToProps
  */
-function mapDispatchToProps() {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(

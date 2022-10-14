@@ -2,6 +2,7 @@ import MainFunctionNavbar from "../base/main-function/navbar";
 import ScreenContainer from "../general/screen-container";
 import AnnouncementsPanel from "./body/announcements-panel";
 import ContinueStudiesPanel from "./body/continue-studies-panel";
+import NextStudiesPanel from "./body/next-studies-panel";
 import LastMessagesPanel from "./body/latest-messages-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
 import { i18nType } from "~/reducers/base/i18n";
@@ -43,7 +44,12 @@ class IndexBody extends React.Component<
               {this.props.i18n.text.get("plugin.wcag.indexViewHeader")}
             </h1>
             <div className="panel-group panel-group--studies">
-              <ContinueStudiesPanel />
+              {this.props.status.isStudent ? (
+                <>
+                  <ContinueStudiesPanel />
+                  <NextStudiesPanel />
+                </>
+              ) : null}
               <WorkspacesPanel />
             </div>
             <LastMessagesPanel />

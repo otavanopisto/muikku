@@ -55,6 +55,7 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
   const { courseCarousel } = useCourseCarousel(
     props.studentId,
     props.studentUserEntityId,
+    true,
     props.displayNotification
   );
 

@@ -40,14 +40,20 @@ const compareAll = (obj1: CarouselSuggestion, obj2: CarouselSuggestion) =>
  *
  * @param studentId studentId
  * @param userEntityId userEntityId
+ * @param isStudent  is the user student or not
  * @param displayNotification displayNotification
  * @returns array of course carousel items
  */
 export const useCourseCarousel = (
   studentId: string,
   userEntityId: number,
+  isStudent: boolean,
   displayNotification: DisplayNotificationTriggerType
 ) => {
+  // This hook cannot be called for anyone else but students (without an error)
+  // And Rules of Hooks say "Don’t call Hooks inside loops, conditions, or nested functions"
+  // So there can't be any conditions inside a component that calls this hook
+
   const [courseCarousel, setCourseCarousel] = React.useState<UseCourseCarousel>(
     {
       isLoading: true,
