@@ -40,7 +40,6 @@ const compareAll = (obj1: CarouselSuggestion, obj2: CarouselSuggestion) =>
  *
  * @param studentId studentId
  * @param userEntityId userEntityId
- * @param isStudent  is the user student or not
  * @param displayNotification displayNotification
  * @returns array of course carousel items
  */
