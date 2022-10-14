@@ -224,8 +224,8 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   ).format("LT")}`;
 
   const arrowClasses = !showComments
-    ? `evaluation-modal__event-arrow evaluation-modal__event-arrow--right `
-    : `evaluation-modal__event-arrow evaluation-modal__event-arrow--down `;
+    ? `evaluation-modal__event-arrow evaluation-modal__event-arrow--journal-comment evaluation-modal__event-arrow--right `
+    : `evaluation-modal__event-arrow evaluation-modal__event-arrow--journal-comment evaluation-modal__event-arrow--down `;
 
   return (
     <div className="evaluation-modal__item">
@@ -258,10 +258,10 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
             className="evaluation-modal__item-subheader evaluation-modal__item-subheader--journal-comment"
             onClick={handleShowCommentsClick}
           >
+            <div className={arrowClasses + "icon-arrow-right"} />
             <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
               plugin.evaluation.evaluationModal.journalComments.title: (666)
             </div>
-            <div className={arrowClasses + "icon-arrow-right"} />
           </div>
 
           <AnimateHeight duration={420} height={showComments ? "auto" : 0}>

@@ -208,6 +208,11 @@
   }
 }
 
+.evaluation-modal__event-arrow--journal-comment {
+  margin: 5px 5px 5px 0;
+  padding: 3px 3px 3px 0;
+}
+
 .evaluation-modal__event-arrow--right {
   transform: rotate(0deg);
   transition: transform 300ms ease-out;
