@@ -11,7 +11,7 @@ import {
   EvaluationStudyDiaryEvent,
   EvaluationBasePriceById,
   EvaluationFilters,
-  EvaluationStudyDiaryCommentsByJournal,
+  EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
 
@@ -41,7 +41,7 @@ export interface EvaluationState {
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
   evaluationDiaryEntries?: EvaluationStateAndData<EvaluationStudyDiaryEvent[]>;
   evaluationJournalComments: {
-    comments: EvaluationStudyDiaryCommentsByJournal;
+    comments: EvaluationJournalCommentsByJournal;
     commentsLoaded: number[];
   };
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;

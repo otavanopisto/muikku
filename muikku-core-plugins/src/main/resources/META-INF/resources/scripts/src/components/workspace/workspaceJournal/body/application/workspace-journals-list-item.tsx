@@ -187,6 +187,7 @@ class WorkspaceJournalsListItem extends React.Component<
                   </DeleteJournal>
                 </>
               )}
+              <h1>{this.props.journal.commentCount}</h1>
             </ApplicationListItemFooter>
           )}
         </ApplicationListItem>
