@@ -138,7 +138,9 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 className="link link--application-list"
                 onClick={handleEditCommentClick}
               >
-                Muokkaa (LOKALISOINTI!)
+                {props.i18n.text.get(
+                  "plugin.workspace.journal.editCommentButton.label"
+                )}
               </Link>
 
               <DeleteJournalComment
@@ -146,7 +148,9 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 workspaceEntityId={props.workspaceEntityId}
               >
                 <Link as="span" className="link link--application-list">
-                  Poista (LOKALISOINTI!)
+                  {props.i18n.text.get(
+                    "plugin.workspace.journal.deleteCommentButton.label"
+                  )}
                 </Link>
               </DeleteJournalComment>
             </ApplicationListItemFooter>
