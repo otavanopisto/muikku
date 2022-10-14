@@ -163,33 +163,46 @@ class WorkspaceJournalsListItem extends React.Component<
               <CkeditorContentLoader html={this.props.journal.content} />
             </article>
           </ApplicationListItemBody>
-          {(this.props.journal.userEntityId === this.props.status.userId ||
-            this.props.showCommentList) && (
-            <ApplicationListItemFooter className="application-list__item-footer--journal-entry">
-              {this.props.journal.userEntityId === this.props.status.userId && (
-                <>
-                  <Link
-                    as="span"
-                    className="link link--application-list"
-                    onClick={this.handleJournalEditClick}
-                  >
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.journal.editEntryButton.label"
-                    )}
-                  </Link>
 
-                  <DeleteJournal journal={this.props.journal}>
-                    <Link as="span" className="link link--application-list">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.journal.deleteEntryButton.label"
-                      )}
-                    </Link>
-                  </DeleteJournal>
-                </>
-              )}
-              <h1>{this.props.journal.commentCount}</h1>
-            </ApplicationListItemFooter>
-          )}
+          <ApplicationListItemFooter className="application-list__item-footer--journal-entry">
+            {(this.props.journal.userEntityId === this.props.status.userId ||
+              this.props.showCommentList) && (
+              <>
+                {this.props.journal.userEntityId ===
+                  this.props.status.userId && (
+                  <>
+                    <div className="application-list__item-footer-content-main">
+                      <Link
+                        as="span"
+                        className="link link--application-list"
+                        onClick={this.handleJournalEditClick}
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.journal.editEntryButton.label"
+                        )}
+                      </Link>
+
+                      <DeleteJournal journal={this.props.journal}>
+                        <Link as="span" className="link link--application-list">
+                          {this.props.i18n.text.get(
+                            "plugin.workspace.journal.deleteEntryButton.label"
+                          )}
+                        </Link>
+                      </DeleteJournal>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+            {!this.props.asCurrent && (
+              <div className="application-list__item-footer-content-aside">
+                {this.props.i18n.text.get(
+                  "plugin.workspace.journal.comments.title"
+                )}{" "}
+                ({this.props.journal.commentCount})
+              </div>
+            )}
+          </ApplicationListItemFooter>
         </ApplicationListItem>
 
         {this.props.showCommentList && <WorkspaceJournalCommentList />}
