@@ -146,15 +146,17 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
           "plugin.workspace.journal.entry.content.label"
         );
 
+    const dialogHeadetTitle = this.props.journalComment
+      ? this.props.i18n.text.get("plugin.workspace.journal.editComment.title")
+      : this.props.i18n.text.get("plugin.workspace.journal.newComment.title");
+
     return (
       <div className="form" role="form">
         <div className="env-dialog env-dialog--mainfunction env-dialog--edit-journal-entry">
           <section className="env-dialog__wrapper">
             <div className="env-dialog__content">
               <header className="env-dialog__header">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.journal.editComment.title"
-                )}
+                {dialogHeadetTitle}
               </header>
               <section className="env-dialog__body">
                 <div
