@@ -85,7 +85,10 @@ const EvaluationJournalEventComment: React.FC<
       </div>
       {creatorIsMe && (
         <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-comment">
-          <Link className="link" onClick={handleEditCommentClick}>
+          <Link
+            className="link link--evaluation-list"
+            onClick={handleEditCommentClick}
+          >
             {props.i18n.text.get(
               "plugin.evaluation.evaluationModal.journalComments.editButton"
             )}
@@ -93,7 +96,7 @@ const EvaluationJournalEventComment: React.FC<
 
           {canDelete && creatorIsMe && (
             <DeleteJournalComment journalComment={journalComment}>
-              <Link className="link">
+              <Link className="link link--evaluation-list">
                 {props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.journalComments.deleteButton"
                 )}
