@@ -163,7 +163,6 @@ class WorkspaceJournalsListItem extends React.Component<
               <CkeditorContentLoader html={this.props.journal.content} />
             </article>
           </ApplicationListItemBody>
-
           {(this.props.journal.userEntityId === this.props.status.userId ||
             this.props.showCommentList) && (
             <ApplicationListItemFooter className="application-list__item-footer--journal-entry">
