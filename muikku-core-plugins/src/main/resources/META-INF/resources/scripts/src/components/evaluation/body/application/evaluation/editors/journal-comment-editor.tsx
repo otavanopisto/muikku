@@ -140,7 +140,11 @@ class JournalCommentEditor extends SessionStateComponent<
       <div className="form" role="form">
         <div className="form__row">
           <div className="form-element">
-            {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
+            <label>
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.journalComments.formContentLabel"
+              )}
+            </label>
 
             <CKEditor
               onChange={this.handleCKEditorChange}
