@@ -215,12 +215,12 @@
 
 .evaluation-modal__event-arrow--right {
   transform: rotate(0deg);
-  transition: transform 300ms ease-out;
+  transition: transform 150ms ease-out;
 }
 
 .evaluation-modal__event-arrow--down {
   transform: rotate(90deg);
-  transition: transform 300ms ease-in;
+  transition: transform 150ms ease-in;
 }
 
 .evaluation-modal__event-date {
