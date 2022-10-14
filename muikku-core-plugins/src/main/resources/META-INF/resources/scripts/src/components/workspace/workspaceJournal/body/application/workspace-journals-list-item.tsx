@@ -190,18 +190,17 @@ class WorkspaceJournalsListItem extends React.Component<
                         </Link>
                       </DeleteJournal>
                     </div>
-
-                    {!this.props.asCurrent && (
-                      <div className="application-list__item-footer-content-aside">
-                        {this.props.i18n.text.get(
-                          "plugin.workspace.journal.comments.title"
-                        )}{" "}
-                        ({this.props.journal.commentCount})
-                      </div>
-                    )}
                   </>
                 )}
               </>
+            )}
+            {!this.props.asCurrent && (
+              <div className="application-list__item-footer-content-aside">
+                {this.props.i18n.text.get(
+                  "plugin.workspace.journal.comments.title"
+                )}{" "}
+                ({this.props.journal.commentCount})
+              </div>
             )}
           </ApplicationListItemFooter>
         </ApplicationListItem>
