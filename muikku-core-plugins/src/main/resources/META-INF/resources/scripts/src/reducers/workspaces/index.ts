@@ -576,7 +576,6 @@ export interface WorkspaceMaterialEditorType {
  */
 export interface WorkspacesType {
   availableCurriculums?: WorkspaceCurriculumFilterListType;
-  suggestedWorkspaces?: string[];
   availableWorkspaces: WorkspaceListType;
   availableFilters: WorkspacesavailableFiltersType;
   templateWorkspaces: TemplateWorkspaceType[];
@@ -800,7 +799,6 @@ export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
  */
 const initialWorkspacesState: WorkspacesType = {
   availableWorkspaces: [],
-  suggestedWorkspaces: [],
   userWorkspaces: [],
   lastWorkspace: null,
   currentWorkspace: null,
