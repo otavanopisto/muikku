@@ -138,7 +138,6 @@ export default class Workspace extends React.Component<
     this.loadWorkspaceMaterialsData =
       this.loadWorkspaceMaterialsData.bind(this);
     this.loadWorkspaceUsersData = this.loadWorkspaceUsersData.bind(this);
-    this.loadWorkspaceJournalData = this.loadWorkspaceJournalData.bind(this);
     this.loadWorkspaceHelpData = this.loadWorkspaceHelpData.bind(this);
     this.closeEnrollmentDialog = this.closeEnrollmentDialog.bind(this);
     this.closeSignupDialog = this.closeSignupDialog.bind(this);
@@ -255,10 +254,6 @@ export default class Workspace extends React.Component<
       }
     } else if (window.location.pathname.includes("/users")) {
       this.loadWorkspaceUsersData();
-    } else if (window.location.pathname.includes("/journal")) {
-      const location = window.location.hash.replace("#", "").split("/");
-
-      this.loadWorkspaceJournalData(location);
     }
   }
 
@@ -797,21 +792,6 @@ export default class Workspace extends React.Component<
   }
 
   /**
-   * loadWorkspaceJournalData
-   * @param location location
-   */
-  loadWorkspaceJournalData(location: string[]): void {
-    /* const showAllActive = location.includes("all");
-    const studentFilter = !location[1];
-    const journalOpen = location[2]; */
-    /* this.props.store.dispatch(
-      loadCurrentWorkspaceJournalsFromServer() as Action
-    ); */
-    /*     console.log("journal hash changed location", location);
-     */
-  }
-
-  /**
    * renderWorkspaceMaterials
    * @param props props
    * @returns JSX.Element
@@ -1074,17 +1054,13 @@ export default class Workspace extends React.Component<
                 .replace("#", "")
                 .split("/");
 
-              /*               console.log(currentLocation);
-               */
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
                 // This happens if teacher/admin uses diary
                 this.props.store.dispatch(
                   loadCurrentWorkspaceJournalsFromServer() as Action
                 );
               } else {
-                // This happens if student uses workspcae diary???
-                /*                 console.log("student", state.status.userId);
-                 */ this.props.store.dispatch(
+                this.props.store.dispatch(
                   loadCurrentWorkspaceJournalsFromServer(
                     state.status.userId
                   ) as Action
