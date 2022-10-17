@@ -567,6 +567,7 @@
   border: 0;
   color: $color-button-primary-text;
   display: inline-flex;
+  padding: 4px 10px;
 
   &:not(:first-child) {
     margin-left: 10px;

@@ -10,6 +10,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { useCourseCarousel } from "~/components/general/carousel/hooks/use-course-carousel";
+import { useNextCourseSuggestions } from "~/hooks/useNextCourseSuggestions";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import Button from "~/components/general/button";
 import "~/sass/elements/panel.scss";
@@ -30,17 +31,17 @@ interface NextStudiesPanelProps {
  * @returns JSX.Element
  */
 const NextStudiesPanel: React.FC<NextStudiesPanelProps> = (props) => {
-  const { courseCarousel } = useCourseCarousel(
+  const { nextSuggestions } = useNextCourseSuggestions(
     props.status.userSchoolDataIdentifier,
     props.status.userId,
     props.displayNotification
   );
 
-  if (courseCarousel.carouselItems.length === 0) {
+  if (nextSuggestions.nextCourses.length === 0) {
     return null;
   }
 
-  const suggestedWorkspaces = courseCarousel.carouselItems.map((workspace) => (
+  const suggestedWorkspaces = nextSuggestions.nextCourses.map((workspace) => (
     <div key={workspace.id}>
       <div className="item-list__item item-list__item--workspaces">
         <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
