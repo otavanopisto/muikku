@@ -13,7 +13,7 @@ import { JournalComment } from "~/@types/journal";
 import {
   DeleteWorkspaceJournalCommentTriggerType,
   deleteWorkspaceJournalComment,
-} from "../../../../actions/workspaces/journals";
+} from "~/actions/workspaces/journals";
 
 /**
  * DeleteJournalProps

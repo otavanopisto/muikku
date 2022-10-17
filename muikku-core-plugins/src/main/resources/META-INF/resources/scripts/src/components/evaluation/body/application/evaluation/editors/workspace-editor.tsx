@@ -393,14 +393,6 @@ class WorkspaceEditor extends SessionStateComponent<
            * onSuccess
            */
           onSuccess: () => {
-            /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-            this.setStateAndClear(
-              {
-                literalEvaluation: "",
-              },
-              this.state.draftId
-            ); */
-
             // Clears localstorage on success
             this.justClear(
               ["literalEvaluation", "grade", "selectedPriceOption"],
@@ -457,14 +449,6 @@ class WorkspaceEditor extends SessionStateComponent<
            * onSuccess
            */
           onSuccess: () => {
-            /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-            this.setStateAndClear(
-              {
-                literalEvaluation: "",
-              },
-              this.state.draftId
-            ); */
-
             // Clears localstorage on success
             this.justClear(
               ["literalEvaluation", "grade", "selectedPriceOption"],
@@ -516,14 +500,6 @@ class WorkspaceEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-            },
-            this.state.draftId
-          ); */
-
           // Clears localstorage on success
           this.justClear(
             ["literalEvaluation", "grade", "selectedPriceOption"],

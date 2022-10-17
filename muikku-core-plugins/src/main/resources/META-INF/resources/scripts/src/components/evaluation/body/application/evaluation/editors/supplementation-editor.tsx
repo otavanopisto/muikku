@@ -209,15 +209,6 @@ class SupplementationEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId); */
-
-          /* this.setStateAndClear(
-            {
-              literalEvaluation: "",
-            },
-            this.state.draftId
-          ); */
-
           // Removes "new" items from localstorage
           this.justClear(["literalEvaluation"], this.state.draftId);
 
@@ -269,18 +260,6 @@ class SupplementationEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          /* cleanWorkspaceAndSupplementationDrafts(this.state.draftId); */
-
-          /**
-           * Removes "edit" items from localstorage
-           */
-          /* this.setStateAndClear(
-            {
-              literalEvaluation: "",
-            },
-            this.state.draftId
-          ); */
-
           // Removes "new" items from localstorage
           this.justClear(["literalEvaluation"], this.state.draftId);
 
