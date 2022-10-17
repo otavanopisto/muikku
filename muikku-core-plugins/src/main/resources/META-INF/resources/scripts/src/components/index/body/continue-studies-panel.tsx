@@ -1,8 +1,4 @@
 import * as React from "react";
-import {
-  displayNotification,
-  DisplayNotificationTriggerType,
-} from "~/actions/base/notifications";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
@@ -10,10 +6,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceMaterialReferenceType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
-import { useCourseCarousel } from "~/components/general/carousel/hooks/use-course-carousel";
-import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import Link from "../../general/link";
-import Button from "~/components/general/button";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 
@@ -24,11 +17,12 @@ interface ContinueStudiesPanelProps {
   i18n: i18nType;
   status: StatusType;
   lastWorkspace: WorkspaceMaterialReferenceType;
-  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
  * ContinueStudiesPanel
+ * @param props ContinueStudiesPanelProps
+ * @returns JSX.Element
  */
 const ContinueStudiesPanel: React.FC<ContinueStudiesPanelProps> = (props) => {
   if (!props.lastWorkspace) {
@@ -76,14 +70,4 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ displayNotification }, dispatch);
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ContinueStudiesPanel);
+export default connect(mapStateToProps)(ContinueStudiesPanel);

@@ -8,7 +8,6 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
-import { WorkspaceMaterialReferenceType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import { useCourseCarousel } from "~/components/general/carousel/hooks/use-course-carousel";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
@@ -22,7 +21,6 @@ import "~/sass/elements/item-list.scss";
 interface NextStudiesPanelProps {
   i18n: i18nType;
   status: StatusType;
-  lastWorkspace: WorkspaceMaterialReferenceType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -35,7 +33,6 @@ const NextStudiesPanel: React.FC<NextStudiesPanelProps> = (props) => {
   const { courseCarousel } = useCourseCarousel(
     props.status.userSchoolDataIdentifier,
     props.status.userId,
-    props.status.isStudent,
     props.displayNotification
   );
 
@@ -112,7 +109,6 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     i18n: state.i18n,
-    lastWorkspace: state.workspaces.lastWorkspace,
   };
 }
 
