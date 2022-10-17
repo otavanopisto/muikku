@@ -153,6 +153,7 @@ export interface CreateDiscussionThreadTriggerType {
     message: string;
     sticky: boolean;
     title: string;
+    subscribe: boolean;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -567,6 +568,16 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
           "/" +
           newThread.id +
           "/1";
+
+        // If user want to subscribe data when creating new
+        if (data.subscribe) {
+          dispatch(
+            subscribeDiscussionThread({
+              areaId: newThread.forumAreaId,
+              threadId: newThread.id,
+            })
+          );
+        }
 
         //non-ready, also area count might change, so let's reload it
         dispatch(loadDiscussionAreasFromServer());
