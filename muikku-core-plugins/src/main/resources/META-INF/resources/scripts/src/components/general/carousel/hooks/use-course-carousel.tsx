@@ -3,18 +3,17 @@ import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { CourseStatus, StudentActivityCourse } from "~/@types/shared";
-import { Course } from "../course-carousel";
 import { schoolCourseTable } from "~/mock/mock-data";
-import { Suggestion } from "../../../../@types/shared";
+import { Suggestion, SuggestedCourse } from "~/@types/shared";
 import { AlternativeStudyObject } from "~/hooks/useStudentAlternativeOptions";
 import { filterSpecialSubjects } from "~/helper-functions/shared";
 
 /**
- * UseStudentActivityState
+ * UseCourseCarousel
  */
 export interface UseCourseCarousel {
   isLoading: boolean;
-  carouselItems: Course[];
+  carouselItems: SuggestedCourse[];
 }
 
 /**
@@ -197,7 +196,7 @@ export const useCourseCarousel = (
             // Suggestions as Courses, sorted by alphabetically
             // These cannot be suggested as next
             const suggestedCourses = suggestions
-              .map((s) => ({ ...s, suggestedAsNext: false } as Course))
+              .map((s) => ({ ...s, suggestedAsNext: false } as SuggestedCourse))
               .sort((a, b) => a.name.localeCompare(b.name));
 
             // Suggested as next courses, sorted by alphabetically
@@ -208,7 +207,7 @@ export const useCourseCarousel = (
                   suggestedNextIdList.find((id) => id === sNext.id) !==
                   undefined
               )
-              .map((s) => ({ ...s, suggestedAsNext: true } as Course))
+              .map((s) => ({ ...s, suggestedAsNext: true } as SuggestedCourse))
               .sort((a, b) => a.name.localeCompare(b.name));
 
             // Here merge two previous arrays and return it
