@@ -183,82 +183,83 @@ class StudentDialog extends React.Component<
       },
     ];
 
-    // Compulsory hops is shown only if basic info is there, current guider has permissions to use/see
-    // and matriculation eligiblity is false
+    // Hops is shown only if basic info is there,
+    // current guider has permissions to use/see (hopsAvailable)
     if (
       this.props.guider.currentStudent &&
       this.props.guider.currentStudent.basic &&
-      this.props.guider.currentStudent.hopsAvailable &&
-      COMPULSORY_HOPS_VISIBLITY.includes(
-        this.props.guider.currentStudent.basic.studyProgrammeName
-      )
-    )
-      tabs.push({
-        id: "HOPS",
-        name: "Hops",
-        type: "guider-student",
-        component: (
-          <>
-            <div className="tabs__header-actions tabs__header-actions--hops">
-              <Button
-                onClick={this.onClickEditHops}
-                buttonModifiers={hopsModifyStateModifiers}
-              >
-                Muokkaustila
-              </Button>
-
-              <select
-                className="form-element__select"
-                value={
-                  this.props.guider.currentStudent.hopsPhase
-                    ? this.props.guider.currentStudent.hopsPhase
-                    : 0
-                }
-                onChange={this.handleHopsPhaseChange}
-              >
-                <option value={0}>HOPS - Ei aktivoitu</option>
-                <option value={1}>HOPS - esitäyttö</option>
-                <option value={2}>HOPS - opintojen suunnittelu</option>
-              </select>
-            </div>
-
-            {this.state.editHops ? (
-              <CompulsoryEducationHopsWizard
-                user="supervisor"
-                usePlace="guider"
-                disabled={false}
-                studentId={this.props.guider.currentStudent.basic.id}
-                superVisorModifies
-              />
-            ) : (
-              <CompulsoryEducationHopsWizard
-                user="supervisor"
-                usePlace="guider"
-                disabled={true}
-                studentId={this.props.guider.currentStudent.basic.id}
-                superVisorModifies={false}
-              />
-            )}
-          </>
-        ),
-      });
-
-    //    If student has HOPS, we show the tab for it
-
-    if (
-      this.props.guider.currentStudent &&
-      this.props.guider.currentStudent.hops &&
-      this.props.guider.currentStudent.hops.optedIn
+      this.props.guider.currentStudent.hopsAvailable
     ) {
-      tabs.splice(1, 0, {
-        id: "STUDY_PLAN",
-        name: this.props.i18n.text.get(
-          "plugin.guider.user.tabs.title.studyPlan"
-        ),
-        type: "guider-student",
-        component: <StudyPlan />,
-      });
+      // Compulsory hops
+      if (
+        COMPULSORY_HOPS_VISIBLITY.includes(
+          this.props.guider.currentStudent.basic.studyProgrammeName
+        )
+      ) {
+        tabs.splice(1, 0, {
+          id: "HOPS",
+          name: "Hops",
+          type: "guider-student",
+          component: (
+            <>
+              <div className="tabs__header-actions tabs__header-actions--hops">
+                <Button
+                  onClick={this.onClickEditHops}
+                  buttonModifiers={hopsModifyStateModifiers}
+                >
+                  Muokkaustila
+                </Button>
+
+                <select
+                  className="form-element__select"
+                  value={
+                    this.props.guider.currentStudent.hopsPhase
+                      ? this.props.guider.currentStudent.hopsPhase
+                      : 0
+                  }
+                  onChange={this.handleHopsPhaseChange}
+                >
+                  <option value={0}>HOPS - Ei aktivoitu</option>
+                  <option value={1}>HOPS - esitäyttö</option>
+                  <option value={2}>HOPS - opintojen suunnittelu</option>
+                </select>
+              </div>
+
+              {this.state.editHops ? (
+                <CompulsoryEducationHopsWizard
+                  user="supervisor"
+                  usePlace="guider"
+                  disabled={false}
+                  studentId={this.props.guider.currentStudent.basic.id}
+                  superVisorModifies
+                />
+              ) : (
+                <CompulsoryEducationHopsWizard
+                  user="supervisor"
+                  usePlace="guider"
+                  disabled={true}
+                  studentId={this.props.guider.currentStudent.basic.id}
+                  superVisorModifies={false}
+                />
+              )}
+            </>
+          ),
+        });
+      }
+      // If student has HOPS, specifically for uppersecondary school
+      else if (
+        this.props.guider.currentStudent.hops &&
+        this.props.guider.currentStudent.hops.optedIn
+      ) {
+        tabs.splice(1, 0, {
+          id: "HOPS",
+          name: "Hops",
+          type: "guider-student",
+          component: <StudyPlan />,
+        });
+      }
     }
+
     if (!this.props.student) {
       return null;
     }

@@ -155,7 +155,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
             workspaces.map(async (workspace, index) => {
               const activity = <WorkspaceActivityType>(
                 await promisify(
-                  mApi().workspace.workspaces.students.activity.read(
+                  mApi().evaluation.workspaces.students.activity.read(
                     workspace.id,
                     pyramusId
                   ),

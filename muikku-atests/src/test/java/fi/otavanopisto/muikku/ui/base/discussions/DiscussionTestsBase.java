@@ -83,7 +83,8 @@ public class DiscussionTestsBase extends AbstractUITest {
       waitAndSendKeys(".env-dialog__textarea", "Description of test area");
       sleep(1000);
       waitAndClick(".env-dialog__actions .button--dialog-execute");
-      waitUntilCountOfElements(".application-panel__toolbar select.form-element__select--toolbar-selector option", 2);
+      waitUntilElementGoesAway(".env-dialog__actions", 10);
+      waitUntilCountOfElements(".application-panel__toolbar select.form-element__select--toolbar-selector option", 3);
       assertTrue(isInSelection(".application-panel__toolbar select.form-element__select--toolbar-selector", "Test Area"));
     } finally {
       cleanUpDiscussions();

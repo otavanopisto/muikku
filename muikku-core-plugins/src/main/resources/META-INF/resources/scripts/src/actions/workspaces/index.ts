@@ -772,7 +772,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                 () =>
                   promisify(
                     mApi()
-                      .workspace.workspaces.students.activity.cacheClear()
+                      .evaluation.workspaces.students.activity.cacheClear()
                       .read(
                         data.workspaceId,
                         state.status.userSchoolDataIdentifier
@@ -944,7 +944,7 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
           const activity = <WorkspaceActivityType>(
             await promisify(
               mApi()
-                .workspace.workspaces.students.activity.cacheClear()
+                .evaluation.workspaces.students.activity.cacheClear()
                 .read(
                   state.workspaces.currentWorkspace.id,
                   state.status.userSchoolDataIdentifier
