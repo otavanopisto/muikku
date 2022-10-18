@@ -62,6 +62,28 @@ class WorkspaceJournalsList extends BodyScrollLoader<
   }
 
   /**
+   * filterJournals
+   * @returns filtered journals
+   */
+  filterJournals = () => {
+    const { journals, filters } = this.props.journalsState;
+    const { showMandatory, showOthers } = filters;
+
+    // Return all if both filters are true or false
+    if ((showMandatory && showOthers) || (!showMandatory && !showOthers)) {
+      return journals;
+    }
+
+    // If only one of the other
+    if (showMandatory) {
+      return journals.filter((j) => j.isMaterialField);
+    }
+    if (showOthers) {
+      return journals.filter((j) => !j.isMaterialField);
+    }
+  };
+
+  /**
    * render
    */
   render() {
@@ -93,9 +115,12 @@ class WorkspaceJournalsList extends BodyScrollLoader<
         </div>
       );
     }
+
+    const itemsToRender = this.filterJournals();
+
     return (
       <ApplicationList>
-        {this.props.journalsState.journals.map((journal) => (
+        {itemsToRender.map((journal) => (
           <WorkspaceJournalsListItem
             key={journal.id}
             journal={journal}

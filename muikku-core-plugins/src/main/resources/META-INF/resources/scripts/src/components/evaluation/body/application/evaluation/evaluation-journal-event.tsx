@@ -249,11 +249,17 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const comments = props.evaluation.evaluationJournalComments.comments[id];
 
+  const isMandatory = props.isMaterialField;
+
   return (
     <div className="evaluation-modal__item">
       <div className="evaluation-modal__item-header" ref={myRef}>
         <div
-          className="evaluation-modal__item-header-title evaluation-modal__item-header-title--journal"
+          className={
+            isMandatory
+              ? "evaluation-modal__item-header-title evaluation-modal__item-header-title--journal-mandatory"
+              : "evaluation-modal__item-header-title evaluation-modal__item-header-title--journal"
+          }
           onClick={handleOpenContentClick}
         >
           {title}

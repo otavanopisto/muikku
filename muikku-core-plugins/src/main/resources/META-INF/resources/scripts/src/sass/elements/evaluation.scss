@@ -119,10 +119,6 @@
   flex-grow: 0;
   flex-shrink: 0;
   padding: 5px 0;
-
-  @include breakpoint($breakpoint-pad) {
-    padding: 0 10px;
-  }
 }
 
 .evaluation-modal__content-footer {

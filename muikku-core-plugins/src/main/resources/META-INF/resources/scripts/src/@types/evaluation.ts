@@ -82,6 +82,14 @@ export interface EvaluationAssignmentContent {
 }
 
 /**
+ * EvaluationJournalFilters
+ */
+export interface EvaluationJournalFilters {
+  showMandatory: boolean;
+  showOthers: boolean;
+}
+
+/**
  * Interface for evaluation study diary event
  */
 export interface EvaluationStudyDiaryEvent {
@@ -94,6 +102,7 @@ export interface EvaluationStudyDiaryEvent {
   title: string;
   userEntityId: number;
   workspaceEntityId: number;
+  isMaterialField: boolean;
 }
 
 /**

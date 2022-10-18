@@ -15,7 +15,14 @@ import { loadStudentsOfWorkspace } from "~/actions/workspaces";
 import { LoadUsersOfWorkspaceTriggerType } from "~/actions/workspaces/index";
 import { WorkspaceStudentListType } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions";
-import { JournalsState } from "../../../../reducers/workspaces/journals";
+import {
+  JournalsState,
+  WorkspaceJournalFilters,
+} from "../../../../reducers/workspaces/journals";
+import {
+  ChangeWorkspaceJournalFiltersTriggerType,
+  changeWorkspaceJournalFilters,
+} from "../../../../actions/workspaces/journals";
 import {
   LoadCurrentWorkspaceJournalsFromServerTriggerType,
   loadCurrentWorkspaceJournalsFromServer,
@@ -31,6 +38,7 @@ interface NavigationAsideProps {
   status: StatusType;
   loadStudents: LoadUsersOfWorkspaceTriggerType;
   loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType;
+  changeWorkspaceJournalFilters: ChangeWorkspaceJournalFiltersTriggerType;
 }
 
 /**
@@ -58,6 +66,21 @@ class NavigationAside extends React.Component<
       students: null,
     };
   }
+
+  /**
+   * Handles change journal filter click
+   * @param filterKey filterKey
+   */
+  handleChangeJournalFilterClick =
+    (filterKey: keyof WorkspaceJournalFilters) => () => {
+      const { filters } = this.props.journalsState;
+
+      this.props.changeWorkspaceJournalFilters({
+        journalFilters: {
+          [filterKey]: !filters[filterKey],
+        },
+      });
+    };
 
   /**
    * Handles student changes and loads specific students journals to global state
@@ -98,6 +121,8 @@ class NavigationAside extends React.Component<
     if (!workspace) {
       return null;
     }
+
+    const { filters } = journalsState;
 
     /**
      * Filtered student list
@@ -143,6 +168,23 @@ class NavigationAside extends React.Component<
 
     return (
       <Navigation key="journal-navigation-11">
+        <NavigationTopic name="Tyyppi">
+          <NavigationElement
+            icon="book"
+            isActive={filters.showMandatory}
+            onClick={this.handleChangeJournalFilterClick("showMandatory")}
+          >
+            Pakolliset
+          </NavigationElement>
+          <NavigationElement
+            icon="book"
+            isActive={filters.showOthers}
+            onClick={this.handleChangeJournalFilterClick("showOthers")}
+          >
+            Muut
+          </NavigationElement>
+        </NavigationTopic>
+
         {!this.props.status.isStudent && (
           <NavigationTopic
             name={this.props.i18n.text.get(
@@ -181,6 +223,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     {
       loadStudents: loadStudentsOfWorkspace,
       loadCurrentWorkspaceJournalsFromServer,
+      changeWorkspaceJournalFilters,
     },
     dispatch
   );
