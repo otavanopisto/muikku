@@ -1461,6 +1461,7 @@
 }
 
 // Buttons used in Material pages
+.button--muikku-submit-journal,
 .button--muikku-submit-exercise,
 .button--muikku-show-correct-answers-button,
 .button--muikku-submit-assignment,
@@ -1473,6 +1474,10 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+}
+
+.button--muikku-submit-journal {
+  background-color: $color-tertiary;
 }
 
 .button--muikku-submit-exercise {

@@ -124,14 +124,6 @@ export default class JournalField extends React.Component<
   JournalFieldProps,
   JournalFieldState
 > {
-  static defaultProps = {
-    content: {
-      richedit: true,
-      example: "",
-      rows: "",
-    },
-  };
-
   /**
    * constructor
    * @param props props
@@ -255,12 +247,15 @@ export default class JournalField extends React.Component<
         // here we make it be a simple textarea or a rich text editor
         // note how somehow numbers come as string...
         field = (
-          <CKEditor
-            configuration={ckEditorConfig}
-            onChange={this.onCKEditorChange}
-          >
-            {this.state.value}
-          </CKEditor>
+          <>
+            <label>Päiväkirjakenttä</label>
+            <CKEditor
+              configuration={ckEditorConfig}
+              onChange={this.onCKEditorChange}
+            >
+              {this.state.value}
+            </CKEditor>
+          </>
         );
       }
     } else if (this.props.usedAs === "evaluationTool") {

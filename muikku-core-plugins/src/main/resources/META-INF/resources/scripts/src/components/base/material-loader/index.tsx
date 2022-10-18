@@ -132,6 +132,24 @@ const STATES = [
     "button-disabled": true,
     "fields-read-only": true,
   },
+  {
+    "assignment-type": "JOURNAL",
+    state: ["UNANSWERED", "ANSWERED"],
+    "button-class": "muikku-submit-journal",
+    "button-text": "plugin.workspace.materialsLoader.submitJournalButton",
+    "success-state": "SUBMITTED",
+    "button-disabled": false,
+    "fields-read-only": false,
+  },
+  {
+    "assignment-type": "JOURNAL",
+    state: "SUBMITTED",
+    "button-class": "muikku-submit-journal",
+    "button-text": "plugin.workspace.materialsLoader.updateJournalButton",
+    "success-state": "ANSWERED",
+    "button-disabled": false,
+    "fields-read-only": true,
+  },
 ];
 
 /**

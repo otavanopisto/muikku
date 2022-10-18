@@ -304,11 +304,6 @@ class WorkspaceNavbar extends React.Component<
       </Link>
     ) : null;
 
-    const trueNavigation: Array<React.ReactElement<any>> = [];
-    if (this.props.navigation) {
-      trueNavigation.push(this.props.navigation);
-    }
-
     let editModeSwitch = null;
     if (this.props.workspaceEditMode.available) {
       editModeSwitch = (
@@ -343,7 +338,7 @@ class WorkspaceNavbar extends React.Component<
         mobileTitle={this.props.title}
         isProfileContainedInThisApp={false}
         modifier={navbarModifiers}
-        navigation={trueNavigation}
+        navigation={this.props.navigation}
         navbarItems={[assessmentRequestItem].concat(
           itemData.map((item) => {
             if (!item.condition) {

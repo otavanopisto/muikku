@@ -46,7 +46,7 @@ export default class WorkspaceJournalBody extends React.Component<
    * render
    */
   render() {
-    const aside = <Aside />;
+    const aside = <Aside key="workspaceJournalBody-aside" />;
     return (
       <div>
         <WorkspaceNavbar
