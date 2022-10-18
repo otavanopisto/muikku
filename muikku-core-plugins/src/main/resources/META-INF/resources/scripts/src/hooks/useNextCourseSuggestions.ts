@@ -5,7 +5,6 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { CourseStatus, StudentActivityCourse } from "~/@types/shared";
 import { Suggestion, SuggestedCourse } from "~/@types/shared";
 
-
 /**
  * NextCourseSuggestions
  */
@@ -23,17 +22,7 @@ interface NextCourse {
 }
 
 /**
- * compareAll
- * @param obj1 obj1
- * @param obj2 obj2
- * @returns boolean
- */
-const compareAll = (obj1: NextCourse, obj2: NextCourse) =>
-  obj1.subjectCode === obj2.subjectCode &&
-  obj1.courseNumber === obj2.courseNumber;
-
-/**
- * Custom hook to return next courses suggested by the counclero
+ * Custom hook to return next courses suggested by the councelor
  *
  * @param studentId studentId
  * @param userEntityId userEntityId
@@ -72,7 +61,6 @@ export const useNextCourseSuggestions = (
          * @returns Course[]
          */
         const nextSuggestionsData = async () => {
-
           //Loaded student activity list
           const studentActivityList = (await promisify(
             mApi().hops.student.studyActivity.read(studentId),
@@ -98,8 +86,7 @@ export const useNextCourseSuggestions = (
           }
 
           // Initialized supervisor suggestions
-          let suggestions: Suggestion[] = [];
-
+          const suggestions: Suggestion[] = [];
 
           // Now fetching all suggested data with course list data
           try {
@@ -114,10 +101,9 @@ export const useNextCourseSuggestions = (
                   "callback"
                 )()) as Suggestion[];
 
-                  for(const suggestion of suggestionListForSubject) {
-                    suggestions.push(suggestion);
-                  }
-
+                for (const suggestion of suggestionListForSubject) {
+                  suggestions.push(suggestion);
+                }
               })
             );
           } catch (err) {
