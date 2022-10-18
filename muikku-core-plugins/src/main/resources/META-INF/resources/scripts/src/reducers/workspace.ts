@@ -14,6 +14,7 @@ import { evaluations } from "../reducers/main-function/evaluation";
 import { profile } from "./main-function/profile";
 
 import { combineReducers } from "redux";
+import { journals } from "./workspaces/journals";
 
 export default combineReducers({
   announcements,
@@ -29,4 +30,5 @@ export default combineReducers({
   userIndex,
   websocket,
   workspaces,
+  journals,
 });
