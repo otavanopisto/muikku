@@ -203,6 +203,7 @@ export type WorkspaceJournalListType = Array<WorkspaceJournalType>;
  */
 export interface WorkspaceJournalsType {
   journals: WorkspaceJournalListType;
+  currentJournal?: WorkspaceJournalType;
   hasMore: boolean;
   userEntityId?: number;
   state: WorkspacesStateType;

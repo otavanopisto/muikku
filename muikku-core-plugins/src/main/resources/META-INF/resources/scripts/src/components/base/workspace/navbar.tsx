@@ -286,6 +286,7 @@ class WorkspaceNavbar extends React.Component<
 
     const assessmentRequestMenuItem = assessmentRequestItem ? (
       <Link
+        key="link--assessment-request"
         onClick={this.onRequestEvaluationOrCancel.bind(this, canCancelRequest)}
         className="link link--full link--menu link--assessment-request"
       >
@@ -340,55 +341,57 @@ class WorkspaceNavbar extends React.Component<
         modifier={navbarModifiers}
         navigation={this.props.navigation}
         navbarItems={[assessmentRequestItem].concat(
-          itemData.map((item) => {
-            if (!item.condition) {
-              return null;
-            }
-            return {
-              modifier: item.modifier,
-              item: (
-                <Dropdown
-                  openByHover
-                  key={item.text}
-                  content={this.props.i18n.text.get(item.text)}
-                >
-                  <Link
-                    tabIndex={this.props.activeTrail == item.trail ? 0 : null}
-                    as={this.props.activeTrail == item.trail ? "span" : null}
-                    openInNewTab={item.openInNewTab}
-                    href={
-                      this.props.activeTrail !== item.trail ? item.href : null
-                    }
-                    to={
-                      item.to && this.props.activeTrail !== item.trail
-                        ? item.href
-                        : null
-                    }
-                    className={`link link--icon link--full link--workspace-navbar ${
-                      this.props.activeTrail === item.trail ? "active" : ""
-                    }`}
-                    aria-label={
-                      this.props.activeTrail == item.trail
-                        ? this.props.i18n.text.get(
-                            "plugin.wcag.mainNavigation.currentPage.aria.label"
-                          ) +
-                          " " +
-                          this.props.i18n.text.get(item.text)
-                        : this.props.i18n.text.get(item.text)
-                    }
-                    role="menuitem"
+          itemData
+            .map((item) => {
+              if (!item.condition) {
+                return null;
+              }
+              return {
+                modifier: item.modifier,
+                item: (
+                  <Dropdown
+                    openByHover
+                    key={item.text}
+                    content={this.props.i18n.text.get(item.text)}
                   >
-                    <span className={`link__icon icon-${item.icon}`} />
-                    {item.badge ? (
-                      <span className="indicator indicator--workspace">
-                        {item.badge >= 100 ? "99+" : item.badge}
-                      </span>
-                    ) : null}
-                  </Link>
-                </Dropdown>
-              ),
-            };
-          })
+                    <Link
+                      tabIndex={this.props.activeTrail == item.trail ? 0 : null}
+                      as={this.props.activeTrail == item.trail ? "span" : null}
+                      openInNewTab={item.openInNewTab}
+                      href={
+                        this.props.activeTrail !== item.trail ? item.href : null
+                      }
+                      to={
+                        item.to && this.props.activeTrail !== item.trail
+                          ? item.href
+                          : null
+                      }
+                      className={`link link--icon link--full link--workspace-navbar ${
+                        this.props.activeTrail === item.trail ? "active" : ""
+                      }`}
+                      aria-label={
+                        this.props.activeTrail == item.trail
+                          ? this.props.i18n.text.get(
+                              "plugin.wcag.mainNavigation.currentPage.aria.label"
+                            ) +
+                            " " +
+                            this.props.i18n.text.get(item.text)
+                          : this.props.i18n.text.get(item.text)
+                      }
+                      role="menuitem"
+                    >
+                      <span className={`link__icon icon-${item.icon}`} />
+                      {item.badge ? (
+                        <span className="indicator indicator--workspace">
+                          {item.badge >= 100 ? "99+" : item.badge}
+                        </span>
+                      ) : null}
+                    </Link>
+                  </Dropdown>
+                ),
+              };
+            })
+            .filter((item) => !!item)
         )}
         defaultOptions={
           this.props.status.loggedIn
@@ -410,37 +413,41 @@ class WorkspaceNavbar extends React.Component<
               ]
         }
         menuItems={[assessmentRequestMenuItem].concat(
-          itemData.map((item: ItemDataElement) => {
-            if (!item.condition) {
-              return null;
-            }
-            return (
-              <Link
-                key={item.modifier}
-                href={this.props.activeTrail !== item.trail ? item.href : null}
-                to={
-                  item.to && this.props.activeTrail !== item.trail
-                    ? item.href
-                    : null
-                }
-                className={`link link--full link--menu ${
-                  this.props.activeTrail === item.trail ? "active" : ""
-                }`}
-              >
-                <span
-                  className={`link__icon link__icon--workspace icon-${item.icon}`}
-                />
-                {item.badge ? (
-                  <span className="indicator indicator--workspace">
-                    {item.badge >= 100 ? "99+" : item.badge}
+          itemData
+            .map((item: ItemDataElement) => {
+              if (!item.condition) {
+                return null;
+              }
+              return (
+                <Link
+                  key={item.modifier}
+                  href={
+                    this.props.activeTrail !== item.trail ? item.href : null
+                  }
+                  to={
+                    item.to && this.props.activeTrail !== item.trail
+                      ? item.href
+                      : null
+                  }
+                  className={`link link--full link--menu ${
+                    this.props.activeTrail === item.trail ? "active" : ""
+                  }`}
+                >
+                  <span
+                    className={`link__icon link__icon--workspace icon-${item.icon}`}
+                  />
+                  {item.badge ? (
+                    <span className="indicator indicator--workspace">
+                      {item.badge >= 100 ? "99+" : item.badge}
+                    </span>
+                  ) : null}
+                  <span className="link--menu-text">
+                    {this.props.i18n.text.get(item.text)}
                   </span>
-                ) : null}
-                <span className="link--menu-text">
-                  {this.props.i18n.text.get(item.text)}
-                </span>
-              </Link>
-            );
-          })
+                </Link>
+              );
+            })
+            .filter((item) => !!item)
         )}
         extraContent={[
           <EvaluationRequestDialog

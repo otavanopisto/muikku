@@ -1,3 +1,21 @@
+import mApi from "~/lib/mApi";
+import promisify from "~/util/promisify";
+import { IChatContact } from "~/components/chat/chat";
+
+/**
+ * obtainNick gets user nick (and name, if present) based on jid
+ * @param jId chat id
+ * @returns user of type IChatContact
+ */
+export const obtainNick = async (jId: string) => {
+  const user: IChatContact = (await promisify(
+    mApi().chat.userInfo.read(jId.split("@")[0], {}),
+    "callback"
+  )()) as IChatContact;
+
+  return user;
+};
+
 /**
  * getUserChatId gets user chat ID
  * @param userId string version of user Id

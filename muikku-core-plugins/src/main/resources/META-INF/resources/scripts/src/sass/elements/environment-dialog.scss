@@ -376,8 +376,9 @@
   }
 }
 
-// Reply Message "Non-dialog"
-.env-dialog--reply-message {
+// "Non-dialog", used within context
+.env-dialog--reply-message,
+.env-dialog--edit-journal-entry {
   opacity: 100%;
   position: relative;
   z-index: unset;
