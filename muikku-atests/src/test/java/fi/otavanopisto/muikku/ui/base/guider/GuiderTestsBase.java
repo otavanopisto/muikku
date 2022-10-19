@@ -9,7 +9,9 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -697,6 +699,59 @@ public class GuiderTestsBase extends AbstractUITest {
         deleteUserGroupUsers();
         archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());      
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void filterByStudyProgrammeTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember manager = new MockStaffMember(13l, 13l, DEFAULT_ORGANIZATION_ID, "Manager", "Person", UserRole.MANAGER, "090975-1231", "testmanager@example.com", Sex.MALE);
+    Set<Long> staffStudyProgrammes = new HashSet<>();
+    staffStudyProgrammes.add(1l);
+    manager.setStaffStudyProgrammes(staffStudyProgrammes);
+    MockStaffMember spl = new MockStaffMember(16l, 16l, DEFAULT_ORGANIZATION_ID, "Leader", "Person", UserRole.STUDY_PROGRAMME_LEADER, "080975-1238", "testleader@example.com", Sex.MALE);
+    staffStudyProgrammes = new HashSet<>();
+    staffStudyProgrammes.add(3l);
+    spl.setStaffStudyProgrammes(staffStudyProgrammes);    
+    MockStudent student = new MockStudent(14l, 14l, "SecondS", "User", "testuersas@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111012-1412", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student2 = new MockStudent(15l, 15l, "TestS", "Student", "testtua@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "011210-1312", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
+        .addStudyProgramme(new StudyProgramme(3l, 1l, "test_sprogramme", "Nettikoulu/yo", 1l, null, false, false))
+        .addStaffMember(admin)
+        .addStaffMember(manager)
+        .addStaffMember(spl)
+        .addStudent(student)
+        .addStudent(student2)
+        .mockLogin(manager)
+        .build();
+      login();
+      try {
+        navigate("/guider", false);
+        waitForPresent(".application-list__item-header .application-list__header-primary span");
+        assertTextIgnoreCase(".application-list__item-header .application-list__header-primary span", "SecondS User");
+        assertCount(".application-list__item-header .application-list__header-primary", 1);
+        logout();
+        mockBuilder.mockLogin(admin);
+        login();
+        navigate("/guider", false);
+        waitForPresent(".application-list__item-header .application-list__header-primary span");
+        assertCount(".application-list__item-header .application-list__header-primary", 2);
+        logout();
+        mockBuilder.mockLogin(spl);
+        login();
+        navigate("/guider", false);
+        assertPresent(".empty");
+      }finally {
+        archiveUserByEmail(manager.getEmail());
+        archiveUserByEmail(spl.getEmail());
+        archiveUserByEmail(student.getEmail());
+        archiveUserByEmail(student2.getEmail());
       }
     } finally {
       mockBuilder.wiremockReset();

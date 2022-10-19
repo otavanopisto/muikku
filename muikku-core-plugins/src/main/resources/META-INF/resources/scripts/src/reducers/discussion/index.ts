@@ -13,6 +13,36 @@ export interface DiscussionUserType {
 }
 
 /**
+ * DiscussionSubscribedThread
+ */
+export interface DiscussionSubscribedThread {
+  /**
+   * Users id
+   */
+  userEntityId: number;
+  /**
+   * Thread id
+   */
+  threadId: number;
+  /**
+   * Thread information
+   */
+  thread: DiscussionThreadType;
+  /**
+   * Id of workspace.
+   */
+  workspaceId?: number;
+  /**
+   * Includes name extension
+   */
+  workspaceName?: string;
+  /**
+   * url of workspace
+   */
+  workspaceUrlName?: string;
+}
+
+/**
  * DiscussionThreadType
  */
 export interface DiscussionThreadType {
@@ -79,6 +109,8 @@ export type DiscussionAreaListType = Array<DiscussionAreaType>;
 export interface DiscussionType {
   state: DiscussionStateType;
   threads: DiscussionThreadListType;
+  subscribedThreads: DiscussionSubscribedThread[];
+  subscribedThreadOnly: boolean;
   page: number;
   areaId: number;
   workspaceId?: number;
@@ -115,6 +147,8 @@ export interface DiscussionPatchType {
 const initialDiscussionState: DiscussionType = {
   state: "LOADING",
   threads: [],
+  subscribedThreads: [],
+  subscribedThreadOnly: false,
   areaId: null,
   workspaceId: null,
   page: 1,
@@ -221,6 +255,13 @@ export const discussion: Reducer<DiscussionType> = (
 
     case "SET_DISCUSSION_WORKSPACE_ID":
       return { ...state, workspaceId: action.payload };
+
+    case "UPDATE_SUBSCRIBED_THREAD_LIST": {
+      return { ...state, subscribedThreads: action.payload };
+    }
+
+    case "UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS":
+      return { ...state, subscribedThreadOnly: action.payload };
 
     default:
       return state;

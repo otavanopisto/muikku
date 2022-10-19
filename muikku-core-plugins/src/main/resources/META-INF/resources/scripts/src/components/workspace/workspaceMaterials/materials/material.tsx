@@ -26,6 +26,7 @@ import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
 import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
+import { AnyActionType } from "~/actions";
 
 /**
  * WorkspaceMaterialProps
@@ -205,7 +206,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 

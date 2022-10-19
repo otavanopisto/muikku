@@ -13,6 +13,7 @@ import {
   WorkspaceType,
   MaterialContentNodeType,
   WorkspaceEditModeStateType,
+  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
@@ -27,12 +28,15 @@ import {
   SetWholeWorkspaceMaterialsTriggerType,
 } from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
+import { AnyActionType } from "~/actions";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * ContentProps
  */
 interface ContentProps {
   i18n: i18nType;
+  status: StatusType;
   materials: MaterialContentNodeListType;
   activeNodeId: number;
   workspace: WorkspaceType;
@@ -41,8 +45,6 @@ interface ContentProps {
   workspaceEditMode: WorkspaceEditModeStateType;
   doNotSetHashes?: boolean;
   enableTouch?: boolean;
-  isLoggedIn: boolean;
-  isStudent: boolean;
 }
 
 /**
@@ -112,6 +114,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps: ContentProps) {
     this.setState({
       materials: nextProps.materials,
@@ -325,6 +328,64 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   }
 
   /**
+   * buildViewRestrictionModifiers
+   * @param viewRestrict viewRestrict
+   * @param section section
+   */
+  buildViewRestrictionModifiers = (
+    viewRestrict: MaterialViewRestriction,
+    section: boolean
+  ) => {
+    if (section) {
+      switch (viewRestrict) {
+        case MaterialViewRestriction.LOGGED_IN:
+          return "toc__section-container--view-restricted-to-logged-in";
+
+        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          return "toc__section-container--view-restricted-to-members";
+
+        default:
+          return null;
+      }
+    } else {
+      switch (viewRestrict) {
+        case MaterialViewRestriction.LOGGED_IN:
+          return "toc__item--view-restricted-to-logged-in";
+
+        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          return "toc__item--view-restricted-to-members";
+
+        default:
+          return null;
+      }
+    }
+  };
+
+  /**
+   * buildViewRestrictionLocaleString
+   * @param viewRestrict viewRestrict
+   * @returns locale string
+   */
+  buildViewRestrictionLocaleString = (
+    viewRestrict: MaterialViewRestriction
+  ) => {
+    switch (viewRestrict) {
+      case MaterialViewRestriction.LOGGED_IN:
+        return this.props.i18n.text.get(
+          "plugin.workspace.materialViewRestricted"
+        );
+
+      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        return this.props.i18n.text.get(
+          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  /**
    * render
    */
   render() {
@@ -342,20 +403,27 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       >
         {this.state.materials.map((node, nodeIndex) => {
           const isSectionViewRestricted =
-            node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn;
+            node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
+            node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
+
           const isSectionViewRestrictedVisible =
-            node.viewRestrict === "LOGGED_IN" && !this.props.isStudent;
+            isSectionViewRestricted &&
+            !this.props.status.isStudent &&
+            this.props.status.loggedIn;
+
           const icon: string = isSectionViewRestrictedVisible
             ? "restriction"
             : null;
-          const iconTitle: string = isSectionViewRestrictedVisible
-            ? this.props.i18n.text.get(
-                "plugin.workspace.materialViewRestricted"
-              )
-            : null;
-          const className: string = isSectionViewRestrictedVisible
-            ? "toc__section-container--view-restricted"
-            : "toc__section-container";
+
+          const iconTitle: string =
+            isSectionViewRestricted && !this.props.status.isStudent
+              ? this.buildViewRestrictionLocaleString(node.viewRestrict)
+              : null;
+
+          const className: string =
+            isSectionViewRestricted && !this.props.status.isStudent
+              ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
+              : "toc__section-container";
 
           const topic = (
             <TocTopic
@@ -377,8 +445,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     return null;
                   }
                   const isViewRestrictedVisible =
-                    subnode.viewRestrict === "LOGGED_IN" &&
-                    !this.props.isStudent;
+                    subnode.viewRestrict ===
+                      MaterialViewRestriction.LOGGED_IN ||
+                    subnode.viewRestrict ===
+                      MaterialViewRestriction.WORKSPACE_MEMBERS;
 
                   const isAssignment = subnode.assignmentType === "EVALUATED";
                   const isExercise = subnode.assignmentType === "EXERCISE";
@@ -389,17 +459,32 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     : isExercise
                     ? "exercise"
                     : null;
-                  const icon: string = isViewRestrictedVisible
-                    ? "restriction"
-                    : null;
-                  const iconTitle: string = isViewRestrictedVisible
-                    ? this.props.i18n.text.get(
-                        "plugin.workspace.materialViewRestricted"
-                      )
-                    : null;
-                  const className: string = isViewRestrictedVisible
-                    ? "toc__item--view-restricted"
-                    : null;
+
+                  const icon: string =
+                    isViewRestrictedVisible &&
+                    !this.props.status.isStudent &&
+                    this.props.status.loggedIn
+                      ? "restriction"
+                      : null;
+
+                  const iconTitle: string =
+                    isViewRestrictedVisible &&
+                    !this.props.status.isStudent &&
+                    this.props.status.loggedIn
+                      ? this.buildViewRestrictionLocaleString(
+                          subnode.viewRestrict
+                        )
+                      : null;
+
+                  const className: string =
+                    isViewRestrictedVisible &&
+                    !this.props.status.isStudent &&
+                    this.props.status.loggedIn
+                      ? this.buildViewRestrictionModifiers(
+                          subnode.viewRestrict,
+                          false
+                        )
+                      : null;
 
                   const pageElement = (
                     <TocElement
@@ -502,12 +587,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    status: state.status,
     materials: state.workspaces.currentHelp,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
-    isLoggedIn: state.status.loggedIn,
-    isStudent: state.status.loggedIn && state.status.isStudent,
   };
 }
 
@@ -515,7 +599,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceHelp },
     dispatch

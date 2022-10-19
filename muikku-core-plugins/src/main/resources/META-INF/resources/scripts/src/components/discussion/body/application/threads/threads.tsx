@@ -28,6 +28,7 @@ export class DiscussionThreads extends React.Component<
  * DiscussionThreadProps
  */
 interface DiscussionThreadProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick: (event: React.MouseEvent<HTMLDivElement>) => any;
   avatar: JSX.Element;
 }
@@ -162,7 +163,7 @@ interface DiscussionCurrentThreadProps {
 /**
  * DiscussionCurrentThread
  */
-export class DiscussionCurrentThread extends React.Component<
+export class DiscussionCurrentThreadListContainer extends React.Component<
   DiscussionCurrentThreadProps,
   Record<string, unknown>
 > {
@@ -194,6 +195,7 @@ interface DiscussionCurrentThreadElementProps {
   isOpMessage?: boolean;
   isReplyOfReply?: boolean;
   isReply?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   avatar: any;
   hidden: boolean;
 }
@@ -227,6 +229,44 @@ export class DiscussionCurrentThreadElement extends React.Component<
           </ApplicationListItemContentWrapper>
         </ApplicationListItem>
       )
+    );
+  }
+}
+
+/**
+ * DiscussionThreadHeaderProps
+ */
+interface DiscussionThreadsListHeaderProps {
+  aside?: React.ReactNode;
+}
+
+/**
+ * DiscussionThreadHeader
+ */
+export class DiscussionThreadsListHeader extends React.Component<
+  DiscussionThreadsListHeaderProps,
+  Record<string, unknown>
+> {
+  /**
+   * render
+   */
+  render() {
+    if (this.props.aside) {
+      return (
+        <ApplicationListItemHeader modifiers="discussion-thread-list">
+          <div className="application-list__item-header-main">
+            {this.props.children}
+          </div>
+          <div className="application-list__item-header-aside">
+            {this.props.aside}
+          </div>
+        </ApplicationListItemHeader>
+      );
+    }
+    return (
+      <ApplicationListItemHeader modifiers="discussion-thread-list">
+        {this.props.children}
+      </ApplicationListItemHeader>
     );
   }
 }

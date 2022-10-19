@@ -8,9 +8,11 @@ import Toolbar from "./application/toolbar";
 import { DiscussionType } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 import DiscussionThreads from "./application/discussion-threads";
-import CurrentThread from "./application/current-thread";
+import DiscussionCurrentThread from "./application/discussion-current-thread";
 import Button from "~/components/general/button";
 import "~/sass/elements/link.scss";
+import { AnyActionType } from "../../../actions/index";
+import DiscussionSubscribedThreads from "./application/discussion-subscribed-threads";
 
 /**
  * DiscussionApplicationState
@@ -68,8 +70,13 @@ class DiscussionApplication extends React.Component<
           primaryOption={primaryOption}
           toolbar={toolbar}
         >
-          <DiscussionThreads />
-          <CurrentThread />
+          {!this.props.discussion.subscribedThreadOnly && <DiscussionThreads />}
+
+          {this.props.discussion.subscribedThreadOnly && (
+            <DiscussionSubscribedThreads />
+          )}
+
+          <DiscussionCurrentThread />
         </ApplicationPanel>
         {primaryOptionMobile}
       </>
@@ -92,7 +99,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

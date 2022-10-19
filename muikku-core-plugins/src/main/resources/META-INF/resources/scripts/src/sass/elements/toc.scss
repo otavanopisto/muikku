@@ -115,6 +115,10 @@
   border-color: $color-assignment;
 }
 
+.toc__item--journal {
+  border-color: $color-tertiary;
+}
+
 .toc__item--submitted {
   .toc__icon {
     background: $color-submitted;
@@ -134,10 +138,17 @@
   }
 }
 
-.toc__section-container--view-restricted .toc__section-title,
-.toc__item--view-restricted {
+.toc__section-container--view-restricted-to-logged-in .toc__section-title,
+.toc__item--view-restricted-to-logged-in {
   .toc__icon {
     background: $color-view-restricted;
+  }
+}
+
+.toc__section-container--view-restricted-to-members .toc__section-title,
+.toc__item--view-restricted-to-members {
+  .toc__icon {
+    background: $color-tertiary;
   }
 }
 

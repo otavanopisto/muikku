@@ -15,6 +15,11 @@
     display: none;
   }
 
+  .content-panel__item .material-page,
+  .content-panel__chapter .content-panel__chapter-title {
+    border: 1px solid $color-default;
+  }
+
   .navbar,
   .application-panel__actions {
     position: relative;

@@ -51,7 +51,7 @@
 
 .application-list__header--discussion {
   align-items: center;
-  display: inline-flex;
+  display: flex;
   margin-bottom: 0;
   margin-left: 10px;
 
@@ -99,6 +99,12 @@
   }
 }
 
+.application-list__footer {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+}
+
 .application-list__footer--organization {
   align-items: center;
   display: flex;
@@ -107,6 +113,21 @@
 
 .application-list__title {
   @include mainfunction-subpanel-title;
+
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.application-list__title-aside {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .application-list__header-icon {
@@ -662,10 +683,7 @@
 .application-list__item-header {
   align-items: center;
   display: flex;
-  flex-basis: auto;
   flex-flow: row wrap;
-  flex-grow: 1;
-  flex-shrink: 1;
 }
 
 .application-list__item-content-header {
@@ -708,7 +726,10 @@
 }
 
 .application-list__item-footer-content-main {
+  align-items: center;
+  display: flex;
   flex-basis: 100%;
+  flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 0;
   font-size: 0.8125rem;
@@ -720,6 +741,10 @@
     flex-shrink: 1;
     padding: 0;
   }
+}
+
+.application-list__item-footer-meta {
+  margin: 0 10px 0 0;
 }
 
 .application-list__item-date {
@@ -737,6 +762,8 @@
 }
 
 .application-list__item-header-main {
+  align-items: center;
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -776,38 +803,6 @@
   }
 }
 
-.application-list__item-header-main-content--journal-entry-creator {
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 0 0 0 15px;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: 1.125rem;
-    font-weight: 400;
-  }
-}
-
-.application-list__item-header-main-content--journal-entry-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: 1.25rem;
-    font-weight: 400;
-  }
-}
-
-.application-list__item-header-main-content--journal-entry-title-in-studies {
-  font-size: 0.875rem;
-  font-weight: 600;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: 1rem;
-    font-weight: 400;
-    padding: 0 20px 0 0;
-  }
-}
-
 .application-list__item-header-aside {
   flex-basis: auto;
   flex-grow: 0;
@@ -825,11 +820,62 @@
 }
 
 // Journal
+.application-list__item-header-main-content--journal-entry-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
+    font-weight: 400;
+    padding: 0 10px 0 0;
+  }
+}
+
+.application-list__item-header-main-content--journal-entry-title-in-studies {
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1rem;
+    font-weight: 400;
+    padding: 0 20px 0 0;
+  }
+}
+
+.application-list__header--journal {
+  border-top: 3px solid $color-default-item-separator-border;
+  padding: 15px 0 0;
+}
+
 .application-list__item-header--journal-entry {
+  cursor: pointer;
   flex-flow: row wrap;
+  margin: 0 0 15px;
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row nowrap;
+  }
+}
+
+.application-list__item-header--journal-comment {
+  flex-flow: row wrap;
+  margin: 0 0 15px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+}
+
+.application-list__item-header-main-content--journal-entry-creator,
+.application-list__item-header-main-content--journal-comment-creator {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0 0 0 15px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    font-weight: 400;
   }
 }
 
@@ -841,7 +887,14 @@
   }
 }
 
+.application-list__item-body--journal-comment {
+  background: lighten($color-tertiary, 30%);
+  border-radius: 3px;
+  padding: 5px 20px;
+}
+
 .application-list__item-content-body--journal-entry,
+.application-list__item-content-body--journal-comment,
 .application-list__item-content-body--discussion {
   padding: 0;
 }
@@ -851,8 +904,12 @@
   margin: 10px 0 0;
 }
 
-// User
+.application-list__item-footer--journal-comment {
+  flex-flow: row wrap;
+  margin: 10px 0;
+}
 
+// User
 .application-list__item-content-aside--user {
   padding: 0 16px 0 0;
 }
@@ -869,7 +926,7 @@
   padding: 10px 0;
 }
 
-// Discussion
+// Workspace users
 .application-list__header--workspace-users {
   padding: 10px;
 
@@ -896,6 +953,13 @@
 }
 
 .application-list__item-header--discussion {
+  justify-content: space-between;
+  margin: 0 0 10px;
+}
+
+.application-list__item-header--discussion-thread-list {
+  font-size: 1.1875rem;
+  justify-content: space-between;
   margin: 0 0 10px;
 }
 
@@ -1021,11 +1085,6 @@
   }
 }
 
-.application-list__item-header--communicator-message-thread {
-  align-items: flex-start;
-  flex-direction: column;
-}
-
 .application-list__item:first-child {
   .application-list__item-header--communicator-message-thread {
     background-color: $color-message-open-header-background;
@@ -1040,8 +1099,7 @@
   padding: 10px;
 }
 
-// Coursepicker - TODO: these should be moved to course.scss ?
-
+// Coursepicker
 .application-list__item-header--course {
   cursor: pointer;
   padding: 10px 0;

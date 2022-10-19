@@ -203,6 +203,7 @@ export type WorkspaceJournalListType = Array<WorkspaceJournalType>;
  */
 export interface WorkspaceJournalsType {
   journals: WorkspaceJournalListType;
+  currentJournal?: WorkspaceJournalType;
   hasMore: boolean;
   userEntityId?: number;
   state: WorkspacesStateType;
@@ -624,15 +625,24 @@ export interface MaterialContentNodeProducerType {
 }
 
 /**
+ * MaterialViewRestriction
+ */
+export enum MaterialViewRestriction {
+  NONE = "NONE",
+  LOGGED_IN = "LOGGED_IN",
+  WORKSPACE_MEMBERS = "WORKSPACE_MEMBERS",
+}
+
+/**
  * MaterialContentNodeType
  */
 export interface MaterialContentNodeType {
   title: string;
   license: string;
-  viewRestrict: string;
+  viewRestrict: MaterialViewRestriction;
   html: string;
   contentType: string;
-
+  contentHiddenForUser: boolean;
   //Standard Fields (only available when loaded through materials rest endpoint)
   id?: number;
 
@@ -642,7 +652,7 @@ export interface MaterialContentNodeType {
   workspaceMaterialId?: number;
   materialId?: number;
   level?: number;
-  assignmentType?: "EXERCISE" | "EVALUATED";
+  assignmentType?: "EXERCISE" | "EVALUATED" | "JOURNAL";
   correctAnswers?: MaterialCorrectAnswersType;
   hidden?: boolean;
   parentId?: number;

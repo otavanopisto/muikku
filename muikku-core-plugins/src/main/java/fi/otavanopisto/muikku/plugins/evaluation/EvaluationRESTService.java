@@ -2,15 +2,20 @@ package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -19,43 +24,66 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceAssessment;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGrade;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGradingScale;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -63,7 +91,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @RequestScoped
 @Stateful
 @Produces("application/json")
-@Path("/workspace")
+@Path("/evaluation")
 @RestCatchSchoolDataExceptions
 public class EvaluationRESTService extends PluginRESTService {
 
@@ -81,9 +109,6 @@ public class EvaluationRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
-
-  @Inject
-  private UserController userController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -108,9 +133,18 @@ public class EvaluationRESTService extends PluginRESTService {
   
   @Inject
   private GuiderController guiderController;
+
+  @Inject
+  private UserController userController;
+
+  @Inject
+  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
   
   @Inject
   private WorkspaceRestModels workspaceRestModels;
+
+  @Inject
+  private ActivityLogController activityLogController;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/activity")
@@ -154,131 +188,6 @@ public class EvaluationRESTService extends PluginRESTService {
     GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = workspaceRestModels.toRestModel(activity, assessmentStates);
 
     return Response.ok(guiderStudentWorkspaceActivityRestModel).build();
-  }
-
-  @PUT
-  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessments/{EVALUATIONID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateWorkspaceAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTID") String studentId, @PathParam("EVALUATIONID") String workspaceAssesmentId, WorkspaceAssessment payload) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST)
-        .entity(String.format("Malformed student identifier %s", studentId))
-        .build();
-    }
-    
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND)
-        .entity(String.format("Could not find workspace entity %d", workspaceEntityId))
-        .build();
-    }
-    
-    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-
-    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
-    if (workspaceStudentEntity == null) {
-      return Response.status(Status.NOT_FOUND)
-        .entity(String.format("Could not find workspace student entity %s from workspace entity %d", studentIdentifier, workspaceEntityId))
-        .build();
-    }
-    
-    SchoolDataIdentifier workspaceAssesmentIdentifier = SchoolDataIdentifier.fromId(workspaceAssesmentId);
-    if (workspaceAssesmentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST)
-        .entity(String.format("Malformed workspace assessment identifier %s", workspaceAssesmentIdentifier))
-        .build();
-    }
-    
-    fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment workspaceAssessment = gradingController.findWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
-    if (workspaceAssessment == null) {
-      return Response.status(Status.NOT_FOUND)
-        .entity(String.format("Could not find workspace assessment %s from workspace entity %d, student identifer %s", workspaceAssesmentId, workspaceEntityId, studentIdentifier))
-        .build(); 
-    }
-
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.EVALUATE_USER, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    if (payload.getEvaluated() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("evaluated is missing").build(); 
-    }
-    
-    if (payload.getAssessorEntityId() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("assessorEntityId is missing").build(); 
-    }
-    
-    UserEntity assessor = userEntityController.findUserEntityById(payload.getAssessorEntityId());
-    if (assessor == null) {
-      return Response.status(Status.BAD_REQUEST).entity("assessor is invalid").build(); 
-    }
-    
-    User assessingUser = userController.findUserByUserEntityDefaults(assessor);
-    if (assessingUser == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Could not find assessor from school data source").build(); 
-    }
-
-    if (payload.getGradeSchoolDataSource() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("gradeSchoolDataSource is missing").build(); 
-    }
-
-    GradingScale gradingScale = gradingController.findGradingScale(payload.getGradingScaleSchoolDataSource(), payload.getGradingScaleIdentifier());
-    if (gradingScale == null) {
-      return Response.status(Status.BAD_REQUEST).entity("gradingScale is invalid").build(); 
-    }
-    
-    if (payload.getGradeIdentifier() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("gradeIdentifier is missing").build(); 
-    }
-
-    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, payload.getGradeSchoolDataSource(), payload.getGradeIdentifier());
-    if (grade == null) {
-      return Response.status(Status.BAD_REQUEST).entity("grade is invalid").build(); 
-    }
-    
-    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceStudent = workspaceController.findWorkspaceUser(workspaceStudentEntity);
-    if (workspaceStudent == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR)
-        .entity(String.format("Failed to get workspace student for workspace student entity %d from school data source", workspaceStudentEntity.getId()))
-        .build(); 
-    }
-    
-    Date evaluated = payload.getEvaluated();
-    UserEntity student = userEntityController.findUserEntityByUserIdentifier(workspaceStudent.getUserIdentifier());
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
-    // WorkspaceSubject
-    
-    SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceSubjectIdentifier());
-    WorkspaceSubject workspaceSubject = workspace.getSubjects().stream()
-      .filter(workspaceSubject_ -> workspaceSubject_.getIdentifier().equals(workspaceSubjectIdentifier))
-      .findFirst()
-      .orElse(null);
-
-    if (workspaceSubject == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment assessment =  gradingController.updateWorkspaceAssessment(
-        workspaceAssesmentIdentifier,
-        workspaceStudent,
-        workspaceSubject,
-        assessingUser,
-        grade,
-        payload.getVerbalAssessment(),
-        evaluated);
-    
-    if (student != null && workspace != null && assessment != null) {
-      boolean multiSubjectWorkspace = workspace.getSubjects().size() > 1;
-      evaluationController.sendAssessmentNotification(workspaceEntity, workspaceSubject, assessment, assessor, student, workspace, grade.getName(), multiSubjectWorkspace);
-    }
-    
-    return Response.ok(createRestModel(workspaceEntity, assessment)).build();
   }
   
   @GET
@@ -341,171 +250,777 @@ public class EvaluationRESTService extends PluginRESTService {
     return Response.ok(createRestModel(result.toArray(new fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation[0]))).build();
   }
 
-  @GET
-  @Path("/users/{USERENTITYID}/materials/{WORKSPACEMATERIALID}/evaluation")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response findWorkspaceMaterialEvaluation(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    Long currentUserEntityId = sessionController.getLoggedUserEntity().getId();
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION) && !currentUserEntityId.equals(userEntityId)) {
+  @DELETE
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/workspaceassessment/{IDENTIFIER}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("IDENTIFIER") String identifier) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation workspaceMaterialEvaluation =
-        evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-    if (workspaceMaterialEvaluation == null) {
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    return Response.ok(createRestModel(workspaceMaterialEvaluation)).build();
+    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+    if (workspaceUser == null) {
+      logger.warning(String.format("Workspace user for workspaceUserEntityId %d not found", workspaceUserEntityId));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspaceEntity == null || userSchoolDataIdentifier == null || workspace == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(identifier);
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+    SchoolDataIdentifier studentIdentifier = userSchoolDataIdentifier.schoolDataIdentifier();
+
+    gradingController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssessmentIdentifier);
+    
+    return Response.noContent().build();
   }
-  
+
+  @DELETE
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/supplementationrequest/{ID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteSupplementationRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ID") Long supplementationRequestId) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    SupplementationRequest supplementationRequest = evaluationController.findSupplementationRequestById(supplementationRequestId);
+    if (supplementationRequest == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!supplementationRequest.getStudentEntityId().equals(studentEntity.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Student mismatch").build();
+    }
+    if (!supplementationRequest.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Workspace mismatch").build();
+    }
+    evaluationController.deleteSupplementationRequest(supplementationRequest);
+
+    return Response.noContent().build();
+  }
+
   @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response findWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialEvaluationId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/events")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaceEvents(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
     
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
+    // Entities and access check (ACCESS_EVALUATION or own)
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("workspaceMaterial not found").build();
-    }
-
-    WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    if (rootFolder == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
-    
-    if (!workspaceEntity.getId().equals(rootFolder.getWorkspaceEntityId())) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluation(workspaceMaterialEvaluationId);
-    if (workspaceMaterialEvaluation == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    if (!workspaceMaterialEvaluation.getWorkspaceMaterialId().equals(workspaceMaterial.getId())) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-
-    if (!sessionController.getLoggedUserEntity().getId().equals(workspaceMaterialEvaluation.getStudentEntityId())) {
-      if (!sessionController.hasWorkspacePermission(EvaluationResourcePermissionCollection.EVALUATION_FINDWORKSPACEMATERIALEVALUATION, workspaceEntity)) {
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      if (!sessionController.getLoggedUserEntity().getId().equals(studentEntity.getId())) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
+    UserEntityName studentName = userEntityController.getName(studentEntity);
     
-    return Response.ok(createRestModel(workspaceMaterialEvaluation)).build();
+    // Result object
+    
+    List<RestEvaluationEvent> events = new ArrayList<RestEvaluationEvent>();
+    
+    
+    // Cancelled assessment request
+    
+    List<AssessmentRequestCancellation> assessmentRequestCancellations = evaluationController.listAssessmentRequestCancellationsByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
+    
+    for (AssessmentRequestCancellation assessmentRequestCancellation : assessmentRequestCancellations) {
+        
+      RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setWorkspaceSubjectIdentifier(null);
+      event.setStudent(studentName.getDisplayName());
+      event.setAuthor(studentName.getDisplayName());
+      event.setDate(assessmentRequestCancellation.getCancellationDate());
+      event.setIdentifier(workspaceUserEntityId.toString());
+      event.setText(null);
+      event.setType(RestEvaluationEventType.EVALUATION_REQUEST_CANCELLED);
+      events.add(event);
+    }
+    
+    // Assessments
+    
+    List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(
+        workspaceEntity.getDataSource().getIdentifier(), 
+        workspaceEntity.getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+    workspaceAssessments.sort(Comparator.comparing(WorkspaceAssessment::getDate));
+    Set<SchoolDataIdentifier> seenWorkspaceSubjects = new HashSet<>();
+    for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
+    
+      // More data from Pyramus (urgh)
+      
+      User assessor = userController.findUserByIdentifier(workspaceAssessment.getAssessingUserIdentifier());
+      SchoolDataIdentifier gradingScaleIdentifier = workspaceAssessment.getGradingScaleIdentifier();
+      GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
+      SchoolDataIdentifier gradeIdentifier = workspaceAssessment.getGradeIdentifier();
+      GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+      SchoolDataIdentifier workspaceSubjectIdentifier = workspaceAssessment.getWorkspaceSubjectIdentifier();
+      
+      // Event
+      
+      RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setWorkspaceSubjectIdentifier(workspaceSubjectIdentifier.toId());
+      event.setStudent(studentName.getDisplayName());
+      event.setAuthor(assessor.getDisplayName());
+      event.setDate(workspaceAssessment.getDate());
+      event.setGrade(gradingScaleItem.getName());
+      // TODO Why do grade and scale identifiers lack source?  
+      event.setGradeIdentifier(String.format("PYRAMUS-%s@PYRAMUS-%s", gradingScale.getIdentifier(), gradingScaleItem.getIdentifier()));
+      event.setIdentifier(workspaceAssessment.getIdentifier().toId());
+      event.setText(workspaceAssessment.getVerbalAssessment());
+      // subseequent workspace assessments are always considered improved grades (#6213: if passing)
+      if (gradingScaleItem.isPassingGrade() && seenWorkspaceSubjects.contains(workspaceAssessment.getWorkspaceSubjectIdentifier())) {
+        event.setType(RestEvaluationEventType.EVALUATION_IMPROVED);
+      }
+      else {
+        event.setType(gradingScaleItem.isPassingGrade() ? RestEvaluationEventType.EVALUATION_PASS : RestEvaluationEventType.EVALUATION_FAIL);
+      }
+      events.add(event);
+      
+      if (workspaceAssessment.getWorkspaceSubjectIdentifier() != null) {
+        seenWorkspaceSubjects.add(workspaceAssessment.getWorkspaceSubjectIdentifier());
+      }
+    }
+    
+    // Supplementation requests
+    
+    List<SupplementationRequest> supplementationRequests = evaluationController.listSupplementationRequestsByStudentAndWorkspaceAndArchived(
+        studentEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
+    for (SupplementationRequest supplementationRequest : supplementationRequests) {
+      
+      // More data from Pyramus (urgh)
+      
+      UserEntity assessorEntity = userEntityController.findUserEntityById(supplementationRequest.getUserEntityId());
+      SchoolDataIdentifier assessorIdentifier = assessorEntity.defaultSchoolDataIdentifier();
+      User assessor = userController.findUserByIdentifier(assessorIdentifier);
+      
+      RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setWorkspaceSubjectIdentifier(supplementationRequest.getWorkspaceSubjectIdentifier());
+      event.setStudent(studentName.getDisplayName());
+      event.setAuthor(assessor.getDisplayName());
+      event.setDate(supplementationRequest.getRequestDate());
+      event.setIdentifier(supplementationRequest.getId().toString());
+      event.setText(supplementationRequest.getRequestText());
+      event.setType(RestEvaluationEventType.SUPPLEMENTATION_REQUEST);
+      events.add(event);
+    }
+    
+    // Evaluation requests
+    
+    List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
+        workspaceEntity.getDataSource().getIdentifier(), 
+        workspaceEntity.getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
+        true);
+    for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
+      RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setWorkspaceSubjectIdentifier(null);
+      event.setStudent(studentName.getDisplayName());
+      event.setAuthor(studentName.getDisplayName());
+      event.setDate(assessmentRequest.getDate());
+      event.setIdentifier(assessmentRequest.getIdentifier());
+      event.setText(assessmentRequest.getRequestText());
+      event.setType(RestEvaluationEventType.EVALUATION_REQUEST);
+      events.add(event);
+    }
+    
+    // Sort and return
+    
+    events.sort(Comparator.comparing(RestEvaluationEvent::getDate));
+    return Response.ok(events).build();
   }
-  
-  @PUT
-  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response updateWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialEvaluationId, WorkspaceMaterialEvaluation payload) {
+
+  @POST
+  @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/assessment")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceMaterialAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, RestAssessmentWithAudio payload) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
-    
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    if (!sessionController.hasWorkspacePermission(EvaluationResourcePermissionCollection.EVALUATION_UPDATEWORKSPACEMATERIALEVALUATION, workspaceEntity)) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
+    // User entity
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace material
+
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("workspaceMaterial not found").build();
+      return Response.status(Status.BAD_REQUEST).build();
     }
+    
+    if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
+      // Grade is required for evaluated assignments, but not required for exercises
+      if (payload.getGradingScaleIdentifier() == null || payload.getGradeIdentifier() == null) {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
+    
+    // Workspace material evaluation
+    
+    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
 
-    WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    if (rootFolder == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
+    // Grade
     
-    if (!workspaceEntity.getId().equals(rootFolder.getWorkspaceEntityId())) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
+    SchoolDataIdentifier gradingScaleIdentifier = payload.getGradingScaleIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradingScaleIdentifier()) : null;
+    GradingScale gradingScale = gradingScaleIdentifier != null ? gradingController.findGradingScale(gradingScaleIdentifier) : null;
+    SchoolDataIdentifier gradeIdentifier = payload.getGradeIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradeIdentifier()) : null;
+    GradingScaleItem gradingScaleItem = (gradingScale != null && gradeIdentifier != null) ? gradingController.findGradingScaleItem(gradingScale, gradeIdentifier) : null;
+
+    // Assessor
     
-    fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluation(workspaceMaterialEvaluationId);
+    SchoolDataIdentifier assessorIdentifier = SchoolDataIdentifier.fromId(payload.getAssessorIdentifier());
+    User assessingUser = userController.findUserByIdentifier(assessorIdentifier);
+    UserEntity assessor = userEntityController.findUserEntityByUser(assessingUser);
+    
+    // Create/update material assessment
+    
     if (workspaceMaterialEvaluation == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      workspaceMaterialEvaluation = evaluationController.createWorkspaceMaterialEvaluation(
+          userEntity,
+          workspaceMaterial,
+          gradingScale,
+          gradingScaleItem,
+          assessor,
+          payload.getAssessmentDate(),
+          payload.getVerbalAssessment());
+    }
+    else {
+      workspaceMaterialEvaluation = evaluationController.updateWorkspaceMaterialEvaluation(
+          workspaceMaterialEvaluation,
+          gradingScale,
+          gradingScaleItem,
+          assessor,
+          payload.getAssessmentDate(),
+          payload.getVerbalAssessment());
     }
     
-    if (!workspaceMaterialEvaluation.getWorkspaceMaterialId().equals(workspaceMaterial.getId())) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
+    evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
+
+    // Remove possible workspace assignment supplementation request
     
-    if (payload.getEvaluated() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("evaluated is missing").build(); 
-    }
-    
-    if (payload.getAssessorEntityId() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("assessorEntityId is missing").build(); 
-    }
-    
-    if (payload.getGradingScaleSchoolDataSource() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("gradingScaleSchoolDataSource is missing").build(); 
-    }
-    
-    if (payload.getGradingScaleIdentifier() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("gradingScaleIdentifier is missing").build(); 
-    }
-    
-    if (payload.getGradeSchoolDataSource() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("gradeSchoolDataSource is missing").build(); 
-    }
-    
-    if (payload.getGradeIdentifier() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("gradeIdentifier is missing").build(); 
+    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(userEntityId, workspaceMaterialId, Boolean.FALSE);
+    if (supplementationRequest != null) {
+      evaluationController.deleteSupplementationRequest(supplementationRequest);
     }
 
-    UserEntity assessor = userEntityController.findUserEntityById(payload.getAssessorEntityId());
-    UserEntity student = userEntityController.findUserEntityById(payload.getStudentEntityId());
-    GradingScale gradingScale = gradingController.findGradingScale(payload.getGradingScaleSchoolDataSource(), payload.getGradingScaleIdentifier());
-    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, payload.getGradeSchoolDataSource(), payload.getGradeIdentifier());
-
-    if (assessor == null) {
-      return Response.status(Status.BAD_REQUEST).entity("assessor is invalid").build(); 
-    }
+    // WorkspaceMaterialEvaluation to RestAssessment
     
-    if (student == null) {
-      return Response.status(Status.BAD_REQUEST).entity("student is invalid").build(); 
-    }
+    List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(workspaceMaterialEvaluation);
+    List<RestAssignmentEvaluationAudioClip> audioAssessments = evaluationAudioClips.stream()
+        .map(audioClip -> new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
+        .collect(Collectors.toList());
     
-    if (gradingScale == null) {
-      return Response.status(Status.BAD_REQUEST).entity("gradingScale is invalid").build(); 
-    }
-    
-    if (grade == null) {
-      return Response.status(Status.BAD_REQUEST).entity("grade is invalid").build(); 
-    }
-    
-    Date evaluated = payload.getEvaluated();
-    
-    workspaceMaterialEvaluation = evaluationController.updateWorkspaceMaterialEvaluation(workspaceMaterialEvaluation, 
-        gradingScale, 
-        grade, 
-        assessor, 
-        evaluated,
-        payload.getVerbalAssessment());
-    
-    return Response.ok(createRestModel(workspaceMaterialEvaluation)).build();
+    RestAssessmentWithAudio restAssessment = new RestAssessmentWithAudio(
+        workspaceMaterialEvaluation.getId().toString(),
+        assessorIdentifier.toId(),
+        gradingScaleIdentifier != null ? gradingScaleIdentifier.toId() : null,
+        gradeIdentifier != null ? gradeIdentifier.toId() : null,
+        workspaceMaterialEvaluation.getVerbalAssessment(),
+        workspaceMaterialEvaluation.getEvaluated(),
+        gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
+        audioAssessments);
+    return Response.ok(restAssessment).build();
   }
   
-  private List<WorkspaceMaterialEvaluation> createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation... entries) {
-    List<WorkspaceMaterialEvaluation> result = new ArrayList<>();
+  @POST
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/supplementationrequest")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceSupplementationRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestSupplementationRequest payload) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (payload.getId() != null) {
+      return Response.status(Status.BAD_REQUEST).entity("POST with payload identifier").build();
+    }
+    if (StringUtils.isBlank(payload.getWorkspaceSubjectIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("Payload missing workspaceSubjectIdentifier").build();
+    }
+
+    SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceSubjectIdentifier());
+    if (workspaceSubjectIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceSubjectIdentifier").build();
+    }
+
+    // Entities
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    
+    if (workspace != null) {
+      if (!workspace.getSubjects().stream().anyMatch(workspaceSubject -> workspaceSubjectIdentifier.equals(workspaceSubject.getIdentifier()))) {
+        return Response.status(Status.BAD_REQUEST).entity("No such workspaceSubjectIdentifier in this workspace").build();
+      }
+    } else {
+      return Response.status(Status.NOT_FOUND).entity("Workspace not found").build();
+    }
+    
+    // Creation
+    
+    SupplementationRequest supplementationRequest = evaluationController.createSupplementationRequest(
+      userEntity.getId(),
+      studentEntity.getId(),
+      workspaceEntity.getId(),
+      workspaceSubjectIdentifier,
+      null, // workspace material
+      payload.getRequestDate(),
+      payload.getRequestText());
+    
+    // Notifications (evaluationController.createSupplementationRequest has already done most of them, though)
+
+    activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.EVALUATION_GOTINCOMPLETED, workspaceEntity.getId(), null);
+
+    return Response.ok(supplementationRequest).build();
+  }
+  
+  @PUT
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/supplementationrequest")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateWorkspaceSupplementationRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestSupplementationRequest payload) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (payload.getId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("PUT without payload identifier").build();
+    }
+    
+    // Entities
+    
+    SupplementationRequest supplementationRequest = evaluationController.findSupplementationRequestById(payload.getId());
+    if (supplementationRequest == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceUserEntity").build();
+    }
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    // Update
+    
+    supplementationRequest = evaluationController.updateSupplementationRequest(supplementationRequest,
+      userEntity.getId(),
+      payload.getRequestDate(),
+      payload.getRequestText());
+
+    return Response.ok(supplementationRequest).build();
+  }
+
+  @POST
+  @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/supplementationrequest")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceMaterialSupplementationRequest(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, RestSupplementationRequest payload) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // User entity
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace material
+
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace material supplementation request
+    
+    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(userEntityId, workspaceMaterialId, Boolean.FALSE);
+
+    // Create/update workspace material supplementation request
+    
+    if (supplementationRequest == null) {
+      supplementationRequest = evaluationController.createSupplementationRequest(
+          payload.getUserEntityId(),
+          payload.getStudentEntityId(),
+          null, // workspaceEntityId
+          null, // workspaceSubjectIdentifier
+          payload.getWorkspaceMaterialId(),
+          payload.getRequestDate(),
+          payload.getRequestText());
+    }
+    else {
+      supplementationRequest = evaluationController.updateSupplementationRequest(
+          supplementationRequest,
+          payload.getUserEntityId(),
+          payload.getRequestDate(),
+          payload.getRequestText());
+    }
+    
+    // Delete possible workspace material assessment
+    
+    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+    if (workspaceMaterialEvaluation != null) {
+      evaluationController.deleteWorkspaceMaterialEvaluation(workspaceMaterialEvaluation);
+    }
+    
+    // SupplementationRequest to RestSupplementationRequest
+    
+    RestSupplementationRequest restSupplementationRequest = new RestSupplementationRequest(
+        supplementationRequest.getId(),
+        supplementationRequest.getUserEntityId(),
+        supplementationRequest.getStudentEntityId(),
+        supplementationRequest.getWorkspaceEntityId(),
+        supplementationRequest.getWorkspaceSubjectIdentifier(),
+        supplementationRequest.getWorkspaceMaterialId(),
+        supplementationRequest.getRequestDate(),
+        supplementationRequest.getRequestText());
+
+    return Response.ok(restSupplementationRequest).build();
+  }
+
+  @POST
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestWorkspaceAssessment payload) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (!StringUtils.isBlank(payload.getIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("POST with payload identifier").build();
+    }
+
+    // Entities and identifiers
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+    if (workspaceUser == null) {
+      logger.warning(String.format("Workspace user for workspaceUserEntityId %d not found", workspaceUserEntityId));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspaceEntity == null || userSchoolDataIdentifier == null || workspace == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+    UserEntity studentEntity = userSchoolDataIdentifier.getUserEntity();
+
+    // WorkspaceSubject
+    
+    SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceSubjectIdentifier());
+    WorkspaceSubject workspaceSubject = workspace.getSubjects().stream()
+      .filter(workspaceSubject_ -> workspaceSubject_.getIdentifier().equals(workspaceSubjectIdentifier))
+      .findFirst()
+      .orElse(null);
+
+    if (workspaceSubject == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Assessor
+    
+    SchoolDataIdentifier assessorIdentifier = SchoolDataIdentifier.fromId(payload.getAssessorIdentifier());
+    User assessingUser = userController.findUserByIdentifier(assessorIdentifier);
+    UserEntity assessingUserEntity = assessingUser == null ? null : userEntityController.findUserEntityByUser(assessingUser);
+    
+    // Grade
+    
+    SchoolDataIdentifier gradingScaleIdentifier = SchoolDataIdentifier.fromId(payload.getGradingScaleIdentifier());
+    GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
+    SchoolDataIdentifier gradeIdentifier = SchoolDataIdentifier.fromId(payload.getGradeIdentifier());
+    GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+
+    // Create workspace assessment
+    
+    WorkspaceAssessment workspaceAssessment = gradingController.createWorkspaceAssessment(
+        workspaceIdentifier.getDataSource(),
+        workspaceUser,
+        workspaceSubject,
+        assessingUser,
+        gradingScaleItem,
+        payload.getVerbalAssessment(),
+        payload.getAssessmentDate());
+    
+    // Notification
+    
+    boolean multiSubjectWorkspace = workspace.getSubjects().size() > 1;
+    evaluationController.sendAssessmentNotification(workspaceEntity, workspaceSubject, workspaceAssessment, assessingUserEntity, studentEntity, workspace, gradingScaleItem.getName(), multiSubjectWorkspace);
+    
+    // Log workspace assessment event
+    if (gradingScaleItem.isPassingGrade()) {
+      activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.EVALUATION_GOTPASSED, workspaceEntity.getId(), null);
+    }
+    else {
+      activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.EVALUATION_GOTFAILED, workspaceEntity.getId(), null);
+    }
+    
+    // Back to rest
+    
+    RestWorkspaceAssessment restAssessment = new RestWorkspaceAssessment(
+        workspaceAssessment.getIdentifier().toId(),
+        workspaceAssessment.getWorkspaceSubjectIdentifier().toId(),
+        workspaceAssessment.getAssessingUserIdentifier().toId(),
+        workspaceAssessment.getGradingScaleIdentifier().toId(),
+        workspaceAssessment.getGradeIdentifier().toId(),
+        workspaceAssessment.getVerbalAssessment(),
+        workspaceAssessment.getDate(),
+        workspaceAssessment.getPassing());
+    return Response.ok(restAssessment).build();
+  }
+  
+  @PUT
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestWorkspaceAssessment payload) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (StringUtils.isBlank(payload.getIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("PUT without payload identifier").build();
+    }
+
+    // Entities and identifiers
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+    if (workspaceUser == null) {
+      logger.warning(String.format("Workspace user for workspaceUserEntityId %d not found", workspaceUserEntityId));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspaceEntity == null || userSchoolDataIdentifier == null || workspace == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(payload.getIdentifier());
+    
+    // WorkspaceSubject
+    
+    SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceSubjectIdentifier());
+    WorkspaceSubject workspaceSubject = workspace.getSubjects().stream()
+      .filter(workspaceSubject_ -> workspaceSubject_.getIdentifier().equals(workspaceSubjectIdentifier))
+      .findFirst()
+      .orElse(null);
+
+    if (workspaceSubject == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Assessor
+    
+    SchoolDataIdentifier assessorIdentifier = SchoolDataIdentifier.fromId(payload.getAssessorIdentifier());
+    User assessingUser = userController.findUserByIdentifier(assessorIdentifier);
+    
+    // Grade
+    
+    SchoolDataIdentifier gradingScaleIdentifier = SchoolDataIdentifier.fromId(payload.getGradingScaleIdentifier());
+    GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
+    SchoolDataIdentifier gradeIdentifier = SchoolDataIdentifier.fromId(payload.getGradeIdentifier());
+    GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+
+    // Update workspace assessment
+    
+    WorkspaceAssessment workspaceAssessment = gradingController.updateWorkspaceAssessment(
+        workspaceAssessmentIdentifier,
+        workspaceUser,
+        workspaceSubject,
+        assessingUser,
+        gradingScaleItem,
+        payload.getVerbalAssessment(),
+        payload.getAssessmentDate());
+    
+    // Back to rest
+    
+    RestWorkspaceAssessment restAssessment = new RestWorkspaceAssessment(
+        workspaceAssessment.getIdentifier().toId(),
+        workspaceAssessment.getWorkspaceSubjectIdentifier().toId(),
+        workspaceAssessment.getAssessingUserIdentifier().toId(),
+        workspaceAssessment.getGradingScaleIdentifier().toId(),
+        workspaceAssessment.getGradeIdentifier().toId(),
+        workspaceAssessment.getVerbalAssessment(),
+        workspaceAssessment.getDate(),
+        workspaceAssessment.getPassing());
+    return Response.ok(restAssessment).build();
+  }
+  
+  @GET
+  @Path("/compositeGradingScales")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listGrades() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    List<RestWorkspaceGradingScale> restGradingScales = new ArrayList<RestWorkspaceGradingScale>();
+    List<CompositeGradingScale> gradingScales = gradingController.listCompositeGradingScales();
+    for (CompositeGradingScale gradingScale : gradingScales) {
+      List<CompositeGrade> grades = gradingScale.getGrades(); 
+      List<RestWorkspaceGrade> restGrades = new ArrayList<RestWorkspaceGrade>();
+      for (CompositeGrade grade : grades) {
+        restGrades.add(new RestWorkspaceGrade(grade.getGradeName(), grade.getGradeIdentifier(), gradingScale.getSchoolDataSource()));
+      }
+      restGradingScales.add(new RestWorkspaceGradingScale(
+          gradingScale.getScaleName(),
+          gradingScale.getScaleIdentifier(),
+          gradingScale.getSchoolDataSource(),
+          restGrades,
+          gradingScale.isActive()));
+    }
+    return Response.ok(restGradingScales).build();
+  }
+
+  @GET
+  @Path("/compositeAssessmentRequests")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listAssessmentRequests(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
+    List<RestAssessmentRequest> restAssessmentRequests = new ArrayList<RestAssessmentRequest>();
+    if (workspaceEntityId == null) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
+      // List assessment requests by staff member
+      
+      SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+      List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByStaffMember(loggedUser);
+      for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
+        restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
+      }
+    }
+    else {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_EVALUATION, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
+      // List assessment requests by workspace
+      
+      List<String> workspaceStudentIdentifiers = new ArrayList<String>();
+      SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+
+      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
+      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+        workspaceStudentIdentifiers.add(workspaceUserEntity.getIdentifier());
+      }
+      
+      List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByWorkspace(workspaceIdentifier, workspaceStudentIdentifiers);
+      for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
+        restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
+      }
+    }
+    
+    return Response.ok(restAssessmentRequests).build();
+  }
+  
+  @PUT
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/evaluationrequestarchive")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response archiveWorkspaceAssessmentRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // #6006: Restore endpoint functionality to pre-state of botched fix #5940
+    
+    // Entities and identifiers
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    
+    // List all assessment requests by student X to course Y
+    
+    List<WorkspaceAssessmentRequest> requests = gradingController.listWorkspaceAssessmentRequests(
+        workspaceEntity.getDataSource().getIdentifier(),
+        workspaceEntity.getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
+        false);
+
+    // Mark each assessment request archived
+    // #5940 hard deleted only latest, and even failed to figure out the correct one
+    
+    if (CollectionUtils.isNotEmpty(requests)) {
+      for (WorkspaceAssessmentRequest request : requests) {
+        gradingController.updateWorkspaceAssessmentRequest(
+          request.getSchoolDataSource(),
+          request.getIdentifier(),
+          request.getWorkspaceUserIdentifier(),
+          request.getWorkspaceUserSchoolDataSource(),
+          workspaceEntity.getIdentifier(),
+          workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
+          request.getRequestText(),
+          request.getDate(),
+          Boolean.TRUE, // archived
+          request.getHandled());
+      }
+      
+      UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+      List<AssessmentRequestCancellation> assessmentRequestCancellations = evaluationController.listAssessmentRequestCancellationsByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
+      
+      for (AssessmentRequestCancellation cancellation : assessmentRequestCancellations) {
+        evaluationController.deleteAssessmentRequestCancellation(cancellation);
+      }
+      return Response.noContent().build();
+    }
+    return Response.status(Status.BAD_REQUEST).build();
+  }
+  
+  private List<RestWorkspaceMaterialEvaluation> createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation... entries) {
+    List<RestWorkspaceMaterialEvaluation> result = new ArrayList<>();
 
     for (fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation entry : entries) {
       result.add(createRestModel(entry));
@@ -514,7 +1029,7 @@ public class EvaluationRESTService extends PluginRESTService {
     return result;
   }
   
-  private WorkspaceMaterialEvaluation createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation evaluation) {
+  private RestWorkspaceMaterialEvaluation createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation evaluation) {
     Boolean passingGrade = null;
     String grade = null;
     String gradingScaleStr = null;
@@ -557,7 +1072,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(audioClip -> new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
         .collect(Collectors.toList());
     
-    return new WorkspaceMaterialEvaluation(
+    return new RestWorkspaceMaterialEvaluation(
         evaluation.getId(), 
         evaluation.getEvaluated(), 
         evaluation.getAssessorEntityId(), 
@@ -574,41 +1089,82 @@ public class EvaluationRESTService extends PluginRESTService {
         audioAssessments);
   }
   
-  private fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment createRestModel(WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment entry) {
-    UserEntity assessor = null;
-    if (entry.getAssessingUserIdentifier() != null) {
-      assessor =userEntityController.findUserEntityByUserIdentifier(entry.getAssessingUserIdentifier());
+  private RestAssessmentRequest toRestAssessmentRequest(CompositeAssessmentRequest compositeAssessmentRequest) {
+    Long assignmentsDone = 0L;
+    Long assignmentsTotal = 0L;
+    // Assignments total
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(compositeAssessmentRequest.getCourseIdentifier());
+    if (workspaceEntity == null) {
+      logger.severe(String.format("WorkspaceEntity for course %s not found", compositeAssessmentRequest.getCourseIdentifier()));
     }
-    
-    GradingScale gradingScale = null;
-    SchoolDataIdentifier identifier = entry.getGradingScaleIdentifier();
-    if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
-      gradingScale = gradingController.findGradingScale(identifier); 
-    }
-        
-    GradingScaleItem grade = null;
-    if (gradingScale != null) {
-      identifier = entry.getGradeIdentifier();
-      if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
-        grade = gradingController.findGradingScaleItem(gradingScale, identifier); 
+    else {
+      List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
+          workspaceEntity,
+          WorkspaceMaterialAssignmentType.EVALUATED);
+      assignmentsTotal = new Long(evaluatedAssignments.size());
+      // Assignments done by user
+      if (assignmentsTotal > 0) {
+        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(compositeAssessmentRequest.getUserIdentifier());            
+        if (userEntity == null) {
+          logger.severe(String.format("UserEntity not found for AssessmentRequest student %s not found", compositeAssessmentRequest.getUserIdentifier()));
+        }
+        else {
+          List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
+          replyStates.add(WorkspaceMaterialReplyState.FAILED);
+          replyStates.add(WorkspaceMaterialReplyState.PASSED);
+          replyStates.add(WorkspaceMaterialReplyState.SUBMITTED);
+          replyStates.add(WorkspaceMaterialReplyState.INCOMPLETE);
+          assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(userEntity.getId(), replyStates, evaluatedAssignments);
+        }
       }
     }
     
-    return new fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment(
-      entry.getIdentifier().toId(),
-      entry.getWorkspaceSubjectIdentifier().toId(),
-      entry.getDate(),
-      assessor != null ? assessor.getId() : null,
-      entry.getWorkspaceUserIdentifier().toId(),
-      entry.getGradingScaleIdentifier() == null ? null : entry.getGradingScaleIdentifier().getIdentifier(),
-      entry.getGradingScaleIdentifier() == null ? null : entry.getGradingScaleIdentifier().getDataSource(),
-      grade == null ? null : grade.getName(),
-      gradingScale == null ? null : gradingScale.getName(),
-      entry.getGradeIdentifier() == null ? null : entry.getGradeIdentifier().getIdentifier(),
-      entry.getGradeIdentifier() == null ? null : entry.getGradeIdentifier().getDataSource(),
-      entry.getVerbalAssessment(),
-      grade == null ? Boolean.FALSE : grade.isPassingGrade()
-    ); 
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(compositeAssessmentRequest.getCourseStudentIdentifier());
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(compositeAssessmentRequest.getUserIdentifier());
+    
+    // An active workspace supplementation request will override graded, passing, and evaluationDate
+    
+    Boolean passing = compositeAssessmentRequest.getPassing();
+    Date evaluationDate = compositeAssessmentRequest.getEvaluationDate();
+    Boolean graded = evaluationDate != null;
+    if (userEntity != null) {
+      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+          userEntity.getId(),
+          workspaceEntity.getId(),
+          Boolean.FALSE);
+      if (supplementationRequest != null && (evaluationDate == null || evaluationDate.before(supplementationRequest.getRequestDate()))) {
+        graded = Boolean.FALSE;
+        passing = Boolean.FALSE;
+        evaluationDate = supplementationRequest.getRequestDate();
+      }
+    }
+    
+    RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
+    restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
+    restAssessmentRequest.setWorkspaceUserIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toId());
+    restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
+    restAssessmentRequest.setAssessmentRequestDate(compositeAssessmentRequest.getAssessmentRequestDate());
+    restAssessmentRequest.setEvaluationDate(evaluationDate);
+    restAssessmentRequest.setPassing(passing);
+    restAssessmentRequest.setGraded(graded);
+    restAssessmentRequest.setAssignmentsDone(assignmentsDone);
+    restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
+    restAssessmentRequest.setEnrollmentDate(compositeAssessmentRequest.getCourseEnrollmentDate());
+    restAssessmentRequest.setFirstName(compositeAssessmentRequest.getFirstName());
+    restAssessmentRequest.setLastName(compositeAssessmentRequest.getLastName());
+    restAssessmentRequest.setStudyProgramme(compositeAssessmentRequest.getStudyProgramme());
+    restAssessmentRequest.setWorkspaceEntityId(workspaceEntity == null ? null : workspaceEntity.getId());
+    restAssessmentRequest.setWorkspaceName(compositeAssessmentRequest.getCourseName());
+    restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
+    restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    List<WorkspaceSubjectRestModel> subjects = workspace.getSubjects().stream()
+        .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
+        .collect(Collectors.toList());
+    restAssessmentRequest.setSubjects(subjects);
+    
+    return restAssessmentRequest;
   }
-  
+
 }

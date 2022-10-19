@@ -200,7 +200,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
               workspaceSet.map(async (workspace) => {
                 workspace.activity = <WorkspaceActivityType>(
                   await promisify(
-                    mApi().workspace.workspaces.students.activity.read(
+                    mApi().evaluation.workspaces.students.activity.read(
                       workspace.id,
                       user.id
                     ),

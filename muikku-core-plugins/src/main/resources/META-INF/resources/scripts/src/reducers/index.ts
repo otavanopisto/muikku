@@ -7,7 +7,6 @@ import { StatusType } from "./base/status";
 import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsType } from "./announcements";
 import { HOPSType } from "./main-function/hops";
-import { VOPSType } from "./main-function/vops";
 import { MessagesType } from "./main-function/messages";
 import { WorkspacesType } from "./workspaces";
 import {
@@ -31,6 +30,7 @@ import { OrganizationSummaryType } from "./organization/summary";
 import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
 import { Calendar } from "./main-function/calendar";
+import { JournalsState } from "./workspaces/journals";
 
 /**
  * StateType
@@ -47,7 +47,6 @@ export interface StateType {
   credentials?: CredentialsType;
   announcements?: AnnouncementsType;
   hops?: HOPSType;
-  vops?: VOPSType;
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesType;
@@ -67,4 +66,5 @@ export interface StateType {
   ceepos?: CeeposState;
   calendar?: Calendar;
   easyToUse?: EasyToUseFunctionState;
+  journals?: JournalsState;
 }

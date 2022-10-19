@@ -1,37 +1,51 @@
 package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
 import java.util.Date;
+import java.util.List;
 
-public class WorkspaceAssessment {
+public class RestWorkspaceMaterialEvaluation {
   
-  public WorkspaceAssessment() {
+  public RestWorkspaceMaterialEvaluation() {
   }
   
-  public WorkspaceAssessment(String identifier, String workspaceSubjectIdentifier, Date evaluated, Long assessorEntityId, String workspaceStudentId,
-      String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String grade, String gradingScale, String gradeIdentifier, 
-      String gradeSchoolDataSource, String verbalAssessment, Boolean passed) {
+  public RestWorkspaceMaterialEvaluation(
+      Long id,
+      Date evaluated, 
+      Long assessorEntityId, 
+      Long studentEntityId, 
+      Long workspaceMaterialId,
+      String gradingScaleIdentifier, 
+      String gradingScaleSchoolDataSource, 
+      String grade, 
+      String gradeIdentifier, 
+      String gradeSchoolDataSource, 
+      String gradingScale,
+      String verbalAssessment,
+      Boolean passed,
+      List<RestAssignmentEvaluationAudioClip> audioAssessments) {
     super();
-    this.identifier = identifier;
-    this.setWorkspaceSubjectIdentifier(workspaceSubjectIdentifier);
+    this.id = id;
     this.evaluated = evaluated;
-    this.workspaceStudentId = workspaceStudentId;
     this.assessorEntityId = assessorEntityId;
+    this.studentEntityId = studentEntityId;
+    this.workspaceMaterialId = workspaceMaterialId;
     this.gradingScaleIdentifier = gradingScaleIdentifier;
     this.gradingScaleSchoolDataSource = gradingScaleSchoolDataSource;
     this.grade = grade;
-    this.gradingScale = gradingScale;
     this.gradeIdentifier = gradeIdentifier;
     this.gradeSchoolDataSource = gradeSchoolDataSource;
+    this.gradingScale = gradingScale;
     this.verbalAssessment = verbalAssessment;
     this.passed = passed;
+    this.audioAssessments = audioAssessments;
   }
 
-  public String getIdentifier() {
-    return identifier;
+  public Long getId() {
+    return id;
   }
-  
-  public void setIdentifier(String identifier) {
-    this.identifier = identifier;
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public Date getEvaluated() {
@@ -48,6 +62,22 @@ public class WorkspaceAssessment {
 
   public void setAssessorEntityId(Long assessorEntityId) {
     this.assessorEntityId = assessorEntityId;
+  }
+
+  public Long getStudentEntityId() {
+    return studentEntityId;
+  }
+
+  public void setStudentEntityId(Long studentEntityId) {
+    this.studentEntityId = studentEntityId;
+  }
+
+  public Long getWorkspaceMaterialId() {
+    return workspaceMaterialId;
+  }
+  
+  public void setWorkspaceMaterialId(Long workspaceMaterialId) {
+    this.workspaceMaterialId = workspaceMaterialId;
   }
   
   public String getGradingScaleIdentifier() {
@@ -90,28 +120,20 @@ public class WorkspaceAssessment {
     this.verbalAssessment = verbalAssessment;
   }
 
-  public String getWorkspaceStudentId() {
-    return workspaceStudentId;
-  }
-  
-  public void setWorkspaceStudentId(String workspaceStudentId) {
-    this.workspaceStudentId = workspaceStudentId;
-  }
-  
-  public Boolean getPassed() {
-    return passed;
-  }
-
-  public void setPassed(Boolean passed) {
-    this.passed = passed;
-  }
-
   public String getGrade() {
     return grade;
   }
 
   public void setGrade(String grade) {
     this.grade = grade;
+  }
+
+  public Boolean getPassed() {
+    return passed;
+  }
+
+  public void setPassed(Boolean passed) {
+    this.passed = passed;
   }
 
   public String getGradingScale() {
@@ -122,25 +144,30 @@ public class WorkspaceAssessment {
     this.gradingScale = gradingScale;
   }
 
-  public String getWorkspaceSubjectIdentifier() {
-    return workspaceSubjectIdentifier;
+  public void addAudioAssessment(RestAssignmentEvaluationAudioClip audioAssessment) {
+    this.audioAssessments.add(audioAssessment);
   }
 
-  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
+  public List<RestAssignmentEvaluationAudioClip> getAudioAssessments() {
+    return audioAssessments;
   }
 
-  private String identifier;
-  private String workspaceSubjectIdentifier;
+  public void setAudioAssessments(List<RestAssignmentEvaluationAudioClip> audioAssessments) {
+    this.audioAssessments = audioAssessments;
+  }
+
+  private Long id;
   private Date evaluated;
-  private String workspaceStudentId;
   private Long assessorEntityId;
+  private Long studentEntityId;
+  private Long workspaceMaterialId;
   private String gradingScaleIdentifier;
   private String gradingScaleSchoolDataSource;
+  private String grade;
   private String gradeIdentifier;
   private String gradeSchoolDataSource;
-  private String grade;
   private String gradingScale;
   private String verbalAssessment;
   private Boolean passed;
+  private List<RestAssignmentEvaluationAudioClip> audioAssessments;
 }

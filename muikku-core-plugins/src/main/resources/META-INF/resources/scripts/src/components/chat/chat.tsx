@@ -22,8 +22,9 @@ import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
 import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/records/summary";
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
-import { getUserChatId } from "~/helper-functions/chat";
+import { getUserChatId, obtainNick } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
+import { BrowserTabNotification } from "~/util/browser-tab-notification";
 
 export type tabs = "ROOMS" | "PEOPLE";
 
@@ -173,6 +174,7 @@ const roleNode = document.querySelector('meta[name="muikku:role"]');
  */
 class Chat extends React.Component<IChatProps, IChatState> {
   private messagesListenerHandler: any = null;
+  private tabNotification = new BrowserTabNotification();
 
   /**
    * constructor
@@ -238,6 +240,18 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
 
   /**
+   * handleTabNotification sets notification on or off
+   * @param newTitle optional title message to show
+   */
+  handleTabNotification = (newTitle?: string) => {
+    if (newTitle) {
+      this.tabNotification.on(newTitle);
+    } else {
+      this.tabNotification.off();
+    }
+  };
+
+  /**
    * loadStudentCouncelors
    */
   async loadStudentCouncelors() {
@@ -251,41 +265,43 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
       const studentsGuidanceCouncelors: SummaryStudentsGuidanceCouncelorsType[] =
         [];
-      if (studentsUserGroups && studentsUserGroups.length) {
-        const councelGroups = studentsUserGroups.filter(
-          (studentsUserGroup) => studentsUserGroup.isGuidanceGroup == true
-        );
 
-        await Promise.all(
-          councelGroups.map(async (studentsUserGroup) => {
-            await promisify(
-              mApi().usergroup.groups.staffMembers.read(studentsUserGroup.id, {
-                properties:
-                  "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
-              }),
-              "callback"
-            )().then((result: SummaryStudentsGuidanceCouncelorsType[]) => {
-              result.forEach((studentsGuidanceCouncelor) => {
-                if (
-                  !studentsGuidanceCouncelors.some(
-                    (existingStudentCouncelor) =>
-                      existingStudentCouncelor.userEntityId ===
-                      studentsGuidanceCouncelor.userEntityId
-                  )
-                ) {
-                  studentsGuidanceCouncelors.push(studentsGuidanceCouncelor);
-                }
-              });
-            });
-          })
-        );
-      }
+      //   This is removed due to a request from councelors. Will be implemented later
 
-      studentsGuidanceCouncelors.sort((x, y) => {
-        const a = x.lastName.toUpperCase(),
-          b = y.lastName.toUpperCase();
-        return a == b ? 0 : a > b ? 1 : -1;
-      });
+      // if (studentsUserGroups && studentsUserGroups.length) {
+      //   const councelGroups = studentsUserGroups.filter(
+      //     (studentsUserGroup) => studentsUserGroup.isGuidanceGroup == true
+      //   );
+      //   await Promise.all(
+      //     councelGroups.map(async (studentsUserGroup) => {
+      //       await promisify(
+      //         mApi().usergroup.groups.staffMembers.read(studentsUserGroup.id, {
+      //           properties:
+      //             "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
+      //         }),
+      //         "callback"
+      //       )().then((result: SummaryStudentsGuidanceCouncelorsType[]) => {
+      //         result.forEach((studentsGuidanceCouncelor) => {
+      //           if (
+      //             !studentsGuidanceCouncelors.some(
+      //               (existingStudentCouncelor) =>
+      //                 existingStudentCouncelor.userEntityId ===
+      //                 studentsGuidanceCouncelor.userEntityId
+      //             )
+      //           ) {
+      //             studentsGuidanceCouncelors.push(studentsGuidanceCouncelor);
+      //           }
+      //         });
+      //       });
+      //     })
+      //   );
+      // }
+
+      // studentsGuidanceCouncelors.sort((x, y) => {
+      //   const a = x.lastName.toUpperCase(),
+      //     b = y.lastName.toUpperCase();
+      //   return a == b ? 0 : a > b ? 1 : -1;
+      // });
 
       this.setState({
         studyGuiders: studentsGuidanceCouncelors,
@@ -356,16 +372,21 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
   };
 
+  handleVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+      this.handleTabNotification();
+    }
+  };
+
   /**
    * componentDidMount
    */
   componentDidMount() {
-    if (
-      this.props.settings &&
-      this.props.settings.visibility === "VISIBLE_TO_ALL"
-    ) {
-      this.initialize();
-    }
+    document.addEventListener(
+      "visibilitychange",
+      this.handleVisibilityChange,
+      false
+    );
   }
 
   /**
@@ -374,6 +395,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   componentWillUnmount() {
     this.state.connection &&
       this.state.connection.deleteHandler(this.messagesListenerHandler);
+    window.removeEventListener("visibilitychange", this.handleVisibilityChange);
   }
 
   /**
@@ -883,14 +905,25 @@ class Chat extends React.Component<IChatProps, IChatState> {
    * onMessageReceived
    * @param stanza stanza
    */
-  public onMessageReceived(stanza: Element) {
+  public async onMessageReceived(stanza: Element) {
     const userFrom = stanza.getAttribute("from").split("/")[0];
+    const userInfo = await obtainNick(userFrom);
+    const userName = userInfo.name ? userInfo.name : userInfo.nick;
+
     if (
       !this.state.openChatsJIDS.find(
         (s) => s.jid !== userFrom && s.type === "user"
       )
     ) {
       this.joinPrivateChat(userFrom, stanza);
+      if (document.hidden) {
+        this.tabNotification.on(
+          this.props.i18n.text.get(
+            "plugin.chat.notification.newMessage",
+            userName
+          )
+        );
+      }
     }
 
     return true;
@@ -1304,6 +1337,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
             .filter((r) => r.type === "user")
             .map((pchat) => (
               <PrivateChat
+                setTabNotification={this.handleTabNotification}
                 jid={pchat.jid}
                 roster={this.state.roster}
                 initializingStanza={pchat.initStanza}

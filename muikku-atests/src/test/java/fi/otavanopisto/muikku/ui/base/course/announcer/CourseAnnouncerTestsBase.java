@@ -188,8 +188,8 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       login();
       waitForPresent(".panel--announcements .item-list--panel-announcements .item-list__announcement-caption");
       assertTextIgnoreCase(".panel--announcements .item-list--panel-announcements .item-list__announcement-caption", "Test title");
-      waitForPresent(".panel--announcements .item-list--panel-announcements .label__text--announcement-workspace");
-      assertTextIgnoreCase(".panel--announcements .item-list--panel-announcements .label__text--announcement-workspace", "testcourse (test extension)");
+      waitForPresent(".panel--announcements .item-list--panel-announcements .label__text--workspace");
+      assertTextIgnoreCase(".panel--announcements .item-list--panel-announcements .label__text--workspace", "testcourse (test extension)");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
