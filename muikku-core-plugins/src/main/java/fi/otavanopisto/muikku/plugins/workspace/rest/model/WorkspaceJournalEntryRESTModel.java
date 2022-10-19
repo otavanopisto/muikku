@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+
 public class WorkspaceJournalEntryRESTModel {
 
   public WorkspaceJournalEntryRESTModel() {
@@ -9,7 +11,7 @@ public class WorkspaceJournalEntryRESTModel {
   }
 
   public WorkspaceJournalEntryRESTModel(Long id, Long workspaceEntityId, Long userEntityId, String firstName,
-      String lastName, String html, String title, Date created, Long commentCount, Boolean isMaterialField) {
+      String lastName, String html, String title, Date created, Long commentCount, Boolean isMaterialField, WorkspaceMaterialReplyState workspaceMaterialReplyState) {
     super();
     this.id = id;
     this.workspaceEntityId = workspaceEntityId;
@@ -21,6 +23,7 @@ public class WorkspaceJournalEntryRESTModel {
     this.created = created;
     this.commentCount = commentCount;
     this.isMaterialField = isMaterialField;
+    this.workspaceMaterialReplyState = workspaceMaterialReplyState;
   }
 
   public Long getWorkspaceEntityId() {
@@ -103,6 +106,14 @@ public class WorkspaceJournalEntryRESTModel {
     this.isMaterialField = isMaterialField;
   }
 
+  public WorkspaceMaterialReplyState getWorkspaceMaterialReplyState() {
+    return workspaceMaterialReplyState;
+  }
+
+  public void setWorkspaceMaterialReplyState(WorkspaceMaterialReplyState workspaceMaterialReplyState) {
+    this.workspaceMaterialReplyState = workspaceMaterialReplyState;
+  }
+
   private Long id;
   private Long workspaceEntityId;
   private Long userEntityId;
@@ -113,4 +124,5 @@ public class WorkspaceJournalEntryRESTModel {
   private Date created;
   private Long commentCount;
   private Boolean isMaterialField;
+  private WorkspaceMaterialReplyState workspaceMaterialReplyState;
 }
