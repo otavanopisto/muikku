@@ -250,6 +250,9 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   const comments = props.evaluation.evaluationJournalComments.comments[id];
 
   const isMandatory = props.isMaterialField;
+  const isDraft =
+    props.workspaceMaterialReplyState &&
+    props.workspaceMaterialReplyState === "ANSWERED";
 
   return (
     <div className="evaluation-modal__item">
@@ -263,6 +266,10 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           onClick={handleOpenContentClick}
         >
           {title}
+          {isDraft &&
+            i18n.text.get(
+              "plugin.evaluation.evaluationModal.journalEntry.statusDraft"
+            )}
           <div className="evaluation-modal__item-meta">
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">

@@ -20,6 +20,7 @@ import {
   WorkspaceType,
   MaterialContentNodeType,
   MaterialViewRestriction,
+  AssignmentType,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -210,6 +211,34 @@ const CKEditorConfig = (
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"
     : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax,muikku-journal",
 });
+
+/**
+ * MaterialPageTypeConfic
+ */
+interface MaterialPageTypeConfic {
+  type: AssignmentType;
+  activeClassMod: string;
+  text: string;
+}
+
+const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
+  {
+    type: "EXERCISE",
+    activeClassMod: "material-editor-exercise",
+    text: "plugin.workspace.materialsManagement.pageType.excercise",
+  },
+  {
+    type: "EVALUATED",
+    activeClassMod: "material-editor-assignment",
+    text: "plugin.workspace.materialsManagement.pageType.evaluated",
+  },
+  {
+    type: "JOURNAL",
+    activeClassMod: "material-editor-journal",
+    text: "plugin.workspace.materialsManagement.pageType.journal",
+  },
+];
+
 /* eslint-enable camelcase */
 
 // First we need to modify the material content nodes end point to be able to receive hidden
@@ -230,7 +259,6 @@ class MaterialEditor extends React.Component<
     this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
     this.cycleViewRestrictionStatus =
       this.cycleViewRestrictionStatus.bind(this);
-    this.cycleAssignmentType = this.cycleAssignmentType.bind(this);
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
@@ -336,37 +364,23 @@ class MaterialEditor extends React.Component<
 
   /**
    * cycleAssignmentType
+   * @param type type
    */
-  cycleAssignmentType() {
-    /**
-     * cycleType
-     * @returns assignment type
-     */
-    const cycleType = (): "EXERCISE" | "EVALUATED" | "JOURNAL" | null => {
-      switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
-        case "EXERCISE":
-          return "EVALUATED";
-
-        case "EVALUATED":
-          return "JOURNAL";
-
-        case "JOURNAL":
-          return null;
-
-        default:
-          return "EXERCISE";
-      }
+  handleChangeAssignmentType =
+    (type: AssignmentType) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      this.props.updateWorkspaceMaterialContentNode({
+        workspace: this.props.editorState.currentNodeWorkspace,
+        material: this.props.editorState.currentDraftNodeValue,
+        update: {
+          assignmentType:
+            this.props.editorState.currentDraftNodeValue.assignmentType !== type
+              ? type
+              : null,
+        },
+        isDraft: true,
+      });
     };
-
-    this.props.updateWorkspaceMaterialContentNode({
-      workspace: this.props.editorState.currentNodeWorkspace,
-      material: this.props.editorState.currentDraftNodeValue,
-      update: {
-        assignmentType: cycleType(),
-      },
-      isDraft: true,
-    });
-  }
 
   /**
    * cycleCorrectAnswers
@@ -701,6 +715,74 @@ class MaterialEditor extends React.Component<
   };
 
   /**
+   * Assignment page type icon if assignment type has been set
+   * @param type type
+   * @returns assignment page type icon
+   */
+  assignmentPageIcon = (type: AssignmentType) => {
+    switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
+      case "EXERCISE":
+        return "books";
+
+      case "EVALUATED":
+        return "evalaute";
+
+      case "JOURNAL":
+        return "book";
+
+      default:
+        return undefined;
+    }
+  };
+
+  /**
+   * renderAssignmentPageButton
+   * @param materialPageConfig materialPageConfig
+   * @param key key
+   * @returns assignment page type button
+   */
+  renderAssignmentPageButton = (
+    materialPageConfig: MaterialPageTypeConfic,
+    key: string | number
+  ) => {
+    const { assignmentType } = this.props.editorState.currentDraftNodeValue;
+
+    const currentAssignmentType = assignmentType || null;
+
+    const isActive =
+      currentAssignmentType &&
+      currentAssignmentType === materialPageConfig.type;
+
+    const buttonModifiers = [
+      "material-editor-change-page-type",
+      "material-editor",
+    ];
+
+    if (isActive) {
+      buttonModifiers.push(materialPageConfig.activeClassMod);
+    }
+
+    return (
+      <Dropdown key={key}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "2.5px",
+          }}
+        >
+          <ButtonPill
+            buttonModifiers={buttonModifiers}
+            icon="puzzle"
+            onClick={this.handleChangeAssignmentType(materialPageConfig.type)}
+          />
+          {this.props.i18n.text.get(materialPageConfig.text)}
+        </div>
+      </Dropdown>
+    );
+  };
+
+  /**
    * render
    */
   render() {
@@ -871,10 +953,10 @@ class MaterialEditor extends React.Component<
           ) : null}
           {this.props.editorState.canChangePageType ? (
             <Dropdown
-              openByHover
-              modifier="material-management-tooltip"
-              content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip"
+              openByHover={false}
+              persistent
+              content={MATERIAL_PAGE_TYPE_CONFIGS.map((config, index) =>
+                this.renderAssignmentPageButton(config, index)
               )}
             >
               <ButtonPill
@@ -884,7 +966,6 @@ class MaterialEditor extends React.Component<
                   assignmentPageType,
                 ]}
                 icon="puzzle"
-                onClick={this.cycleAssignmentType}
               />
             </Dropdown>
           ) : null}

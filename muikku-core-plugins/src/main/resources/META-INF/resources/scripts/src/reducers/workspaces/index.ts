@@ -609,7 +609,7 @@ export interface MaterialAssignmentType {
   parentId: number;
   nextSiblingId: number;
   hidden: boolean;
-  assignmentType: "EXERCISE" | "EVALUATED";
+  assignmentType: AssignmentType;
   correctAnswers: string;
   path: string;
   title: string;
@@ -633,6 +633,8 @@ export enum MaterialViewRestriction {
   WORKSPACE_MEMBERS = "WORKSPACE_MEMBERS",
 }
 
+export type AssignmentType = "EXERCISE" | "EVALUATED" | "JOURNAL";
+
 /**
  * MaterialContentNodeType
  */
@@ -652,7 +654,7 @@ export interface MaterialContentNodeType {
   workspaceMaterialId?: number;
   materialId?: number;
   level?: number;
-  assignmentType?: "EXERCISE" | "EVALUATED" | "JOURNAL";
+  assignmentType?: AssignmentType;
   correctAnswers?: MaterialCorrectAnswersType;
   hidden?: boolean;
   parentId?: number;

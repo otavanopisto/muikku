@@ -103,6 +103,9 @@ class WorkspaceJournalsListItem extends React.Component<
       );
 
     const isMandatory = this.props.journal.isMaterialField;
+    const isDraft =
+      this.props.journal.workspaceMaterialReplyState &&
+      this.props.journal.workspaceMaterialReplyState === "ANSWERED";
 
     if (this.state.editing) {
       return (
@@ -151,6 +154,13 @@ class WorkspaceJournalsListItem extends React.Component<
               ) : (
                 <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
                   {this.props.journal.title}
+                </span>
+              )}
+              {isDraft && (
+                <span>
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.journal.status.draft"
+                  )}
                 </span>
               )}
             </div>

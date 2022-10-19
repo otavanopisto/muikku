@@ -1,6 +1,7 @@
 import { Reducer } from "redux";
 import { JournalComment } from "~/@types/journal";
 import { ActionType } from "~/actions";
+import { MaterialCompositeRepliesStateType } from "./index";
 
 export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
@@ -17,7 +18,15 @@ export interface WorkspaceJournalType {
   title: string;
   created: string;
   commentCount: number;
+  /**
+   * Whether journal is "mandatory" assignment and material field
+   */
   isMaterialField: boolean;
+  /**
+   * Material field reply status. ANSWERED | "SUBMITTED" are only ones
+   * that matters
+   */
+  workspaceMaterialReplyState: MaterialCompositeRepliesStateType | null;
 }
 
 /**
