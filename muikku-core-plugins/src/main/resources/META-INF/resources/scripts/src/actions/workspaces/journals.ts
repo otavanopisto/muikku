@@ -217,7 +217,20 @@ const loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromSe
  */
 const loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType =
   function loadMoreCurrentWorkspaceJournalsFromServer() {
-    return loadCurrentWorkspaceJournalsHelper.bind(this, null, false);
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const currentJournalsState = getState().journals;
+
+      dispatch(
+        loadCurrentWorkspaceJournalsHelper.bind(
+          this,
+          currentJournalsState.userEntityId,
+          false
+        )
+      );
+    };
   };
 
 /**
