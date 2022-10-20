@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -509,14 +510,33 @@ public class PyramusMock {
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(subject))
-              .withStatus(200)));          
+              .withStatus(200)));
+          
+          stubFor(get(urlEqualTo(String.format("/1/common/subjectByCode/%s", subject.getCode())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(subject))
+              .withStatus(200)));
         }
-        
         stubFor(get(urlEqualTo("/1/common/subjects"))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(pmock.objectMapper.writeValueAsString(pmock.subjects))
-            .withStatus(200)));
+                .willReturn(aResponse()
+                  .withHeader("Content-Type", "application/json")
+                  .withBody(pmock.objectMapper.writeValueAsString(pmock.subjects))
+                  .withStatus(200)));
+
+//      Following is a hack I'm not terribly proud of, but it silences records view errors for now.
+//      Could mock subjects like in prod. but waiting for dynamically working system to this.
+        List<String> codes = new ArrayList<>();
+        codes.addAll(Arrays.asList("%C3%A4i", "s2", "rub", "ena", "ma", "ue", "et", "hi", "yh", "fy", "ke", "bi", "ge", "te", "ot"));
+        for (String code : codes) { 
+            Subject subject = pmock.getSubjects().get(0);
+            stubFor(get(urlEqualTo(String.format("/1/common/subjectByCode/%s", code)))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(subject))
+                .withStatus(200)));            
+        }
+
         return this;
       }
       
