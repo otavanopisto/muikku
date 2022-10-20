@@ -20,8 +20,17 @@ export interface WallProps {
 const WallPanel: React.FC<WallProps> = (props) => {
   const { i18n, status } = props;
   return (
-    <Panel header="Muu">
-      <div>Sisällysztä</div>
+    <Panel header="Muu" modifier="wall" icon="icon-star-empty">
+      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
+      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
+      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
+      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
+      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
+      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
+      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
+      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
+      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
+      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
     </Panel>
   );
 };

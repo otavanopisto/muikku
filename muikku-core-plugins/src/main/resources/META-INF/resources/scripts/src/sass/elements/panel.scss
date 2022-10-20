@@ -245,6 +245,11 @@
   }
 }
 
+.panel__header-icon--wall {
+  background-color: $color-index-text-for-panels-title-wall-icon-background;
+  color: $color-index-text-for-panels-title-wall-icon-color;
+}
+
 .panel__header-icon--continue-studies {
   background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
   color: $color-index-text-for-panels-title-continue-studies-icon-color;
