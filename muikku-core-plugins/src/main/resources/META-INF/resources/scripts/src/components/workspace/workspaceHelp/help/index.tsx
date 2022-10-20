@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable react/no-string-refs */
 
 /**
@@ -33,6 +34,7 @@ import {
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
+import { AnyActionType } from "~/actions";
 
 /**
  * HelpMaterialsProps
@@ -42,10 +44,13 @@ interface HelpMaterialsProps {
   status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
   activeNodeId: number;
   workspaceEditMode: WorkspaceEditModeStateType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (activeNodeId: number) => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpenNavigation: () => any;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
@@ -97,6 +102,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    */
   componentDidMount() {
     const defaultOffset =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ((document.querySelector("#stick") as HTMLElement) || ({} as any))
         .offsetHeight || DEFAULT_OFFSET;
     if (defaultOffset !== this.state.defaultOffset) {
@@ -119,7 +125,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: HelpMaterialsProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: HelpMaterialsProps) {
     if (this.props.materials !== nextProps.materials) {
       this.getFlattenedMaterials(nextProps);
     }
@@ -153,6 +159,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     nextSibling: MaterialContentNodeType,
     includesSection: boolean
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const materialManagementItemsOptions: Array<any> = [
       {
         icon: "plus",
@@ -346,6 +353,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * onScroll
    */
   onScroll() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((window as any).IGNORE_SCROLL_EVENTS) {
       return;
     }
@@ -482,17 +490,11 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         </div>
       ) : null;
 
-    const hideRestrictedMaterial =
-      (this.props.status.isStudent &&
-        !this.props.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT) ||
-      !this.props.status.loggedIn;
+    const results: JSX.Element[] = [];
 
-    const results: any = [];
     this.props.materials.forEach((section, index) => {
-      const isSectionViewRestricted =
-        section.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
-        section.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
-
+      // If first section, then above it is "add new section" icon button
+      // And it is only showed when editing is active
       if (index === 0 && isEditable) {
         results.push(
           <div
@@ -518,6 +520,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
       const nextSection = this.props.materials[index + 1] || null;
 
+      // Management option, only showed when editing is active
       const lastManagementOptionsWithinSectionItem = isEditable ? (
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown
@@ -527,7 +530,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               nextSection,
               null,
               true
-            ).map((item) => (closeDropdown: () => any) => {
+            ).map((item) => (closeDropdown: () => void) => {
               if (item.file) {
                 return (
                   <label
@@ -569,95 +572,114 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         </div>
       ) : null;
 
-      const sectionSpecificContentData: any = [];
+      // section is restricted in following cases:
+      // section is restricted for logged in users and users is not logged in...
+      // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
+      const isSectionViewRestricted =
+        (section.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+          !this.props.status.loggedIn) ||
+        (section.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+          !this.props.workspace.isCourseMember &&
+          (this.props.status.isStudent || !this.props.status.loggedIn));
 
-      section.children.forEach((node) => {
-        if (isSectionViewRestricted) {
-          return;
-        }
+      // "section pages"
+      const sectionSpecificContentData: JSX.Element[] = [];
 
-        // this is the next sibling for the content node that is to be added, aka the current
-        const nextSibling = node;
-        if (isEditable) {
-          sectionSpecificContentData.push(
-            <div
-              key={node.workspaceMaterialId + "-dropdown"}
-              className="material-admin-panel material-admin-panel--master-functions"
-            >
-              <Dropdown
-                modifier="material-management"
-                items={this.getMaterialsOptionListDropdown(
-                  section,
-                  nextSection,
-                  nextSibling,
-                  false
-                ).map((item) => (closeDropdown: () => any) => {
-                  if (item.file) {
+      // If section is restricted we don't return anything
+      !isSectionViewRestricted &&
+        section.children.forEach((node) => {
+          // this is the next sibling for the content node that is to be added, aka the current
+          const nextSibling = node;
+
+          // Adding editing functions to page if editing is active
+          if (isEditable) {
+            sectionSpecificContentData.push(
+              <div
+                key={node.workspaceMaterialId + "-dropdown"}
+                className="material-admin-panel material-admin-panel--master-functions"
+              >
+                <Dropdown
+                  modifier="material-management"
+                  items={this.getMaterialsOptionListDropdown(
+                    section,
+                    nextSection,
+                    nextSibling,
+                    false
+                  ).map((item) => (closeDropdown: () => void) => {
+                    if (item.file) {
+                      return (
+                        <label
+                          htmlFor={node.workspaceMaterialId + "-input"}
+                          className={`link link--full link--material-management-dropdown`}
+                        >
+                          <input
+                            type="file"
+                            id={node.workspaceMaterialId + "-input"}
+                            onChange={(e) => {
+                              closeDropdown();
+                              item.onChange && item.onChange(e);
+                            }}
+                          />
+                          <span
+                            className={`link__icon icon-${item.icon}`}
+                          ></span>
+                          <span>{this.props.i18n.text.get(item.text)}</span>
+                        </label>
+                      );
+                    }
                     return (
-                      <label
-                        htmlFor={node.workspaceMaterialId + "-input"}
+                      <Link
                         className={`link link--full link--material-management-dropdown`}
+                        onClick={() => {
+                          closeDropdown();
+                          item.onClick && item.onClick();
+                        }}
                       >
-                        <input
-                          type="file"
-                          id={node.workspaceMaterialId + "-input"}
-                          onChange={(e) => {
-                            closeDropdown();
-                            item.onChange && item.onChange(e);
-                          }}
-                        />
                         <span className={`link__icon icon-${item.icon}`}></span>
                         <span>{this.props.i18n.text.get(item.text)}</span>
-                      </label>
+                      </Link>
                     );
-                  }
-                  return (
-                    <Link
-                      className={`link link--full link--material-management-dropdown`}
-                      onClick={() => {
-                        closeDropdown();
-                        item.onClick && item.onClick();
-                      }}
-                    >
-                      <span className={`link__icon icon-${item.icon}`}></span>
-                      <span>{this.props.i18n.text.get(item.text)}</span>
-                    </Link>
-                  );
-                })}
+                  })}
+                >
+                  <ButtonPill
+                    buttonModifiers="material-management-master"
+                    icon="plus"
+                  />
+                </Dropdown>
+              </div>
+            );
+          }
+
+          // Actual page material
+          // Nothing is shown is workspace or material "compositeReplies" are missing or
+          // editing is not active and material is hided and showEvenIfHidden is false
+          const material =
+            !this.props.workspace || (!isEditable && node.hidden) ? null : (
+              <ContentPanelItem
+                ref={node.workspaceMaterialId + ""}
+                key={node.workspaceMaterialId + ""}
               >
-                <ButtonPill
-                  buttonModifiers="material-management-master"
-                  icon="plus"
+                <div
+                  id={"p-" + node.workspaceMaterialId}
+                  style={{
+                    transform:
+                      "translateY(" + -this.state.defaultOffset + "px)",
+                  }}
                 />
-              </Dropdown>
-            </div>
-          );
-        }
+                {/*TOP OF THE PAGE*/}
+                <HelpMaterial
+                  folder={section}
+                  materialContentNode={node}
+                  workspace={this.props.workspace}
+                  isViewRestricted={false}
+                />
+              </ContentPanelItem>
+            );
+          sectionSpecificContentData.push(material);
+        });
 
-        const material =
-          !this.props.workspace || (!isEditable && node.hidden) ? null : (
-            <ContentPanelItem
-              ref={node.workspaceMaterialId + ""}
-              key={node.workspaceMaterialId + ""}
-            >
-              <div
-                id={"p-" + node.workspaceMaterialId}
-                style={{
-                  transform: "translateY(" + -this.state.defaultOffset + "px)",
-                }}
-              />
-              {/*TOP OF THE PAGE*/}
-              <HelpMaterial
-                folder={section}
-                materialContentNode={node}
-                workspace={this.props.workspace}
-                isViewRestricted={false}
-              />
-            </ContentPanelItem>
-          );
-        sectionSpecificContentData.push(material);
-      });
-
+      // Hidden materials are only shown if editing is active
+      // Otherwise nothing is returned
       if (!isEditable && section.hidden) {
         return;
       }
@@ -720,7 +742,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             </div>
           </h2>
 
-          {isSectionViewRestricted && hideRestrictedMaterial ? (
+          {isSectionViewRestricted ? (
             <div className="content-panel__item">
               <article className="material-page">
                 <div className="material-page__content material-page__content--view-restricted">
@@ -770,7 +792,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,
