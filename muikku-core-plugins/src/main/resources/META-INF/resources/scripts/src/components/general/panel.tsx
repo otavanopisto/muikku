@@ -32,7 +32,11 @@ export const Panel: React.FC<PanelProps> & {
         ) : null}
         <h2 className="panel__header-title">{header}</h2>
       </div>
-      <div className="panel__body">{children}</div>
+      <div
+        className={`panel__body ${modifier ? "panel__body--" + modifier : ""}`}
+      >
+        {children}
+      </div>
     </div>
   );
 };
