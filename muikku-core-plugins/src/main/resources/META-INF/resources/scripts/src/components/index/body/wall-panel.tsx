@@ -4,7 +4,6 @@ import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import { Panel } from "~/components/general/panel";
-import "~/sass/elements/panel.scss";
 
 /**
  * Wall properties
