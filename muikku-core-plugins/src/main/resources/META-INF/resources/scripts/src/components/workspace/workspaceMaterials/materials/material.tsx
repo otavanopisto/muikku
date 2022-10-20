@@ -160,7 +160,8 @@ class WorkspaceMaterial extends React.Component<
                   stateConfiguration={stateConfiguration}
                 />
                 <div className="material-page__de-floater"></div>
-                {!isEvaluatedAsPassed ? (
+                {!isEvaluatedAsPassed &&
+                !props.material.contentHiddenForUser ? (
                   <MaterialLoaderButtons
                     {...props}
                     {...state}
