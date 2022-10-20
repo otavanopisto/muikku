@@ -3,6 +3,7 @@ import ScreenContainer from "../general/screen-container";
 import AnnouncementsPanel from "./body/announcements-panel";
 import ContinueStudiesPanel from "./body/continue-studies-panel";
 import LastMessagesPanel from "./body/latest-messages-panel";
+import WallPanel from "./body/wall-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
@@ -46,7 +47,11 @@ class IndexBody extends React.Component<
               <ContinueStudiesPanel />
               <WorkspacesPanel />
             </div>
-            <LastMessagesPanel />
+            <div className="panel-group panel-group--info">
+              <WallPanel />
+              <LastMessagesPanel />
+            </div>
+
             <AnnouncementsPanel overflow={true} />
           </ScreenContainer>
         ) : (
