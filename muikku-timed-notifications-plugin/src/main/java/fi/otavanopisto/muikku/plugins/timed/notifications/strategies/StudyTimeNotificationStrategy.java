@@ -16,6 +16,7 @@ import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -147,17 +148,17 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
             new Object[] {studentName.getDisplayNameWithLine()});
         String studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content",
             new Object[] {studentName.getDisplayNameWithLine()});
-        String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
-        if (guidanceCounselorMail != null) {
+        List<String> guidanceCounselorMails = notificationController.listStudyCounselorsEmails(studentEntity.defaultSchoolDataIdentifier());
+        if (CollectionUtils.isNotEmpty(guidanceCounselorMails)) {
           studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.guidanceCounselor",
-              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMail});
+              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMails.get(0)});
         }
         String notificationContent = isAineopiskelu ? internetixStudyTimeNotification : studyTimeNotification;
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.subject"),
           notificationContent,
           studentEntity,
-          guidanceCounselorMail
+          guidanceCounselorMails
         );
         studyTimeLeftNotificationController.createStudyTimeNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_STUDYTIME);

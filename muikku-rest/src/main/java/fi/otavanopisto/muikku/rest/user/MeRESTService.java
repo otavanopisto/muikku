@@ -76,7 +76,7 @@ public class MeRESTService {
     }
     
     Boolean onlyMessageReceivers = false;
-    List<UserEntity> guidanceCouncelors = userGroupGuidanceController.getGuidanceCouncelors(sessionController.getLoggedUser(), onlyMessageReceivers);
+    List<UserEntity> guidanceCouncelors = userGroupGuidanceController.getGuidanceCounselors(sessionController.getLoggedUser(), onlyMessageReceivers);
     
     List<fi.otavanopisto.muikku.rest.model.StaffMember> staffMembers = new ArrayList<>();
     

@@ -16,6 +16,7 @@ import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -116,18 +117,18 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
           logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
           continue;
         }
-        String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        List<String> guidanceCounselorMails = notificationController.listStudyCounselorsEmails(studentEntity.defaultSchoolDataIdentifier());
         String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content",
             new Object[] {studentName.getDisplayNameWithLine()});
-        if (guidanceCounselorMail != null) {
+        if (CollectionUtils.isNotEmpty(guidanceCounselorMails)) {
           notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content.guidanceCounselor",
-              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMail});
+              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMails.get(0)});
         }
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.subject"),
           notificationContent,
           studentEntity,
-          guidanceCounselorMail
+          guidanceCounselorMails
         );
         assesmentRequestNotificationController.createAssesmentRequestNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_ASSESMENTREQUEST);

@@ -19,7 +19,7 @@ public class UserGroupGuidanceController {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
-  public List<UserEntity> getGuidanceCouncelors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
+  public List<UserEntity> getGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
     List<GroupUser> guidanceCounselors = userSchoolDataController.listStudentGuidanceCounselors(studentIdentifier, onlyMessageReceivers);
     
     List<UserEntity> councelorList = new ArrayList<>();
