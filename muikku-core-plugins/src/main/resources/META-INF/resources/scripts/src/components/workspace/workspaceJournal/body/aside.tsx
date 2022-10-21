@@ -168,20 +168,28 @@ class NavigationAside extends React.Component<
 
     return (
       <Navigation key="journal-navigation-11">
-        <NavigationTopic name="Tyyppi">
+        <NavigationTopic
+          name={this.props.i18n.text.get(
+            "plugin.workspace.journal.filters.title"
+          )}
+        >
           <NavigationElement
             icon="book"
             isActive={filters.showMandatory}
             onClick={this.handleChangeJournalFilterClick("showMandatory")}
           >
-            Pakolliset
+            {this.props.i18n.text.get(
+              "plugin.workspace.journal.filters.mandatory.label"
+            )}
           </NavigationElement>
           <NavigationElement
             icon="book"
             isActive={filters.showOthers}
             onClick={this.handleChangeJournalFilterClick("showOthers")}
           >
-            Muut
+            {this.props.i18n.text.get(
+              "plugin.workspace.journal.filters.other.label"
+            )}
           </NavigationElement>
         </NavigationTopic>
 

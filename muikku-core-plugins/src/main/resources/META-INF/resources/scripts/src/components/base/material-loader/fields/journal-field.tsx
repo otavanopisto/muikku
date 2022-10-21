@@ -248,7 +248,13 @@ export default class JournalField extends React.Component<
         // note how somehow numbers come as string...
         field = (
           <>
-            <label>Päiväkirjakenttä</label>
+            <label>
+              <b>
+                {this.props.i18n.text.get(
+                  "plugin.workspace.journalMemoField.label"
+                )}
+              </b>
+            </label>
             <CKEditor
               configuration={ckEditorConfig}
               onChange={this.onCKEditorChange}
