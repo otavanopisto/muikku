@@ -1,7 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceMaterialReferenceType } from "~/reducers/workspaces";
