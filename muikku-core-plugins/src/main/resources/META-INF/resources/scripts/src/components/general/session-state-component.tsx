@@ -108,8 +108,13 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
    * setStateAndClear
    * @param newState newState
    * @param namespace namespace
+   * @param callback callback
    */
-  setStateAndClear(newState: Partial<S>, namespace?: any): void {
+  setStateAndClear(
+    newState: Partial<S>,
+    namespace?: any,
+    callback?: () => void
+  ): void {
     let internalStorage = this.storage;
     if (namespace) {
       internalStorage = this.storage.namespace(namespace + "");
@@ -119,7 +124,7 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       internalStorage.clear(key);
     });
     this.recovered = false;
-    this.setState(newState as S);
+    this.setState(newState as S, callback);
   }
 
   /**

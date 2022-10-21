@@ -6,12 +6,15 @@ import {
   AssignmentEvaluationSupplementationRequest,
   WorkspaceEvaluationSaveReturn,
   EvaluationBasePriceById,
+  EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { StateType } from "../../../reducers/index";
 import mApi from "~/lib/mApi";
 import promisify from "../../../util/promisify";
 import { MApiError } from "../../../lib/mApi";
-import notificationActions from "~/actions/base/notifications";
+import notificationActions, {
+  displayNotification,
+} from "~/actions/base/notifications";
 import { EvaluationAssigmentData } from "../../../@types/evaluation";
 import { EvaluationEnum, BilledPriceRequest } from "../../../@types/evaluation";
 import { MaterialCompositeRepliesType } from "../../../reducers/workspaces/index";
@@ -42,6 +45,12 @@ import {
   AssessmentRequest,
   EvaluationStatus,
 } from "../../../@types/evaluation";
+import {
+  JournalComment,
+  JournalCommentCreate,
+  JournalCommentDelete,
+  JournalCommentUpdate,
+} from "~/@types/journal";
 
 //////State update interfaces
 export type UPDATE_BASE_PRICE_STATE = SpecificActionType<
@@ -183,6 +192,44 @@ export type UPDATE_OPENED_ASSIGNMENTS_EVALUATION = SpecificActionType<
 export type UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS = SpecificActionType<
   "UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS",
   boolean
+>;
+
+// EVALUATION JOURNAL COMMENTS
+
+export type EVALUATION_JOURNAL_COMMENTS_INITIALIZED = SpecificActionType<
+  "EVALUATION_JOURNAL_COMMENTS_INITIALIZED",
+  EvaluationJournalCommentsByJournal
+>;
+
+export type EVALUATION_JOURNAL_COMMENTS_LOAD = SpecificActionType<
+  "EVALUATION_JOURNAL_COMMENTS_LOAD",
+  {
+    comments: EvaluationJournalCommentsByJournal;
+    commentsLoaded: number[];
+  }
+>;
+
+export type EVALUATION_JOURNAL_COMMENTS_CREATE = SpecificActionType<
+  "EVALUATION_JOURNAL_COMMENTS_CREATE",
+  {
+    updatedJournalEntryList: EvaluationStudyDiaryEvent[];
+    updatedCommentsList: EvaluationJournalCommentsByJournal;
+  }
+>;
+
+export type EVALUATION_JOURNAL_COMMENTS_UPDATE = SpecificActionType<
+  "EVALUATION_JOURNAL_COMMENTS_UPDATE",
+  {
+    updatedCommentsList: EvaluationJournalCommentsByJournal;
+  }
+>;
+
+export type EVALUATION_JOURNAL_COMMENTS_DELETE = SpecificActionType<
+  "EVALUATION_JOURNAL_COMMENTS_DELETE",
+  {
+    updatedJournalEntryList: EvaluationStudyDiaryEvent[];
+    updatedCommentsList: EvaluationJournalCommentsByJournal;
+  }
 >;
 
 // Server events
@@ -471,6 +518,51 @@ export interface UpdateNeedsReloadEvaluationRequests {
   (data: { value: boolean }): AnyActionType;
 }
 
+/**
+ * LoadWorkspaceJournalCommentsFromServerTriggerType
+ */
+export interface LoadEvaluationJournalCommentsFromServerTriggerType {
+  (data: { workspaceId: number; journalEntryId: number }): AnyActionType;
+}
+
+/**
+ * CreateWorkspaceJournalCommentInTriggerType
+ */
+export interface CreateEvaluationJournalCommentTriggerType {
+  (data: {
+    newCommentPayload: JournalCommentCreate;
+    journalEntryId: number;
+    workspaceEntityId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * UpdateWorkspaceJournalCommentInTriggerType
+ */
+export interface UpdateEvaluationJournalCommentTriggerType {
+  (data: {
+    updatedCommentPayload: JournalCommentUpdate;
+    journalEntryId: number;
+    workspaceEntityId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * DeleteWorkspaceJournalCommentInTriggerType
+ */
+export interface DeleteEvaluationJournalCommentTriggerType {
+  (data: {
+    deleteCommentPayload: JournalCommentDelete;
+    journalEntryId: number;
+    workspaceEntityId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
 // Actions
 
 /**
@@ -941,6 +1033,16 @@ const loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluation
           ),
           "callback"
         )()) as EvaluationStudyDiaryEvent[] | [];
+
+        const obj: EvaluationJournalCommentsByJournal = studyDiaryEvents.reduce(
+          (o, key) => ({ ...o, [key.id]: [] }),
+          {}
+        );
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_COMMENTS_INITIALIZED",
+          payload: obj,
+        });
 
         dispatch({
           type: "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS",
@@ -2009,6 +2111,322 @@ const updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
     };
   };
 
+/**
+ * loadWorkspaceJournalCommentsFromServer
+ * @param data data
+ */
+const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFromServerTriggerType =
+  function loadWorkspaceJournalCommentsFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const evaluationJournalComments =
+        getState().evaluations.evaluationJournalComments;
+
+      if (
+        !evaluationJournalComments.commentsLoaded.includes(data.journalEntryId)
+      ) {
+        try {
+          const journalCommentList = (await promisify(
+            mApi().workspace.workspaces.journal.comments.read(
+              data.workspaceId,
+              data.journalEntryId
+            ),
+            "callback"
+          )()) as JournalComment[];
+
+          const updatedComments: EvaluationJournalCommentsByJournal = {
+            ...evaluationJournalComments.comments,
+          };
+
+          updatedComments[data.journalEntryId] = journalCommentList;
+
+          dispatch({
+            type: "EVALUATION_JOURNAL_COMMENTS_LOAD",
+            payload: {
+              comments: updatedComments,
+              commentsLoaded: [
+                ...evaluationJournalComments.commentsLoaded,
+                data.journalEntryId,
+              ],
+            },
+          });
+        } catch (err) {
+          if (!(err instanceof MApiError)) {
+            throw err;
+          }
+          dispatch(
+            displayNotification(
+              getState().i18n.text.get(
+                "plugin.evaluation.notifications.loadJournalComments.error",
+                err.message
+              ),
+              "error"
+            )
+          );
+        }
+      }
+    };
+  };
+
+/**
+ * createWorkspaceJournalComment
+ * @param data data
+ */
+const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType =
+  function createEvaluationJournalComment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const {
+        newCommentPayload,
+        journalEntryId,
+        workspaceEntityId,
+        fail,
+        success,
+      } = data;
+
+      const evaluationState = getState().evaluations;
+
+      try {
+        const [updated] = await Promise.all([
+          (async () => {
+            // New comment data
+            const newComment = (await promisify(
+              mApi().workspace.workspaces.journal.comments.create(
+                workspaceEntityId,
+                journalEntryId,
+                newCommentPayload
+              ),
+              "callback"
+            )()) as JournalComment;
+
+            const updatedJournalIndex =
+              evaluationState.evaluationDiaryEntries.data.findIndex(
+                (jEntry) => jEntry.id === journalEntryId
+              );
+
+            const updatedCommentsList = {
+              ...evaluationState.evaluationJournalComments.comments,
+            };
+
+            const updatedJournalEntryList = [
+              ...evaluationState.evaluationDiaryEntries.data,
+            ];
+
+            updatedJournalEntryList[updatedJournalIndex].commentCount++;
+            updatedCommentsList[journalEntryId].push(newComment);
+
+            return {
+              updatedJournalEntryList,
+              updatedCommentsList,
+            };
+          })(),
+        ]);
+
+        success && success();
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_COMMENTS_CREATE",
+          payload: {
+            updatedCommentsList: updated.updatedCommentsList,
+            updatedJournalEntryList: updated.updatedJournalEntryList,
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.evaluation.notifications.createJournalComments.error",
+              err.message
+            ),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
+ * createWorkspaceJournalComment
+ * @param data data
+ */
+const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType =
+  function createEvaluationJournalComment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const {
+        updatedCommentPayload,
+        journalEntryId,
+        workspaceEntityId,
+        fail,
+        success,
+      } = data;
+
+      const evaluationState = getState().evaluations;
+
+      try {
+        const [updated] = await Promise.all([
+          (async () => {
+            // Updated comment data
+            const updatedComment = (await promisify(
+              mApi().workspace.workspaces.journal.comments.update(
+                workspaceEntityId,
+                journalEntryId,
+                updatedCommentPayload.id,
+                updatedCommentPayload
+              ),
+              "callback"
+            )()) as JournalComment;
+
+            const updatedCommentsList = {
+              ...evaluationState.evaluationJournalComments.comments,
+            };
+            const index = updatedCommentsList[journalEntryId].findIndex(
+              (c) => c.id === updatedComment.id
+            );
+
+            updatedCommentsList[journalEntryId].splice(
+              index,
+              1,
+              updatedComment
+            );
+
+            return {
+              updatedCommentsList,
+            };
+          })(),
+        ]);
+
+        success && success();
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_COMMENTS_UPDATE",
+          payload: {
+            updatedCommentsList: updated.updatedCommentsList,
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.evaluation.notifications.updateJournalComments.error",
+              err.message
+            ),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
+ * deleteEvaluationJournalComment
+ * @param data data
+ */
+const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType =
+  function createEvaluationJournalComment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const {
+        deleteCommentPayload,
+        journalEntryId,
+        workspaceEntityId,
+        fail,
+        success,
+      } = data;
+
+      const evaluationState = getState().evaluations;
+
+      try {
+        const [updated] = await Promise.all([
+          (async () => {
+            await promisify(
+              mApi().workspace.workspaces.journal.comments.del(
+                workspaceEntityId,
+                journalEntryId,
+                deleteCommentPayload.id
+              ),
+              "callback"
+            )();
+
+            // Journal index that comment count needs to be updated
+            const updatedJournalIndex =
+              evaluationState.evaluationDiaryEntries.data.findIndex(
+                (jEntry) => jEntry.id === journalEntryId
+              );
+
+            // Comment list to update
+            const updatedCommentsList = {
+              ...evaluationState.evaluationJournalComments.comments,
+            };
+
+            const updatedJournalEntryList = [
+              ...evaluationState.evaluationDiaryEntries.data,
+            ];
+
+            // Find index of deleted comment
+            const indexOfDeletedComment = updatedCommentsList[
+              journalEntryId
+            ].findIndex((c) => c.id === deleteCommentPayload.id);
+
+            // Splice it out
+            updatedCommentsList[journalEntryId].splice(
+              indexOfDeletedComment,
+              1
+            );
+
+            // Update comment count and delete comment from list
+            updatedJournalEntryList[updatedJournalIndex].commentCount--;
+
+            return {
+              updatedCommentsList,
+              updatedJournalEntryList,
+            };
+          })(),
+        ]);
+
+        success && success();
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_COMMENTS_DELETE",
+          payload: {
+            updatedCommentsList: updated.updatedCommentsList,
+            updatedJournalEntryList: updated.updatedJournalEntryList,
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.evaluation.notifications.deleteJournalComments.error",
+              err.message
+            ),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -2037,4 +2455,8 @@ export {
   loadBasePriceFromServer,
   archiveStudent,
   deleteAssessmentRequest,
+  loadEvaluationJournalCommentsFromServer,
+  createEvaluationJournalComment,
+  updateEvaluationJournalComment,
+  deleteEvaluationJournalComment,
 };
