@@ -101,11 +101,11 @@
 }
 
 .material-page__title--journal {
-  border-left: 3px solid $color-tertiary;
+  border-left: 3px solid $color-journal-page;
   padding: 0 0 0 6px;
 
   @include breakpoint($breakpoint-pad) {
-    border-left: 5px solid $color-tertiary;
+    border-left: 5px solid $color-journal-page;
     padding: 0 0 0 15px;
   }
 }
