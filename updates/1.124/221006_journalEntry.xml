@@ -2,7 +2,7 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
   <sql>alter table workspaceJournalEntry add column materialFieldReplyIdentifier varchar(255) after created;</sql>
-  <sql>create index ind_journalEntry on workspaceJournalEntry (materialFieldReplyIdentifier);<sql>
+  <sql>create index ind_journalEntry on workspaceJournalEntry (materialFieldReplyIdentifier);</sql>
 
   <sql>create table QueryJournalField (id bigint not null auto_increment, primary key(id));</sql>
 </update> 
