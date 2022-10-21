@@ -7,6 +7,7 @@ import mApi, { MApiError } from "~/lib/mApi";
 import { displayNotification } from "../base/notifications";
 import {
   JournalsState,
+  WorkspaceJournalFilters,
   WorkspaceJournalType,
 } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react-redux";
@@ -51,6 +52,11 @@ export type JOURNALS_DELETE = SpecificActionType<
 
 export type JOURNALS_SET_CURRENT = SpecificActionType<
   "JOURNALS_SET_CURRENT",
+  JournalActionUpdate
+>;
+
+export type JOURNALS_FILTTERS_CHANGE = SpecificActionType<
+  "JOURNALS_FILTTERS_CHANGE",
   JournalActionUpdate
 >;
 
@@ -141,6 +147,17 @@ export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
 }
 
 /**
+ * ChangeWorkspaceJournalFiltersTriggerType
+ */
+export interface ChangeWorkspaceJournalFiltersTriggerType {
+  (data: {
+    journalFilters: Partial<WorkspaceJournalFilters>;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
  * CreateWorkspaceJournalCommentInTriggerType
  */
 export interface CreateWorkspaceJournalCommentTriggerType {
@@ -200,7 +217,20 @@ const loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromSe
  */
 const loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType =
   function loadMoreCurrentWorkspaceJournalsFromServer() {
-    return loadCurrentWorkspaceJournalsHelper.bind(this, null, false);
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const currentJournalsState = getState().journals;
+
+      dispatch(
+        loadCurrentWorkspaceJournalsHelper.bind(
+          this,
+          currentJournalsState.userEntityId,
+          false
+        )
+      );
+    };
   };
 
 /**
@@ -536,6 +566,36 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
   };
 
 /**
+ * changeWorkspaceJournalFilters
+ * @param data data
+ */
+const changeWorkspaceJournalFilters: ChangeWorkspaceJournalFiltersTriggerType =
+  function changeWorkspaceJournalFilters(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const { journalFilters } = data;
+
+      const currentJournalsState = getState().journals;
+
+      dispatch({
+        type: "JOURNALS_FILTTERS_CHANGE",
+        payload: {
+          original: currentJournalsState,
+          updated: {
+            ...currentJournalsState,
+            filters: {
+              ...currentJournalsState.filters,
+              ...journalFilters,
+            },
+          },
+        },
+      });
+    };
+  };
+
+/**
  * createWorkspaceJournalComment
  * @param data data
  */
@@ -813,6 +873,7 @@ export {
   createWorkspaceJournalForCurrentWorkspace,
   updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace,
+  changeWorkspaceJournalFilters,
   setCurrentJournal,
   createWorkspaceJournalComment,
   updatedWorkspaceJournalComment,

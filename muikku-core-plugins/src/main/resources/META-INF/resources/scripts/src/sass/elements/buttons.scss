@@ -2265,3 +2265,9 @@
   background-color: $color-default-contrast;
   color: $color-default;
 }
+
+.button--journal-filter-others-active,
+.button--journal-filter-mandatory-active {
+  background-color: $color-tertiary;
+  color: $color-default;
+}
