@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -38,6 +39,7 @@ import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
@@ -332,7 +334,6 @@ public class EvaluationRESTService extends PluginRESTService {
     
     List<RestEvaluationEvent> events = new ArrayList<RestEvaluationEvent>();
     
-    
     // Cancelled assessment request
     
     List<AssessmentRequestCancellation> assessmentRequestCancellations = evaluationController.listAssessmentRequestCancellationsByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
@@ -359,10 +360,10 @@ public class EvaluationRESTService extends PluginRESTService {
     workspaceAssessments.sort(Comparator.comparing(WorkspaceAssessment::getDate));
     Set<SchoolDataIdentifier> seenWorkspaceSubjects = new HashSet<>();
     for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
-    
-      // More data from Pyramus (urgh)
+      UserEntityName assessorName = userEntityController.getName(workspaceAssessment.getAssessingUserIdentifier());
       
-      User assessor = userController.findUserByIdentifier(workspaceAssessment.getAssessingUserIdentifier());
+      // More data from Pyramus (urgh)
+
       SchoolDataIdentifier gradingScaleIdentifier = workspaceAssessment.getGradingScaleIdentifier();
       GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
       SchoolDataIdentifier gradeIdentifier = workspaceAssessment.getGradeIdentifier();
@@ -374,7 +375,7 @@ public class EvaluationRESTService extends PluginRESTService {
       RestEvaluationEvent event = new RestEvaluationEvent();
       event.setWorkspaceSubjectIdentifier(workspaceSubjectIdentifier.toId());
       event.setStudent(studentName.getDisplayName());
-      event.setAuthor(assessor.getDisplayName());
+      event.setAuthor(assessorName.getDisplayName());
       event.setDate(workspaceAssessment.getDate());
       event.setGrade(gradingScaleItem.getName());
       // TODO Why do grade and scale identifiers lack source?  
@@ -400,17 +401,12 @@ public class EvaluationRESTService extends PluginRESTService {
     List<SupplementationRequest> supplementationRequests = evaluationController.listSupplementationRequestsByStudentAndWorkspaceAndArchived(
         studentEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
     for (SupplementationRequest supplementationRequest : supplementationRequests) {
-      
-      // More data from Pyramus (urgh)
-      
       UserEntity assessorEntity = userEntityController.findUserEntityById(supplementationRequest.getUserEntityId());
-      SchoolDataIdentifier assessorIdentifier = assessorEntity.defaultSchoolDataIdentifier();
-      User assessor = userController.findUserByIdentifier(assessorIdentifier);
-      
+      UserEntityName assessorName = userEntityController.getName(assessorEntity);
       RestEvaluationEvent event = new RestEvaluationEvent();
       event.setWorkspaceSubjectIdentifier(supplementationRequest.getWorkspaceSubjectIdentifier());
       event.setStudent(studentName.getDisplayName());
-      event.setAuthor(assessor.getDisplayName());
+      event.setAuthor(assessorName.getDisplayName());
       event.setDate(supplementationRequest.getRequestDate());
       event.setIdentifier(supplementationRequest.getId().toString());
       event.setText(supplementationRequest.getRequestText());
@@ -435,6 +431,54 @@ public class EvaluationRESTService extends PluginRESTService {
       event.setText(assessmentRequest.getRequestText());
       event.setType(RestEvaluationEventType.EVALUATION_REQUEST);
       events.add(event);
+    }
+    
+    // Interim evaluation requests
+    
+    List<InterimEvaluationRequest> interimEvaluationRequests = evaluationController.listInterimEvaluationRequests(studentEntity.getId(), workspaceEntity.getId());
+    for (InterimEvaluationRequest interimEvaluationRequest : interimEvaluationRequests) {
+      RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setWorkspaceSubjectIdentifier(null);
+      event.setStudent(studentName.getDisplayName());
+      event.setAuthor(studentName.getDisplayName());
+      event.setDate(interimEvaluationRequest.getRequestDate());
+      event.setIdentifier(interimEvaluationRequest.getId().toString());
+      event.setText(interimEvaluationRequest.getRequestText());
+      event.setType(RestEvaluationEventType.INTERIM_EVALUATION_REQUEST);
+      events.add(event);
+      if (interimEvaluationRequest.getCancellationDate() != null) {
+        event = new RestEvaluationEvent();
+        event.setWorkspaceSubjectIdentifier(null);
+        event.setStudent(studentName.getDisplayName());
+        event.setAuthor(studentName.getDisplayName());
+        event.setDate(interimEvaluationRequest.getCancellationDate());
+        event.setIdentifier(interimEvaluationRequest.getId().toString());
+        event.setText(interimEvaluationRequest.getRequestText());
+        event.setType(RestEvaluationEventType.INTERIM_EVALUATION_REQUEST_CANCELLED);
+        events.add(event);
+      }
+    }
+    
+    // Interim evaluations
+    
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(
+        workspaceEntity,
+        WorkspaceMaterialAssignmentType.INTERIM_EVALUATION,
+        BooleanPredicate.IGNORE);
+    for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+      WorkspaceMaterialEvaluation evaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, studentEntity);
+      if (evaluation != null) {
+        UserEntity assessor = userEntityController.findUserEntityById(evaluation.getAssessorEntityId());
+        RestEvaluationEvent event = new RestEvaluationEvent();
+        event.setWorkspaceSubjectIdentifier(null);
+        event.setStudent(studentName.getDisplayName());
+        event.setAuthor(userEntityController.getName(assessor).getDisplayName());
+        event.setDate(evaluation.getEvaluated());
+        event.setIdentifier(evaluation.getId().toString());
+        event.setText(evaluation.getVerbalAssessment());
+        event.setType(RestEvaluationEventType.INTERIM_EVALUATION);
+        events.add(event);
+      }
     }
     
     // Sort and return
@@ -521,6 +565,20 @@ public class EvaluationRESTService extends PluginRESTService {
     SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(userEntityId, workspaceMaterialId, Boolean.FALSE);
     if (supplementationRequest != null) {
       evaluationController.deleteSupplementationRequest(supplementationRequest);
+    }
+    
+    // Archive related interim evaluation requests
+    
+    if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
+      WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(workspaceMaterial);
+      List<InterimEvaluationRequest> requests = evaluationController.listInterimEvaluationRequests(
+          userEntityId,
+          workspaceEntity.getId(),
+          workspaceMaterial.getId(),
+          Boolean.FALSE);
+      for (InterimEvaluationRequest request : requests) {
+        evaluationController.archiveInterimEvaluationRequest(request);
+      }
     }
 
     // WorkspaceMaterialEvaluation to RestAssessment

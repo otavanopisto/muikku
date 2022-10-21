@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -27,10 +28,12 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.InterimEvaluationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
@@ -121,6 +124,9 @@ public class EvaluationController {
   @Inject
   private AssessmentRequestCancellationDAO assessmentRequestCancellationDAO;
   
+  @Inject
+  private InterimEvaluationRequestDAO interimEvaluationRequestDAO;
+  
   /* Workspace activity */
   
   public List<WorkspaceActivity> listWorkspaceActivities(SchoolDataIdentifier studentIdentifier,
@@ -174,6 +180,30 @@ public class EvaluationController {
         activity.setText(supplementationRequest.getRequestText());
         activity.setDate(supplementationRequest.getRequestDate());
         activity.setState(WorkspaceActivityState.SUPPLEMENTATION_REQUESTED);
+      }
+      
+      // Interim evaluation request, if one exists and is newer than activity date so far
+      
+      InterimEvaluationRequest interimEvaluationRequest = findLatestInterimEvaluationRequest(userEntity.getId(), workspaceEntity.getId());
+      if (interimEvaluationRequest != null && interimEvaluationRequest.getRequestDate().after(activity.getDate())) {
+        activity.setText(interimEvaluationRequest.getRequestText());
+        activity.setDate(interimEvaluationRequest.getRequestDate());
+        activity.setState(WorkspaceActivityState.INTERIM_EVALUATION_REQUESTED);
+      }
+      
+      // Interim evaluation, if one exists and is newer than activity date so far
+      
+      List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(
+          workspaceEntity,
+          WorkspaceMaterialAssignmentType.INTERIM_EVALUATION,
+          BooleanPredicate.IGNORE);
+      for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+        WorkspaceMaterialEvaluation evaluation = findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+        if (evaluation != null && evaluation.getEvaluated().after(activity.getDate())) {
+          activity.setText(evaluation.getVerbalAssessment());
+          activity.setDate(evaluation.getEvaluated());
+          activity.setState(WorkspaceActivityState.INTERIM_EVALUATION);
+        }
       }
       
       // Optional assignment statistics
@@ -235,6 +265,29 @@ public class EvaluationController {
       }
     }
     return activities;
+  }
+  
+  public InterimEvaluationRequest findLatestInterimEvaluationRequest(Long userEntityId, Long workspaceEntityId) {
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndWorkspaceAndArchived(userEntityId, workspaceEntityId, Boolean.FALSE);
+    if (requests.size() == 0) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(InterimEvaluationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
+  }
+  
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(Long userEntityId, Long workspaceEntityId) {
+    return interimEvaluationRequestDAO.listByUserAndWorkspace(userEntityId, workspaceEntityId);
+  }
+
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(Long userEntityId, Long workspaceEntityId, Long workspaceMaterialId, Boolean archived) {
+    return interimEvaluationRequestDAO.listByUserAndWorkspaceAndMaterialAndArchived(userEntityId, workspaceEntityId, workspaceMaterialId, archived);
+  }
+  
+  public void archiveInterimEvaluationRequest(InterimEvaluationRequest interimEvaluationRequest) {
+    interimEvaluationRequestDAO.archive(interimEvaluationRequest);
   }
   
   public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Long workspaceMaterialId, Date requestDate, String requestText) {

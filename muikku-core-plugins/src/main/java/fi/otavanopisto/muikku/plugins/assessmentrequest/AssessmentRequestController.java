@@ -131,6 +131,12 @@ public class AssessmentRequestController {
     case SUPPLEMENTATION_REQUESTED:
       state = WorkspaceAssessmentState.INCOMPLETE;
       break;
+    case INTERIM_EVALUATION_REQUESTED:
+      state = WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST;
+      break;
+    case INTERIM_EVALUATION:
+      state = WorkspaceAssessmentState.INTERIM_EVALUATION;
+      break;
     case ONGOING:
     case TRANSFERRED:
     default:
@@ -188,6 +194,12 @@ public class AssessmentRequestController {
         break;
       case SUPPLEMENTATION_REQUESTED:
         state = WorkspaceAssessmentState.INCOMPLETE;
+        break;
+      case INTERIM_EVALUATION_REQUESTED:
+        state = WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST;
+        break;
+      case INTERIM_EVALUATION:
+        state = WorkspaceAssessmentState.INTERIM_EVALUATION;
         break;
       case ONGOING:
       case TRANSFERRED:

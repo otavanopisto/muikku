@@ -4,13 +4,15 @@ import java.util.Date;
 
 public class WorkspaceAssessmentState {
 
-  public static final String UNASSESSED = "unassessed";       // no request, no grade
-  public static final String PENDING = "pending";             // active request, no grade
-  public static final String PENDING_PASS = "pending_pass";   // active request, earlier passing grade
-  public static final String PENDING_FAIL = "pending_fail";   // active request, earlier failing grade
-  public static final String PASS = "pass";                   // no request, passing grade
-  public static final String FAIL = "fail";                   // no request, failing grade
-  public static final String INCOMPLETE = "incomplete";       // teacher has requested changes
+  public static final String UNASSESSED = "unassessed";                                   // no request, no grade
+  public static final String PENDING = "pending";                                         // active request, no grade
+  public static final String PENDING_PASS = "pending_pass";                               // active request, earlier passing grade
+  public static final String PENDING_FAIL = "pending_fail";                               // active request, earlier failing grade
+  public static final String PASS = "pass";                                               // no request, passing grade
+  public static final String FAIL = "fail";                                               // no request, failing grade
+  public static final String INCOMPLETE = "incomplete";                                   // teacher has requested changes
+  public static final String INTERIM_EVALUATION_REQUEST = "interim_evalution_request";    // interim evaluation request
+  public static final String INTERIM_EVALUATION = "interim_evalution";                    // interim evaluation
 
   public WorkspaceAssessmentState() {
   }
