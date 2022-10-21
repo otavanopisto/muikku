@@ -15,6 +15,7 @@ import {
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
+import Link from "~/components/general/link";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceType,
@@ -217,24 +218,24 @@ const CKEditorConfig = (
  */
 interface MaterialPageTypeConfic {
   type: AssignmentType;
-  activeClassMod: string;
+  classNameMod: string;
   text: string;
 }
 
 const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
   {
     type: "EXERCISE",
-    activeClassMod: "material-editor-exercise",
+    classNameMod: "material-editor-dropdown-exercise",
     text: "plugin.workspace.materialsManagement.pageType.excercise",
   },
   {
     type: "EVALUATED",
-    activeClassMod: "material-editor-assignment",
+    classNameMod: "material-editor-dropdown-assignment",
     text: "plugin.workspace.materialsManagement.pageType.evaluated",
   },
   {
     type: "JOURNAL",
-    activeClassMod: "material-editor-journal",
+    classNameMod: "material-editor-dropdown-journal",
     text: "plugin.workspace.materialsManagement.pageType.journal",
   },
 ];
@@ -725,7 +726,7 @@ class MaterialEditor extends React.Component<
         return "books";
 
       case "EVALUATED":
-        return "evalaute";
+        return "evaluate";
 
       case "JOURNAL":
         return "book";
@@ -753,32 +754,23 @@ class MaterialEditor extends React.Component<
       currentAssignmentType &&
       currentAssignmentType === materialPageConfig.type;
 
-    const buttonModifiers = [
-      "material-editor-change-page-type",
-      "material-editor",
-    ];
+    const activePageTypeClassName = isActive
+      ? "link--material-editor-dropdown-active"
+      : "";
 
-    if (isActive) {
-      buttonModifiers.push(materialPageConfig.activeClassMod);
-    }
+    const pageTypeClassName = materialPageConfig.classNameMod
+      ? "link--" + materialPageConfig.classNameMod
+      : "";
 
     return (
-      <Dropdown key={key}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "2.5px",
-          }}
-        >
-          <ButtonPill
-            buttonModifiers={buttonModifiers}
-            icon="puzzle"
-            onClick={this.handleChangeAssignmentType(materialPageConfig.type)}
-          />
-          {this.props.i18n.text.get(materialPageConfig.text)}
-        </div>
-      </Dropdown>
+      <Link
+        key={key}
+        className={`link link--full link--material-editor-dropdown ${pageTypeClassName} ${activePageTypeClassName}`}
+        onClick={this.handleChangeAssignmentType(materialPageConfig.type)}
+      >
+        <span className="link__icon icon-puzzle"></span>
+        <span>{this.props.i18n.text.get(materialPageConfig.text)}</span>
+      </Link>
     );
   };
 
@@ -955,7 +947,7 @@ class MaterialEditor extends React.Component<
             <Dropdown
               openByHover={false}
               persistent
-              content={MATERIAL_PAGE_TYPE_CONFIGS.map((config, index) =>
+              items={MATERIAL_PAGE_TYPE_CONFIGS.map((config, index) =>
                 this.renderAssignmentPageButton(config, index)
               )}
             >

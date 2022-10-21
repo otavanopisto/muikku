@@ -391,7 +391,11 @@
 }
 
 .evaluation-modal__item-header-title--journal {
-  border-left-color: $color-journal;
+  border-left-color: $color-journal-entry;
+}
+
+.evaluation-modal__item-header-title--journal-mandatory {
+  border-left-color: $color-journal-page;
 }
 
 .evaluation-modal__item-header-title--assignment {

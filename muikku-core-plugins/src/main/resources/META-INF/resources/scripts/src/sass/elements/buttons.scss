@@ -1730,13 +1730,13 @@
 }
 
 .button-pill--material-editor-journal {
-  background: $color-tertiary;
-  border-color: $color-tertiary;
+  background: $color-journal-page;
+  border-color: $color-journal-page;
   color: $color-default;
 
   &:hover {
-    background: $color-tertiary;
-    border-color: $color-tertiary;
+    background: $color-journal-page;
+    border-color: $color-journal-page;
   }
 }
 
@@ -2266,8 +2266,11 @@
   color: $color-default;
 }
 
-.button--journal-filter-others-active,
-.button--journal-filter-mandatory-active {
-  background-color: $color-tertiary;
+.button--journal-filter {
+  margin: 0 10px 0 0;
+}
+
+.button--journal-filter-active {
+  background-color: $color-list-selected-background;
   color: $color-default;
 }

@@ -183,8 +183,8 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
           onClick={handleChangeJournalFilterClick("showMandatory")}
           buttonModifiers={
             journalFilters.showMandatory
-              ? ["journal-filter-mandatory", "journal-filter-mandatory-active"]
-              : ["journal-filter-mandatory"]
+              ? ["journal-filter", "journal-filter-active"]
+              : ["journal-filter"]
           }
         >
           Pakolliset
@@ -193,8 +193,8 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
           onClick={handleChangeJournalFilterClick("showOthers")}
           buttonModifiers={
             journalFilters.showOthers
-              ? ["journal-filter-others", "journal-filter-others-active"]
-              : ["journal-filter-others"]
+              ? ["journal-filter", "journal-filter-active"]
+              : ["journal-filter"]
           }
         >
           Muut
