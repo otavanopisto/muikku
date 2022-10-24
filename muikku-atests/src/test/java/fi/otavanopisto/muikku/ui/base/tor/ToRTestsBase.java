@@ -106,6 +106,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForContent(".workspace-assessment__literal .workspace-assessment__literal-data", 5);
         assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
+        archiveUserByEmail(student.getEmail());
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -205,6 +206,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForVisible(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p");
         assertTextIgnoreCase(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p", "Test evaluation.");
       } finally {
+          archiveUserByEmail(student.getEmail());
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());
       }
@@ -256,6 +258,7 @@ public class ToRTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label", "Äidinkieli");
       assertTextIgnoreCase(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label + div.application-sub-panel__summary-item-description", "Osallistumisoikeuteen vaaditut kurssisuoritukset 5 / 5");
     }finally {
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -288,6 +291,7 @@ public class ToRTestsBase extends AbstractUITest {
       waitForVisible(".application-sub-panel__notification-body--studies-yo-subjects>div");
       assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään ainetta kirjoitettavaksesi. Valitse aineet HOPS-lomakkeelta.");
     }finally {
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -342,6 +346,7 @@ public class ToRTestsBase extends AbstractUITest {
       waitForPresent(".application-sub-panel__card-highlight--summary-returned");
       assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
     } finally {
+      archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();
       mockBuilder.wiremockReset();
     }
@@ -374,7 +379,9 @@ public class ToRTestsBase extends AbstractUITest {
       
       assertText(".notes .notes__item .notes__item-header span", "Task for myself.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+//    "more actions" vertical menu
       waitAndClick(".notes .notes__item .icon-more_vert");
+//    Mark as done link
       waitAndClick(".dropdown__container-item");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       assertText(".notes .notes__item .notes__item-status.notes__item-status--done", "Done");
@@ -384,8 +391,8 @@ public class ToRTestsBase extends AbstractUITest {
       waitAndClick(".tabs--notes #archived");
       assertText(".notes .notes__item .notes__item-header span", "Task for myself.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
-        
     } finally {
+      archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();
       mockBuilder.wiremockReset();
     }
