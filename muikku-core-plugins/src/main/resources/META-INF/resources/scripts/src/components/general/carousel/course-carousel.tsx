@@ -10,7 +10,7 @@ import Button from "~/components/general/button";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { useCourseCarousel } from "./hooks/use-course-carousel";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
-import { Suggestion } from "~/@types/shared";
+import { SuggestedCourse } from "~/@types/shared";
 import Carousel from "react-multi-carousel";
 import WorkspaceDescriptionDialog from "./workspace-description-dialog";
 
@@ -89,17 +89,10 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
 };
 
 /**
- * Course
- */
-export interface Course extends Suggestion {
-  suggestedAsNext: boolean;
-}
-
-/**
  * CourseCarouselItemProps
  */
 interface CourseCarouselItemProps {
-  course: Course;
+  course: SuggestedCourse;
   suggestedBySupervisor?: boolean;
 }
 

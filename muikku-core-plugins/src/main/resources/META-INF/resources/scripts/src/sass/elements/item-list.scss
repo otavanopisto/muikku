@@ -114,6 +114,12 @@
   }
 }
 
+.item-list__item-actions {
+  align-items: center;
+  display: flex;
+  padding: 0 15px 15px 10px;
+}
+
 // List item icons
 .item-list__icon {
   align-items: center;
