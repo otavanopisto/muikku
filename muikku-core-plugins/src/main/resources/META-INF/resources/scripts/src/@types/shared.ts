@@ -528,6 +528,13 @@ export interface Suggestion {
 }
 
 /**
+ * Course
+ */
+export interface SuggestedCourse extends Suggestion {
+  suggestedAsNext: boolean;
+}
+
+/**
  * FOR SOME REASON... backend's course type is defined
  * in finnish in the backend side
  */

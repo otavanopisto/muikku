@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
@@ -12,15 +11,15 @@ import Navigation, {
 import { WorkspaceType } from "~/reducers/workspaces/index";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
-import {
-  loadStudentsOfWorkspace,
-  loadCurrentWorkspaceJournalsFromServer,
-} from "~/actions/workspaces";
-import {
-  LoadUsersOfWorkspaceTriggerType,
-  LoadCurrentWorkspaceJournalsFromServerTriggerType,
-} from "~/actions/workspaces/index";
+import { loadStudentsOfWorkspace } from "~/actions/workspaces";
+import { LoadUsersOfWorkspaceTriggerType } from "~/actions/workspaces/index";
 import { WorkspaceStudentListType } from "~/reducers/user-index";
+import { AnyActionType } from "~/actions";
+import { JournalsState } from "../../../../reducers/workspaces/journals";
+import {
+  LoadCurrentWorkspaceJournalsFromServerTriggerType,
+  loadCurrentWorkspaceJournalsFromServer,
+} from "~/actions/workspaces/journals";
 
 /**
  * NavigationAsideProps
@@ -28,6 +27,7 @@ import { WorkspaceStudentListType } from "~/reducers/user-index";
 interface NavigationAsideProps {
   i18n: i18nType;
   workspace: WorkspaceType;
+  journalsState: JournalsState;
   status: StatusType;
   loadStudents: LoadUsersOfWorkspaceTriggerType;
   loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType;
@@ -93,7 +93,7 @@ class NavigationAside extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { workspace } = this.props;
+    const { workspace, journalsState } = this.props;
 
     if (!workspace) {
       return null;
@@ -108,9 +108,9 @@ class NavigationAside extends React.Component<
      * If all student is showed
      */
     const allSelected =
-      workspace !== null &&
-      workspace.journals !== null &&
-      workspace.journals.userEntityId === null;
+      journalsState !== null &&
+      journalsState.journals !== null &&
+      journalsState.userEntityId === null;
 
     const navigationElementList: JSX.Element[] = [];
 
@@ -132,10 +132,7 @@ class NavigationAside extends React.Component<
         navigationElementList.push(
           <NavigationElement
             key={student.userEntityId}
-            isActive={
-              student.userEntityId ===
-              this.props.workspace.journals.userEntityId
-            }
+            isActive={student.userEntityId === journalsState.userEntityId}
             icon="user"
             onClick={this.handleOnStudentClick(student.userEntityId)}
           >
@@ -145,7 +142,7 @@ class NavigationAside extends React.Component<
       );
 
     return (
-      <Navigation>
+      <Navigation key="journal-navigation-11">
         {!this.props.status.isStudent && (
           <NavigationTopic
             name={this.props.i18n.text.get(
@@ -169,6 +166,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
+    journalsState: state.journals,
     status: state.status,
   };
 }
@@ -178,7 +176,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStudents: loadStudentsOfWorkspace,

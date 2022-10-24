@@ -402,26 +402,35 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         )}
       >
         {this.state.materials.map((node, nodeIndex) => {
-          const isSectionViewRestricted =
+          // Boolean if there is view Restriction for toc topic
+          const isTocTopicViewRestricted =
             node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
             node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
 
-          const isSectionViewRestrictedVisible =
-            isSectionViewRestricted &&
-            !this.props.status.isStudent &&
-            this.props.status.loggedIn;
+          // section is restricted in following cases:
+          // section is restricted for logged in users and users is not logged in...
+          // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
+          const isTocTopicViewRestrictedFromUser =
+            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+              !this.props.status.loggedIn) ||
+            (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+              !this.props.workspace.isCourseMember &&
+              (this.props.status.isStudent || !this.props.status.loggedIn));
 
-          const icon: string = isSectionViewRestrictedVisible
-            ? "restriction"
-            : null;
+          const icon: string =
+            isTocTopicViewRestricted &&
+            !this.props.status.isStudent &&
+            this.props.status.loggedIn
+              ? "restriction"
+              : null;
 
           const iconTitle: string =
-            isSectionViewRestricted && !this.props.status.isStudent
+            isTocTopicViewRestricted && !this.props.status.isStudent
               ? this.buildViewRestrictionLocaleString(node.viewRestrict)
               : null;
 
           const className: string =
-            isSectionViewRestricted && !this.props.status.isStudent
+            isTocTopicViewRestricted && !this.props.status.isStudent
               ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
               : "toc__section-container";
 
@@ -439,114 +448,114 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               iconAfter={icon}
               iconAfterTitle={iconTitle}
             >
-              {node.children
-                .map((subnode) => {
-                  if (isSectionViewRestricted) {
-                    return null;
-                  }
-                  const isViewRestrictedVisible =
-                    subnode.viewRestrict ===
-                      MaterialViewRestriction.LOGGED_IN ||
-                    subnode.viewRestrict ===
-                      MaterialViewRestriction.WORKSPACE_MEMBERS;
+              {!isTocTopicViewRestrictedFromUser &&
+                node.children
+                  .map((subnode) => {
+                    // Boolean if there is view Restriction for toc element
+                    const isTocElementViewRestricted =
+                      subnode.viewRestrict ===
+                        MaterialViewRestriction.LOGGED_IN ||
+                      subnode.viewRestrict ===
+                        MaterialViewRestriction.WORKSPACE_MEMBERS;
 
-                  const isAssignment = subnode.assignmentType === "EVALUATED";
-                  const isExercise = subnode.assignmentType === "EXERCISE";
+                    const isAssignment = subnode.assignmentType === "EVALUATED";
+                    const isExercise = subnode.assignmentType === "EXERCISE";
 
-                  //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
-                  const modifier = isAssignment
-                    ? "assignment"
-                    : isExercise
-                    ? "exercise"
-                    : null;
-
-                  const icon: string =
-                    isViewRestrictedVisible &&
-                    !this.props.status.isStudent &&
-                    this.props.status.loggedIn
-                      ? "restriction"
+                    //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
+                    const modifier = isAssignment
+                      ? "assignment"
+                      : isExercise
+                      ? "exercise"
                       : null;
 
-                  const iconTitle: string =
-                    isViewRestrictedVisible &&
-                    !this.props.status.isStudent &&
-                    this.props.status.loggedIn
-                      ? this.buildViewRestrictionLocaleString(
-                          subnode.viewRestrict
-                        )
-                      : null;
+                    const icon: string =
+                      isTocElementViewRestricted &&
+                      !this.props.status.isStudent &&
+                      this.props.status.loggedIn
+                        ? "restriction"
+                        : null;
 
-                  const className: string =
-                    isViewRestrictedVisible &&
-                    !this.props.status.isStudent &&
-                    this.props.status.loggedIn
-                      ? this.buildViewRestrictionModifiers(
-                          subnode.viewRestrict,
-                          false
-                        )
-                      : null;
+                    const iconTitle: string =
+                      isTocElementViewRestricted &&
+                      !this.props.status.isStudent &&
+                      this.props.status.loggedIn
+                        ? this.buildViewRestrictionLocaleString(
+                            subnode.viewRestrict
+                          )
+                        : null;
 
-                  const pageElement = (
-                    <TocElement
-                      modifier={modifier}
-                      ref={subnode.workspaceMaterialId + ""}
-                      key={subnode.workspaceMaterialId}
-                      isActive={
-                        this.props.activeNodeId === subnode.workspaceMaterialId
-                      }
-                      className={className}
-                      isHidden={subnode.hidden || node.hidden}
-                      disableScroll
-                      iconAfter={icon}
-                      iconAfterTitle={iconTitle}
-                      hash={
-                        this.props.doNotSetHashes
-                          ? null
-                          : "p-" + subnode.workspaceMaterialId
-                      }
-                    >
-                      {subnode.title}
-                    </TocElement>
-                  );
+                    const className: string =
+                      isTocElementViewRestricted &&
+                      !this.props.status.isStudent &&
+                      this.props.status.loggedIn
+                        ? this.buildViewRestrictionModifiers(
+                            subnode.viewRestrict,
+                            false
+                          )
+                        : null;
 
-                  if (!isEditable) {
-                    if (subnode.hidden) {
-                      return null;
-                    }
-                    return pageElement;
-                  } else {
-                    return (
-                      <Draggable
-                        interactionData={subnode}
-                        interactionGroup="TOC_SUBNODE"
+                    const pageElement = (
+                      <TocElement
+                        modifier={modifier}
+                        ref={subnode.workspaceMaterialId + ""}
                         key={subnode.workspaceMaterialId}
-                        className="toc__item--drag-container"
-                        handleSelector=".toc__item--drag-handle"
-                        onInteractionWith={this.onInteractionBetweenSubnodes.bind(
-                          this,
-                          subnode
-                        )}
-                        ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
-                        enableTouch={this.props.enableTouch}
+                        isActive={
+                          this.props.activeNodeId ===
+                          subnode.workspaceMaterialId
+                        }
+                        className={className}
+                        isHidden={subnode.hidden || node.hidden}
+                        disableScroll
+                        iconAfter={icon}
+                        iconAfterTitle={iconTitle}
+                        hash={
+                          this.props.doNotSetHashes
+                            ? null
+                            : "p-" + subnode.workspaceMaterialId
+                        }
                       >
-                        <div className="toc__item--drag-handle icon-move"></div>
-                        {pageElement}
-                      </Draggable>
+                        {subnode.title}
+                      </TocElement>
                     );
-                  }
-                })
-                .concat(
-                  isEditable ? (
-                    <Droppable
-                      key="LAST"
-                      interactionData={node.workspaceMaterialId}
-                      interactionGroup="TOC_SUBNODE"
-                      className="toc__element--drag-placeholder-container"
-                    ></Droppable>
-                  ) : (
-                    []
-                  )
-                )}
+
+                    if (!isEditable) {
+                      if (subnode.hidden) {
+                        return null;
+                      }
+                      return pageElement;
+                    } else {
+                      return (
+                        <Draggable
+                          interactionData={subnode}
+                          interactionGroup="TOC_SUBNODE"
+                          key={subnode.workspaceMaterialId}
+                          className="toc__item--drag-container"
+                          handleSelector=".toc__item--drag-handle"
+                          onInteractionWith={this.onInteractionBetweenSubnodes.bind(
+                            this,
+                            subnode
+                          )}
+                          ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
+                          enableTouch={this.props.enableTouch}
+                        >
+                          <div className="toc__item--drag-handle icon-move"></div>
+                          {pageElement}
+                        </Draggable>
+                      );
+                    }
+                  })
+                  .concat(
+                    isEditable ? (
+                      <Droppable
+                        key="LAST"
+                        interactionData={node.workspaceMaterialId}
+                        interactionGroup="TOC_SUBNODE"
+                        className="toc__element--drag-placeholder-container"
+                      ></Droppable>
+                    ) : (
+                      []
+                    )
+                  )}
             </TocTopic>
           );
 

@@ -1,3 +1,4 @@
+import { JournalComment } from "~/@types/journal";
 import {
   WorkspaceType,
   MaterialContentNodeListType,
@@ -93,6 +94,13 @@ export interface EvaluationStudyDiaryEvent {
   title: string;
   userEntityId: number;
   workspaceEntityId: number;
+}
+
+/**
+ * EvaluationJournalCommentsByJournal
+ */
+export interface EvaluationJournalCommentsByJournal {
+  [journalEntryId: number]: JournalComment[];
 }
 
 /**
