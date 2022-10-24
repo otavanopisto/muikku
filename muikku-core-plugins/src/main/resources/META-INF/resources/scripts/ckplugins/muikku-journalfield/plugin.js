@@ -1,29 +1,29 @@
 (function() {
   'use strict'
-  
+
   /* global CKEDITOR */
 
-  CKEDITOR.plugins.add('muikku-journal', {
+  CKEDITOR.plugins.add('muikku-journalfield', {
     requires: 'muikku-fields',
-    icons: 'muikkujournalfield',
+    icons: 'muikku-journalfield',
     hidpi: true,
     lang: 'fi,en',
     init: function(editor) {
-      editor.ui.addButton('muikku-journal', {
-        label: editor.lang['muikku-journal'].toolbarMenu,
-        command: 'createMuikkuJournal',
+      editor.ui.addButton('muikku-journalfield', {
+        label: editor.lang['muikku-journalfield'].toolbarMenu,
+        command: 'createMuikkuJournalField',
         toolbar: 'insert,20'
       });
-      editor.addCommand('createMuikkuJournal', {
+      editor.addCommand('createMuikkuJournalField', {
         exec: function (editor) {
 
           // JSON representation
-          
+
           var contentJson = {};
           contentJson.name = editor.createRandomMuikkuFieldName();
-          
+
           // Object representation
-          
+
           var object = new CKEDITOR.dom.element('cke:object');
           object.setAttribute('type', 'application/vnd.muikku.field.journal');
           var paramType = new CKEDITOR.dom.element('cke:param');
@@ -36,17 +36,17 @@
           object.append(paramContent);
 
           // Default UI representation
-          
+
           var input = new CKEDITOR.dom.element('input');
           input.setAttribute('name', contentJson.name);
           input.setAttribute('type', 'file');
           object.append(input);
 
           // CKEditor UI representation
-          
-          var fakeElement = editor.createFakeElement(object, 'muikku-journal', 'object');
-          fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-journal') + 'gfx/muikku-placeholder-journalfield.gif'); 
-          fakeElement.setAttribute('title', editor.lang['muikku-journal'].uiElement);
+
+          var fakeElement = editor.createFakeElement(object, 'muikku-journalfield', 'object');
+          fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-journalfield') + 'gfx/muikku-placeholder-journalfield.gif');
+          fakeElement.setAttribute('title', editor.lang['muikku-journalfield'].uiElement);
           editor.insertElement(fakeElement);
         }
       });
@@ -59,11 +59,11 @@
         dataFilter.addRules({
           elements: {
             'cke:object': function(element) {
-              var type = element.attributes.type; 
+              var type = element.attributes.type;
               if (type == 'application/vnd.muikku.field.journal') {
-                var fakeElement = editor.createFakeParserElement(element, 'muikku-journal', 'object');
-                fakeElement.attributes['src'] = path + 'gfx/muikku-placeholder-journalfield.gif'; 
-                fakeElement.attributes['title'] = editor.lang['muikku-journal'].uiElement;
+                var fakeElement = editor.createFakeParserElement(element, 'muikku-journalfield', 'object');
+                fakeElement.attributes['src'] = path + 'gfx/muikku-placeholder-journalfield.gif';
+                fakeElement.attributes['title'] = editor.lang['muikku-journalfield'].uiElement;
                 return fakeElement;
               }
             }
@@ -72,5 +72,5 @@
       }
     }
   });
-  
+
 }).call(this);

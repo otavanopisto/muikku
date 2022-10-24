@@ -46,7 +46,7 @@ const PLUGINS = {
   "muikku-audio-defaults": "/scripts/ckplugins/muikku-audio-defaults/",
   "muikku-image-target": "/scripts/ckplugins/muikku-image-target/",
   "muikku-embedded": "/scripts/ckplugins/muikku-embedded/",
-  "muikku-journal": "/scripts/ckplugins/muikku-journal/",
+  "muikku-journalfield": "/scripts/ckplugins/muikku-journalfield/",
 };
 const pluginsLoaded: any = {};
 
