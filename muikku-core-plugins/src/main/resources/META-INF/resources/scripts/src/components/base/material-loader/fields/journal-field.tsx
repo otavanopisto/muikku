@@ -220,13 +220,12 @@ export default class JournalField extends React.Component<
           />
         );
       } else {
-        unloadedField = <textarea className="material-page__memofield" />;
+        unloadedField = <textarea className="material-page__journalfield" />;
       }
 
       return (
-        <span ref="base" className="material-page__memofield-wrapper">
+        <span ref="base" className="material-page__journalfield-wrapper">
           {unloadedField}
-          <span className="material-page__counter-wrapper" />
         </span>
       );
     }
@@ -284,7 +283,7 @@ export default class JournalField extends React.Component<
     // and here the element itself
     return (
       <span
-        className={`material-page__memofield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__journalfield-wrapper ${fieldSavedStateClass}`}
       >
         <Synchronizer
           synced={this.state.synced}
@@ -293,26 +292,6 @@ export default class JournalField extends React.Component<
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         {field}
-        <span className="material-page__counter-wrapper">
-          <span className="material-page__word-count-container">
-            <span className="material-page__word-count-title">
-              {this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}
-            </span>
-            <span className="material-page__word-count">
-              {this.state.words}
-            </span>
-          </span>
-          <span className="material-page__character-count-container">
-            <span className="material-page__character-count-title">
-              {this.props.i18n.text.get(
-                "plugin.workspace.memoField.characterCount"
-              )}
-            </span>
-            <span className="material-page__character-count">
-              {this.state.characters}
-            </span>
-          </span>
-        </span>
       </span>
     );
   }

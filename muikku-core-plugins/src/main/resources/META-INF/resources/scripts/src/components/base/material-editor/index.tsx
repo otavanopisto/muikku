@@ -709,10 +709,10 @@ class MaterialEditor extends React.Component<
           return "journal";
 
         default:
-          return "textual";
+          return "theory";
       }
     }
-    return "textual";
+    return "theory";
   };
 
   /**
