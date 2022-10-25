@@ -595,7 +595,7 @@ class MaterialLoader extends React.Component<
   }
 
   /**
-   * materialPageType
+   * returnMaterialPageType
    * @returns material page type
    */
   returnMaterialPageType = () => {
