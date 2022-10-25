@@ -23,6 +23,13 @@ import {
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
+import { IconButton } from "../../../general/button";
+import {
+  SubscribeDiscussionArea,
+  subscribeDiscussionArea,
+  UnsubscribeDiscustionArea,
+  unsubscribeDiscussionArea,
+} from "../../../../actions/discussion/index";
 import {
   ShowOnlySubscribedThreads,
   showOnlySubscribedThreads,
@@ -36,6 +43,8 @@ interface DiscussionToolbarProps {
   discussion: DiscussionType;
   status: StatusType;
   showOnlySubscribedThreads: ShowOnlySubscribedThreads;
+  subscribeDiscussionArea: SubscribeDiscussionArea;
+  unsubscribeDiscussionArea: UnsubscribeDiscustionArea;
 }
 
 /**
@@ -60,6 +69,28 @@ class CommunicatorToolbar extends React.Component<
     this.onSelectChange = this.onSelectChange.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
   }
+
+  /**
+   * toggleAreaSubscribeClick
+   * @param e e
+   */
+  toggleAreaSubscribeClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    const subscribed =
+      this.props.discussion.areaId &&
+      this.props.discussion.subscribedAreas.find(
+        (sArea) => sArea.areaId === this.props.discussion.areaId
+      ) !== undefined;
+
+    subscribed
+      ? this.props.unsubscribeDiscussionArea({
+          areaId: this.props.discussion.areaId,
+        })
+      : this.props.subscribeDiscussionArea({
+          areaId: this.props.discussion.areaId,
+        });
+  };
 
   /**
    * onSelectChange
@@ -143,6 +174,11 @@ class CommunicatorToolbar extends React.Component<
       );
     }
 
+    const areaIsSubscribed =
+      this.props.discussion.subscribedAreas.findIndex(
+        (sArea) => sArea.areaId === this.props.discussion.areaId
+      ) !== -1;
+
     return (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
@@ -155,6 +191,7 @@ class CommunicatorToolbar extends React.Component<
               />
             </NewArea>
           ) : null}
+
           {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ? (
             <ModifyArea>
               <ButtonPill
@@ -167,6 +204,7 @@ class CommunicatorToolbar extends React.Component<
               />
             </ModifyArea>
           ) : null}
+
           {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? (
             <DeleteArea>
               <ButtonPill
@@ -179,6 +217,7 @@ class CommunicatorToolbar extends React.Component<
               />
             </DeleteArea>
           ) : null}
+
           <div className="form-element">
             <label htmlFor="discussionAreaSelect" className="visually-hidden">
               {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
@@ -197,13 +236,29 @@ class CommunicatorToolbar extends React.Component<
                   "plugin.discussion.browseareas.subscribtions"
                 )}
               </option>
-              {this.props.discussion.areas.map((area) => (
-                <option key={area.id} value={area.id}>
-                  {area.name}
-                </option>
-              ))}
+              {this.props.discussion.areas.map((area) => {
+                const subscribed =
+                  this.props.discussion.subscribedAreas.findIndex(
+                    (sArea) => sArea.areaId === area.id
+                  ) !== -1;
+
+                return (
+                  <option key={area.id} value={area.id}>
+                    {area.name}
+                    {subscribed ? "TODO:(Tilattu)" : "TODO:(Ei tilattu)"}
+                  </option>
+                );
+              })}
             </select>
           </div>
+
+          {this.props.discussion.areaId && (
+            <IconButton
+              onClick={this.toggleAreaSubscribeClick}
+              icon={areaIsSubscribed ? "bookmark-full" : "bookmark-empty"}
+              buttonModifiers={["discussion-toolbar"]}
+            />
+          )}
         </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>
     );
@@ -230,6 +285,8 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       showOnlySubscribedThreads,
+      subscribeDiscussionArea,
+      unsubscribeDiscussionArea,
     },
     dispatch
   );

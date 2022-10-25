@@ -340,7 +340,7 @@ class DicussionNewThread extends SessionStateComponent<
               onChange={this.toggleSubscribeThread}
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
-              Tilaa ketju
+              TODO: Tilaa ketju
             </label>
           </div>
         </div>

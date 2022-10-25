@@ -53,6 +53,7 @@ import {
   setDiscussionWorkpaceId,
   loadSubscribedDiscussionThreadList,
   showOnlySubscribedThreads,
+  loadSubscribedDiscussionAreaList,
 } from "~/actions/discussion";
 
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
@@ -543,7 +544,8 @@ export default class Workspace extends React.Component<
         setDiscussionWorkpaceId(state.status.currentWorkspaceId) as Action
       );
 
-      // Load subscribed threads every time
+      // Load subscribed areas and threads every time
+      this.props.store.dispatch(loadSubscribedDiscussionAreaList({}) as Action);
       this.props.store.dispatch(
         loadSubscribedDiscussionThreadList({}) as Action
       );
