@@ -23,10 +23,12 @@ import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
+import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
@@ -409,7 +411,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestEnvironments.Browser.EDGE
     }
   )
-  public void workspaceSignupPermissionsTest() throws Exception {
+  public void workspaceSignupTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
@@ -425,6 +427,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -441,7 +444,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         logout();
-        mockBuilder.mockLogin(student);
+        mockBuilder.mockLogin(student).mockEmptyStudyActivity();
         login();
         navigate("/coursepicker", false);
         waitForVisible(".application-panel__actions-aside ");
@@ -450,8 +453,34 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick(".application-panel__content-main.loader-empty .application-list__item-header--course");
         waitAndClick(".button--coursepicker-course-action:nth-of-type(2)");
         assertPresent(".dialog--workspace-signup-dialog .button--standard-ok");
+        waitForVisible(".dialog__content-row #signUpMessage");
+        sendKeys("#signUpMessage", "Hello!\nSigning up!");
+        
+        MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+        
+        mockBuilder
+          .addCourseStudent(course1.getId(), courseStudent)
+          .build();
+        waitAndClick(".button--standard-ok");
+        waitForPresent(".hero__workspace-title");
+        
+        logout();
+        mockBuilder.mockLogin(admin);
+        login();
+        assertPresent(".navbar__item--communicator .indicator");
+        navigate("/communicator", false);
+        waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester (Test Study Programme)");
+        waitAndClick("div.application-list__item.message");
+        assertText(".application-list__item-content-body", "Opiskelija Student Tester (Test Study Programme) on ilmoittautunut työtilaan Test (test extension).\n" + 
+            "\n" + 
+            "Viesti opiskelijalta:\n" + 
+            "Hello! Signing up!");
       }finally{
-        deleteWorkspace(workspace.getId());  
+        deleteUserGroupUsers();
+        deleteUserGroups();
+        deleteWorkspaces();
+        archiveUserByEmail(student.getEmail());
       }
     }finally{
       mockBuilder.wiremockReset();

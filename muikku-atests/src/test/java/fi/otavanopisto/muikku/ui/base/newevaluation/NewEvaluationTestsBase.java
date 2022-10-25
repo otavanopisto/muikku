@@ -67,6 +67,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .addCourseStudent(course1.getId(), courseStudent)
+        .mockEmptyStudyActivity()
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -78,7 +79,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       try {
       logout();
-      mockBuilder.mockLogin(student);
+      mockBuilder
+        .mockLogin(student);
       login();
     
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -91,7 +93,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".button--muikku-submit-assignment");
 
       waitForElementToBeClickable(".button--muikku-withdraw-assignment");
-      
+      waitAndClick(".link--workspace-assessment");
+      waitForVisible(".dialog .dialog__content");
+
       mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
         .mockCompositeGradingScales()
@@ -101,7 +105,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .mockStaffCompositeCourseAssessmentRequests()
         .mockWorkspaceBasePrice(course1.getId(), courseBasePrices)
         .mockWorkspaceBilledPriceUpdate(String.valueOf(price/2));
-      
+
+      sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+      waitAndClick(".button--standard-ok");
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+            
       logout();
       
       mockBuilder
@@ -114,6 +122,15 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       mockBuilder.mockLogin(admin);
       login();
+      assertPresent(".navbar__item--communicator .indicator");
+      navigate("/communicator", false);
+      waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
+      assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester (Test Study Programme)");
+      waitAndClick("div.application-list__item.message");
+      assertText(".application-list__item-content-body", "Student Tester (Test Study Programme) lähetti arviointipyynnön työtilassa testcourse (test extension).\n" + 
+          "Arviointipyynnön teksti\n" + 
+          "Hello!");
+
       navigate(String.format("/evaluation"), false);
       waitAndClick(".button-pill--evaluate");
       

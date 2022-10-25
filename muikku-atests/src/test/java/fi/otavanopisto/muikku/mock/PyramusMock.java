@@ -865,7 +865,13 @@ public class PyramusMock {
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
               .withStatus(200)));
-              
+        
+        stubFor(post(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId)))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
+                .withStatus(200)));
+        
         return this;
       }
 
