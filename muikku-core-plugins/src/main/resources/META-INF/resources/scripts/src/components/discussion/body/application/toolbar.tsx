@@ -218,6 +218,13 @@ class CommunicatorToolbar extends React.Component<
             </DeleteArea>
           ) : null}
 
+          <ButtonPill
+            disabled={!this.props.discussion.areaId}
+            onClick={this.toggleAreaSubscribeClick}
+            icon={areaIsSubscribed ? "bookmark-full" : "bookmark-empty"}
+            buttonModifiers={["discussion-toolbar"]}
+          />
+
           <div className="form-element">
             <label htmlFor="discussionAreaSelect" className="visually-hidden">
               {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
@@ -244,21 +251,16 @@ class CommunicatorToolbar extends React.Component<
 
                 return (
                   <option key={area.id} value={area.id}>
-                    {area.name}
-                    {subscribed ? "TODO:(Tilattu)" : "TODO:(Ei tilattu)"}
+                    {area.name}{" "}
+                    {subscribed &&
+                      `(${this.props.i18n.text.get(
+                        "plugin.discussion.subscribed.area.label"
+                      )})`}
                   </option>
                 );
               })}
             </select>
           </div>
-
-          {this.props.discussion.areaId && (
-            <IconButton
-              onClick={this.toggleAreaSubscribeClick}
-              icon={areaIsSubscribed ? "bookmark-full" : "bookmark-empty"}
-              buttonModifiers={["discussion-toolbar"]}
-            />
-          )}
         </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>
     );

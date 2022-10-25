@@ -241,7 +241,7 @@ class DiscussionSubscribedThreads extends React.Component<
       ) {
         return (
           <div className="empty">
-            <span>Ei tilattuja viestejä</span>
+            <span>{this.props.i18n.text.get("plugin.discussion.browseareas.subscribtions.empty.title")}</span>
           </div>
         );
       }
