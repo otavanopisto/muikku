@@ -172,7 +172,9 @@ class DiscussionNewArea extends SessionStateComponent<
             onChange={this.handleToggleSubscribeAreaClick}
           />
           <label htmlFor="messageLocked" className="env-dialog__input-label">
-            TODO: Tilaa ketju
+            {this.props.i18n.text.get(
+              "plugin.discussion.createarea.subscribe"
+            )}
           </label>
         </div>
       </div>,
