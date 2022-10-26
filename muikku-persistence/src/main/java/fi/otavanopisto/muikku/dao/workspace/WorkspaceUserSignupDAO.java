@@ -23,13 +23,9 @@ public class WorkspaceUserSignupDAO extends CoreDAO<WorkspaceUserSignup> {
     getEntityManager().persist(signup);
     return signup;
   }
-
-  public List<WorkspaceUserSignup> listWorkspaceUserSignups() {
-    return super.listAll();
-  }
   
-  public void delete(WorkspaceUserSignup e) {
-    super.delete(e);
+  public void delete(WorkspaceUserSignup workspaceUserSignup) {
+    super.delete(workspaceUserSignup);
   }
 
   

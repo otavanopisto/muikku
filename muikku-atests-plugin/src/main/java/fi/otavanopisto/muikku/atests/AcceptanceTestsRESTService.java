@@ -123,9 +123,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private WorkspaceEntityDAO workspaceEntityDAO;
   
   @Inject
-  private WorkspaceUserSignupDAO workspaceUserSignupDAO;
-
-  @Inject
   private WorkspaceController workspaceController;
   
   @Inject
@@ -465,9 +462,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
       }
       
-      List<WorkspaceUserSignup> workspaceUserSignups = workspaceUserSignupDAO.listWorkspaceUserSignups();
+      List<WorkspaceUserSignup> workspaceUserSignups = workspaceController.listWorkspaceUserSignups();
       for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
-        workspaceUserSignupDAO.delete(workspaceUserSignup);
+        workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
       }
       
       SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
