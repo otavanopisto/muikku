@@ -845,10 +845,33 @@ public class PyramusMock {
       
       public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
         List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
-        CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
-        assessmentRequests.add(assessmentRequest);
+        
+        if (courseStudentId != null && requestText != null) {
+          CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
+          assessmentRequests.add(assessmentRequest);
+          
+          stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, assessmentRequest.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
+              .withStatus(200)));
+          
+          stubFor(post(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
+              .withStatus(200)));
+        }
+
         
         stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
+            .withStatus(200)));
+
+        stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId)))
+            .withQueryParam("archived", matching("false"))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
@@ -859,19 +882,6 @@ public class PyramusMock {
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
               .withStatus(200)));
-        
-        stubFor(get(urlEqualTo(String.format("/1/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, assessmentRequest.getId())))
-            .willReturn(aResponse()
-              .withHeader("Content-Type", "application/json")
-              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
-              .withStatus(200)));
-        
-        stubFor(post(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId)))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
-                .withStatus(200)));
-        
         return this;
       }
 
