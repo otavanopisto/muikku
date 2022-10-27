@@ -23,31 +23,24 @@ interface ContinueStudiesPanelProps {
  * @param props ContinueStudiesPanelProps
  * @returns JSX.Element
  */
-
 const ContinueStudiesPanel: React.FC<ContinueStudiesPanelProps> = (props) => {
   if (!props.lastWorkspace) {
     return null;
   }
   return (
     <Panel
-      header={this.props.i18n.text.get(
-        "plugin.frontPage.latestWorkspace.title"
-      )}
+      header={props.i18n.text.get("plugin.frontPage.latestWorkspace.title")}
       modifier="continue-studies"
       icon="icon-forward"
     >
-      <Panel.BodyTitle>
-        {this.props.lastWorkspace.workspaceName}
-      </Panel.BodyTitle>
+      <Panel.BodyTitle>{props.lastWorkspace.workspaceName}</Panel.BodyTitle>
       <Panel.BodyContent>
-        {this.props.i18n.text.get(
-          "plugin.frontPage.latestWorkspace.material.part1"
-        )}{" "}
+        {props.i18n.text.get("plugin.frontPage.latestWorkspace.material.part1")}{" "}
         <span className="panel__body-highlight">
-          {this.props.lastWorkspace.materialName}.
+          {props.lastWorkspace.materialName}.
         </span>{" "}
-        <Link className="link" href={this.props.lastWorkspace.url}>
-          {this.props.i18n.text.get(
+        <Link className="link" href={props.lastWorkspace.url}>
+          {props.i18n.text.get(
             "plugin.frontPage.latestWorkspace.continueStudiesLink"
           )}
         </Link>
