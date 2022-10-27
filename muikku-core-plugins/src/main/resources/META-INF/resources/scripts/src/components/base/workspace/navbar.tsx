@@ -476,7 +476,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     title: state.title,
-    currentWorkspace: state.workspaces.currentWorkspace,
+    currentWorkspace: state.activeWorkspace.workspaceData,
     workspaceEditMode: state.workspaces.editMode,
   };
 }

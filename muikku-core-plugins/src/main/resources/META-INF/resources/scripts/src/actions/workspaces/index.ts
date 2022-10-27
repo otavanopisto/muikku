@@ -687,7 +687,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
     ) => {
       const state = getState();
 
-      const current: WorkspaceType = state.workspaces.currentWorkspace;
+      const current: WorkspaceType = state.activeWorkspace.workspaceData;
       if (
         current &&
         current.id === data.workspaceId &&
@@ -942,7 +942,7 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
               mApi()
                 .evaluation.workspaces.students.activity.cacheClear()
                 .read(
-                  state.workspaces.currentWorkspace.id,
+                  state.activeWorkspace.workspaceData.id,
                   state.status.userSchoolDataIdentifier
                 ),
               "callback"
@@ -994,7 +994,7 @@ const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentR
             await promisify(
               mApi()
                 .assessmentrequest.workspace.assessmentRequests.cacheClear()
-                .read(state.workspaces.currentWorkspace.id, {
+                .read(state.activeWorkspace.workspaceData.id, {
                   studentIdentifier: state.status.userSchoolDataIdentifier,
                 }),
               "callback"
@@ -1658,7 +1658,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       const appliedProducers = data.update.producers;
       const unchangedPermissions: WorkspacePermissionsType[] = [];
       const currentWorkspace: WorkspaceType =
-        getState().workspaces.currentWorkspace;
+        getState().activeWorkspace.workspaceData;
       const newChatStatus = data.update.chatStatus;
 
       // I left the workspace image out of this, because it never is in the application state anyway
@@ -2709,14 +2709,14 @@ const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
         const chatStatus: WorkspaceChatStatusType = <WorkspaceChatStatusType>(
           await promisify(
             mApi().chat.workspaceChatSettings.read(
-              getState().workspaces.currentWorkspace.id
+              getState().activeWorkspace.workspaceData.id
             ),
             "callback"
           )()
         );
 
         const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+          getState().activeWorkspace.workspaceData;
 
         dispatch({
           type: "UPDATE_WORKSPACE",
@@ -2754,13 +2754,13 @@ const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorks
         const details: WorkspaceDetailsType = <WorkspaceDetailsType>(
           await promisify(
             mApi().workspace.workspaces.details.read(
-              getState().workspaces.currentWorkspace.id
+              getState().activeWorkspace.workspaceData.id
             ),
             "callback"
           )()
         );
         const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+          getState().activeWorkspace.workspaceData;
 
         dispatch({
           type: "UPDATE_WORKSPACE",
@@ -2802,14 +2802,14 @@ const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurren
 
         await promisify(
           mApi().workspace.workspaces.details.update(
-            state.workspaces.currentWorkspace.id,
+            state.activeWorkspace.workspaceData.id,
             data.newDetails
           ),
           "callback"
         )();
 
         const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+          getState().activeWorkspace.workspaceData;
 
         dispatch({
           type: "UPDATE_WORKSPACE",
@@ -2851,7 +2851,7 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
     ) => {
       try {
         const state: StateType = getState();
-        const existingProducers = state.workspaces.currentWorkspace.producers;
+        const existingProducers = state.activeWorkspace.workspaceData.producers;
 
         const workspaceProducersToAdd =
           existingProducers.length == 0
@@ -2877,7 +2877,7 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
             .map((p) =>
               promisify(
                 mApi().workspace.workspaces.materialProducers.create(
-                  state.workspaces.currentWorkspace.id,
+                  state.activeWorkspace.workspaceData.id,
                   p
                 ),
                 "callback"
@@ -2887,7 +2887,7 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
               workspaceProducersToDelete.map((p) =>
                 promisify(
                   mApi().workspace.workspaces.materialProducers.del(
-                    state.workspaces.currentWorkspace.id,
+                    state.activeWorkspace.workspaceData.id,
                     p.id
                   ),
                   "callback"
@@ -2903,12 +2903,12 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
         >await promisify(
           mApi()
             .workspace.workspaces.materialProducers.cacheClear()
-            .read(state.workspaces.currentWorkspace.id),
+            .read(state.activeWorkspace.workspaceData.id),
           "callback"
         )();
 
         const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+          getState().activeWorkspace.workspaceData;
 
         dispatch({
           type: "UPDATE_WORKSPACE",
@@ -2988,14 +2988,14 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
         await Promise.all([
           promisify(
             mApi().workspace.workspaces.workspacefile.del(
-              state.workspaces.currentWorkspace.id,
+              state.activeWorkspace.workspaceData.id,
               "workspace-frontpage-image-cropped"
             ),
             "callback"
           )(),
           promisify(
             mApi().workspace.workspaces.del(
-              state.workspaces.currentWorkspace.id,
+              state.activeWorkspace.workspaceData.id,
               "workspace-frontpage-image-original"
             ),
             "callback"
@@ -3003,7 +3003,7 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
         ]);
 
         const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+          getState().activeWorkspace.workspaceData;
 
         dispatch({
           type: "UPDATE_WORKSPACE",
@@ -3145,7 +3145,7 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
     ) => {
       try {
         const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+          getState().activeWorkspace.workspaceData;
         const cloneWorkspace: WorkspaceType = <WorkspaceType>await promisify(
           mApi().workspace.workspaces.create(
             {
@@ -3252,7 +3252,7 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
     ) => {
       try {
         const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+          getState().activeWorkspace.workspaceData;
         const mimeTypeRegex = /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/;
         const mimeTypeOriginal =
           data.originalB64 && data.originalB64.match(mimeTypeRegex)[1];
@@ -3334,12 +3334,12 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
     ) => {
       try {
         const currentWorkspace: WorkspaceType =
-          getState().workspaces.currentWorkspace;
+          getState().activeWorkspace.workspaceData;
         const permissions: WorkspacePermissionsType[] = <
           WorkspacePermissionsType[]
         >await promisify(
           mApi().workspace.workspaces.signupGroups.read(
-            getState().workspaces.currentWorkspace.id
+            getState().activeWorkspace.workspaceData.id
           ),
           "callback"
         )();

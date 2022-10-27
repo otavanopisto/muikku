@@ -31,6 +31,7 @@ import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
 import { Calendar } from "./main-function/calendar";
 import { JournalsState } from "./workspaces/journals";
+import { ActiveWorkspaceState } from "./workspaces/activeWorkspace";
 
 /**
  * StateType
@@ -67,4 +68,5 @@ export interface StateType {
   calendar?: Calendar;
   easyToUse?: EasyToUseFunctionState;
   journals?: JournalsState;
+  activeWorkspace: ActiveWorkspaceState;
 }

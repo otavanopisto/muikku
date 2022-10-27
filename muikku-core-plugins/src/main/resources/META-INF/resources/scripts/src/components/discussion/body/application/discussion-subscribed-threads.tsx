@@ -37,7 +37,7 @@ import {
   SubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
-import { WorkspacesType } from "~/reducers/workspaces";
+import { WorkspacesType, WorkspaceType } from "~/reducers/workspaces";
 
 /**
  * DiscussionThreadsProps
@@ -47,6 +47,7 @@ interface DiscussionSubscribedThreadsProps {
   i18n: i18nType;
   status: StatusType;
   workspaces: WorkspacesType;
+  activeWorkspace: WorkspaceType;
   subscribeDiscussionThread: SubscribeDiscussionThread;
   unsubscribeDiscussionThread: UnsubscribeDiscustionThread;
 }
@@ -103,11 +104,10 @@ class DiscussionSubscribedThreads extends React.Component<
     const thread = subscribedThread.thread;
     const relatedToWorkspace = !!subscribedThread.workspaceId;
 
-    const activeWorkspace = !!this.props.workspaces.currentWorkspace;
+    const activeWorkspace = !!this.props.activeWorkspace;
     const inThatWorkspace =
-      !!this.props.workspaces.currentWorkspace &&
-      subscribedThread.workspaceId ===
-        this.props.workspaces.currentWorkspace.id;
+      !!this.props.activeWorkspace &&
+      subscribedThread.workspaceId === this.props.activeWorkspace.id;
 
     // There is three different cases how subscribed current fetching can happen
     // FIRST: subscribed thread is related to workspace and we are not in that workspace...
@@ -548,6 +548,7 @@ function mapStateToProps(state: StateType) {
     discussion: state.discussion,
     status: state.status,
     workspaces: state.workspaces,
+    activeWorkspace: state.activeWorkspace.workspaceData,
   };
 }
 

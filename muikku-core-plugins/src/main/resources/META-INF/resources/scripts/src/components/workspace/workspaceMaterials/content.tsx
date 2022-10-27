@@ -722,7 +722,7 @@ function mapStateToProps(state: StateType) {
     materials: state.workspaces.currentMaterials,
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
-    workspace: state.workspaces.currentWorkspace,
+    workspace: state.activeWorkspace.workspaceData,
     workspaceEditMode: state.workspaces.editMode,
   };
 }

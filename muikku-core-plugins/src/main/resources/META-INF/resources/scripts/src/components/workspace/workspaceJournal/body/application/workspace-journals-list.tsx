@@ -120,7 +120,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     workspaceJournalsState: state.journals && state.journals.state,
     workspaceJournalsHasMore: state.journals && state.journals.hasMore,
-    workspace: state.workspaces.currentWorkspace,
+    workspace: state.activeWorkspace.workspaceData,
     journalsState: state.journals,
     status: state.status,
   };

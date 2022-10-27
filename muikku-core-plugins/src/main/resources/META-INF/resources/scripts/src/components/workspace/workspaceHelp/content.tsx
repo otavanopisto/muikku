@@ -599,7 +599,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     materials: state.workspaces.currentHelp,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
-    workspace: state.workspaces.currentWorkspace,
+    workspace: state.activeWorkspace.workspaceData,
     workspaceEditMode: state.workspaces.editMode,
   };
 }

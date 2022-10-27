@@ -653,10 +653,10 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
             }),
             "callback"
           )()) as AssessmentRequest[];
-        } else if (useFromWorkspace && state.workspaces.currentWorkspace.id) {
+        } else if (useFromWorkspace && state.activeWorkspace.workspaceData.id) {
           evaluationAssessmentRequests = (await promisify(
             mApi().evaluation.compositeAssessmentRequests.read({
-              workspaceEntityId: state.workspaces.currentWorkspace.id,
+              workspaceEntityId: state.activeWorkspace.workspaceData.id,
             }),
             "callback"
           )()) as AssessmentRequest[];

@@ -67,6 +67,10 @@ import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { loadCurrentWorkspaceJournalsFromServer } from "~/actions/workspaces/journals";
+import {
+  loadActiveWorkspaceChatStatus,
+  setActiveWorkspace,
+} from "~/actions/workspaces/activeWorkspace";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -403,6 +407,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
 
+      // TODO: REMOVE
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -410,6 +415,20 @@ export default class Workspace extends React.Component<
            * success
            * @param workspace workspace
            */
+          success: (workspace) => {
+            if (!workspace.staffMembers && state.status.loggedIn) {
+              this.props.store.dispatch(
+                loadStaffMembersOfWorkspace({ workspace }) as Action
+              );
+            }
+            this.props.store.dispatch(titleActions.updateTitle(workspace.name));
+          },
+        }) as Action
+      );
+
+      this.props.store.dispatch(
+        setActiveWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
           success: (workspace) => {
             if (!workspace.staffMembers && state.status.loggedIn) {
               this.props.store.dispatch(
@@ -468,6 +487,8 @@ export default class Workspace extends React.Component<
           state.i18n.text.get("plugin.workspace.helpPage.title")
         )
       );
+
+      // TODO: REMOVE
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -475,6 +496,15 @@ export default class Workspace extends React.Component<
             state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS,
         }) as Action
       );
+
+      this.props.store.dispatch(
+        setActiveWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+          loadDetails:
+            state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS,
+        }) as Action
+      );
+
       this.props.store.dispatch(
         loadWholeWorkspaceHelp(
           state.status.currentWorkspaceId,
@@ -529,11 +559,20 @@ export default class Workspace extends React.Component<
           state.i18n.text.get("plugin.workspace.discussions.pageTitle")
         )
       );
+
+      // TODO: REMOVE
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
         }) as Action
       );
+
+      this.props.store.dispatch(
+        setActiveWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+        }) as Action
+      );
+
       this.props.store.dispatch(
         setDiscussionWorkpaceId(state.status.currentWorkspaceId) as Action
       );
@@ -625,8 +664,16 @@ export default class Workspace extends React.Component<
           state.i18n.text.get("plugin.workspace.announcer.pageTitle")
         )
       );
+
+      // TODO: REMOVE
       this.props.store.dispatch(
         setCurrentWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+        }) as Action
+      );
+
+      this.props.store.dispatch(
+        setActiveWorkspace({
           workspaceId: state.status.currentWorkspaceId,
         }) as Action
       );
@@ -749,8 +796,50 @@ export default class Workspace extends React.Component<
   loadWorkspaceUsersData(): void {
     const state = this.props.store.getState();
 
+    // TODO: REMOVE
     this.props.store.dispatch(
       setCurrentWorkspace({
+        workspaceId: state.status.currentWorkspaceId,
+        /**
+         * success
+         * @param workspace workspace
+         */
+        success: (workspace) => {
+          if (!workspace.staffMembers && state.status.loggedIn) {
+            this.props.store.dispatch(
+              loadStaffMembersOfWorkspace({ workspace }) as Action
+            );
+          }
+          if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
+            this.props.store.dispatch(
+              loadStudentsOfWorkspace({
+                workspace,
+                payload: {
+                  q: "",
+                  firstResult: 0,
+                  maxResults: 10,
+                  active: true,
+                },
+              }) as Action
+            );
+            this.props.store.dispatch(
+              loadStudentsOfWorkspace({
+                workspace,
+                payload: {
+                  q: "",
+                  firstResult: 0,
+                  maxResults: 10,
+                  active: false,
+                },
+              }) as Action
+            );
+          }
+        },
+      }) as Action
+    );
+
+    this.props.store.dispatch(
+      setActiveWorkspace({
         workspaceId: state.status.currentWorkspaceId,
         /**
          * success
@@ -824,6 +913,8 @@ export default class Workspace extends React.Component<
           state.i18n.text.get("plugin.workspace.materials.pageTitle")
         )
       );
+
+      // TODO: REMOVE
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -831,6 +922,15 @@ export default class Workspace extends React.Component<
             state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS,
         }) as Action
       );
+
+      this.props.store.dispatch(
+        setActiveWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+          loadDetails:
+            state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS,
+        }) as Action
+      );
+
       this.props.store.dispatch(
         loadWorkspaceCompositeMaterialReplies(
           state.status.currentWorkspaceId
@@ -1029,8 +1129,52 @@ export default class Workspace extends React.Component<
           state.i18n.text.get("plugin.workspace.journal.pageTitle")
         )
       );
+
+      // TODO: REMOVE
       this.props.store.dispatch(
         setCurrentWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
+          success: (workspace) => {
+            if (
+              !workspace.students &&
+              state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS
+            ) {
+              this.props.store.dispatch(
+                loadStudentsOfWorkspace({
+                  workspace,
+                  payload: { q: "", maxResults: 500 },
+                }) as Action
+              );
+            }
+            if (!workspace.journals) {
+              //here in the callback
+              const currentLocation = window.location.hash
+                .replace("#", "")
+                .split("/");
+
+              if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
+                // This happens if teacher/admin uses diary
+                this.props.store.dispatch(
+                  loadCurrentWorkspaceJournalsFromServer() as Action
+                );
+              } else {
+                this.props.store.dispatch(
+                  loadCurrentWorkspaceJournalsFromServer(
+                    state.status.userId
+                  ) as Action
+                );
+              }
+            }
+          },
+        }) as Action
+      );
+
+      this.props.store.dispatch(
+        setActiveWorkspace({
           workspaceId: state.status.currentWorkspaceId,
           /**
            * success
@@ -1104,6 +1248,8 @@ export default class Workspace extends React.Component<
         )
       );
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
+
+      // TODO: REMOVE
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1119,7 +1265,39 @@ export default class Workspace extends React.Component<
                 loadWorkspaceDetailsInCurrentWorkspace() as Action
               );
             }
+
+            // TODO: REMOVE
             this.props.store.dispatch(loadWorkspaceChatStatus() as Action);
+
+            this.props.store.dispatch(
+              loadActiveWorkspaceChatStatus() as Action
+            );
+          },
+        }) as Action
+      );
+
+      this.props.store.dispatch(
+        setActiveWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           */
+          success: () => {
+            this.props.store.dispatch(
+              loadCurrentWorkspaceUserGroupPermissions() as Action
+            );
+            if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
+              this.props.store.dispatch(
+                loadWorkspaceDetailsInCurrentWorkspace() as Action
+              );
+            }
+
+            // TODO: REMOVE
+            this.props.store.dispatch(loadWorkspaceChatStatus() as Action);
+
+            this.props.store.dispatch(
+              loadActiveWorkspaceChatStatus() as Action
+            );
           },
         }) as Action
       );
@@ -1150,8 +1328,24 @@ export default class Workspace extends React.Component<
           state.i18n.text.get("plugin.workspace.permissions.pageTitle")
         )
       );
+
+      // TODO: REMOVE
       this.props.store.dispatch(
         setCurrentWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           */
+          success: () => {
+            this.props.store.dispatch(
+              loadCurrentWorkspaceUserGroupPermissions() as Action
+            );
+          },
+        }) as Action
+      );
+
+      this.props.store.dispatch(
+        setActiveWorkspace({
           workspaceId: state.status.currentWorkspaceId,
           /**
            * success
@@ -1200,8 +1394,50 @@ export default class Workspace extends React.Component<
             .i18n.text.get("plugin.evaluation.evaluation")
         )
       );
+
+      // TODO: REMOVE
       this.props.store.dispatch(
         setCurrentWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
+          success: (workspace) => {
+            this.props.store.dispatch(
+              loadCurrentWorkspaceUserGroupPermissions() as Action
+            );
+
+            this.props.store.dispatch(
+              loadEvaluationAssessmentRequestsFromServer(true) as Action
+            );
+            this.props.store.dispatch(
+              loadEvaluationWorkspacesFromServer() as Action
+            );
+            this.props.store.dispatch(
+              loadListOfImportantAssessmentIdsFromServer() as Action
+            );
+            this.props.store.dispatch(
+              loadListOfUnimportantAssessmentIdsFromServer() as Action
+            );
+            this.props.store.dispatch(
+              loadEvaluationGradingSystemFromServer() as Action
+            );
+            this.props.store.dispatch(
+              loadEvaluationSortFunctionFromServer() as Action
+            );
+
+            this.props.store.dispatch(
+              setSelectedWorkspaceId({
+                workspaceId: workspace.id,
+              }) as Action
+            );
+          },
+        }) as Action
+      );
+
+      this.props.store.dispatch(
+        setActiveWorkspace({
           workspaceId: state.status.currentWorkspaceId,
           /**
            * success

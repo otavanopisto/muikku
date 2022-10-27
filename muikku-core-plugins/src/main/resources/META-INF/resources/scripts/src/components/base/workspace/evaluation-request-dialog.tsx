@@ -21,7 +21,7 @@ interface EvaluationRequestDialogProps {
   i18n: i18nType;
   workspace: WorkspaceType;
   isOpen: boolean;
-  onClose: () => any;
+  onClose: () => void;
   requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType;
   status: StatusType;
 }
@@ -68,7 +68,7 @@ class EvaluationRequestDialog extends React.Component<
    * request
    * @param closeDialog closeDialog
    */
-  request(closeDialog: () => any) {
+  request(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
@@ -106,7 +106,7 @@ class EvaluationRequestDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <div className="dialog__content-row">
           {this.props.i18n.text.get(
@@ -143,7 +143,7 @@ class EvaluationRequestDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-ok", "execute"]}
@@ -188,7 +188,7 @@ class EvaluationRequestDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace,
+    workspace: state.activeWorkspace.workspaceData,
     status: state.status,
   };
 }

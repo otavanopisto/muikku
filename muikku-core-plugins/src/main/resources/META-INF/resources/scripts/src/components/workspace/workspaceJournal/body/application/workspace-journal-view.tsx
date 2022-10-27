@@ -49,7 +49,7 @@ const WorkspaceJournalView: React.FC<WorkspaceJournalViewProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    currentWorkspace: state.workspaces.currentWorkspace,
+    currentWorkspace: state.activeWorkspace.workspaceData,
     journalsState: state.journals,
   };
 }

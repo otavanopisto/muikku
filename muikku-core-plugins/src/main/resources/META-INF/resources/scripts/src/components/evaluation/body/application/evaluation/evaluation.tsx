@@ -937,7 +937,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluation: state.evaluations,
-    currentWorkspace: state.workspaces.currentWorkspace,
+    currentWorkspace: state.activeWorkspace.workspaceData,
   };
 }
 

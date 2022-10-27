@@ -248,7 +248,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
   getState: () => StateType
 ) {
   const state: StateType = getState();
-  const currentWorkspace = state.workspaces.currentWorkspace;
+  const currentWorkspace = state.activeWorkspace.workspaceData;
 
   let currentJournalState = state.journals;
   let journalNextstate: ReducerStateType;
@@ -354,4 +354,25 @@ export async function loadCurrentWorkspaceJournalsHelper(
       },
     });
   }
+}
+
+/**
+ * reuseExistantValue
+ * @param conditional conditional
+ * @param existantValue existantValue
+ * @param otherwise otherwise
+ */
+export function reuseExistantValue(
+  conditional: boolean,
+  existantValue: any,
+  otherwise: () => any
+) {
+  if (!conditional) {
+    return null;
+  }
+  if (existantValue) {
+    return existantValue;
+  }
+
+  return otherwise();
 }

@@ -11,7 +11,7 @@ import { AnyActionType } from "~/actions";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
-import { WorkspacesType } from "~/reducers/workspaces";
+import { WorkspacesType, WorkspaceType } from "~/reducers/workspaces";
 import {
   createAnnouncement,
   CreateAnnouncementTriggerType,
@@ -49,6 +49,7 @@ interface NewEditAnnouncementProps {
 
   workspaceId: number;
   workspaces: WorkspacesType;
+  activeWorkspace: WorkspaceType;
 }
 
 /**
@@ -334,15 +335,21 @@ class NewEditAnnouncement extends SessionStateComponent<
    * @returns list of ContactRecipientType
    */
   getPredefinedWorkspaceByIdToConcat(props: NewEditAnnouncementProps) {
-    if (!props.workspaces || !props.workspaceId || props.announcement) {
+    if (
+      !props.workspaces ||
+      !props.workspaceId ||
+      props.announcement ||
+      !props.activeWorkspace
+    ) {
       return [];
     }
 
+    // Predifend active workspace is defined when user is in the workspaces
+    // then its is the workspace that is currently active otherwise its
+    // the first workspace in the list that matches the workspaceId
     const workpaceFound =
-      props.workspaces &&
-      props.workspaces.currentWorkspace &&
-      props.workspaces.currentWorkspace.id === props.workspaceId
-        ? props.workspaces.currentWorkspace
+      props.activeWorkspace && props.activeWorkspace.id === props.workspaceId
+        ? props.activeWorkspace
         : props.workspaces &&
           props.workspaces.availableWorkspaces
             .concat(props.workspaces.userWorkspaces)
@@ -733,6 +740,7 @@ function mapStateToProps(state: StateType) {
     //when loading
     workspaceId: state.announcements.workspaceId,
     workspaces: state.workspaces,
+    activeWorkspace: state.activeWorkspace.workspaceData,
   };
 }
 

@@ -340,7 +340,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     availableCurriculums: state.workspaces.availableCurriculums,
-    workspace: state.workspaces.currentWorkspace,
+    workspace: state.activeWorkspace.workspaceData,
     status: state.status,
   };
 }

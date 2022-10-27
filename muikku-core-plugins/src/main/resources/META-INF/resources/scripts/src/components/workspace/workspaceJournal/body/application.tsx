@@ -154,7 +154,7 @@ class WorkspaceJournalApplication extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace,
+    workspace: state.activeWorkspace.workspaceData,
     journalsState: state.journals,
     status: state.status,
   };

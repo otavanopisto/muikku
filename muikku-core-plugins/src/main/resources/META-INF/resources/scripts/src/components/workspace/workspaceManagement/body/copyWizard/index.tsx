@@ -244,7 +244,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces && state.workspaces.currentWorkspace,
+    workspace: state.workspaces && state.activeWorkspace.workspaceData,
   };
 }
 

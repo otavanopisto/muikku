@@ -15,8 +15,10 @@ import { profile } from "./main-function/profile";
 
 import { combineReducers } from "redux";
 import { journals } from "./workspaces/journals";
+import { activeWorkspace } from "./workspaces/activeWorkspace";
 
 export default combineReducers({
+  activeWorkspace,
   announcements,
   discussion,
   easyToUse,

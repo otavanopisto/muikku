@@ -63,7 +63,7 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace,
+    workspace: state.activeWorkspace.workspaceData,
   };
 }
 

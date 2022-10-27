@@ -278,7 +278,7 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
         const newJournal: WorkspaceJournalType = <WorkspaceJournalType>(
           await promisify(
             mApi().workspace.workspaces.journal.create(
-              state.workspaces.currentWorkspace.id,
+              state.activeWorkspace.workspaceData.id,
               {
                 content: data.content,
                 title: data.title,
@@ -335,11 +335,11 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
         const state: StateType = getState();
         await promisify(
           mApi().workspace.workspaces.journal.update(
-            state.workspaces.currentWorkspace.id,
+            state.activeWorkspace.workspaceData.id,
             data.journal.id,
             {
               id: data.journal.id,
-              workspaceEntityId: state.workspaces.currentWorkspace.id,
+              workspaceEntityId: state.activeWorkspace.workspaceData.id,
               content: data.content,
               title: data.title,
             }
@@ -399,7 +399,7 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
         const state: StateType = getState();
         await promisify(
           mApi().workspace.workspaces.journal.del(
-            state.workspaces.currentWorkspace.id,
+            state.activeWorkspace.workspaceData.id,
             data.journal.id
           ),
           "callback"

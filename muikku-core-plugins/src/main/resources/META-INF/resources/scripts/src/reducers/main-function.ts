@@ -27,8 +27,10 @@ import { combineReducers } from "redux";
 import { evaluations } from "./main-function/evaluation/index";
 import { ceepos } from "./main-function/ceepos";
 import { calendar } from "./main-function/calendar";
+import { activeWorkspace } from "./workspaces/activeWorkspace";
 
 export default combineReducers({
+  activeWorkspace,
   announcements,
   calendar,
   ceepos,
