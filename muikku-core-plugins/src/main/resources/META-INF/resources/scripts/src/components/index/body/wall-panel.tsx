@@ -22,7 +22,7 @@ export interface WallProps {
  */
 const WallPanel: React.FC<WallProps> = (props) => {
   const { i18n, status } = props;
-  const { notes, updateNoteStatus } = UseNotes(
+  const { notes, updateNoteStatus, updateNote } = UseNotes(
     status.userId,
     i18n,
     displayNotification
@@ -35,8 +35,10 @@ const WallPanel: React.FC<WallProps> = (props) => {
         {notes.map((note) => (
           <Note
             i18n={i18n}
+            isCreator={note.creator === status.userId}
             key={note.id}
             note={note}
+            onUpdate={updateNote}
             onStatusUpdate={updateNoteStatus}
           />
         ))}

@@ -589,6 +589,9 @@ export default class MainFunction extends React.Component<
    * @returns JSX.Element
    */
   renderIndexBody() {
+    this.loadlib(
+      `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+    );
     this.updateFirstTime();
     if (this.itsFirstTime) {
       this.props.websocket &&

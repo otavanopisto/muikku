@@ -1,26 +1,34 @@
 import * as React from "react";
-import { NotesItemRead, NotesItemStatus } from "~/@types/notes";
+import {
+  NotesItemRead,
+  NotesItemStatus,
+  NotesItemUpdate,
+} from "~/@types/notes";
 import { isOverdue } from "~/helper-functions/dates";
 import * as moment from "moment";
 import { i18nType } from "~/reducers/base/i18n";
+import NotesItemEdit from "~/components/general/notes/notes-item-edit";
+import Button from "~/components/general/button";
 import "~/sass/elements/note.scss";
 /**
  * NoteProps
  */
 interface NoteProps {
   modifier?: string;
+  isCreator: boolean;
   onStatusUpdate: (id: number, status: NotesItemStatus) => void;
+  onUpdate: (id: number, update: NotesItemUpdate) => void;
   note: NotesItemRead;
   i18n: i18nType;
 }
 
 /**
- * NoteProps
+ * A simple note componet for panel use
  * @param props NoteProps
  * @returns JSX.Element
  */
 export const Note: React.FC<NoteProps> = (props) => {
-  const { modifier, note, i18n, onStatusUpdate } = props;
+  const { modifier, note, i18n, isCreator, onStatusUpdate, onUpdate } = props;
   const overdue = isOverdue(note.dueDate);
   const [showDescription, setShowDescription] = React.useState(false);
 
@@ -28,8 +36,11 @@ export const Note: React.FC<NoteProps> = (props) => {
     setShowDescription(!showDescription);
   };
 
+  /**
+   * Handles status change
+   */
   const handleStatusChange = () => {
-    if (note.creator === note.owner) {
+    if (isCreator) {
       onStatusUpdate(note.id, NotesItemStatus.APPROVED);
     } else {
       onStatusUpdate(note.id, NotesItemStatus.APPROVAL_PENDING);
@@ -71,8 +82,15 @@ export const Note: React.FC<NoteProps> = (props) => {
             dangerouslySetInnerHTML={{ __html: note.description }}
           ></div>
           <div className="note__footer">
-            <div onClick={handleStatusChange}>UpdateStatus</div>
-            <div>EditNote</div>
+            <Button onClick={handleStatusChange}>UpdateStatus</Button>
+            {isCreator && (
+              <NotesItemEdit
+                selectedNotesItem={note}
+                onNotesItemSaveUpdateClick={onUpdate}
+              >
+                <Button buttonModifiers={"note-edit"}>EditNote</Button>
+              </NotesItemEdit>
+            )}
           </div>
         </>
       ) : null}
