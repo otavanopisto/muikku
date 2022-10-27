@@ -4,6 +4,9 @@ import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import { Panel } from "~/components/general/panel";
+import { UseNotes } from "~/hooks/useNotes";
+import { displayNotification } from "~/actions/base/notifications";
+import { Note } from "./wall/note";
 
 /**
  * Wall properties
@@ -19,18 +22,25 @@ export interface WallProps {
  */
 const WallPanel: React.FC<WallProps> = (props) => {
   const { i18n, status } = props;
+  const { notes, updateNoteStatus } = UseNotes(
+    status.userId,
+    i18n,
+    displayNotification
+  );
+
   return (
-    <Panel header="Muu" modifier="wall" icon="icon-star-empty">
-      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
-      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
-      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
-      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
-      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
-      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
-      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
-      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
-      <Panel.BodyTitle>Lappusii</Panel.BodyTitle>
-      <Panel.BodyContent>Sisällysztä</Panel.BodyContent>
+    <Panel header="SeinäMä" modifier="wall" icon="icon-star-empty">
+      <Panel.BodyTitle>Annetut tehtävät</Panel.BodyTitle>
+      <Panel.BodyContent>
+        {notes.map((note) => (
+          <Note
+            i18n={i18n}
+            key={note.id}
+            note={note}
+            onStatusUpdate={updateNoteStatus}
+          />
+        ))}
+      </Panel.BodyContent>
     </Panel>
   );
 };
