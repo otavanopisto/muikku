@@ -9,9 +9,9 @@ import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import { WorkspaceType } from "~/reducers/workspaces";
 import {
-  cancelAssessmentAtWorkspace,
-  CancelAssessmentAtWorkspaceTriggerType,
-} from "~/actions/workspaces";
+  CancelActiveWorkspaceAssessmentRequestTrigger,
+  cancelActiveWorkspaceAssessmentRequest,
+} from "~/actions/workspaces/activeWorkspace";
 
 /**
  * EvaluationCancelDialogProps
@@ -20,8 +20,8 @@ interface EvaluationCancelDialogProps {
   i18n: i18nType;
   workspace: WorkspaceType;
   isOpen: boolean;
-  onClose: () => any;
-  cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType;
+  onClose: () => void;
+  cancelActiveWorkspaceAssessmentRequest: CancelActiveWorkspaceAssessmentRequestTrigger;
 }
 
 /**
@@ -55,11 +55,11 @@ class EvaluationCancelDialog extends React.Component<
    * cancel
    * @param closeDialog closeDialog
    */
-  cancel(closeDialog: () => any) {
+  cancel(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
-    this.props.cancelAssessmentAtWorkspace({
+    this.props.cancelActiveWorkspaceAssessmentRequest({
       workspace: this.props.workspace,
       /**
        * success
@@ -90,7 +90,7 @@ class EvaluationCancelDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <span>
           {this.props.i18n.text.get(
@@ -104,7 +104,7 @@ class EvaluationCancelDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-ok", "warn"]}
@@ -158,7 +158,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ cancelAssessmentAtWorkspace }, dispatch);
+  return bindActionCreators(
+    { cancelActiveWorkspaceAssessmentRequest },
+    dispatch
+  );
 }
 
 export default connect(

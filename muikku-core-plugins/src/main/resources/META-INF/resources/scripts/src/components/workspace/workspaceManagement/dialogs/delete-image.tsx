@@ -10,11 +10,13 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-import {
-  updateCurrentWorkspaceImagesB64,
-  UpdateCurrentWorkspaceImagesB64TriggerType,
-} from "~/actions/workspaces";
+
 import "~/sass/elements/rangeslider.scss";
+import {
+  UpdateActiveWorkspaceImagesB64Trigger,
+  updateActiveWorkspaceImagesB64,
+} from "~/actions/workspaces/activeWorkspace";
+import { AnyActionType } from "~/actions";
 
 /**
  * DeleteImageDialogProps
@@ -22,10 +24,10 @@ import "~/sass/elements/rangeslider.scss";
 interface DeleteImageDialogProps {
   i18n: i18nType;
   displayNotification: DisplayNotificationTriggerType;
-  updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType;
-  onDelete: () => any;
+  updateActiveWorkspaceImagesB64: UpdateActiveWorkspaceImagesB64Trigger;
+  onDelete: () => void;
   isOpen: boolean;
-  onClose: () => any;
+  onClose: () => void;
 }
 
 /**
@@ -53,9 +55,9 @@ class DeleteImageDialog extends React.Component<
    * deleteImage
    * @param closeDialog closeDialog
    */
-  deleteImage(closeDialog: () => any) {
+  deleteImage(closeDialog: () => void) {
     closeDialog();
-    this.props.updateCurrentWorkspaceImagesB64({
+    this.props.updateActiveWorkspaceImagesB64({
       delete: true,
       /**
        * success
@@ -80,7 +82,7 @@ class DeleteImageDialog extends React.Component<
      *  content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         {this.props.i18n.text.get(
           "plugin.workspace.management.deleteImage.dialog.description"
@@ -91,7 +93,7 @@ class DeleteImageDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["execute", "standard-ok"]}
@@ -140,9 +142,9 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { displayNotification, updateCurrentWorkspaceImagesB64 },
+    { displayNotification, updateActiveWorkspaceImagesB64 },
     dispatch
   );
 }

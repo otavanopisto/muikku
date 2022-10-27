@@ -15,14 +15,15 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-import {
-  updateCurrentWorkspaceImagesB64,
-  UpdateCurrentWorkspaceImagesB64TriggerType,
-} from "~/actions/workspaces";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Slider = require("react-rangeslider").default;
 import "~/sass/elements/rangeslider.scss";
+import { AnyActionType } from "../../../../actions/index";
+import {
+  UpdateActiveWorkspaceImagesB64Trigger,
+  updateActiveWorkspaceImagesB64,
+} from "~/actions/workspaces/activeWorkspace";
 
 /**
  * UploadImageDialogProps
@@ -30,14 +31,18 @@ import "~/sass/elements/rangeslider.scss";
 interface UploadImageDialogProps {
   i18n: i18nType;
   displayNotification: DisplayNotificationTriggerType;
-  onImageChange: (croppedB64: string, originalB64?: string, file?: File) => any;
-  updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType;
+  onImageChange: (
+    croppedB64: string,
+    originalB64?: string,
+    file?: File
+  ) => void;
+  updateActiveWorkspaceImagesB64: UpdateActiveWorkspaceImagesB64Trigger;
   b64?: string;
   file?: File;
   src?: string;
 
   isOpen: boolean;
-  onClose: () => any;
+  onClose: () => void;
 }
 
 /**
@@ -77,9 +82,9 @@ class UploadImageDialog extends React.Component<
    * acceptImage
    * @param closeDialog closeDialog
    */
-  acceptImage(closeDialog: () => any) {
+  acceptImage(closeDialog: () => void) {
     closeDialog();
-    this.props.updateCurrentWorkspaceImagesB64({
+    this.props.updateActiveWorkspaceImagesB64({
       originalB64: this.props.b64,
       croppedB64: this.retriever.getAsDataURL(),
       /**
@@ -156,7 +161,7 @@ class UploadImageDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <ImageEditor
           className="image-editor image-editor--workspace"
@@ -166,6 +171,7 @@ class UploadImageDialog extends React.Component<
           ratio={4.63}
           scale={this.state.scale / 100}
           angle={this.state.angle}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           displayBoxWidth={parseInt((window.innerWidth * 0.8) as any)}
         />
         <div className="dialog__image-tools">
@@ -186,7 +192,7 @@ class UploadImageDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["execute", "standard-ok"]}
@@ -235,9 +241,9 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { displayNotification, updateCurrentWorkspaceImagesB64 },
+    { displayNotification, updateActiveWorkspaceImagesB64 },
     dispatch
   );
 }

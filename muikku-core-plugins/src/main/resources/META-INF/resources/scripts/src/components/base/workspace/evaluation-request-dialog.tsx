@@ -8,11 +8,11 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import { WorkspaceType } from "~/reducers/workspaces";
-import {
-  RequestAssessmentAtWorkspaceTriggerType,
-  requestAssessmentAtWorkspace,
-} from "~/actions/workspaces";
 import { StatusType } from "~/reducers/base/status";
+import {
+  RequestActiveWorkspaceAssessmentTrigger,
+  requestActiveWorkspaceAssesmentTrigger,
+} from "~/actions/workspaces/activeWorkspace";
 
 /**
  * EvaluationRequestDialogProps
@@ -22,7 +22,7 @@ interface EvaluationRequestDialogProps {
   workspace: WorkspaceType;
   isOpen: boolean;
   onClose: () => void;
-  requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType;
+  requestActiveWorkspaceAssesmentTrigger: RequestActiveWorkspaceAssessmentTrigger;
   status: StatusType;
 }
 
@@ -72,7 +72,7 @@ class EvaluationRequestDialog extends React.Component<
     this.setState({
       locked: true,
     });
-    this.props.requestAssessmentAtWorkspace({
+    this.props.requestActiveWorkspaceAssesmentTrigger({
       workspace: this.props.workspace,
       text: this.state.message,
       /**
@@ -198,7 +198,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ requestAssessmentAtWorkspace }, dispatch);
+  return bindActionCreators(
+    { requestActiveWorkspaceAssesmentTrigger },
+    dispatch
+  );
 }
 
 export default connect(

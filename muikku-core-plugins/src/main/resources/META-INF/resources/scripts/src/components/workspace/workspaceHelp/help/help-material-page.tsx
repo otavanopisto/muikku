@@ -9,10 +9,6 @@ import {
   WorkspaceType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import {
-  setCurrentWorkspace,
-  SetCurrentWorkspaceTriggerType,
-} from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
@@ -41,7 +37,6 @@ interface HelpMaterialProps {
   folder: MaterialContentNodeType;
   isViewRestricted: boolean;
   workspace: WorkspaceType;
-  setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
   setActiveWorkspace: SetActiveWorkspaceTrigger;
 }
 
@@ -73,12 +68,6 @@ class WorkspaceMaterial extends React.Component<
     //This function is very efficient and reuses as much data as possible so
     // it won't call anything from the server other than
     //to refresh the activity and that's because we are forcing it to do so
-
-    // TODO: REMOVE
-    this.props.setCurrentWorkspace({
-      workspaceId: this.props.workspace.id,
-      refreshActivity: true,
-    });
 
     this.props.setActiveWorkspace({
       workspaceId: this.props.workspace.id,
@@ -175,10 +164,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators(
-    { setCurrentWorkspace, setActiveWorkspace },
-    dispatch
-  );
+  return bindActionCreators({ setActiveWorkspace }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial);

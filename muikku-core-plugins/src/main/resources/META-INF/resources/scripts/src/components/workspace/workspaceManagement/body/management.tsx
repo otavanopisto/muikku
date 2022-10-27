@@ -29,16 +29,6 @@ import { LicenseSelector } from "~/components/general/license-selector";
 import UploadImageDialog from "../dialogs/upload-image";
 import DeleteImageDialog from "../dialogs/delete-image";
 import AddProducer from "~/components/general/add-producer";
-import {
-  updateWorkspace,
-  UpdateWorkspaceTriggerType,
-  updateWorkspaceProducersForCurrentWorkspace,
-  UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
-  updateCurrentWorkspaceImagesB64,
-  UpdateCurrentWorkspaceImagesB64TriggerType,
-  updateWorkspaceDetailsForCurrentWorkspace,
-  UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType,
-} from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import {
   displayNotification,
@@ -49,6 +39,10 @@ import { SearchFormElement } from "~/components/general/form-element";
 import * as moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
+import {
+  UpdateActiveWorkspaceTrigger,
+  updateActiveWorkspace,
+} from "~/actions/workspaces/activeWorkspace";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
@@ -60,11 +54,8 @@ interface ManagementPanelProps {
   workspace: WorkspaceType;
   i18n: i18nType;
   workspaceTypes: Array<WorkspaceTypeType>;
-  updateWorkspace: UpdateWorkspaceTriggerType;
-  updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType;
-  updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType;
-  updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType;
   displayNotification: DisplayNotificationTriggerType;
+  updateActiveWorkspace: UpdateActiveWorkspaceTrigger;
 }
 
 /**
@@ -519,39 +510,6 @@ class ManagementPanel extends React.Component<
   }
 
   /**
-   * saveImage
-   * @param croppedB64 croppedB64
-   * @param originalB64 originalB64
-   * @param file file
-   */
-  saveImage(croppedB64: string, originalB64?: string, file?: File) {
-    this.props.updateCurrentWorkspaceImagesB64({
-      originalB64: originalB64,
-      croppedB64: croppedB64,
-      /**
-       * success
-       */
-      success: () => {
-        this.props.displayNotification(
-          this.props.i18n.text.get(
-            "plugin.workspace.management.notification.coverImage.saved"
-          ),
-          "success"
-        );
-      },
-    });
-
-    this.setState({
-      workspaceHasCustomImage: true,
-      newWorkspaceImageCombo: {
-        file,
-        originalB64,
-        croppedB64,
-      },
-    });
-  }
-
-  /**
    * save
    */
   save() {
@@ -658,7 +616,7 @@ class ManagementPanel extends React.Component<
       payload = Object.assign({ permissions: permissionsArray }, payload);
     }
 
-    this.props.updateWorkspace({
+    this.props.updateActiveWorkspace({
       workspace: this.props.workspace,
       update: payload,
       /**
@@ -1339,10 +1297,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
-      updateWorkspace,
-      updateWorkspaceProducersForCurrentWorkspace,
-      updateCurrentWorkspaceImagesB64,
-      updateWorkspaceDetailsForCurrentWorkspace,
+      updateActiveWorkspace,
       displayNotification,
     },
     dispatch

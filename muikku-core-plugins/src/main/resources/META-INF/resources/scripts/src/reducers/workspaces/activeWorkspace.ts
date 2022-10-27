@@ -30,7 +30,7 @@ export const activeWorkspace: Reducer<ActiveWorkspaceState> = (
     case "ACTIVE_WORKSPACE_SET":
       return { ...state, workspaceData: action.payload };
 
-    case "UPDATE_WORKSPACE": {
+    case "ACTIVE_WORKSPACE_UPDATE": {
       let updatedWorkspaceData = state.workspaceData;
       if (
         updatedWorkspaceData &&
@@ -43,7 +43,7 @@ export const activeWorkspace: Reducer<ActiveWorkspaceState> = (
       }
       return {
         ...state,
-        currentWorkspace: updatedWorkspaceData,
+        workspaceData: updatedWorkspaceData,
       };
     }
 

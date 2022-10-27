@@ -30,11 +30,12 @@ import DeactivateReactivateUserDialog from "./dialogs/deactivate-reactivate-user
 import { SearchFormElement } from "~/components/general/form-element";
 import WorkspaceUser from "~/components/general/workspace-user";
 import PagerV2 from "~/components/general/pagerV2";
+import { AnyActionType } from "../../../actions/index";
 import {
-  loadStaffMembersOfWorkspace,
-  loadStudentsOfWorkspace,
-  LoadUsersOfWorkspaceTriggerType,
-} from "~/actions/workspaces";
+  LoadUsersOfActiveWorkspaceTrigger,
+  loadStudentsOfActiveWorkspace,
+  loadStaffMembersOfActiveWorkspace,
+} from "~/actions/workspaces/activeWorkspace";
 
 /**
  * WorkspaceUsersProps
@@ -43,8 +44,8 @@ interface WorkspaceUsersProps {
   status: StatusType;
   workspace: WorkspaceType;
   i18n: i18nType;
-  loadStaffMembers: LoadUsersOfWorkspaceTriggerType;
-  loadStudents: LoadUsersOfWorkspaceTriggerType;
+  loadStaffMembers: LoadUsersOfActiveWorkspaceTrigger;
+  loadStudents: LoadUsersOfActiveWorkspaceTrigger;
 }
 
 /**
@@ -107,6 +108,7 @@ class WorkspaceUsers extends React.Component<
    * UNSAFE_componentWillReceiveProps. Should be refactored at somepoint
    * @param nextProps nextProps
    */
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: WorkspaceUsersProps) {
     if (nextProps.workspace && nextProps.workspace.staffMembers) {
       this.allStaffPages = Math.ceil(
@@ -571,11 +573,11 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
-      loadStaffMembers: loadStaffMembersOfWorkspace,
-      loadStudents: loadStudentsOfWorkspace,
+      loadStaffMembers: loadStaffMembersOfActiveWorkspace,
+      loadStudents: loadStudentsOfActiveWorkspace,
     },
     dispatch
   );

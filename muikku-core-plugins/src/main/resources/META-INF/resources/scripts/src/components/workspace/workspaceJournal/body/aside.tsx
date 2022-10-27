@@ -11,8 +11,6 @@ import Navigation, {
 import { WorkspaceType } from "~/reducers/workspaces/index";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
-import { loadStudentsOfWorkspace } from "~/actions/workspaces";
-import { LoadUsersOfWorkspaceTriggerType } from "~/actions/workspaces/index";
 import { WorkspaceStudentListType } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions";
 import { JournalsState } from "../../../../reducers/workspaces/journals";
@@ -20,6 +18,10 @@ import {
   LoadCurrentWorkspaceJournalsFromServerTriggerType,
   loadCurrentWorkspaceJournalsFromServer,
 } from "~/actions/workspaces/journals";
+import {
+  LoadUsersOfActiveWorkspaceTrigger,
+  loadStudentsOfActiveWorkspace,
+} from "~/actions/workspaces/activeWorkspace";
 
 /**
  * NavigationAsideProps
@@ -29,7 +31,7 @@ interface NavigationAsideProps {
   workspace: WorkspaceType;
   journalsState: JournalsState;
   status: StatusType;
-  loadStudents: LoadUsersOfWorkspaceTriggerType;
+  loadStudents: LoadUsersOfActiveWorkspaceTrigger;
   loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType;
 }
 
@@ -179,7 +181,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
-      loadStudents: loadStudentsOfWorkspace,
+      loadStudents: loadStudentsOfActiveWorkspace,
       loadCurrentWorkspaceJournalsFromServer,
     },
     dispatch
