@@ -14,7 +14,6 @@ import { StatusType } from "~/reducers/base/status";
 import StudiesEnded from "./body/studies-ended";
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
 import "~/sass/elements/wcag.scss";
-// import GuidanceEventsPanel from "./body/guidance-events-panel";
 
 /**
  * IndexBodyProps
@@ -54,7 +53,7 @@ class IndexBody extends React.Component<
               <WorkspacesPanel />
             </div>
             <div className="panel-group panel-group--info">
-              <WallPanel />
+              {this.props.status.isStudent ? <WallPanel /> : null}
               <LastMessagesPanel />
             </div>
 
