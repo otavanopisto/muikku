@@ -8,6 +8,7 @@ import { UseNotes } from "~/hooks/useNotes";
 import { displayNotification } from "~/actions/base/notifications";
 import { Note } from "./wall/note";
 
+
 /**
  * Wall properties
  */
@@ -23,6 +24,7 @@ export interface WallProps {
 const WallPanel: React.FC<WallProps> = (props) => {
   const { i18n, status } = props;
   const { notes, updateNoteStatus, updateNote } = UseNotes(
+    status.role,
     status.userId,
     i18n,
     displayNotification

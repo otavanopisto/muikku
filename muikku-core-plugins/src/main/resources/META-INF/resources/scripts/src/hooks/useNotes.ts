@@ -7,16 +7,25 @@ import {
   NotesItemUpdate,
 } from "~/@types/notes";
 import { i18nType } from "~/reducers/base/i18n";
+import {Role} from "~/reducers/base/status"
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
 export const UseNotes = (
+  role: Role,
   studentId: number,
   i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [notes, setNotes] = React.useState(<NotesItemRead[]>[]);
 
+
+
   React.useEffect(() => {
+
+    // This is for students only hook, if you call it as someone else, no loading should happen
+    if(role !== Role.STUDENT) {
+      return;
+    }
     /**
      * loads Notes
      */

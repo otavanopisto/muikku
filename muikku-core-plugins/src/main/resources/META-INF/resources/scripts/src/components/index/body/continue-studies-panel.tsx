@@ -37,7 +37,7 @@ const ContinueStudiesPanel: React.FC<ContinueStudiesPanelProps> = (props) => {
       <Panel.BodyContent>
         {props.i18n.text.get("plugin.frontPage.latestWorkspace.material.part1")}{" "}
         <span className="panel__body-highlight">
-          {props.lastWorkspace.materialName}.
+          {props.lastWorkspace.materialName}
         </span>{" "}
         <Link className="link" href={props.lastWorkspace.url}>
           {props.i18n.text.get(

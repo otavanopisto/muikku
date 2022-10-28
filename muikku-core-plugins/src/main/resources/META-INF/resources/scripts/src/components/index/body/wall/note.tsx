@@ -32,6 +32,13 @@ export const Note: React.FC<NoteProps> = (props) => {
   const overdue = isOverdue(note.dueDate);
   const [showDescription, setShowDescription] = React.useState(false);
 
+  const updateButtonLocale = isCreator
+    ? "plugin.records.tasks.action.markAsDone"
+    : "plugin.records.tasks.action.requestApproval";
+
+  /**
+   * toggles description visibility
+   */
   const toggleShowDescription = () => {
     setShowDescription(!showDescription);
   };
@@ -65,14 +72,10 @@ export const Note: React.FC<NoteProps> = (props) => {
         >
           {overdue ? (
             <span className="note__overdue-tag">
-              {i18n.text.get(
-                "plugin.records.tasks.status.overdue",
-                moment(note.dueDate).format("l")
-              )}
+              {i18n.text.get("plugin.records.tasks.status.overdue")}
             </span>
-          ) : (
-            moment(note.dueDate).format("l")
-          )}
+          ) : null}
+          <span>{moment(note.dueDate).format("l")}</span>
         </span>
       </div>
       {showDescription ? (
@@ -82,13 +85,25 @@ export const Note: React.FC<NoteProps> = (props) => {
             dangerouslySetInnerHTML={{ __html: note.description }}
           ></div>
           <div className="note__footer">
-            <Button onClick={handleStatusChange}>UpdateStatus</Button>
+            <Button
+              buttonModifiers={["primary-function-content", "frontpage-button"]}
+              onClick={handleStatusChange}
+            >
+              {i18n.text.get(updateButtonLocale)}
+            </Button>
             {isCreator && (
               <NotesItemEdit
                 selectedNotesItem={note}
                 onNotesItemSaveUpdateClick={onUpdate}
               >
-                <Button buttonModifiers={"note-edit"}>EditNote</Button>
+                <Button
+                  buttonModifiers={[
+                    "primary-function-content",
+                    "frontpage-button",
+                  ]}
+                >
+                  {i18n.text.get("plugin.records.tasks.editnote.topic")}
+                </Button>
               </NotesItemEdit>
             )}
           </div>

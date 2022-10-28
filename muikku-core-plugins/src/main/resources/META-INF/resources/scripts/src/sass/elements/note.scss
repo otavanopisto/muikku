@@ -52,6 +52,7 @@
   background-color: lighten($color-fatal, 42%);
   border-radius: 10px;
   color: darken($color-fatal, 15%);
+  margin-right: 5px;
   padding: 2px 8px;
 }
 
@@ -59,6 +60,10 @@
   font-size: 0.9rem;
   font-weight: 300;
   padding: 0 0 0 10px;
+}
+
+.note__footer {
+  padding: 10px 5px;
 }
 
 @keyframes border {
