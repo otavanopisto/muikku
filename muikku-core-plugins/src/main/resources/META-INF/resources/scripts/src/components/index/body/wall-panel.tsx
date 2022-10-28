@@ -28,7 +28,7 @@ export interface WallProps {
  */
 const WallPanel: React.FC<WallProps> = (props) => {
   const { i18n, status, displayNotification } = props;
-  const { notes, updateNoteStatus, updateNote, testNotifications } = UseNotes(
+  const { notes, updateNoteStatus, updateNote } = UseNotes(
     status,
     i18n,
     displayNotification
@@ -38,16 +38,20 @@ const WallPanel: React.FC<WallProps> = (props) => {
     <Panel header="SeinäMä" modifier="wall" icon="icon-star-empty">
       <Panel.BodyTitle>Annetut tehtävät</Panel.BodyTitle>
       <Panel.BodyContent>
-        {notes.map((note) => (
-          <Note
-            i18n={i18n}
-            isCreator={note.creator === status.userId}
-            key={note.id}
-            note={note}
-            onUpdate={updateNote}
-            onStatusUpdate={updateNoteStatus}
-          />
-        ))}
+        {notes.length > 0 ? (
+          notes.map((note) => (
+            <Note
+              i18n={i18n}
+              isCreator={note.creator === status.userId}
+              key={note.id}
+              note={note}
+              onUpdate={updateNote}
+              onStatusUpdate={updateNoteStatus}
+            />
+          ))
+        ) : (
+          <div className="empty">Ei meneillään olevia tehtäviä</div>
+        )}
       </Panel.BodyContent>
     </Panel>
   );

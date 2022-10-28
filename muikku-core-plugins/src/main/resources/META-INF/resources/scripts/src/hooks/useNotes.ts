@@ -35,12 +35,6 @@ export const UseNotes = (
           "callback"
         )()) as NotesItemRead[];
         setNotes(notesItems.filter((note) => note.status === "ONGOING"));
-        displayNotification(
-          i18n.text.get(
-            "plugin.records.tasks.notification.stateUpdate.success"
-          ),
-          "success"
-        );
       } catch (err) {
         displayNotification(
           i18n.text.get("plugin.records.tasks.notification.load.error", err),
@@ -49,7 +43,7 @@ export const UseNotes = (
       }
     };
     loadNotes();
-  }, [userId, displayNotification, i18n]);
+  }, [userId, role, displayNotification, i18n]);
 
   const testNotifications = () => {
     displayNotification(
