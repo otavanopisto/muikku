@@ -42,7 +42,7 @@ import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
-import fi.otavanopisto.muikku.plugins.forum.events.ForumThreadMessageSent;
+import fi.otavanopisto.muikku.plugins.forum.events.ForumMessageSent;
 import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumAreaGroup;
@@ -95,7 +95,7 @@ public class ForumRESTService extends PluginRESTService {
   private ForumRESTModels restModels;
   
   @Inject
-  private Event<ForumThreadMessageSent> forumThreadMessageSent;
+  private Event<ForumMessageSent> forumMessageSent;
   
   @Inject
   private UserEntityController userEntityController;
@@ -537,6 +537,8 @@ public class ForumRESTService extends PluginRESTService {
           newThread.getSticky(), 
           newThread.getLocked());
 
+      forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, null));
+      
       return Response.ok(
         restModels.restModel(thread)
       ).build();
@@ -775,7 +777,7 @@ public class ForumRESTService extends PluginRESTService {
           }
         }
         
-        forumThreadMessageSent.fire(new ForumThreadMessageSent(forumThread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl));
+        forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), forumThread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, null));
         
         return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply))).build();
       } else {
