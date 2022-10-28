@@ -1,5 +1,6 @@
 import * as React from "react";
 import promisify from "~/util/promisify";
+import { StatusType } from "~/reducers/base/status";
 import mApi from "~/lib/mApi";
 import {
   NotesItemRead,
@@ -7,35 +8,39 @@ import {
   NotesItemUpdate,
 } from "~/@types/notes";
 import { i18nType } from "~/reducers/base/i18n";
-import {Role} from "~/reducers/base/status"
+import { Role } from "~/reducers/base/status";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
 export const UseNotes = (
-  role: Role,
-  studentId: number,
+  status: StatusType,
   i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [notes, setNotes] = React.useState(<NotesItemRead[]>[]);
-
-
+  const { userId, role } = status;
 
   React.useEffect(() => {
-
     // This is for students only hook, if you call it as someone else, no loading should happen
-    if(role !== Role.STUDENT) {
+    if (role !== Role.STUDENT) {
       return;
     }
+
     /**
      * loads Notes
      */
     const loadNotes = async () => {
       try {
         const notesItems = (await promisify(
-          mApi().notes.owner.read(studentId, { listArchived: false }),
+          mApi().notes.owner.read(userId, { listArchived: false }),
           "callback"
         )()) as NotesItemRead[];
         setNotes(notesItems.filter((note) => note.status === "ONGOING"));
+        displayNotification(
+          i18n.text.get(
+            "plugin.records.tasks.notification.stateUpdate.success"
+          ),
+          "success"
+        );
       } catch (err) {
         displayNotification(
           i18n.text.get("plugin.records.tasks.notification.load.error", err),
@@ -44,7 +49,14 @@ export const UseNotes = (
       }
     };
     loadNotes();
-  }, [studentId, displayNotification, i18n]);
+  }, [userId, displayNotification, i18n]);
+
+  const testNotifications = () => {
+    displayNotification(
+      i18n.text.get("plugin.records.tasks.notification.stateUpdate.success"),
+      "success"
+    );
+  };
 
   /**
    * changenotesItemStatus
@@ -147,8 +159,15 @@ export const UseNotes = (
     updateNoteStatus: (noteId: number, newStatus: NotesItemStatus) => {
       updateNoteStatus(noteId, newStatus);
     },
-    updateNote: (noteId: number, update: NotesItemUpdate) => {
-      updateNote(noteId, update);
+    updateNote: (
+      noteId: number,
+      update: NotesItemUpdate,
+      onSuccess?: () => void
+    ) => {
+      updateNote(noteId, update, onSuccess);
+    },
+    testNotifications: () => {
+      testNotifications();
     },
   };
 };

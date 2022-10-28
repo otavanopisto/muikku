@@ -2,12 +2,16 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions";
 import { Panel } from "~/components/general/panel";
 import { UseNotes } from "~/hooks/useNotes";
-import { displayNotification } from "~/actions/base/notifications";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
 import { Note } from "./wall/note";
-
 
 /**
  * Wall properties
@@ -15,6 +19,7 @@ import { Note } from "./wall/note";
 export interface WallProps {
   i18n: i18nType;
   status: StatusType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -22,10 +27,9 @@ export interface WallProps {
  * @param props WallProps
  */
 const WallPanel: React.FC<WallProps> = (props) => {
-  const { i18n, status } = props;
-  const { notes, updateNoteStatus, updateNote } = UseNotes(
-    status.role,
-    status.userId,
+  const { i18n, status, displayNotification } = props;
+  const { notes, updateNoteStatus, updateNote, testNotifications } = UseNotes(
+    status,
     i18n,
     displayNotification
   );
@@ -60,4 +64,12 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-export default connect(mapStateToProps)(WallPanel);
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ displayNotification }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(WallPanel);
