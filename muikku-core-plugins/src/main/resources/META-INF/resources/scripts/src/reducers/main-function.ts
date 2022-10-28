@@ -6,7 +6,7 @@ import i18n from "./base/i18n";
 import { title } from "./base/title";
 import websocket from "./util/websocket";
 import { messages } from "./main-function/messages";
-import { organizationWorkspaces, workspaces } from "./workspaces";
+import { workspaces } from "./workspaces";
 import { announcements } from "./announcements";
 import { userIndex } from "./user-index";
 import {
@@ -27,6 +27,7 @@ import { combineReducers } from "redux";
 import { evaluations } from "./main-function/evaluation/index";
 import { ceepos } from "./main-function/ceepos";
 import { calendar } from "./main-function/calendar";
+import { organizationWorkspaces } from "./workspaces/organization";
 
 export default combineReducers({
   announcements,

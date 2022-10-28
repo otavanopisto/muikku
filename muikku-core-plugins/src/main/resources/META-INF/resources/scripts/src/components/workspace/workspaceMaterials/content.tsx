@@ -28,15 +28,15 @@ import "~/sass/elements/material-admin.scss";
 import Toc, { TocTopic, TocElement } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
-import {
-  updateWorkspaceMaterialContentNode,
-  UpdateWorkspaceMaterialContentNodeTriggerType,
-  setWholeWorkspaceMaterials,
-  SetWholeWorkspaceMaterialsTriggerType,
-} from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
 import { AnyActionType } from "~/actions/index";
 import { StatusType } from "~/reducers/base/status";
+import {
+  updateWorkspaceMaterialContentNode,
+  setWholeWorkspaceMaterials,
+  SetWholeWorkspaceMaterialsTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+} from "~/actions/workspaces/material";
 
 /**
  * ContentProps
