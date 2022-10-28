@@ -30,6 +30,7 @@ interface DiscussionNewAreaProps {
 interface DiscussionNewAreaState {
   name: string;
   description: string;
+  areaSubscribed: boolean;
   locked: boolean;
 }
 
@@ -49,6 +50,8 @@ class DiscussionNewArea extends SessionStateComponent<
 
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
+    this.handleToggleSubscribeAreaClick =
+      this.handleToggleSubscribeAreaClick.bind(this);
     this.createArea = this.createArea.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
@@ -56,6 +59,7 @@ class DiscussionNewArea extends SessionStateComponent<
     this.state = this.getRecoverStoredState({
       name: "",
       description: "",
+      areaSubscribed: false,
       locked: false,
     });
   }
@@ -97,6 +101,13 @@ class DiscussionNewArea extends SessionStateComponent<
   }
 
   /**
+   * toggleLocked
+   */
+  handleToggleSubscribeAreaClick() {
+    this.setStateAndStore({ areaSubscribed: !this.state.areaSubscribed });
+  }
+
+  /**
    * createArea
    * @param closeDialog closeDialog
    */
@@ -105,11 +116,17 @@ class DiscussionNewArea extends SessionStateComponent<
     this.props.createDiscussionArea({
       name: this.state.name,
       description: this.state.description,
+      subscribe: this.state.areaSubscribed,
       /**
        * success
        */
       success: () => {
-        this.setStateAndClear({ name: "", description: "", locked: false });
+        this.setStateAndClear({
+          name: "",
+          description: "",
+          locked: false,
+          areaSubscribed: false,
+        });
         closeDialog();
       },
       /**
@@ -146,6 +163,22 @@ class DiscussionNewArea extends SessionStateComponent<
         </div>
       </div>,
       <div className="env-dialog__row" key="2">
+        <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
+          <input
+            id="messageLocked"
+            type="checkbox"
+            className="env-dialog__input"
+            checked={this.state.areaSubscribed}
+            onChange={this.handleToggleSubscribeAreaClick}
+          />
+          <label htmlFor="messageLocked" className="env-dialog__input-label">
+            {this.props.i18n.text.get(
+              "plugin.discussion.createarea.subscribe"
+            )}
+          </label>
+        </div>
+      </div>,
+      <div className="env-dialog__row" key="3">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaDescription" className="env-dialog__label">
             {this.props.i18n.text.get(

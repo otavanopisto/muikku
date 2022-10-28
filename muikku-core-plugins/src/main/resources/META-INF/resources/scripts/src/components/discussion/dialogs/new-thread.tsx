@@ -340,7 +340,9 @@ class DicussionNewThread extends SessionStateComponent<
               onChange={this.toggleSubscribeThread}
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
-              Tilaa ketju
+              {this.props.i18n.text.get(
+                "plugin.discussion.createmessage.subscribe"
+              )}
             </label>
           </div>
         </div>
