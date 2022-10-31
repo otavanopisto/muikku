@@ -297,13 +297,22 @@ class AssignmentEditor extends SessionStateComponent<
           this.props.onAssigmentSave(this.props.materialAssignment.materialId);
         }
 
-        if (this.props.onClose) {
-          this.props.onClose();
-        }
+        // Clears localstorage on success
+        this.justClear(
+          ["literalEvaluation", "assignmentEvaluationType", "grade"],
+          this.state.draftId
+        );
 
-        this.setState({
-          locked: false,
-        });
+        this.setState(
+          {
+            locked: false,
+          },
+          () => {
+            if (this.props.onClose) {
+              this.props.onClose();
+            }
+          }
+        );
       });
     } catch (error) {
       notificationActions.displayNotification(
@@ -374,13 +383,22 @@ class AssignmentEditor extends SessionStateComponent<
           this.props.onAssigmentSave(this.props.materialAssignment.materialId);
         }
 
-        if (this.props.onClose) {
-          this.props.onClose();
-        }
+        // Clears localstorage on success
+        this.justClear(
+          ["literalEvaluation", "assignmentEvaluationType", "grade"],
+          this.state.draftId
+        );
 
-        this.setState({
-          locked: false,
-        });
+        this.setState(
+          {
+            locked: false,
+          },
+          () => {
+            if (this.props.onClose) {
+              this.props.onClose();
+            }
+          }
+        );
       });
     } catch (error) {
       notificationActions.displayNotification(

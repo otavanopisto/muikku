@@ -11,6 +11,7 @@ import {
   EvaluationStudyDiaryEvent,
   EvaluationBasePriceById,
   EvaluationFilters,
+  EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
 
@@ -39,6 +40,10 @@ export interface EvaluationState {
   evaluationSelectedAssessmentId?: AssessmentRequest;
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
   evaluationDiaryEntries?: EvaluationStateAndData<EvaluationStudyDiaryEvent[]>;
+  evaluationJournalComments: {
+    comments: EvaluationJournalCommentsByJournal;
+    commentsLoaded: number[];
+  };
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
   evaluationCompositeReplies?: EvaluationStateAndData<
     MaterialCompositeRepliesType[]
@@ -79,6 +84,7 @@ export const initialState: EvaluationState = {
   evaluationCurrentStudentAssigments: { state: "LOADING", data: undefined },
   openedAssignmentEvaluationId: undefined,
   evaluationBilledPrice: undefined,
+  evaluationJournalComments: { comments: {}, commentsLoaded: [] },
   evaluationDiaryEntries: {
     state: "LOADING",
     data: undefined,
@@ -305,6 +311,59 @@ export const evaluations: Reducer<EvaluationState> = (
       return {
         ...state,
         basePrice: { state: action.payload, data: state.basePrice.data },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_INITIALIZED":
+      return {
+        ...state,
+        evaluationJournalComments: {
+          ...state.evaluationJournalComments,
+          comments: action.payload,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_LOAD":
+      return {
+        ...state,
+        evaluationJournalComments: {
+          comments: action.payload.comments,
+          commentsLoaded: action.payload.commentsLoaded,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_CREATE":
+      return {
+        ...state,
+        evaluationDiaryEntries: {
+          state: state.evaluationDiaryEntries.state,
+          data: action.payload.updatedJournalEntryList,
+        },
+        evaluationJournalComments: {
+          ...state.evaluationJournalComments,
+          comments: action.payload.updatedCommentsList,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_UPDATE":
+      return {
+        ...state,
+        evaluationJournalComments: {
+          ...state.evaluationJournalComments,
+          comments: action.payload.updatedCommentsList,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_DELETE":
+      return {
+        ...state,
+        evaluationDiaryEntries: {
+          state: state.evaluationDiaryEntries.state,
+          data: action.payload.updatedJournalEntryList,
+        },
+        evaluationJournalComments: {
+          ...state.evaluationJournalComments,
+          comments: action.payload.updatedCommentsList,
+        },
       };
 
     default:

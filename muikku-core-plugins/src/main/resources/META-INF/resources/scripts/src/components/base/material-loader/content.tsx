@@ -9,6 +9,7 @@ import BinaryMaterialLoader from "~/components/base/material-loader/binary";
 interface MaterialLoaderContentProps extends MaterialLoaderProps {
   answersChecked: boolean;
   answersVisible: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stateConfiguration: any;
 }
 
