@@ -1,4 +1,3 @@
-
 @import "../base/colors";
 @import "../base/vars";
 @import "../base/mixins";
@@ -12,19 +11,19 @@
   &:not(:first-child) {
     margin-top: 10px;
   }
-  
+
   &.state-LOW {
     border-color: $color-priority-low;
   }
-  
+
   &.state-NORMAL {
     border-color: $color-priority-normal;
   }
-  
+
   &.state-HIGH {
     border-color: $color-priority-high;
   }
-  
+
   &.state-OVERDUE {
     animation: border 1s ease-in alternate infinite;
     border-left: 3px solid $color-priority-high;
