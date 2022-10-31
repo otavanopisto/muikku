@@ -151,7 +151,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
         List<String> guidanceCounselorMails = notificationController.listStudyCounselorsEmails(studentEntity.defaultSchoolDataIdentifier());
         if (CollectionUtils.isNotEmpty(guidanceCounselorMails)) {
           studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.guidanceCounselor",
-              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMails.get(0)});
+              new Object[] {studentName.getDisplayNameWithLine(), String.join(", ", guidanceCounselorMails)});
         }
         String notificationContent = isAineopiskelu ? internetixStudyTimeNotification : studyTimeNotification;
         notificationController.sendNotification(

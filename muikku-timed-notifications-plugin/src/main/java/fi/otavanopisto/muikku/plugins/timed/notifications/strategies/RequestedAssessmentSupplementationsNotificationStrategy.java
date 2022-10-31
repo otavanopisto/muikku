@@ -205,7 +205,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
                 new Object[] {studentName.getDisplayNameWithLine(), workspaceName});
             if (CollectionUtils.isNotEmpty(guidanceCounselorMails)) {
             notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content.guidanceCounselor",
-                new Object[] {studentName.getDisplayNameWithLine(), workspaceName, guidanceCounselorMails.get(0)});
+                new Object[] {studentName.getDisplayNameWithLine(), workspaceName, String.join(", ", guidanceCounselorMails)});
             }
             notificationController.sendNotification(
               localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),

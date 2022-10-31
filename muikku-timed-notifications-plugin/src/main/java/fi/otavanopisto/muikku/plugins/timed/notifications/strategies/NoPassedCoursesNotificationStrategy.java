@@ -94,7 +94,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
             new Object[] {studentName.getDisplayNameWithLine()});
         if (CollectionUtils.isNotEmpty(guidanceCounselorMails)) {
           notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.content.guidanceCounselor",
-              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMails.get(0)});
+              new Object[] {studentName.getDisplayNameWithLine(), String.join(", ", guidanceCounselorMails)});
         }
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.subject"),
