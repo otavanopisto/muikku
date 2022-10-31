@@ -189,7 +189,7 @@ public class EvaluationController {
       
       // Interim evaluation request, if one exists and is newer than activity date so far
       
-      InterimEvaluationRequest interimEvaluationRequest = findLatestInterimEvaluationRequest(userEntity, workspaceEntity);
+      InterimEvaluationRequest interimEvaluationRequest = findLatestInterimEvaluationRequest(userEntity, workspaceEntity, Boolean.FALSE);
       if (interimEvaluationRequest != null && interimEvaluationRequest.getRequestDate().after(activity.getDate())) {
         activity.setText(interimEvaluationRequest.getRequestText());
         activity.setDate(interimEvaluationRequest.getRequestDate());
@@ -273,7 +273,18 @@ public class EvaluationController {
   }
   
   public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceEntity workspaceEntity) {
-    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndWorkspaceAndArchived(userEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndWorkspace(userEntity.getId(), workspaceEntity.getId());
+    if (requests.size() == 0) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(InterimEvaluationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
+  }
+  
+  public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceEntity workspaceEntity, Boolean archived) {
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndWorkspaceAndArchived(userEntity.getId(), workspaceEntity.getId(), archived);
     if (requests.size() == 0) {
       return null;
     }
@@ -284,7 +295,18 @@ public class EvaluationController {
   }
   
   public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceMaterial workspaceMaterial) {
-    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), Boolean.FALSE);
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndMaterial(userEntity.getId(), workspaceMaterial.getId());
+    if (requests.size() == 0) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(InterimEvaluationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
+  }
+  
+  public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceMaterial workspaceMaterial, Boolean archived) {
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), archived);
     if (requests.size() == 0) {
       return null;
     }

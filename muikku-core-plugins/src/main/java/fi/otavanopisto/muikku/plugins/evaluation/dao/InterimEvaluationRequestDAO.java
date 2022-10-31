@@ -102,6 +102,22 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<InterimEvaluationRequest> listByUserAndMaterial(Long userEntityId, Long workspaceMaterialId) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<InterimEvaluationRequest> criteria = criteriaBuilder.createQuery(InterimEvaluationRequest.class);
+    Root<InterimEvaluationRequest> root = criteria.from(InterimEvaluationRequest.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(InterimEvaluationRequest_.userEntityId), userEntityId),
+            criteriaBuilder.equal(root.get(InterimEvaluationRequest_.workspaceMaterialId), workspaceMaterialId)
+            )
+        );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public List<InterimEvaluationRequest> listByUserAndMaterialAndArchived(Long userEntityId, Long workspaceMaterialId, Boolean archived) {
     EntityManager entityManager = getEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
