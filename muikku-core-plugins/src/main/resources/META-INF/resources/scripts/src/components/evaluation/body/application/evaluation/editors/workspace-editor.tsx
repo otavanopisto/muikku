@@ -11,7 +11,6 @@ import {
   updateWorkspaceEvaluationToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
-import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
 import Button from "~/components/general/button";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
@@ -394,11 +393,9 @@ class WorkspaceEditor extends SessionStateComponent<
            * onSuccess
            */
           onSuccess: () => {
-            cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-            this.setStateAndClear(
-              {
-                literalEvaluation: "",
-              },
+            // Clears localstorage on success
+            this.justClear(
+              ["literalEvaluation", "grade", "selectedPriceOption"],
               this.state.draftId
             );
 
@@ -432,13 +429,18 @@ class WorkspaceEditor extends SessionStateComponent<
           );
         }
 
+        const { existingBilledPriceObject } = this.state;
+
+        const billingPriceDisabled =
+          existingBilledPriceObject && !existingBilledPriceObject.editable;
+
         /**
-         * Updating price if "billingPrice" is not undefined
+         * Updating price if "billingPrice" is not undefined or is not disabled
          * otherwise just updates evaluation
          */
         this.props.updateWorkspaceEvaluationToServer({
           type: "edit",
-          billingPrice,
+          billingPrice: !billingPriceDisabled && billingPrice,
           workspaceEvaluation: {
             identifier: latestEvent.identifier,
             assessorIdentifier: status.userSchoolDataIdentifier,
@@ -452,11 +454,9 @@ class WorkspaceEditor extends SessionStateComponent<
            * onSuccess
            */
           onSuccess: () => {
-            cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-            this.setStateAndClear(
-              {
-                literalEvaluation: "",
-              },
+            // Clears localstorage on success
+            this.justClear(
+              ["literalEvaluation", "grade", "selectedPriceOption"],
               this.state.draftId
             );
 
@@ -505,11 +505,9 @@ class WorkspaceEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-            },
+          // Clears localstorage on success
+          this.justClear(
+            ["literalEvaluation", "grade", "selectedPriceOption"],
             this.state.draftId
           );
 
