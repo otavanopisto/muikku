@@ -71,12 +71,12 @@ class WorkspacesPanel extends React.Component<
               ))}
           </div>
         ) : (
-          <div className="empty">
+          <Panel.BodyContent modifier="empty">
             {this.props.status.isStudent ? (
               <>
                 {this.props.i18n.text.get(
                   "plugin.frontPage.workspaces.noWorkspaces.part1"
-                )}
+                )}{" "}
                 <Link href="/coursepicker">
                   {this.props.i18n.text.get(
                     "plugin.frontPage.workspaces.noWorkspaces.coursepicker"
@@ -93,7 +93,7 @@ class WorkspacesPanel extends React.Component<
                 )}
               </>
             )}
-          </div>
+          </Panel.BodyContent>
         )}
       </Panel>
     );

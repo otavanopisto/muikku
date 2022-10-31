@@ -330,7 +330,8 @@
   }
 }
 
-.panel__body--empty {
+.panel__body--empty,
+.panel__body-content--empty {
   font-style: italic;
   padding: 10px;
 }

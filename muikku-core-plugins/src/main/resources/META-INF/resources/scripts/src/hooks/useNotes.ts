@@ -11,7 +11,14 @@ import { i18nType } from "~/reducers/base/i18n";
 import { Role } from "~/reducers/base/status";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
-export const UseNotes = (
+/**
+ * A hook for getting notes with status "ONGOING" and functions to manipulate them
+ * @param status user status for user
+ * @param i18n localization
+ * @param displayNotification notification thunk
+ * @returns an array of notes and functions to update and change status
+ */
+export const useOnGoingNotes = (
   status: StatusType,
   i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
@@ -44,13 +51,6 @@ export const UseNotes = (
     };
     loadNotes();
   }, [userId, role, displayNotification, i18n]);
-
-  const testNotifications = () => {
-    displayNotification(
-      i18n.text.get("plugin.records.tasks.notification.stateUpdate.success"),
-      "success"
-    );
-  };
 
   /**
    * changenotesItemStatus
@@ -159,9 +159,6 @@ export const UseNotes = (
       onSuccess?: () => void
     ) => {
       updateNote(noteId, update, onSuccess);
-    },
-    testNotifications: () => {
-      testNotifications();
     },
   };
 };

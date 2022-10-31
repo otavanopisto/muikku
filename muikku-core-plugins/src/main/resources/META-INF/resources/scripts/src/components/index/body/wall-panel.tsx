@@ -6,7 +6,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { Panel } from "~/components/general/panel";
-import { UseNotes } from "~/hooks/useNotes";
+import { useOnGoingNotes } from "~/hooks/useNotes";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -28,7 +28,7 @@ export interface WallProps {
  */
 const WallPanel: React.FC<WallProps> = (props) => {
   const { i18n, status, displayNotification } = props;
-  const { notes, updateNoteStatus, updateNote } = UseNotes(
+  const { notes, updateNoteStatus, updateNote } = useOnGoingNotes(
     status,
     i18n,
     displayNotification
@@ -50,7 +50,9 @@ const WallPanel: React.FC<WallProps> = (props) => {
             />
           ))
         ) : (
-          <div className="empty">Ei meneillään olevia tehtäviä</div>
+          <div className="empty">
+            {i18n.text.get("plugin.records.tasks.empty")}
+          </div>
         )}
       </Panel.BodyContent>
     </Panel>

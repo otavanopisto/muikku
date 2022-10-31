@@ -76,7 +76,9 @@ export const Note: React.FC<NoteProps> = (props) => {
               {i18n.text.get("plugin.records.tasks.status.overdue")}
             </span>
           ) : null}
-          <span>{moment(note.dueDate).format("l")}</span>
+          {note.dueDate ? (
+            <span>{moment(note.dueDate).format("l")}</span>
+          ) : null}
         </span>
       </div>
       <AnimateHeight height={showDescription ? "auto" : 0}>
