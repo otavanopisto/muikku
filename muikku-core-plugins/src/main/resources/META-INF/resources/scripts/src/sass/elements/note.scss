@@ -12,21 +12,18 @@
   &:not(:first-child) {
     margin-top: 10px;
   }
-  &.state-OWN {
-    border-color: orange;
-  }
   &.state-LOW {
-    border-color: gray;
+    border-color: $color-priority-low;
   }
   &.state-NORMAL {
-    border-color: green;
+    border-color: $color-priority-normal;
   }
   &.state-HIGH {
-    border-color: red;
+    border-color: $color-priority-high;
   }
   &.state-OVERDUE {
     animation: border 1s ease-in alternate infinite;
-    border-left: 3px solid red;
+    border-left: 3px solid $color-priority-high;
   }
 }
 
@@ -68,10 +65,10 @@
 
 @keyframes border {
   from {
-    border-left: 3px solid red;
+    border-left: 3px solid $color-priority-high;
   }
   to {
-    border-left: 3px solid #fff;
+    border-left: 3px solid $color-default;
   }
 }
 
