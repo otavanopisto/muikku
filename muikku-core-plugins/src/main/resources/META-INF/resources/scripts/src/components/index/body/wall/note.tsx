@@ -4,6 +4,7 @@ import {
   NotesItemStatus,
   NotesItemUpdate,
 } from "~/@types/notes";
+import AnimateHeight from "react-animate-height";
 import { isOverdue } from "~/helper-functions/dates";
 import * as moment from "moment";
 import { i18nType } from "~/reducers/base/i18n";
@@ -78,37 +79,35 @@ export const Note: React.FC<NoteProps> = (props) => {
           <span>{moment(note.dueDate).format("l")}</span>
         </span>
       </div>
-      {showDescription ? (
-        <>
-          <div
-            className="note__description"
-            dangerouslySetInnerHTML={{ __html: note.description }}
-          ></div>
-          <div className="note__footer">
-            <Button
-              buttonModifiers={["primary-function-content", "frontpage-button"]}
-              onClick={handleStatusChange}
+      <AnimateHeight height={showDescription ? "auto" : 0}>
+        <div
+          className="note__description"
+          dangerouslySetInnerHTML={{ __html: note.description }}
+        ></div>
+        <div className="note__footer">
+          <Button
+            buttonModifiers={["primary-function-content", "frontpage-button"]}
+            onClick={handleStatusChange}
+          >
+            {i18n.text.get(updateButtonLocale)}
+          </Button>
+          {isCreator && (
+            <NotesItemEdit
+              selectedNotesItem={note}
+              onNotesItemSaveUpdateClick={onUpdate}
             >
-              {i18n.text.get(updateButtonLocale)}
-            </Button>
-            {isCreator && (
-              <NotesItemEdit
-                selectedNotesItem={note}
-                onNotesItemSaveUpdateClick={onUpdate}
+              <Button
+                buttonModifiers={[
+                  "primary-function-content",
+                  "frontpage-button",
+                ]}
               >
-                <Button
-                  buttonModifiers={[
-                    "primary-function-content",
-                    "frontpage-button",
-                  ]}
-                >
-                  {i18n.text.get("plugin.records.tasks.editnote.topic")}
-                </Button>
-              </NotesItemEdit>
-            )}
-          </div>
-        </>
-      ) : null}
+                {i18n.text.get("plugin.records.tasks.editnote.topic")}
+              </Button>
+            </NotesItemEdit>
+          )}
+        </div>
+      </AnimateHeight>
     </div>
   );
 };
