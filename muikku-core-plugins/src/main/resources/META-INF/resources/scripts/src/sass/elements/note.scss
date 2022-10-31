@@ -5,22 +5,26 @@
 @import "../base/breakpoints";
 
 .note {
-  border-left: 3px solid #fff;
+  border-left: 3px solid $color-default;
   cursor: pointer;
   padding: 5px 0 5px 5px;
 
   &:not(:first-child) {
     margin-top: 10px;
   }
+  
   &.state-LOW {
     border-color: $color-priority-low;
   }
+  
   &.state-NORMAL {
     border-color: $color-priority-normal;
   }
+  
   &.state-HIGH {
     border-color: $color-priority-high;
   }
+  
   &.state-OVERDUE {
     animation: border 1s ease-in alternate infinite;
     border-left: 3px solid $color-priority-high;
