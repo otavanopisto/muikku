@@ -10,6 +10,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { useNextCourseSuggestions } from "~/hooks/useNextCourseSuggestions";
+import { Panel } from "~/components/general/panel";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import Button from "~/components/general/button";
 import "~/sass/elements/panel.scss";
@@ -86,19 +87,15 @@ const NextStudiesPanel: React.FC<NextStudiesPanelProps> = (props) => {
   ));
 
   return (
-    <div className="panel panel--continue-studies">
-      <div className="panel__header">
-        <div className="panel__header-icon panel__header-icon--continue-studies icon-forward"></div>
-        <h2 className="panel__header-title">
-          {props.i18n.text.get("plugin.frontPage.suggestedWorkspaces.title")}
-        </h2>
+    <Panel
+      header={props.i18n.text.get("plugin.frontPage.suggestedWorkspaces.title")}
+      icon="icon-forward"
+      modifier="continue-studies"
+    >
+      <div className="item-list item-list--panel-workspaces">
+        {suggestedWorkspaces}
       </div>
-      <div className="panel__body">
-        <div className="item-list item-list--panel-workspaces">
-          {suggestedWorkspaces}
-        </div>
-      </div>
-    </div>
+    </Panel>
   );
 };
 /**
