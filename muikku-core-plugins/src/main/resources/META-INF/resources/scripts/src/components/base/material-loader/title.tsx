@@ -48,7 +48,7 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
         return "journal";
 
       default:
-        return "textual";
+        return "theory";
     }
   };
 
