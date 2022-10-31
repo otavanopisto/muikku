@@ -5,8 +5,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceListType, WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-import "~/sass/elements/panel.scss";
-import "~/sass/elements/panel.scss";
+import { Panel } from "~/components/general/panel";
 
 /**
  * WorkspacesPanelProps
@@ -34,56 +33,50 @@ class WorkspacesPanel extends React.Component<
    */
   render() {
     return (
-      <div className="panel panel--workspaces">
-        <div className="panel__header">
-          <div className="panel__header-icon panel__header-icon--workspaces icon-books"></div>
-          <h2 className="panel__header-title">
-            {this.props.i18n.text.get("plugin.frontPage.workspaces.title")}
-          </h2>
-        </div>
+      <Panel
+        icon="icon-books"
+        modifier="workspaces"
+        header={this.props.i18n.text.get("plugin.frontPage.workspaces.title")}
+      >
         {this.props.workspaces.length ? (
-          <div className="panel__body">
-            <div className="item-list item-list--panel-workspaces">
-              {this.props.workspaces
-                .sort(
-                  (workspaceA: WorkspaceType, workspaceB: WorkspaceType) => {
-                    if (
-                      workspaceA.name.toLocaleLowerCase() <
-                      workspaceB.name.toLocaleLowerCase()
-                    ) {
-                      return -1;
-                    }
-                    if (workspaceA.name > workspaceB.name) {
-                      return 1;
-                    }
-                    return 0;
-                  }
-                )
-                .map((workspace: WorkspaceType) => (
-                  <Link
-                    key={workspace.id}
-                    className="item-list__item item-list__item--workspaces"
-                    href={`/workspace/${workspace.urlName}`}
-                  >
-                    <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
-                    <span className="item-list__text-body">
-                      {`${workspace.name} ${
-                        workspace.nameExtension
-                          ? "(" + workspace.nameExtension + ")"
-                          : ""
-                      }`}
-                    </span>
-                  </Link>
-                ))}
-            </div>
+          <div className="item-list item-list--panel-workspaces">
+            {this.props.workspaces
+              .sort((workspaceA: WorkspaceType, workspaceB: WorkspaceType) => {
+                if (
+                  workspaceA.name.toLocaleLowerCase() <
+                  workspaceB.name.toLocaleLowerCase()
+                ) {
+                  return -1;
+                }
+                if (workspaceA.name > workspaceB.name) {
+                  return 1;
+                }
+                return 0;
+              })
+              .map((workspace: WorkspaceType) => (
+                <Link
+                  key={workspace.id}
+                  className="item-list__item item-list__item--workspaces"
+                  href={`/workspace/${workspace.urlName}`}
+                >
+                  <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
+                  <span className="item-list__text-body">
+                    {`${workspace.name} ${
+                      workspace.nameExtension
+                        ? "(" + workspace.nameExtension + ")"
+                        : ""
+                    }`}
+                  </span>
+                </Link>
+              ))}
           </div>
         ) : (
-          <div className="panel__body panel__body--empty">
+          <Panel.BodyContent modifier="empty">
             {this.props.status.isStudent ? (
-              <div>
+              <>
                 {this.props.i18n.text.get(
                   "plugin.frontPage.workspaces.noWorkspaces.part1"
-                )}
+                )}{" "}
                 <Link href="/coursepicker">
                   {this.props.i18n.text.get(
                     "plugin.frontPage.workspaces.noWorkspaces.coursepicker"
@@ -92,17 +85,17 @@ class WorkspacesPanel extends React.Component<
                 {this.props.i18n.text.get(
                   "plugin.frontPage.workspaces.noWorkspaces.part2"
                 )}
-              </div>
+              </>
             ) : (
-              <div>
+              <>
                 {this.props.i18n.text.get(
                   "plugin.frontPage.workspaces.noWorkspaces.teacher"
                 )}
-              </div>
+              </>
             )}
-          </div>
+          </Panel.BodyContent>
         )}
-      </div>
+      </Panel>
     );
   }
 }
