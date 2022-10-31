@@ -151,6 +151,14 @@ public class RestAssessmentRequest {
     this.subjects = subjects;
   }
 
+  public boolean isInterimEvaluationRequest() {
+    return isInterimEvaluationRequest;
+  }
+
+  public void setInterimEvaluationRequest(boolean isInterimEvaluationRequest) {
+    this.isInterimEvaluationRequest = isInterimEvaluationRequest;
+  }
+
   private Long userEntityId;
   private String firstName;
   private String lastName;
@@ -161,6 +169,7 @@ public class RestAssessmentRequest {
   private String workspaceName;
   private String workspaceNameExtension;
   private String workspaceUrlName;
+  private boolean isInterimEvaluationRequest;
   private Date enrollmentDate;
   private Date assessmentRequestDate;
   private Date evaluationDate;

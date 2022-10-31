@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.evaluation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -65,6 +66,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class EvaluationController {
@@ -75,6 +77,9 @@ public class EvaluationController {
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private SessionController sessionController;
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
@@ -184,7 +189,7 @@ public class EvaluationController {
       
       // Interim evaluation request, if one exists and is newer than activity date so far
       
-      InterimEvaluationRequest interimEvaluationRequest = findLatestInterimEvaluationRequest(userEntity.getId(), workspaceEntity.getId());
+      InterimEvaluationRequest interimEvaluationRequest = findLatestInterimEvaluationRequest(userEntity, workspaceEntity);
       if (interimEvaluationRequest != null && interimEvaluationRequest.getRequestDate().after(activity.getDate())) {
         activity.setText(interimEvaluationRequest.getRequestText());
         activity.setDate(interimEvaluationRequest.getRequestDate());
@@ -267,8 +272,8 @@ public class EvaluationController {
     return activities;
   }
   
-  public InterimEvaluationRequest findLatestInterimEvaluationRequest(Long userEntityId, Long workspaceEntityId) {
-    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndWorkspaceAndArchived(userEntityId, workspaceEntityId, Boolean.FALSE);
+  public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceEntity workspaceEntity) {
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndWorkspaceAndArchived(userEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
     if (requests.size() == 0) {
       return null;
     }
@@ -278,16 +283,47 @@ public class EvaluationController {
     return requests.get(0);
   }
   
+  public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceMaterial workspaceMaterial) {
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), Boolean.FALSE);
+    if (requests.size() == 0) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(InterimEvaluationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
+  }
+  
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(Long workspaceEntityId, Boolean archived) {
+    return interimEvaluationRequestDAO.listByWorkspaceAndArchived(workspaceEntityId, archived);
+  }
+
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(Collection<Long> workspaceEntityIds, Boolean archived) {
+    return interimEvaluationRequestDAO.listByWorkspacesAndArchived(workspaceEntityIds, archived);
+  }
+  
   public List<InterimEvaluationRequest> listInterimEvaluationRequests(Long userEntityId, Long workspaceEntityId) {
     return interimEvaluationRequestDAO.listByUserAndWorkspace(userEntityId, workspaceEntityId);
   }
 
-  public List<InterimEvaluationRequest> listInterimEvaluationRequests(Long userEntityId, Long workspaceEntityId, Long workspaceMaterialId, Boolean archived) {
-    return interimEvaluationRequestDAO.listByUserAndWorkspaceAndMaterialAndArchived(userEntityId, workspaceEntityId, workspaceMaterialId, archived);
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(UserEntity userEntity, WorkspaceMaterial workspaceMaterial, Boolean archived) {
+    return interimEvaluationRequestDAO.listByUserAndMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), archived);
   }
   
   public void archiveInterimEvaluationRequest(InterimEvaluationRequest interimEvaluationRequest) {
     interimEvaluationRequestDAO.archive(interimEvaluationRequest);
+  }
+  
+  public InterimEvaluationRequest createInterimEvaluationRequest(Long workspaceMaterialId, String requestText) {
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(workspaceMaterial);
+    Long userEntityId = sessionController.getLoggedUserEntity().getId();
+    Date requestDate = new Date();
+    return interimEvaluationRequestDAO.createInterimEvaluationRequest(userEntityId, workspaceEntity.getId(), workspaceMaterialId, requestDate, requestText);
+  }
+  
+  public InterimEvaluationRequest cancelInterimEvaluationRequest(InterimEvaluationRequest interimEvaluationRequest) {
+    return interimEvaluationRequestDAO.updateInterimEvalutionRequest(interimEvaluationRequest, new Date(), interimEvaluationRequest.getRequestText(), Boolean.TRUE);
   }
   
   public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Long workspaceMaterialId, Date requestDate, String requestText) {
@@ -417,7 +453,7 @@ public class EvaluationController {
   public List<WorkspaceMaterialEvaluation> listWorkspaceMaterialEvaluationsByWorkspaceMaterialId(Long workspaceMaterialId){
     return workspaceMaterialEvaluationDAO.listByWorkspaceMaterialId(workspaceMaterialId);
   }
-
+  
   public SupplementationRequest updateSupplementationRequest(SupplementationRequest supplementationRequest, Long userEntityId, Date requestDate, String requestText) {
     SchoolDataIdentifier workspaceSubjectIdentifier = supplementationRequest.getWorkspaceSubjectIdentifier() != null ? SchoolDataIdentifier.fromId(supplementationRequest.getWorkspaceSubjectIdentifier()) : null;
     supplementationRequest = supplementationRequestDAO.updateSupplementationRequest(

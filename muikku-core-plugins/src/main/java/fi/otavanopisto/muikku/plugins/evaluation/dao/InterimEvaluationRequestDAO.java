@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation.dao;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,14 +23,15 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
       Long workspaceEntityId,
       Long workspaceMaterialId,
       Date requestDate,
-      Date cancellationDate) {
+      String requestText) {
     InterimEvaluationRequest interimEvaluationRequest = new InterimEvaluationRequest();
     
     interimEvaluationRequest.setUserEntityId(userEntityId);
     interimEvaluationRequest.setWorkspaceEntityId(workspaceEntityId);
     interimEvaluationRequest.setWorkspaceMaterialId(workspaceMaterialId);
     interimEvaluationRequest.setRequestDate(requestDate);
-    interimEvaluationRequest.setCancellationDate(cancellationDate);
+    interimEvaluationRequest.setRequestText(requestText);
+    interimEvaluationRequest.setCancellationDate(null);
     interimEvaluationRequest.setArchived(Boolean.FALSE);
     
     return persist(interimEvaluationRequest);
@@ -37,13 +40,35 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
   public InterimEvaluationRequest updateInterimEvalutionRequest(
       InterimEvaluationRequest interimEvaluationRequest,
       Date cancellationDate,
+      String requestText,
       Boolean archived) {
     interimEvaluationRequest.setCancellationDate(cancellationDate);
+    interimEvaluationRequest.setRequestText(requestText);
     interimEvaluationRequest.setArchived(archived);
     
     return persist(interimEvaluationRequest);
   }
   
+  public List<InterimEvaluationRequest> listByWorkspaceAndArchived(Long workspaceEntityId, Boolean archived) {
+    return listByWorkspacesAndArchived(Collections.singletonList(workspaceEntityId), archived);
+  }
+
+  public List<InterimEvaluationRequest> listByWorkspacesAndArchived(Collection<Long> workspaceEntityIds, Boolean archived) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<InterimEvaluationRequest> criteria = criteriaBuilder.createQuery(InterimEvaluationRequest.class);
+    Root<InterimEvaluationRequest> root = criteria.from(InterimEvaluationRequest.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.in(InterimEvaluationRequest_.workspaceEntityId), workspaceEntityIds),
+            criteriaBuilder.equal(root.get(InterimEvaluationRequest_.archived), archived)
+            )
+        );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public List<InterimEvaluationRequest> listByUserAndWorkspace(Long userEntityId, Long workspaceEntityId) {
     EntityManager entityManager = getEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -77,7 +102,7 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<InterimEvaluationRequest> listByUserAndWorkspaceAndMaterialAndArchived(Long userEntityId, Long workspaceEntityId, Long workspaceMaterialId, Boolean archived) {
+  public List<InterimEvaluationRequest> listByUserAndMaterialAndArchived(Long userEntityId, Long workspaceMaterialId, Boolean archived) {
     EntityManager entityManager = getEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<InterimEvaluationRequest> criteria = criteriaBuilder.createQuery(InterimEvaluationRequest.class);
@@ -86,7 +111,6 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(InterimEvaluationRequest_.userEntityId), userEntityId),
-            criteriaBuilder.equal(root.get(InterimEvaluationRequest_.workspaceEntityId), workspaceEntityId),
             criteriaBuilder.equal(root.get(InterimEvaluationRequest_.workspaceMaterialId), workspaceMaterialId),
             criteriaBuilder.equal(root.get(InterimEvaluationRequest_.archived), archived)
             )

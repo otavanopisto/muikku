@@ -925,7 +925,7 @@ public class ForumRESTService extends PluginRESTService {
       if (workspaceEntity != null) {
         workspaceEntityId = workspaceEntity.getId();
         workspaceUrlName = workspaceEntity.getUrlName();
-        workspaceName = workspaceEntityController.getName(workspaceEntity);
+        workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
       }
     }
     ForumThreadRESTModel threadRest = restModels.restModel(entity.getForumThread());

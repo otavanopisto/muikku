@@ -25,6 +25,7 @@ import fi.otavanopisto.muikku.dao.users.UserGroupEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupUserEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
+import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -37,19 +38,31 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 
 @Dependent
 public class WorkspaceEntityController { 
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private SessionController sessionController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
   private WorkspaceEntityDAO workspaceEntityDAO;
+
+  @Inject
+  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -65,6 +78,7 @@ public class WorkspaceEntityController {
   
   @Inject
   private PluginSettingsController pluginSettingsController;
+
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -139,7 +153,17 @@ public class WorkspaceEntityController {
     
     return listWorkspaceEntitiesByDataSource(schoolDataSource, firstResult, maxResults); 
   }
-
+  
+  public List<WorkspaceEntity> listWorkspaceEntitiesByCurrentUser() {
+    UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    if (usdi == null) {
+      logger.severe("UserSchoolDataIdentifier not found for " + sessionController.getLoggedUser());
+      return null;
+    }
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndActiveAndArchived(
+        usdi, Boolean.TRUE, Boolean.FALSE);
+    return workspaceUserEntities.stream().map(WorkspaceUserEntity::getWorkspaceEntity).collect(Collectors.toList()); 
+  }
 
   public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
     return workspaceEntityDAO.updateAccess(workspaceEntity, access);
@@ -220,7 +244,7 @@ public class WorkspaceEntityController {
     return result;
   }
   
-  public String getName(WorkspaceEntity workspaceEntity) {
+  public WorkspaceEntityName getName(WorkspaceEntity workspaceEntity) {
     if (!searchProviders.isUnsatisfied()) {
       SearchProvider searchProvider = searchProviders.get();
       
@@ -228,11 +252,7 @@ public class WorkspaceEntityController {
       if (searchResult.getTotalHitCount() == 1) {
         List<Map<String, Object>> results = searchResult.getResults();
         Map<String, Object> match = results.get(0);
-        String name = (String) match.get("name");
-        if (match.get("nameExtension") != null) {
-          name = String.format("%s (%s)", name, (String) match.get("nameExtension"));
-        }
-        return name;
+        return new WorkspaceEntityName((String) match.get("name"), (String) match.get("nameExtension"));
       }
       else {
         throw new RuntimeException(String.format("Search provider couldn't find a unique workspace. %d results.", searchResult.getTotalHitCount()));
@@ -242,7 +262,7 @@ public class WorkspaceEntityController {
       throw new RuntimeException("Search provider is not present in application.");
     }
   }
-
+  
   public boolean isSignupAllowed(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity) {
     if (!searchProviders.isUnsatisfied()) {
       SearchProvider searchProvider = searchProviders.get();
