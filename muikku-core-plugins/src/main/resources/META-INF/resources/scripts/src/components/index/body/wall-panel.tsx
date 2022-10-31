@@ -35,8 +35,14 @@ const WallPanel: React.FC<WallProps> = (props) => {
   );
 
   return (
-    <Panel header="SeinäMä" modifier="wall" icon="icon-star-empty">
-      <Panel.BodyTitle>Annetut tehtävät</Panel.BodyTitle>
+    <Panel
+      header={props.i18n.text.get("plugin.frontPage.wall.title")}
+      modifier="wall"
+      icon="icon-star-empty"
+    >
+      <Panel.BodyTitle>
+        {props.i18n.text.get("plugin.frontPage.wall.subtitle.tasks")}
+      </Panel.BodyTitle>
       <Panel.BodyContent>
         {notes.length > 0 ? (
           notes.map((note) => (
