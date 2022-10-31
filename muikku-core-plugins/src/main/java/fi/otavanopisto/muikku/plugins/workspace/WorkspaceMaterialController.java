@@ -811,7 +811,7 @@ public class WorkspaceMaterialController {
     for (int i = 0; i < workspaceMaterials.size(); i++) {
       WorkspaceMaterial currentMaterial = workspaceMaterials.get(i);
       WorkspaceMaterial nextSibling = i + 1 < workspaceMaterials.size() ? workspaceMaterials.get(i + 1) : null;
-      result.add(createContentNode(currentMaterial, 0, false, nextSibling));
+      result.add(createContentNode(currentMaterial, 0, MaterialViewRestrict.NONE, false, nextSibling));
     }
 
     return result;
@@ -872,7 +872,7 @@ public class WorkspaceMaterialController {
     for (int i = 0; i < rootMaterialNodes.size(); i++) {
       WorkspaceNode currentNode = rootMaterialNodes.get(i);
       WorkspaceNode nextSibling = i + 1 < rootMaterialNodes.size() ? rootMaterialNodes.get(i + 1) : null;
-      ContentNode node = createContentNode(currentNode, 1, includeHidden, nextSibling);
+      ContentNode node = createContentNode(currentNode, 1, MaterialViewRestrict.NONE, includeHidden, nextSibling);
       contentNodes.add(node);
     }
     return contentNodes;
@@ -896,7 +896,7 @@ public class WorkspaceMaterialController {
     for (int i = 0; i < helpPages.size(); i++) {
       WorkspaceNode currentNode = helpPages.get(i);
       WorkspaceNode nextSibling = i + 1 < helpPages.size() ? helpPages.get(i + 1) : null;
-      ContentNode node = createContentNode(currentNode, 1, true, nextSibling);
+      ContentNode node = createContentNode(currentNode, 1, MaterialViewRestrict.NONE, true, nextSibling);
       contentNodes.add(node);
     }
     return contentNodes;
@@ -904,18 +904,24 @@ public class WorkspaceMaterialController {
 
   public ContentNode createContentNode(WorkspaceNode rootMaterialNode, WorkspaceNode nextSibling)
       throws WorkspaceMaterialException {
-    return createContentNode(rootMaterialNode, 1, true, nextSibling);
+    return createContentNode(rootMaterialNode, 1, MaterialViewRestrict.NONE, true, nextSibling);
   }
 
-  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean includeHidden,
-      WorkspaceNode nextSibling) throws WorkspaceMaterialException {
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, MaterialViewRestrict minimumRestriction, 
+      boolean includeHidden, WorkspaceNode nextSibling) throws WorkspaceMaterialException {
+
+    // Note: view restriction gets only propagated from the first level as the materials don't really support 
+    //       multiple levels anyways at the moment. If it's later needed to support nested folders, the
+    //       flattening mechanism needs to start propagating the view restriction too.
+    
     switch (rootMaterialNode.getType()) {
     case FOLDER:
       WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
+      MaterialViewRestrict folderViewRestrict = MaterialViewRestrict.max(minimumRestriction, workspaceFolder.getViewRestrict());
       ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", null,
           rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(),
           nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null,
-          workspaceFolder.getPath(), null, Collections.emptyList(), workspaceFolder.getViewRestrict(), 
+          workspaceFolder.getPath(), null, Collections.emptyList(), folderViewRestrict, 
           false);
       List<WorkspaceNode> children = includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
           : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
@@ -940,7 +946,7 @@ public class WorkspaceMaterialController {
               MaterialViewRestrict.NONE, false);
         }
         else {
-          contentNode = createContentNode(child.node, child.level, includeHidden, child.nextSibling);
+          contentNode = createContentNode(child.node, child.level, folderViewRestrict, includeHidden, child.nextSibling);
         }
         folderContentNode.addChild(contentNode);
       }
@@ -949,13 +955,14 @@ public class WorkspaceMaterialController {
     case MATERIAL:
       WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
       Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
+      MaterialViewRestrict materialViewRestrict = MaterialViewRestrict.max(minimumRestriction, material.getViewRestrict());
       String contentType = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getContentType()
           : material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContentType() : null;
 
       String html;
       boolean materialContentHiddenForUser;
       
-      switch (material.getViewRestrict()) {
+      switch (materialViewRestrict) {
         case LOGGED_IN:
           if (sessionController.isLoggedIn()) {
             materialContentHiddenForUser = false;
@@ -1001,7 +1008,7 @@ public class WorkspaceMaterialController {
           workspaceMaterial.getParent().getId(), nextSibling == null ? null : nextSibling.getId(),
           workspaceMaterial.getHidden(), html, workspaceMaterial.getPath(),
           material.getLicense(), createRestModel(materialController.listMaterialProducers(material)), 
-          material.getViewRestrict(), materialContentHiddenForUser);
+          materialViewRestrict, materialContentHiddenForUser);
     default:
       return null;
     }

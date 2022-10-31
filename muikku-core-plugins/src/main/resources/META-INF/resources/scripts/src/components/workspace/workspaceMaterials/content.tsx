@@ -457,26 +457,37 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         )}
       >
         {this.state.materials.map((node, nodeIndex) => {
-          const isSectionViewRestricted =
+          // Boolean if there is view Restriction for toc topic
+          const isTocTopicViewRestricted =
             node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
             node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
 
+          // section is restricted in following cases:
+          // section is restricted for logged in users and users is not logged in...
+          // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
+          const isTocTopicViewRestrictedFromUser =
+            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+              !this.props.status.loggedIn) ||
+            (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+              !this.props.workspace.isCourseMember &&
+              (this.props.status.isStudent || !this.props.status.loggedIn));
+
           const iconTopic: string =
-            isSectionViewRestricted &&
+            isTocTopicViewRestricted &&
             !this.props.status.isStudent &&
             this.props.status.loggedIn
               ? "restriction"
               : null;
 
           const iconTitleTopic: string =
-            isSectionViewRestricted &&
+            isTocTopicViewRestricted &&
             !this.props.status.isStudent &&
             this.props.status.loggedIn
               ? this.buildViewRestrictionLocaleString(node.viewRestrict)
               : null;
 
           const classNameTopic: string =
-            isSectionViewRestricted &&
+            isTocTopicViewRestricted &&
             !this.props.status.isStudent &&
             this.props.status.loggedIn
               ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
@@ -496,180 +507,179 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               iconAfter={iconTopic}
               iconAfterTitle={iconTitleTopic}
             >
-              {node.children
-                .map((subnode) => {
-                  if (isSectionViewRestricted) {
-                    return null;
-                  }
+              {!isTocTopicViewRestrictedFromUser &&
+                node.children
+                  .map((subnode) => {
+                    // Boolean if there is view Restriction for toc element
+                    const isTocElementViewRestricted =
+                      subnode.viewRestrict ===
+                        MaterialViewRestriction.LOGGED_IN ||
+                      subnode.viewRestrict ===
+                        MaterialViewRestriction.WORKSPACE_MEMBERS;
 
-                  const isViewRestrictedVisible =
-                    subnode.viewRestrict ===
-                      MaterialViewRestriction.LOGGED_IN ||
-                    subnode.viewRestrict ===
-                      MaterialViewRestriction.WORKSPACE_MEMBERS;
+                    const isAssignment = subnode.assignmentType === "EVALUATED";
+                    const isExercise = subnode.assignmentType === "EXERCISE";
+                    const isJournal = subnode.assignmentType === "JOURNAL";
 
-                  const isAssignment = subnode.assignmentType === "EVALUATED";
-                  const isExercise = subnode.assignmentType === "EXERCISE";
-                  const isJournal = subnode.assignmentType === "JOURNAL";
+                    //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
+                    const modifier = isAssignment
+                      ? "assignment"
+                      : isExercise
+                      ? "exercise"
+                      : isJournal
+                      ? "journal"
+                      : null;
 
-                  //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
-                  const modifier = isAssignment
-                    ? "assignment"
-                    : isExercise
-                    ? "exercise"
-                    : isJournal
-                    ? "journal"
-                    : null;
+                    let icon: string | null = null;
+                    let iconTitle: string | null = null;
+                    let className: string | null = null;
 
-                  let icon: string | null = null;
-                  let iconTitle: string | null = null;
-                  let className: string | null = null;
+                    const compositeReplies =
+                      this.props.materialReplies &&
+                      this.props.materialReplies.find(
+                        (reply) =>
+                          reply.workspaceMaterialId ===
+                          subnode.workspaceMaterialId
+                      );
 
-                  const compositeReplies =
-                    this.props.materialReplies &&
-                    this.props.materialReplies.find(
-                      (reply) =>
-                        reply.workspaceMaterialId ===
-                        subnode.workspaceMaterialId
-                    );
+                    let showEvenIfHidden = false;
 
-                  let showEvenIfHidden = false;
-
-                  if (subnode.hidden && compositeReplies) {
-                    showEvenIfHidden =
-                      compositeReplies && compositeReplies.submitted !== null;
-                  }
-
-                  if (compositeReplies) {
-                    switch (compositeReplies.state) {
-                      case "ANSWERED":
-                        icon = "check";
-                        className = "toc__item--answered";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.exerciseDoneTooltip"
-                        );
-                        break;
-                      case "SUBMITTED":
-                        icon = "check";
-                        className = "toc__item--submitted";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentDoneTooltip"
-                        );
-                        break;
-                      case "WITHDRAWN":
-                        icon = "check";
-                        className = "toc__item--withdrawn";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentWithdrawnTooltip"
-                        );
-                        break;
-                      case "INCOMPLETE":
-                        icon = "thumb-down";
-                        className = "toc__item--incomplete";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentIncompleteTooltip"
-                        );
-                        break;
-                      case "FAILED":
-                        icon = "thumb-down";
-                        className = "toc__item--failed";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentFailedTooltip"
-                        );
-                        break;
-                      case "PASSED":
-                        icon = "thumb-up";
-                        className = "toc__item--passed";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentPassedTooltip"
-                        );
-                        break;
-                      case "UNANSWERED":
-                      default:
-                        break;
+                    if (subnode.hidden && compositeReplies) {
+                      showEvenIfHidden =
+                        compositeReplies && compositeReplies.submitted !== null;
                     }
-                  }
 
-                  if (
-                    isViewRestrictedVisible &&
-                    !this.props.status.isStudent &&
-                    this.props.status.loggedIn
-                  ) {
-                    icon = "restriction";
-                    className = this.buildViewRestrictionModifiers(
-                      subnode.viewRestrict,
-                      false
-                    );
-                    iconTitle = this.buildViewRestrictionLocaleString(
-                      subnode.viewRestrict
-                    );
-                  }
-
-                  const pageElement = (
-                    <TocElement
-                      modifier={modifier}
-                      ref={subnode.workspaceMaterialId + ""}
-                      key={subnode.workspaceMaterialId}
-                      isActive={
-                        this.props.activeNodeId === subnode.workspaceMaterialId
+                    if (compositeReplies) {
+                      switch (compositeReplies.state) {
+                        case "ANSWERED":
+                          icon = "check";
+                          className = "toc__item--answered";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.exerciseDoneTooltip"
+                          );
+                          break;
+                        case "SUBMITTED":
+                          icon = "check";
+                          className = "toc__item--submitted";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentDoneTooltip"
+                          );
+                          break;
+                        case "WITHDRAWN":
+                          icon = "check";
+                          className = "toc__item--withdrawn";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentWithdrawnTooltip"
+                          );
+                          break;
+                        case "INCOMPLETE":
+                          icon = "thumb-down";
+                          className = "toc__item--incomplete";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentIncompleteTooltip"
+                          );
+                          break;
+                        case "FAILED":
+                          icon = "thumb-down";
+                          className = "toc__item--failed";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentFailedTooltip"
+                          );
+                          break;
+                        case "PASSED":
+                          icon = "thumb-up";
+                          className = "toc__item--passed";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentPassedTooltip"
+                          );
+                          break;
+                        case "UNANSWERED":
+                        default:
+                          break;
                       }
-                      className={className}
-                      isHidden={subnode.hidden || node.hidden}
-                      disableScroll
-                      iconAfter={icon}
-                      iconAfterTitle={iconTitle}
-                      hash={
-                        this.props.doNotSetHashes
-                          ? null
-                          : "p-" + subnode.workspaceMaterialId
-                      }
-                    >
-                      {subnode.title}
-                    </TocElement>
-                  );
-
-                  if (!isEditable) {
-                    if (subnode.hidden && !showEvenIfHidden) {
-                      return null;
                     }
-                    return pageElement;
-                  } else {
-                    return (
-                      <Draggable
-                        interactionData={subnode}
-                        interactionGroup="TOC_SUBNODE"
+
+                    if (
+                      isTocElementViewRestricted &&
+                      !this.props.status.isStudent &&
+                      this.props.status.loggedIn
+                    ) {
+                      icon = "restriction";
+                      className = this.buildViewRestrictionModifiers(
+                        subnode.viewRestrict,
+                        false
+                      );
+                      iconTitle = this.buildViewRestrictionLocaleString(
+                        subnode.viewRestrict
+                      );
+                    }
+
+                    const pageElement = (
+                      <TocElement
+                        modifier={modifier}
+                        ref={subnode.workspaceMaterialId + ""}
                         key={subnode.workspaceMaterialId}
-                        className="toc__item--drag-container"
-                        handleSelector=".toc__item--drag-handle"
-                        onInteractionWith={this.onInteractionBetweenSubnodes.bind(
-                          this,
-                          subnode
-                        )}
-                        onDropInto={this.onDropBetweenSubnodes.bind(
-                          this,
-                          subnode
-                        )}
-                        ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
-                        enableTouch={this.props.enableTouch}
+                        isActive={
+                          this.props.activeNodeId ===
+                          subnode.workspaceMaterialId
+                        }
+                        className={className}
+                        isHidden={subnode.hidden || node.hidden}
+                        disableScroll
+                        iconAfter={icon}
+                        iconAfterTitle={iconTitle}
+                        hash={
+                          this.props.doNotSetHashes
+                            ? null
+                            : "p-" + subnode.workspaceMaterialId
+                        }
                       >
-                        <div className="toc__item--drag-handle icon-move"></div>
-                        {pageElement}
-                      </Draggable>
+                        {subnode.title}
+                      </TocElement>
                     );
-                  }
-                })
-                .concat(
-                  isEditable ? (
-                    <Droppable
-                      key="LAST"
-                      interactionData={node.workspaceMaterialId}
-                      interactionGroup="TOC_SUBNODE"
-                      className="toc__element--drag-placeholder-container"
-                    ></Droppable>
-                  ) : (
-                    []
-                  )
-                )}
+
+                    if (!isEditable) {
+                      if (subnode.hidden && !showEvenIfHidden) {
+                        return null;
+                      }
+                      return pageElement;
+                    } else {
+                      return (
+                        <Draggable
+                          interactionData={subnode}
+                          interactionGroup="TOC_SUBNODE"
+                          key={subnode.workspaceMaterialId}
+                          className="toc__item--drag-container"
+                          handleSelector=".toc__item--drag-handle"
+                          onInteractionWith={this.onInteractionBetweenSubnodes.bind(
+                            this,
+                            subnode
+                          )}
+                          onDropInto={this.onDropBetweenSubnodes.bind(
+                            this,
+                            subnode
+                          )}
+                          ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
+                          enableTouch={this.props.enableTouch}
+                        >
+                          <div className="toc__item--drag-handle icon-move"></div>
+                          {pageElement}
+                        </Draggable>
+                      );
+                    }
+                  })
+                  .concat(
+                    isEditable ? (
+                      <Droppable
+                        key="LAST"
+                        interactionData={node.workspaceMaterialId}
+                        interactionGroup="TOC_SUBNODE"
+                        className="toc__element--drag-placeholder-container"
+                      ></Droppable>
+                    ) : (
+                      []
+                    )
+                  )}
             </TocTopic>
           );
 
