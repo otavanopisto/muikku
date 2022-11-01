@@ -945,6 +945,7 @@ class MaterialEditor extends React.Component<
           ) : null}
           {this.props.editorState.canChangePageType ? (
             <Dropdown
+              modifier="material-editor-page-type"
               openByHover={false}
               persistent
               items={MATERIAL_PAGE_TYPE_CONFIGS.map((config, index) =>
