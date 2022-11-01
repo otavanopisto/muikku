@@ -765,16 +765,28 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   /**
-   * mApi().evaluation.interimEvaluationRequest.create({
-   *   'workspaceMaterialId': 123,                     // workspace material id
-   *   'requestText': 'Yadda yadda'                    // request text
-   * });
+   * mApi().evaluation.interimEvaluationRequest.create(<payload>);
    * 
    * Creates a new interim evaluation request for the current user for the given workspace material.
    * 
-   * @param payload Request payload
+   * Payload: Interim evaluation request with workspace material and request text.
    * 
-   * @return The created interim evaluation request
+   * {workspaceMaterialId: 123,
+   *  requestText: "Interim evaluation, plz"}
+   * 
+   * Output: Created interim evaluation request
+   *  
+   * {id: 23523,
+   *  userEntityId: 472389,
+   *  workspaceEntityId: 34274,
+   *  workspaceMaterialId: 123,
+   *  requestDate: 2022-10-15T03:24:00,
+   *  cancellationDate: null,
+   *  requestText: "Interim evaluation, plz",
+   *  archived: false}
+   *  
+   * Errors:
+   * 400 Workspace material id not given, material not found, request text not given
    */
   @POST
   @Path("/interimEvaluationRequest")
@@ -804,10 +816,22 @@ public class EvaluationRESTService extends PluginRESTService {
    * mApi().evaluation.workspace.interimEvaluationRequest.read(123);
    * 
    * Finds the latest interim evaluation request for workspace 123 for the currently logged in user.
+   * Note that this also returns the request even if it has been handled or cancelled (i.e. archived).
    * 
-   * @param workspaceEntityId Workspace id
-   * 
-   * @return Latest interim evaluation request for given workspace. Also returns a request even if it has been handled (i.e. archived)
+   * Output: Interim evaluation request
+   *  
+   * {id: 23523,
+   *  userEntityId: 472389,
+   *  workspaceEntityId: 123,
+   *  workspaceMaterialId: 42342,
+   *  requestDate: 2022-10-15T03:24:00,
+   *  cancellationDate: 2022-10-16T03:24:00,
+   *  requestText: "Interim evaluation, plz",
+   *  archived: true}
+   *  
+   * Errors:
+   * 400 Workspace with given id not found
+   * 404 Latest interim evaluation request does not exist
    */
   @GET
   @Path("/workspace/{WORKSPACEENTITYID}/interimEvaluationRequest")
@@ -822,20 +846,32 @@ public class EvaluationRESTService extends PluginRESTService {
     if (interimEvaluationRequest != null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    return Response.ok(interimEvaluationRequest).build();
+    return Response.ok(toRestModel(interimEvaluationRequest)).build();
   }
 
   /**
-   * mApi().evaluation.workspacematerial.interimEvaluationRequest.read(123);
+   * mApi().evaluation.workspaceMaterial.interimEvaluationRequest.read(123);
    * 
    * Finds the latest interim evaluation request for workspace material 123 for the currently logged in user.
+   * Note that this also returns the request even if it has been handled or cancelled (i.e. archived).
    * 
-   * @param workspaceMaterialId Workspace material id
-   * 
-   * @return Latest interim evaluation request for given workspace material. Also returns a request even if it has been handled (i.e. archived)
+   * Output: Interim evaluation request
+   *  
+   * {id: 23523,
+   *  userEntityId: 472389,
+   *  workspaceEntityId: 42343,
+   *  workspaceMaterialId: 123,
+   *  requestDate: 2022-10-15T03:24:00,
+   *  cancellationDate: 2022-10-16T03:24:00,
+   *  requestText: "Interim evaluation, plz",
+   *  archived: true}
+   *  
+   * Errors:
+   * 400 Workspace material with given id not found
+   * 404 Latest interim evaluation request does not exist
    */
   @GET
-  @Path("/workspacematerial/{WORKSPACEMATERIALID}/interimEvaluationRequest")
+  @Path("/workspaceMaterial/{WORKSPACEMATERIALID}/interimEvaluationRequest")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response findInterimEvaluationRequestByWorkspaceMaterial(@PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
@@ -847,57 +883,44 @@ public class EvaluationRESTService extends PluginRESTService {
     if (interimEvaluationRequest != null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    return Response.ok(interimEvaluationRequest).build();
+    return Response.ok(toRestModel(interimEvaluationRequest)).build();
   }
 
   /**
-   * mApi().evaluation.workspace.cancelInterimEvaluationRequest.update(123);
+   * mApi().evaluation.interimEvaluationRequest.del(123);
    * 
-   * Cancels the latest interim evaluation request of the given workspace for the currently logged in user.
+   * Cancels the interim evaluation request with the given id.
    * 
-   * @param workspaceEntityId Workspace id
+   * Output: Interim evaluation request
+   *  
+   * {id: 123,
+   *  userEntityId: 472389,
+   *  workspaceEntityId: 42343,
+   *  workspaceMaterialId: 5436,
+   *  requestDate: 2022-10-15T03:24:00,
+   *  cancellationDate: 2022-10-16T03:24:00,
+   *  requestText: "Interim evaluation, plz",
+   *  archived: true}
+   *  
+   * Errors:
+   * 403 Interim evaluation request does not belong to the current user
+   * 404 Interim evaluation request with id does not exist
    * 
-   * @return 204 No content
    */
-  @PUT
-  @Path("/workspace/{WORKSPACEENTITYID}/cancelInterimEvaluationRequest")
+  @DELETE
+  @Path("/interimEvaluationRequest/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response cancelInterimEvaluationRequestByWorkspace(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+  public Response cancelInterimEvaluationRequestByWorkspace(@PathParam("ID") Long interimEvaluationRequestId) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
+    InterimEvaluationRequest interimEvaluationRequest = evaluationController.findInterimEvaluationRequestById(interimEvaluationRequestId);
+    if (interimEvaluationRequest == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Interim evaluation request with id %d not found", interimEvaluationRequestId)).build();
     }
-    InterimEvaluationRequest interimEvaluationRequest = evaluationController.findLatestInterimEvaluationRequest(userEntity, workspaceEntity, Boolean.FALSE);
-    if (interimEvaluationRequest != null) {
-      evaluationController.cancelInterimEvaluationRequest(interimEvaluationRequest);
+    if (!userEntity.equals(interimEvaluationRequest.getUserEntityId())) {
+      return Response.status(Status.FORBIDDEN).entity("Interim evaluation request user mismatch").build();
     }
-    return Response.noContent().build();
-  }
-
-  /**
-   * mApi().evaluation.workspacematerial.cancelInterimEvaluationRequest.update(123);
-   * 
-   * Cancels the latest interim evaluation request of the given workspace material for the currently logged in user.
-   * 
-   * @param workspaceMaterialId Workspace material id
-   * 
-   * @return 204 No content
-   */
-  @PUT
-  @Path("/workspacematerial/{WORKSPACEMATERIALID}/cancelInterimEvaluationRequest")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response cancelInterimEvaluationRequestByWorkspaceMaterial(@PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace material %d not found", workspaceMaterial)).build();
-    }
-    InterimEvaluationRequest interimEvaluationRequest = evaluationController.findLatestInterimEvaluationRequest(userEntity, workspaceMaterial, Boolean.FALSE);
-    if (interimEvaluationRequest != null) {
-      evaluationController.cancelInterimEvaluationRequest(interimEvaluationRequest);
-    }
-    return Response.noContent().build();
+    interimEvaluationRequest = evaluationController.cancelInterimEvaluationRequest(interimEvaluationRequest);
+    return Response.ok(toRestModel(interimEvaluationRequest)).build();
   }
 
   @POST

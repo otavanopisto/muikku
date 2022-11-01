@@ -272,6 +272,10 @@ public class EvaluationController {
     return activities;
   }
   
+  public InterimEvaluationRequest findInterimEvaluationRequestById(Long interimEvaluationRequestId) {
+    return interimEvaluationRequestDAO.findById(interimEvaluationRequestId);
+  }
+  
   public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceEntity workspaceEntity) {
     List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndWorkspace(userEntity.getId(), workspaceEntity.getId());
     if (requests.size() == 0) {
