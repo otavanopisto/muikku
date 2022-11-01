@@ -294,6 +294,8 @@ public interface UserSchoolDataBridge {
 
   public List<GroupUser> listGroupUsersByGroupAndType(String groupIdentifier, GroupUserType type);
 
+  public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers);
+  
   public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword);
 
   public String findUsername(String userIdentifier);

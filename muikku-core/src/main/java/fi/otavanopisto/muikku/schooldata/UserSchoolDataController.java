@@ -542,4 +542,12 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).amICounselor(studentIdentifier.getIdentifier());
   }
   
+  public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).listStudentGuidanceCounselors(studentIdentifier, onlyMessageReceivers);
+  }
+  
 }
