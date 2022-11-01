@@ -11,8 +11,8 @@ import "~/sass/elements/filter.scss";
 import { SortBy, EvaluationSort } from "~/@types/evaluation";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
-  SaveEvaluationSortFunction,
-  saveEvaluationSortFunctionToServer,
+  UpdateEvaluationSortFunction,
+  updateEvaluationSortFunctionToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import Dropdown from "~/components/general/dropdown";
 import { ButtonPill } from "~/components/general/button";
@@ -23,7 +23,7 @@ import { ButtonPill } from "~/components/general/button";
 interface EvaluationSortersProps {
   i18n: i18nType;
   evaluations: EvaluationState;
-  saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction;
+  updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction;
 }
 
 /**
@@ -69,7 +69,7 @@ class EvaluationSorters extends React.Component<
           value: "no-sort",
         };
 
-        this.props.saveEvaluationSortFunctionToServer({ sortFunction });
+        this.props.updateEvaluationSortFunctionToServer({ sortFunction });
       } else {
         /**
          * Otherwise select clicked new sort
@@ -79,7 +79,7 @@ class EvaluationSorters extends React.Component<
           value: sortBy,
         };
 
-        this.props.saveEvaluationSortFunctionToServer({ sortFunction });
+        this.props.updateEvaluationSortFunctionToServer({ sortFunction });
       }
     };
 
@@ -249,7 +249,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ saveEvaluationSortFunctionToServer }, dispatch);
+  return bindActionCreators({ updateEvaluationSortFunctionToServer }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EvaluationSorters);

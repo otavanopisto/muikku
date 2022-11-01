@@ -14,8 +14,8 @@ import {
   loadBasePriceFromServer,
   LoadEvaluationCurrentStudentAssigments,
   loadCurrentStudentAssigmentsData,
-  LoadEvaluationStudyDiaryEvent,
-  loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
+  LoadEvaluationJournalEvents,
+  loadEvaluationSelectedAssessmentJournalEventsFromServer,
   LoadEvaluationCompositeReplies,
   loadEvaluationCompositeRepliesFromServer,
   UpdateEvaluationSelectedAssessment,
@@ -39,7 +39,7 @@ interface EvaluateDialogProps {
   updateSelectedAssessment: UpdateEvaluationSelectedAssessment;
   loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments;
   loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies;
-  loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationStudyDiaryEvent;
+  loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJournalEvents;
   loadBasePriceFromServer: LoadBasePrice;
 }
 
@@ -78,7 +78,7 @@ class EvaluateDialog extends React.Component<
     this.props.loadCurrentStudentAssigmentsData({
       workspaceId: assessment.workspaceEntityId,
     });
-    this.props.loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer({
+    this.props.loadEvaluationSelectedAssessmentJournalEventsFromServer({
       assessment,
     });
 
@@ -148,7 +148,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       loadCurrentStudentAssigmentsData,
 
       loadEvaluationCompositeRepliesFromServer,
-      loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
+      loadEvaluationSelectedAssessmentJournalEventsFromServer,
       loadBasePriceFromServer,
     },
     dispatch
