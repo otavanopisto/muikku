@@ -16,6 +16,7 @@ import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -88,18 +89,18 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
           logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
           continue;
         }
-        String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        List<String> guidanceCounselorMails = notificationController.listStudyCounselorsEmails(studentEntity.defaultSchoolDataIdentifier());
         String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.content",
             new Object[] {studentName.getDisplayNameWithLine()});
-        if (guidanceCounselorMail != null) {
+        if (CollectionUtils.isNotEmpty(guidanceCounselorMails)) {
           notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.content.guidanceCounselor",
-              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMail});
+              new Object[] {studentName.getDisplayNameWithLine(), String.join(", ", guidanceCounselorMails)});
         }
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.subject"),
           notificationContent,
           studentEntity,
-          guidanceCounselorMail
+          guidanceCounselorMails
         );
         noPassedCoursesNotificationController.createNoPassedCoursesNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_NOPASSEDCOURSES);
