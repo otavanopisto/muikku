@@ -102,9 +102,17 @@ class WorkspaceJournalsListItem extends React.Component<
         (s) => s.userEntityId === this.props.journal.userEntityId
       );
 
+    const isMandatory = this.props.journal.isMaterialField;
+    const isDraft =
+      this.props.journal.workspaceMaterialReplyState &&
+      this.props.journal.workspaceMaterialReplyState === "ANSWERED";
+
     if (this.state.editing) {
       return (
-        <ApplicationListItem className="journal">
+        <ApplicationListItem
+          className={"journal"}
+          modifiers={isMandatory && "mandatory"}
+        >
           <WorkspaceJournalEditor
             type="edit"
             journal={this.props.journal}
@@ -116,10 +124,17 @@ class WorkspaceJournalsListItem extends React.Component<
 
     return (
       <>
-        <ApplicationListItem className="journal">
+        <ApplicationListItem
+          className="journal"
+          modifiers={isMandatory && "mandatory"}
+        >
           <ApplicationListItemHeader
             onClick={this.handleJournalItemClick}
             className="application-list__item-header--journal-entry"
+            modifiers={
+              this.props.asCurrent &&
+              "application-list__item-header--journal-entry-current"
+            }
             tabIndex={0}
           >
             {!this.props.status.isStudent ? (
@@ -139,6 +154,13 @@ class WorkspaceJournalsListItem extends React.Component<
               ) : (
                 <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
                   {this.props.journal.title}
+                </span>
+              )}
+              {isDraft && (
+                <span>
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.journal.status.draft"
+                  )}
                 </span>
               )}
             </div>

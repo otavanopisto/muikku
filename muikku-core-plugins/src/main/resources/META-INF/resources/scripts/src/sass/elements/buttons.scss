@@ -1466,6 +1466,7 @@
 }
 
 // Buttons used in Material pages
+.button--muikku-submit-journal,
 .button--muikku-submit-exercise,
 .button--muikku-show-correct-answers-button,
 .button--muikku-submit-assignment,
@@ -1478,6 +1479,10 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+}
+
+.button--muikku-submit-journal {
+  background-color: $color-journal-page;
 }
 
 .button--muikku-submit-exercise {
@@ -1726,6 +1731,17 @@
   &:hover {
     background: $color-assignment;
     border-color: $color-assignment;
+  }
+}
+
+.button-pill--material-editor-journal {
+  background: $color-journal-page;
+  border-color: $color-journal-page;
+  color: $color-default;
+
+  &:hover {
+    background: $color-journal-page;
+    border-color: $color-journal-page;
   }
 }
 
@@ -2252,5 +2268,14 @@
 
 .button--reading-ruler-preset-active {
   background-color: $color-default-contrast;
+  color: $color-default;
+}
+
+.button--journal-filter {
+  margin: 0 10px 0 0;
+}
+
+.button--journal-filter-active {
+  background-color: $color-list-selected-background;
   color: $color-default;
 }

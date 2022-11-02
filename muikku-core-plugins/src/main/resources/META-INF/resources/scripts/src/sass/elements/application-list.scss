@@ -858,6 +858,10 @@
   }
 }
 
+.application-list__item-header--journal-entry-current {
+  cursor: initial;
+}
+
 .application-list__item-header--journal-comment {
   flex-flow: row wrap;
   margin: 0 0 15px;
