@@ -71,6 +71,19 @@ public class MeRESTService {
   @Inject
   private UserGroupGuidanceController userGroupGuidanceController;
   
+  /**
+   * Sets the server side locale for current user.
+   * 
+   * Payload:
+   * {
+   *    lang: "en"
+   * }
+   * 
+   * Available languages en/fi
+   * 
+   * @param selection
+   * @return
+   */
   @POST
   @Path("/locale")
   @RESTPermit (handling = Handling.UNSECURED)
