@@ -564,23 +564,24 @@ export default class Dropdown extends React.Component<
           ></span>
           {(this.props.content || this.props.items) && (
             <div className="dropdown__container">
-              {this.props.content}
-              {this.props.items &&
-                this.props.items.map((item, index) => {
-                  const element = React.cloneElement(
-                    typeof item === "function" ? item(this.close) : item,
-                    {
-                      id: this.id + "-item-" + index,
-                      onKeyDown: this.onItemKeyDown,
-                    }
-                  );
+              {this.props.content ? this.props.content : null}
+              {this.props.items
+                ? this.props.items.map((item, index) => {
+                    const element = React.cloneElement(
+                      typeof item === "function" ? item(this.close) : item,
+                      {
+                        id: this.id + "-item-" + index,
+                        onKeyDown: this.onItemKeyDown,
+                      }
+                    );
 
-                  return (
-                    <div className="dropdown__container-item" key={index}>
-                      {element}
-                    </div>
-                  );
-                })}
+                    return (
+                      <div className="dropdown__container-item" key={index}>
+                        {element}
+                      </div>
+                    );
+                  })
+                : null}
             </div>
           )}
         </div>
