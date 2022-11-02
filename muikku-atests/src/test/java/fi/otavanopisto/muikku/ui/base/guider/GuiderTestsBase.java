@@ -803,6 +803,10 @@ public class GuiderTestsBase extends AbstractUITest {
       logout();
       mockBuilder.mockLogin(student);
       login();
+      assertText(".note__header .note__title", "Task from guider.");
+      waitAndClick(".note__header .note__title");
+      waitForVisible(".note__description");
+      assertText(".note__description p", "Do some stuff!");
       navigate("/records", false);
       assertText(".notes .notes__item .notes__item-header span", "Task from guider.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
