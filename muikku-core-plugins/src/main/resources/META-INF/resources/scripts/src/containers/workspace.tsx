@@ -24,16 +24,12 @@ import { RouteComponentProps } from "react-router";
 import {
   setCurrentWorkspace,
   loadStaffMembersOfWorkspace,
-  loadWholeWorkspaceMaterials,
-  setCurrentWorkspaceMaterialsActiveNodeId,
-  loadWorkspaceCompositeMaterialReplies,
   updateLastWorkspace,
   loadStudentsOfWorkspace,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadCurrentWorkspaceUserGroupPermissions,
   loadWorkspaceChatStatus,
-  loadWholeWorkspaceHelp,
   setAvailableCurriculums,
 } from "~/actions/workspaces";
 import {
@@ -47,7 +43,6 @@ import {
   loadDiscussionThreadFromServer,
   setDiscussionWorkpaceId,
   loadSubscribedDiscussionThreadList,
-  showOnlySubscribedThreads,
 } from "~/actions/discussion";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { displayNotification } from "~/actions/base/notifications";
@@ -67,6 +62,12 @@ import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { loadCurrentWorkspaceJournalsFromServer } from "~/actions/workspaces/journals";
+import {
+  loadWholeWorkspaceHelp,
+  loadWholeWorkspaceMaterials,
+  loadWorkspaceCompositeMaterialReplies,
+  setCurrentWorkspaceMaterialsActiveNodeId,
+} from "~/actions/workspaces/material";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1049,11 +1050,6 @@ export default class Workspace extends React.Component<
               );
             }
             if (!workspace.journals) {
-              //here in the callback
-              const currentLocation = window.location.hash
-                .replace("#", "")
-                .split("/");
-
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
                 // This happens if teacher/admin uses diary
                 this.props.store.dispatch(

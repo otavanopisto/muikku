@@ -2,16 +2,6 @@ import * as React from "react";
 import "~/sass/elements/material-editor.scss";
 import "~/sass/elements/form.scss";
 import { bindActionCreators } from "redux";
-import {
-  setWorkspaceMaterialEditorState,
-  SetWorkspaceMaterialEditorStateTriggerType,
-  updateWorkspaceMaterialContentNode,
-  UpdateWorkspaceMaterialContentNodeTriggerType,
-  createWorkspaceMaterialAttachment,
-  CreateWorkspaceMaterialAttachmentTriggerType,
-  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
-  requestWorkspaceMaterialContentNodeAttachments,
-} from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
@@ -41,6 +31,16 @@ import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import { PageLocation, UploadingValue } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
+import {
+  setWorkspaceMaterialEditorState,
+  updateWorkspaceMaterialContentNode,
+  createWorkspaceMaterialAttachment,
+  requestWorkspaceMaterialContentNodeAttachments,
+  CreateWorkspaceMaterialAttachmentTriggerType,
+  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  SetWorkspaceMaterialEditorStateTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+} from "~/actions/workspaces/material";
 
 /**
  * MaterialEditorProps

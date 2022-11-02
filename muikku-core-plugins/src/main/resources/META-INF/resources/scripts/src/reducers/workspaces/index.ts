@@ -572,30 +572,6 @@ export interface WorkspaceMaterialEditorType {
   showUpdateLinkedMaterialsDialogForPublishCount: number;
 }
 
-/**
- * WorkspacesType
- */
-export interface WorkspacesType {
-  availableCurriculums?: WorkspaceCurriculumFilterListType;
-  availableWorkspaces: WorkspaceListType;
-  availableFilters: WorkspacesavailableFiltersType;
-  templateWorkspaces: TemplateWorkspaceType[];
-  state: WorkspacesStateType;
-  activeFilters: WorkspacesActiveFiltersType;
-  hasMore: boolean;
-  toolbarLock: boolean;
-  types?: Array<WorkspaceTypeType>;
-  userWorkspaces?: WorkspaceListType;
-  lastWorkspace?: WorkspaceMaterialReferenceType;
-  currentWorkspace?: WorkspaceType;
-  currentMaterials?: MaterialContentNodeListType;
-  currentHelp?: MaterialContentNodeListType;
-  currentMaterialsActiveNodeId?: number;
-  currentMaterialsReplies?: MaterialCompositeRepliesListType;
-  editMode?: WorkspaceEditModeStateType;
-  materialEditor?: WorkspaceMaterialEditorType;
-}
-
 export type WorkspacesPatchType = Partial<WorkspacesType>;
 
 export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
@@ -748,74 +724,55 @@ export interface MaterialEvaluationType {
 
 export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
 
-/* function processWorkspaceToHaveNewAssessmentStateAndDate(
-  id: number,
-  assessmentState: WorkspaceAssessementStateType,
-  date: string,
-  assessmentRequestObject: WorkspaceAssessmentRequestType,
-  deleteAssessmentRequestObject: boolean,
-  workspace: WorkspaceType
-) {
+/**
+ * WorkspacesType
+ */
+export interface WorkspacesType {
+  state: WorkspacesStateType;
+  // Last workspace that was opened
+  lastWorkspace?: WorkspaceMaterialReferenceType;
 
-  let replacement =
-    workspace && workspace.id === id ? { ...workspace } : workspace;
-  if (replacement && replacement.id === id) {
-    if (replacement.studentActivity) {
-      replacement.studentActivity = {
-        ...replacement.studentActivity,
-        assessmentState: {
-          ...replacement.studentActivity.assessmentState,
-          date,
-          state: assessmentState,
-        },
-      };
-    }
-    if (replacement.studentAssessments) {
-      replacement.studentAssessments = {
-        ...replacement.studentAssessments,
-        assessmentState,
-        assessmentStateDate: date,
-        assessments: replacement.studentAssessments.assessments,
-      };
-    }
-    if (replacement.assessmentRequests) {
-      const index = replacement.assessmentRequests.findIndex(
-        (r) => r.id === assessmentRequestObject.id
-      );
-      replacement.assessmentRequests = [...replacement.assessmentRequests];
-      if (index !== -1) {
-        if (deleteAssessmentRequestObject) {
-          replacement.assessmentRequests.splice(index, 1);
-        } else {
-          replacement.assessmentRequests[index] = assessmentRequestObject;
-        }
-      } else if (!deleteAssessmentRequestObject) {
-        replacement.assessmentRequests.push(assessmentRequestObject);
-      }
-    }
-  }
-  return replacement;
-} */
+  // Following is data related to current workspace
+  currentWorkspace?: WorkspaceType;
+  currentHelp?: MaterialContentNodeListType;
+  currentMaterials?: MaterialContentNodeListType;
+  currentMaterialsActiveNodeId?: number;
+  currentMaterialsReplies?: MaterialCompositeRepliesListType;
+
+  // Curriculums
+  availableCurriculums?: WorkspaceCurriculumFilterListType;
+
+  // Filters related to workspaces
+  availableFilters: WorkspacesavailableFiltersType;
+  activeFilters: WorkspacesActiveFiltersType;
+
+  // List of different workspaces. Used different places like workspace picker etc
+  availableWorkspaces: WorkspaceListType;
+  userWorkspaces?: WorkspaceListType;
+
+  // Other workspace related data
+  templateWorkspaces: TemplateWorkspaceType[];
+  types?: Array<WorkspaceTypeType>;
+  hasMore: boolean;
+  toolbarLock: boolean;
+
+  // Workspace material editor and boolean to indicate if edit mode is active
+  editMode?: WorkspaceEditModeStateType;
+  materialEditor?: WorkspaceMaterialEditorType;
+}
 
 /**
  * initialWorkspacesState
  */
 const initialWorkspacesState: WorkspacesType = {
-  availableWorkspaces: [],
-  userWorkspaces: [],
+  state: "LOADING",
   lastWorkspace: null,
   currentWorkspace: null,
-  currentMaterials: null,
-  templateWorkspaces: [],
   currentHelp: null,
+  currentMaterials: null,
   currentMaterialsReplies: null,
-  availableFilters: {
-    educationTypes: [],
-    curriculums: [],
-    organizations: [],
-    baseFilters: ["ALL_COURSES", "MY_COURSES", "UNPUBLISHED"],
-  },
-  state: "LOADING",
+  currentMaterialsActiveNodeId: null,
+  availableCurriculums: null,
   activeFilters: {
     educationFilters: [],
     curriculumFilters: [],
@@ -824,10 +781,18 @@ const initialWorkspacesState: WorkspacesType = {
     query: "",
     baseFilter: "ALL_COURSES",
   },
+  availableFilters: {
+    educationTypes: [],
+    curriculums: [],
+    organizations: [],
+    baseFilters: ["ALL_COURSES", "MY_COURSES", "UNPUBLISHED"],
+  },
+  availableWorkspaces: [],
+  userWorkspaces: [],
+  templateWorkspaces: [],
+  types: null,
   hasMore: false,
   toolbarLock: false,
-  currentMaterialsActiveNodeId: null,
-  types: null,
   editMode: {
     active: false,
     available: false,
@@ -1314,96 +1279,51 @@ export const workspaces: Reducer<WorkspacesType> = (
   }
 };
 
-/**
- * initialOrganizationWorkspacesState
- */
-const initialOrganizationWorkspacesState: WorkspacesType = {
-  availableWorkspaces: [],
-  templateWorkspaces: [],
-  currentWorkspace: null,
-  availableFilters: {
-    educationTypes: [],
-    curriculums: [],
-    stateFilters: [],
-  },
-  state: "LOADING",
-  activeFilters: {
-    educationFilters: [],
-    curriculumFilters: [],
-    stateFilters: [],
-    query: "",
-  },
-  hasMore: false,
-  toolbarLock: false,
-  types: null,
-};
+/* function processWorkspaceToHaveNewAssessmentStateAndDate(
+  id: number,
+  assessmentState: WorkspaceAssessementStateType,
+  date: string,
+  assessmentRequestObject: WorkspaceAssessmentRequestType,
+  deleteAssessmentRequestObject: boolean,
+  workspace: WorkspaceType
+) {
 
-/**
- * Reducer function for organizationWorkspaces
- *
- * @param state state
- * @param action action
- * @returns State of organizationWorkspaces
- */
-export const organizationWorkspaces: Reducer<WorkspacesType> = (
-  state = initialOrganizationWorkspacesState,
-  action: ActionType
-) => {
-  switch (action.type) {
-    case "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES":
-      return {
-        ...state,
-        availableFilters: Object.assign({}, state.availableFilters, {
-          educationTypes: action.payload,
-        }),
+  let replacement =
+    workspace && workspace.id === id ? { ...workspace } : workspace;
+  if (replacement && replacement.id === id) {
+    if (replacement.studentActivity) {
+      replacement.studentActivity = {
+        ...replacement.studentActivity,
+        assessmentState: {
+          ...replacement.studentActivity.assessmentState,
+          date,
+          state: assessmentState,
+        },
       };
-
-    case "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES":
-      return {
-        ...state,
-        availableFilters: Object.assign({}, state.availableFilters, {
-          stateFilters: action.payload,
-        }),
+    }
+    if (replacement.studentAssessments) {
+      replacement.studentAssessments = {
+        ...replacement.studentAssessments,
+        assessmentState,
+        assessmentStateDate: date,
+        assessments: replacement.studentAssessments.assessments,
       };
-
-    case "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS":
-      return {
-        ...state,
-        availableFilters: Object.assign({}, state.availableFilters, {
-          curriculums: action.payload,
-        }),
-      };
-
-    case "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS":
-      return Object.assign({}, state, action.payload);
-
-    case "UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS":
-      return { ...state, activeFilters: action.payload };
-
-    case "UPDATE_ORGANIZATION_WORKSPACES_STATE":
-      return { ...state, state: action.payload };
-
-    case "UPDATE_ORGANIZATION_TEMPLATES":
-      return { ...state, templateWorkspaces: action.payload };
-
-    case "UPDATE_ORGANIZATION_SELECTED_WORKSPACE": {
-      if (
-        state.currentWorkspace &&
-        state.currentWorkspace.id === action.payload.id
-      ) {
-        return {
-          ...state,
-          currentWorkspace: { ...state.currentWorkspace, ...action.payload },
-        };
-      } else {
-        return {
-          ...state,
-          currentWorkspace: { ...state.currentWorkspace, ...action.payload },
-        };
+    }
+    if (replacement.assessmentRequests) {
+      const index = replacement.assessmentRequests.findIndex(
+        (r) => r.id === assessmentRequestObject.id
+      );
+      replacement.assessmentRequests = [...replacement.assessmentRequests];
+      if (index !== -1) {
+        if (deleteAssessmentRequestObject) {
+          replacement.assessmentRequests.splice(index, 1);
+        } else {
+          replacement.assessmentRequests[index] = assessmentRequestObject;
+        }
+      } else if (!deleteAssessmentRequestObject) {
+        replacement.assessmentRequests.push(assessmentRequestObject);
       }
     }
-
-    default:
-      return state;
   }
-};
+  return replacement;
+} */
