@@ -88,6 +88,10 @@ public class MeRESTService {
   @Path("/locale")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response setLocale(LanguageSelectionRestModel selection) {
+    if (selection == null || StringUtils.isBlank(selection.getLang())) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     Locale locale = LocaleUtils.toLocale(selection.getLang());
     localSessionController.setLocale(locale);
     
