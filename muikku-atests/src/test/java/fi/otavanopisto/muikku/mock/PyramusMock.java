@@ -1225,6 +1225,10 @@ public class PyramusMock {
             .withStatus(302)
             .withHeader("Location", "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));
         
+        if (loggable instanceof MockStudent) {
+          mockEmptyStudyActivity();
+        }
+        
         return this;
       }
       
