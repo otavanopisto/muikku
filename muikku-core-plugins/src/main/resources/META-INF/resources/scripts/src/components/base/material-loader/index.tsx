@@ -132,6 +132,24 @@ const STATES = [
     "button-disabled": true,
     "fields-read-only": true,
   },
+  {
+    "assignment-type": "JOURNAL",
+    state: ["UNANSWERED", "ANSWERED"],
+    "button-class": "muikku-submit-journal",
+    "button-text": "plugin.workspace.materialsLoader.submitJournalButton",
+    "success-state": "SUBMITTED",
+    "button-disabled": false,
+    "fields-read-only": false,
+  },
+  {
+    "assignment-type": "JOURNAL",
+    state: "SUBMITTED",
+    "button-class": "muikku-submit-journal",
+    "button-text": "plugin.workspace.materialsLoader.updateJournalButton",
+    "success-state": "ANSWERED",
+    "button-disabled": false,
+    "fields-read-only": true,
+  },
 ];
 
 /**
@@ -575,6 +593,27 @@ class MaterialLoader extends React.Component<
     this.props.onAnswerCheckableChange &&
       this.props.onAnswerCheckableChange(answerCheckable);
   }
+
+  /**
+   * returnMaterialPageType
+   * @returns material page type
+   */
+  returnMaterialPageType = () => {
+    switch (this.props.material.assignmentType) {
+      case "EXERCISE":
+        return "exercise";
+
+      case "EVALUATED":
+        return "assignment";
+
+      case "JOURNAL":
+        return "journal";
+
+      default:
+        return "theory";
+    }
+  };
+
   /**
    *
    */
@@ -592,11 +631,8 @@ class MaterialLoader extends React.Component<
       this.props.material.hidden ||
       (this.props.folder && this.props.folder.hidden);
 
-    const materialPageType = this.props.material.assignmentType
-      ? this.props.material.assignmentType === "EXERCISE"
-        ? "exercise"
-        : "assignment"
-      : "textual";
+    const materialPageType = this.returnMaterialPageType();
+
     let className = `material-page material-page--${materialPageType} ${(
       modifiers || []
     )

@@ -474,7 +474,12 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickAndConfirm(".icon-puzzle", ".button-pill--material-editor-assignment", 5, 2000);
+          
+          waitAndClick(".material-editor__buttonset-primary .button-pill--material-editor-change-page-type");
+          //waitAndClickAndConfirm(".icon-puzzle", ".button-pill--material-editor-assignment", 5, 2000);
+          assertVisible(".dropdown--material-editor-page-type");
+          waitAndClickAndConfirm(".dropdown--material-editor-page-type .link--material-editor-dropdown-assignment", ".button-pill--material-editor-assignment", 5, 2000);
+          
           waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 2000);
           waitAndClickAndConfirmVisibilityGoesAway(".button-pill--material-page-close-editor .icon-arrow-left", ".button-pill--material-page-close-editor .icon-arrow-left", 5, 3000);
           assertVisible(".material-page--assignment .button--muikku-submit-assignment");

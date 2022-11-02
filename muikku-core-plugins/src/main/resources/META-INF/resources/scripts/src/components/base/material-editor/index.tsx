@@ -15,11 +15,13 @@ import {
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
+import Link from "~/components/general/link";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceType,
   MaterialContentNodeType,
   MaterialViewRestriction,
+  AssignmentType,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -180,6 +182,7 @@ const CKEditorConfig = (
         "muikku-organizerfield",
         "muikku-sorterfield",
         "muikku-mathexercisefield",
+        "muikku-journalfield",
       ],
     },
     {
@@ -207,8 +210,36 @@ const CKEditorConfig = (
   removePlugins: "image,exportpdf,wsc",
   extraPlugins: disablePlugins
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"
-    : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax",
+    : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax,muikku-journalfield",
 });
+
+/**
+ * MaterialPageTypeConfic
+ */
+interface MaterialPageTypeConfic {
+  type: AssignmentType;
+  classNameMod: string;
+  text: string;
+}
+
+const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
+  {
+    type: "EXERCISE",
+    classNameMod: "material-editor-dropdown-exercise",
+    text: "plugin.workspace.materialsManagement.pageType.excercise",
+  },
+  {
+    type: "EVALUATED",
+    classNameMod: "material-editor-dropdown-assignment",
+    text: "plugin.workspace.materialsManagement.pageType.evaluated",
+  },
+  {
+    type: "JOURNAL",
+    classNameMod: "material-editor-dropdown-journal",
+    text: "plugin.workspace.materialsManagement.pageType.journal",
+  },
+];
+
 /* eslint-enable camelcase */
 
 // First we need to modify the material content nodes end point to be able to receive hidden
@@ -229,7 +260,6 @@ class MaterialEditor extends React.Component<
     this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
     this.cycleViewRestrictionStatus =
       this.cycleViewRestrictionStatus.bind(this);
-    this.cycleAssignmentType = this.cycleAssignmentType.bind(this);
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
@@ -335,23 +365,23 @@ class MaterialEditor extends React.Component<
 
   /**
    * cycleAssignmentType
+   * @param type type
    */
-  cycleAssignmentType() {
-    this.props.updateWorkspaceMaterialContentNode({
-      workspace: this.props.editorState.currentNodeWorkspace,
-      material: this.props.editorState.currentDraftNodeValue,
-      update: {
-        assignmentType: !this.props.editorState.currentDraftNodeValue
-          .assignmentType
-          ? "EXERCISE"
-          : this.props.editorState.currentDraftNodeValue.assignmentType ===
-            "EXERCISE"
-          ? "EVALUATED"
-          : null,
-      },
-      isDraft: true,
-    });
-  }
+  handleChangeAssignmentType =
+    (type: AssignmentType) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      this.props.updateWorkspaceMaterialContentNode({
+        workspace: this.props.editorState.currentNodeWorkspace,
+        material: this.props.editorState.currentDraftNodeValue,
+        update: {
+          assignmentType:
+            this.props.editorState.currentDraftNodeValue.assignmentType !== type
+              ? type
+              : null,
+        },
+        isDraft: true,
+      });
+    };
 
   /**
    * cycleCorrectAnswers
@@ -663,6 +693,88 @@ class MaterialEditor extends React.Component<
   }
 
   /**
+   * assignmentPageType
+   * @returns assignment page type
+   */
+  assignmentPageType = () => {
+    if (this.props.editorState.currentDraftNodeValue.assignmentType) {
+      switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
+        case "EXERCISE":
+          return "exercise";
+
+        case "EVALUATED":
+          return "assignment";
+
+        case "JOURNAL":
+          return "journal";
+
+        default:
+          return "theory";
+      }
+    }
+    return "theory";
+  };
+
+  /**
+   * Assignment page type icon if assignment type has been set
+   * @param type type
+   * @returns assignment page type icon
+   */
+  assignmentPageIcon = (type: AssignmentType) => {
+    switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
+      case "EXERCISE":
+        return "books";
+
+      case "EVALUATED":
+        return "evaluate";
+
+      case "JOURNAL":
+        return "book";
+
+      default:
+        return undefined;
+    }
+  };
+
+  /**
+   * renderAssignmentPageButton
+   * @param materialPageConfig materialPageConfig
+   * @param key key
+   * @returns assignment page type button
+   */
+  renderAssignmentPageButton = (
+    materialPageConfig: MaterialPageTypeConfic,
+    key: string | number
+  ) => {
+    const { assignmentType } = this.props.editorState.currentDraftNodeValue;
+
+    const currentAssignmentType = assignmentType || null;
+
+    const isActive =
+      currentAssignmentType &&
+      currentAssignmentType === materialPageConfig.type;
+
+    const activePageTypeClassName = isActive
+      ? "link--material-editor-dropdown-active"
+      : "";
+
+    const pageTypeClassName = materialPageConfig.classNameMod
+      ? "link--" + materialPageConfig.classNameMod
+      : "";
+
+    return (
+      <Link
+        key={key}
+        className={`link link--full link--material-editor-dropdown ${pageTypeClassName} ${activePageTypeClassName}`}
+        onClick={this.handleChangeAssignmentType(materialPageConfig.type)}
+      >
+        <span className="link__icon icon-puzzle"></span>
+        <span>{this.props.i18n.text.get(materialPageConfig.text)}</span>
+      </Link>
+    );
+  };
+
+  /**
    * render
    */
   render() {
@@ -678,13 +790,9 @@ class MaterialEditor extends React.Component<
         />
       );
     }
-    const materialPageType = this.props.editorState.currentDraftNodeValue
-      .assignmentType
-      ? this.props.editorState.currentDraftNodeValue.assignmentType ===
-        "EXERCISE"
-        ? "exercise"
-        : "assignment"
-      : "textual";
+
+    const materialPageType = this.assignmentPageType();
+
     const assignmentPageType = "material-editor-" + materialPageType;
 
     const comparerPoints = [
@@ -837,10 +945,11 @@ class MaterialEditor extends React.Component<
           ) : null}
           {this.props.editorState.canChangePageType ? (
             <Dropdown
-              openByHover
-              modifier="material-management-tooltip"
-              content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip"
+              modifier="material-editor-page-type"
+              openByHover={false}
+              persistent
+              items={MATERIAL_PAGE_TYPE_CONFIGS.map((config, index) =>
+                this.renderAssignmentPageButton(config, index)
               )}
             >
               <ButtonPill
@@ -850,7 +959,6 @@ class MaterialEditor extends React.Component<
                   assignmentPageType,
                 ]}
                 icon="puzzle"
-                onClick={this.cycleAssignmentType}
               />
             </Dropdown>
           ) : null}
