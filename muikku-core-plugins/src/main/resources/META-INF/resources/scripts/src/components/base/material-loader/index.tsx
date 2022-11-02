@@ -28,12 +28,6 @@ import { bindActionCreators } from "redux";
 import {
   UpdateAssignmentStateTriggerType,
   updateAssignmentState,
-  setWorkspaceMaterialEditorState,
-  SetWorkspaceMaterialEditorStateTriggerType,
-  UpdateWorkspaceMaterialContentNodeTriggerType,
-  updateWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments,
-  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
 } from "~/actions/workspaces";
 import {
   DisplayNotificationTriggerType,
@@ -43,6 +37,14 @@ import {
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/material-page.scss";
 import { UsedAs } from "~/@types/shared";
+import {
+  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  SetWorkspaceMaterialEditorStateTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+  setWorkspaceMaterialEditorState,
+  updateWorkspaceMaterialContentNode,
+  requestWorkspaceMaterialContentNodeAttachments,
+} from "~/actions/workspaces/material";
 
 //These represent the states assignments and exercises can be in
 const STATES = [

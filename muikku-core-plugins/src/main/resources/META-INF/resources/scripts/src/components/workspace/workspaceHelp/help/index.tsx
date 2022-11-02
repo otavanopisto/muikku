@@ -24,17 +24,17 @@ import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
-import {
-  setWorkspaceMaterialEditorState,
-  SetWorkspaceMaterialEditorStateTriggerType,
-  createWorkspaceMaterialContentNode,
-  CreateWorkspaceMaterialContentNodeTriggerType,
-  updateWorkspaceMaterialContentNode,
-  UpdateWorkspaceMaterialContentNodeTriggerType,
-} from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
+import {
+  setWorkspaceMaterialEditorState,
+  createWorkspaceMaterialContentNode,
+  updateWorkspaceMaterialContentNode,
+  CreateWorkspaceMaterialContentNodeTriggerType,
+  SetWorkspaceMaterialEditorStateTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+} from "~/actions/workspaces/material";
 
 /**
  * HelpMaterialsProps
