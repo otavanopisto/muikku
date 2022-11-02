@@ -362,6 +362,7 @@ public class ToRTestsBase extends AbstractUITest {
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
         .mockMatriculationEligibility(true)
+        .mockEmptyStudyActivity()
         .mockLogin(student)
         .build();
         login();
