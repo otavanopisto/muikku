@@ -905,7 +905,6 @@ public class EvaluationRESTService extends PluginRESTService {
    * Errors:
    * 403 Interim evaluation request does not belong to the current user
    * 404 Interim evaluation request with id does not exist
-   * 
    */
   @DELETE
   @Path("/interimEvaluationRequest/{ID}")
@@ -916,7 +915,7 @@ public class EvaluationRESTService extends PluginRESTService {
     if (interimEvaluationRequest == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Interim evaluation request with id %d not found", interimEvaluationRequestId)).build();
     }
-    if (!userEntity.equals(interimEvaluationRequest.getUserEntityId())) {
+    if (!userEntity.getId().equals(interimEvaluationRequest.getUserEntityId())) {
       return Response.status(Status.FORBIDDEN).entity("Interim evaluation request user mismatch").build();
     }
     interimEvaluationRequest = evaluationController.cancelInterimEvaluationRequest(interimEvaluationRequest);
