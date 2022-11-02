@@ -338,6 +338,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
    * @param presetName presetName
    * @param presetSettings presetSettings
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleChangePresetClick =
     (
       presetName: ReadingRulerNameType,
@@ -389,22 +390,22 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
 
   /**
    * handleTouch
+   * @param e e
    */
-  const handleTouchStart = React.useCallback(
-    (e: React.TouchEvent<HTMLDivElement>) => {
-      if (!pinned) {
-        if (dragger && dragger.current) {
-          const handlePosition =
-            dragger.current.getBoundingClientRect().top +
-            dragger.current.getBoundingClientRect().height / 2;
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!pinned) {
+      if (dragger && dragger.current) {
+        const handlePosition =
+          dragger.current.getBoundingClientRect().top +
+          dragger.current.getBoundingClientRect().height / 2;
 
+        unstable_batchedUpdates(() => {
           setIsDragging(true);
           setCursorLocation(handlePosition);
-        }
+        });
       }
-    },
-    [pinned]
-  );
+    }
+  };
 
   const modifiers: string[] = [];
 
@@ -574,7 +575,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
                   <ChromePicker
                     disableAlpha
                     color={backgroundColor}
-                    onChangeComplete={(e) =>
+                    onChange={(e) =>
                       handleSettingsChange("backgroundColor", e.hex)
                     }
                   />
