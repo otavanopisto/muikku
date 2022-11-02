@@ -5,11 +5,9 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.material.dao.QueryJournalFieldDAO;
-import fi.otavanopisto.muikku.plugins.material.dao.QueryTextFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.QueryJournalField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryTextField;
 
 @Dependent
 public class QueryJournalFieldController {
@@ -24,15 +22,15 @@ public class QueryJournalFieldController {
     return queryJournalFieldDAO.create(material, name);
   }
 
-  public QueryJournalField findQueryTextFieldbyId(Long id) {
+  public QueryJournalField findQueryJournalFieldbyId(Long id) {
     return queryJournalFieldDAO.findById(id);
   }
 
-  public QueryJournalField findQueryTextFieldByMaterialAndName(Material material, String name) {
+  public QueryJournalField findQueryJournalFieldByMaterialAndName(Material material, String name) {
     return queryJournalFieldDAO.findByMaterialAndName(material, name);
   }
 
-  public void deleteQueryTextField(QueryJournalField queryField, boolean removeAnswers) {
+  public void deleteQueryJournalField(QueryJournalField queryField, boolean removeAnswers) {
     queryFieldDeleteEvent.fire(new QueryFieldDeleteEvent(queryField, removeAnswers));
     queryJournalFieldDAO.delete(queryField);
   }

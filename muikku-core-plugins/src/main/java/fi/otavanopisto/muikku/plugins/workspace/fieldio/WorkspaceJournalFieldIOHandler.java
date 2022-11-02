@@ -33,23 +33,17 @@ public class WorkspaceJournalFieldIOHandler implements WorkspaceFieldIOHandler {
     
     WorkspaceJournalEntry journalEntry = workspaceJournalController.findJournalEntryByMaterialFieldReplyIdentifier(identifier);
 
-    if (StringUtils.isNotBlank(value)) {
-      if (journalEntry == null) {
-        UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
+    if (journalEntry == null) {
+      UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
         
-          Long workspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(field.getWorkspaceMaterial());
-          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      Long workspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(field.getWorkspaceMaterial());
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
           
-          if (workspaceEntity != null) { 
-          journalEntry = workspaceJournalController.createJournalEntry(workspaceEntity, userEntity, value, identifier, field.getWorkspaceMaterial().getTitle());
-        }
-      } else {
-        journalEntry = workspaceJournalController.updateJournalEntry(journalEntry, field.getWorkspaceMaterial().getTitle(), value);
+      if (workspaceEntity != null) { 
+        journalEntry = workspaceJournalController.createJournalEntry(workspaceEntity, userEntity, value, identifier, field.getWorkspaceMaterial().getTitle());
       }
     } else {
-      if (journalEntry != null) {
-        journalEntry = workspaceJournalController.updateJournalEntry(journalEntry, field.getWorkspaceMaterial().getTitle(), null);
-      }
+      journalEntry = workspaceJournalController.updateJournalEntry(journalEntry, journalEntry.getTitle(), value);
     }
   }
 

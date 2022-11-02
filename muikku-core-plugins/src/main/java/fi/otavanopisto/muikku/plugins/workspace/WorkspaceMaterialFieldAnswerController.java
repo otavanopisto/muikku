@@ -116,21 +116,6 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialTextFieldAnswerDAO.updateValue(workspaceMaterialTextFieldAnswer, value);
   }
   
-  /* JournalField */
-
-  public WorkspaceMaterialTextFieldAnswer createWorkspaceMaterialJournalAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) {
-    return workspaceMaterialTextFieldAnswerDAO.create(field, reply, value);
-  }
-
-  public WorkspaceMaterialTextFieldAnswer findWorkspaceMaterialJournalAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
-    return workspaceMaterialTextFieldAnswerDAO.findByFieldAndReply(field, reply);
-  }
-
-  public WorkspaceMaterialTextFieldAnswer updateWorkspaceMaterialJournalAnswerValue(WorkspaceMaterialTextFieldAnswer workspaceMaterialTextFieldAnswer,
-      String value) {
-    return workspaceMaterialTextFieldAnswerDAO.updateValue(workspaceMaterialTextFieldAnswer, value);
-  }
-  
   /* Organizer field */
 
   public WorkspaceMaterialOrganizerFieldAnswer createWorkspaceMaterialOrganizerFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) {
