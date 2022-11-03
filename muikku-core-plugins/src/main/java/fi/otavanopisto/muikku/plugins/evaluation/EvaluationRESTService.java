@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -815,6 +816,56 @@ public class EvaluationRESTService extends PluginRESTService {
   /**
    * mApi().evaluation.workspace.interimEvaluationRequest.read(123);
    * 
+   * Returns a list of all interim evaluation request for workspace 123 for the currently logged in user.
+   * Note that this also returns requests even if they have been handled or cancelled (i.e. archived).
+   * 
+   * Output: List of all interim evaluation requests for the current user and the given workspace.
+   *  
+   * [{id: 23523,
+   *  userEntityId: 472389,
+   *  workspaceEntityId: 123,
+   *  workspaceMaterialId: 42342,
+   *  requestDate: 2022-10-15T03:24:00,
+   *  cancellationDate: 2022-10-16T03:24:00,
+   *  requestText: "Interim evaluation, plz",
+   *  archived: true},
+   *  ...]
+   *  
+   * Errors:
+   * 400 Workspace with given id not found
+   */
+  @GET
+  @Path("/workspace/{WORKSPACEENTITYID}/interimEvaluationRequests")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response findInterimEvaluationRequestsByWorkspace(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
+    }
+    
+    // List all interim evaluation requests of the user in the workspace
+    
+    List<InterimEvaluationRequest> interimEvaluationRequests = evaluationController.listInterimEvaluationRequests(
+        userEntity.getId(), workspaceEntity.getId());
+    
+    // One material page can have several interim evaluation requests (one was made, then cancelled,
+    // then another one made, etc.) Because of this, return a collection that contains only the latest
+    // interim evaluation request of each page.
+    
+    interimEvaluationRequests.sort(Comparator.comparing(InterimEvaluationRequest::getId).reversed());
+    HashMap<Long, RestInterimEvaluationRequest> restRequests = new HashMap<>();
+    for (InterimEvaluationRequest interimEvaluationRequest : interimEvaluationRequests) {
+      if (!restRequests.containsKey(interimEvaluationRequest.getWorkspaceMaterialId())) {
+        restRequests.put(interimEvaluationRequest.getWorkspaceMaterialId(), toRestModel(interimEvaluationRequest));
+      }
+    }
+    return Response.ok(restRequests.values()).build();
+  }
+
+  /**
+   * mApi().evaluation.workspace.interimEvaluationRequest.read(123);
+   * 
    * Finds the latest interim evaluation request for workspace 123 for the currently logged in user.
    * Note that this also returns the request even if it has been handled or cancelled (i.e. archived).
    * 
@@ -843,7 +894,7 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
     }
     InterimEvaluationRequest interimEvaluationRequest = evaluationController.findLatestInterimEvaluationRequest(userEntity, workspaceEntity);
-    if (interimEvaluationRequest != null) {
+    if (interimEvaluationRequest == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
     return Response.ok(toRestModel(interimEvaluationRequest)).build();
@@ -880,7 +931,7 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace material %d not found", workspaceMaterial)).build();
     }
     InterimEvaluationRequest interimEvaluationRequest = evaluationController.findLatestInterimEvaluationRequest(userEntity, workspaceMaterial);
-    if (interimEvaluationRequest != null) {
+    if (interimEvaluationRequest == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
     return Response.ok(toRestModel(interimEvaluationRequest)).build();
