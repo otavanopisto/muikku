@@ -39,7 +39,7 @@
     init : function(editor) {
       editor.addCommand('muikkutextfield', new CKEDITOR.dialogCommand('muikkutextfield', {}));
       editor.ui.addButton && editor.ui.addButton('MuikkuTextField', {
-        label : editor.lang['muikku-textfield'].propertiesMenu,
+        label : editor.lang['muikku-textfield'].toolbarMenu,
         command : 'muikkutextfield',
         toolbar : 'insert,20'
       });

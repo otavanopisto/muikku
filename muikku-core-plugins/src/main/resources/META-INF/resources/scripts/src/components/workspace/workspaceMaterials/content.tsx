@@ -28,15 +28,15 @@ import "~/sass/elements/material-admin.scss";
 import Toc, { TocTopic, TocElement } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
-import {
-  updateWorkspaceMaterialContentNode,
-  UpdateWorkspaceMaterialContentNodeTriggerType,
-  setWholeWorkspaceMaterials,
-  SetWholeWorkspaceMaterialsTriggerType,
-} from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
 import { AnyActionType } from "~/actions/index";
 import { StatusType } from "~/reducers/base/status";
+import {
+  updateWorkspaceMaterialContentNode,
+  setWholeWorkspaceMaterials,
+  SetWholeWorkspaceMaterialsTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+} from "~/actions/workspaces/material";
 
 /**
  * ContentProps
@@ -519,12 +519,15 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
                     const isAssignment = subnode.assignmentType === "EVALUATED";
                     const isExercise = subnode.assignmentType === "EXERCISE";
+                    const isJournal = subnode.assignmentType === "JOURNAL";
 
                     //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
                     const modifier = isAssignment
                       ? "assignment"
                       : isExercise
                       ? "exercise"
+                      : isJournal
+                      ? "journal"
                       : null;
 
                     let icon: string | null = null;

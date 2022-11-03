@@ -69,6 +69,14 @@ public class WorkspaceJournalEntry {
   public void setCreated(Date created) {
     this.created = created;
   }
+  
+  public String getMaterialFieldReplyIdentifier() {
+    return materialFieldReplyIdentifier;
+  }
+  
+  public void setMaterialFieldReplyIdentifier(String materialFieldReplyIdentifier) {
+    this.materialFieldReplyIdentifier = materialFieldReplyIdentifier;
+  }
 
   public void setArchived(Boolean archived) {
     this.archived = archived;
@@ -99,6 +107,9 @@ public class WorkspaceJournalEntry {
   @Column (updatable=false, nullable=false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date created;
+  
+  @Column 
+  private String materialFieldReplyIdentifier;
 
   @Column (nullable=false)
   private Boolean archived;

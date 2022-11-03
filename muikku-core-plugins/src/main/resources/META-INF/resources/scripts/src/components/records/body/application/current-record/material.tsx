@@ -1,6 +1,7 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import {
+  AssignmentType,
   MaterialCompositeRepliesType,
   MaterialContentNodeType,
   WorkspaceType,
@@ -32,7 +33,7 @@ interface MaterialProps {
   open: boolean;
   onMaterialClick: (
     id: number,
-    type: "EXERCISE" | "EVALUATED"
+    type: AssignmentType
   ) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
