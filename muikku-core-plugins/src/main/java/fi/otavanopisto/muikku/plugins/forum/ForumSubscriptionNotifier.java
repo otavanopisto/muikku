@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ejb.AccessTimeout;
 import javax.ejb.Asynchronous;
@@ -30,9 +28,6 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Singleton
 public class ForumSubscriptionNotifier {
-
-  @Inject
-  private Logger logger;
  
   @Inject
   private ForumThreadNewMessageNotification forumThreadNewMessageNotification;
@@ -78,6 +73,7 @@ public class ForumSubscriptionNotifier {
 
         ForumThreadSubscription forumThreadSubscription = forumThreadSubsciptionController.findByThreadAndUserEntity(forumThread, recipient);
         
+        // if a user has subscribed to both forum area and a forum thread in same area, don't send notification via area because the user gets notified via thread instead
         if (forumThreadSubscription != null) {
           continue;
         }
@@ -125,12 +121,9 @@ public class ForumSubscriptionNotifier {
             }
             notifierController.sendNotification(forumThreadNewMessageNotification, poster, recipient, params);
           }
+        }
       }
-    }
-    
-    } else {
-      logger.log(Level.SEVERE, String.format("Forum couldn't send notifications as some entity was not found"));
-    }
+    } 
   }
   
 }
