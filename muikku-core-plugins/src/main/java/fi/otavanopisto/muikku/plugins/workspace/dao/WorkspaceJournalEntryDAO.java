@@ -22,7 +22,7 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
 
   private static final long serialVersionUID = 63917373561361361L;
 
-  public WorkspaceJournalEntry create(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title, Date created, Boolean archived) {
+  public WorkspaceJournalEntry create(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title, Date created, String materialFieldReplyIdentifier, Boolean archived) {
     WorkspaceJournalEntry journalEntry = new WorkspaceJournalEntry();
     journalEntry.setUserEntityId(userEntity.getId());
     journalEntry.setWorkspaceEntityId(workspaceEntity.getId());
@@ -30,6 +30,7 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     journalEntry.setTitle(title);
     journalEntry.setCreated(created);
     journalEntry.setArchived(archived);
+    journalEntry.setMaterialFieldReplyIdentifier(materialFieldReplyIdentifier);
     return persist(journalEntry);
   }
 
@@ -117,6 +118,27 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId),
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
+        )
+    );
+    criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
+    TypedQuery<WorkspaceJournalEntry> query = entityManager.createQuery(criteria);
+    
+    query.setMaxResults(1);
+    
+    return getSingleResult(query);
+  }
+  
+  public WorkspaceJournalEntry findByMaterialFieldReplyIdentifier(String identifier) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceJournalEntry> criteria = criteriaBuilder.createQuery(WorkspaceJournalEntry.class);
+    Root<WorkspaceJournalEntry> root = criteria.from(WorkspaceJournalEntry.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.materialFieldReplyIdentifier), identifier),
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
         )
     );

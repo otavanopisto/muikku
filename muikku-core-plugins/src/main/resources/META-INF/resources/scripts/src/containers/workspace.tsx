@@ -1,16 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Notifications from "../components/base/notifications";
 import DisconnectedWarningDialog from "../components/base/disconnect-warning";
 import { BrowserRouter, Route } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
-
 import { Store } from "react-redux";
 import { StateType } from "~/reducers";
 import { Action } from "redux";
 import Websocket from "~/util/websocket";
-
 import titleActions from "~/actions/base/title";
-
 import WorkspaceHomeBody from "~/components/workspace/workspaceHome";
 import WorkspaceHelpBody from "~/components/workspace/workspaceHelp";
 import WorkspaceDiscussionBody from "~/components/workspace/workspaceDiscussions";
@@ -21,24 +19,17 @@ import WorkspaceJournalBody from "~/components/workspace/workspaceJournal";
 import WorkspaceManagementBody from "~/components/workspace/workspaceManagement";
 import WorkspaceUsersBody from "~/components/workspace/workspaceUsers";
 import WorkspacePermissionsBody from "~/components/workspace/workspacePermissions";
-
 import Chat from "../components/chat/chat";
-
 import { RouteComponentProps } from "react-router";
 import {
   setCurrentWorkspace,
   loadStaffMembersOfWorkspace,
-  loadWholeWorkspaceMaterials,
-  setCurrentWorkspaceMaterialsActiveNodeId,
-  loadWorkspaceCompositeMaterialReplies,
   updateLastWorkspace,
   loadStudentsOfWorkspace,
-  loadCurrentWorkspaceJournalsFromServer,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadCurrentWorkspaceUserGroupPermissions,
   loadWorkspaceChatStatus,
-  loadWholeWorkspaceHelp,
   setAvailableCurriculums,
 } from "~/actions/workspaces";
 import {
@@ -55,7 +46,6 @@ import {
   showOnlySubscribedThreads,
   loadSubscribedDiscussionAreaList,
 } from "~/actions/discussion";
-
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { displayNotification } from "~/actions/base/notifications";
 import { loadProfileChatSettings } from "~/actions/main-function/profile";
@@ -74,6 +64,13 @@ import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionPatchType } from "~/reducers/discussion";
+import { loadCurrentWorkspaceJournalsFromServer } from "~/actions/workspaces/journals";
+import {
+  loadWholeWorkspaceHelp,
+  loadWholeWorkspaceMaterials,
+  loadWorkspaceCompositeMaterialReplies,
+  setCurrentWorkspaceMaterialsActiveNodeId,
+} from "~/actions/workspaces/material";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1091,6 +1088,7 @@ export default class Workspace extends React.Component<
             }
             if (!workspace.journals) {
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
+                // This happens if teacher/admin uses diary
                 this.props.store.dispatch(
                   loadCurrentWorkspaceJournalsFromServer() as Action
                 );

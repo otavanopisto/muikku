@@ -2,7 +2,9 @@ import MainFunctionNavbar from "../base/main-function/navbar";
 import ScreenContainer from "../general/screen-container";
 import AnnouncementsPanel from "./body/announcements-panel";
 import ContinueStudiesPanel from "./body/continue-studies-panel";
+import NextStudiesPanel from "./body/next-studies-panel";
 import LastMessagesPanel from "./body/latest-messages-panel";
+import WallPanel from "./body/wall-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
@@ -12,7 +14,6 @@ import { StatusType } from "~/reducers/base/status";
 import StudiesEnded from "./body/studies-ended";
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
 import "~/sass/elements/wcag.scss";
-// import GuidanceEventsPanel from "./body/guidance-events-panel";
 
 /**
  * IndexBodyProps
@@ -43,10 +44,19 @@ class IndexBody extends React.Component<
               {this.props.i18n.text.get("plugin.wcag.indexViewHeader")}
             </h1>
             <div className="panel-group panel-group--studies">
-              <ContinueStudiesPanel />
+              {this.props.status.isStudent ? (
+                <>
+                  <ContinueStudiesPanel />
+                  <NextStudiesPanel />
+                </>
+              ) : null}
               <WorkspacesPanel />
             </div>
-            <LastMessagesPanel />
+            <div className="panel-group panel-group--info">
+              {this.props.status.isStudent ? <WallPanel /> : null}
+              <LastMessagesPanel />
+            </div>
+
             <AnnouncementsPanel overflow={true} />
           </ScreenContainer>
         ) : (

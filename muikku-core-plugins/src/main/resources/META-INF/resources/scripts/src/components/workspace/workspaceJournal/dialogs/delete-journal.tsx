@@ -9,18 +9,19 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
-import { WorkspaceJournalType } from "~/reducers/workspaces";
 import {
   deleteWorkspaceJournalInCurrentWorkspace,
   DeleteWorkspaceJournalInCurrentWorkspaceTriggerType,
-} from "~/actions/workspaces";
+} from "~/actions/workspaces/journals";
+import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 
 /**
  * DeleteJournalProps
  */
 interface DeleteJournalProps {
   i18n: i18nType;
-  journal: WorkspaceJournalType;
+  journal: WorkspaceJournalWithComments;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWorkspaceTriggerType;
 }
@@ -57,7 +58,7 @@ class DeleteJournal extends React.Component<
    * deleteJournal
    * @param closeDialog closeDialog
    */
-  deleteJournal(closeDialog: () => any) {
+  deleteJournal(closeDialog: () => void) {
     this.setState({ locked: true });
     this.props.deleteWorkspaceJournalInCurrentWorkspace({
       journal: this.props.journal,
@@ -85,7 +86,7 @@ class DeleteJournal extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         {this.props.i18n.text.get(
           "plugin.workspace.journal.deleteEntry.dialog.description"
@@ -97,7 +98,7 @@ class DeleteJournal extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}

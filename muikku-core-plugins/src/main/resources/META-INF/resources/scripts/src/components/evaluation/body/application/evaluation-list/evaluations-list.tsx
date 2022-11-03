@@ -11,8 +11,8 @@ import {
   UpdateImportance,
   SetEvaluationSelectedWorkspace,
   setSelectedWorkspaceId,
-  SaveEvaluationSortFunction,
-  saveEvaluationSortFunctionToServer,
+  UpdateEvaluationSortFunction,
+  updateEvaluationSortFunctionToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { UpdateImportanceObject } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
@@ -26,7 +26,7 @@ interface EvaluationListProps {
   i18n: i18nType;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   evaluations: EvaluationState;
-  saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction;
+  updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction;
   updateImportance: UpdateImportance;
 }
 
@@ -72,7 +72,7 @@ export class EvaluationList extends React.Component<
           value: "no-sort",
         };
 
-        this.props.saveEvaluationSortFunctionToServer({ sortFunction });
+        this.props.updateEvaluationSortFunctionToServer({ sortFunction });
       } else {
         /**
          * Otherwise select clicked new sort
@@ -82,7 +82,7 @@ export class EvaluationList extends React.Component<
           value: sortBy,
         };
 
-        this.props.saveEvaluationSortFunctionToServer({ sortFunction });
+        this.props.updateEvaluationSortFunctionToServer({ sortFunction });
       }
     };
 
@@ -194,12 +194,6 @@ export class EvaluationList extends React.Component<
     const filteredBySortAssessments = assessments;
 
     switch (sortBy) {
-      case "no-sort":
-        filteredBySortAssessments.sort((a, b) =>
-          b.lastName.localeCompare(a.lastName)
-        );
-        break;
-
       case "sort-alpha-asc":
         filteredBySortAssessments.sort((a, b) =>
           a.lastName.localeCompare(b.lastName)
@@ -221,17 +215,22 @@ export class EvaluationList extends React.Component<
         break;
 
       case "sort-workspace-alpha-asc":
-        filteredBySortAssessments.sort((a, b) =>
-          a.lastName.localeCompare(b.lastName)
-        );
+        filteredBySortAssessments.sort((a, b) => {
+          const workspaceA = a.workspaceName.trim().toLowerCase();
+          const workspaceB = b.workspaceName.trim().toLowerCase();
+          return workspaceA.localeCompare(workspaceB);
+        });
         break;
 
       case "sort-workspace-alpha-desc":
-        filteredBySortAssessments.sort((a, b) =>
-          b.lastName.localeCompare(a.lastName)
-        );
+        filteredBySortAssessments.sort((a, b) => {
+          const workspaceA = a.workspaceName.trim().toLowerCase();
+          const workspaceB = b.workspaceName.trim().toLowerCase();
+          return workspaceB.localeCompare(workspaceA);
+        });
         break;
 
+      case "no-sort":
       default:
         filteredBySortAssessments.sort((a, b) =>
           b.lastName.localeCompare(a.lastName)
@@ -512,7 +511,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     {
       setSelectedWorkspaceId,
       updateImportance,
-      saveEvaluationSortFunctionToServer,
+      updateEvaluationSortFunctionToServer,
     },
     dispatch
   );

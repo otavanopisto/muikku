@@ -10,10 +10,10 @@ import { bindActionCreators } from "redux";
 import { WorkspaceMaterialEditorType } from "~/reducers/workspaces";
 import {
   setWorkspaceMaterialEditorState,
-  SetWorkspaceMaterialEditorStateTriggerType,
   updateWorkspaceMaterialContentNode,
+  SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
-} from "~/actions/workspaces";
+} from "~/actions/workspaces/material";
 
 /**
  * ConfirmPublishRemovePageWithLinkedAnswersDialogProps

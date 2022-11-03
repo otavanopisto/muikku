@@ -21,8 +21,8 @@ public class WorkspaceJournalController {
   @Inject
   private WorkspaceJournalCommentDAO workspaceJournalCommentDAO;
 
-  public WorkspaceJournalEntry createJournalEntry(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title) {
-    return workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date(), Boolean.FALSE);
+  public WorkspaceJournalEntry createJournalEntry(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String materialFieldReplyIdentifier, String title) {
+    return workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date(), materialFieldReplyIdentifier, Boolean.FALSE);
   }
 
   public List<WorkspaceJournalEntry> listEntriesForStudents(WorkspaceEntity workspaceEntity, Collection<UserEntity> userEntities, int firstResult, int maxResults) {
@@ -43,6 +43,12 @@ public class WorkspaceJournalController {
   
   public WorkspaceJournalEntry findJournalEntry(Long workspaceJournalEntryId) {
     return workspaceJournalEntryDAO.findById(workspaceJournalEntryId);
+  }
+  
+
+  
+  public WorkspaceJournalEntry findJournalEntryByMaterialFieldReplyIdentifier(String materialFieldReplyIdentifier) {
+    return workspaceJournalEntryDAO.findByMaterialFieldReplyIdentifier(materialFieldReplyIdentifier);
   }
 
   public WorkspaceJournalEntry updateJournalEntry(WorkspaceJournalEntry workspaceJournalEntry, String title, String html) {
@@ -84,4 +90,5 @@ public class WorkspaceJournalController {
   public Long getCommentCount(WorkspaceJournalEntry journalEntry) {
     return workspaceJournalCommentDAO.countByJournalEntryAndArchived(journalEntry, Boolean.FALSE);
   }
+  
 }

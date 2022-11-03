@@ -17,6 +17,7 @@ import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -199,18 +200,18 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
               logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
               continue;
             }
-            String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+            List<String> guidanceCounselorMails = notificationController.listStudyCounselorsEmails(studentEntity.defaultSchoolDataIdentifier());
             String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content",
                 new Object[] {studentName.getDisplayNameWithLine(), workspaceName});
-            if (guidanceCounselorMail != null) {
+            if (CollectionUtils.isNotEmpty(guidanceCounselorMails)) {
             notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content.guidanceCounselor",
-                new Object[] {studentName.getDisplayNameWithLine(), workspaceName, guidanceCounselorMail});
+                new Object[] {studentName.getDisplayNameWithLine(), workspaceName, String.join(", ", guidanceCounselorMails)});
             }
             notificationController.sendNotification(
               localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
               notificationContent,
               studentEntity,
-              guidanceCounselorMail
+              guidanceCounselorMails
             );
             
             // Store notification to avoid duplicates in the future

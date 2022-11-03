@@ -20,7 +20,6 @@ import {
   loadUserWorkspaceCurriculumFiltersFromServer,
   setWorkspaceStateFilters,
   loadUserWorkspaceEducationFiltersFromServer,
-  loadUserWorkspaceOrganizationFiltersFromServer,
 } from "~/actions/workspaces";
 import {
   loadLastWorkspaceFromServer,
@@ -80,7 +79,6 @@ import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
   setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords,
   setLocationToHopsInTranscriptOfRecords,
   setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
@@ -117,6 +115,7 @@ import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionPatchType } from "~/reducers/discussion";
+import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -603,6 +602,9 @@ export default class MainFunction extends React.Component<
    * @returns JSX.Element
    */
   renderIndexBody() {
+    this.loadlib(
+      `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+    );
     this.updateFirstTime();
     if (this.itsFirstTime) {
       this.props.websocket &&

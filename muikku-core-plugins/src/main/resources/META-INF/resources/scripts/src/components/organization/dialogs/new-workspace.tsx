@@ -18,14 +18,16 @@ import {
   loadSelectorUserGroups,
 } from "~/actions/main-function/users";
 import {
+  CreateWorkspaceStateType,
   loadTemplatesFromServer,
   LoadTemplatesFromServerTriggerType,
   loadWorkspacesFromServer,
   LoadWorkspacesFromServerTriggerType,
-  CreateWorkspaceTriggerType,
-  createWorkspace,
-  CreateWorkspaceStateType,
 } from "~/actions/workspaces";
+import {
+  createWorkspace,
+  CreateWorkspaceTriggerType,
+} from "~/actions/workspaces/organization";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";

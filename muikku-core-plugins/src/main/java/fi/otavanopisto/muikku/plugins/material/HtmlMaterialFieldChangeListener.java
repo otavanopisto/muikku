@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldConnectionM
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.FileFieldMeta;
+import fi.otavanopisto.muikku.plugins.material.fieldmeta.JournalFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MathExerciseFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldMeta;
@@ -70,6 +71,9 @@ public class HtmlMaterialFieldChangeListener {
   
   @Inject
   private QueryMathExerciseFieldController queryMathExerciseFieldController;
+  
+  @Inject
+  private QueryJournalFieldController queryJournalFieldController;
   
   // Create
 
@@ -220,6 +224,26 @@ public class HtmlMaterialFieldChangeListener {
       queryFileFieldController.createQueryFileField(event.getMaterial(), fileFieldMeta.getName());
     }
   }
+  
+  //Journal field
+ public void onHtmlMaterialJournalFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+   if (event.getField().getType().equals("application/vnd.muikku.field.journal")) {
+     ObjectMapper objectMapper = new ObjectMapper();
+     JournalFieldMeta journalFieldMeta;
+     try {
+       journalFieldMeta = objectMapper.readValue(event.getField().getContent(), JournalFieldMeta.class);
+     } catch (IOException e) {
+       throw new MaterialFieldMetaParsingExeption("Could not parse journal field meta", e);
+     }
+     
+     QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), journalFieldMeta.getName());
+     if (queryField != null) {
+       throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
+     }
+     
+     queryJournalFieldController.createQueryJournalField(event.getMaterial(), journalFieldMeta.getName());
+   }
+ }
   
   // Audio field
   

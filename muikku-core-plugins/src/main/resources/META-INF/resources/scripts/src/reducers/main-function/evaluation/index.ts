@@ -11,6 +11,7 @@ import {
   EvaluationStudyDiaryEvent,
   EvaluationBasePriceById,
   EvaluationFilters,
+  EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
 
@@ -39,6 +40,10 @@ export interface EvaluationState {
   evaluationSelectedAssessmentId?: AssessmentRequest;
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
   evaluationDiaryEntries?: EvaluationStateAndData<EvaluationStudyDiaryEvent[]>;
+  evaluationJournalComments: {
+    comments: EvaluationJournalCommentsByJournal;
+    commentsLoaded: number[];
+  };
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
   evaluationCompositeReplies?: EvaluationStateAndData<
     MaterialCompositeRepliesType[]
@@ -79,6 +84,7 @@ export const initialState: EvaluationState = {
   evaluationCurrentStudentAssigments: { state: "LOADING", data: undefined },
   openedAssignmentEvaluationId: undefined,
   evaluationBilledPrice: undefined,
+  evaluationJournalComments: { comments: {}, commentsLoaded: [] },
   evaluationDiaryEntries: {
     state: "LOADING",
     data: undefined,
@@ -103,13 +109,13 @@ export const evaluations: Reducer<EvaluationState> = (
   action: ActionType
 ) => {
   switch (action.type) {
-    case "UPDATE_EVALUATION_STATE":
+    case "EVALUATION_STATE_UPDATE":
       return {
         ...state,
         status: action.payload,
       };
 
-    case "SET_IMPORTANT_ASSESSMENTS":
+    case "EVALUATION_IMPORTANT_ASSESSMENTS_LOAD":
       return {
         ...state,
         importantRequests: action.payload.value
@@ -117,7 +123,7 @@ export const evaluations: Reducer<EvaluationState> = (
           : [],
       };
 
-    case "SET_UNIMPORTANT_ASSESSMENTS":
+    case "EVALUATION_UNIMPORTANT_ASSESSMENTS_LOAD":
       return {
         ...state,
         unimportantRequests: action.payload.value
@@ -125,19 +131,19 @@ export const evaluations: Reducer<EvaluationState> = (
           : [],
       };
 
-    case "SET_EVALUATION_WORKSPACES":
+    case "EVALUATION_WORKSPACES_LOAD":
       return {
         ...state,
         evaluationWorkspaces: action.payload,
       };
 
-    case "SET_EVALUATION_GRADE_SYSTEM":
+    case "EVALUATION_GRADE_SYSTEM_LOAD":
       return {
         ...state,
         evaluationGradeSystem: action.payload,
       };
 
-    case "SET_EVALUATION_SELECTED_WORKSPACE":
+    case "EVALUATION_SELECTED_WORKSPACE_CHANGE":
       return {
         ...state,
         selectedWorkspaceId: action.payload,
@@ -147,25 +153,25 @@ export const evaluations: Reducer<EvaluationState> = (
             : state.evaluationFilters,
       };
 
-    case "UPDATE_EVALUATION_SEARCH":
+    case "EVALUATION_SEARCH_CHANGE":
       return {
         ...state,
         evaluationSearch: action.payload,
       };
 
-    case "SET_EVALUATION_SORT_FUNCTION":
+    case "EVALUATION_SORT_FUNCTION_CHANGE":
       return {
         ...state,
         evaluationSort: action.payload,
       };
 
-    case "SET_EVALUATION_FILTERS":
+    case "EVALUATION_FILTERS_CHANGE":
       return {
         ...state,
         evaluationFilters: action.payload,
       };
 
-    case "UPDATE_EVALUATION_IMPORTANCE":
+    case "EVALUATION_IMPORTANCE_UPDATE":
       return {
         ...state,
         importantRequests: action.payload.importantAssessments.value
@@ -180,25 +186,25 @@ export const evaluations: Reducer<EvaluationState> = (
           : [],
       };
 
-    case "UPDATE_EVALUATION_SELECTED_ASSESSMENT":
+    case "EVALUATION_ASSESSMENT_UPDATE":
       return {
         ...state,
         evaluationSelectedAssessmentId: action.payload,
       };
 
-    case "UPDATE_OPENED_ASSIGNMENTS_EVALUATION":
+    case "EVALUATION_OPENED_ASSIGNMENT_UPDATE":
       return {
         ...state,
         openedAssignmentEvaluationId: action.payload,
       };
 
-    case "SET_EVALUATION_BILLED_PRICE":
+    case "EVALUATION_BILLED_PRICE_LOAD":
       return {
         ...state,
         openedAssignmentEvaluationId: action.payload,
       };
 
-    case "SET_EVALUATION_COMPOSITE_REPLIES":
+    case "EVALUATION_COMPOSITE_REPLIES_LOAD":
       return {
         ...state,
         evaluationCompositeReplies: {
@@ -207,7 +213,7 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE":
+    case "EVALUATION_COMPOSITE_REPLIES_STATE_UPDATE":
       return {
         ...state,
         evaluationCompositeReplies: {
@@ -216,7 +222,7 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS":
+    case "EVALUATION_ASSESSMENT_EVENTS_LOAD":
       return {
         ...state,
         evaluationAssessmentEvents: {
@@ -225,7 +231,7 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "UPDATE_EVALUATION_CURRENT_EVENTS_STATE":
+    case "EVALUATION_ASSESSMENT_EVENTS_STATE_UPDATE":
       return {
         ...state,
         evaluationAssessmentEvents: {
@@ -234,7 +240,7 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS":
+    case "EVALUATION_JOURNAL_EVENTS_LOAD":
       return {
         ...state,
         evaluationDiaryEntries: {
@@ -243,7 +249,7 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE":
+    case "EVALUATION_JOURNAL_STATE_UPDATE":
       return {
         ...state,
         evaluationDiaryEntries: {
@@ -252,7 +258,7 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS":
+    case "EVALUATION_ASSESSMENT_ASSIGNMENTS_LOAD":
       return {
         ...state,
         evaluationCurrentStudentAssigments: {
@@ -261,7 +267,7 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE":
+    case "EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE":
       return {
         ...state,
         evaluationCurrentStudentAssigments: {
@@ -270,7 +276,7 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "SET_EVALUATION_ASESSESSMENTS":
+    case "EVALUATION_REQUESTS_LOAD":
       return {
         ...state,
         evaluationRequests: {
@@ -279,7 +285,7 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "UPDATE_EVALUATION_REQUESTS_STATE":
+    case "EVALUATION_REQUESTS_STATE_UPDATE":
       return {
         ...state,
         needsReloadEvaluationRequests: false,
@@ -289,22 +295,75 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
-    case "UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS":
+    case "EVALUATION_NEEDS_RELOAD_REQUESTS_UPDATE":
       return {
         ...state,
         needsReloadEvaluationRequests: action.payload,
       };
 
-    case "SET_BASE_PRICE":
+    case "EVALUATION_BASE_PRICE_LOAD":
       return {
         ...state,
         basePrice: { state: state.basePrice.state, data: action.payload },
       };
 
-    case "UPDATE_BASE_PRICE_STATE":
+    case "EVALUATION_BASE_PRICE_STATE_UPDATE":
       return {
         ...state,
         basePrice: { state: action.payload, data: state.basePrice.data },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_INITIALIZED":
+      return {
+        ...state,
+        evaluationJournalComments: {
+          ...state.evaluationJournalComments,
+          comments: action.payload,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_LOAD":
+      return {
+        ...state,
+        evaluationJournalComments: {
+          comments: action.payload.comments,
+          commentsLoaded: action.payload.commentsLoaded,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_CREATE":
+      return {
+        ...state,
+        evaluationDiaryEntries: {
+          state: state.evaluationDiaryEntries.state,
+          data: action.payload.updatedJournalEntryList,
+        },
+        evaluationJournalComments: {
+          ...state.evaluationJournalComments,
+          comments: action.payload.updatedCommentsList,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_UPDATE":
+      return {
+        ...state,
+        evaluationJournalComments: {
+          ...state.evaluationJournalComments,
+          comments: action.payload.updatedCommentsList,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_COMMENTS_DELETE":
+      return {
+        ...state,
+        evaluationDiaryEntries: {
+          state: state.evaluationDiaryEntries.state,
+          data: action.payload.updatedJournalEntryList,
+        },
+        evaluationJournalComments: {
+          ...state.evaluationJournalComments,
+          comments: action.payload.updatedCommentsList,
+        },
       };
 
     default:
