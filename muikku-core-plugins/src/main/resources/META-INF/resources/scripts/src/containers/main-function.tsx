@@ -20,7 +20,6 @@ import {
   loadUserWorkspaceCurriculumFiltersFromServer,
   setWorkspaceStateFilters,
   loadUserWorkspaceEducationFiltersFromServer,
-  loadUserWorkspaceOrganizationFiltersFromServer,
 } from "~/actions/workspaces";
 import {
   loadLastWorkspaceFromServer,
@@ -79,7 +78,6 @@ import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
   setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords,
   setLocationToHopsInTranscriptOfRecords,
   setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
@@ -116,6 +114,7 @@ import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionPatchType } from "~/reducers/discussion";
+import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
