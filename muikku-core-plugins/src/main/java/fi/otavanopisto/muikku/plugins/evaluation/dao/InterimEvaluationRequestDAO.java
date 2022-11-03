@@ -61,7 +61,7 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.in(InterimEvaluationRequest_.workspaceEntityId), workspaceEntityIds),
+            root.get(InterimEvaluationRequest_.workspaceEntityId).in(workspaceEntityIds),
             criteriaBuilder.equal(root.get(InterimEvaluationRequest_.archived), archived)
             )
         );
