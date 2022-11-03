@@ -13,6 +13,36 @@ export interface DiscussionUserType {
 }
 
 /**
+ * DiscussionSubscribedArea
+ */
+export interface DiscussionSubscribedArea {
+  /**
+   * Area id
+   */
+  areaId: number;
+  /**
+   * Users id
+   */
+  userEntityId: number;
+  /**
+   * Area information
+   */
+  area: DiscussionAreaType;
+  /**
+   * Id of workspace.
+   */
+  workspaceId: null;
+  /**
+   * Includes name extension
+   */
+  workspaceUrlName: null;
+  /**
+   * url of workspace
+   */
+  workspaceName: null;
+}
+
+/**
  * DiscussionSubscribedThread
  */
 export interface DiscussionSubscribedThread {
@@ -109,6 +139,7 @@ export type DiscussionAreaListType = Array<DiscussionAreaType>;
 export interface DiscussionType {
   state: DiscussionStateType;
   threads: DiscussionThreadListType;
+  subscribedAreas: DiscussionSubscribedArea[];
   subscribedThreads: DiscussionSubscribedThread[];
   subscribedThreadOnly: boolean;
   page: number;
@@ -146,6 +177,8 @@ export interface DiscussionPatchType {
  */
 const initialDiscussionState: DiscussionType = {
   state: "LOADING",
+  areas: [],
+  subscribedAreas: [],
   threads: [],
   subscribedThreads: [],
   subscribedThreadOnly: false,
@@ -158,7 +191,6 @@ const initialDiscussionState: DiscussionType = {
   currentPage: 1,
   currentTotalPages: 1,
   currentReplies: [],
-  areas: [],
 };
 
 /**
@@ -255,6 +287,10 @@ export const discussion: Reducer<DiscussionType> = (
 
     case "SET_DISCUSSION_WORKSPACE_ID":
       return { ...state, workspaceId: action.payload };
+
+    case "UPDATE_SUBSCRIBED_AREA_LIST": {
+      return { ...state, subscribedAreas: action.payload };
+    }
 
     case "UPDATE_SUBSCRIBED_THREAD_LIST": {
       return { ...state, subscribedThreads: action.payload };

@@ -24,7 +24,7 @@ public class ForumThreadNewMessageNotification implements NotifierAction, Notifi
   @Override
   public String getEmailSubject(NotifierContext context) {
     Locale locale = (Locale) context.getParameter("locale");
-    return locale == null ? "Uusi viesti seuraamassasi keskustelualueen viestiketjussa" : localeController.getText(locale, "plugin.forum.notification.mail.subject");
+    return locale == null ? "Seuraamaasi keskusteluun on tullut uusi viesti" : localeController.getText(locale, "plugin.forum.notification.mail.subject");
   }
 
   @Override
@@ -35,7 +35,7 @@ public class ForumThreadNewMessageNotification implements NotifierAction, Notifi
     String messageUrl = (String) context.getParameter("url");
     Locale locale = (Locale) context.getParameter("locale");
     if (messageSender == null || messageSubject == null || messageContent == null || messageUrl == null || locale == null) {
-      return "Uusi viesti seuraamassasi keskustelualueen viestiketjussa";
+      return "Seuraamaasi keskusteluun on tullut uusi viesti";
     }
     return localeController.getText(
         locale,
