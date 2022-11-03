@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.timed.notifications;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -58,8 +60,16 @@ public class NotificationController {
    * @return
    */
   public List<String> listStudyCounselorsEmails(SchoolDataIdentifier studentIdentifier) {
+    EnumSet<EnvironmentRoleArchetype> recipientRoles = EnumSet.of(
+        EnvironmentRoleArchetype.TEACHER,
+        EnvironmentRoleArchetype.ADMINISTRATOR,
+        EnvironmentRoleArchetype.MANAGER,
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER
+    );
+
     // List only guidance counselors that receive messages
-    List<UserEntity> guidanceCounselors = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier, true);
+    List<UserEntity> guidanceCounselors = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier, recipientRoles, true);
     List<String> guidanceCouncelorEmails = new ArrayList<>();
     for (UserEntity guidanceCounselor : guidanceCounselors) {
       String guidanceCounselorEmail = userEmailEntityController.getUserDefaultEmailAddress(guidanceCounselor, false);
