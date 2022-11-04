@@ -19,6 +19,7 @@ import {
 import { useNextCourseSuggestions } from "~/hooks/useNextCourseSuggestions";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import Button from "~/components/general/button";
+import ItemList from "~/components/general/item-list";
 
 /**
  * WorkspacesPanelProps
@@ -49,24 +50,30 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
     <Panel
       icon="icon-books"
       modifier="workspaces"
-      header={i18n.text.get("plugin.frontPage.workspaces.title")}
+      header={i18n.text.get("plugin.frontPage.studies.title")}
     >
       {lastWorkspace ? (
         <>
           <Panel.BodyTitle>Jatka opintoja</Panel.BodyTitle>
-          <Panel.BodyTitle>{props.lastWorkspace.workspaceName}</Panel.BodyTitle>
           <Panel.BodyContent>
-            {props.i18n.text.get(
-              "plugin.frontPage.latestWorkspace.material.part1"
-            )}{" "}
-            <span className="panel__body-highlight">
-              {props.lastWorkspace.materialName}
-            </span>{" "}
-            <Link className="link" href={props.lastWorkspace.url}>
-              {props.i18n.text.get(
-                "plugin.frontPage.latestWorkspace.continueStudiesLink"
-              )}
-            </Link>
+            <ItemList>
+              <ItemList.Item icon="icon-books" modifier="workspaces">
+                {props.lastWorkspace.workspaceName}
+              </ItemList.Item>
+              <ItemList.ItemFooter>
+                {props.i18n.text.get(
+                  "plugin.frontPage.latestWorkspace.material.part1"
+                )}{" "}
+                <span className="panel__body-highlight">
+                  {props.lastWorkspace.materialName}
+                </span>{" "}
+                <Link className="link" href={props.lastWorkspace.url}>
+                  {props.i18n.text.get(
+                    "plugin.frontPage.latestWorkspace.continueStudiesLink"
+                  )}
+                </Link>
+              </ItemList.ItemFooter>
+            </ItemList>
           </Panel.BodyContent>
         </>
       ) : null}
@@ -74,20 +81,21 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       <>
         <Panel.BodyTitle>Seuraavaksi</Panel.BodyTitle>
         <Panel.BodyContent>
-          <div className="item-list item-list--panel-workspaces">
+          <ItemList>
             {nextSuggestions.nextCourses.map((workspace) => (
-              <div key={workspace.id}>
-                <div className="item-list__item item-list__item--workspaces">
-                  <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
-                  <span className="item-list__text-body">
-                    {`${workspace.name} ${
-                      workspace.nameExtension
-                        ? "(" + workspace.nameExtension + ")"
-                        : ""
-                    }`}
-                  </span>
-                </div>
-                <div className="item-list__item-actions">
+              <React.Fragment key={workspace.id}>
+                <ItemList.Item
+                  as={Link}
+                  modifier="workspaces"
+                  icon="icon-books"
+                >
+                  {`${workspace.name} ${
+                    workspace.nameExtension
+                      ? "(" + workspace.nameExtension + ")"
+                      : ""
+                  }`}
+                </ItemList.Item>
+                <ItemList.ItemFooter>
                   <Button
                     aria-label={
                       props.i18n.text.get(
@@ -128,10 +136,10 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                       )}
                     </Button>
                   </WorkspaceSignup>
-                </div>
-              </div>
+                </ItemList.ItemFooter>
+              </React.Fragment>
             ))}
-          </div>
+          </ItemList>
         </Panel.BodyContent>
       </>
 
