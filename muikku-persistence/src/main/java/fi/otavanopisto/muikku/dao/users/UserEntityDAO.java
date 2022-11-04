@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserOnlineStatus;
 
 public class UserEntityDAO extends CoreDAO<UserEntity> {
 
@@ -60,6 +61,11 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
     return persist(userEntity);
   }
 
+  public UserEntity updateOnlineStatus(UserEntity userEntity, UserOnlineStatus onlineStatus) {
+    userEntity.setOnlineStatus(onlineStatus);
+    return persist(userEntity);
+  }
+
   public UserEntity updateDefaultSchoolDataSource(UserEntity userEntity, SchoolDataSource defaultSchoolDataSource) {
     userEntity.setDefaultSchoolDataSource(defaultSchoolDataSource);
     return persist(userEntity);
@@ -74,4 +80,5 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
     userEntity.setUpdatedByStudent(updatedByStudent);
     return persist(userEntity);
   }
+
 }

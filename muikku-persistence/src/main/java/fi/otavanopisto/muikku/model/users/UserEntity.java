@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -91,6 +93,14 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
     return updatedByStudent;
   }
 
+  public UserOnlineStatus getOnlineStatus() {
+    return onlineStatus;
+  }
+
+  public void setOnlineStatus(UserOnlineStatus onlineStatus) {
+    this.onlineStatus = onlineStatus;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -114,6 +124,9 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
   @ManyToOne
   private SchoolDataSource defaultSchoolDataSource;
 
+  @Enumerated (EnumType.STRING)
+  private UserOnlineStatus onlineStatus;
+  
   @Version
   @Column(nullable = false)
   private Long version;

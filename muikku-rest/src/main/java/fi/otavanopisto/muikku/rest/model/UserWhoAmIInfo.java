@@ -3,6 +3,8 @@ package fi.otavanopisto.muikku.rest.model;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.model.users.UserOnlineStatus;
+
 public class UserWhoAmIInfo extends UserBasicInfo {
 
   public UserWhoAmIInfo() {
@@ -31,7 +33,8 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               String studyTimeLeftStr,
               OffsetDateTime studyStartDate,
               OffsetDateTime studyEndDate,
-              OffsetDateTime studyTimeEnd
+              OffsetDateTime studyTimeEnd,
+              UserOnlineStatus onlineStatus
               ) {
     super(id, identifier, firstName, lastName, nickName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
@@ -42,6 +45,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.organizationIdentifier = organizationIdentifier;
     this.isDefaultOrganization = isDefaultOrganization;
     this.isActive = isActive;
+    this.onlineStatus = onlineStatus;
     this.setPermissions(permissions);
     this.setRoles(roles);
     this.displayName = displayName;
@@ -198,6 +202,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.studyTimeEnd = studyTimeEnd;
   }
 
+  public UserOnlineStatus getOnlineStatus() {
+    return onlineStatus;
+  }
+
+  public void setOnlineStatus(UserOnlineStatus onlineStatus) {
+    this.onlineStatus = onlineStatus;
+  }
+
   private String studyProgrammeName;
   private String studyProgrammeIdentifier;
   private boolean hasEvaluationFees;
@@ -216,5 +228,6 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private OffsetDateTime studyStartDate;
   private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;
+  private UserOnlineStatus onlineStatus;
   
 }

@@ -34,6 +34,7 @@ import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
+import fi.otavanopisto.muikku.model.users.UserOnlineStatus;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -356,6 +357,10 @@ public class UserEntityController implements Serializable {
 
   public UserEntity updateLocale(UserEntity userEntity, Locale locale) {
     return userEntityDAO.updateLocale(userEntity, locale != null ? locale.toString() : null);
+  }
+
+  public UserEntity updateOnlineStatus(UserEntity userEntity, UserOnlineStatus onlineStatus) {
+    return userEntityDAO.updateOnlineStatus(userEntity, onlineStatus);
   }
 
   public UserEntity archiveUserEntity(UserEntity userEntity) {

@@ -102,6 +102,28 @@ public class MeRESTService {
     return Response.noContent().build();
   }
   
+  /**
+   * Sets the online status (override) for current user.
+   * 
+   * Payload:
+   * {
+   *    onlineStatus: "ONLINE"
+   * }
+   * 
+   * Available states ONLINE/OFFLINE
+   * 
+   * @param onlineStatus
+   * @return
+   */
+  @POST
+  @Path("/online")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response setOnlineStatus(OnlineStatusSelectionRestModel onlineStatus) {
+    userEntityController.updateOnlineStatus(localSessionController.getLoggedUserEntity(), onlineStatus.getOnlineStatus());
+    
+    return Response.noContent().build();
+  }
+  
   @GET
   @Path("/guidanceCounselors")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)

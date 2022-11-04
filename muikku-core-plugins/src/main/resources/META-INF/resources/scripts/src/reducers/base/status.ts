@@ -7,6 +7,11 @@
 import $ from "~/lib/jquery";
 import { ActionType } from "~/actions";
 
+export enum OnlineStatus {
+  ONLINE = "ONLINE",
+  OFFLINE = "OFFLINE",
+}
+
 /**
  * WhoAmIType
  */
@@ -33,6 +38,7 @@ export interface WhoAmIType {
   studyProgrammeIdentifier: string;
   addresses: string;
   emails: string;
+  onlineStatus: OnlineStatus;
 }
 
 /**

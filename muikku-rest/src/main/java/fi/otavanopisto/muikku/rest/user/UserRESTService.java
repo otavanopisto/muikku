@@ -64,6 +64,7 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserOnlineStatus;
 import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -1764,6 +1765,8 @@ public class UserRESTService extends AbstractRESTService {
       }
     }
     
+    UserOnlineStatus onlineStatus = userEntity.getOnlineStatus();
+    
     // Result object
     UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
         userEntity == null ? null : userEntity.getId(),
@@ -1789,7 +1792,8 @@ public class UserRESTService extends AbstractRESTService {
         studyTimeLeftStr,
         studyStartDate,
         studyEndDate,
-        studyTimeEnd); 
+        studyTimeEnd,
+        onlineStatus); 
 
     return Response.ok(whoamiInfo).build();
   }
