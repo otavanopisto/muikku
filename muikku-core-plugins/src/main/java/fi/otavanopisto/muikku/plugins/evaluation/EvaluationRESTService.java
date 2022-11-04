@@ -833,15 +833,25 @@ public class EvaluationRESTService extends PluginRESTService {
    *  
    * Errors:
    * 400 Workspace with given id not found
+   * 403 Trying to access interim evaluation requests of user without sufficient rights
    */
   @GET
   @Path("/workspace/{WORKSPACEENTITYID}/interimEvaluationRequests")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findInterimEvaluationRequestsByWorkspace(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+  public Response findInterimEvaluationRequestsByWorkspace(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("userEntityId") Long userEntityId) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
+    }
+    
+    if (userEntityId != null) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_INTERIM_EVALUATION_REQUESTS) && !userEntityId.equals(userEntity.getId())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      else {
+        userEntity = userEntityController.findUserEntityById(userEntityId);
+      }
     }
     
     // List all interim evaluation requests of the user in the workspace
