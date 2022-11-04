@@ -840,11 +840,6 @@ public class EvaluationRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response findInterimEvaluationRequestsByWorkspace(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("userEntityId") Long userEntityId) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
-    }
-    
     if (userEntityId != null) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_INTERIM_EVALUATION_REQUESTS) && !userEntityId.equals(userEntity.getId())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -852,6 +847,10 @@ public class EvaluationRESTService extends PluginRESTService {
       else {
         userEntity = userEntityController.findUserEntityById(userEntityId);
       }
+    }
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
     }
     
     // List all interim evaluation requests of the user in the workspace
@@ -934,8 +933,16 @@ public class EvaluationRESTService extends PluginRESTService {
   @GET
   @Path("/workspaceMaterial/{WORKSPACEMATERIALID}/interimEvaluationRequest")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findInterimEvaluationRequestByWorkspaceMaterial(@PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
+  public Response findInterimEvaluationRequestByWorkspaceMaterial(@PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam("userEntityId") Long userEntityId) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
+    if (userEntityId != null) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_INTERIM_EVALUATION_REQUESTS) && !userEntityId.equals(userEntity.getId())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      else {
+        userEntity = userEntityController.findUserEntityById(userEntityId);
+      }
+    }
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace material %d not found", workspaceMaterial)).build();
