@@ -38,6 +38,13 @@
   }
 }
 
+.link--index {
+  text-decoration: underline;
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
 .link--frontpage {
   color: $color-link-frontpage-text;
   font-size: 0.9375rem;

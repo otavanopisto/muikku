@@ -5,6 +5,7 @@ import * as React from "react";
  */
 interface ItemListProps {
   modifier?: string;
+  header?: string;
 }
 
 /**
@@ -18,11 +19,18 @@ const ItemList: React.FC<ItemListProps> & {
   ) => JSX.Element;
   ItemFooter?: React.FC<FooterProps>;
 } = (props) => {
-  const { children, modifier } = props;
+  const { children, modifier, header } = props;
 
   return (
     <div className={`item-list ${modifier ? "item-list--" + modifier : ""}`}>
-      {children}
+      {header ? (
+        <>
+          <div className="item-list__header">{header}</div>
+          <div className="item-list__content">{children}</div>
+        </>
+      ) : (
+        <>{children}</>
+      )}
     </div>
   );
 };
@@ -66,16 +74,15 @@ const ListItem = <C extends React.ElementType = "div">(
     >
       {icon ? (
         <>
-          <div
+          <span
             className={`item-list__icon ${
               modifier ? "item-list__icon--" + modifier : ""
             } ${icon}`}
-          ></div>
-
-          <div className="item-list__text-body">{children}</div>
+          ></span>
+          <span className="item-list__text-body">{children}</span>
         </>
       ) : (
-        { children }
+        <>{children}</>
       )}
     </Component>
   );

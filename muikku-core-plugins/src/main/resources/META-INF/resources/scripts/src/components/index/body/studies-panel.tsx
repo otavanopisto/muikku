@@ -18,7 +18,6 @@ import {
 } from "~/actions/base/notifications";
 import { useNextCourseSuggestions } from "~/hooks/useNextCourseSuggestions";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
-import Button from "~/components/general/button";
 import ItemList from "~/components/general/item-list";
 
 /**
@@ -54,22 +53,22 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
     >
       {lastWorkspace ? (
         <>
-          <Panel.BodyTitle>Jatka opintoja</Panel.BodyTitle>
+          <Panel.BodyTitle>
+            {i18n.text.get("plugin.frontPage.studies.continue.title")}
+          </Panel.BodyTitle>
           <Panel.BodyContent>
             <ItemList>
               <ItemList.Item icon="icon-books" modifier="workspaces">
                 {props.lastWorkspace.workspaceName}
               </ItemList.Item>
               <ItemList.ItemFooter>
-                {props.i18n.text.get(
-                  "plugin.frontPage.latestWorkspace.material.part1"
-                )}{" "}
-                <span className="panel__body-highlight">
+                {/* <span className="panel__body-highlight">
                   {props.lastWorkspace.materialName}
-                </span>{" "}
-                <Link className="link" href={props.lastWorkspace.url}>
+                </span>{" "} */}
+                <Link className="link--index" href={props.lastWorkspace.url}>
                   {props.i18n.text.get(
-                    "plugin.frontPage.latestWorkspace.continueStudiesLink"
+                    "plugin.frontPage.latestWorkspace.material.part1",
+                    props.lastWorkspace.materialName
                   )}
                 </Link>
               </ItemList.ItemFooter>
@@ -79,16 +78,14 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       ) : null}
 
       <>
-        <Panel.BodyTitle>Seuraavaksi</Panel.BodyTitle>
+        <Panel.BodyTitle>
+          {i18n.text.get("plugin.frontPage.studies.next.title")}
+        </Panel.BodyTitle>
         <Panel.BodyContent>
           <ItemList>
             {nextSuggestions.nextCourses.map((workspace) => (
               <React.Fragment key={workspace.id}>
-                <ItemList.Item
-                  as={Link}
-                  modifier="workspaces"
-                  icon="icon-books"
-                >
+                <ItemList.Item modifier="workspaces" icon="icon-books">
                   {`${workspace.name} ${
                     workspace.nameExtension
                       ? "(" + workspace.nameExtension + ")"
@@ -96,22 +93,19 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                   }`}
                 </ItemList.Item>
                 <ItemList.ItemFooter>
-                  <Button
+                  <Link
+                    className="link--index"
                     aria-label={
                       props.i18n.text.get(
                         "plugin.frontPage.suggestedWorkspaces.checkOut"
                       ) + workspace.name
                     }
-                    buttonModifiers={[
-                      "primary-function-content",
-                      "frontpage-button",
-                    ]}
                     href={`/workspace/${workspace.urlName}`}
                   >
                     {props.i18n.text.get(
                       "plugin.frontPage.suggestedWorkspaces.checkOut"
                     )}
-                  </Button>
+                  </Link>
                   <WorkspaceSignup
                     workspaceSignUpDetails={{
                       id: workspace.id,
@@ -120,21 +114,22 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                       urlName: workspace.urlName,
                     }}
                   >
-                    <Button
+                    <Link
+                      className="link--index"
                       aria-label={
                         props.i18n.text.get(
                           "plugin.frontPage.suggestedWorkspaces.signUp"
                         ) + workspace.name
                       }
-                      buttonModifiers={[
-                        "primary-function-content",
-                        "frontpage-button",
-                      ]}
+                      // buttonModifiers={[
+                      //   "primary-function-content",
+                      //   "frontpage-button",
+                      // ]}
                     >
                       {props.i18n.text.get(
                         "plugin.frontPage.suggestedWorkspaces.signUp"
                       )}
-                    </Button>
+                    </Link>
                   </WorkspaceSignup>
                 </ItemList.ItemFooter>
               </React.Fragment>
@@ -143,10 +138,12 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
         </Panel.BodyContent>
       </>
 
-      <Panel.BodyTitle>Kurssisi</Panel.BodyTitle>
+      <Panel.BodyTitle>
+        {i18n.text.get("plugin.frontPage.studies.workspaces.title")}
+      </Panel.BodyTitle>
       {workspaces.length ? (
         <Panel.BodyContent>
-          <div className="item-list item-list--panel-workspaces">
+          <ItemList>
             {workspaces
               .sort((workspaceA: WorkspaceType, workspaceB: WorkspaceType) => {
                 if (
@@ -161,29 +158,28 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                 return 0;
               })
               .map((workspace: WorkspaceType) => (
-                <Link
-                  key={workspace.id}
-                  className="item-list__item item-list__item--workspaces"
+                <ItemList.Item
+                  modifier="workspaces"
+                  as={Link}
                   href={`/workspace/${workspace.urlName}`}
+                  key={workspace.id}
+                  icon="icon-books"
                 >
-                  <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
-                  <span className="item-list__text-body">
-                    {`${workspace.name} ${
-                      workspace.nameExtension
-                        ? "(" + workspace.nameExtension + ")"
-                        : ""
-                    }`}
-                  </span>
-                </Link>
+                  {`${workspace.name} ${
+                    workspace.nameExtension
+                      ? "(" + workspace.nameExtension + ")"
+                      : ""
+                  }`}
+                </ItemList.Item>
               ))}
-          </div>
+          </ItemList>
         </Panel.BodyContent>
       ) : (
         <Panel.BodyContent modifier="empty">
           {status.isStudent ? (
             <>
               {i18n.text.get("plugin.frontPage.workspaces.noWorkspaces.part1")}{" "}
-              <Link href="/coursepicker">
+              <Link href="/coursepicker" className="link--frontpage">
                 {i18n.text.get(
                   "plugin.frontPage.workspaces.noWorkspaces.coursepicker"
                 )}

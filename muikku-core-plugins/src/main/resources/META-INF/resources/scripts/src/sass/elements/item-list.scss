@@ -7,6 +7,15 @@
   @include text;
 }
 
+.item-list__header {
+  font-weight: 400;
+  padding: 0 0 0 10px;
+}
+
+.item-list__content {
+  padding: 5px 0 10px 15px;
+}
+
 .item-list--student-councelors {
   align-items: flex-start;
   display: flex;
@@ -117,7 +126,7 @@
 .item-list__item-actions {
   align-items: center;
   display: flex;
-  padding: 0 15px 15px 10px;
+  padding: 0 15px 15px 33px;
 }
 
 // List item icons
