@@ -62,14 +62,11 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                 {props.lastWorkspace.workspaceName}
               </ItemList.Item>
               <ItemList.ItemFooter>
-                {/* <span className="panel__body-highlight">
-                  {props.lastWorkspace.materialName}
-                </span>{" "} */}
+                {props.i18n.text.get(
+                  "plugin.frontPage.latestWorkspace.material.part1"
+                )}{" "}
                 <Link className="link--index" href={props.lastWorkspace.url}>
-                  {props.i18n.text.get(
-                    "plugin.frontPage.latestWorkspace.material.part1",
-                    props.lastWorkspace.materialName
-                  )}
+                  {props.lastWorkspace.materialName}
                 </Link>
               </ItemList.ItemFooter>
             </ItemList>
