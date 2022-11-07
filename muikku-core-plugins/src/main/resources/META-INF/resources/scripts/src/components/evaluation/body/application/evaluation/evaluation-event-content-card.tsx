@@ -77,9 +77,13 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
       case EvaluationEnum.EVALUATION_IMPROVED:
         mod = "state-IMPROVED";
         break;
+
+      case EvaluationEnum.INTERIM_EVALUATION_REQUEST:
       case EvaluationEnum.EVALUATION_REQUEST:
         mod = "state-REQUESTED";
         break;
+
+      case EvaluationEnum.INTERIM_EVALUATION_REQUEST_CANCELLED:
       case EvaluationEnum.EVALUATION_REQUEST_CANCELLED:
         mod = "state-REQUESTED-CANCELLED";
         break;
@@ -87,6 +91,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         mod = "state-INCOMPLETE";
         break;
 
+      case EvaluationEnum.INTERIM_EVALUATION:
       case EvaluationEnum.EVALUATION_PASS:
         mod = "state-PASSED";
         break;
@@ -285,6 +290,57 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
                 {EvaluationEnum.SUPPLEMENTATION_REQUEST ? "T" : grade}
               </div>
             ) : null}
+          </>
+        );
+
+      case EvaluationEnum.INTERIM_EVALUATION:
+        return (
+          <>
+            <div className="evaluation-modal__event-meta">
+              <span className="evaluation-modal__event-author">{author}</span>{" "}
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.interimEvaluation.1"
+              )}{" "}
+              <span className="evaluation-modal__event-type state-CANCELLED">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.interimEvaluation.2"
+                )}
+              </span>
+            </div>
+          </>
+        );
+
+      case EvaluationEnum.INTERIM_EVALUATION_REQUEST:
+        return (
+          <>
+            <div className="evaluation-modal__event-meta">
+              <span className="evaluation-modal__event-author">{author}</span>{" "}
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.1"
+              )}{" "}
+              <span className="evaluation-modal__event-type state-CANCELLED">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.2"
+                )}
+              </span>
+            </div>
+          </>
+        );
+
+      case EvaluationEnum.INTERIM_EVALUATION_REQUEST_CANCELLED:
+        return (
+          <>
+            <div className="evaluation-modal__event-meta">
+              <span className="evaluation-modal__event-author">{author}</span>{" "}
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.1"
+              )}{" "}
+              <span className="evaluation-modal__event-type state-CANCELLED">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.2"
+                )}
+              </span>
+            </div>
           </>
         );
       default:

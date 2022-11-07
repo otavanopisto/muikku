@@ -1466,6 +1466,7 @@
 }
 
 // Buttons used in Material pages
+.muikku-submit-interim-evaluation,
 .button--muikku-submit-journal,
 .button--muikku-submit-exercise,
 .button--muikku-show-correct-answers-button,
@@ -1479,6 +1480,11 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+}
+
+.button--muikku-submit-interim-evaluation {
+  background-color: black;
+  color: white;
 }
 
 .button--muikku-submit-journal {
@@ -1742,6 +1748,17 @@
   &:hover {
     background: $color-journal-page;
     border-color: $color-journal-page;
+  }
+}
+
+.button-pill--material-editor-interim-evaluation {
+  background: black;
+  border-color: black;
+  color: $color-default;
+
+  &:hover {
+    background: black;
+    border-color: black;
   }
 }
 
@@ -2138,6 +2155,12 @@
       color: $color-disabled;
     }
   }
+}
+
+.button--evaluate-intermin-evaluation {
+  background-color: black;
+  color: $color-default;
+  margin: 0 5px;
 }
 
 .button--evaluate-assignment {

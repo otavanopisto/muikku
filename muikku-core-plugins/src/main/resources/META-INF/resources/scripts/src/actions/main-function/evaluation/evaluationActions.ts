@@ -17,7 +17,10 @@ import notificationActions, {
 } from "~/actions/base/notifications";
 import { EvaluationAssigmentData } from "../../../@types/evaluation";
 import { EvaluationEnum, BilledPriceRequest } from "../../../@types/evaluation";
-import { MaterialCompositeRepliesType } from "../../../reducers/workspaces/index";
+import {
+  MaterialCompositeRepliesType,
+  WorkspaceInterimEvaluationRequest,
+} from "../../../reducers/workspaces/index";
 import {
   WorkspaceUserEntity,
   AssignmentEvaluationSaveReturn,
@@ -76,6 +79,11 @@ export type EVALUATION_ASSESSMENT_EVENTS_STATE_UPDATE = SpecificActionType<
 export type EVALUATION_ASSESSMENT_EVENTS_LOAD = SpecificActionType<
   "EVALUATION_ASSESSMENT_EVENTS_LOAD",
   EvaluationEvent[]
+>;
+
+export type EVALUATION_INTERMIN_REQUESTS_LOAD = SpecificActionType<
+  "EVALUATION_INTERMIN_REQUESTS_LOAD",
+  WorkspaceInterimEvaluationRequest[]
 >;
 
 export type EVALUATION_REQUESTS_STATE_UPDATE = SpecificActionType<
@@ -1621,6 +1629,14 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       try {
         const [assigments] = await Promise.all([
           (async () => {
+            const assignmentsInterim =
+              <MaterialAssignmentType[]>await promisify(
+                mApi().workspace.workspaces.materials.read(workspaceId, {
+                  assignmentType: "INTERIM_EVALUATION",
+                }),
+                "callback"
+              )() || [];
+
             const assignmentsExcercise =
               <MaterialAssignmentType[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
@@ -1638,6 +1654,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
               )() || [];
 
             const assignments = [
+              ...assignmentsInterim,
               ...assignmentsEvaluated,
               ...assignmentsExcercise,
             ];

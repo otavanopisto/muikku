@@ -238,6 +238,11 @@ const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
     classNameMod: "material-editor-dropdown-journal",
     text: "plugin.workspace.materialsManagement.pageType.journal",
   },
+  {
+    type: "INTERIM_EVALUATION",
+    classNameMod: "material-editor-dropdown-interim-evaluation",
+    text: "plugin.workspace.materialsManagement.pageType.interimEvaluation",
+  },
 ];
 
 /* eslint-enable camelcase */
@@ -708,32 +713,14 @@ class MaterialEditor extends React.Component<
         case "JOURNAL":
           return "journal";
 
+        case "INTERIM_EVALUATION":
+          return "interim-evaluation";
+
         default:
           return "theory";
       }
     }
     return "theory";
-  };
-
-  /**
-   * Assignment page type icon if assignment type has been set
-   * @param type type
-   * @returns assignment page type icon
-   */
-  assignmentPageIcon = (type: AssignmentType) => {
-    switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
-      case "EXERCISE":
-        return "books";
-
-      case "EVALUATED":
-        return "evaluate";
-
-      case "JOURNAL":
-        return "book";
-
-      default:
-        return undefined;
-    }
   };
 
   /**

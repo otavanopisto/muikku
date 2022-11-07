@@ -520,6 +520,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     const isAssignment = subnode.assignmentType === "EVALUATED";
                     const isExercise = subnode.assignmentType === "EXERCISE";
                     const isJournal = subnode.assignmentType === "JOURNAL";
+                    const isInterimEvaluation =
+                      subnode.assignmentType === "INTERIM_EVALUATION";
 
                     //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
                     const modifier = isAssignment
@@ -528,6 +530,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                       ? "exercise"
                       : isJournal
                       ? "journal"
+                      : isInterimEvaluation
+                      ? "interim-evaluation"
                       : null;
 
                     let icon: string | null = null;

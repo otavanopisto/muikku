@@ -406,6 +406,10 @@
   border-left-color: $color-exercise;
 }
 
+.evaluation-modal__item-header-title--interim-evaluation {
+  border-left-color: black;
+}
+
 .evaluation-modal__item-header-title--active-dialog {
   color: $color-assignment;
   cursor: default;

@@ -10,7 +10,7 @@ type MaterialLoaderAssesmentProps = MaterialLoaderProps;
 
 /**
  * MaterialLoaderAssesment
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {

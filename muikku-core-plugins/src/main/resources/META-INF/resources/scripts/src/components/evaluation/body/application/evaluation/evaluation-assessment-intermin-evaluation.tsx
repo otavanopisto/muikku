@@ -10,6 +10,7 @@ import {
   MaterialAssignmentType,
   MaterialCompositeRepliesType,
   MaterialEvaluationType,
+  AssignmentType,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
@@ -20,7 +21,6 @@ import { ButtonPill } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
 import mApi from "~/lib/mApi";
 import SlideDrawer from "./slide-drawer";
-import AssignmentEditor from "./editors/assignment-editor";
 import { StateType } from "~/reducers/index";
 import { i18nType } from "~/reducers/base/i18n";
 import {
@@ -29,12 +29,13 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
-import ExcerciseEditor from "./editors/excercise-editor";
+import InterimEvaluationEditor from "./editors/interim-evaluation-editor";
+import { WorkspaceInterimEvaluationRequest } from "../../../../../reducers/workspaces/index";
 
 /**
  * EvaluationCardProps
  */
-interface EvaluationAssessmentAssignmentProps {
+interface EvaluationAssessmentInterminEvaluationRequestProps {
   workspace: WorkspaceType;
   assigment: MaterialAssignmentType;
   open: boolean;
@@ -49,14 +50,15 @@ interface EvaluationAssessmentAssignmentProps {
 }
 
 /**
- * EvaluationAssessmentAssignmentState
+ * EvaluationAssessmentInterminEvaluationRequestState
  */
-interface EvaluationAssessmentAssignmentState {
+interface EvaluationAssessmentInterminEvaluationRequestState {
   openContent: boolean;
   openDrawer: boolean;
   materialNode?: MaterialContentNodeType;
+  interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
   isLoading: boolean;
-  openAssignmentType?: "EVALUATED" | "EXERCISE";
+  openAssignmentType?: AssignmentType;
   showCloseEditorWarning: boolean;
   isRecording: boolean;
 }
@@ -64,9 +66,9 @@ interface EvaluationAssessmentAssignmentState {
 /**
  * EvaluationAssessmentAssignment
  */
-class EvaluationAssessmentAssignment extends React.Component<
-  EvaluationAssessmentAssignmentProps,
-  EvaluationAssessmentAssignmentState
+class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
+  EvaluationAssessmentInterminEvaluationRequestProps,
+  EvaluationAssessmentInterminEvaluationRequestState
 > {
   private myRef: HTMLDivElement = undefined;
 
@@ -74,7 +76,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * constructor
    * @param props props
    */
-  constructor(props: EvaluationAssessmentAssignmentProps) {
+  constructor(props: EvaluationAssessmentInterminEvaluationRequestProps) {
     super(props);
 
     this.state = {
@@ -93,12 +95,12 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @param prevState prevState
    */
   componentDidUpdate(
-    prevProps: EvaluationAssessmentAssignmentProps,
-    prevState: EvaluationAssessmentAssignmentState
+    prevProps: EvaluationAssessmentInterminEvaluationRequestProps,
+    prevState: EvaluationAssessmentInterminEvaluationRequestState
   ) {
     if (this.props.open !== prevState.openContent) {
       if (this.props.open && prevState.materialNode === undefined) {
-        this.loadMaterialData();
+        this.loadMaterialRelatedData();
       }
 
       this.setState({
@@ -115,18 +117,39 @@ class EvaluationAssessmentAssignment extends React.Component<
   sleep = (m: number) => new Promise((r) => setTimeout(r, m));
 
   /**
-   * loadMaterialData
+   * Loads all needed material related data
    */
-  loadMaterialData = async () => {
-    const { workspace, assigment, selectedAssessment } = this.props;
-
-    const userEntityId = selectedAssessment.userEntityId;
-
+  loadMaterialRelatedData = async () => {
     this.setState({
       isLoading: true,
     });
 
     const sleep = await this.sleep(1000);
+
+    const [data] = await Promise.all([
+      (async () => ({
+        materialNodeData: await this.loadMaterialContentNodeData(),
+        interminEvaluationRequestData:
+          await this.loadInterminEvaluationRequestRequestData(),
+      }))(),
+      sleep,
+    ]);
+
+    this.setState({
+      materialNode: data.materialNodeData,
+      interminEvaluationRequest: data.interminEvaluationRequestData,
+      isLoading: false,
+    });
+  };
+
+  /**
+   * Loads material content node data with evaluation and bundles it with
+   * assignment data and path from props
+   */
+  loadMaterialContentNodeData = async () => {
+    const { workspace, assigment, selectedAssessment } = this.props;
+
+    const userEntityId = selectedAssessment.userEntityId;
 
     const [loadedMaterial] = await Promise.all([
       (async () => {
@@ -157,17 +180,38 @@ class EvaluationAssessmentAssignment extends React.Component<
 
         return loadedMaterial;
       })(),
-      sleep,
     ]);
 
-    this.setState({
-      isLoading: false,
-      materialNode: loadedMaterial,
-    });
+    return loadedMaterial;
   };
 
   /**
-   * updateMaterialEvaluationData
+   * Loads intermin evaluation request data for material use
+   * If api call fails, returns undefined meaning that there is no
+   * intermin evaluation request for material
+   */
+  loadInterminEvaluationRequestRequestData = async () => {
+    const { assigment } = this.props;
+
+    try {
+      const interminEvaluationRequest = (await promisify(
+        mApi().evaluation.workspaceMaterial.interimEvaluationRequest.read(
+          assigment.id,
+          {
+            userEntityId: this.props.selectedAssessment.userEntityId,
+          }
+        ),
+        "callback"
+      )()) as WorkspaceInterimEvaluationRequest;
+
+      return interminEvaluationRequest;
+    } catch (error) {
+      return undefined;
+    }
+  };
+
+  /**
+   * Update material evaluation data to state after editing it
    * @param  assigmentSaveReturn assigmentSaveReturn
    */
   updateMaterialEvaluationData = (
@@ -180,34 +224,6 @@ class EvaluationAssessmentAssignment extends React.Component<
       ...this.state.materialNode,
     };
 
-    let gradeId = null;
-    let gradeDataSource = null;
-
-    let gradeScaleId = null;
-    let gradeScaleDataSource = null;
-
-    if (assigmentSaveReturn.gradeIdentifier !== null) {
-      /**
-       * gradeId and source are included in same string, so splittin is required
-       */
-      const gradeIdentifierSplitted =
-        assigmentSaveReturn.gradeIdentifier.split("-");
-
-      gradeId = gradeIdentifierSplitted[1];
-      gradeDataSource = gradeIdentifierSplitted[0];
-    }
-    if (assigmentSaveReturn.gradingScaleIdentifier !== null) {
-      /**
-       * gradeScaleId and source are included in same string, so splittin is required
-       */
-      const gradeScaleIdentifierSplitted =
-        assigmentSaveReturn.gradingScaleIdentifier.split("-");
-
-      gradeScaleId = gradeScaleIdentifierSplitted[1];
-
-      gradeScaleDataSource = gradeScaleIdentifierSplitted[0];
-    }
-
     /**
      * Updates founded evaluation items with new values
      */
@@ -215,10 +231,10 @@ class EvaluationAssessmentAssignment extends React.Component<
       ...this.state.materialNode.evaluation,
       evaluated: assigmentSaveReturn.assessmentDate,
       verbalAssessment: assigmentSaveReturn.verbalAssessment,
-      gradeIdentifier: gradeId,
-      gradeSchoolDataSource: gradeDataSource,
-      gradingScaleIdentifier: gradeScaleId,
-      gradingScaleSchoolDataSource: gradeScaleDataSource,
+      gradeIdentifier: null,
+      gradeSchoolDataSource: null,
+      gradingScaleIdentifier: null,
+      gradingScaleSchoolDataSource: null,
       passed: assigmentSaveReturn.passing,
     };
 
@@ -228,7 +244,7 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
-   * toggleOpened
+   * Toggles open material content drawer
    */
   handleOpenMaterialContent = () => {
     const { openContent } = this.state;
@@ -241,7 +257,7 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
-   * handleCloseSlideDrawer
+   * Closes slide drawer
    */
   handleCloseSlideDrawer = () => {
     this.props.updateOpenedAssignmentEvaluation({ assignmentId: undefined });
@@ -254,12 +270,12 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
-   * handleOpenSlideDrawer
+   * Opens slide drawer
    * @param assignmentId assignmentId
    * @param assignmentType assignmentType
    */
   handleOpenSlideDrawer =
-    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") => () => {
+    (assignmentId: number, assignmentType: AssignmentType) => () => {
       if (
         this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
       ) {
@@ -267,7 +283,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       }
 
       if (this.state.materialNode === undefined) {
-        this.loadMaterialData();
+        this.loadMaterialRelatedData();
       }
 
       this.setState(
@@ -280,7 +296,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     };
 
   /**
-   * handleExecuteScrollToElement
+   * Scrolls to opened element
    */
   handleExecuteScrollToElement = () => {
     window.dispatchEvent(new Event("resize"));
@@ -293,23 +309,12 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
-   * handleAudioAssessmentChange
+   * Handles audo assessment change
    */
   handleAudioAssessmentChange = () => {
     this.setState({
       showCloseEditorWarning: true,
     });
-  };
-
-  /**
-   * assignmentTypeClass
-   * @returns string
-   */
-  materialTypeClass = () => {
-    if (this.props.assigment.assignmentType === "EVALUATED") {
-      return "assignment";
-    }
-    return "exercise";
   };
 
   /**
@@ -323,47 +328,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       compositeReply.evaluationInfo &&
       compositeReply.evaluationInfo.date
     ) {
-      if (
-        (compositeReply.evaluationInfo &&
-          compositeReply.evaluationInfo.grade) ||
-        (compositeReply.evaluationInfo &&
-          this.props.assigment.assignmentType === "EXERCISE" &&
-          compositeReply.evaluationInfo.type === "PASSED")
-      ) {
-        // Evaluated if graded or if assignment type is excercise and info type returns PASSED
-        return "state-EVALUATED";
-      } else if (
-        compositeReply.state === "SUBMITTED" &&
-        compositeReply.evaluationInfo.type === "INCOMPLETE"
-      ) {
-        // Supplemented as in use to be incomplete but user has submitted it again
-        return "state-SUPPLEMENTED";
-      } else {
-        // Incomplete
-        return "state-INCOMPLETE";
-      }
-    }
-  };
-
-  /**
-   * assigmentGradeClass
-   * @param compositeReply compositeReply
-   * @returns classMod
-   */
-  assigmentGradeClass = (compositeReply?: MaterialCompositeRepliesType) => {
-    if (compositeReply) {
-      const { evaluationInfo } = compositeReply;
-
-      if (evaluationInfo && evaluationInfo.type !== "INCOMPLETE") {
-        return "state-EVALUATED";
-      } else if (
-        compositeReply.state === "SUBMITTED" &&
-        evaluationInfo &&
-        evaluationInfo.type === "INCOMPLETE"
-      ) {
-        return "state-SUPPLEMENTED";
-      }
-      return "state-INCOMPLETE";
+      return "state-EVALUATED";
     }
   };
 
@@ -383,32 +348,9 @@ class EvaluationAssessmentAssignment extends React.Component<
       const hasSubmitted = compositeReply.submitted;
 
       /**
-       * Checking if its evaluated with grade
-       */
-      const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
-
-      /**
-       * Needs supplementation
-       */
-      const needsSupplementation =
-        evaluationInfo && evaluationInfo.type === "INCOMPLETE";
-
-      /**
-       * If evaluation is given as supplementation request and student
-       * cancels and makes changes to answers and submits again
-       */
-      const supplementationDone =
-        compositeReply.state === "SUBMITTED" && needsSupplementation;
-
-      /**
        * Evaluation date if evaluated
        */
       const evaluationDate = evaluationInfo && evaluationInfo.date;
-
-      /**
-       * Grade class mod
-       */
-      const assignmentGradeClassMod = this.assigmentGradeClass(compositeReply);
 
       return (
         <div className="evaluation-modal__item-meta">
@@ -448,45 +390,6 @@ class EvaluationAssessmentAssignment extends React.Component<
               </span>
             </div>
           )}
-
-          {evaluatedWithGrade && (
-            <div className="evaluation-modal__item-meta-item">
-              <span className="evaluation-modal__item-meta-item-label">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-                )}
-              </span>
-              <span
-                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
-              >
-                {evaluationInfo.grade}
-              </span>
-            </div>
-          )}
-
-          {needsSupplementation && !supplementationDone && (
-            <div className="evaluation-modal__item-meta-item">
-              <span
-                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
-              >
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
-                )}
-              </span>
-            </div>
-          )}
-
-          {supplementationDone && (
-            <div className="evaluation-modal__item-meta-item">
-              <span
-                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
-              >
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteDoneLabel"
-                )}
-              </span>
-            </div>
-          )}
         </div>
       );
     }
@@ -505,7 +408,6 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   render() {
     const { compositeReply, showAsHidden } = this.props;
-    const materialTypeClass = this.materialTypeClass();
 
     let contentOpen: string | number = 0;
 
@@ -524,6 +426,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
     const evaluatedFunctionClassMod =
       this.assignmentFunctionClass(compositeReply);
+
     let evaluationTitleClassMod = "";
 
     if (
@@ -537,11 +440,6 @@ class EvaluationAssessmentAssignment extends React.Component<
       evaluationTitleClassMod = "active-dialog";
     }
 
-    const materialPageType =
-      this.props.assigment.assignmentType === "EVALUATED"
-        ? "assignment"
-        : "excercise";
-
     return (
       <div className={`evaluation-modal__item `}>
         <div
@@ -551,7 +449,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           <div
             onClick={this.handleOpenMaterialContent}
             className={`evaluation-modal__item-header-title
-                        evaluation-modal__item-header-title--${materialTypeClass}
+                        evaluation-modal__item-header-title--interim-evaluation
                         ${
                           evaluationTitleClassMod
                             ? "evaluation-modal__item-header-title--" +
@@ -564,7 +462,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             {showAsHidden && (
               <div className="evaluation-modal__item-hidden">
                 {this.props.i18n.text.get(
-                  `plugin.evaluation.evaluationModal.${materialPageType}HiddenButAnswered`
+                  `plugin.evaluation.evaluationModal.interimEvaluationHiddenButAnswered`
                 )}
               </div>
             )}
@@ -572,8 +470,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             {this.renderAssignmentMeta(compositeReply)}
           </div>
           <div className="evaluation-modal__item-functions">
-            {this.props.assigment.assignmentType === "EVALUATED" ||
-            this.props.assigment.assignmentType === "EXERCISE" ? (
+            {this.props.assigment.assignmentType === "INTERIM_EVALUATION" ? (
               compositeReply &&
               compositeReply.state !== "UNANSWERED" &&
               compositeReply.state !== "WITHDRAWN" ? (
@@ -595,16 +492,8 @@ class EvaluationAssessmentAssignment extends React.Component<
         <SlideDrawer
           showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
-          closeIconModifiers={
-            this.props.assigment.assignmentType === "EVALUATED"
-              ? ["evaluation", "assignment-drawer-close"]
-              : ["evaluation", "excercise-drawer-close"]
-          }
-          modifiers={
-            this.props.assigment.assignmentType === "EVALUATED"
-              ? ["assignment"]
-              : ["excercise"]
-          }
+          closeIconModifiers={["evaluation", "interim-evaluation-drawer-close"]}
+          modifiers={["interim-evaluation"]}
           show={
             this.state.openDrawer &&
             this.props.evaluations.openedAssignmentEvaluationId ===
@@ -616,43 +505,23 @@ class EvaluationAssessmentAssignment extends React.Component<
           {this.state.isLoading ? (
             <div className="loader-empty" />
           ) : this.state.materialNode ? (
-            this.props.assigment.assignmentType === "EVALUATED" ? (
-              <AssignmentEditor
-                selectedAssessment={this.props.selectedAssessment}
-                onAudioAssessmentChange={this.handleAudioAssessmentChange}
-                showAudioAssessmentWarningOnClose={
-                  this.state.showCloseEditorWarning
-                }
-                editorLabel={this.props.i18n.text.get(
-                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
-                )}
-                materialEvaluation={this.state.materialNode.evaluation}
-                materialAssignment={this.state.materialNode.assignment}
-                compositeReplies={compositeReply}
-                isRecording={this.state.isRecording}
-                onIsRecordingChange={this.handleIsRecordingChange}
-                updateMaterialEvaluationData={this.updateMaterialEvaluationData}
-                onClose={this.handleCloseSlideDrawer}
-              />
-            ) : (
-              <ExcerciseEditor
-                selectedAssessment={this.props.selectedAssessment}
-                onAudioAssessmentChange={this.handleAudioAssessmentChange}
-                showAudioAssessmentWarningOnClose={
-                  this.state.showCloseEditorWarning
-                }
-                editorLabel={this.props.i18n.text.get(
-                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
-                )}
-                materialEvaluation={this.state.materialNode.evaluation}
-                materialAssignment={this.state.materialNode.assignment}
-                isRecording={this.state.isRecording}
-                onIsRecordingChange={this.handleIsRecordingChange}
-                compositeReplies={compositeReply}
-                updateMaterialEvaluationData={this.updateMaterialEvaluationData}
-                onClose={this.handleCloseSlideDrawer}
-              />
-            )
+            <InterimEvaluationEditor
+              selectedAssessment={this.props.selectedAssessment}
+              onAudioAssessmentChange={this.handleAudioAssessmentChange}
+              showAudioAssessmentWarningOnClose={
+                this.state.showCloseEditorWarning
+              }
+              editorLabel={this.props.i18n.text.get(
+                "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
+              )}
+              materialEvaluation={this.state.materialNode.evaluation}
+              materialAssignment={this.state.materialNode.assignment}
+              compositeReplies={compositeReply}
+              isRecording={this.state.isRecording}
+              onIsRecordingChange={this.handleIsRecordingChange}
+              updateMaterialEvaluationData={this.updateMaterialEvaluationData}
+              onClose={this.handleCloseSlideDrawer}
+            />
           ) : null}
         </SlideDrawer>
 
@@ -662,11 +531,26 @@ class EvaluationAssessmentAssignment extends React.Component<
           ) : this.props.workspace && this.state.materialNode ? (
             <EvaluationMaterial
               material={this.state.materialNode}
-              workspace={this.props.workspace}
+              workspace={{
+                ...this.props.workspace,
+                interimEvaluationRequests: this.state
+                  .interminEvaluationRequest && [
+                  this.state.interminEvaluationRequest,
+                ],
+              }}
               compositeReply={compositeReply}
               userEntityId={this.props.selectedAssessment.userEntityId}
             />
           ) : null}
+
+          {/* {!this.state.isLoading && this.state.interminEvaluationRequest && (
+            <span
+              className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly"
+              dangerouslySetInnerHTML={{
+                __html: this.state.interminEvaluationRequest.requestText,
+              }}
+            />
+          )} */}
         </AnimateHeight>
       </div>
     );
@@ -695,4 +579,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EvaluationAssessmentAssignment);
+)(EvaluationAssessmentInterminEvaluationRequest);

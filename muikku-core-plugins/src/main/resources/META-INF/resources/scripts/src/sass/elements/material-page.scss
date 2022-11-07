@@ -110,6 +110,16 @@
   }
 }
 
+.material-page__title--interim-evaluation {
+  border-left: 3px solid black;
+  padding: 0 0 0 6px;
+
+  @include breakpoint($breakpoint-pad) {
+    border-left: 5px solid black;
+    padding: 0 0 0 15px;
+  }
+}
+
 .material-page__title-meta {
   color: $color-info;
   font-style: italic;

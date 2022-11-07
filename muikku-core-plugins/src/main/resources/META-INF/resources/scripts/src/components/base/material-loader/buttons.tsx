@@ -17,7 +17,10 @@ interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
  */
 export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
   const noAnswerOrStateConfig = !props.answerable || !props.stateConfiguration;
-  if (noAnswerOrStateConfig) {
+  if (
+    noAnswerOrStateConfig ||
+    props.material.assignmentType === "INTERIM_EVALUATION"
+  ) {
     return null;
   }
 

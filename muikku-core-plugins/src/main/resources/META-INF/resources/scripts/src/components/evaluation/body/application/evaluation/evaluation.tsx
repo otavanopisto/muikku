@@ -486,6 +486,11 @@ export class Evaluation extends React.Component<
             isEvaluated = true;
           }
 
+          const isInterimEvaluation =
+            eItem.type === EvaluationEnum.INTERIM_EVALUATION ||
+            eItem.type === EvaluationEnum.INTERIM_EVALUATION_REQUEST ||
+            eItem.type === EvaluationEnum.INTERIM_EVALUATION_REQUEST_CANCELLED;
+
           /**
            * Is not evaluation request boolean
            */
@@ -563,16 +568,18 @@ export class Evaluation extends React.Component<
                 selectedAssessment={this.props.selectedAssessment}
                 {...eItem}
                 showModifyLink={
-                  !isRequestOrCancelled || isSupplementationRequest
+                  !isInterimEvaluation &&
+                  (!isRequestOrCancelled || isSupplementationRequest)
                 }
                 showDeleteLink={
-                  (!isRequestOrCancelled &&
+                  !isInterimEvaluation &&
+                  ((!isRequestOrCancelled &&
                     nextIsNotRequest &&
                     isLatestEvaluationForModule &&
                     !latestEventIsSupplementationRequest) ||
-                  (isSupplementationRequest &&
-                    nextIsNotRequest &&
-                    canDeleteSupplementationRequest)
+                    (isSupplementationRequest &&
+                      nextIsNotRequest &&
+                      canDeleteSupplementationRequest))
                 }
               />
             );
@@ -590,8 +597,10 @@ export class Evaluation extends React.Component<
               key={index}
               selectedAssessment={this.props.selectedAssessment}
               {...eItem}
-              showModifyLink={!isRequestOrCancelled}
-              showDeleteLink={!isRequestOrCancelled && isLatestEvent}
+              showModifyLink={!isInterimEvaluation && !isRequestOrCancelled}
+              showDeleteLink={
+                !isInterimEvaluation && !isRequestOrCancelled && isLatestEvent
+              }
             />
           );
         })
