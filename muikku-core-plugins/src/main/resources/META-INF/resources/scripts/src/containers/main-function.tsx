@@ -20,7 +20,6 @@ import {
   loadUserWorkspaceCurriculumFiltersFromServer,
   setWorkspaceStateFilters,
   loadUserWorkspaceEducationFiltersFromServer,
-  loadUserWorkspaceOrganizationFiltersFromServer,
 } from "~/actions/workspaces";
 import {
   loadLastWorkspaceFromServer,
@@ -49,6 +48,7 @@ import {
   setDiscussionWorkpaceId,
   loadSubscribedDiscussionThreadList,
   showOnlySubscribedThreads,
+  loadSubscribedDiscussionAreaList,
 } from "~/actions/discussion";
 import { loadAnnouncement, loadAnnouncements } from "~/actions/announcements";
 import AnnouncementsBody from "../components/announcements/body";
@@ -79,7 +79,6 @@ import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
   setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords,
   setLocationToHopsInTranscriptOfRecords,
   setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
@@ -116,6 +115,7 @@ import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionPatchType } from "~/reducers/discussion";
+import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -406,18 +406,19 @@ export default class MainFunction extends React.Component<
   loadDiscussionData(location: string[]) {
     const state = this.props.store.getState();
 
-    // Load subscribed threads every time
+    // Load subscribed areas and threads every time
+    this.props.store.dispatch(loadSubscribedDiscussionAreaList({}) as Action);
     this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
     if (location.includes("subs")) {
       const payload: DiscussionPatchType = {
-        current: undefined,
+        current: state.discussion.current && undefined,
+        areaId: undefined,
       };
 
-      state.discussion.current &&
-        this.props.store.dispatch({
-          type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
-          payload,
-        });
+      this.props.store.dispatch({
+        type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+        payload,
+      });
 
       this.props.store.dispatch(
         showOnlySubscribedThreads({ value: true }) as Action
@@ -429,10 +430,22 @@ export default class MainFunction extends React.Component<
         );
 
       if (location.length <= 2) {
+        const payload: DiscussionPatchType = {
+          areaId: undefined,
+        };
+
+        // As first item of location array is areaId
+        // And if there is not area, then redux state must be updated to
+        // to indicate this. So setting area id to undefined
+        !location[0] &&
+          this.props.store.dispatch({
+            type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+            payload,
+          });
+
         //The link is expected to be like # none, in this case it will collapse to null, page 1
         //Else it can be #1 in that case it will collapse to area 1, page 1
         //Or otherwise #1/2 in that case it will collapse to area 1 page 2
-
         this.props.store.dispatch(
           loadDiscussionThreadsFromServer({
             areaId: parseInt(location[0]) || null,

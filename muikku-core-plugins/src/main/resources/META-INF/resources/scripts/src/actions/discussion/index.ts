@@ -14,6 +14,7 @@ import {
   DiscussionThreadReplyType,
   DiscussionAreaUpdateType,
   DiscussionSubscribedThread,
+  DiscussionSubscribedArea,
 } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
@@ -88,6 +89,10 @@ export type UPDATE_SUBSCRIBED_THREAD_LIST = SpecificActionType<
   "UPDATE_SUBSCRIBED_THREAD_LIST",
   DiscussionSubscribedThread[]
 >;
+export type UPDATE_SUBSCRIBED_AREA_LIST = SpecificActionType<
+  "UPDATE_SUBSCRIBED_AREA_LIST",
+  DiscussionSubscribedArea[]
+>;
 
 /**
  * ShowOnlySubscribedThreads
@@ -95,8 +100,8 @@ export type UPDATE_SUBSCRIBED_THREAD_LIST = SpecificActionType<
 export interface ShowOnlySubscribedThreads {
   (data: {
     value: boolean;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -107,8 +112,8 @@ export interface SubscribeDiscussionThread {
   (data: {
     areaId: number;
     threadId: number;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -119,8 +124,30 @@ export interface UnsubscribeDiscustionThread {
   (data: {
     areaId: number;
     threadId: number;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * SubscribeDiscussionArea
+ */
+export interface SubscribeDiscussionArea {
+  (data: {
+    areaId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * UnsubscribeDiscustionArea
+ */
+export interface UnsubscribeDiscustionArea {
+  (data: {
+    areaId: number;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -128,7 +155,14 @@ export interface UnsubscribeDiscustionThread {
  * LoadSubscribedDiscussionThreadList
  */
 export interface LoadSubscribedDiscussionThreadList {
-  (data: { success?: () => any; fail?: () => any }): AnyActionType;
+  (data: { success?: () => void; fail?: () => void }): AnyActionType;
+}
+
+/**
+ * LoadSubscribedDiscussionThreadList
+ */
+export interface LoadSubscribedDiscussionAreaList {
+  (data: { success?: () => void; fail?: () => void }): AnyActionType;
 }
 
 /**
@@ -153,6 +187,7 @@ export interface CreateDiscussionThreadTriggerType {
     message: string;
     sticky: boolean;
     title: string;
+    subscribe: boolean;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -330,6 +365,129 @@ const unsubscribeDiscussionThread: UnsubscribeDiscustionThread =
           type: "UPDATE_DISCUSSION_THREADS_STATE",
           payload: <DiscussionStateType>"ERROR",
         });
+      }
+    };
+  };
+
+/**
+ * subscribeDiscussionArea
+ * @param data data
+ * @returns dispatch
+ */
+const subscribeDiscussionArea: SubscribeDiscussionArea =
+  function subscribeDiscussionArea(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        const subscribedArea: DiscussionSubscribedArea = <
+          DiscussionSubscribedArea
+        >await promisify(
+          mApi().forum.areas.toggleSubscription.create(data.areaId),
+          "callback"
+        )();
+
+        const subscribedAreaList = [...state.discussion.subscribedAreas];
+
+        subscribedAreaList.push(subscribedArea);
+
+        dispatch({
+          type: "UPDATE_SUBSCRIBED_AREA_LIST",
+          payload: subscribedAreaList,
+        });
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: <DiscussionStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * unsubscribeDiscussionArea
+ * @param data data
+ * @returns dispatch
+ */
+const unsubscribeDiscussionArea: UnsubscribeDiscustionArea =
+  function unsubscribeDiscussionArea(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        await promisify(
+          mApi().forum.areas.toggleSubscription.create(data.areaId),
+          "callback"
+        )();
+
+        const subscribedAreaList = [...state.discussion.subscribedAreas];
+
+        const index = subscribedAreaList.findIndex(
+          (sArea) => sArea.areaId === data.areaId
+        );
+
+        subscribedAreaList.splice(index, 1);
+
+        dispatch({
+          type: "UPDATE_SUBSCRIBED_AREA_LIST",
+          payload: subscribedAreaList,
+        });
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: <DiscussionStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadSubscribedDiscussionAreaList
+ * @param data data
+ * @returns dispatch
+ */
+const loadSubscribedDiscussionAreaList: LoadSubscribedDiscussionAreaList =
+  function loadSubscribedDiscussionThreadList(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        const subscribedAreaList: DiscussionSubscribedArea[] = <
+          DiscussionSubscribedArea[]
+        >await promisify(
+          mApi().forum.subscriptionAreas.read(state.status.userId),
+          "callback"
+        )();
+
+        dispatch({
+          type: "UPDATE_SUBSCRIBED_AREA_LIST",
+          payload: subscribedAreaList,
+        });
+
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: "READY",
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: "ERROR",
+        });
+        data.fail && data.fail();
       }
     };
   };
@@ -567,6 +725,16 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
           "/" +
           newThread.id +
           "/1";
+
+        // If user want to subscribe data when creating new
+        if (data.subscribe) {
+          dispatch(
+            subscribeDiscussionThread({
+              areaId: newThread.forumAreaId,
+              threadId: newThread.id,
+            })
+          );
+        }
 
         //non-ready, also area count might change, so let's reload it
         dispatch(loadDiscussionAreasFromServer());
@@ -1089,6 +1257,7 @@ export interface CreateDiscussionAreaTriggerType {
   (data: {
     name: string;
     description: string;
+    subscribe: boolean;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -1134,6 +1303,16 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
             "callback"
           )()
         );
+
+        // If user want to subscribe data when creating new
+        if (data.subscribe) {
+          dispatch(
+            subscribeDiscussionArea({
+              areaId: newArea.id,
+            })
+          );
+        }
+
         dispatch({
           type: "PUSH_DISCUSSION_AREA_LAST",
           payload: newArea,
@@ -1292,6 +1471,9 @@ export {
   showOnlySubscribedThreads,
   subscribeDiscussionThread,
   unsubscribeDiscussionThread,
+  subscribeDiscussionArea,
+  unsubscribeDiscussionArea,
+  loadSubscribedDiscussionAreaList,
   loadSubscribedDiscussionThreadList,
   loadDiscussionThreadsFromServer,
   createDiscussionThread,

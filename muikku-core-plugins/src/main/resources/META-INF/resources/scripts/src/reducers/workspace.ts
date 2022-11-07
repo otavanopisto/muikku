@@ -22,6 +22,7 @@ export default combineReducers({
   easyToUse,
   evaluations,
   i18n,
+  journals,
   locales,
   notifications,
   profile,
@@ -30,5 +31,4 @@ export default combineReducers({
   userIndex,
   websocket,
   workspaces,
-  journals,
 });

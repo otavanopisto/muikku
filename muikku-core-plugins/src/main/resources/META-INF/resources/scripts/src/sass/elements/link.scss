@@ -266,7 +266,8 @@
 .link--profile-dropdown,
 .link--tasks-dropdown,
 .link--purchasable-product-dropdown,
-.link--chat-dropdown {
+.link--chat-dropdown,
+.link--material-editor-dropdown {
   color: $color-default-contrast;
   justify-content: flex-start;
 
@@ -339,6 +340,31 @@
   }
 }
 
+// Material editor's page type dropdown links
+.link--material-editor-dropdown-active {
+  background: $color-default-generic-background;
+  font-weight: 600;
+}
+
+.link--material-editor-dropdown-exercise {
+  .link__icon {
+    color: $color-exercise;
+  }
+}
+
+.link--material-editor-dropdown-assignment {
+  .link__icon {
+    color: $color-assignment;
+  }
+}
+
+.link--material-editor-dropdown-journal {
+  .link__icon {
+    color: $color-journal-page;
+  }
+}
+
+// Links used in dropdowns of main functions
 .link--main-functions-settings-dropdown {
   color: $color-default-contrast;
   justify-content: flex-start;

@@ -1,3 +1,4 @@
+import { MaterialCompositeRepliesStateType } from "./../reducers/workspaces/index";
 import { JournalComment } from "~/@types/journal";
 import {
   WorkspaceType,
@@ -82,6 +83,14 @@ export interface EvaluationAssignmentContent {
 }
 
 /**
+ * EvaluationJournalFilters
+ */
+export interface EvaluationJournalFilters {
+  showMandatory: boolean;
+  showOthers: boolean;
+}
+
+/**
  * Interface for evaluation study diary event
  */
 export interface EvaluationStudyDiaryEvent {
@@ -94,6 +103,15 @@ export interface EvaluationStudyDiaryEvent {
   title: string;
   userEntityId: number;
   workspaceEntityId: number;
+  /**
+   * Whether journal is "mandatory" assignment and material field
+   */
+  isMaterialField: boolean;
+  /**
+   * Material field reply status. ANSWERED | "SUBMITTED" are only ones
+   * that matters
+   */
+  workspaceMaterialReplyState: MaterialCompositeRepliesStateType | null;
 }
 
 /**

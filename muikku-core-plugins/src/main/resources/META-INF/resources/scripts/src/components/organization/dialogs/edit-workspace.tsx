@@ -18,17 +18,19 @@ import {
   loadSelectorUserGroups,
 } from "~/actions/main-function/users";
 import {
-  UpdateWorkspaceTriggerType,
-  updateOrganizationWorkspace,
-  UpdateWorkspaceStateType,
-  SetCurrentWorkspaceTriggerType,
-  setCurrentOrganizationWorkspace,
-  loadCurrentOrganizationWorkspaceStaff,
-  LoadWorkspacesFromServerTriggerType,
-  loadCurrentOrganizationWorkspaceStudents,
   LoadUsersOfWorkspaceTriggerType,
   loadWorkspacesFromServer,
+  LoadWorkspacesFromServerTriggerType,
+  SetCurrentWorkspaceTriggerType,
+  UpdateWorkspaceStateType,
+  UpdateWorkspaceTriggerType,
 } from "~/actions/workspaces";
+import {
+  updateOrganizationWorkspace,
+  setCurrentOrganizationWorkspace,
+  loadCurrentOrganizationWorkspaceStaff,
+  loadCurrentOrganizationWorkspaceStudents,
+} from "~/actions/workspaces/organization";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";

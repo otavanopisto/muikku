@@ -1,6 +1,7 @@
 import { Reducer } from "redux";
 import { JournalComment } from "~/@types/journal";
 import { ActionType } from "~/actions";
+import { MaterialCompositeRepliesStateType } from "./index";
 
 export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
@@ -17,6 +18,15 @@ export interface WorkspaceJournalType {
   title: string;
   created: string;
   commentCount: number;
+  /**
+   * Whether journal is "mandatory" assignment and material field
+   */
+  isMaterialField: boolean;
+  /**
+   * Material field reply status. ANSWERED | "SUBMITTED" are only ones
+   * that matters
+   */
+  workspaceMaterialReplyState: MaterialCompositeRepliesStateType | null;
 }
 
 /**
@@ -24,6 +34,14 @@ export interface WorkspaceJournalType {
  */
 export interface WorkspaceJournalWithComments extends WorkspaceJournalType {
   comments?: JournalComment[];
+}
+
+/**
+ * WorkspaceJournalFilters
+ */
+export interface WorkspaceJournalFilters {
+  showMandatory: boolean;
+  showOthers: boolean;
 }
 
 /**
@@ -36,6 +54,7 @@ export interface JournalsState {
   userEntityId?: number;
   commentsLoaded: number[];
   commentsSaving: number[];
+  filters: WorkspaceJournalFilters;
   state: ReducerStateType;
 }
 
@@ -44,6 +63,10 @@ const initialJournalsState: JournalsState = {
   hasMore: false,
   commentsLoaded: [],
   commentsSaving: [],
+  filters: {
+    showMandatory: false,
+    showOthers: false,
+  },
   state: "LOADING",
 };
 
@@ -94,6 +117,13 @@ export const journals: Reducer<JournalsState> = (
     }
 
     case "JOURNALS_DELETE": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_FILTTERS_CHANGE": {
       return {
         ...state,
         ...action.payload.updated,

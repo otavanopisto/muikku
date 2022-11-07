@@ -35,6 +35,7 @@ import fi.otavanopisto.muikku.dao.users.FlagDAO;
 import fi.otavanopisto.muikku.dao.users.FlagStudentDAO;
 import fi.otavanopisto.muikku.dao.users.UserPendingPasswordChangeDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
+import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
@@ -48,6 +49,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserSignup;
 import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
@@ -454,10 +456,15 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceMaterialController.deleteAllWorkspaceNodes(workspaceEntity);
       } catch (WorkspaceMaterialContainsAnswersExeption e) {
         return Response.status(500).entity(e.getMessage()).build();
-      }  
+      }
       List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesIncludeArchived(workspaceEntity);
       for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
         workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+      }
+      
+      List<WorkspaceUserSignup> workspaceUserSignups = workspaceController.listWorkspaceUserSignups();
+      for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
+        workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
       }
       
       SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
@@ -1091,6 +1098,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceEntity,
         userEntity,
         payload.getHtml(),
+        null,
         payload.getTitle());
     return Response.ok(createRestEntity(workspaceJournalEntry)).build();
 

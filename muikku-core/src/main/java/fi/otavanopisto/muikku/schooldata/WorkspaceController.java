@@ -324,6 +324,14 @@ public class WorkspaceController {
     return workspaceUserSignupDAO.create(workspaceEntity, userEntity, date, message);
   }
   
+  public List<WorkspaceUserSignup> listWorkspaceUserSignups() {
+    return workspaceUserSignupDAO.listAll();
+  }
+  
+  public void deleteWorkspaceUserSignup(WorkspaceUserSignup workspaceUserSignup) {
+    workspaceUserSignupDAO.delete(workspaceUserSignup);
+  }
+  
   /* WorkspaceMaterialProducer */
 
   public WorkspaceMaterialProducer createWorkspaceMaterialProducer(WorkspaceEntity workspaceEntity, String name) {
