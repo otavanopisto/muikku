@@ -129,6 +129,15 @@
   padding: 0 15px 15px 33px;
 }
 
+.item-list__item-actions--continue-studies {
+  padding: 0 15px 15px 8px;
+
+  span:after {
+    content: "\00a0"; /*&nbsp; */
+  }
+}
+
+
 // List item icons
 .item-list__icon {
   align-items: center;

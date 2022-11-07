@@ -40,9 +40,15 @@
 
 .link--index {
   text-decoration: underline;
+
   &:not(:first-child) {
     margin-left: 10px;
   }
+}
+
+.link--index-text-link {
+  text-decoration: underline;
+  vertical-align: top;
 }
 
 .link--frontpage {

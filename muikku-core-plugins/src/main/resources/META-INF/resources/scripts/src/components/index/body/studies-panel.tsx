@@ -61,11 +61,16 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
               <ItemList.Item icon="icon-books" modifier="workspaces">
                 {props.lastWorkspace.workspaceName}
               </ItemList.Item>
-              <ItemList.ItemFooter>
-                {props.i18n.text.get(
-                  "plugin.frontPage.latestWorkspace.material.part1"
-                )}{" "}
-                <Link className="link--index" href={props.lastWorkspace.url}>
+              <ItemList.ItemFooter modifier="continue-studies">
+                <span>
+                  {props.i18n.text.get(
+                    "plugin.frontPage.latestWorkspace.material.part1"
+                  )}
+                </span>
+                <Link
+                  className="link--index-text-link"
+                  href={props.lastWorkspace.url}
+                >
                   {props.lastWorkspace.materialName}
                 </Link>
               </ItemList.ItemFooter>
@@ -74,66 +79,64 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
         </>
       ) : null}
 
-      <>
-        <Panel.BodyTitle>
-          {i18n.text.get("plugin.frontPage.studies.next.title")}
-        </Panel.BodyTitle>
-        <Panel.BodyContent>
-          <ItemList>
-            {nextSuggestions.nextCourses.map((workspace) => (
-              <React.Fragment key={workspace.id}>
-                <ItemList.Item modifier="workspaces" icon="icon-books">
-                  {`${workspace.name} ${
-                    workspace.nameExtension
-                      ? "(" + workspace.nameExtension + ")"
-                      : ""
-                  }`}
-                </ItemList.Item>
-                <ItemList.ItemFooter>
-                  <Link
-                    className="link--index"
-                    aria-label={
-                      props.i18n.text.get(
-                        "plugin.frontPage.suggestedWorkspaces.checkOut"
-                      ) + workspace.name
-                    }
-                    href={`/workspace/${workspace.urlName}`}
-                  >
-                    {props.i18n.text.get(
-                      "plugin.frontPage.suggestedWorkspaces.checkOut"
-                    )}
-                  </Link>
-                  <WorkspaceSignup
-                    workspaceSignUpDetails={{
-                      id: workspace.id,
-                      name: workspace.name,
-                      nameExtension: workspace.nameExtension,
-                      urlName: workspace.urlName,
-                    }}
-                  >
+      {nextSuggestions.nextCourses.length > 0 ? (
+        <>
+          <Panel.BodyTitle>
+            {i18n.text.get("plugin.frontPage.studies.next.title")}
+          </Panel.BodyTitle>
+          <Panel.BodyContent>
+            <ItemList>
+              {nextSuggestions.nextCourses.map((workspace) => (
+                <React.Fragment key={workspace.id}>
+                  <ItemList.Item modifier="workspaces" icon="icon-books">
+                    {`${workspace.name} ${
+                      workspace.nameExtension
+                        ? "(" + workspace.nameExtension + ")"
+                        : ""
+                    }`}
+                  </ItemList.Item>
+                  <ItemList.ItemFooter>
                     <Link
                       className="link--index"
                       aria-label={
                         props.i18n.text.get(
-                          "plugin.frontPage.suggestedWorkspaces.signUp"
+                          "plugin.frontPage.suggestedWorkspaces.checkOut"
                         ) + workspace.name
                       }
-                      // buttonModifiers={[
-                      //   "primary-function-content",
-                      //   "frontpage-button",
-                      // ]}
+                      href={`/workspace/${workspace.urlName}`}
                     >
                       {props.i18n.text.get(
-                        "plugin.frontPage.suggestedWorkspaces.signUp"
+                        "plugin.frontPage.suggestedWorkspaces.checkOut"
                       )}
                     </Link>
-                  </WorkspaceSignup>
-                </ItemList.ItemFooter>
-              </React.Fragment>
-            ))}
-          </ItemList>
-        </Panel.BodyContent>
-      </>
+                    <WorkspaceSignup
+                      workspaceSignUpDetails={{
+                        id: workspace.id,
+                        name: workspace.name,
+                        nameExtension: workspace.nameExtension,
+                        urlName: workspace.urlName,
+                      }}
+                    >
+                      <Link
+                        className="link--index"
+                        aria-label={
+                          props.i18n.text.get(
+                            "plugin.frontPage.suggestedWorkspaces.signUp"
+                          ) + workspace.name
+                        }
+                      >
+                        {props.i18n.text.get(
+                          "plugin.frontPage.suggestedWorkspaces.signUp"
+                        )}
+                      </Link>
+                    </WorkspaceSignup>
+                  </ItemList.ItemFooter>
+                </React.Fragment>
+              ))}
+            </ItemList>
+          </Panel.BodyContent>
+        </>
+      ) : null}
 
       <Panel.BodyTitle>
         {i18n.text.get("plugin.frontPage.studies.workspaces.title")}
@@ -176,7 +179,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
           {status.isStudent ? (
             <>
               {i18n.text.get("plugin.frontPage.workspaces.noWorkspaces.part1")}{" "}
-              <Link href="/coursepicker" className="link--frontpage">
+              <Link href="/coursepicker" className="link link--index-text-link">
                 {i18n.text.get(
                   "plugin.frontPage.workspaces.noWorkspaces.coursepicker"
                 )}
