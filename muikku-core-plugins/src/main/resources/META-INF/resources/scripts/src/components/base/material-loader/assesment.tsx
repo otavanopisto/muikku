@@ -42,13 +42,28 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
         } as RecordValue)
     );
 
+  // As default use case in the materials assignmentType is check from material object
+  // but in the case evaluation it is done from assignment object when used from evaluation
+  const isInterminEvaluation =
+    props.usedAs === "default"
+      ? props.material.assignmentType === "INTERIM_EVALUATION"
+      : props.material.assignment &&
+        props.material.assignment.assignmentType === "INTERIM_EVALUATION";
+
+  // Corresponding text is shown whether assessment is
+  // given for interim evaluation
+  const assessmentLabelText = isInterminEvaluation
+    ? props.i18n.text.get(
+        "plugin.workspace.materialsLoader.evaluation.literalIntermin.label"
+      )
+    : props.i18n.text.get(
+        "plugin.workspace.materialsLoader.evaluation.literal.label"
+      );
+
   return (
     <div className="material-page__assignment-assessment-literal">
       <div className="material-page__assignment-assessment-literal-label">
-        {props.i18n.text.get(
-          "plugin.workspace.materialsLoader.evaluation.literal.label"
-        )}
-        :
+        {assessmentLabelText}:
       </div>
       <div
         className="material-page__assignment-assessment-literal-data rich-text"

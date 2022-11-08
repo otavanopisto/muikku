@@ -911,7 +911,7 @@ public class EvaluationController {
     String messageBody = localeController.getText(
         sessionController.getLocale(),
         "plugin.communicator.interimevaluationrequest.body",
-        new String[] {senderName, workspaceName, workspaceMaterial.getTitle(), StringUtils.replace(interimEvaluationRequest.getRequestText(), "\n", "<br/>")});
+        new String[] {senderName, workspaceName, workspaceMaterial.getTitle(), interimEvaluationRequest.getRequestText()});
     
     // Send the mail
     
