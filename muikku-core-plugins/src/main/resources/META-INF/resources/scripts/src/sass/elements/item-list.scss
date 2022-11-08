@@ -141,11 +141,10 @@
 .item-list__item-actions--continue-studies {
   padding: 0 15px 15px 8px;
 
-  span:after {
-    content: "\00a0"; /*&nbsp; */
+  span::after {
+    content: "\00a0"; /* &nbsp; */
   }
 }
-
 
 // List item icons
 .item-list__icon {
@@ -168,7 +167,6 @@
 .item-list__icon--continue-studies {
   color: $color-index-item-list-item-panel-workspaces-icon;
 }
-
 
 .item-list__icon--latest-messages {
   color: $color-index-item-list-item-panel-latest-messages-icon;
