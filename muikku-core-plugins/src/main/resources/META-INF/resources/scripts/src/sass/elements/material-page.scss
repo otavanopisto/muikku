@@ -111,11 +111,11 @@
 }
 
 .material-page__title--interim-evaluation {
-  border-left: 3px solid black;
+  border-left: 3px solid $color-interim-evaluation;
   padding: 0 0 0 6px;
 
   @include breakpoint($breakpoint-pad) {
-    border-left: 5px solid black;
+    border-left: 5px solid $color-interim-evaluation;
     padding: 0 0 0 15px;
   }
 }
@@ -831,7 +831,9 @@
 }
 
 // Memo field
-.material-page__memofield-wrapper {
+.material-page__memofield-wrapper,
+.material-page__journalfield-wrapper,
+.material-page__interim-evaluation-wrapper {
   display: block;
   padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
   position: relative;
@@ -864,32 +866,12 @@
   /* stylelint-enable selector-class-pattern */
 }
 
-// Journal fieold
+// Journal field overrides
 .material-page__journalfield-wrapper {
-  display: block;
-  padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
-  position: relative;
-
-  .material-page__field-answer-synchronizer {
-    left: 0;
-  }
-
-  // Necessary evil as material editor uses the same class names to provide wysiwyg experience close to the actualy material page render
-  // but unfortunately it does affect taskfields with ckeditors as well so this is needed to override padding rules.
 
   /* stylelint-disable selector-class-pattern */
-  .cke_editable.cke_wysiwyg_div {
-    padding: 0 8px;
-  }
-
   .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
-    background: $color-default;
     border: 2px solid $color-journal-page;
-    border-radius: 2px;
-    box-sizing: border-box;
-    margin: 4px 0 0;
-    max-width: 100%;
-    min-width: 100%;
   }
 
   .cke_wysiwyg_div {
@@ -898,8 +880,14 @@
   /* stylelint-enable selector-class-pattern */
 }
 
-.material-page__memofield,
-.material-page__journalfield {
+// Interim evaluation request field overrides
+.material-page__interim-evaluation-wrapper {
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+    border: 2px solid $color-interim-evaluation;
+  }
+}
+
+.material-page__memofield {
   @include taskfield-text;
   @include taskfield-defaults;
 

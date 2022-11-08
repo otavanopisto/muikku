@@ -118,6 +118,11 @@ class WorkspaceMaterial extends React.Component<
           evalStateClassName = "material-page__assignment-assessment--passed";
           evalStateIcon = "icon-thumb-up";
           break;
+        case "INTERIM_EVALUATION":
+          evalStateClassName =
+            "material-page__assignment-assessment--interim-evaluation";
+          evalStateIcon = "icon-thumb-up";
+          break;
         case "WITHDRAWN":
           evalStateClassName =
             "material-page__assignment-assessment--withdrawn";

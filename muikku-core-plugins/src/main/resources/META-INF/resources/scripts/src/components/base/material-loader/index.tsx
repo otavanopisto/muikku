@@ -642,6 +642,9 @@ class MaterialLoader extends React.Component<
       case "JOURNAL":
         return "journal";
 
+      case "INTERIM_EVALUATION":
+        return "interim-evaluation";
+
       default:
         return "theory";
     }
