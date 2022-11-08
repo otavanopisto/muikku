@@ -885,7 +885,7 @@ public class EvaluationController {
     // Gather message contents
     
     UserEntity sender = userEntityController.findUserEntityById(interimEvaluationRequest.getUserEntityId());
-    String senderName = userEntityController.getName(sender).getDisplayName();
+    String senderName = userEntityController.getName(sender).getDisplayNameWithLine();
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(interimEvaluationRequest.getWorkspaceEntityId());
     String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getWorkspaceMaterialId());
@@ -933,7 +933,7 @@ public class EvaluationController {
     // Gather message contents
     
     UserEntity sender = userEntityController.findUserEntityById(interimEvaluationRequest.getUserEntityId());
-    String senderName = userEntityController.getName(sender).getDisplayName();
+    String senderName = userEntityController.getName(sender).getDisplayNameWithLine();
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(interimEvaluationRequest.getWorkspaceEntityId());
     String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getWorkspaceMaterialId());
