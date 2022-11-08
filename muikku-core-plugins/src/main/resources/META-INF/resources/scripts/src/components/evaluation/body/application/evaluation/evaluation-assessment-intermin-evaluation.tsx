@@ -512,7 +512,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
                 this.state.showCloseEditorWarning
               }
               editorLabel={this.props.i18n.text.get(
-                "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
+                "plugin.evaluation.assignmentEvaluationDialog.interimLiteralAssessment"
               )}
               materialEvaluation={this.state.materialNode.evaluation}
               materialAssignment={this.state.materialNode.assignment}

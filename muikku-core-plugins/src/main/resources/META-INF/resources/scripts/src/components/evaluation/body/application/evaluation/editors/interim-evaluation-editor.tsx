@@ -358,7 +358,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
             >
               <label htmlFor="assignmentEvaluationGrade">
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.audioAssessments"
+                  "plugin.evaluation.evaluationModal.interminEvaluationAudioAssessments"
                 )}
               </label>
               <Recorder
