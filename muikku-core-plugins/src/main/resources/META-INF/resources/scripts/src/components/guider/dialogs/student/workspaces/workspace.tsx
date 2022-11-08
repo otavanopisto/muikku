@@ -80,42 +80,40 @@ class StudentWorkspace extends React.Component<
   };
 
   /**
-   * getAssessmentStateTextAndClassModifier
+   * getAssessmentStateText
    * @param assessment assessment
    * @returns object containing state text and class modifier
    */
-  getAssessmentStateTextAndClassModifier = (assessment: Assessment) => {
+  getAssessmentStateText = (assessment: Assessment) => {
     let stateText;
-    let extraClasses = "";
 
     switch (assessment.state) {
       case "pending":
       case "pending_pass":
       case "pending_fail":
         stateText = "plugin.guider.assessmentState.PENDING";
-        extraClasses = "state-PENDING";
         break;
       case "pass":
         stateText = "plugin.guider.assessmentState.PASS";
-        extraClasses = "state-PASSED";
         break;
       case "fail":
         stateText = "plugin.guider.assessmentState.FAIL";
-        extraClasses = "state-FAILED";
         break;
       case "incomplete":
         stateText = "plugin.guider.assessmentState.INCOMPLETE";
-        extraClasses = "state-INCOMPLETE";
+        break;
+      case "interim_evalution_request":
+        stateText = "plugin.guider.assessmentState.PENDING_INTERIM_EVALUATION";
+        break;
+      case "interim_evalution":
+        stateText = "plugin.guider.assessmentState.INTERIM_EVALUATION";
         break;
       default:
         stateText = "plugin.guider.assessmentState.UNASSESSED";
         break;
     }
 
-    return {
-      stateText,
-      extraClasses,
-    };
+    return stateText;
   };
 
   /**
@@ -218,14 +216,12 @@ class StudentWorkspace extends React.Component<
               return;
             }
 
-            const stateInfo = this.getAssessmentStateTextAndClassModifier(a);
+            const stateText = this.getAssessmentStateText(a);
 
             /**
              * State text by default
              */
-            let resultingStateText = this.props.i18n.text.get(
-              stateInfo.stateText
-            );
+            let resultingStateText = this.props.i18n.text.get(stateText);
 
             /**
              * Add date to string if date is present

@@ -38,7 +38,9 @@ export type WorkspaceAssessementStateType =
   | "pending_fail"
   | "pass"
   | "fail"
-  | "incomplete";
+  | "incomplete"
+  | "interim_evalution_request"
+  | "interim_evalution";
 
 /**
  * Assessment

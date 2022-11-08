@@ -62,6 +62,12 @@
   }
 }
 
+.evaluation-card--interim {
+  &.state-REQUESTED {
+    border: 1px solid black;
+  }
+}
+
 .evaluation-card__header {
   background: $color-evaluation-card-header-background;
   border-top-left-radius: 2px;

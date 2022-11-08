@@ -20,6 +20,8 @@ import {
   updateCurrentStudentCompositeRepliesData,
   LoadEvaluationAssessmentEvent,
   loadEvaluationAssessmentEventsFromServer,
+  UpdateNeedsReloadEvaluationRequests,
+  updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
@@ -60,6 +62,7 @@ interface InterimEvaluationEditorProps {
   ) => void;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
+  updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests;
   /**
    * Handles changes whether recording is happening or not
    */
@@ -209,6 +212,8 @@ class InterimEvaluationEditor extends SessionStateComponent<
         });
 
         this.props.updateMaterialEvaluationData(data);
+
+        this.props.updateNeedsReloadEvaluationRequests({ value: true });
 
         if (this.props.onAssigmentSave) {
           this.props.onAssigmentSave(this.props.materialAssignment.materialId);
@@ -447,6 +452,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     {
       updateCurrentStudentCompositeRepliesData,
       loadEvaluationAssessmentEventsFromServer,
+      updateNeedsReloadEvaluationRequests,
     },
     dispatch
   );

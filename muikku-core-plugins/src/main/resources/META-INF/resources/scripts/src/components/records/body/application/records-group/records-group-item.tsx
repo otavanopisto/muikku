@@ -42,9 +42,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const getAssessmentData = (assessment: Assessment) => {
     let evalStateClassName = "";
     let evalStateIcon = "";
-    let assessmentIsPending = null;
-    let assessmentIsIncomplete = null;
-    let assessmentIsUnassessed = null;
+    let assessmentIsPending = false;
+    let assessmentIsIncomplete = false;
+    let assessmentIsUnassessed = false;
+    let assessmentIsInterim = false;
 
     switch (assessment.state) {
       case "pass":
@@ -67,7 +68,20 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         evalStateIcon = "";
         assessmentIsIncomplete = true;
         break;
+
+      case "interim_evalution_request":
+        assessmentIsInterim = true;
+        evalStateClassName = "workspace-assessment--interim-evaluation-request";
+        evalStateIcon = "icon-assessment-pending";
+        break;
+      case "interim_evalution":
+        assessmentIsInterim = true;
+        evalStateClassName = "workspace-assessment--interim-evaluation";
+        evalStateIcon = "icon-thumb-up";
+        break;
+
       case "unassessed":
+      default:
         assessmentIsUnassessed = true;
     }
 
@@ -80,6 +94,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
       assessmentIsPending,
       assessmentIsUnassessed,
       assessmentIsIncomplete,
+      assessmentIsInterim,
       literalAssessment,
     };
   };
@@ -105,6 +120,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
             assessmentIsIncomplete,
             assessmentIsUnassessed,
             literalAssessment,
+            assessmentIsInterim,
           } = getAssessmentData(a);
 
           /**
@@ -129,7 +145,9 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               })`
             : undefined;
 
-          return !assessmentIsUnassessed && !assessmentIsPending ? (
+          return !assessmentIsUnassessed &&
+            !assessmentIsPending &&
+            !assessmentIsInterim ? (
             <div
               key={a.workspaceSubjectIdentifier}
               className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
@@ -157,6 +175,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                   {i18n.time.format(a.date)}
                 </span>
               </div>
+
               <div className="workspace-assessment__grade">
                 <span className="workspace-assessment__grade-label">
                   {i18n.text.get(
@@ -172,6 +191,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     : a.grade}
                 </span>
               </div>
+
               <div className="workspace-assessment__literal">
                 <div className="workspace-assessment__literal-label">
                   {i18n.text.get(
@@ -206,9 +226,13 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               </div>
               <div className="workspace-assessment__literal">
                 <div className="workspace-assessment__literal-label">
-                  {i18n.text.get(
-                    "plugin.records.workspace.assessment.request.label"
-                  )}
+                  {assessmentIsInterim
+                    ? i18n.text.get(
+                        "plugin.records.workspace.assessment.request.label"
+                      )
+                    : i18n.text.get(
+                        "plugin.records.workspace.assessment.interimEvaluationrequest.label"
+                      )}
                   :
                 </div>
                 <div

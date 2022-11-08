@@ -12,17 +12,17 @@ import { i18nType } from "~/reducers/base/i18n";
 /**
  * UseFollowUpGoalsState
  */
-export interface UseAssignmentExcerciseState {
+export interface UseInterimEvaluationState {
   isLoading: boolean;
-  excerciseAssignments: MaterialContentNodeType[];
+  interimEvaluationAssignments: MaterialContentNodeType[];
 }
 
 /**
  * Intial state
  */
-const initialState: UseAssignmentExcerciseState = {
+const initialState: UseInterimEvaluationState = {
   isLoading: false,
-  excerciseAssignments: [],
+  interimEvaluationAssignments: [],
 };
 
 /**
@@ -34,14 +34,16 @@ const initialState: UseAssignmentExcerciseState = {
  * @param displayNotification displayNotification
  * @returns student study hours
  */
-export const useExcerciseAssignments = (
+export const useInterimEvaluationAssigments = (
   workspaceId: number,
   tabOpen: AssignmentsTabType,
   i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
-  const [excerciseAssignmentsData, setExcerciseAssignmentsData] =
-    React.useState(initialState);
+  const [
+    interimEvaluationeAssignmentsData,
+    setInterimEvaluationAssignmentsData,
+  ] = React.useState(initialState);
 
   React.useEffect(() => {
     let isCancelled = false;
@@ -51,12 +53,14 @@ export const useExcerciseAssignments = (
      * Loads student activity data
      * @param workspaceId of student
      */
-    const loadExcercisenData = async (workspaceId: number) => {
+    const loadInterimEvaluationData = async (workspaceId: number) => {
       if (!isCancelled) {
-        setExcerciseAssignmentsData((excerciseAssignmentsData) => ({
-          ...excerciseAssignmentsData,
-          isLoading: true,
-        }));
+        setInterimEvaluationAssignmentsData(
+          (interimEvaluationeAssignmentsData) => ({
+            ...interimEvaluationeAssignmentsData,
+            isLoading: true,
+          })
+        );
       }
 
       try {
@@ -67,7 +71,7 @@ export const useExcerciseAssignments = (
           (async () => {
             const assignments = <Array<MaterialAssignmentType>>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "EXERCISE",
+                  assignmentType: "INTERIM_EVALUATION",
                 }),
                 "callback"
               )() || [];
@@ -98,11 +102,13 @@ export const useExcerciseAssignments = (
         ]);
 
         if (!isCancelled) {
-          setExcerciseAssignmentsData((excerciseAssignmentsData) => ({
-            ...excerciseAssignmentsData,
-            excerciseAssignments: materials,
-            isLoading: false,
-          }));
+          setInterimEvaluationAssignmentsData(
+            (interimEvaluationeAssignmentsData) => ({
+              ...interimEvaluationeAssignmentsData,
+              interimEvaluationAssignments: materials,
+              isLoading: false,
+            })
+          );
         }
       } catch (err) {
         if (!isCancelled) {
@@ -112,10 +118,12 @@ export const useExcerciseAssignments = (
             )}, ${err.message}`,
             "error"
           );
-          setExcerciseAssignmentsData((excerciseAssignmentsData) => ({
-            ...excerciseAssignmentsData,
-            isLoading: false,
-          }));
+          setInterimEvaluationAssignmentsData(
+            (interimEvaluationeAssignmentsData) => ({
+              ...interimEvaluationeAssignmentsData,
+              isLoading: false,
+            })
+          );
         }
       }
     };
@@ -125,10 +133,11 @@ export const useExcerciseAssignments = (
      * existing data
      */
     if (
-      tabOpen === "EXERCISE" &&
-      excerciseAssignmentsData.excerciseAssignments.length === 0
+      tabOpen === "INTERIM_EVALUATION" &&
+      interimEvaluationeAssignmentsData.interimEvaluationAssignments.length ===
+        0
     ) {
-      loadExcercisenData(workspaceId);
+      loadInterimEvaluationData(workspaceId);
     }
 
     return () => {
@@ -138,11 +147,11 @@ export const useExcerciseAssignments = (
     workspaceId,
     displayNotification,
     tabOpen,
-    excerciseAssignmentsData.excerciseAssignments.length,
+    interimEvaluationeAssignmentsData.interimEvaluationAssignments.length,
     i18n,
   ]);
 
   return {
-    excerciseAssignmentsData,
+    interimEvaluationeAssignmentsData,
   };
 };

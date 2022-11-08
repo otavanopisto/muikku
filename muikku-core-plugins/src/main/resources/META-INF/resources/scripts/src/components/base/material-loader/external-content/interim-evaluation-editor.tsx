@@ -127,7 +127,10 @@ class InterimEvaluationEditor extends React.Component<
   ) {
     return (
       this.props.readOnly !== nextProps.readOnly ||
-      !equals(nextState, this.state)
+      !equals(nextState, this.state) ||
+      (this.props.usedAs === "default" &&
+        nextProps.stateConfiguration &&
+        !equals(nextProps.stateConfiguration, this.props.stateConfiguration))
     );
   }
 

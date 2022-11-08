@@ -217,6 +217,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     </span>
   );
 
+  const cardModifier = rest.interimEvaluationRequest
+    ? "evaluation-card--interim"
+    : "";
   let cardStateClass = "";
 
   /**
@@ -263,7 +266,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     ) : null;
 
   return (
-    <div className={`evaluation-card ${cardStateClass}`}>
+    <div className={`evaluation-card ${cardModifier} ${cardStateClass}`}>
       <div className="evaluation-card__header">
         <div className="evaluation-card__header-title">{studentName}</div>
         <div className="evaluation-card__heder-description">
@@ -288,7 +291,13 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
           }`}
         >
           <span className="evaluation-card__content-label">
-            {i18n.text.get("plugin.evaluation.card.evaluationRequestedLabel")}
+            {rest.interimEvaluationRequest
+              ? i18n.text.get(
+                  "plugin.evaluation.card.interimEvaluationRequestedLabel"
+                )
+              : i18n.text.get(
+                  "plugin.evaluation.card.evaluationRequestedLabel"
+                )}
           </span>
           <span className="evaluation-card__content-data">
             {assessmentRequestDate}
