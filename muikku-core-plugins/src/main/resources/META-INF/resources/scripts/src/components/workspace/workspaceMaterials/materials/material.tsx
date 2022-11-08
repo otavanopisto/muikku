@@ -89,13 +89,15 @@ class WorkspaceMaterial extends React.Component<
 
     const isEvaluatedAsPassed =
       this.props.compositeReplies &&
-      this.props.compositeReplies.state === "PASSED";
+      (this.props.compositeReplies.state === "PASSED" ||
+        this.props.compositeReplies.state === "INTERIM_EVALUATION");
 
     const hasEvaluation =
       this.props.compositeReplies &&
       this.props.compositeReplies.evaluationInfo &&
       (this.props.compositeReplies.state === "INCOMPLETE" ||
         this.props.compositeReplies.state === "PASSED" ||
+        this.props.compositeReplies.state === "INTERIM_EVALUATION" ||
         this.props.compositeReplies.state === "FAILED" ||
         this.props.compositeReplies.state === "WITHDRAWN");
 
