@@ -888,7 +888,7 @@ public class EvaluationController {
     String senderName = userEntityController.getName(sender).getDisplayName();
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(interimEvaluationRequest.getWorkspaceEntityId());
     String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getId());
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getWorkspaceMaterialId());
     List<UserEntity> teachers = new ArrayList<>();
     List<String> teacherEmails = new ArrayList<>();
     List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
@@ -936,7 +936,7 @@ public class EvaluationController {
     String senderName = userEntityController.getName(sender).getDisplayName();
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(interimEvaluationRequest.getWorkspaceEntityId());
     String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getId());
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getWorkspaceMaterialId());
     List<UserEntity> teachers = new ArrayList<>();
     List<String> teacherEmails = new ArrayList<>();
     List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
