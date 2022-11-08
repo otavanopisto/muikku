@@ -48,7 +48,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
   return (
     <Panel
       icon="icon-books"
-      modifier="workspaces"
+      modifier="studying"
       header={i18n.text.get("plugin.frontPage.studies.title")}
     >
       {lastWorkspace ? (
@@ -57,8 +57,8 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
             {i18n.text.get("plugin.frontPage.studies.continue.title")}
           </Panel.BodyTitle>
           <Panel.BodyContent>
-            <ItemList>
-              <ItemList.Item icon="icon-books" modifier="workspaces">
+            <ItemList modifier="continue-studies">
+              <ItemList.Item icon="icon-forward" modifier="continue-studies">
                 {props.lastWorkspace.workspaceName}
               </ItemList.Item>
               <ItemList.ItemFooter modifier="continue-studies">
@@ -85,10 +85,10 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
             {i18n.text.get("plugin.frontPage.studies.next.title")}
           </Panel.BodyTitle>
           <Panel.BodyContent>
-            <ItemList>
+            <ItemList modifier="suggestions">
               {nextSuggestions.nextCourses.map((workspace) => (
                 <React.Fragment key={workspace.id}>
-                  <ItemList.Item modifier="workspaces" icon="icon-books">
+                  <ItemList.Item modifier="next-studies" icon="icon-books">
                     {`${workspace.name} ${
                       workspace.nameExtension
                         ? "(" + workspace.nameExtension + ")"
@@ -143,7 +143,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       </Panel.BodyTitle>
       {workspaces.length ? (
         <Panel.BodyContent>
-          <ItemList>
+          <ItemList modifier="workspaces">
             {workspaces
               .sort((workspaceA: WorkspaceType, workspaceB: WorkspaceType) => {
                 if (
