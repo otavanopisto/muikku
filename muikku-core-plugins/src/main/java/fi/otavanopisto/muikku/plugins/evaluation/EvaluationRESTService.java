@@ -1093,9 +1093,7 @@ public class EvaluationRESTService extends PluginRESTService {
     WorkspaceJournalFeedback journalFeedback = evaluationController.findWorkspaceJournalFeedbackByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
     
     if (journalFeedback == null) {
-      return Response.status(Status.NOT_FOUND)
-          .entity("Could not find journal feedback")
-          .build();
+      return Response.status(Status.OK).entity("Could not find feedback with given entities").build();
     }
     return Response.ok(createRestModel(journalFeedback)).build();
   }
