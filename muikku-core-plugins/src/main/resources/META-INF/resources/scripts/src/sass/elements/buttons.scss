@@ -1483,8 +1483,8 @@
 }
 
 .button--muikku-submit-interim-evaluation {
-  background-color: black;
-  color: white;
+  background-color: $color-interim-evaluation;
+  color: $color-default;
 }
 
 .button--muikku-submit-journal {
@@ -1752,13 +1752,13 @@
 }
 
 .button-pill--material-editor-interim-evaluation {
-  background: black;
-  border-color: black;
+  background: $color-interim-evaluation;
+  border-color: $color-interim-evaluation;
   color: $color-default;
 
   &:hover {
-    background: black;
-    border-color: black;
+    background: $color-interim-evaluation;
+    border-color: $color-interim-evaluation;
   }
 }
 
@@ -2158,7 +2158,7 @@
 }
 
 .button--evaluate-intermin-evaluation {
-  background-color: black;
+  background-color: $color-interim-evaluation;
   color: $color-default;
   margin: 0 5px;
 }
