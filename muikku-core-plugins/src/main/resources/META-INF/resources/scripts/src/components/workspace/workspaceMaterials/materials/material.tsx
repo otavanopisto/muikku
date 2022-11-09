@@ -89,15 +89,13 @@ class WorkspaceMaterial extends React.Component<
 
     const isEvaluatedAsPassed =
       this.props.compositeReplies &&
-      (this.props.compositeReplies.state === "PASSED" ||
-        this.props.compositeReplies.state === "INTERIM_EVALUATION");
+      this.props.compositeReplies.state === "PASSED";
 
     const hasEvaluation =
       this.props.compositeReplies &&
       this.props.compositeReplies.evaluationInfo &&
       (this.props.compositeReplies.state === "INCOMPLETE" ||
         this.props.compositeReplies.state === "PASSED" ||
-        this.props.compositeReplies.state === "INTERIM_EVALUATION" ||
         this.props.compositeReplies.state === "FAILED" ||
         this.props.compositeReplies.state === "WITHDRAWN");
 
@@ -118,11 +116,6 @@ class WorkspaceMaterial extends React.Component<
           break;
         case "PASSED":
           evalStateClassName = "material-page__assignment-assessment--passed";
-          evalStateIcon = "icon-thumb-up";
-          break;
-        case "INTERIM_EVALUATION":
-          evalStateClassName =
-            "material-page__assignment-assessment--interim-evaluation";
           evalStateIcon = "icon-thumb-up";
           break;
         case "WITHDRAWN":
