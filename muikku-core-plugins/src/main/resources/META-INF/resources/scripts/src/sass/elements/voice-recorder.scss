@@ -13,6 +13,10 @@
   margin: 4px 0 0;
   position: relative;
   width: 100%;
+
+  .external-link-indicator {
+    display: none;
+  }
 }
 
 .voice-container {
@@ -21,6 +25,10 @@
   margin: 4px 0 0;
   position: relative;
   width: 100%;
+
+  .external-link-indicator {
+    display: none;
+  }
 
   .voice-recorder__files-container {
     padding: 0;

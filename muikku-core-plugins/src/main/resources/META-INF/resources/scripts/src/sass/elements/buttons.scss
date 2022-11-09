@@ -2157,42 +2157,6 @@
   }
 }
 
-.button--evaluate-intermin-evaluation {
-  background-color: $color-interim-evaluation;
-  color: $color-default;
-  margin: 0 5px;
-}
-
-.button--evaluate-assignment {
-  background-color: $color-assignment;
-  color: $color-default;
-  margin: 0 5px;
-}
-
-.button--evaluate-supplementation {
-  background: $color-incomplete;
-  color: $color-default;
-  margin: 0 5px;
-}
-
-.button--evaluate-workspace {
-  background: $color-success;
-  color: $color-default;
-  margin: 0 5px;
-}
-
-.button--evaluate-remove-draft {
-  background: $color-clear;
-  color: $color-default;
-  margin: 0 5px;
-}
-
-.button--evaluate-cancel {
-  background: $color-button-cancel-background;
-  color: $color-default;
-  margin: 0 5px;
-}
-
 .button--whatsapp-me {
   background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
   color: $color-default;
@@ -2200,25 +2164,8 @@
 }
 
 .button-icon--evaluation {
-  &.button-icon--excercise-drawer-close {
-    color: $color-default-contrast;
-    font-size: 2rem;
-  }
-
-  &.button-icon--assignment-drawer-close {
-    color: $color-assignment;
-    font-size: 2rem;
-  }
-
-  &.button-icon--workspace-drawer-close {
-    color: $color-info;
-    font-size: 2rem;
-  }
-
-  &.button-icon--supplementation-drawer-close {
-    color: $color-incomplete;
-    font-size: 2rem;
-  }
+  color: $color-info;
+  font-size: 2rem;
 
   &.disabled,
   &:disabled {

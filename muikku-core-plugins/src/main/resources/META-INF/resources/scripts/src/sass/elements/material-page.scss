@@ -1006,6 +1006,10 @@
     padding: 5px;
     text-decoration: none;
     width: auto;
+
+    .external-link-indicator {
+      display: none;
+    }
   }
 }
 

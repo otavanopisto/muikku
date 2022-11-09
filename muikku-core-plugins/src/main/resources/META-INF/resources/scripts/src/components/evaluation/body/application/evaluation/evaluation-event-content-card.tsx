@@ -318,7 +318,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.1"
               )}{" "}
-              <span className="evaluation-modal__event-type state-CANCELLED">
+              <span className="evaluation-modal__event-type state-REQUESTED">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.2"
                 )}

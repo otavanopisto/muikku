@@ -13,8 +13,10 @@
 
 .evaluation-card {
   background: $color-default;
-  border: 1px solid darken($color-evaluation-card-border, 10%);
+  border-color: darken($color-evaluation-card-border, 10%);
   border-radius: 2px;
+  border-style: solid;
+  border-width: 1px;
   box-sizing: border-box;
   display: inline-block;
   margin: 5px;
@@ -34,11 +36,11 @@
   }
 
   &.state-REQUESTED {
-    border: 1px solid $color-evaluation-request;
+    border-color: $color-evaluation-request;
   }
 
   &.state-FAILED {
-    border: 1px solid $color-grade-failed;
+    border-color: $color-grade-failed;
 
     .button-pill--evaluate {
       background: $color-grade-failed;
@@ -46,7 +48,7 @@
   }
 
   &.state-PASSED {
-    border: 1px solid $color-grade-passed;
+    border-color: $color-grade-passed;
 
     .button-pill--evaluate {
       background: $color-grade-passed;
@@ -54,7 +56,7 @@
   }
 
   &.state-INCOMPLETE {
-    border: 1px solid $color-grade-incomplete;
+    border-color: $color-grade-incomplete;
 
     .button-pill--evaluate {
       background: $color-grade-incomplete;
@@ -64,7 +66,11 @@
 
 .evaluation-card--interim {
   &.state-REQUESTED {
-    border: 1px solid black;
+    border-color: $color-interim-evaluation;
+
+    .button-pill--evaluate {
+      background: $color-interim-evaluation;
+    }
   }
 }
 

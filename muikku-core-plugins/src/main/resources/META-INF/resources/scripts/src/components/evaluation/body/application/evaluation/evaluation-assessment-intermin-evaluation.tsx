@@ -492,7 +492,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
         <SlideDrawer
           showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
-          closeIconModifiers={["evaluation", "interim-evaluation-drawer-close"]}
+          closeIconModifiers={["evaluation"]}
           modifiers={["interim-evaluation"]}
           show={
             this.state.openDrawer &&

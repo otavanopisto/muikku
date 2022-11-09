@@ -372,7 +372,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
 
         <div className="form__buttons form__buttons--evaluation">
           <Button
-            buttonModifiers="evaluate-intermin-evaluation"
+            buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
           >
@@ -383,7 +383,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
-                buttonModifiers="evaluate-cancel"
+                buttonModifiers="dialog-cancel"
                 disabled={this.state.locked || this.props.isRecording}
               >
                 {this.props.i18n.text.get(
@@ -395,7 +395,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
             <Button
               onClick={this.props.onClose}
               disabled={this.state.locked || this.props.isRecording}
-              buttonModifiers="evaluate-cancel"
+              buttonModifiers="dialog-cancel"
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -405,7 +405,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
 
           {this.recovered && (
             <Button
-              buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="dialog-clear"
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >

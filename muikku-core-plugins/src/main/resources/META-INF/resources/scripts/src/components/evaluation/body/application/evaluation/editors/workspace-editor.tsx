@@ -905,7 +905,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
         <div className="form__buttons form__buttons--evaluation">
           <Button
-            buttonModifiers="evaluate-workspace"
+            buttonModifiers="dialog-execute"
             onClick={this.handleEvaluationSave}
             disabled={this.state.locked}
           >
@@ -916,7 +916,7 @@ class WorkspaceEditor extends SessionStateComponent<
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
-            buttonModifiers="evaluate-cancel"
+            buttonModifiers="dialog-cancel"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -924,7 +924,7 @@ class WorkspaceEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-              buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="dialog-clear"
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >

@@ -345,7 +345,7 @@ class SupplementationEditor extends SessionStateComponent<
 
         <div className="form__buttons form__buttons--evaluation">
           <Button
-            buttonModifiers="evaluate-supplementation"
+            buttonModifiers="dialog-execute"
             onClick={this.handleEvaluationSupplementationSave}
             disabled={this.state.locked}
           >
@@ -356,7 +356,7 @@ class SupplementationEditor extends SessionStateComponent<
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
-            buttonModifiers="evaluate-cancel"
+            buttonModifiers="dialog-cancel"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -364,7 +364,7 @@ class SupplementationEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-              buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="dialog-clear"
               disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >

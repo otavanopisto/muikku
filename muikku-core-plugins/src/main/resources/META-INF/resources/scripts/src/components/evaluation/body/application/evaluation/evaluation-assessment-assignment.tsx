@@ -595,11 +595,7 @@ class EvaluationAssessmentAssignment extends React.Component<
         <SlideDrawer
           showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
-          closeIconModifiers={
-            this.props.assigment.assignmentType === "EVALUATED"
-              ? ["evaluation", "assignment-drawer-close"]
-              : ["evaluation", "excercise-drawer-close"]
-          }
+          closeIconModifiers={["evaluation"]}
           modifiers={
             this.props.assigment.assignmentType === "EVALUATED"
               ? ["assignment"]

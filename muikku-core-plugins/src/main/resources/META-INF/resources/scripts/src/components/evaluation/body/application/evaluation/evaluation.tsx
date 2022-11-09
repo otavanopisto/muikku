@@ -734,10 +734,7 @@ export class Evaluation extends React.Component<
                           title={this.props.i18n.text.get(
                             "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
                           )}
-                          closeIconModifiers={[
-                            "evaluation",
-                            "workspace-drawer-close",
-                          ]}
+                          closeIconModifiers={["evaluation"]}
                           modifiers={["workspace"]}
                           show={workspaceEditorOpen}
                           onClose={this.handleCloseWorkspaceEvaluationDrawer}
@@ -770,6 +767,7 @@ export class Evaluation extends React.Component<
                           title={this.props.i18n.text.get(
                             "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
                           )}
+                          closeIconModifiers={["evaluation"]}
                           modifiers={["supplementation"]}
                           show={supplementationEditorOpen}
                           onClose={
@@ -803,6 +801,7 @@ export class Evaluation extends React.Component<
                         title={this.props.i18n.text.get(
                           "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
                         )}
+                        closeIconModifiers={["evaluation"]}
                         modifiers={["workspace"]}
                         show={showWorkspaceEvaluationDrawer}
                         onClose={this.handleCloseWorkspaceEvaluationDrawer}
@@ -826,6 +825,7 @@ export class Evaluation extends React.Component<
                       title={this.props.i18n.text.get(
                         "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
                       )}
+                      closeIconModifiers={["evaluation"]}
                       modifiers={["supplementation"]}
                       show={this.state.showWorkspaceSupplemenationDrawer}
                       onClose={
