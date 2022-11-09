@@ -686,9 +686,7 @@ export type MaterialCompositeRepliesStateType =
   | "WITHDRAWN"
   | "PASSED"
   | "FAILED"
-  | "INCOMPLETE"
-  | "INTERIM_EVALUATION_REQUEST"
-  | "INTERIM_EVALUATION";
+  | "INCOMPLETE";
 
 /**
  * MaterialCompositeRepliesType

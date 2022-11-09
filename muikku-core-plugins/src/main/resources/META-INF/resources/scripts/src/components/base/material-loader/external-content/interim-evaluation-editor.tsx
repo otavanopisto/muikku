@@ -16,6 +16,10 @@ import {
   updateCurrentWorkspaceInterimEvaluationRequests,
 } from "../../../../actions/workspaces/index";
 import { characterCount, wordCount } from "~/helper-functions/materials";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
 
 /* eslint-disable camelcase */
 const ckEditorConfig = {
@@ -63,6 +67,7 @@ interface InterimEvaluationEditorProps extends MaterialLoaderProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stateConfiguration: any;
   updateCurrentWorkspaceInterimEvaluationRequests: UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -156,44 +161,76 @@ class InterimEvaluationEditor extends React.Component<
     // If there is no request data, we need to create a new one
     // otherwise delete existing one
     if (this.props.stateConfiguration.state === "SUBMITTED") {
-      const requestData = (await promisify(
-        mApi().evaluation.interimEvaluationRequest.del(
-          this.state.requestData.id
-        ),
-        "callback"
-      )()) as WorkspaceInterimEvaluationRequest;
+      try {
+        const requestData = (await promisify(
+          mApi().evaluation.interimEvaluationRequest.del(
+            this.state.requestData.id
+          ),
+          "callback"
+        )()) as WorkspaceInterimEvaluationRequest;
 
-      this.setState(
-        {
-          requestData,
-        },
-        () => {
-          this.props.updateCurrentWorkspaceInterimEvaluationRequests({
+        this.props.displayNotification(
+          this.props.i18n.text.get(
+            "plugin.workspace.materialsLoader.cancelInterimEvaluationRequest.success"
+          ),
+          "success"
+        );
+
+        this.setState(
+          {
             requestData,
-          });
-          this.props.onPushAnswer && this.props.onPushAnswer();
-        }
-      );
+          },
+          () => {
+            this.props.updateCurrentWorkspaceInterimEvaluationRequests({
+              requestData,
+            });
+            this.props.onPushAnswer && this.props.onPushAnswer();
+          }
+        );
+      } catch (error) {
+        this.props.displayNotification(
+          this.props.i18n.text.get(
+            "plugin.workspace.materialsLoader.cancelInterimEvaluationRequest.error"
+          ),
+          "error"
+        );
+      }
     } else {
-      const requestData = (await promisify(
-        mApi().evaluation.interimEvaluationRequest.create({
-          workspaceMaterialId: this.props.material.workspaceMaterialId,
-          requestText: this.state.value,
-        }),
-        "callback"
-      )()) as WorkspaceInterimEvaluationRequest;
+      try {
+        const requestData = (await promisify(
+          mApi().evaluation.interimEvaluationRequest.create({
+            workspaceMaterialId: this.props.material.workspaceMaterialId,
+            requestText: this.state.value,
+          }),
+          "callback"
+        )()) as WorkspaceInterimEvaluationRequest;
 
-      this.setState(
-        {
-          requestData,
-        },
-        () => {
-          this.props.updateCurrentWorkspaceInterimEvaluationRequests({
+        this.props.displayNotification(
+          this.props.i18n.text.get(
+            "plugin.workspace.materialsLoader.submitInterimEvaluationRequest.success"
+          ),
+          "success"
+        );
+
+        this.setState(
+          {
             requestData,
-          });
-          this.props.onPushAnswer && this.props.onPushAnswer();
-        }
-      );
+          },
+          () => {
+            this.props.updateCurrentWorkspaceInterimEvaluationRequests({
+              requestData,
+            });
+            this.props.onPushAnswer && this.props.onPushAnswer();
+          }
+        );
+      } catch (error) {
+        this.props.displayNotification(
+          this.props.i18n.text.get(
+            "plugin.workspace.materialsLoader.submitInterimEvaluationRequest.error"
+          ),
+          "error"
+        );
+      }
     }
   };
 
@@ -303,7 +340,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { updateCurrentWorkspaceInterimEvaluationRequests },
+    { updateCurrentWorkspaceInterimEvaluationRequests, displayNotification },
     dispatch
   );
 }

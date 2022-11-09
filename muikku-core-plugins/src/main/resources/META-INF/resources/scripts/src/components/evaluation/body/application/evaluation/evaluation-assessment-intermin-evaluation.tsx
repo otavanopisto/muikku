@@ -322,15 +322,11 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    * @param compositeReply compositeReply
    * @returns Assignment function button class
    */
-  assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) => {
-    if (
-      compositeReply &&
-      compositeReply.evaluationInfo &&
-      compositeReply.evaluationInfo.date
-    ) {
-      return "state-EVALUATED";
-    }
-  };
+  assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) =>
+    compositeReply &&
+    compositeReply.evaluationInfo &&
+    compositeReply.evaluationInfo.date &&
+    "state-EVALUATED";
 
   /**
    * renderAssignmentStatus
@@ -443,7 +439,9 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
     return (
       <div className={`evaluation-modal__item `}>
         <div
-          className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}
+          className={`evaluation-modal__item-header ${
+            evaluatedFunctionClassMod ? evaluatedFunctionClassMod : ""
+          }`}
           ref={(ref) => (this.myRef = ref)}
         >
           <div
