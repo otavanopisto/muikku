@@ -1093,7 +1093,7 @@ public class EvaluationRESTService extends PluginRESTService {
     WorkspaceJournalFeedback journalFeedback = evaluationController.findWorkspaceJournalFeedbackByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
     
     if (journalFeedback == null) {
-      return Response.ok().build();
+      Response.noContent().build();
     }
     return Response.ok(createRestModel(journalFeedback)).build();
   }
@@ -1109,7 +1109,7 @@ public class EvaluationRESTService extends PluginRESTService {
     WorkspaceJournalFeedback journalFeedback = evaluationController.findWorkspaceJournalFeedbackByStudentAndWorkspace(studentEntityId, workspaceEntityId);
     
     if (journalFeedback == null) {
-      return null;
+      return Response.status(Status.NOT_FOUND).build();
     }
     evaluationController.deleteWorkspaceJournalFeedback(journalFeedback);
 
