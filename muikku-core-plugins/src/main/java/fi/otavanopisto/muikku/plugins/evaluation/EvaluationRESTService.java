@@ -1073,7 +1073,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     if (studentEntity == null) {
       return Response.status(Status.BAD_REQUEST)
-        .entity(String.format("Malformed student identifier %s", studentEntity))
+        .entity(String.format("Malformed student entity %s", studentEntity))
         .build();
     }
     
@@ -1090,7 +1090,14 @@ public class EvaluationRESTService extends PluginRESTService {
       }
     }
     
-   return Response.ok(createRestModel(evaluationController.findWorkspaceJournalFeedbackByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId()))).build();
+    WorkspaceJournalFeedback journalFeedback = evaluationController.findWorkspaceJournalFeedbackByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
+    
+    if (journalFeedback == null) {
+      return Response.status(Status.NOT_FOUND)
+          .entity("Could not find journal feedback")
+          .build();
+    }
+    return Response.ok(createRestModel(journalFeedback)).build();
   }
   
   @DELETE
