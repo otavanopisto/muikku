@@ -28,10 +28,12 @@ import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSen
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceJournalFeedbackDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceJournalFeedback;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
@@ -120,6 +122,9 @@ public class EvaluationController {
   
   @Inject
   private AssessmentRequestCancellationDAO assessmentRequestCancellationDAO;
+  
+  @Inject
+  private WorkspaceJournalFeedbackDAO workspaceJournalFeedbackDAO;
   
   /* Workspace activity */
   
@@ -704,6 +709,22 @@ public class EvaluationController {
         messageContent,
         Collections.<Tag>emptySet());
     communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
+  }
+  
+  public WorkspaceJournalFeedback createWorkspaceJournalFeedback(Long studentEntityId, Long workspaceEntityId, Long creator, String feedback) {
+    return workspaceJournalFeedbackDAO.create(studentEntityId, feedback, workspaceEntityId, creator);
+  }
+  
+  public WorkspaceJournalFeedback updateWorkspaceJournalFeedback(WorkspaceJournalFeedback journalFeedback, String feedback) {
+    return workspaceJournalFeedbackDAO.updateFeedback(journalFeedback, feedback);
+  }
+  
+  public WorkspaceJournalFeedback findWorkspaceJournalFeedbackByStudentAndWorkspace(Long studentEntityId, Long workspaceEntityId) {
+    return workspaceJournalFeedbackDAO.findByStudentAndWorkspace(studentEntityId, workspaceEntityId);
+  }
+  
+  public void deleteWorkspaceJournalFeedback(WorkspaceJournalFeedback journalFeedback) {
+    workspaceJournalFeedbackDAO.delete(journalFeedback);
   }
 
 }
