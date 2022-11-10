@@ -66,6 +66,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -147,6 +148,9 @@ public class EvaluationRESTService extends PluginRESTService {
 
   @Inject
   private ActivityLogController activityLogController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/activity")
@@ -1121,8 +1125,15 @@ public class EvaluationRESTService extends PluginRESTService {
     RestWorkspaceJournalFeedback restFeedback = new RestWorkspaceJournalFeedback();
     UserEntity creatorEntity = userEntityController.findUserEntityById(journalFeedback.getCreator());
     User creator = null;
+    
     if (creatorEntity != null) {
-      creator = userController.findUserByUserEntityDefaults(creatorEntity);
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        creator = userController.findUserByUserEntityDefaults(creatorEntity);
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
     }
     restFeedback.setId(journalFeedback.getId());
     restFeedback.setCreated(journalFeedback.getCreated());
