@@ -22,6 +22,7 @@ import {
 } from "~/actions/workspaces/journals";
 import WorkspaceJournalView from "./application/workspace-journal-view";
 import { JournalsState } from "~/reducers/workspaces/journals";
+import WorkspaceJournalFeedback from "./application/workspace-journal-feedback";
 
 /**
  * WorkspaceJournalApplicationProps
@@ -135,6 +136,13 @@ class WorkspaceJournalApplication extends React.Component<
           primaryOption={primaryOption}
         >
           <WorkspaceJournalView />
+
+          {this.props.journalsState.journalFeedback && (
+            <WorkspaceJournalFeedback
+              journalFeedback={this.props.journalsState.journalFeedback}
+            />
+          )}
+
           <WorkspaceJournalsList />
         </ApplicationPanel>
         {this.props.status.isStudent ? (

@@ -61,7 +61,10 @@ import { registerLocale } from "react-datepicker";
 import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
-import { loadCurrentWorkspaceJournalsFromServer } from "~/actions/workspaces/journals";
+import {
+  loadCurrentWorkspaceJournalsFromServer,
+  loadWorkspaceJournalFeedback,
+} from "~/actions/workspaces/journals";
 import {
   loadWholeWorkspaceHelp,
   loadWholeWorkspaceMaterials,
@@ -1060,6 +1063,13 @@ export default class Workspace extends React.Component<
                   loadCurrentWorkspaceJournalsFromServer(
                     state.status.userId
                   ) as Action
+                );
+
+                this.props.store.dispatch(
+                  loadWorkspaceJournalFeedback({
+                    userEntityId: state.status.userId,
+                    workspaceEntityId: workspace.id,
+                  }) as Action
                 );
               }
             }

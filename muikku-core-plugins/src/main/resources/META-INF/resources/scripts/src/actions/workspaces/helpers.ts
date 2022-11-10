@@ -364,7 +364,9 @@ export async function loadCurrentWorkspaceJournalsHelper(
  */
 export function reuseExistantValue(
   conditional: boolean,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   existantValue: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   otherwise: () => any
 ) {
   if (!conditional) {

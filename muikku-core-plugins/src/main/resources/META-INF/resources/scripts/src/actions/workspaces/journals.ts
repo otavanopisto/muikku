@@ -7,6 +7,7 @@ import mApi, { MApiError } from "~/lib/mApi";
 import { displayNotification } from "../base/notifications";
 import {
   JournalsState,
+  WorkspaceJournalFeedback,
   WorkspaceJournalFilters,
   WorkspaceJournalType,
 } from "~/reducers/workspaces/journals";
@@ -78,6 +79,12 @@ export type JOURNALS_COMMENTS_UPDATE = SpecificActionType<
 
 export type JOURNALS_COMMENTS_DELETE = SpecificActionType<
   "JOURNALS_COMMENTS_DELETE",
+  JournalActionUpdate
+>;
+
+// Journals feedback
+export type JOURNALS_FEEDBACK_LOAD = SpecificActionType<
+  "JOURNALS_FEEDBACK_LOAD",
   JournalActionUpdate
 >;
 
@@ -201,6 +208,20 @@ export interface DeleteWorkspaceJournalCommentTriggerType {
  */
 export interface SetCurrentJournalTriggerType {
   (data: { currentJournal: WorkspaceJournalType }): AnyActionType;
+}
+
+// Journal feedback trigger types
+
+/**
+ * LoadWorkspaceJournalFeedbackTriggerType
+ */
+export interface LoadWorkspaceJournalFeedbackTriggerType {
+  (data: {
+    userEntityId: number;
+    workspaceEntityId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
 }
 
 /**
@@ -866,6 +887,66 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
     };
   };
 
+/**
+ * loadWorkspaceJournalFeedback
+ * @param data data
+ */
+const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
+  function loadWorkspaceJournalFeedback(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const { userEntityId, workspaceEntityId, fail, success } = data;
+
+      const currentJournalsState = getState().journals;
+
+      try {
+        const [updated] = await Promise.all([
+          (async () => {
+            const journalFeedback = (await promisify(
+              mApi().evaluation.workspaces.students.journalfeedback.read(
+                workspaceEntityId,
+                userEntityId
+              ),
+              "callback"
+            )()) as WorkspaceJournalFeedback;
+
+            return {
+              journalFeedback,
+            };
+          })(),
+        ]);
+
+        success && success();
+
+        dispatch({
+          type: "JOURNALS_FEEDBACK_LOAD",
+          payload: {
+            original: currentJournalsState,
+            updated: {
+              ...currentJournalsState,
+              journalFeedback: updated.journalFeedback,
+            },
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.journal.feedback.notification.delete.error"
+            ),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
 export {
   loadCurrentWorkspaceJournalsFromServer,
   loadMoreCurrentWorkspaceJournalsFromServer,
@@ -878,4 +959,5 @@ export {
   createWorkspaceJournalComment,
   updatedWorkspaceJournalComment,
   deleteWorkspaceJournalComment,
+  loadWorkspaceJournalFeedback,
 };

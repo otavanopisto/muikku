@@ -9,21 +9,19 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
-import { JournalComment } from "~/@types/journal";
 import {
-  DeleteEvaluationJournalCommentTriggerType,
-  deleteEvaluationJournalComment,
+  DeleteEvaluationJournalFeedbackTriggerType,
+  deleteEvaluationJournalFeedback,
 } from "../../../actions/main-function/evaluation/evaluationActions";
+import { EvaluationJournalFeedback } from "~/@types/evaluation";
 
 /**
  * DeleteJournalProps
  */
-interface DeleteJournalCommentProps {
+interface DeleteJournalFeedbackProps {
   i18n: i18nType;
-  userEntityId: number;
-  workspaceEntityId: number;
-  journalComment: JournalComment;
-  deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType;
+  journalFeedback: EvaluationJournalFeedback;
+  deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
 }
@@ -31,25 +29,25 @@ interface DeleteJournalCommentProps {
 /**
  * DeleteJournalState
  */
-interface DeleteJournalCommentState {
+interface DeleteJournalFeedbackState {
   locked: boolean;
 }
 
 /**
  * DeleteJournal
  */
-class DeleteJournalComment extends React.Component<
-  DeleteJournalCommentProps,
-  DeleteJournalCommentState
+class DeleteJournalFeedback extends React.Component<
+  DeleteJournalFeedbackProps,
+  DeleteJournalFeedbackState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: DeleteJournalCommentProps) {
+  constructor(props: DeleteJournalFeedbackProps) {
     super(props);
 
-    this.deleteJournalComment = this.deleteJournalComment.bind(this);
+    this.deleteJournalFeedback = this.deleteJournalFeedback.bind(this);
 
     this.state = {
       locked: false,
@@ -60,25 +58,23 @@ class DeleteJournalComment extends React.Component<
    * deleteJournal
    * @param closeDialog closeDialog
    */
-  deleteJournalComment(closeDialog: () => void) {
-    const { journalComment, userEntityId, workspaceEntityId } = this.props;
+  deleteJournalFeedback(closeDialog: () => void) {
+    const { journalFeedback } = this.props;
 
     this.setState({ locked: true });
-    this.props.deleteEvaluationJournalComment({
-      deleteCommentPayload: {
-        id: this.props.journalComment.id,
-        journalEntryId: this.props.journalComment.journalEntryId,
-      },
-      journalEntryId: this.props.journalComment.journalEntryId,
-      workspaceEntityId: 1,
+
+    this.props.deleteEvaluationJournalFeedback({
+      feedbackId: journalFeedback.id,
+      userEntityId: journalFeedback.student,
+      workspaceEntityId: journalFeedback.workspaceEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
         localStorage.removeItem(
-          `diary-journalComment-edit.${userEntityId}-${workspaceEntityId}-${journalComment.journalEntryId}-${journalComment.id}.journalCommentText`
+          `diary-journalFeedback-edit.${journalFeedback.student}-${journalFeedback.workspaceEntityId}-${journalFeedback.id}.feedbackText`
         );
-
-        this.setState({ locked: false });
-        closeDialog();
+        this.setState({ locked: false }, () => {
+          closeDialog();
+        });
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
       fail: () => {
@@ -111,7 +107,7 @@ class DeleteJournalComment extends React.Component<
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}
-          onClick={this.deleteJournalComment.bind(this, closeDialog)}
+          onClick={this.deleteJournalFeedback.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
@@ -159,10 +155,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ deleteEvaluationJournalComment }, dispatch);
+  return bindActionCreators({ deleteEvaluationJournalFeedback }, dispatch);
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DeleteJournalComment);
+)(DeleteJournalFeedback);

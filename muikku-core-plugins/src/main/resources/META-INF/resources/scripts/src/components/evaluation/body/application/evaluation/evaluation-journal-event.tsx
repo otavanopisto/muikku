@@ -129,12 +129,16 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     e.stopPropagation();
     unstable_batchedUpdates(() => {
       if (!open || !showContent) {
-        commentToEdit && setCommentToEdit(undefined);
-        setShowContent(true);
-        setCreateNewActive(true);
+        unstable_batchedUpdates(() => {
+          commentToEdit && setCommentToEdit(undefined);
+          setShowContent(true);
+          setCreateNewActive(true);
+        });
       } else {
-        commentToEdit && setCommentToEdit(undefined);
-        setCreateNewActive(true);
+        unstable_batchedUpdates(() => {
+          commentToEdit && setCommentToEdit(undefined);
+          setCreateNewActive(true);
+        });
       }
     });
   };
@@ -203,8 +207,11 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
         callback();
-        setCreateNewActive(false);
-        setEditorLocked(false);
+
+        unstable_batchedUpdates(() => {
+          setCreateNewActive(false);
+          setEditorLocked(false);
+        });
       },
     });
   };
@@ -230,8 +237,11 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
         callback();
-        setCommentToEdit(undefined);
-        setEditorLocked(false);
+
+        unstable_batchedUpdates(() => {
+          setCommentToEdit(undefined);
+          setEditorLocked(false);
+        });
       },
     });
   };
@@ -266,6 +276,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           onClick={handleOpenContentClick}
         >
           {title}
+          TODO:
           {isDraft &&
             i18n.text.get(
               "plugin.evaluation.evaluationModal.journalEntry.statusDraft"

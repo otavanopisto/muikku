@@ -39,7 +39,14 @@ interface EvaluationDiaryEventCommentProps {
 const EvaluationJournalEventComment: React.FC<
   EvaluationDiaryEventCommentProps
 > = (props) => {
-  const { journalComment, status, onEditClick, canDelete } = props;
+  const {
+    journalComment,
+    status,
+    onEditClick,
+    canDelete,
+    userEntityId,
+    workspaceEntityId,
+  } = props;
 
   const { comment, created, id, firstName, lastName, authorId } =
     journalComment;
@@ -90,7 +97,11 @@ const EvaluationJournalEventComment: React.FC<
           </Link>
 
           {canDelete && creatorIsMe && (
-            <DeleteJournalComment journalComment={journalComment}>
+            <DeleteJournalComment
+              journalComment={journalComment}
+              userEntityId={userEntityId}
+              workspaceEntityId={workspaceEntityId}
+            >
               <Link className="link link--evaluation-list">
                 {props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.journalComments.deleteButton"
