@@ -24,6 +24,12 @@ public class RestWorkspaceJournalFeedback {
     this.creator = creator;
   }
 
+  public String getCreatorName() {
+    return creatorName;
+  }
+  public void setCreatorName(String creatorName) {
+    this.creatorName = creatorName;
+  }
   public Date getCreated() {
     return created;
   }
@@ -48,6 +54,7 @@ public class RestWorkspaceJournalFeedback {
   private Long id;
   private Long student;
   private Long creator;
+  private String creatorName;
   private Date created;
   private Long workspaceEntityId;
   private String feedback;

@@ -1119,10 +1119,15 @@ public class EvaluationRESTService extends PluginRESTService {
   
   private RestWorkspaceJournalFeedback createRestModel(WorkspaceJournalFeedback journalFeedback) {
     RestWorkspaceJournalFeedback restFeedback = new RestWorkspaceJournalFeedback();
-    
+    UserEntity creatorEntity = userEntityController.findUserEntityById(journalFeedback.getCreator());
+    User creator = null;
+    if (creatorEntity != null) {
+      creator = userController.findUserByUserEntityDefaults(creatorEntity);
+    }
     restFeedback.setId(journalFeedback.getId());
     restFeedback.setCreated(journalFeedback.getCreated());
     restFeedback.setCreator(journalFeedback.getCreator());
+    restFeedback.setCreatorName(creator.getDisplayName());
     restFeedback.setFeedback(journalFeedback.getFeedback());
     restFeedback.setStudent(journalFeedback.getStudent());
     restFeedback.setWorkspaceEntityId(journalFeedback.getWorkspaceEntityId());
