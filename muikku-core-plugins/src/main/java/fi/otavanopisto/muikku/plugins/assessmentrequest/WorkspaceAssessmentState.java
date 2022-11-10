@@ -11,8 +11,8 @@ public class WorkspaceAssessmentState {
   public static final String PASS = "pass";                                               // no request, passing grade
   public static final String FAIL = "fail";                                               // no request, failing grade
   public static final String INCOMPLETE = "incomplete";                                   // teacher has requested changes
-  public static final String INTERIM_EVALUATION_REQUEST = "interim_evalution_request";    // interim evaluation request
-  public static final String INTERIM_EVALUATION = "interim_evalution";                    // interim evaluation
+  public static final String INTERIM_EVALUATION_REQUEST = "interim_evaluation_request";   // interim evaluation request
+  public static final String INTERIM_EVALUATION = "interim_evaluation";                   // interim evaluation
 
   public WorkspaceAssessmentState() {
   }
