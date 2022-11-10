@@ -102,10 +102,10 @@ class StudentWorkspace extends React.Component<
       case "incomplete":
         stateText = "plugin.guider.assessmentState.INCOMPLETE";
         break;
-      case "interim_evalution_request":
+      case "interim_evaluation_request":
         stateText = "plugin.guider.assessmentState.PENDING_INTERIM_EVALUATION";
         break;
-      case "interim_evalution":
+      case "interim_evaluation":
         stateText = "plugin.guider.assessmentState.INTERIM_EVALUATION";
         break;
       default:

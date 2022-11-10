@@ -69,12 +69,12 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         assessmentIsIncomplete = true;
         break;
 
-      case "interim_evalution_request":
+      case "interim_evaluation_request":
         assessmentIsInterim = true;
         evalStateClassName = "workspace-assessment--interim-evaluation-request";
         evalStateIcon = "icon-assessment-pending";
         break;
-      case "interim_evalution":
+      case "interim_evaluation":
         assessmentIsInterim = true;
         evalStateClassName = "workspace-assessment--interim-evaluation";
         evalStateIcon = "icon-thumb-up";
@@ -228,10 +228,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 <div className="workspace-assessment__literal-label">
                   {assessmentIsInterim
                     ? i18n.text.get(
-                        "plugin.records.workspace.assessment.request.label"
+                        "plugin.records.workspace.assessment.interimEvaluationrequest.label"
                       )
                     : i18n.text.get(
-                        "plugin.records.workspace.assessment.interimEvaluationrequest.label"
+                        "plugin.records.workspace.assessment.request.label"
                       )}
                   :
                 </div>
