@@ -20,11 +20,13 @@ import {
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
-import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/records/summary";
+
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
 import { getUserChatId, obtainNick } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
 import { BrowserTabNotification } from "~/util/browser-tab-notification";
+import { Contact } from "~/reducers/base/contacts";
+
 
 export type tabs = "ROOMS" | "PEOPLE";
 
@@ -148,7 +150,7 @@ interface IChatState {
   openChatsJIDS: IOpenChatJID[];
   selectedUserPresence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2.1
   ready: boolean;
-  studyGuiders: SummaryStudentsGuidanceCouncelorsType[];
+  studyGuiders: Contact[];
   roomNameField: string;
   roomDescField: string;
   // roomPersistent: boolean;
@@ -263,7 +265,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         "callback"
       )()) as GuiderUserGroupListType;
 
-      const studentsGuidanceCouncelors: SummaryStudentsGuidanceCouncelorsType[] =
+      const studentsGuidanceCouncelors: Contact[] =
         [];
 
       //   This is removed due to a request from councelors. Will be implemented later

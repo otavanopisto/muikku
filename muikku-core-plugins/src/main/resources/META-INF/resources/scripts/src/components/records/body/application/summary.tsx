@@ -9,7 +9,6 @@ import "~/sass/elements/application-sub-panel.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import {
   SummaryType,
-  SummaryStudentsGuidanceCouncelorsType,
 } from "~/reducers/main-function/records/summary";
 import { Contacts, Contact } from "~/reducers/base/contacts";
 import { HOPSType } from "~/reducers/main-function/hops";
@@ -117,7 +116,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
             </div>
 
-            <div className="application-sub-panel__item">
+            <div className="application-sub-panel__item application-sub-panel__item--councelors">
               <div className="application-sub-panel__item-title">
                 {this.props.i18n.text.get(
                   "plugin.records.studyStudentCouncelorsLabel"
