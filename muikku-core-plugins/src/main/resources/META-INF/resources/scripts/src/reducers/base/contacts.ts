@@ -4,35 +4,50 @@ import { LoadingState } from "~/@types/shared";
 export type ContactState = "WAITING" | "LOADING" | "READY" | "ERROR";
 
 /**
- *
+ * ContactGroup
  */
 export interface ContactGroup {
   state: LoadingState;
-  list: string[];
+  list: Contact[];
+}
+
+/**
+ * Contact
+ */
+export interface Contact {
+  email: string;
+  firstName: string;
+  hasImage: true;
+  id: string;
+  lastName: string;
+  organization: { id: number; name: string };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  properties: any;
+  role: string;
+  userEntityId: number;
 }
 
 /**
  * CredentialsType
  */
 export interface Contacts {
-  guiders: ContactGroup;
+  councelors: ContactGroup;
 }
 
 export type ContactGroupNames = keyof Contacts;
 
 /**
- * initialCredentialsState
+ * initialContactsState
  */
-
 const initialContactsState: Contacts = {
-  guiders: {
+  councelors: {
     state: "WAITING",
     list: [],
   },
 };
 
 /**
- * Reducer function for credentials
+ * Contacts reducer function
  *
  * @param state state
  * @param action action
@@ -51,12 +66,12 @@ export const contacts: Reducer<Contacts> = (
 
     case "UPDATE_CONTACT_GROUP_STATE": {
       const groupName: ContactGroupNames = action.payload.groupName;
-      const currentGroup = state[groupName];
-      const newGroup = JSON.parse(JSON.stringify(currentGroup)) as ContactGroup;
+      const group = state[groupName];
+      // const newGroup = JSON.parse(JSON.stringify(currentGroup)) as ContactGroup;
 
-      newGroup.state = action.payload.state;
+      group.state = action.payload.state;
 
-      return { ...state, [groupName]:{...newGroup} };
+      return { ...state, [groupName]: { ...group } };
     }
 
     default:

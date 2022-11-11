@@ -11,6 +11,7 @@ import {
   SummaryType,
   SummaryStudentsGuidanceCouncelorsType,
 } from "~/reducers/main-function/records/summary";
+import { Contacts, Contact } from "~/reducers/base/contacts";
 import { HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
@@ -37,6 +38,7 @@ import { Instructions } from "~/components/general/instructions";
 interface SummaryProps {
   i18n: i18nType;
   records: RecordsType;
+  contacts: Contacts;
   summary: SummaryType;
   status: StatusType;
   hops: HOPSType;
@@ -123,8 +125,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-councelors">
                 <div className="item-list item-list--student-councelors">
-                  {this.props.summary.data.studentsGuidanceCouncelors.map(
-                    (councelor: SummaryStudentsGuidanceCouncelorsType) => {
+                  {this.props.contacts.councelors.list.map(
+                    (councelor: Contact) => {
                       let displayVacationPeriod =
                         !!councelor.properties["profile-vacation-start"];
                       if (councelor.properties["profile-vacation-end"]) {
@@ -435,6 +437,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     records: state.records,
+    contacts: state.contacts,
     summary: state.summary,
     status: state.status,
     hops: state.hops,
