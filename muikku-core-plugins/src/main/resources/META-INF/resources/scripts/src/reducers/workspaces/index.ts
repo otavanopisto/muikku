@@ -49,6 +49,7 @@ export interface Assessment {
   date: string;
   state: WorkspaceAssessementStateType;
   grade: string;
+  passingGrade: boolean;
   text: string;
   workspaceSubjectIdentifier: string | null;
 }

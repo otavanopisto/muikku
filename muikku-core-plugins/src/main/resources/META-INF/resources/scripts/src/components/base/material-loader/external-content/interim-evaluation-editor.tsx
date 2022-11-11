@@ -131,6 +131,7 @@ class InterimEvaluationEditor extends React.Component<
     nextState: InterimEvaluationEditorState
   ) {
     return (
+      !equals(this.props.workspace, nextProps.workspace) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
       (this.props.usedAs === "default" &&
@@ -239,6 +240,22 @@ class InterimEvaluationEditor extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    let creatingInterimEvaluationRequestBlocked = false;
+
+    const isSubmitted =
+      this.props.stateConfiguration &&
+      this.props.stateConfiguration.state === "SUBMITTED";
+    const isEvaluated =
+      this.props.stateConfiguration &&
+      this.props.stateConfiguration.state === "PASSED";
+
+    if (this.props.workspace && this.props.workspace.activity) {
+      creatingInterimEvaluationRequestBlocked =
+        this.props.workspace.activity.assessmentState.find((a) =>
+          ["pending", "pending_pass", "pending_fail"].includes(a.state)
+        ) !== undefined;
+    }
+
     let field = (
       <CKEditor configuration={ckEditorConfig} onChange={this.onCKEditorChange}>
         {this.state.value}
@@ -246,10 +263,10 @@ class InterimEvaluationEditor extends React.Component<
     );
 
     if (
-      (this.props.stateConfiguration &&
-        (this.props.stateConfiguration.state === "SUBMITTED" ||
-          this.props.stateConfiguration.state === "PASSED")) ||
-      this.props.readOnly
+      isSubmitted ||
+      isEvaluated ||
+      this.props.readOnly ||
+      creatingInterimEvaluationRequestBlocked
     ) {
       field = (
         <span
@@ -297,7 +314,16 @@ class InterimEvaluationEditor extends React.Component<
             {field}
           </span>
         </div>
-        {!this.props.readOnly && buttons}
+
+        {creatingInterimEvaluationRequestBlocked && !isEvaluated ? (
+          <div className="material-page__content rich-text">
+            Välipalautepyyntöjen luominen on poissa käytöstä, kun kurssista on
+            aktiivinen arviointipyyntötehtynä. Peruuta arviointipyyntö tai odota
+            että pyyntö on käsitelty
+          </div>
+        ) : (
+          !this.props.readOnly && buttons
+        )}
       </>
     );
   }
