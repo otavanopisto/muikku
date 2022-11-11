@@ -35,13 +35,14 @@ public class WorkspaceAssessmentState {
     this.text = text;
   }
 
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text, String grade, Date gradeDate) {
+  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text, String grade, Date gradeDate, boolean passingGrade) {
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
     this.state = state;
     this.date = date;
     this.text = text;
     this.grade = grade;
     this.gradeDate = gradeDate;
+    this.passingGrade = passingGrade;
   }
 
   public String getState() {
@@ -92,9 +93,18 @@ public class WorkspaceAssessmentState {
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
   }
 
+  public boolean isPassingGrade() {
+    return passingGrade;
+  }
+
+  public void setPassingGrade(boolean passingGrade) {
+    this.passingGrade = passingGrade;
+  }
+
   private Date date;
   private String state;
   private String grade;
+  private boolean passingGrade;
   private Date gradeDate;
   private String text;
   private String workspaceSubjectIdentifier;
