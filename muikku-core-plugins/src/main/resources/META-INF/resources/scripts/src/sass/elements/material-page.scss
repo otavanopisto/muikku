@@ -136,6 +136,17 @@
   }
 }
 
+.material-page__content-disclaimer {
+  font-style: italic;
+  margin: 15px 0;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0;
+    padding: 0 20px;
+  }
+}
+
 .material-page__content--view-restricted {
   align-items: center;
   color: darken($color-disabled, 30%);

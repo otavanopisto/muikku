@@ -316,10 +316,10 @@ class InterimEvaluationEditor extends React.Component<
         </div>
 
         {creatingInterimEvaluationRequestBlocked && !isEvaluated ? (
-          <div className="material-page__content rich-text">
-            Välipalautepyyntöjen luominen on poissa käytöstä, kun kurssista on
-            aktiivinen arviointipyyntötehtynä. Peruuta arviointipyyntö tai odota
-            että pyyntö on käsitelty
+          <div className="material-page__content-disclaimer rich-text">
+            {this.props.i18n.text.get(
+              "plugin.workspace.materialsLoader.interimEvaluationDisclaimer"
+            )}
           </div>
         ) : (
           !this.props.readOnly && buttons

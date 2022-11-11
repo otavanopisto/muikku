@@ -448,6 +448,12 @@
   }
 }
 
+.link--workspace-assessment-interim-request {
+  &::before {
+    background: $color-interim-evaluation;
+  }
+}
+
 .link--workspace-assessment-failed {
   &::before {
     background: $color-assessment-failed;

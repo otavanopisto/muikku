@@ -557,7 +557,11 @@ function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
       icon = "pass";
       break;
     case "interim_evaluation":
+      icon = "pass";
+      break;
     case "interim_evaluation_request":
+      icon = "pending";
+      break;
     default:
       icon = "canceled";
       break;
