@@ -27,7 +27,6 @@ import { getName } from "~/util/modifiers";
 import { BrowserTabNotification } from "~/util/browser-tab-notification";
 import { Contact } from "~/reducers/base/contacts";
 
-
 export type tabs = "ROOMS" | "PEOPLE";
 
 /**
@@ -265,8 +264,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         "callback"
       )()) as GuiderUserGroupListType;
 
-      const studentsGuidanceCouncelors: Contact[] =
-        [];
+      const studentsGuidanceCouncelors: Contact[] = [];
 
       //   This is removed due to a request from counselors. Will be implemented later
 

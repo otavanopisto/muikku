@@ -72,15 +72,6 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         await promisify(mApi().user.students.read(pyramusId), "callback")()
       );
 
-      /* Student's user groups */
-      const studentsUserGroups = <GuiderUserGroupListType>(
-        await promisify(
-          mApi().usergroup.groups.read({ userIdentifier: pyramusId }),
-          "callback"
-        )()
-      );
-
-
       /* Getting past the object with keys */
       const activityArrays: Record<string, unknown>[] = Object.keys(
         activityLogs

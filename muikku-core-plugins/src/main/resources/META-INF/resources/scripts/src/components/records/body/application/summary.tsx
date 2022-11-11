@@ -7,9 +7,7 @@ import "~/sass/elements/glyph.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import { RecordsType } from "~/reducers/main-function/records";
-import {
-  SummaryType,
-} from "~/reducers/main-function/records/summary";
+import { SummaryType } from "~/reducers/main-function/records/summary";
 import { Contacts, Contact } from "~/reducers/base/contacts";
 import { HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
