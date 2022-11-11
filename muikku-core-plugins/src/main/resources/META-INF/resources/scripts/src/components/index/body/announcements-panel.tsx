@@ -220,7 +220,7 @@ class AnnouncementsPanel extends React.Component<
           </>
         ) : (
           <div
-            className="empty"
+            className="empty empty--front-page"
             aria-label={this.props.i18n.text.get(
               "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel"
             )}
