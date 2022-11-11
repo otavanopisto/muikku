@@ -857,7 +857,6 @@
 .application-list__item-header--journal-entry {
   cursor: pointer;
   flex-flow: row wrap;
-  margin: 0 0 15px;
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row nowrap;
