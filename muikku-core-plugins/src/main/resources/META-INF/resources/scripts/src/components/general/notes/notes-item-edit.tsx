@@ -52,7 +52,7 @@ class NotesItemEdit extends SessionStateComponent<
    * @param props props
    */
   constructor(props: NotesItemEditProps) {
-    super(props, "discussion-modify-thread-dialog");
+    super(props, "records-notes-item-edit");
 
     this.clearUp = this.clearUp.bind(this);
 

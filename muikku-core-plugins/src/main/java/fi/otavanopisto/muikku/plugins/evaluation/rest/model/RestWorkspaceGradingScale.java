@@ -2,9 +2,9 @@ package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
 import java.util.List;
 
-public class WorkspaceGradingScale {
+public class RestWorkspaceGradingScale {
 
-  public WorkspaceGradingScale(String name, String id, String dataSource, List<WorkspaceGrade> grades, boolean active) {
+  public RestWorkspaceGradingScale(String name, String id, String dataSource, List<RestWorkspaceGrade> grades, boolean active) {
     super();
     this.name = name;
     this.id = id;
@@ -37,11 +37,11 @@ public class WorkspaceGradingScale {
     this.dataSource = dataSource;
   }
 
-  public List<WorkspaceGrade> getGrades() {
+  public List<RestWorkspaceGrade> getGrades() {
     return grades;
   }
 
-  public void setGrades(List<WorkspaceGrade> grades) {
+  public void setGrades(List<RestWorkspaceGrade> grades) {
     this.grades = grades;
   }
 
@@ -56,6 +56,6 @@ public class WorkspaceGradingScale {
   private String name;
   private String id;
   private String dataSource;
-  private List<WorkspaceGrade> grades;
+  private List<RestWorkspaceGrade> grades;
   private boolean active;
 }

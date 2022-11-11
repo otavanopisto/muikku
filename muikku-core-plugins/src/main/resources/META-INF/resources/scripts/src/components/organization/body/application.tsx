@@ -13,7 +13,7 @@ import Users from "./application/users";
 import UserGroups from "./application/usergroups";
 import OrganizationWorkspaces from "./application/workspaces";
 import WorkspacesAside from "./application/workspaces/aside";
-// import Reports from './application/reports';
+
 import { i18nType } from "~/reducers/base/i18n";
 import { ButtonPill } from "~/components/general/button";
 import WorkspaceDialog from "../dialogs/new-workspace";

@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
-public class WorkspaceGrade {
+public class RestWorkspaceGrade {
 
-  public WorkspaceGrade(String name, String id, String dataSource) {
+  public RestWorkspaceGrade(String name, String id, String dataSource) {
     super();
     this.name = name;
     this.id = id;

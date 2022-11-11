@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.dao.workspace;
 
 import java.util.Date;
+import java.util.List;
 
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -21,6 +22,10 @@ public class WorkspaceUserSignupDAO extends CoreDAO<WorkspaceUserSignup> {
     
     getEntityManager().persist(signup);
     return signup;
+  }
+  
+  public void delete(WorkspaceUserSignup workspaceUserSignup) {
+    super.delete(workspaceUserSignup);
   }
 
   

@@ -9,11 +9,11 @@ import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import { WorkspaceMaterialEditorType } from "~/reducers/workspaces";
 import {
-  setWorkspaceMaterialEditorState,
-  SetWorkspaceMaterialEditorStateTriggerType,
-  deleteWorkspaceMaterialContentNode,
   DeleteWorkspaceMaterialContentNodeTriggerType,
-} from "~/actions/workspaces";
+  deleteWorkspaceMaterialContentNode,
+  SetWorkspaceMaterialEditorStateTriggerType,
+  setWorkspaceMaterialEditorState,
+} from "~/actions/workspaces/material";
 
 /**
  * ConfirmDeletePageWithAnswersDialogProps

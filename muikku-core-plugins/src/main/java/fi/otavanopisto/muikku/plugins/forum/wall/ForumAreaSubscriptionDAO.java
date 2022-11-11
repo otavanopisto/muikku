@@ -7,7 +7,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.forum.wall.ForumAreaSubscription_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
@@ -58,4 +57,20 @@ public class ForumAreaSubscriptionDAO extends CorePluginsDAO<ForumAreaSubscripti
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
+  public List<ForumAreaSubscription> listByArea(ForumArea forumArea) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<ForumAreaSubscription> criteria = criteriaBuilder.createQuery(ForumAreaSubscription.class);
+    Root<ForumAreaSubscription> root = criteria.from(ForumAreaSubscription.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.equal(root.get(ForumAreaSubscription_.forumArea), forumArea.getId()));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  @Override
+  public void delete(ForumAreaSubscription forumAreaSubscription) {
+    super.delete(forumAreaSubscription);
+  }
 }

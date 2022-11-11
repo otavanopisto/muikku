@@ -27,7 +27,10 @@ const defaultProps = {
  * @param props props
  * @returns JSX.Element
  */
-const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
+const SlideDrawer = React.forwardRef<
+  HTMLElement,
+  React.PropsWithChildren<SlideDrawerProps>
+>((props, ref) => {
   props = { ...defaultProps, ...props };
 
   const {
@@ -54,6 +57,7 @@ const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
 
   return (
     <section
+      ref={ref}
       className={`${drawerClasses} ${
         modifiers
           ? modifiers
@@ -97,6 +101,8 @@ const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
       </div>
     </section>
   );
-};
+});
+
+SlideDrawer.displayName = "SlideDrawer";
 
 export default SlideDrawer;
