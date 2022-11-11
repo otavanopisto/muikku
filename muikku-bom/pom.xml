@@ -4,7 +4,7 @@
 
   <groupId>fi.otavanopisto.muikku</groupId>
   <artifactId>bom</artifactId>
-  <version>1.1.194</version>
+  <version>1.1.195-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Muikku BOM</name>
 
@@ -43,7 +43,7 @@
 
     <!-- Muikku -->
 
-    <muikku.version>1.1.194</muikku.version>
+    <muikku.version>1.1.195-SNAPSHOT</muikku.version>
 
     <!-- Webapp-permission -->
 
