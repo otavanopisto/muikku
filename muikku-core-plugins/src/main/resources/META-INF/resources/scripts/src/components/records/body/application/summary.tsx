@@ -116,22 +116,22 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
             </div>
 
-            <div className="application-sub-panel__item application-sub-panel__item--councelors">
+            <div className="application-sub-panel__item application-sub-panel__item--counselors">
               <div className="application-sub-panel__item-title">
                 {this.props.i18n.text.get(
                   "plugin.records.studyStudentCouncelorsLabel"
                 )}
               </div>
-              <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-councelors">
-                <div className="item-list item-list--student-councelors">
-                  {this.props.contacts.councelors.list.map(
-                    (councelor: Contact) => {
+              <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-counselors">
+                <div className="item-list item-list--student-counselors">
+                  {this.props.contacts.counselors.list.map(
+                    (counselor: Contact) => {
                       let displayVacationPeriod =
-                        !!councelor.properties["profile-vacation-start"];
-                      if (councelor.properties["profile-vacation-end"]) {
+                        !!counselor.properties["profile-vacation-start"];
+                      if (counselor.properties["profile-vacation-end"]) {
                         // we must check for the ending
                         const vacationEndsAt = moment(
-                          councelor.properties["profile-vacation-end"]
+                          counselor.properties["profile-vacation-end"]
                         );
                         const today = moment();
                         // if it's before or it's today then we display, otherwise nope
@@ -141,30 +141,30 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       }
                       return (
                         <div
-                          className="item-list__item item-list__item--student-councelor"
-                          key={councelor.userEntityId}
+                          className="item-list__item item-list__item--student-counselor"
+                          key={counselor.userEntityId}
                         >
                           <div className="item-list__profile-picture">
                             <Avatar
-                              id={councelor.userEntityId}
+                              id={counselor.userEntityId}
                               userCategory={3}
-                              firstName={councelor.firstName}
-                              hasImage={councelor.hasImage}
+                              firstName={counselor.firstName}
+                              hasImage={counselor.hasImage}
                             />
                           </div>
                           <div className="item-list__text-body item-list__text-body--multiline">
                             <div className="item-list__user-name">
-                              {councelor.firstName} {councelor.lastName}
+                              {counselor.firstName} {counselor.lastName}
                             </div>
                             <div className="item-list__user-contact-info">
                               <div className="item-list__user-email">
                                 <div className="glyph icon-envelope"></div>
-                                {councelor.email}
+                                {counselor.email}
                               </div>
-                              {councelor.properties["profile-phone"] ? (
+                              {counselor.properties["profile-phone"] ? (
                                 <div className="item-list__user-phone">
                                   <div className="glyph icon-phone"></div>
-                                  {councelor.properties["profile-phone"]}
+                                  {counselor.properties["profile-phone"]}
                                 </div>
                               ) : null}
                             </div>
@@ -175,12 +175,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                 )}
                                 &nbsp;
                                 {this.props.i18n.time.format(
-                                  councelor.properties["profile-vacation-start"]
+                                  counselor.properties["profile-vacation-start"]
                                 )}
-                                {councelor.properties["profile-vacation-end"]
+                                {counselor.properties["profile-vacation-end"]
                                   ? "–" +
                                     this.props.i18n.time.format(
-                                      councelor.properties[
+                                      counselor.properties[
                                         "profile-vacation-end"
                                       ]
                                     )
@@ -189,13 +189,13 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                             ) : null}
                             <div className="item-list__user-actions">
                               <CommunicatorNewMessage
-                                extraNamespace="guidance-councelor"
+                                extraNamespace="guidance-counselor"
                                 initialSelectedItems={[
                                   {
                                     type: "staff",
                                     value: {
-                                      id: councelor.userEntityId,
-                                      name: getName(councelor, true),
+                                      id: counselor.userEntityId,
+                                      name: getName(counselor, true),
                                     },
                                   },
                                 ]}
@@ -214,16 +214,16 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                   ]}
                                 ></ButtonPill>
                               </CommunicatorNewMessage>
-                              {councelor.properties["profile-phone"] &&
-                              councelor.properties["profile-whatsapp"] ? (
+                              {counselor.properties["profile-phone"] &&
+                              counselor.properties["profile-whatsapp"] ? (
                                 <WhatsappButtonLink
                                   i18n={this.props.i18n}
                                   mobileNumber={
-                                    councelor.properties["profile-phone"]
+                                    counselor.properties["profile-phone"]
                                   }
                                 />
                               ) : null}
-                              {councelor.properties[
+                              {counselor.properties[
                                 "profile-appointmentCalendar"
                               ] ? (
                                 <ButtonPill
@@ -237,7 +237,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                   buttonModifiers="appointment-calendar"
                                   openInNewTab="_blank"
                                   href={
-                                    councelor.properties[
+                                    counselor.properties[
                                       "profile-appointmentCalendar"
                                     ]
                                   }

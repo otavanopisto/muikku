@@ -995,7 +995,7 @@ export default class MainFunction extends React.Component<
       this.loadlib(
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
-      this.props.store.dispatch(loadContactGroup("councelors") as Action);
+      this.props.store.dispatch(loadContactGroup("counselors") as Action);
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(

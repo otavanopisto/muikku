@@ -268,7 +268,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       const studentsGuidanceCouncelors: Contact[] =
         [];
 
-      //   This is removed due to a request from councelors. Will be implemented later
+      //   This is removed due to a request from counselors. Will be implemented later
 
       // if (studentsUserGroups && studentsUserGroups.length) {
       //   const councelGroups = studentsUserGroups.filter(
@@ -311,7 +311,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     } catch (e) {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.chat.notification.councelorLoadFailed"
+          "plugin.chat.notification.counselorLoadFailed"
         ),
         "error"
       );
@@ -1189,25 +1189,25 @@ class Chat extends React.Component<IChatProps, IChatState> {
               {this.props.status.isStudent ? (
                 <>
                   <div className="chat__controlbox-private-chat-heading">
-                    {this.props.i18n.text.get("plugin.chat.people.councelors")}
+                    {this.props.i18n.text.get("plugin.chat.people.counselors")}
                   </div>
                   <div className="chat__controlbox-people-listing">
                     {this.state.studyGuiders.length > 0 ? (
-                      this.state.studyGuiders.map((councelor) => {
+                      this.state.studyGuiders.map((counselor) => {
                         const person: IChatContact = {
-                          jid: getUserChatId(councelor.userEntityId, "staff"),
-                          name: getName(councelor, true),
+                          jid: getUserChatId(counselor.userEntityId, "staff"),
+                          name: getName(counselor, true),
                         };
                         return (
                           <Person
-                            modifier="councelor"
+                            modifier="counselor"
                             person={person}
                             toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
                               this,
                               person.jid,
                               true
                             )}
-                            key={councelor.userEntityId}
+                            key={counselor.userEntityId}
                           />
                         );
                       })

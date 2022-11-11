@@ -31,7 +31,7 @@ export interface Contact {
  * CredentialsType
  */
 export interface Contacts {
-  councelors: ContactGroup;
+  counselors: ContactGroup;
 }
 
 export type ContactGroupNames = keyof Contacts;
@@ -40,7 +40,7 @@ export type ContactGroupNames = keyof Contacts;
  * initialContactsState
  */
 const initialContactsState: Contacts = {
-  councelors: {
+  counselors: {
     state: "WAITING",
     list: [],
   },
