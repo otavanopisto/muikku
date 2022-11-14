@@ -25,6 +25,10 @@ export interface WhoAmIType {
   hasImage: boolean;
   id: number;
   /**
+   * Whether user is active
+   */
+  isActive: boolean;
+  /**
    * PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
    */
   identifier: string;
@@ -120,11 +124,7 @@ const roleNode = document.querySelector('meta[name="muikku:role"]');
  */
 export default function status(
   state: StatusType = {
-    loggedIn: JSON.parse(
-      document
-        .querySelector('meta[name="muikku:loggedIn"]')
-        .getAttribute("value")
-    ), //whoami.id
+    loggedIn: false, //whoami.id is checked if exists
     userId: null, // whoami.id
     userSchoolDataIdentifier: null, // whoami.identifier
     role: <Role>(
@@ -132,12 +132,8 @@ export default function status(
     ),
     permissions: {},
     contextPath: "", // always empty
-    isActiveUser: JSON.parse(
-      document
-        .querySelector('meta[name="muikku:activeUser"]')
-        .getAttribute("value")
-    ), // missing
-    hasFees: false,
+    isActiveUser: false, // whoamI.isActive
+    hasFees: false, // whoami.hasEvaluationFees
     profile: null,
     isStudent: roleNode.getAttribute("value") === "STUDENT", // check if roles contain STUDENT
     currentWorkspaceInfo: null,

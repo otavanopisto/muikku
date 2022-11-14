@@ -57,6 +57,7 @@ async function loadWhoAMI(
       userId: whoAmI.id,
       hasImage: whoAmI.hasImage,
       hasFees: whoAmI.hasEvaluationFees,
+      isActiveUser: whoAmI.isActive,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
           "CREATE_ANNOUNCEMENT"
