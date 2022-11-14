@@ -56,6 +56,7 @@ async function loadWhoAMI(
       loggedIn: !!whoAmI.id,
       userId: whoAmI.id,
       hasImage: whoAmI.hasImage,
+      hasFees: whoAmI.hasEvaluationFees,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
           "CREATE_ANNOUNCEMENT"
@@ -108,6 +109,11 @@ async function loadWhoAMI(
         curriculumName: whoAmI.curriculumName,
       },
     },
+  });
+
+  dispatch({
+    type: "LOCALE_UPDATE",
+    payload: whoAmI.locale,
   });
 
   whoAmIReadyCb();

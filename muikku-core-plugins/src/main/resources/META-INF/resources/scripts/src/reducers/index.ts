@@ -1,6 +1,6 @@
 import { EasyToUseFunctionState } from "./easy-to-use-functions/index";
 import { i18nType } from "./base/i18n";
-import { LocaleListType } from "./base/locales";
+import { LocaleState } from "./base/locales";
 import { NotificationState } from "./base/notifications";
 import { CredentialsType } from "./base/credentials";
 import { StatusType } from "./base/status";
@@ -38,7 +38,7 @@ import { JournalsState } from "./workspaces/journals";
 export interface StateType {
   notifications: NotificationState;
   i18n: i18nType;
-  locales: LocaleListType;
+  locales: LocaleState;
   status: StatusType;
   title: string;
   websocket?: WebsocketStateType;

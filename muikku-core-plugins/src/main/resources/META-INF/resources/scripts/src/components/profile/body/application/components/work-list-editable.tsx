@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import {
   EditableField,
   StoredWorklistItem,
@@ -30,7 +30,7 @@ const dayOfCurrentMonth: number = moment(new Date()).date();
  */
 interface WorkListEditableProps {
   i18n: i18nType;
-  locales: LocaleListType;
+  locales: LocaleState;
   onSubmit: (data: {
     description: string;
     date: string;
