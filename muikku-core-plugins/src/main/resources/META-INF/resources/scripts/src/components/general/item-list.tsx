@@ -29,7 +29,7 @@ const ItemList: React.FC<ItemListProps> & {
           <div className="item-list__content">{children}</div>
         </>
       ) : (
-        <>{children}</>
+        children
       )}
     </div>
   );
@@ -82,7 +82,7 @@ const ListItem = <C extends React.ElementType = "div">(
           <span className="item-list__text-body">{children}</span>
         </>
       ) : (
-        <>{children}</>
+        children
       )}
     </Component>
   );
@@ -95,6 +95,11 @@ interface FooterProps {
   modifier?: string;
 }
 
+/**
+ * ItemFooter component
+ * @param props
+ * @returns JSX.Element
+ */
 const ItemFooter: React.FC<FooterProps> = (props) => {
   const { modifier, children } = props;
 

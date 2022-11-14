@@ -32,7 +32,7 @@ interface WorkspacesPanelProps {
 }
 
 /**
- *
+ * StudiesPanel component
  * @param props
  * @returns  JSX.element
  */
@@ -48,7 +48,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
   return (
     <Panel
       icon="icon-books"
-      modifier="studying"
+      modifier="workspaces"
       header={i18n.text.get("plugin.frontPage.studies.title")}
     >
       {lastWorkspace ? (
