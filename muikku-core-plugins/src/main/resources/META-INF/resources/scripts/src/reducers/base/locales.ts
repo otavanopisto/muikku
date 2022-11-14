@@ -1,31 +1,20 @@
-//TODO this reducer uses the api that interacts with the DOM in order to
-//retrieve data, please fix in next versions
-import $ from "~/lib/jquery";
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 
 /**
- * LocaleListType
+ * LocaleState
  */
-export interface LocaleListType {
-  available: {
-    name: string;
-    locale: string;
-  }[];
-  current: string;
+export interface LocaleState {
+  current?: string;
 }
+
+export type LocaleType = "en" | "fi";
 
 /**
  * initialLocalesState
  */
-const initialLocalesState: LocaleListType = {
-  available: $.makeArray(
-    $("#language-picker a").map((index: number, element: HTMLElement) => ({
-      name: $(element).text().trim(),
-      locale: $(element).data("locale"),
-    }))
-  ),
-  current: $("#locale").text(),
+const initialLocalesState: LocaleState = {
+  current: undefined,
 };
 
 /**
@@ -35,13 +24,15 @@ const initialLocalesState: LocaleListType = {
  * @param action action
  * @returns State of locales
  */
-export const locales: Reducer<LocaleListType> = (
+export const locales: Reducer<LocaleState> = (
   state = initialLocalesState,
   action: ActionType
 ) => {
   switch (action.type) {
-    case "SET_LOCALE":
-      $('#language-picker a[data-locale="' + action.payload + '"]').click();
+    case "LOCALE_SET":
+      return Object.assign({}, state, { current: action.payload });
+
+    case "LOCALE_UPDATE":
       return Object.assign({}, state, { current: action.payload });
 
     default:

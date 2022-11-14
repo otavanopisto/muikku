@@ -25,6 +25,7 @@ export interface WhoAmIType {
   hasImage: boolean;
   id: number;
   organizationIdentifier: string;
+  locale: string;
   nickName: string;
   isDefaultOrganization: boolean;
   permissions: string[];
@@ -139,11 +140,7 @@ export default function status(
         .querySelector('meta[name="muikku:activeUser"]')
         .getAttribute("value")
     ), // missing
-    hasFees: JSON.parse(
-      document
-        .querySelector('meta[name="muikku:hasFees"]')
-        .getAttribute("value")
-    ),
+    hasFees: false,
     profile: null,
     isStudent: roleNode.getAttribute("value") === "STUDENT", // check if roles contain STUDENT
     currentWorkspaceInfo: null,
