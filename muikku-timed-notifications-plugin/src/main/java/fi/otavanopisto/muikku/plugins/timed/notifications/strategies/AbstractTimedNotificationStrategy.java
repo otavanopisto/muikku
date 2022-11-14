@@ -1,12 +1,14 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -16,12 +18,15 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 
 public abstract class AbstractTimedNotificationStrategy implements TimedNotificationStrategy {
@@ -99,6 +104,58 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
     return result;
   }
 
+  /**
+   * Returns study start date for a given search result. If the result has study periods
+   * of type TEMPORARILY SUSPENDED, the latest end date of such period is considered as 
+   * the study start date. This is to avoid notifiers triggering on students that are on 
+   * a temporary leave. 
+   * 
+   * @param studentSearchResult
+   * @return
+   */
+  protected Date getStudyStartDateIncludingTemporaryLeaves(Map<String, Object> studentSearchResult) {
+    Date studyStartDate = getDateResult(studentSearchResult.get("studyStartDate"));
+
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> studyPeriods = (List<Map<String, Object>>) studentSearchResult.get("studyPeriods");
+    
+    LocalDate maxEndDate = null;
+    
+    if (CollectionUtils.isNotEmpty(studyPeriods)) {
+      for (Map<String, Object> studyPeriod : studyPeriods) {
+        UserStudyPeriodType studyPeriodType = EnumUtils.getEnum(UserStudyPeriodType.class, (String) studyPeriod.get("type"));
+        
+        if (studyPeriodType == UserStudyPeriodType.TEMPORARILY_SUSPENDED) {
+          String periodEndStr = (String) studyPeriod.get("end");
+          
+          if (StringUtils.isNotBlank(periodEndStr)) {
+            LocalDate periodEnd = LocalDate.parse(periodEndStr);
+            if (periodEnd == null) {
+              // If a period has no end date, it's considered as ongoing forever - thus
+              // the startdate cannot be determined like this
+              studyStartDate = null;
+              maxEndDate = null;
+              break;
+            }
+            else if (maxEndDate == null || (periodEnd != null && periodEnd.isAfter(periodEnd))) {
+              maxEndDate = periodEnd;
+            }
+          }
+        }
+      }
+    }
+    
+    // If there is a period end date, we consider that + 1 day as the study start date
+    
+    if (maxEndDate != null) {
+      Date date = Date.from(maxEndDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+      
+      return date.after(studyStartDate) ? date : studyStartDate;
+    }
+    
+    return studyStartDate;
+  }
+  
   protected OffsetDateTime fromDateToOffsetDateTime(Date date) {
     if (date == null) {
       return null;

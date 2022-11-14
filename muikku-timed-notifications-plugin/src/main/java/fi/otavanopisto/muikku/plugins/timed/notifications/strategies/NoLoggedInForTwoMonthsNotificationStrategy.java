@@ -167,8 +167,13 @@ public class NoLoggedInForTwoMonthsNotificationStrategy extends AbstractTimedNot
         logger.severe(String.format("Could not process user found from search index with id %s", studentId));
         continue;
       }
-      OffsetDateTime sendNotificationIfNotLoggedInBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
 
+      Date studyStartDate = getStudyStartDateIncludingTemporaryLeaves(result);
+      if (studyStartDate == null) {
+        // Skip if the study start date (or end of temporary leave) cannot be determined as it implies the student is not active
+        continue;
+      }
+      
       Long userEntityId = new Long((int) result.get("userEntityId"));
       UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
       if (studentEntity == null) {
@@ -179,6 +184,8 @@ public class NoLoggedInForTwoMonthsNotificationStrategy extends AbstractTimedNot
         continue;
       }
       
+      OffsetDateTime sendNotificationIfNotLoggedInBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
+
       if (studentEntity.getLastLogin().before(Date.from(sendNotificationIfNotLoggedInBefore.toInstant()))) {
         studentIdentifiers.add(studentIdentifier);
       }

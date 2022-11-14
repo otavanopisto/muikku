@@ -119,7 +119,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
           logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
           continue;
         }
-        Date studyStartDate = getDateResult(result.get("studyStartDate"));
+        Date studyStartDate = getStudyStartDateIncludingTemporaryLeaves(result);
         
         // Do not notify students that have no study start date set or have started their studies within the last 60 days
         

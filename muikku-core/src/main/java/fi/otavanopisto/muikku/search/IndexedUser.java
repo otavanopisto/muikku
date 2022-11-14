@@ -254,6 +254,14 @@ public class IndexedUser {
     this.groups = groups;
   }
 
+  public Set<IndexedUserStudyPeriod> getStudyPeriods() {
+    return studyPeriods;
+  }
+
+  public void setStudyPeriods(Set<IndexedUserStudyPeriod> studyPeriods) {
+    this.studyPeriods = studyPeriods;
+  }
+
   private String identifier;
   private String schoolDataSource;
   private String firstName;
@@ -279,5 +287,5 @@ public class IndexedUser {
   private String email;
   private Set<Long> workspaces;
   private Set<Long> groups;
-
+  private Set<IndexedUserStudyPeriod> studyPeriods;
 }

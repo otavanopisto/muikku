@@ -144,8 +144,9 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
         continue;
       }
       
-      Date studyStartDate = getDateResult(result.get("studyStartDate"));
+      Date studyStartDate = getStudyStartDateIncludingTemporaryLeaves(result);
       if (studyStartDate == null) {
+        // Skip if the study start date (or end of temporary leave) cannot be determined as it implies the student is not active
         continue;
       }
       
