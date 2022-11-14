@@ -24,6 +24,10 @@ export interface WhoAmIType {
   hasEvaluationFees: boolean;
   hasImage: boolean;
   id: number;
+  /**
+   * PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
+   */
+  identifier: string;
   organizationIdentifier: string;
   locale: string;
   nickName: string;
@@ -42,9 +46,9 @@ export interface WhoAmIType {
 export interface StatusType {
   loggedIn: boolean;
   userId: number;
+  userSchoolDataIdentifier: string;
   permissions: any;
   contextPath: string;
-  userSchoolDataIdentifier: string;
   isActiveUser: boolean;
   role: Role;
   isStudent: boolean;
@@ -122,14 +126,12 @@ export default function status(
         .getAttribute("value")
     ), //whoami.id
     userId: null, // whoami.id
+    userSchoolDataIdentifier: null, // whoami.identifier
     role: <Role>(
       document.querySelector('meta[name="muikku:role"]').getAttribute("value")
     ),
     permissions: {},
     contextPath: "", // always empty
-    userSchoolDataIdentifier: document
-      .querySelector('meta[name="muikku:loggedUser"]')
-      .getAttribute("value"), // missing
     isActiveUser: JSON.parse(
       document
         .querySelector('meta[name="muikku:activeUser"]')
