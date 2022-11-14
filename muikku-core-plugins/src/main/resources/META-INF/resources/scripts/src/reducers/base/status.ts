@@ -121,12 +121,7 @@ export default function status(
         .querySelector('meta[name="muikku:loggedIn"]')
         .getAttribute("value")
     ), //whoami.id
-    userId:
-      parseInt(
-        document
-          .querySelector('meta[name="muikku:loggedUserId"]')
-          .getAttribute("value")
-      ) || null, // whoami.id
+    userId: null, // whoami.id
     role: <Role>(
       document.querySelector('meta[name="muikku:role"]').getAttribute("value")
     ),

@@ -958,9 +958,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     );
     const expectedId =
       (this.state.isStudent ? "muikku-student-" : "muikku-staff-") +
-      document
-        .querySelector('meta[name="muikku:loggedUserId"]')
-        .getAttribute("value");
+      this.props.status.userId.toString();
 
     let prebind: IPrebindResponseType = null;
     const isRestore = !!session;
