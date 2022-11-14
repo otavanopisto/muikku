@@ -70,7 +70,25 @@ public class MeRESTService {
 
   @Inject
   private UserGroupGuidanceController userGroupGuidanceController;
-  
+
+  /**
+   * Returns the server side locale for current user or default if not logged in.
+   * 
+   * Returns:
+   * {
+   *    lang: "en"
+   * }
+   */
+  @GET
+  @Path("/locale")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response getLocale() {
+    Locale locale = localSessionController.getLocale();
+    String lang = (locale == null || locale.getLanguage() == null) ? "FI" : locale.getLanguage().toUpperCase();
+
+    return Response.ok(new LanguageSelectionRestModel(lang)).build();
+  }
+
   /**
    * Sets the server side locale for current user.
    * 
