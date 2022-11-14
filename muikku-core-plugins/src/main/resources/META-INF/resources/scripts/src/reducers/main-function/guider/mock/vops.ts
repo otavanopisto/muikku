@@ -579,7 +579,7 @@ export default {
           grade: null,
           name: "FY1 - Fysiikka luonnontieteenä",
           description:
-            "Kurssilla tutustutaan fysiikan muovaamaan maailmankuvaan. Keskeiset sisällöt ovat fysiikan merkitys nykyaikana, jatko-opinnoissa ja työelämässä, tutustuminen perusvuorovaikutuksiin, maailmankaikkeuden rakenteisiin ja syntyyn sekä aineen rakenteeseen, voima liikkeen muutoksen aiheuttajana ja liikeilmiöt, tutkimukset ja mallintaminen fysikaalisen tiedon rakentumisessa sekä tulosten kerääminen, esittäminen graafisesti ja luotettavuuden arviointi. Numerarviointi.",
+            "Kurssilla tutustutaan fysiikan muovaamaan maailmankuvaan. Keskeiset sisällöt ovat fysiikan merkitys nykyaikana, jatko-opinnoissa ja työelämässä, tutustuminen perusvuorovaikutuksiin, maailmankaikkeuden rakenteisiin ja syntyyn sekä aineen rakenteeseen, voima liikkeen muutoksen aiheuttajana ja liikeilmiöt, tutkimukset ja mallintaminen fysikaalisen tiedon rakentumisessa sekä tulosten kerääminen, esittäminen graafisesti ja luotettavuuden arviointi. Numeroarviointi.",
           placeholder: false,
         },
         {
