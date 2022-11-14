@@ -37,7 +37,7 @@ export interface WhoAmIType {
   nickName: string;
   isDefaultOrganization: boolean;
   permissions: string[];
-  roles: string[];
+  role: Role;
   studyProgrammeName: string;
   studyProgrammeIdentifier: string;
   addresses: string;
@@ -114,7 +114,6 @@ export enum Role {
 const workspaceIdNode = document.querySelector(
   'meta[name="muikku:workspaceId"]'
 );
-const roleNode = document.querySelector('meta[name="muikku:role"]');
 
 // _MUIKKU_LOCALE should be taken from the html
 /**
@@ -127,15 +126,13 @@ export default function status(
     loggedIn: false, //whoami.id is checked if exists
     userId: null, // whoami.id
     userSchoolDataIdentifier: null, // whoami.identifier
-    role: <Role>(
-      document.querySelector('meta[name="muikku:role"]').getAttribute("value")
-    ),
+    role: undefined, // whoami.role
     permissions: {},
     contextPath: "", // always empty
     isActiveUser: false, // whoamI.isActive
     hasFees: false, // whoami.hasEvaluationFees
     profile: null,
-    isStudent: roleNode.getAttribute("value") === "STUDENT", // check if roles contain STUDENT
+    isStudent: false, // check if role is STUDENT
     currentWorkspaceInfo: null,
     hasImage: false,
     imgVersion: new Date().getTime(),

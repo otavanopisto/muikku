@@ -8,6 +8,7 @@ import {
   WhoAmIType,
 } from "~/reducers/base/status";
 import promisify from "~/util/promisify";
+import { Role } from "../../reducers/base/status";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -58,6 +59,8 @@ async function loadWhoAMI(
       hasImage: whoAmI.hasImage,
       hasFees: whoAmI.hasEvaluationFees,
       isActiveUser: whoAmI.isActive,
+      role: whoAmI.role,
+      isStudent: whoAmI.role === Role.STUDENT,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
           "CREATE_ANNOUNCEMENT"

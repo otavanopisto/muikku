@@ -167,8 +167,6 @@ interface IChatProps {
   displayNotification: DisplayNotificationTriggerType;
 }
 
-const roleNode = document.querySelector('meta[name="muikku:role"]');
-
 /**
  * Chat
  */
@@ -199,7 +197,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       showControlBox:
         JSON.parse(window.sessionStorage.getItem("showControlBox")) || false,
       showNewRoomForm: false,
-      isStudent: roleNode.getAttribute("value") === "STUDENT",
+      isStudent: props.status.isStudent,
       openRoomNumber: null,
 
       // we should have these open
@@ -1312,6 +1310,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               (r) => r.type === "muc" && r.jid === chat.roomJID
             ) ? (
               <Groupchat
+                status={this.props.status}
                 removeChatRoom={this.removeChatRoom.bind(this, chat.roomJID)}
                 requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(
                   this,
@@ -1335,6 +1334,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
             .filter((r) => r.type === "user")
             .map((pchat) => (
               <PrivateChat
+                status={this.props.status}
                 setTabNotification={this.handleTabNotification}
                 jid={pchat.jid}
                 roster={this.state.roster}
