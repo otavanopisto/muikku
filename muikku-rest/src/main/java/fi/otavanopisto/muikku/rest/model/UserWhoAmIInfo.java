@@ -24,6 +24,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               boolean isActive,
               Set<String> permissions,
               Set<String> roles,
+              String locale,
               String displayName,
               String emails,
               String addresses,
@@ -42,6 +43,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.organizationIdentifier = organizationIdentifier;
     this.isDefaultOrganization = isDefaultOrganization;
     this.isActive = isActive;
+    this.locale = locale;
     this.setPermissions(permissions);
     this.setRoles(roles);
     this.displayName = displayName;
@@ -198,6 +200,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.studyTimeEnd = studyTimeEnd;
   }
 
+  public String getLocale() {
+    return locale;
+  }
+
+  public void setLocale(String locale) {
+    this.locale = locale;
+  }
+
   private String studyProgrammeName;
   private String studyProgrammeIdentifier;
   private boolean hasEvaluationFees;
@@ -216,5 +226,6 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private OffsetDateTime studyStartDate;
   private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;
-  
+  private String locale;
+
 }
