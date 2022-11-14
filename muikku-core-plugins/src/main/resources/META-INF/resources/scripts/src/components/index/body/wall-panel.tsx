@@ -56,8 +56,8 @@ const WallPanel: React.FC<WallProps> = (props) => {
             />
           ))
         ) : (
-          <div className="empty">
-            {i18n.text.get("plugin.records.tasks.empty")}
+          <div className="empty empty--front-page">
+            {i18n.text.get("plugin.frontPage.wall.tasks.empty")}
           </div>
         )}
       </Panel.BodyContent>
