@@ -1675,13 +1675,13 @@ public class UserRESTService extends AbstractRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     SchoolDataIdentifier userIdentifier = userEntity == null ? null : sessionController.getLoggedUser();
 
-    // User roles
+    // User role
     
-    Set<String> roleSet = new HashSet<String>();
+    EnvironmentRoleArchetype role = null;
     if (userIdentifier != null) {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
           findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
-      roleSet.add(userSchoolDataIdentifier.getRole().getArchetype().toString());
+      role = userSchoolDataIdentifier.getRole().getArchetype();
     }
     
     // Environment level permissions
@@ -1785,7 +1785,7 @@ public class UserRESTService extends AbstractRESTService {
         isDefaultOrganization,
         currentUserSession.isActive(),
         permissionSet,
-        roleSet,
+        role,
         locale,
         user == null ? null : user.getDisplayName(),
         emails,
