@@ -123,13 +123,21 @@ const workspaceIdNode = document.querySelector(
  */
 export default function status(
   state: StatusType = {
-    loggedIn: false, //whoami.id is checked if exists
+    loggedIn: JSON.parse(
+      document
+        .querySelector('meta[name="muikku:loggedIn"]')
+        .getAttribute("value")
+    ), //whoami.id is checked if exists
     userId: null, // whoami.id
     userSchoolDataIdentifier: null, // whoami.identifier
     role: undefined, // whoami.role
     permissions: {},
     contextPath: "", // always empty
-    isActiveUser: false, // whoamI.isActive
+    isActiveUser: JSON.parse(
+      document
+        .querySelector('meta[name="muikku:activeUser"]')
+        .getAttribute("value")
+    ), // whoamI.isActive
     hasFees: false, // whoami.hasEvaluationFees
     profile: null,
     isStudent: false, // check if role is STUDENT

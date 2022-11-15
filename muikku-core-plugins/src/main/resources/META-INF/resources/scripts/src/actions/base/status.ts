@@ -61,6 +61,7 @@ async function loadWhoAMI(
       isActiveUser: whoAmI.isActive,
       role: whoAmI.role,
       isStudent: whoAmI.role === Role.STUDENT,
+      userSchoolDataIdentifier: whoAmI.identifier,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
           "CREATE_ANNOUNCEMENT"
