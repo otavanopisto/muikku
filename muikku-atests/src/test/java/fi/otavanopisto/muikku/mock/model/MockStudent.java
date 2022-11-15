@@ -1,7 +1,11 @@
 package fi.otavanopisto.muikku.mock.model;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 
 public class MockStudent extends MockLoggable{
 
@@ -91,6 +95,15 @@ public class MockStudent extends MockLoggable{
   public void setStudyEndTime(OffsetDateTime studyEndTime) {
     this.studyEndTime = studyEndTime;
   }
+  
+  public List<StudentGroupUser> getCounselors() {
+    return counselors;
+  }
+  
+  public void addCounselor(StudentGroupUser counselor) {
+    this.counselors.add(counselor);
+  }
+  
   //  public List<Long> getCourses() {
 //    return courses;
 //  }
@@ -110,5 +123,5 @@ public class MockStudent extends MockLoggable{
   private OffsetDateTime studyStartDate;
   private OffsetDateTime studyEndTime;
 //  private List<Long> courses;
-  
+  private List<StudentGroupUser> counselors = new ArrayList<>();
 }
