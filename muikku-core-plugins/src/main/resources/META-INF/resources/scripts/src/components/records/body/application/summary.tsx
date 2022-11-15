@@ -122,7 +122,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-counselors">
                 <div className="item-list item-list--student-counselors">
-                  {this.props.contacts.counselors.list.length < 0 ? (
+                  {this.props.contacts.counselors.list.length > 0 ? (
                     this.props.contacts.counselors.list.map(
                       (counselor: Contact) => {
                         let displayVacationPeriod =
