@@ -10,6 +10,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -26,6 +27,7 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -71,6 +73,9 @@ public class MeRESTService {
   @Inject
   private UserGroupGuidanceController userGroupGuidanceController;
   
+  @Inject
+  private ChatController chatController;
+  
   /**
    * Sets the server side locale for current user.
    * 
@@ -105,7 +110,9 @@ public class MeRESTService {
   @GET
   @Path("/guidanceCounselors")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listGuidanceCounselors(@QueryParam("properties") String properties) {
+  public Response listGuidanceCounselors(
+      @QueryParam("onlyChatEnabled") @DefaultValue("false") boolean onlyChatEnabled,
+      @QueryParam("properties") String properties) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -121,6 +128,10 @@ public class MeRESTService {
     List<fi.otavanopisto.muikku.rest.model.StaffMember> staffMembers = new ArrayList<>();
     
     for (UserEntity userEntity : guidanceCouncelors) {
+      if (onlyChatEnabled && !chatController.isChatEnabled(userEntity)) {
+        continue;
+      }
+      
       boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
       SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
       UserEntityName userEntityName = userEntityController.getName(userEntity);
