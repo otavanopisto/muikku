@@ -2,12 +2,12 @@ import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import { LocaleType } from "~/reducers/base/locales";
+import { LocaleReadResponse, LocaleType } from "~/reducers/base/locales";
 import promisify from "~/util/promisify";
 import notificationActions from "~/actions/base/notifications";
 
 // ACTIONS for locale
-export type LOCALE_SET = SpecificActionType<"LOCALE_SET", LocaleType>;
+export type LOCALE_SET = SpecificActionType<"LOCALE_SET", string>;
 
 export type LOCALE_UPDATE = SpecificActionType<"LOCALE_UPDATE", string>;
 
@@ -25,10 +25,10 @@ export interface SetLocaleTriggerType {
 }
 
 /**
- * SetLocaleTriggerType
+ * LoadLocaleTriggerType
  */
-export interface SetCurrentLocaleTriggerType {
-  (data: { onSuccess?: () => void; onFail?: () => void }): AnyActionType;
+export interface LoadLocaleTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -66,5 +66,36 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
   };
 };
 
-export default { setLocale };
-export { setLocale };
+/**
+ * loadLocale
+ */
+const loadLocale: LoadLocaleTriggerType = function loadLocale() {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    try {
+      const locale = (await promisify(
+        mApi().me.locale.read(),
+        "callback"
+      )()) as LocaleReadResponse;
+
+      dispatch({
+        type: "LOCALE_UPDATE",
+        payload: locale.lang,
+      });
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          state.i18n.text.get("Hups", err.message),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+export default { setLocale, loadLocale };
+export { setLocale, loadLocale };

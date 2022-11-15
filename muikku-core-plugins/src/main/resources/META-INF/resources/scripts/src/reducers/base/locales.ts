@@ -11,6 +11,13 @@ export interface LocaleState {
 export type LocaleType = "en" | "fi";
 
 /**
+ * LocaleReadResponse
+ */
+export interface LocaleReadResponse {
+  lang: string;
+}
+
+/**
  * initialLocalesState
  */
 const initialLocalesState: LocaleState = {
