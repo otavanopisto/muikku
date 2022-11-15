@@ -17,7 +17,16 @@
   }
 }
 
-.empty--dialog-row {
+.empty--dialog-row,
+.empty--sub-panel-data {
   justify-content: left;
   padding: 0;
+}
+
+
+.empty--sub-panel-data {
+  span {
+    font-size: inherit;
+    font-weight: 400;
+  }
 }

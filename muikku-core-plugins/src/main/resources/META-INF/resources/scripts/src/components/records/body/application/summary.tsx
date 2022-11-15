@@ -122,7 +122,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-counselors">
                 <div className="item-list item-list--student-counselors">
-                  {this.props.contacts.counselors.list.length > 0 ? (
+                  {this.props.contacts.counselors.list.length < 0 ? (
                     this.props.contacts.counselors.list.map(
                       (counselor: Contact) => {
                         let displayVacationPeriod =
@@ -251,7 +251,13 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       }
                     )
                   ) : (
-                    <div className="empty">Ei ohjaajia</div>
+                    <div className="empty empty--sub-panel-data">
+                      <span className="application-sub-panel__single-entry">
+                        {this.props.i18n.text.get(
+                          "plugin.records.summary.counselors.empty"
+                        )}
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>
