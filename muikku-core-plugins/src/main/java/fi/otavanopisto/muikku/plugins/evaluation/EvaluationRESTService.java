@@ -1293,6 +1293,7 @@ public class EvaluationRESTService extends PluginRESTService {
           
           // With all afore-mentioned anomalies out of the way, the state of the user in this workspace is, indeed, interim evaluation requested 
           
+          restAssessmentRequest.setId(interimEvaluationRequest.getId());
           restAssessmentRequest.setAssessmentRequestDate(interimEvaluationRequest.getRequestDate());
           restAssessmentRequest.setInterimEvaluationRequest(true);
         }
