@@ -310,6 +310,9 @@ class InterimEvaluationEditor extends React.Component<
     return (
       <>
         <div className="material-page__content rich-text">
+          <span className="material-page__interim-evaluation-field-label">
+            Viesti opettajalle:
+          </span>
           <span className={`material-page__interim-evaluation-wrapper`}>
             {field}
           </span>

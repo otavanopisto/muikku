@@ -245,9 +245,15 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     rest.workspaceEntityId !== selectedWorkspaceId ? (
       <DeleteRequestDialog {...rest}>
         <ButtonPill
-          aria-label={i18n.text.get(
-            "plugin.evaluation.card.button.deleteRequest.title"
-          )}
+          aria-label={
+            rest.interimEvaluationRequest
+              ? i18n.text.get(
+                  "plugin.evaluation.card.button.deleteInterimRequest.title"
+                )
+              : i18n.text.get(
+                  "plugin.evaluation.card.button.deleteRequest.title"
+                )
+          }
           buttonModifiers="archive-request"
           icon="trash"
         />

@@ -153,6 +153,11 @@ export interface AssessmentRequest {
   workspaceUrlName: string;
   workspaceUserEntityId: number;
   workspaceUserIdentifier: string;
+  /**
+   * If request is interim evaluation request id is latest interim evaluation request.
+   * Otherwise id is related evaluation request.
+   */
+  id: number;
   subjects: EvaluationWorkspaceSubject[];
 }
 

@@ -449,6 +449,17 @@ export interface DeleteAssessmentRequest {
 }
 
 /**
+ * DeleteInterimEvaluationRequest
+ */
+export interface DeleteInterimEvaluationRequest {
+  (data: {
+    interimEvaluatiomRequestId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
  * ArchiveStudent
  */
 export interface ArchiveStudent {
@@ -2009,6 +2020,47 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
   };
 
 /**
+ * Delete interim evaluation request
+ * @param param0 param0
+ * @param param0.interimEvaluatiomRequestId interimEvaluatiomRequestId
+ */
+const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
+  function deleteAssessmentRequest({ interimEvaluatiomRequestId }) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        await promisify(
+          mApi().evaluation.interimEvaluationRequest.del(
+            interimEvaluatiomRequestId
+          ),
+          "callback"
+        )().then(() => {
+          notificationActions.displayNotification(
+            "Välipalautepyyntö poistettu onnistuneesti",
+            "success"
+          );
+
+          dispatch(loadEvaluationAssessmentRequestsFromServer());
+        });
+      } catch (error) {
+        dispatch(
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.deleteRequest.error",
+              error.message
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
  * Archives student from workspace
  * @param root0 root0
  * @param root0.workspaceEntityId workspaceEntityId
@@ -2467,6 +2519,7 @@ export {
   loadBasePriceFromServer,
   archiveStudent,
   deleteAssessmentRequest,
+  deleteInterimEvaluationRequest,
   loadEvaluationJournalCommentsFromServer,
   createEvaluationJournalComment,
   updateEvaluationJournalComment,
