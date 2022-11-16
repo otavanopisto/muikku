@@ -128,7 +128,9 @@ public class MeRESTService {
     List<fi.otavanopisto.muikku.rest.model.StaffMember> staffMembers = new ArrayList<>();
     
     for (UserEntity userEntity : guidanceCouncelors) {
-      if (onlyChatEnabled && !chatController.isChatEnabled(userEntity)) {
+      boolean chatEnabled = chatController.isChatEnabled(userEntity);
+
+      if (onlyChatEnabled && !chatEnabled) {
         continue;
       }
       
@@ -154,7 +156,7 @@ public class MeRESTService {
         }
       }
 
-      staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
+      staffMembers.add(new GuidanceCounselorRestModel(
           userEntity.defaultSchoolDataIdentifier().toId(),
           userEntity.getId(),
           userEntityName.getFirstName(),
@@ -163,7 +165,8 @@ public class MeRESTService {
           propertyMap,
           organizationRESTModel,
           usdi.getRole() != null && usdi.getRole().getArchetype() != null ? usdi.getRole().getArchetype().name() : null,
-          hasImage));
+          hasImage,
+          chatEnabled));
     }
     
     return Response.ok(staffMembers).build();
