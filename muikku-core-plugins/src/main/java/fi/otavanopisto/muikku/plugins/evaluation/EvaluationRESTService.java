@@ -1551,7 +1551,11 @@ public class EvaluationRESTService extends PluginRESTService {
     if (workspaceUser != null && workspaceUser.getEnrolmentTime() != null) {
       restAssessmentRequest.setEnrollmentDate(Date.from(workspaceUser.getEnrolmentTime().toInstant()));
     }
-    restAssessmentRequest.setFirstName(userEntityName.getFirstName());
+    String firstName = userEntityName.getFirstName();
+    if (!StringUtils.isEmpty(userEntityName.getNickName())) {
+      firstName = String.format("%s \"%s\"", firstName, userEntityName.getNickName());
+    }
+    restAssessmentRequest.setFirstName(firstName);
     restAssessmentRequest.setLastName(userEntityName.getLastName());
     restAssessmentRequest.setStudyProgramme(userEntityName.getStudyProgrammeName());
     restAssessmentRequest.setWorkspaceEntityId(workspaceEntity == null ? null : workspaceEntity.getId());
