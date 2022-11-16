@@ -157,10 +157,12 @@ class WorkspaceJournalsListItem extends React.Component<
                 </span>
               )}
               {isDraft && (
-                <span>
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.journal.status.draft"
-                  )}
+                <span className="label label--draft">
+                  <span className="label__text">
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.journal.status.draft"
+                    )}
+                  </span>
                 </span>
               )}
             </div>
