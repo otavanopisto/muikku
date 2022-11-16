@@ -447,7 +447,7 @@ public class EvaluationController {
       String messageBody = localeController.getText(
           sessionController.getLocale(),
           "plugin.workspace.interimEvaluation.notificationContent",
-          new String[] {workspaceName, workspaceUrl, verbalAssessment});
+          new String[] {workspaceUrl, workspaceName, verbalAssessment});
       
       CommunicatorMessageCategory category = communicatorController.persistCategory("interimEvaluationRequests");
       CommunicatorMessage communicatorMessage = communicatorController.createMessage(
