@@ -220,10 +220,16 @@ class WorkspaceJournalsListItem extends React.Component<
             )}
             {!this.props.asCurrent && (
               <div className="application-list__item-footer-content-aside">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.journal.comments.title"
-                )}{" "}
-                ({this.props.journal.commentCount})
+                <Link
+                  as="span"
+                  className="link link--application-list"
+                  onClick={this.handleJournalItemClick}
+                >
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.journal.comments.title"
+                  )}{" "}
+                  ({this.props.journal.commentCount})
+                </Link>
               </div>
             )}
           </ApplicationListItemFooter>
