@@ -11,12 +11,12 @@ import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import { Dispatch } from "react-redux";
 
-export type LOAD_CONTACT_GROUP = SpecificActionType<
-  "LOAD_CONTACT_GROUP",
+export type CONTACT_LOAD_GROUP = SpecificActionType<
+  "CONTACT_LOAD_GROUP",
   ContactGroupPayload
 >;
-export type UPDATE_CONTACT_GROUP_STATE = SpecificActionType<
-  "UPDATE_CONTACT_GROUP_STATE",
+export type CONTACT_UPDATE_GROUP_STATE = SpecificActionType<
+  "CONTACT_UPDATE_GROUP_STATE",
   LoadingStatePayload
 >;
 
@@ -62,7 +62,7 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
 
     try {
       dispatch({
-        type: "UPDATE_CONTACT_GROUP_STATE",
+        type: "CONTACT_UPDATE_GROUP_STATE",
         payload: { groupName: groupName, state: <LoadingState>"LOADING" },
       });
       const data: Contact[] = (await promisify(
@@ -81,7 +81,7 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
         groupName: groupName,
       };
       dispatch({
-        type: "LOAD_CONTACT_GROUP",
+        type: "CONTACT_LOAD_GROUP",
         payload: payload,
       });
     } catch (err) {

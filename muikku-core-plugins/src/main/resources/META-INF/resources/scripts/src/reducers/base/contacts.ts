@@ -58,13 +58,13 @@ export const contacts: Reducer<Contacts> = (
   action: ActionType
 ) => {
   switch (action.type) {
-    case "LOAD_CONTACT_GROUP": {
+    case "CONTACT_LOAD_GROUP": {
       const groupName: ContactGroupNames = action.payload.groupName;
 
       return { ...state, [groupName]: { ...action.payload.data } };
     }
 
-    case "UPDATE_CONTACT_GROUP_STATE": {
+    case "CONTACT_UPDATE_GROUP_STATE": {
       const groupName: ContactGroupNames = action.payload.groupName;
       const group = state[groupName];
       // const newGroup = JSON.parse(JSON.stringify(currentGroup)) as ContactGroup;

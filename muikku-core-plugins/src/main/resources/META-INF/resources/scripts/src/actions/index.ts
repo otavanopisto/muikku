@@ -302,8 +302,8 @@ import {
 } from "./workspaces/journals";
 
 import {
-  LOAD_CONTACT_GROUP,
-  UPDATE_CONTACT_GROUP_STATE,
+  CONTACT_LOAD_GROUP,
+  CONTACT_UPDATE_GROUP_STATE,
 } from "./base/contacts";
 
 export type ActionType =
@@ -535,7 +535,7 @@ export type ActionType =
   | EVALUATION_JOURNAL_COMMENTS_INITIALIZED
   | EVALUATION_JOURNAL_COMMENTS_DELETE
   | EVALUATION_JOURNAL_COMMENTS_CREATE
-  | LOAD_CONTACT_GROUP
-  | UPDATE_CONTACT_GROUP_STATE;
+  | CONTACT_LOAD_GROUP
+  | CONTACT_UPDATE_GROUP_STATE;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;
