@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.rest.user;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.Stateful;
@@ -10,12 +11,14 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -27,6 +30,8 @@ import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.session.local.LocalSession;
+import fi.otavanopisto.muikku.session.local.LocalSessionController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
@@ -48,6 +53,10 @@ public class MeRESTService {
   private SessionController sessionController;
   
   @Inject
+  @LocalSession
+  private LocalSessionController localSessionController;
+
+  @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
@@ -61,6 +70,37 @@ public class MeRESTService {
 
   @Inject
   private UserGroupGuidanceController userGroupGuidanceController;
+  
+  /**
+   * Sets the server side locale for current user.
+   * 
+   * Payload:
+   * {
+   *    lang: "en"
+   * }
+   * 
+   * Available languages en/fi
+   * 
+   * @param selection
+   * @return
+   */
+  @POST
+  @Path("/locale")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response setLocale(LanguageSelectionRestModel selection) {
+    if (selection == null || StringUtils.isBlank(selection.getLang())) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    Locale locale = LocaleUtils.toLocale(selection.getLang());
+    localSessionController.setLocale(locale);
+    
+    if (localSessionController.isLoggedIn()) {
+      userEntityController.updateLocale(localSessionController.getLoggedUserEntity(), locale);
+    }
+    
+    return Response.noContent().build();
+  }
   
   @GET
   @Path("/guidanceCounselors")
@@ -117,6 +157,5 @@ public class MeRESTService {
     
     return Response.ok(staffMembers).build();
   }
-  
   
 }
