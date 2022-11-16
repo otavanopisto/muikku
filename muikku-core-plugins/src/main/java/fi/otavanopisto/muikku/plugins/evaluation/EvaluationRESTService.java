@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
@@ -988,6 +989,16 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     interimEvaluationRequest = evaluationController.cancelInterimEvaluationRequest(interimEvaluationRequest, myRequest);
+    
+    // When an interim evaluation request is cancelled, ensure that the respective page falls back to state ANSWERED 
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getWorkspaceMaterialId());
+    UserEntity requestMaker = userEntityController.findUserEntityById(interimEvaluationRequest.getUserEntityId());
+    WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, requestMaker);
+    if (reply != null && reply.getState() == WorkspaceMaterialReplyState.SUBMITTED) {
+      workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.ANSWERED);
+    }
+        
     return Response.ok(toRestModel(interimEvaluationRequest)).build();
   }
 
