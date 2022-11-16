@@ -983,10 +983,11 @@ public class EvaluationRESTService extends PluginRESTService {
     if (interimEvaluationRequest == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Interim evaluation request with id %d not found", interimEvaluationRequestId)).build();
     }
-    if (!userEntity.getId().equals(interimEvaluationRequest.getUserEntityId())) {
-      return Response.status(Status.FORBIDDEN).entity("Interim evaluation request user mismatch").build();
+    boolean myRequest = userEntity.getId().equals(interimEvaluationRequest.getUserEntityId());
+    if (!myRequest && !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
-    interimEvaluationRequest = evaluationController.cancelInterimEvaluationRequest(interimEvaluationRequest);
+    interimEvaluationRequest = evaluationController.cancelInterimEvaluationRequest(interimEvaluationRequest, myRequest);
     return Response.ok(toRestModel(interimEvaluationRequest)).build();
   }
 
@@ -1477,6 +1478,9 @@ public class EvaluationRESTService extends PluginRESTService {
     }
     
     RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
+
+    // Note: Id is not set because CompositeAssessmentRequest from Pyramus does not have it. Might need refactoring in the future.
+    
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
     restAssessmentRequest.setWorkspaceUserIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toId());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
@@ -1534,6 +1538,7 @@ public class EvaluationRESTService extends PluginRESTService {
     }
 
     RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
+    restAssessmentRequest.setId(interimEvaluationRequest.getId());
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
     restAssessmentRequest.setWorkspaceUserIdentifier(userEntity.getDefaultIdentifier());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());

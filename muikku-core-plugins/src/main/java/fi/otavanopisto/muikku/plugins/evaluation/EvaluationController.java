@@ -369,13 +369,15 @@ public class EvaluationController {
     return interimEvaluationRequest;
   }
   
-  public InterimEvaluationRequest cancelInterimEvaluationRequest(InterimEvaluationRequest interimEvaluationRequest) {
+  public InterimEvaluationRequest cancelInterimEvaluationRequest(InterimEvaluationRequest interimEvaluationRequest, boolean sendCancellationMessage) {
     interimEvaluationRequest = interimEvaluationRequestDAO.updateInterimEvalutionRequest(
         interimEvaluationRequest,
         new Date(),
         interimEvaluationRequest.getRequestText(),
         Boolean.TRUE);
-    sendInterimEvaluationRequestCancelledMessage(interimEvaluationRequest);
+    if (sendCancellationMessage) {
+      sendInterimEvaluationRequestCancelledMessage(interimEvaluationRequest);
+    }
     return interimEvaluationRequest;
   }
   
