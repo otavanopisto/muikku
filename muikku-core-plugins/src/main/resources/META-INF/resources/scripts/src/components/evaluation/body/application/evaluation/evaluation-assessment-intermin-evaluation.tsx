@@ -470,8 +470,8 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           <div className="evaluation-modal__item-functions">
             {this.props.assigment.assignmentType === "INTERIM_EVALUATION" ? (
               compositeReply &&
-              compositeReply.state !== "UNANSWERED" &&
-              compositeReply.state !== "WITHDRAWN" ? (
+              (compositeReply.state === "SUBMITTED" ||
+                compositeReply.state === "PASSED") ? (
                 <ButtonPill
                   aria-label={this.props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
