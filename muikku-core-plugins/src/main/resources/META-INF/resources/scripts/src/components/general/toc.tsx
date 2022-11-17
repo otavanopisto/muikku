@@ -72,12 +72,17 @@ export const TocTopic: React.FC<TocTopicProps> = (props) => {
     setHeight(height === 0 ? "auto" : 0);
   };
 
-  const arrowModifier = height === 0 ? "closed" : "open";
+  const arrowModifier = height === 0 ? "icon-arrow-right" : "icon-arrow-down";
 
   return (
     <div className={props.className}>
       {props.name ? (
         <div className={`toc__section-title ${props.isHidden ? "hidden" : ""}`}>
+          <span
+            style={{ color: "inherit" }}
+            className={`toc__icon toc__icon--section-open-close ${arrowModifier}`}
+            onClick={toggleHeight}
+          />
           <Link
             style={{ color: "inherit" }}
             href={props.hash ? "#" + props.hash : null}
@@ -85,11 +90,6 @@ export const TocTopic: React.FC<TocTopicProps> = (props) => {
           >
             <span className="toc__text-body">{props.name}</span>
           </Link>
-          <span
-            style={{ color: "inherit" }}
-            className={`toc__icon icon-arrow-right ${arrowModifier}`}
-            onClick={toggleHeight}
-          />
           {props.iconAfter ? (
             <span
               title={props.iconAfterTitle}
@@ -99,7 +99,7 @@ export const TocTopic: React.FC<TocTopicProps> = (props) => {
           ) : null}
         </div>
       ) : null}
-      <AnimateHeight height={height} easing="ease-in">
+      <AnimateHeight duration={200} height={height} easing="ease-in">
         <div style={{ display: "flex", flexDirection: "column" }}>
           {props.children}
         </div>

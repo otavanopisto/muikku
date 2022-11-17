@@ -508,63 +508,95 @@ class ContentComponent extends SessionStateComponent<
         tocHeaderExtraContent={
           <Dropdown
             content={
-              <div className="toc__dropdown-assignment-filters">
-                <div className="toc__dropdown-assignment-filters-item">
-                  <input
-                    type="checkbox"
-                    value="THEORY"
-                    checked={this.state.assignmentTypeFilters.includes(
-                      "THEORY"
-                    )}
-                    onChange={this.handleToggleAssignmentFilterChange}
-                  />
-                  <label className="material-page__checkable-label">
-                    TODO: Teoria sivut
-                  </label>
+              <>
+                <div className="dropdown__container-item">
+                  <div className="filter-item filter-item--workspace-page">
+                    <input
+                      type="checkbox"
+                      value="THEORY"
+                      id="theory-page-filter"
+                      checked={this.state.assignmentTypeFilters.includes(
+                        "THEORY"
+                      )}
+                      onChange={this.handleToggleAssignmentFilterChange}
+                    />
+                    <label
+                      htmlFor="theory-page-filter"
+                      className="filter-item__label"
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.materials.tocFilter.theory"
+                      )}
+                    </label>
+                  </div>
                 </div>
-                <div className="toc__dropdown-assignment-filters-item">
-                  <input
-                    type="checkbox"
-                    value="EXERCISE"
-                    checked={this.state.assignmentTypeFilters.includes(
-                      "EXERCISE"
-                    )}
-                    onChange={this.handleToggleAssignmentFilterChange}
-                  />
-                  <label className="material-page__checkable-label">
-                    TODO: Harjoitustehtävät
-                  </label>
+                <div className="dropdown__container-item">
+                  <div className="filter-item filter-item--workspace-page">
+                    <input
+                      type="checkbox"
+                      value="EXERCISE"
+                      id="exercise-page-filter"
+                      checked={this.state.assignmentTypeFilters.includes(
+                        "EXERCISE"
+                      )}
+                      onChange={this.handleToggleAssignmentFilterChange}
+                    />
+                    <label
+                      htmlFor="exercise-page-filter"
+                      className="filter-item__label"
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.materials.tocFilter.exercise"
+                      )}
+                    </label>
+                  </div>
                 </div>
-                <div className="toc__dropdown-assignment-filters-item">
-                  <input
-                    type="checkbox"
-                    value="EVALUATED"
-                    checked={this.state.assignmentTypeFilters.includes(
-                      "EVALUATED"
-                    )}
-                    onChange={this.handleToggleAssignmentFilterChange}
-                  />
-                  <label className="material-page__checkable-label">
-                    TODO: Arvioitavat tehtävät
-                  </label>
+                <div className="dropdown__container-item">
+                  <div className="filter-item filter-item--workspace-page">
+                    <input
+                      type="checkbox"
+                      value="EVALUATED"
+                      id="assignment-page-filter"
+                      checked={this.state.assignmentTypeFilters.includes(
+                        "EVALUATED"
+                      )}
+                      onChange={this.handleToggleAssignmentFilterChange}
+                    />
+                    <label
+                      htmlFor="assignment-page-filter"
+                      className="filter-item__label"
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.materials.tocFilter.assignment"
+                      )}
+                    </label>
+                  </div>
                 </div>
-                <div className="toc__dropdown-assignment-filters-item">
-                  <input
-                    type="checkbox"
-                    value="JOURNAL"
-                    checked={this.state.assignmentTypeFilters.includes(
-                      "JOURNAL"
-                    )}
-                    onChange={this.handleToggleAssignmentFilterChange}
-                  />
-                  <label className="material-page__checkable-label">
-                    TODO: Päiväkirjatehtävät
-                  </label>
+                <div className="dropdown__container-item">
+                  <div className="filter-item filter-item--workspace-page">
+                    <input
+                      type="checkbox"
+                      value="JOURNAL"
+                      id="journal-page-filter"
+                      checked={this.state.assignmentTypeFilters.includes(
+                        "JOURNAL"
+                      )}
+                      onChange={this.handleToggleAssignmentFilterChange}
+                    />
+                    <label
+                      htmlFor="journal-page-filter"
+                      className="filter-item__label"
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.materials.tocFilter.journal"
+                      )}
+                    </label>
+                  </div>
                 </div>
-              </div>
+              </>
             }
           >
-            <IconButton icon="cogs" />
+            <IconButton icon="filter" />
           </Dropdown>
         }
       >

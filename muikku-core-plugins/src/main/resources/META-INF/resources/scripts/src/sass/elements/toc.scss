@@ -10,6 +10,7 @@
 .toc-header {
   align-items: center;
   display: flex;
+  justify-content: space-between;
 }
 
 .toc__title {
@@ -31,7 +32,7 @@
   @include text;
 
   display: flex;
-  padding: 5px 8px 5px 10px;
+  padding: 5px 8px 5px 5px;
   text-transform: uppercase;
   user-select: text;
 
@@ -213,4 +214,8 @@
   height: 1.25rem;
   justify-content: center;
   width: 1.25rem;
+}
+
+.toc__icon--section-open-close {
+  margin: 0 5px 0 0;
 }
