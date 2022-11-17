@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.rest.user;
+package fi.otavanopisto.muikku.plugins.me;
 
 public class LanguageSelectionRestModel {
 

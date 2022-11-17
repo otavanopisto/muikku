@@ -71,7 +71,7 @@ class WorkspacesPanel extends React.Component<
               ))}
           </div>
         ) : (
-          <Panel.BodyContent modifier="empty">
+          <Panel.BodyContent modifier="empty empty--front-page">
             {this.props.status.isStudent ? (
               <>
                 {this.props.i18n.text.get(
