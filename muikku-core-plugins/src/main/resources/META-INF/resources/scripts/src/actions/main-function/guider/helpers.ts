@@ -129,7 +129,7 @@ export async function loadStudentsHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get("plugin.guider.errormessage.users"),
+        getState().i18n.text.get("plugin.guider.errorMessage.users"),
         "error"
       )
     );
