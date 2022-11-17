@@ -7,10 +7,8 @@ import "~/sass/elements/glyph.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import { RecordsType } from "~/reducers/main-function/records";
-import {
-  SummaryType,
-  SummaryStudentsGuidanceCouncelorsType,
-} from "~/reducers/main-function/records/summary";
+import { SummaryType } from "~/reducers/main-function/records/summary";
+import { Contacts, Contact } from "~/reducers/base/contacts";
 import { HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
@@ -37,6 +35,7 @@ import { Instructions } from "~/components/general/instructions";
 interface SummaryProps {
   i18n: i18nType;
   records: RecordsType;
+  contacts: Contacts;
   summary: SummaryType;
   status: StatusType;
   hops: HOPSType;
@@ -115,138 +114,150 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
             </div>
 
-            <div className="application-sub-panel__item">
+            <div className="application-sub-panel__item application-sub-panel__item--counselors">
               <div className="application-sub-panel__item-title">
                 {this.props.i18n.text.get(
                   "plugin.records.studyStudentCouncelorsLabel"
                 )}
               </div>
-              <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-councelors">
-                <div className="item-list item-list--student-councelors">
-                  {this.props.summary.data.studentsGuidanceCouncelors.map(
-                    (councelor: SummaryStudentsGuidanceCouncelorsType) => {
-                      let displayVacationPeriod =
-                        !!councelor.properties["profile-vacation-start"];
-                      if (councelor.properties["profile-vacation-end"]) {
-                        // we must check for the ending
-                        const vacationEndsAt = moment(
-                          councelor.properties["profile-vacation-end"]
-                        );
-                        const today = moment();
-                        // if it's before or it's today then we display, otherwise nope
-                        displayVacationPeriod =
-                          vacationEndsAt.isAfter(today, "day") ||
-                          vacationEndsAt.isSame(today, "day");
-                      }
-                      return (
-                        <div
-                          className="item-list__item item-list__item--student-councelor"
-                          key={councelor.userEntityId}
-                        >
-                          <div className="item-list__profile-picture">
-                            <Avatar
-                              id={councelor.userEntityId}
-                              userCategory={3}
-                              firstName={councelor.firstName}
-                              hasImage={councelor.hasImage}
-                            />
-                          </div>
-                          <div className="item-list__text-body item-list__text-body--multiline">
-                            <div className="item-list__user-name">
-                              {councelor.firstName} {councelor.lastName}
+              <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-counselors">
+                <div className="item-list item-list--student-counselors">
+                  {this.props.contacts.counselors.list.length > 0 ? (
+                    this.props.contacts.counselors.list.map(
+                      (counselor: Contact) => {
+                        let displayVacationPeriod =
+                          !!counselor.properties["profile-vacation-start"];
+                        if (counselor.properties["profile-vacation-end"]) {
+                          // we must check for the ending
+                          const vacationEndsAt = moment(
+                            counselor.properties["profile-vacation-end"]
+                          );
+                          const today = moment();
+                          // if it's before or it's today then we display, otherwise nope
+                          displayVacationPeriod =
+                            vacationEndsAt.isAfter(today, "day") ||
+                            vacationEndsAt.isSame(today, "day");
+                        }
+                        return (
+                          <div
+                            className="item-list__item item-list__item--student-counselor"
+                            key={counselor.userEntityId}
+                          >
+                            <div className="item-list__profile-picture">
+                              <Avatar
+                                id={counselor.userEntityId}
+                                userCategory={3}
+                                firstName={counselor.firstName}
+                                hasImage={counselor.hasImage}
+                              />
                             </div>
-                            <div className="item-list__user-contact-info">
-                              <div className="item-list__user-email">
-                                <div className="glyph icon-envelope"></div>
-                                {councelor.email}
+                            <div className="item-list__text-body item-list__text-body--multiline">
+                              <div className="item-list__user-name">
+                                {counselor.firstName} {counselor.lastName}
                               </div>
-                              {councelor.properties["profile-phone"] ? (
-                                <div className="item-list__user-phone">
-                                  <div className="glyph icon-phone"></div>
-                                  {councelor.properties["profile-phone"]}
+                              <div className="item-list__user-contact-info">
+                                <div className="item-list__user-email">
+                                  <div className="glyph icon-envelope"></div>
+                                  {counselor.email}
+                                </div>
+                                {counselor.properties["profile-phone"] ? (
+                                  <div className="item-list__user-phone">
+                                    <div className="glyph icon-phone"></div>
+                                    {counselor.properties["profile-phone"]}
+                                  </div>
+                                ) : null}
+                              </div>
+                              {displayVacationPeriod ? (
+                                <div className="item-list__user-vacation-period">
+                                  {this.props.i18n.text.get(
+                                    "plugin.workspace.index.teachersVacationPeriod.label"
+                                  )}
+                                  &nbsp;
+                                  {this.props.i18n.time.format(
+                                    counselor.properties[
+                                      "profile-vacation-start"
+                                    ]
+                                  )}
+                                  {counselor.properties["profile-vacation-end"]
+                                    ? "–" +
+                                      this.props.i18n.time.format(
+                                        counselor.properties[
+                                          "profile-vacation-end"
+                                        ]
+                                      )
+                                    : null}
                                 </div>
                               ) : null}
-                            </div>
-                            {displayVacationPeriod ? (
-                              <div className="item-list__user-vacation-period">
-                                {this.props.i18n.text.get(
-                                  "plugin.workspace.index.teachersVacationPeriod.label"
-                                )}
-                                &nbsp;
-                                {this.props.i18n.time.format(
-                                  councelor.properties["profile-vacation-start"]
-                                )}
-                                {councelor.properties["profile-vacation-end"]
-                                  ? "–" +
-                                    this.props.i18n.time.format(
-                                      councelor.properties[
-                                        "profile-vacation-end"
-                                      ]
-                                    )
-                                  : null}
-                              </div>
-                            ) : null}
-                            <div className="item-list__user-actions">
-                              <CommunicatorNewMessage
-                                extraNamespace="guidance-councelor"
-                                initialSelectedItems={[
-                                  {
-                                    type: "staff",
-                                    value: {
-                                      id: councelor.userEntityId,
-                                      name: getName(councelor, true),
+                              <div className="item-list__user-actions">
+                                <CommunicatorNewMessage
+                                  extraNamespace="guidance-counselor"
+                                  initialSelectedItems={[
+                                    {
+                                      type: "staff",
+                                      value: {
+                                        id: counselor.userEntityId,
+                                        name: getName(counselor, true),
+                                      },
                                     },
-                                  },
-                                ]}
-                              >
-                                <ButtonPill
-                                  icon="envelope"
-                                  aria-label={this.props.i18n.text.get(
-                                    "plugin.records.contactStudentCouncelor.message.label"
-                                  )}
-                                  title={this.props.i18n.text.get(
-                                    "plugin.records.contactStudentCouncelor.message.label"
-                                  )}
-                                  buttonModifiers={[
-                                    "new-message",
-                                    "new-message-to-staff",
                                   ]}
-                                ></ButtonPill>
-                              </CommunicatorNewMessage>
-                              {councelor.properties["profile-phone"] &&
-                              councelor.properties["profile-whatsapp"] ? (
-                                <WhatsappButtonLink
-                                  i18n={this.props.i18n}
-                                  mobileNumber={
-                                    councelor.properties["profile-phone"]
-                                  }
-                                />
-                              ) : null}
-                              {councelor.properties[
-                                "profile-appointmentCalendar"
-                              ] ? (
-                                <ButtonPill
-                                  aria-label={this.props.i18n.text.get(
-                                    "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
-                                  )}
-                                  title={this.props.i18n.text.get(
-                                    "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
-                                  )}
-                                  icon="clock"
-                                  buttonModifiers="appointment-calendar"
-                                  openInNewTab="_blank"
-                                  href={
-                                    councelor.properties[
-                                      "profile-appointmentCalendar"
-                                    ]
-                                  }
-                                />
-                              ) : null}
+                                >
+                                  <ButtonPill
+                                    icon="envelope"
+                                    aria-label={this.props.i18n.text.get(
+                                      "plugin.records.contactStudentCouncelor.message.label"
+                                    )}
+                                    title={this.props.i18n.text.get(
+                                      "plugin.records.contactStudentCouncelor.message.label"
+                                    )}
+                                    buttonModifiers={[
+                                      "new-message",
+                                      "new-message-to-staff",
+                                    ]}
+                                  ></ButtonPill>
+                                </CommunicatorNewMessage>
+                                {counselor.properties["profile-phone"] &&
+                                counselor.properties["profile-whatsapp"] ? (
+                                  <WhatsappButtonLink
+                                    i18n={this.props.i18n}
+                                    mobileNumber={
+                                      counselor.properties["profile-phone"]
+                                    }
+                                  />
+                                ) : null}
+                                {counselor.properties[
+                                  "profile-appointmentCalendar"
+                                ] ? (
+                                  <ButtonPill
+                                    aria-label={this.props.i18n.text.get(
+                                      "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
+                                    )}
+                                    title={this.props.i18n.text.get(
+                                      "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
+                                    )}
+                                    icon="clock"
+                                    buttonModifiers="appointment-calendar"
+                                    openInNewTab="_blank"
+                                    href={
+                                      counselor.properties[
+                                        "profile-appointmentCalendar"
+                                      ]
+                                    }
+                                  />
+                                ) : null}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    }
+                        );
+                      }
+                    )
+                  ) : (
+                    <div className="empty empty--sub-panel-data">
+                      <span className="application-sub-panel__single-entry">
+                        {this.props.i18n.text.get(
+                          "plugin.records.summary.counselors.empty"
+                        )}
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>
@@ -435,6 +446,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     records: state.records,
+    contacts: state.contacts,
     summary: state.summary,
     status: state.status,
     hops: state.hops,

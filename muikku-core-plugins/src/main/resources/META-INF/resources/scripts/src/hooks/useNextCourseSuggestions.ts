@@ -22,7 +22,7 @@ interface NextCourse {
 }
 
 /**
- * Custom hook to return next courses suggested by the councelor
+ * Custom hook to return next courses suggested by the counselor
  *
  * @param studentId studentId
  * @param userEntityId userEntityId
