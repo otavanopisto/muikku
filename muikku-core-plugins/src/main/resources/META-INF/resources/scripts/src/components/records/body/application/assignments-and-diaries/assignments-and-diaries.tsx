@@ -324,7 +324,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         <span>{props.i18n.text.get("plugin.records.journal.title")}</span>
         <span>
           <Link
-            className="link link--studies-close-open"
+            className="link link--studies-open-close"
             disabled={
               journalsData.isLoading || journalsData.journals.length === 0
             }
@@ -333,7 +333,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             {props.i18n.text.get("plugin.records.openClose.openAll")}
           </Link>
           <Link
-            className="link link--studies-close-open"
+            className="link link--studies-open-close"
             disabled={
               journalsData.isLoading || journalsData.journals.length === 0
             }
@@ -381,7 +381,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             </span>
             <span>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   evaluatedAssignmentsData.isLoading ||
                   evaluatedAssignmentsData.evaluatedAssignments.length === 0
@@ -391,7 +391,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 {props.i18n.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   evaluatedAssignmentsData.isLoading ||
                   evaluatedAssignmentsData.evaluatedAssignments.length === 0
@@ -423,7 +423,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             <span>{props.i18n.text.get("plugin.records.exercises.title")}</span>
             <span>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   excerciseAssignmentsData.isLoading ||
                   excerciseAssignmentsData.excerciseAssignments.length === 0
@@ -433,7 +433,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 {props.i18n.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   excerciseAssignmentsData.isLoading ||
                   excerciseAssignmentsData.excerciseAssignments.length === 0

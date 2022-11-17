@@ -337,11 +337,11 @@
   padding: 10px;
 }
 
-.evaluation-modal__event-buttonset {
+.evaluation-modal__event-actions {
   align-items: center;
   display: flex;
   justify-content: flex-end;
-  padding: 0 5px;
+  padding: 5px 10px;
 }
 
 // Evaluation item listing
@@ -409,6 +409,12 @@
 .evaluation-modal__item-header-title--active-dialog {
   color: $color-assignment;
   cursor: default;
+}
+
+.evaluation-modal__item-header-title--journal-feedback {
+  border: 0;
+  font-size: 1rem;
+  padding: 0;
 }
 
 .evaluation-modal__item-hidden {
@@ -495,12 +501,18 @@
   }
 }
 
+.evaluation-modal__item-journal-feedback {
+  margin: 10px 0;
+}
+
 .evaluation-modal__item-literal-assessment-label,
-.evaluation-modal__item-verbal-assessment-label {
+.evaluation-modal__item-verbal-assessment-label,
+.evaluation-modal__item-journal-feedback-label {
   font-weight: 600;
 }
 
-.evaluation-modal__item-literal-assessment-data {
+.evaluation-modal__item-literal-assessment-data,
+.evaluation-modal__item-journal-feedback-data {
   margin: 5px 0;
 }
 
@@ -513,8 +525,12 @@
 .evaluation-modal__item-actions {
   align-items: center;
   display: flex;
+  justify-content: flex-end;
+  padding: 5px 0;
+}
+
+.evaluation-modal__item-actions--journal-feedback {
   justify-content: flex-start;
-  padding: 5px 10px;
 }
 
 // Evaluation item's subheader
@@ -538,7 +554,7 @@
 }
 
 .evaluation-modal__item-body--journal-comment {
-  padding: 5px 10px;
+  padding: 5px 10px 0;
 }
 
 // Evaluation assessment drawer

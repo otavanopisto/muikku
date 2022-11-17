@@ -88,7 +88,7 @@ const EvaluationJournalEventComment: React.FC<
       {creatorIsMe && (
         <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-comment">
           <Link
-            className="link link--evaluation-list"
+            className="link link--evaluation"
             onClick={handleEditCommentClick}
           >
             {props.i18n.text.get(
@@ -102,7 +102,7 @@ const EvaluationJournalEventComment: React.FC<
               userEntityId={userEntityId}
               workspaceEntityId={workspaceEntityId}
             >
-              <Link className="link link--evaluation-list">
+              <Link className="link link--evaluation link--evaluation-delete">
                 {props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.journalComments.deleteButton"
                 )}

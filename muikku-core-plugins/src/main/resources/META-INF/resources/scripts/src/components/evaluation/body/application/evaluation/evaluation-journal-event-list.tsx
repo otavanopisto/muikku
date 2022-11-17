@@ -204,41 +204,47 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
 
       {journalFeedbackIsReady ? (
         journalFeedback ? (
-          <div
-            className="evaluation-modal__content-journal-feedback"
-            style={{
-              backgroundColor: "white",
-              padding: "10px",
-              margin: "10px 0",
-            }}
-          >
-            <span>
-              <h3>TODO: Kokonaispalaute:</h3>
-              <CkeditorContentLoader html={journalFeedback.feedback} />
-            </span>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: "10px",
-              }}
-            >
-              <div>
-                <span style={{ fontWeight: "bold" }}>Annettu: </span>
-                {moment(journalFeedback.created).format("l")}
+          <div className="evaluation-modal__content-body">
+            <div className="evaluation-modal__item">
+              <div className="evaluation-modal__item-journal-feedback">
+                <div className="evaluation-modal__item-journal-feedback-label">
+                  {props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalFeedBackTitle"
+                  )}
+                </div>
+                <div className="evaluation-modal__item-journal-feedback-data rich-text rich-text--evaluation-literal">
+                  <CkeditorContentLoader html={journalFeedback.feedback} />
+                </div>
               </div>
-              <div>
+              <div className="evaluation-modal__item-meta">
+                <div className="evaluation-modal__item-meta-item">
+                  <span className="evaluation-modal__item-meta-item-label">
+                    {props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.journalFeedBackLabel"
+                    )}
+                    :{" "}
+                  </span>
+                  <span className="evaluation-modal__item-meta-item-data">
+                    {moment(journalFeedback.created).format("l")}
+                  </span>
+                </div>
+              </div>
+              <div className="evaluation-modal__item-actions">
                 <Link
-                  className="link link--evaluation-close-open"
+                  className="link link--evaluation"
                   onClick={handleCreateOrEditJournalFeedback}
                 >
-                  TODO: Muokkaa
+                  {props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalFeedback.editButton"
+                  )}
                 </Link>
 
                 {!feedbackEditorOpen && (
                   <DeleteJournalFeedback journalFeedback={journalFeedback}>
-                    <Link className="link link--evaluation-close-open">
-                      TODO: Poista
+                    <Link className="link link--evaluation link--evaluation-delete">
+                      {props.i18n.text.get(
+                        "plugin.evaluation.evaluationModal.journalFeedback.deleteButton"
+                      )}
                     </Link>
                   </DeleteJournalFeedback>
                 )}
@@ -246,24 +252,25 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
             </div>
           </div>
         ) : (
-          <div className="evaluation-modal__content-journal-feedback-empty">
-            <div
-              className="empty"
-              style={{ margin: "10px 0", padding: "0px", flexFlow: "column" }}
-            >
-              <span
-                style={{
-                  textAlign: "center",
-                  border: "solid 1px black",
-                  borderColor: "#0000001f",
-                  padding: "10px",
-                  cursor: "pointer",
-                }}
-                onClick={handleCreateOrEditJournalFeedback}
-              >
-                TODO: Kokonaispalautetta ei ole vielä annettu. Klikkaa
-                antaaksesi kokonaispalautetta
-              </span>
+          <div className="evaluation-modal__content-body">
+            <div className="evaluation-modal__item">
+              <div className="evaluation-modal__item-body rich-text">
+                <p>
+                  {props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalFeedBackEmpty"
+                  )}
+                </p>
+              </div>
+              <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-feedback">
+                <Link
+                  className="link link--evaluation"
+                  onClick={handleCreateOrEditJournalFeedback}
+                >
+                  {props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalFeedBackLink"
+                  )}
+                </Link>
+              </div>
             </div>
           </div>
         )
@@ -284,7 +291,9 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                 : ["journal-filter"]
             }
           >
-            TODO:Pakolliset
+            {props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.filters.mandatory.label"
+            )}
           </Button>
           <Button
             onClick={handleChangeJournalFilterClick("showOthers")}
@@ -294,20 +303,22 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                 : ["journal-filter"]
             }
           >
-            TODO:Muut
+            {props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.filters.other.label"
+            )}
           </Button>
         </div>
 
         {journalEntriesIsReady ? (
           <div className="evaluation-modal__content-actions">
             <Link
-              className="link link--evaluation-close-open"
+              className="link link--evaluation link--evaluation-open-close"
               onClick={handleCloseAllDiaryEntriesClick}
             >
               {i18n.text.get("plugin.evaluation.evaluationModal.closeAll")}
             </Link>
             <Link
-              className="link link--evaluation-close-open"
+              className="link link--evaluation link--evaluation-open-close"
               onClick={handleOpenAllDiaryEntriesClick}
             >
               {i18n.text.get("plugin.evaluation.evaluationModal.openAll")}
@@ -325,7 +336,9 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
 
       <SlideDrawer
         show={feedbackEditorOpen}
-        title="Oppimispäiväkirjan kokonaispalaute"
+        title={props.i18n.text.get(
+          "plugin.evaluation.evaluationModal.journalFeedBackTitle"
+        )}
         onClose={handleCancelJournalFeedback}
       >
         <JournalFeedbackEditor

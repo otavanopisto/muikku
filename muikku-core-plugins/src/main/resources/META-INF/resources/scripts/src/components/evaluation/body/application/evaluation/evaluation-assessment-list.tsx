@@ -193,13 +193,13 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
           evaluation.evaluationCompositeReplies.state === "READY" ? (
             <div className="evaluation-modal__content-actions">
               <Link
-                className="link link--evaluation-close-open"
+                className="link link--evaluation link--evaluation-open-close"
                 onClick={handleCloseAllMaterialContentClick}
               >
                 {i18n.text.get("plugin.evaluation.evaluationModal.closeAll")}
               </Link>
               <Link
-                className="link link--evaluation-close-open"
+                className="link link--evaluation link--evaluation-open-close"
                 onClick={handleOpenAllMaterialContentClick}
               >
                 {i18n.text.get("plugin.evaluation.evaluationModal.openAll")}
