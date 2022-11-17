@@ -210,7 +210,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         }
 
         case "INTERIM_EVALUATION": {
-          console.log("click click");
           const updatedList = [...interimOpen];
 
           const index = updatedList.indexOf(id);
