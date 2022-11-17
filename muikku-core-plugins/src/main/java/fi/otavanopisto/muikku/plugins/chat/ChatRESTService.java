@@ -9,7 +9,6 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +29,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -44,10 +42,7 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserEntityProperty;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
@@ -57,7 +52,6 @@ import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomRESTModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatSettingsRESTModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.WorkspaceChatSettingsRESTModel;
-import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -65,11 +59,7 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserEntityFileController;
-import fi.otavanopisto.muikku.users.UserEntityName;
-import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -128,15 +118,6 @@ public class ChatRESTService extends PluginRESTService {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
-  @Inject
-  private UserGroupGuidanceController userGroupGuidanceController;
-
-  @Inject
-  private UserEntityFileController userEntityFileController;
-
-  @Inject
-  private UserEmailEntityController userEmailEntityController;
-  
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -631,67 +612,6 @@ public class ChatRESTService extends PluginRESTService {
     else {
       return Response.noContent().build();
     }
-  }
-  
-  @GET
-  @Path("/myGuidanceCounselors")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listGuidanceCounselors(@QueryParam("properties") String properties) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-    if (loggedUser == null || loggedUser.getRole() == null || loggedUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    Boolean onlyMessageReceivers = false;
-    List<UserEntity> guidanceCouncelors = userGroupGuidanceController.getGuidanceCounselors(sessionController.getLoggedUser(), onlyMessageReceivers);
-    
-    List<fi.otavanopisto.muikku.rest.model.StaffMember> staffMembers = new ArrayList<>();
-    
-    for (UserEntity userEntity : guidanceCouncelors) {
-      // Skip guidance counselors that do not have chat enabled
-      if (!chatController.isChatEnabled(userEntity)) {
-        continue;
-      }
-      
-      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-      SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
-      UserEntityName userEntityName = userEntityController.getName(userEntity);
-      String email = userEmailEntityController.getUserDefaultEmailAddress(schoolDataIdentifier, false);
-
-      UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
-      OrganizationEntity organizationEntity = usdi.getOrganization();
-      OrganizationRESTModel organizationRESTModel = null;
-      if (organizationEntity != null) {
-        organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
-      }
-
-      String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
-
-      Map<String, String> propertyMap = new HashMap<String, String>();
-      if (userEntity != null) {
-        for (int i = 0; i < propertyArray.length; i++) {
-          UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
-          propertyMap.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
-        }
-      }
-
-      staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
-          userEntity.defaultSchoolDataIdentifier().toId(),
-          userEntity.getId(),
-          userEntityName.getFirstName(),
-          userEntityName.getLastName(),
-          email,
-          propertyMap,
-          organizationRESTModel,
-          usdi.getRole() != null && usdi.getRole().getArchetype() != null ? usdi.getRole().getArchetype().name() : null,
-          hasImage));
-    }
-    
-    return Response.ok(staffMembers).build();
   }
   
   private SearchProvider getSearchProvider() {
