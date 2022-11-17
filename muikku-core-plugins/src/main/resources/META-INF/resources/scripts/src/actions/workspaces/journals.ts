@@ -248,7 +248,9 @@ const loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJourna
         loadCurrentWorkspaceJournalsHelper.bind(
           this,
           currentJournalsState.userEntityId,
-          false
+          false,
+          dispatch,
+          getState
         )
       );
     };

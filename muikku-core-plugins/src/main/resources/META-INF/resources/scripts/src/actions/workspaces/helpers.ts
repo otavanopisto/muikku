@@ -15,6 +15,7 @@ import {
   WorkspaceJournalType,
 } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react";
+import { loadWorkspaceJournalFeedback } from "./journals";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
@@ -248,6 +249,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
   getState: () => StateType
 ) {
   const state: StateType = getState();
+
   const currentWorkspace = state.workspaces.currentWorkspace;
 
   let currentJournalState = state.journals;
@@ -322,6 +324,16 @@ export async function loadCurrentWorkspaceJournalsHelper(
         },
       },
     });
+
+    // when loading journals for the first time is done, we also want to load user's
+    // journal feedback if that exists
+    initial &&
+      dispatch(
+        loadWorkspaceJournalFeedback({
+          userEntityId: state.status.userId,
+          workspaceEntityId: currentWorkspace.id,
+        })
+      );
   } catch (err) {
     if (!(err instanceof MApiError)) {
       throw err;
