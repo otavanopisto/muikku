@@ -18,7 +18,7 @@ import {
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-import Toc, { TocTopic, TocElement } from "~/components/general/toc";
+import { Toc, TocTopic, TocElement } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
@@ -397,7 +397,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     return (
       <Toc
-        tocTitle={this.props.i18n.text.get(
+        tocHeaderTitle={this.props.i18n.text.get(
           "plugin.workspace.materials.tocTitle"
         )}
       >
@@ -436,6 +436,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
           const topic = (
             <TocTopic
+              topicId={node.workspaceMaterialId}
               name={node.title}
               isHidden={node.hidden}
               key={node.workspaceMaterialId}

@@ -25,7 +25,7 @@ import {
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-import Toc, { TocTopic, TocElement } from "~/components/general/toc";
+import { Toc, TocTopic, TocElement } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
@@ -37,6 +37,9 @@ import {
   SetWholeWorkspaceMaterialsTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
+import Dropdown from "~/components/general/dropdown";
+import { IconButton } from "~/components/general/button";
+import SessionStateComponent from "~/components/general/session-state-component";
 
 /**
  * ContentProps
@@ -60,6 +63,8 @@ interface ContentProps {
  */
 interface ContentState {
   materials: MaterialContentNodeListType;
+  assignmentTypeFilters: string[];
+  sessionId: string;
 }
 
 /**
@@ -89,7 +94,10 @@ function isScrolledIntoView(el: HTMLElement) {
 /**
  * ContentComponent
  */
-class ContentComponent extends React.Component<ContentProps, ContentState> {
+class ContentComponent extends SessionStateComponent<
+  ContentProps,
+  ContentState
+> {
   private storedLastUpdateServerExecution: Function;
   private originalMaterials: MaterialContentNodeListType;
 
@@ -98,9 +106,20 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * @param props props
    */
   constructor(props: ContentProps) {
-    super(props);
+    super(props, "workspaceMaterialsContent");
+
+    const sessionId = props.status.loggedIn
+      ? `${props.workspace.id}.${props.status.userId}`
+      : `${props.workspace.id}`;
 
     this.state = {
+      ...this.getRecoverStoredState(
+        {
+          assignmentTypeFilters: [],
+          sessionId,
+        },
+        sessionId
+      ),
       materials: props.materials,
     };
 
@@ -382,6 +401,37 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   }
 
   /**
+   * handleToggleAssignmentFilterChange
+   * @param e e
+   */
+  handleToggleAssignmentFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const clickedValue = e.target.value;
+
+    const newAssignmentFilter = [...this.state.assignmentTypeFilters];
+
+    // Get possible existing index of clicked value
+    const indexOfActiveFilter = newAssignmentFilter.findIndex(
+      (f) => f === clickedValue
+    );
+
+    if (indexOfActiveFilter !== -1) {
+      newAssignmentFilter.splice(indexOfActiveFilter, 1);
+    } else {
+      newAssignmentFilter.push(clickedValue);
+    }
+
+    // Using session component to store filters
+    this.setStateAndStore(
+      {
+        assignmentTypeFilters: newAssignmentFilter,
+      },
+      this.state.sessionId
+    );
+  };
+
+  /**
    * buildViewRestrictionModifiers
    * @param viewRestrict viewRestrict
    * @param section section
@@ -452,9 +502,71 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     return (
       <Toc
-        tocTitle={this.props.i18n.text.get(
+        tocHeaderTitle={this.props.i18n.text.get(
           "plugin.workspace.materials.tocTitle"
         )}
+        tocHeaderExtraContent={
+          <Dropdown
+            content={
+              <div className="toc__dropdown-assignment-filters">
+                <div className="toc__dropdown-assignment-filters-item">
+                  <input
+                    type="checkbox"
+                    value="THEORY"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "THEORY"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label className="material-page__checkable-label">
+                    TODO: Teoria sivut
+                  </label>
+                </div>
+                <div className="toc__dropdown-assignment-filters-item">
+                  <input
+                    type="checkbox"
+                    value="EXERCISE"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "EXERCISE"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label className="material-page__checkable-label">
+                    TODO: Harjoitustehtävät
+                  </label>
+                </div>
+                <div className="toc__dropdown-assignment-filters-item">
+                  <input
+                    type="checkbox"
+                    value="EVALUATED"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "EVALUATED"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label className="material-page__checkable-label">
+                    TODO: Arvioitavat tehtävät
+                  </label>
+                </div>
+                <div className="toc__dropdown-assignment-filters-item">
+                  <input
+                    type="checkbox"
+                    value="JOURNAL"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "JOURNAL"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label className="material-page__checkable-label">
+                    TODO: Päiväkirjatehtävät
+                  </label>
+                </div>
+              </div>
+            }
+          >
+            <IconButton icon="cogs" />
+          </Dropdown>
+        }
       >
         {this.state.materials.map((node, nodeIndex) => {
           // Boolean if there is view Restriction for toc topic
@@ -495,6 +607,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
           const topic = (
             <TocTopic
+              topicId={
+                this.props.status.loggedIn
+                  ? `${node.workspaceMaterialId}_${this.props.status.userId}`
+                  : node.workspaceMaterialId
+              }
               name={node.title}
               isHidden={node.hidden}
               key={node.workspaceMaterialId}
@@ -520,6 +637,18 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     const isAssignment = subnode.assignmentType === "EVALUATED";
                     const isExercise = subnode.assignmentType === "EXERCISE";
                     const isJournal = subnode.assignmentType === "JOURNAL";
+                    const isTheory = subnode.assignmentType === null;
+
+                    // Boolean if toc element is filtered out
+                    // if there is no filters, then all elements are shown
+                    // if there is filters, then only elements that match the filters are shown
+                    let filteredOut = false;
+
+                    if (this.state.assignmentTypeFilters.length > 0) {
+                      filteredOut = !this.state.assignmentTypeFilters.includes(
+                        subnode.assignmentType || (isTheory && "THEORY")
+                      );
+                    }
 
                     //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
                     const modifier = isAssignment
@@ -625,6 +754,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                         }
                         className={className}
                         isHidden={subnode.hidden || node.hidden}
+                        isFilteredOut={filteredOut}
                         disableScroll
                         iconAfter={icon}
                         iconAfterTitle={iconTitle}

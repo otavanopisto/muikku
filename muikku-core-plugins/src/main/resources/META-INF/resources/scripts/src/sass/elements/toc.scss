@@ -7,13 +7,18 @@
   @include text;
 }
 
+.toc-header {
+  align-items: center;
+  display: flex;
+}
+
 .toc__title {
   @include text;
 
   font-size: calc(#{$text-mobile-font-size} * 1.35);
   font-weight: 400;
   line-height: 1;
-  margin: 12px 10px 16px;
+  margin: 12px 10px;
   text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
@@ -26,7 +31,7 @@
   @include text;
 
   display: flex;
-  margin: 12px 8px 12px 10px;
+  padding: 5px 8px 5px 10px;
   text-transform: uppercase;
   user-select: text;
 
@@ -48,7 +53,7 @@
   cursor: pointer;
   display: flex;
   font-weight: 300;
-  margin: 6px 4px 6px 8px;
+  margin: 2px 4px 2px 15px;
   padding: 4px;
   position: relative;
   user-select: text;
@@ -67,6 +72,14 @@
   &.hidden {
     font-style: italic;
     opacity: 50%;
+  }
+
+  &.filteredOut {
+    height: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+    overflow: hidden;
+    padding: 0;
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
@@ -98,7 +111,7 @@
   justify-content: center;
   position: absolute;
   right: 7px;
-  top: 3px;
+  top: 4px;
   width: 1.375rem;
   z-index: 9999;
 }
