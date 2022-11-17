@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.rest.user;
+package fi.otavanopisto.muikku.plugins.me;
 
 import fi.otavanopisto.muikku.model.users.UserOnlineStatus;
 
