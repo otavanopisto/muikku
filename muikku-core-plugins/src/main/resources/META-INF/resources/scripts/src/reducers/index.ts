@@ -31,6 +31,7 @@ import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
 import { Calendar } from "./main-function/calendar";
 import { JournalsState } from "./workspaces/journals";
+import { Contacts } from "./base/contacts";
 
 /**
  * StateType
@@ -40,6 +41,7 @@ export interface StateType {
   i18n: i18nType;
   locales: LocaleListType;
   status: StatusType;
+  contacts: Contacts;
   title: string;
   websocket?: WebsocketStateType;
   yo?: YOType;

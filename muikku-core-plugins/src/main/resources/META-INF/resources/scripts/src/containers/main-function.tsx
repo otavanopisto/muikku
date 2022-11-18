@@ -118,6 +118,7 @@ import { DiscussionPatchType } from "~/reducers/discussion";
 import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
+import { loadContactGroup } from "~/actions/base/contacts";
 
 moment.locale("fi");
 
@@ -994,6 +995,7 @@ export default class MainFunction extends React.Component<
       this.loadlib(
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
+      this.props.store.dispatch(loadContactGroup("counselors") as Action);
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(

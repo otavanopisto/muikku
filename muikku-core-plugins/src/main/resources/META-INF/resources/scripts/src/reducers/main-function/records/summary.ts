@@ -38,20 +38,6 @@ export interface SummarStudentDetails extends SummaryStudyTime {
 }
 
 /**
- * SummaryStudentsGuidanceCouncelorsType
- */
-export interface SummaryStudentsGuidanceCouncelorsType {
-  firstName: string;
-  lastName: string;
-  email: string;
-  userEntityId: number;
-  id: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  properties: any;
-  hasImage: boolean;
-}
-
-/**
  * SummaryDataType
  */
 export interface SummaryDataType {
@@ -61,7 +47,6 @@ export interface SummaryDataType {
   graphData: GraphDataType;
   coursesDone: number;
   studentsDetails: SummarStudentDetails;
-  studentsGuidanceCouncelors: SummaryStudentsGuidanceCouncelorsType[];
 }
 
 /**

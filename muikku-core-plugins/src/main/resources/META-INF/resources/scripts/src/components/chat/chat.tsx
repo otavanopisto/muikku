@@ -20,11 +20,12 @@ import {
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
-import { SummaryStudentsGuidanceCouncelorsType } from "~/reducers/main-function/records/summary";
+
 import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
 import { getUserChatId, obtainNick } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
 import { BrowserTabNotification } from "~/util/browser-tab-notification";
+import { Contact } from "~/reducers/base/contacts";
 
 export type tabs = "ROOMS" | "PEOPLE";
 
@@ -148,7 +149,7 @@ interface IChatState {
   openChatsJIDS: IOpenChatJID[];
   selectedUserPresence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2.1
   ready: boolean;
-  studyGuiders: SummaryStudentsGuidanceCouncelorsType[];
+  studyGuiders: Contact[];
   roomNameField: string;
   roomDescField: string;
   // roomPersistent: boolean;
@@ -263,10 +264,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
         "callback"
       )()) as GuiderUserGroupListType;
 
-      const studentsGuidanceCouncelors: SummaryStudentsGuidanceCouncelorsType[] =
-        [];
+      const studentsGuidanceCouncelors: Contact[] = [];
 
-      //   This is removed due to a request from councelors. Will be implemented later
+      //   This is removed due to a request from counselors. Will be implemented later
 
       // if (studentsUserGroups && studentsUserGroups.length) {
       //   const councelGroups = studentsUserGroups.filter(
@@ -309,7 +309,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     } catch (e) {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.chat.notification.councelorLoadFailed"
+          "plugin.chat.notification.counselorLoadFailed"
         ),
         "error"
       );
@@ -1187,25 +1187,25 @@ class Chat extends React.Component<IChatProps, IChatState> {
               {this.props.status.isStudent ? (
                 <>
                   <div className="chat__controlbox-private-chat-heading">
-                    {this.props.i18n.text.get("plugin.chat.people.councelors")}
+                    {this.props.i18n.text.get("plugin.chat.people.counselors")}
                   </div>
                   <div className="chat__controlbox-people-listing">
                     {this.state.studyGuiders.length > 0 ? (
-                      this.state.studyGuiders.map((councelor) => {
+                      this.state.studyGuiders.map((counselor) => {
                         const person: IChatContact = {
-                          jid: getUserChatId(councelor.userEntityId, "staff"),
-                          name: getName(councelor, true),
+                          jid: getUserChatId(counselor.userEntityId, "staff"),
+                          name: getName(counselor, true),
                         };
                         return (
                           <Person
-                            modifier="councelor"
+                            modifier="counselor"
                             person={person}
                             toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
                               this,
                               person.jid,
                               true
                             )}
-                            key={councelor.userEntityId}
+                            key={counselor.userEntityId}
                           />
                         );
                       })
