@@ -20,6 +20,7 @@ import Tabs, { Tab } from "~/components/general/tabs";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { useExcerciseAssignments } from "./hooks/useExcercises";
 import { useCompositeReply } from "./hooks/useCompositeReply";
+import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 import Link from "~/components/general/link";
 
 import "~/sass/elements/empty.scss";
@@ -352,31 +353,45 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
       </ApplicationSubPanel.Header>
       <ApplicationSubPanel.Body>
         {journalsData.journalFeedback && (
-          <ApplicationListItem className="journal journal--studies">
-            <ApplicationListItemHeader className="application-list__item-header--journal-entry">
-              <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-                <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title-in-studies">
-                  TODO:Oppimispäiväkirjan kokonaispalaute
-                </span>
-              </div>
-              <div className="application-list__item-header-aside">
-                <span>
+          <div className="journal journal--feedback">
+            <div className="journal__header journal__header--studies-view">
+              {props.i18n.text.get(
+                "plugin.workspace.journal.journalFeedBackTitle"
+              )}
+            </div>
+            <article className="journal__body rich-text">
+              <CkeditorContentLoader
+                html={journalsData.journalFeedback.feedback}
+              />
+            </article>
+            <div className="journal__meta">
+              <div className="journal__meta-item">
+                <div className="journal__meta-item-label">
+                  {props.i18n.text.get(
+                    "plugin.workspace.journal.journalFeedBackDate"
+                  )}
+                  :
+                </div>
+                <div className="journal__meta-item-data">
                   {i18n.time.format(
                     journalsData.journalFeedback.created,
                     "L LT"
                   )}
-                </span>
+                </div>
               </div>
-            </ApplicationListItemHeader>
-            <ApplicationListItemBody className="application-list__item-body">
-              <article
-                className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
-                dangerouslySetInnerHTML={{
-                  __html: journalsData.journalFeedback.feedback,
-                }}
-              ></article>
-            </ApplicationListItemBody>
-          </ApplicationListItem>
+              <div className="journal__meta-item">
+                <div className="journal__meta-item-label">
+                  {props.i18n.text.get(
+                    "plugin.workspace.journal.journalFeedBackAuthor"
+                  )}
+                  :
+                </div>
+                <div className="journal__meta-item-data">
+                  {journalsData.journalFeedback.creatorName}
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {journalsData.journals.length ? (

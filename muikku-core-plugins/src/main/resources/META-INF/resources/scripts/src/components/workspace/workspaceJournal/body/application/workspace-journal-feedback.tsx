@@ -38,8 +38,9 @@ const WorkspaceJournalFeedback: React.FC<WorkspaceJournalFeedbackProps> = (
             )}
             :
           </div>
-          <div className="journal__meta-item-data"></div>{" "}
-          {moment(journalFeedback.created).format("l")}
+          <div className="journal__meta-item-data">
+            {moment(journalFeedback.created).format("l")}
+          </div>
         </div>
         <div className="journal__meta-item">
           <div className="journal__meta-item-label">
