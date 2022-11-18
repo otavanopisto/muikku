@@ -8,7 +8,7 @@
   padding: 10px;
 
   &:first-child {
-    border-color: transparent;
+    border-top-color: transparent;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -24,4 +24,32 @@
   border-top: 1px solid $color-message-border;
   padding: 15px 0;
   width: 100%;
+}
+
+.journal--feedback {
+  background: lighten($color-passed, 55%);
+  border-left: 3px solid $color-passed;
+  padding: 15px;
+}
+
+.journal__header {
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+.journal__meta {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.journal__meta-item {
+  align-items: center;
+  display: flex;
+  margin: 2px 20px 3px 0;
+}
+
+.journal__meta-item-label {
+  font-weight: 600;
+  margin: 0 5px 0 0;
 }

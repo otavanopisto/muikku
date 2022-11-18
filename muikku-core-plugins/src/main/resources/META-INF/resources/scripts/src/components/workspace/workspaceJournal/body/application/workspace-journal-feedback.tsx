@@ -1,6 +1,7 @@
 import * as React from "react";
 import { WorkspaceJournalFeedback } from "~/reducers/workspaces/journals";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
+import { i18nType } from "~/reducers/base/i18n";
 import * as moment from "moment";
 
 /**
@@ -8,6 +9,7 @@ import * as moment from "moment";
  */
 interface WorkspaceJournalFeedbackProps {
   journalFeedback: WorkspaceJournalFeedback;
+  i18n: i18nType;
 }
 
 /**
@@ -21,14 +23,35 @@ const WorkspaceJournalFeedback: React.FC<WorkspaceJournalFeedbackProps> = (
   const { journalFeedback } = props;
 
   return (
-    <div>
-      <h2>TODO: Kokonaispalaute</h2>
-      <article className="application-list__item-content-body application-list__item-content-body--journal-comment rich-text">
+    <div className="journal journal--feedback">
+      <div className="journal__header">
+        {props.i18n.text.get("plugin.workspace.journal.journalFeedBackTitle")}
+      </div>
+      <article className="journal__body rich-text">
         <CkeditorContentLoader html={journalFeedback.feedback} />
       </article>
-      <div>
-        <div>TODO: Arvioitu: {moment(journalFeedback.created).format("l")}</div>
-        <div>TODO: Arvioija: {journalFeedback.creatorName}</div>
+      <div className="journal__meta">
+        <div className="journal__meta-item">
+          <div className="journal__meta-item-label">
+            {props.i18n.text.get(
+              "plugin.workspace.journal.journalFeedBackDate"
+            )}
+            :
+          </div>
+          <div className="journal__meta-item-data"></div>{" "}
+          {moment(journalFeedback.created).format("l")}
+        </div>
+        <div className="journal__meta-item">
+          <div className="journal__meta-item-label">
+            {props.i18n.text.get(
+              "plugin.workspace.journal.journalFeedBackAuthor"
+            )}
+            :
+          </div>
+          <div className="journal__meta-item-data">
+            {journalFeedback.creatorName}
+          </div>
+        </div>
       </div>
     </div>
   );
