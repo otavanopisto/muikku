@@ -180,7 +180,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       
       // Students without a start date (or with an end date) are never notified
 
-      if (studyStartDate == null || studyEndDate != null) {
+      if (!isUsableStudyStartDate(studyStartDate) || studyEndDate != null) {
         continue;
       }
 

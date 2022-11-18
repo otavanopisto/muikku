@@ -105,6 +105,16 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
   }
 
   /**
+   * Returns true if given date is not null and is before current date/time
+   * 
+   * @param studyStartDate
+   * @return
+   */
+  protected boolean isUsableStudyStartDate(Date studyStartDate) {
+    return studyStartDate != null && studyStartDate.before(new Date());
+  }
+  
+  /**
    * Returns study start date for a given search result. If the result has study periods
    * of type TEMPORARILY SUSPENDED, the latest end date of such period is considered as 
    * the study start date. This is to avoid notifiers triggering on students that are on 
@@ -137,7 +147,7 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
               maxEndDate = null;
               break;
             }
-            else if (maxEndDate == null || (periodEnd != null && periodEnd.isAfter(periodEnd))) {
+            else if (maxEndDate == null || (periodEnd != null && periodEnd.isAfter(maxEndDate))) {
               maxEndDate = periodEnd;
             }
           }

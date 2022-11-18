@@ -123,7 +123,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
         
         // Do not notify students that have no study start date set or have started their studies within the last 60 days
         
-        if (studyStartDate == null || fromDateToOffsetDateTime(studyStartDate).isAfter(sendNotificationIfStudentStartedBefore)) {
+        if (!isUsableStudyStartDate(studyStartDate) || fromDateToOffsetDateTime(studyStartDate).isAfter(sendNotificationIfStudentStartedBefore)) {
           continue;
         }
         

@@ -170,7 +170,7 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       OffsetDateTime sendNotificationIfNotLoggedInBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
 
       Date studyStartDate = getStudyStartDateIncludingTemporaryLeaves(result);
-      if (studyStartDate == null) {
+      if (!isUsableStudyStartDate(studyStartDate)) {
         continue;
       }
       Long userEntityId = new Long((int) result.get("userEntityId"));

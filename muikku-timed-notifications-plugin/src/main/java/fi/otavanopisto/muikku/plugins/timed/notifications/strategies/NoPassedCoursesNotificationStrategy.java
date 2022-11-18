@@ -145,7 +145,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
       }
       
       Date studyStartDate = getStudyStartDateIncludingTemporaryLeaves(result);
-      if (studyStartDate == null) {
+      if (!isUsableStudyStartDate(studyStartDate)) {
         // Skip if the study start date (or end of temporary leave) cannot be determined as it implies the student is not active
         continue;
       }
