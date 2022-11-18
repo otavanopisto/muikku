@@ -21,7 +21,6 @@ import {
 import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
 import { AnyActionType } from "~/actions";
-import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
 import { getUserChatId, obtainNick } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
 import { BrowserTabNotification } from "~/util/browser-tab-notification";
