@@ -16,6 +16,7 @@ export interface ContactGroup {
  */
 export interface Contact {
   email: string;
+  chatAvailable: boolean;
   firstName: string;
   hasImage: true;
   id: string;
