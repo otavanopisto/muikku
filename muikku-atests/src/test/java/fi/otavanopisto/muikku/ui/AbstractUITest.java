@@ -90,6 +90,7 @@ import fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel;
 import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
 import fi.otavanopisto.muikku.atests.DiscussionThread;
+import fi.otavanopisto.muikku.atests.DiscussionThreadReply;
 import fi.otavanopisto.muikku.atests.Flag;
 import fi.otavanopisto.muikku.atests.StudentFlag;
 import fi.otavanopisto.muikku.atests.Workspace;
@@ -1463,6 +1464,25 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertNotNull(discussion.getId());
     
     return discussion;
+  }
+
+  protected DiscussionThreadReply createDiscussionReply(Long threadId, String message, Boolean deleted, DiscussionThreadReply parentReply) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    DiscussionThreadReply payload = new DiscussionThreadReply(null, threadId, message, deleted, parentReply);
+    Response response = asStudent()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/discussions/reply");
+    
+    response.then()
+      .statusCode(200);
+      
+    DiscussionThreadReply discussionThreadReply = objectMapper.readValue(response.asString(), DiscussionThreadReply.class);
+    assertNotNull(discussionThreadReply);
+    assertNotNull(discussionThreadReply.getId());
+    
+    return discussionThreadReply;
   }
 
   protected void deleteDiscussion(Long groupId, Long id) {
