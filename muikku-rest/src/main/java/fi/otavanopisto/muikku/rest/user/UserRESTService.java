@@ -1766,7 +1766,7 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     Locale localeObj = sessionController.getLocale();
-    String locale = (localeObj == null || localeObj.getLanguage() == null) ? "FI" : localeObj.getLanguage().toUpperCase();
+    String locale = (localeObj == null || localeObj.getLanguage() == null) ? "fi" : localeObj.getLanguage().toLowerCase();
 
     // Result object
     UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(

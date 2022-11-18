@@ -89,7 +89,7 @@ public class MeRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response getLocale() {
     Locale locale = localSessionController.getLocale();
-    String lang = (locale == null || locale.getLanguage() == null) ? "FI" : locale.getLanguage().toUpperCase();
+    String lang = (locale == null || locale.getLanguage() == null) ? "fi" : locale.getLanguage().toLowerCase();
 
     return Response.ok(new LanguageSelectionRestModel(lang)).build();
   }
