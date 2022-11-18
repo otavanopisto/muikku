@@ -9,7 +9,7 @@ import { isOverdue } from "~/helper-functions/dates";
 import * as moment from "moment";
 import { i18nType } from "~/reducers/base/i18n";
 import NotesItemEdit from "~/components/general/notes/notes-item-edit";
-import Button from "~/components/general/button";
+import Link from "~/components/general/link";
 import "~/sass/elements/note.scss";
 /**
  * NoteProps
@@ -87,25 +87,17 @@ export const Note: React.FC<NoteProps> = (props) => {
           dangerouslySetInnerHTML={{ __html: note.description }}
         ></div>
         <div className="note__footer">
-          <Button
-            buttonModifiers={["primary-function-content", "frontpage-button"]}
-            onClick={handleStatusChange}
-          >
+          <Link className="link link--index" onClick={handleStatusChange}>
             {i18n.text.get(updateButtonLocale)}
-          </Button>
+          </Link>
           {isCreator && (
             <NotesItemEdit
               selectedNotesItem={note}
               onNotesItemSaveUpdateClick={onUpdate}
             >
-              <Button
-                buttonModifiers={[
-                  "primary-function-content",
-                  "frontpage-button",
-                ]}
-              >
+              <Link className="link link--index">
                 {i18n.text.get("plugin.records.tasks.editnote.topic")}
-              </Button>
+              </Link>
             </NotesItemEdit>
           )}
         </div>
