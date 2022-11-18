@@ -9,7 +9,9 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { i18nType } from "~/reducers/base/i18n";
-import ApplicationList from "~/components/general/application-list";
+import ApplicationList, {
+  ApplicationListItemHeader,
+} from "~/components/general/application-list";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "../../../../../reducers/base/status";
 import Material from "../current-record/material";
@@ -22,6 +24,11 @@ import Link from "~/components/general/link";
 
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/application-sub-panel.scss";
+import {
+  ApplicationListItem,
+  ApplicationListItemBody,
+} from "../../../../general/application-list";
+import { bindActionCreators } from "redux";
 
 /**
  * AssignmentsAndDiariesProps
@@ -344,6 +351,34 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         </span>
       </ApplicationSubPanel.Header>
       <ApplicationSubPanel.Body>
+        {journalsData.journalFeedback && (
+          <ApplicationListItem className="journal journal--studies">
+            <ApplicationListItemHeader className="application-list__item-header--journal-entry">
+              <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+                <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title-in-studies">
+                  TODO:Oppimispäiväkirjan kokonaispalaute
+                </span>
+              </div>
+              <div className="application-list__item-header-aside">
+                <span>
+                  {i18n.time.format(
+                    journalsData.journalFeedback.created,
+                    "L LT"
+                  )}
+                </span>
+              </div>
+            </ApplicationListItemHeader>
+            <ApplicationListItemBody className="application-list__item-body">
+              <article
+                className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
+                dangerouslySetInnerHTML={{
+                  __html: journalsData.journalFeedback.feedback,
+                }}
+              ></article>
+            </ApplicationListItemBody>
+          </ApplicationListItem>
+        )}
+
         {journalsData.journals.length ? (
           journalsData.journals.map((journal) => {
             const isOpen = journalsOpen.includes(journal.id);
@@ -488,7 +523,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return { displayNotification };
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(

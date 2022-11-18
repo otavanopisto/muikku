@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as moment from "moment";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { JournalComment } from "~/@types/journal";
@@ -40,6 +39,7 @@ const EvaluationJournalEventComment: React.FC<
   EvaluationDiaryEventCommentProps
 > = (props) => {
   const {
+    i18n,
     journalComment,
     status,
     onEditClick,
@@ -71,10 +71,15 @@ const EvaluationJournalEventComment: React.FC<
   };
 
   const creatorIsMe = status.userId === authorId;
-  const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
-  const formatedDate = `${moment(created).format("l")} - ${moment(
-    created
-  ).format("LT")}`;
+  const creatorName = creatorIsMe
+    ? i18n.text.get(
+        "plugin.evaluation.evaluationModal.journalComments.creator.me"
+      )
+    : `${firstName} ${lastName}`;
+  const formatedDate = `${i18n.time.format(created, "l")} - ${i18n.time.format(
+    created,
+    "LT"
+  )}`;
 
   return (
     <div
@@ -91,7 +96,7 @@ const EvaluationJournalEventComment: React.FC<
             className="link link--evaluation"
             onClick={handleEditCommentClick}
           >
-            {props.i18n.text.get(
+            {i18n.text.get(
               "plugin.evaluation.evaluationModal.journalComments.editButton"
             )}
           </Link>
@@ -103,7 +108,7 @@ const EvaluationJournalEventComment: React.FC<
               workspaceEntityId={workspaceEntityId}
             >
               <Link className="link link--evaluation link--evaluation-delete">
-                {props.i18n.text.get(
+                {i18n.text.get(
                   "plugin.evaluation.evaluationModal.journalComments.deleteButton"
                 )}
               </Link>

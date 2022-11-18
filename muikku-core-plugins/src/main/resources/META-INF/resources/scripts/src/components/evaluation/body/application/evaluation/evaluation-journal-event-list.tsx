@@ -16,7 +16,6 @@ import {
 import JournalFeedbackEditor from "./editors/journal-feedback-editor";
 import SlideDrawer from "./slide-drawer";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import * as moment from "moment";
 import {
   DeleteEvaluationJournalFeedbackTriggerType,
   deleteEvaluationJournalFeedback,
@@ -208,7 +207,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
             <div className="evaluation-modal__item">
               <div className="evaluation-modal__item-journal-feedback">
                 <div className="evaluation-modal__item-journal-feedback-label">
-                  {props.i18n.text.get(
+                  {i18n.text.get(
                     "plugin.evaluation.evaluationModal.journalFeedBackTitle"
                   )}
                 </div>
@@ -219,13 +218,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
               <div className="evaluation-modal__item-meta">
                 <div className="evaluation-modal__item-meta-item">
                   <span className="evaluation-modal__item-meta-item-label">
-                    {props.i18n.text.get(
+                    {i18n.text.get(
                       "plugin.evaluation.evaluationModal.journalFeedBackLabel"
                     )}
-                    :{" "}
+                    :
                   </span>
                   <span className="evaluation-modal__item-meta-item-data">
-                    {moment(journalFeedback.created).format("l")}
+                    {i18n.time.format(journalFeedback.created, "l")}
                   </span>
                 </div>
               </div>
