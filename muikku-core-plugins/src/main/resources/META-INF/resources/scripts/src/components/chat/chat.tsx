@@ -152,7 +152,6 @@ interface IChatState {
   openChatsJIDS: IOpenChatJID[];
   selectedUserPresence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2.1
   ready: boolean;
-  // studyGuiders: Contact[];
   roomNameField: string;
   roomDescField: string;
   // roomPersistent: boolean;
@@ -197,7 +196,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       connection: null,
       rosterLoaded: false,
       connectionHostname: null,
-      // studyGuiders: [],
       roster: [],
       activeTab: "ROOMS",
       isInitialized: false,
