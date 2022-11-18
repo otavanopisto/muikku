@@ -510,6 +510,15 @@ class ContentComponent extends SessionStateComponent<
             content={
               <>
                 <div className="dropdown__container-item">
+                  <div className="filter-category">
+                    <div className="filter-category__label">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.materials.tocFilter"
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="dropdown__container-item">
                   <div className="filter-item filter-item--workspace-page">
                     <input
                       type="checkbox"
@@ -596,7 +605,7 @@ class ContentComponent extends SessionStateComponent<
               </>
             }
           >
-            <IconButton icon="filter" />
+            <IconButton icon="filter" buttonModifiers={["toc-filter"]} />
           </Dropdown>
         }
       >
