@@ -152,6 +152,15 @@
   }
 }
 
+// TODO: better solution for this
+.toc__section-container {
+  &.active {
+    .toc__section-title {
+      border-bottom: 3px solid black;
+    }
+  }
+}
+
 .toc__section-container--view-restricted-to-logged-in .toc__section-title,
 .toc__item--view-restricted-to-logged-in {
   .toc__icon {

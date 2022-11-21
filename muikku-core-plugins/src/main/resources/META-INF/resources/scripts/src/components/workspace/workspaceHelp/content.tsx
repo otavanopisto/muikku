@@ -18,7 +18,7 @@ import {
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-import { Toc, TocTopic, TocElement } from "~/components/general/toc";
+import TocTopic, { Toc, TocElement } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
@@ -386,6 +386,24 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   };
 
   /**
+   * Check if section is active by looking if any of its children are active
+   *
+   * @param section section
+   * @returns boolean if section is active
+   */
+  isSectionActive = (section: MaterialContentNodeType) => {
+    const { activeNodeId } = this.props;
+
+    for (const m of section.children) {
+      if (m.workspaceMaterialId === activeNodeId) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  /**
    * render
    */
   render() {
@@ -429,14 +447,15 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               ? this.buildViewRestrictionLocaleString(node.viewRestrict)
               : null;
 
-          const className: string =
+          const classModifier: string[] =
             isTocTopicViewRestricted && !this.props.status.isStudent
-              ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
-              : "toc__section-container";
+              ? [this.buildViewRestrictionModifiers(node.viewRestrict, true)]
+              : [];
 
           const topic = (
             <TocTopic
               topicId={node.workspaceMaterialId}
+              isActive={this.isSectionActive(node)}
               name={node.title}
               isHidden={node.hidden}
               key={node.workspaceMaterialId}
@@ -445,7 +464,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                   ? null
                   : "s-" + node.workspaceMaterialId
               }
-              className={className}
+              modifiers={classModifier}
               iconAfter={icon}
               iconAfterTitle={iconTitle}
             >

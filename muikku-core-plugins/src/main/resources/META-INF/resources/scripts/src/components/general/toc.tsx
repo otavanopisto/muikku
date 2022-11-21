@@ -44,6 +44,15 @@ interface TocTopicProps {
    * Topic id is combination of workspace material folder id + something user related
    */
   topicId: number | string;
+  /**
+   * If some of topic's children is active, topic is active
+   */
+  isActive: boolean;
+
+  /**
+   * Toc topic class modifiers
+   */
+  modifiers?: string[];
   name?: string;
   icon?: string;
   className?: string;
@@ -52,61 +61,110 @@ interface TocTopicProps {
   iconAfter?: string;
   iconAfterTitle?: string;
   iconAfterColor?: string;
+  children?: React.ReactNode;
 }
 
-/**
- * TocTopicNew
- * @param props props
- * @returns JSX.Element
- */
-export const TocTopic: React.FC<TocTopicProps> = (props) => {
-  const [height, setHeight] = useLocalStorage<number | string>(
-    `tocTopic-${props.topicId}`,
-    "auto"
-  );
-
-  /**
-   * toggleHeight
-   */
-  const toggleHeight = () => {
-    setHeight(height === 0 ? "auto" : 0);
-  };
-
-  const arrowModifier = height === 0 ? "icon-arrow-right" : "icon-arrow-down";
-
-  return (
-    <div className={props.className}>
-      {props.name ? (
-        <div className={`toc__section-title ${props.isHidden ? "hidden" : ""}`}>
-          <span
-            style={{ color: "inherit" }}
-            className={`toc__icon toc__icon--section-open-close ${arrowModifier}`}
-            onClick={toggleHeight}
-          />
-          <Link
-            style={{ color: "inherit" }}
-            href={props.hash ? "#" + props.hash : null}
-            disableSmoothScroll={true}
-          >
-            <span className="toc__text-body">{props.name}</span>
-          </Link>
-          {props.iconAfter ? (
-            <span
-              title={props.iconAfterTitle}
-              className={`toc__icon icon-${props.iconAfter}`}
-              style={{ color: props.iconAfterColor }}
-            ></span>
-          ) : null}
-        </div>
-      ) : null}
-      <AnimateHeight duration={200} height={height} easing="ease-in">
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {props.children}
-        </div>
-      </AnimateHeight>
-    </div>
-  );
+export type ToggleOpenHandle = {
+  toggleOpen: (type?: "open" | "close") => void;
 };
+
+/**
+ * TocTopic component with toggle open functionality with ref forwarding
+ */
+const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
+  (props, ref) => {
+    const [height, setHeight] = useLocalStorage<number | string>(
+      `tocTopic-${props.topicId}`,
+      "auto"
+    );
+
+    /**
+     * Toggles open state
+     * @param type "open" | "handle"
+     */
+    const toggleHeight = (type?: "open" | "close") => {
+      if (type) {
+        setHeight(type === "open" ? "auto" : 0);
+      } else {
+        setHeight(height === 0 ? "auto" : 0);
+      }
+    };
+
+    // Way to expose toggleHeight to parent component
+    React.useImperativeHandle(ref, () => ({
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      toggleOpen: (type) => {
+        toggleHeight(type);
+      },
+    }));
+
+    /**
+     * Handles toggle open and close clicks
+     */
+    const handleToggleHeightClick = () => {
+      toggleHeight();
+    };
+
+    /**
+     * Handles Link click. Opens topic if it's closed
+     * @param e e
+     */
+    const handleLinkClick = (e: React.MouseEvent) => {
+      if (height === 0) {
+        toggleHeight("open");
+      }
+    };
+
+    const arrowModifier = height === 0 ? "icon-arrow-right" : "icon-arrow-down";
+
+    return (
+      <div
+        className={`toc__section-container ${props.isActive ? "active" : ""} ${
+          props.modifiers
+            ? props.modifiers
+                .map((m) => `toc__section-container--${m}`)
+                .join(" ")
+            : ""
+        }`}
+      >
+        {props.name ? (
+          <div
+            className={`toc__section-title ${props.isHidden ? "hidden" : ""}`}
+          >
+            {/**TODO: Styling */}
+            <span
+              className={`toc__icon toc__icon--section-open-close ${arrowModifier}`}
+              onClick={handleToggleHeightClick}
+            />
+            {/**TODO: Styling */}
+            <Link
+              href={props.hash ? "#" + props.hash : null}
+              disableSmoothScroll={true}
+              onClick={handleLinkClick}
+            >
+              <span className="toc__text-body">{props.name}</span>
+            </Link>
+            {props.iconAfter ? (
+              <span
+                title={props.iconAfterTitle}
+                className={`toc__icon icon-${props.iconAfter}`}
+                style={{ color: props.iconAfterColor }}
+              ></span>
+            ) : null}
+          </div>
+        ) : null}
+        <AnimateHeight duration={200} height={height} easing="ease-in">
+          {/**TODO: Styling */}
+          <div>{props.children}</div>
+        </AnimateHeight>
+      </div>
+    );
+  }
+);
+
+TocTopic.displayName = "TocTopic";
+
+export default TocTopic;
 
 /**
  * TocElementProps

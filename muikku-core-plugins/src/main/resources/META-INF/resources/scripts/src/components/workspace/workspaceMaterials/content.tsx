@@ -25,7 +25,11 @@ import {
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-import { Toc, TocTopic, TocElement } from "~/components/general/toc";
+import TocTopic, {
+  Toc,
+  TocElement,
+  ToggleOpenHandle,
+} from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
@@ -38,7 +42,7 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import Dropdown from "~/components/general/dropdown";
-import { IconButton } from "~/components/general/button";
+import { ButtonPill, IconButton } from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 
 /**
@@ -100,6 +104,7 @@ class ContentComponent extends SessionStateComponent<
 > {
   private storedLastUpdateServerExecution: Function;
   private originalMaterials: MaterialContentNodeListType;
+  private topicRefs: ToggleOpenHandle[];
 
   /**
    * constructor
@@ -112,10 +117,12 @@ class ContentComponent extends SessionStateComponent<
       ? `${props.workspace.id}.${props.status.userId}`
       : `${props.workspace.id}`;
 
+    this.topicRefs = [];
+
     this.state = {
       ...this.getRecoverStoredState(
         {
-          assignmentTypeFilters: [],
+          assignmentTypeFilters: ["THEORY", "EVALUATED", "EXERCISE", "JOURNAL"],
           sessionId,
         },
         sessionId
@@ -401,6 +408,18 @@ class ContentComponent extends SessionStateComponent<
   }
 
   /**
+   * handleOpenAllSections
+   * @param type type
+   */
+  handleToggleAllSectionsOpen =
+    (type: "close" | "open") =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      for (const ref of this.topicRefs) {
+        ref.toggleOpen(type);
+      }
+    };
+
+  /**
    * handleToggleAssignmentFilterChange
    * @param e e
    */
@@ -490,6 +509,24 @@ class ContentComponent extends SessionStateComponent<
   };
 
   /**
+   * Check if section is active by looking if any of its children are active
+   *
+   * @param section section
+   * @returns boolean if section is active
+   */
+  isSectionActive = (section: MaterialContentNodeType) => {
+    const { activeNodeId } = this.props;
+
+    for (const m of section.children) {
+      if (m.workspaceMaterialId === activeNodeId) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -506,107 +543,121 @@ class ContentComponent extends SessionStateComponent<
           "plugin.workspace.materials.tocTitle"
         )}
         tocHeaderExtraContent={
-          <Dropdown
-            content={
-              <>
-                <div className="dropdown__container-item">
-                  <div className="filter-category">
-                    <div className="filter-category__label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.materials.tocFilter"
-                      )}
+          <div>
+            <Dropdown openByHover content={<p>Avaa kaikki</p>}>
+              <ButtonPill
+                icon="cogs"
+                onClick={this.handleToggleAllSectionsOpen("open")}
+              />
+            </Dropdown>
+            <Dropdown openByHover content={<p>Sulje kaikki</p>}>
+              <ButtonPill
+                icon="trash"
+                onClick={this.handleToggleAllSectionsOpen("close")}
+              />
+            </Dropdown>
+            <Dropdown
+              content={
+                <>
+                  <div className="dropdown__container-item">
+                    <div className="filter-category">
+                      <div className="filter-category__label">
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter"
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="dropdown__container-item">
-                  <div className="filter-item filter-item--workspace-page">
-                    <input
-                      type="checkbox"
-                      value="THEORY"
-                      id="theory-page-filter"
-                      checked={this.state.assignmentTypeFilters.includes(
-                        "THEORY"
-                      )}
-                      onChange={this.handleToggleAssignmentFilterChange}
-                    />
-                    <label
-                      htmlFor="theory-page-filter"
-                      className="filter-item__label"
-                    >
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.materials.tocFilter.theory"
-                      )}
-                    </label>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="THEORY"
+                        id="theory-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "THEORY"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="theory-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.theory"
+                        )}
+                      </label>
+                    </div>
                   </div>
-                </div>
-                <div className="dropdown__container-item">
-                  <div className="filter-item filter-item--workspace-page">
-                    <input
-                      type="checkbox"
-                      value="EXERCISE"
-                      id="exercise-page-filter"
-                      checked={this.state.assignmentTypeFilters.includes(
-                        "EXERCISE"
-                      )}
-                      onChange={this.handleToggleAssignmentFilterChange}
-                    />
-                    <label
-                      htmlFor="exercise-page-filter"
-                      className="filter-item__label"
-                    >
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.materials.tocFilter.exercise"
-                      )}
-                    </label>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="EXERCISE"
+                        id="exercise-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "EXERCISE"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="exercise-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.exercise"
+                        )}
+                      </label>
+                    </div>
                   </div>
-                </div>
-                <div className="dropdown__container-item">
-                  <div className="filter-item filter-item--workspace-page">
-                    <input
-                      type="checkbox"
-                      value="EVALUATED"
-                      id="assignment-page-filter"
-                      checked={this.state.assignmentTypeFilters.includes(
-                        "EVALUATED"
-                      )}
-                      onChange={this.handleToggleAssignmentFilterChange}
-                    />
-                    <label
-                      htmlFor="assignment-page-filter"
-                      className="filter-item__label"
-                    >
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.materials.tocFilter.assignment"
-                      )}
-                    </label>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="EVALUATED"
+                        id="assignment-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "EVALUATED"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="assignment-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.assignment"
+                        )}
+                      </label>
+                    </div>
                   </div>
-                </div>
-                <div className="dropdown__container-item">
-                  <div className="filter-item filter-item--workspace-page">
-                    <input
-                      type="checkbox"
-                      value="JOURNAL"
-                      id="journal-page-filter"
-                      checked={this.state.assignmentTypeFilters.includes(
-                        "JOURNAL"
-                      )}
-                      onChange={this.handleToggleAssignmentFilterChange}
-                    />
-                    <label
-                      htmlFor="journal-page-filter"
-                      className="filter-item__label"
-                    >
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.materials.tocFilter.journal"
-                      )}
-                    </label>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="JOURNAL"
+                        id="journal-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "JOURNAL"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="journal-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.journal"
+                        )}
+                      </label>
+                    </div>
                   </div>
-                </div>
-              </>
-            }
-          >
-            <IconButton icon="filter" buttonModifiers={["toc-filter"]} />
-          </Dropdown>
+                </>
+              }
+            >
+              <IconButton icon="filter" buttonModifiers={["toc-filter"]} />
+            </Dropdown>
+          </div>
         }
       >
         {this.state.materials.map((node, nodeIndex) => {
@@ -648,6 +699,10 @@ class ContentComponent extends SessionStateComponent<
 
           const topic = (
             <TocTopic
+              ref={(ref) => {
+                this.topicRefs[nodeIndex] = ref;
+              }}
+              isActive={this.isSectionActive(node)}
               topicId={
                 this.props.status.loggedIn
                   ? `${node.workspaceMaterialId}_${this.props.status.userId}`
@@ -681,15 +736,11 @@ class ContentComponent extends SessionStateComponent<
                     const isTheory = subnode.assignmentType === null;
 
                     // Boolean if toc element is filtered out
-                    // if there is no filters, then all elements are shown
                     // if there is filters, then only elements that match the filters are shown
-                    let filteredOut = false;
-
-                    if (this.state.assignmentTypeFilters.length > 0) {
-                      filteredOut = !this.state.assignmentTypeFilters.includes(
+                    const filteredOut =
+                      !this.state.assignmentTypeFilters.includes(
                         subnode.assignmentType || (isTheory && "THEORY")
                       );
-                    }
 
                     //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
                     const modifier = isAssignment
