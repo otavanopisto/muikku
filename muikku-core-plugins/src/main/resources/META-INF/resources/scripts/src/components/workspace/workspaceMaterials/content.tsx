@@ -462,10 +462,10 @@ class ContentComponent extends SessionStateComponent<
     if (section) {
       switch (viewRestrict) {
         case MaterialViewRestriction.LOGGED_IN:
-          return "toc__section-container--view-restricted-to-logged-in";
+          return "view-restricted-to-logged-in";
 
         case MaterialViewRestriction.WORKSPACE_MEMBERS:
-          return "toc__section-container--view-restricted-to-members";
+          return "view-restricted-to-members";
 
         default:
           return null;
@@ -692,12 +692,12 @@ class ContentComponent extends SessionStateComponent<
               ? this.buildViewRestrictionLocaleString(node.viewRestrict)
               : null;
 
-          const classNameTopic: string =
+          const topicClassMods: string[] =
             isTocTopicViewRestricted &&
             !this.props.status.isStudent &&
             this.props.status.loggedIn
-              ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
-              : "toc__section-container";
+              ? [this.buildViewRestrictionModifiers(node.viewRestrict, true)]
+              : [];
 
           const topic = (
             <TocTopic
@@ -718,7 +718,7 @@ class ContentComponent extends SessionStateComponent<
                   ? null
                   : "s-" + node.workspaceMaterialId
               }
-              className={classNameTopic}
+              modifiers={topicClassMods}
               iconAfter={iconTopic}
               iconAfterTitle={iconTitleTopic}
             >
