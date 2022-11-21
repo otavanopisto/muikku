@@ -31,7 +31,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       try{
         login();
         navigate("/announcer", false);
-        waitAndClick("div.application-panel__helper-container.application-panel__helper-container--main-action > a.button--primary-function");
+        waitAndClick(".application-panel__actions-aside  > a.button--primary-function");
         
         waitForPresent(".cke_contents");
         waitForPresent(".env-dialog__row--dates .env-dialog__form-element-container:nth-child(2) input");
@@ -74,7 +74,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitForNotVisible(".dialog.dialog--delete-announcement.dialog--visible");
         waitForNotVisible(".application-list__item-content-header");
         reloadCurrentPage();
-        waitForPresent(".application-panel__main-container");
+        waitForPresent(".application-panel__content-main");
         assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list__item-content-header") == false);
         navigate("/", false);
         navigate("/announcer#archived", false);
@@ -217,7 +217,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
     createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null, null);
     try {
       navigate("/announcer", false);
-      waitForPresent("div.application-panel__main-container.loader-empty");
+      waitForPresent(".application-panel__content-main.loader-empty");
       navigate("/", false);
       navigate("/announcer#past", false);
       

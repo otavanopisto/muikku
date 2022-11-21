@@ -13,10 +13,18 @@ import {
   DiscussionThreadReplyListType,
   DiscussionThreadReplyType,
   DiscussionAreaUpdateType,
+  DiscussionSubscribedThread,
+  DiscussionSubscribedArea,
 } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
+import { Dispatch } from "react-redux";
 
 const MAX_LOADED_AT_ONCE = 30;
+
+export type UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS = SpecificActionType<
+  "UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS",
+  boolean
+>;
 
 export type UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES = SpecificActionType<
   "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
@@ -77,6 +85,85 @@ export type SET_DISCUSSION_WORKSPACE_ID = SpecificActionType<
   "SET_DISCUSSION_WORKSPACE_ID",
   number
 >;
+export type UPDATE_SUBSCRIBED_THREAD_LIST = SpecificActionType<
+  "UPDATE_SUBSCRIBED_THREAD_LIST",
+  DiscussionSubscribedThread[]
+>;
+export type UPDATE_SUBSCRIBED_AREA_LIST = SpecificActionType<
+  "UPDATE_SUBSCRIBED_AREA_LIST",
+  DiscussionSubscribedArea[]
+>;
+
+/**
+ * ShowOnlySubscribedThreads
+ */
+export interface ShowOnlySubscribedThreads {
+  (data: {
+    value: boolean;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * SubscribeToDiscussionThread
+ */
+export interface SubscribeDiscussionThread {
+  (data: {
+    areaId: number;
+    threadId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * UnsubscribeDiscustionThread
+ */
+export interface UnsubscribeDiscustionThread {
+  (data: {
+    areaId: number;
+    threadId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * SubscribeDiscussionArea
+ */
+export interface SubscribeDiscussionArea {
+  (data: {
+    areaId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * UnsubscribeDiscustionArea
+ */
+export interface UnsubscribeDiscustionArea {
+  (data: {
+    areaId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * LoadSubscribedDiscussionThreadList
+ */
+export interface LoadSubscribedDiscussionThreadList {
+  (data: { success?: () => void; fail?: () => void }): AnyActionType;
+}
+
+/**
+ * LoadSubscribedDiscussionThreadList
+ */
+export interface LoadSubscribedDiscussionAreaList {
+  (data: { success?: () => void; fail?: () => void }): AnyActionType;
+}
 
 /**
  * loadDiscussionThreadsFromServerTriggerType
@@ -100,6 +187,7 @@ export interface CreateDiscussionThreadTriggerType {
     message: string;
     sticky: boolean;
     title: string;
+    subscribe: boolean;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -178,6 +266,276 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
 }
 
 /**
+ * showOnlySubscribedThreads
+ * @param data data
+ * @returns dispatch
+ */
+const showOnlySubscribedThreads: ShowOnlySubscribedThreads =
+  function showOnlySubscribedThreads(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS",
+        payload: data.value,
+      });
+    };
+  };
+
+/**
+ * subscribeDiscussionThread
+ * @param data data
+ * @returns dispatch
+ */
+const subscribeDiscussionThread: SubscribeDiscussionThread =
+  function subscribeDiscussionThread(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        const subscribedThread: DiscussionSubscribedThread = <
+          DiscussionSubscribedThread
+        >await promisify(
+          mApi().forum.areas.threads.toggleSubscription.create(
+            data.areaId,
+            data.threadId
+          ),
+          "callback"
+        )();
+
+        const subscribedThreadList = [...state.discussion.subscribedThreads];
+
+        subscribedThreadList.push(subscribedThread);
+
+        dispatch({
+          type: "UPDATE_SUBSCRIBED_THREAD_LIST",
+          payload: subscribedThreadList,
+        });
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: <DiscussionStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * unsubscribeDiscussionThread
+ * @param data data
+ * @returns dispatch
+ */
+const unsubscribeDiscussionThread: UnsubscribeDiscustionThread =
+  function unsubscribeDiscussionThread(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        await promisify(
+          mApi().forum.areas.threads.toggleSubscription.create(
+            data.areaId,
+            data.threadId
+          ),
+          "callback"
+        )();
+
+        const subscribedThreadList = [...state.discussion.subscribedThreads];
+
+        const index = subscribedThreadList.findIndex(
+          (sThread) => sThread.threadId === data.threadId
+        );
+
+        subscribedThreadList.splice(index, 1);
+
+        dispatch({
+          type: "UPDATE_SUBSCRIBED_THREAD_LIST",
+          payload: subscribedThreadList,
+        });
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: <DiscussionStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * subscribeDiscussionArea
+ * @param data data
+ * @returns dispatch
+ */
+const subscribeDiscussionArea: SubscribeDiscussionArea =
+  function subscribeDiscussionArea(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        const subscribedArea: DiscussionSubscribedArea = <
+          DiscussionSubscribedArea
+        >await promisify(
+          mApi().forum.areas.toggleSubscription.create(data.areaId),
+          "callback"
+        )();
+
+        const subscribedAreaList = [...state.discussion.subscribedAreas];
+
+        subscribedAreaList.push(subscribedArea);
+
+        dispatch({
+          type: "UPDATE_SUBSCRIBED_AREA_LIST",
+          payload: subscribedAreaList,
+        });
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: <DiscussionStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * unsubscribeDiscussionArea
+ * @param data data
+ * @returns dispatch
+ */
+const unsubscribeDiscussionArea: UnsubscribeDiscustionArea =
+  function unsubscribeDiscussionArea(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        await promisify(
+          mApi().forum.areas.toggleSubscription.create(data.areaId),
+          "callback"
+        )();
+
+        const subscribedAreaList = [...state.discussion.subscribedAreas];
+
+        const index = subscribedAreaList.findIndex(
+          (sArea) => sArea.areaId === data.areaId
+        );
+
+        subscribedAreaList.splice(index, 1);
+
+        dispatch({
+          type: "UPDATE_SUBSCRIBED_AREA_LIST",
+          payload: subscribedAreaList,
+        });
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: <DiscussionStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadSubscribedDiscussionAreaList
+ * @param data data
+ * @returns dispatch
+ */
+const loadSubscribedDiscussionAreaList: LoadSubscribedDiscussionAreaList =
+  function loadSubscribedDiscussionThreadList(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        const subscribedAreaList: DiscussionSubscribedArea[] = <
+          DiscussionSubscribedArea[]
+        >await promisify(
+          mApi().forum.subscriptionAreas.read(state.status.userId),
+          "callback"
+        )();
+
+        dispatch({
+          type: "UPDATE_SUBSCRIBED_AREA_LIST",
+          payload: subscribedAreaList,
+        });
+
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: "READY",
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: "ERROR",
+        });
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * loadSubscribedDiscussionThreadList
+ * @param data data
+ * @returns dispatch
+ */
+const loadSubscribedDiscussionThreadList: LoadSubscribedDiscussionThreadList =
+  function loadSubscribedDiscussionThreadList(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        const subscribedThreadList: DiscussionSubscribedThread[] = <
+          DiscussionSubscribedThread[]
+        >await promisify(
+          mApi().forum.subscriptionThreads.read(state.status.userId),
+          "callback"
+        )();
+
+        dispatch({
+          type: "UPDATE_SUBSCRIBED_THREAD_LIST",
+          payload: subscribedThreadList,
+        });
+
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: "READY",
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: "ERROR",
+        });
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
  * loadDiscussionThreadsFromServer
  * @param data data
  * @returns dispatch
@@ -185,7 +543,7 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
 const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerType =
   function loadDiscussionThreadsFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       //Remove the current message
@@ -311,7 +669,7 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
 const createDiscussionThread: CreateDiscussionThreadTriggerType =
   function createDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!data.title) {
@@ -368,6 +726,16 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
           newThread.id +
           "/1";
 
+        // If user want to subscribe data when creating new
+        if (data.subscribe) {
+          dispatch(
+            subscribeDiscussionThread({
+              areaId: newThread.forumAreaId,
+              threadId: newThread.id,
+            })
+          );
+        }
+
         //non-ready, also area count might change, so let's reload it
         dispatch(loadDiscussionAreasFromServer());
 
@@ -400,7 +768,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
 const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
   function modifyDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!data.title) {
@@ -483,7 +851,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
 const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType =
   function loadDiscussionThreadFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -615,7 +983,7 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
 const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType =
   function replyToDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const payload: any = {
@@ -675,7 +1043,7 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
 const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
   function deleteCurrentDiscussionThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -793,7 +1161,7 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
 const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
   function modifyReplyFromCurrentThread(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -854,7 +1222,7 @@ export interface LoadDiscussionAreasFromServerTriggerType {
 const loadDiscussionAreasFromServer: LoadDiscussionAreasFromServerTriggerType =
   function loadDiscussionAreasFromServer(callback) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const discussion: DiscussionType = getState().discussion;
@@ -889,6 +1257,7 @@ export interface CreateDiscussionAreaTriggerType {
   (data: {
     name: string;
     description: string;
+    subscribe: boolean;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -902,7 +1271,7 @@ export interface CreateDiscussionAreaTriggerType {
 const createDiscussionArea: CreateDiscussionAreaTriggerType =
   function createDiscussionArea(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!data.name) {
@@ -934,6 +1303,16 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
             "callback"
           )()
         );
+
+        // If user want to subscribe data when creating new
+        if (data.subscribe) {
+          dispatch(
+            subscribeDiscussionArea({
+              areaId: newArea.id,
+            })
+          );
+        }
+
         dispatch({
           type: "PUSH_DISCUSSION_AREA_LAST",
           payload: newArea,
@@ -971,7 +1350,7 @@ export interface UpdateDiscussionAreaTriggerType {
 const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
   function updateDiscussionArea(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!data.name) {
@@ -1038,7 +1417,7 @@ export interface DeleteDiscussionAreaTriggerType {
 const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
   function deleteDiscussionArea(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1089,6 +1468,13 @@ const setDiscussionWorkpaceId: SetDiscussionWorkspaceIdTriggerType =
   };
 
 export {
+  showOnlySubscribedThreads,
+  subscribeDiscussionThread,
+  unsubscribeDiscussionThread,
+  subscribeDiscussionArea,
+  unsubscribeDiscussionArea,
+  loadSubscribedDiscussionAreaList,
+  loadSubscribedDiscussionThreadList,
   loadDiscussionThreadsFromServer,
   createDiscussionThread,
   loadDiscussionThreadFromServer,

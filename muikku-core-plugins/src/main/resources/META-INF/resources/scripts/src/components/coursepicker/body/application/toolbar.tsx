@@ -9,6 +9,7 @@ import { StateType } from "~/reducers";
 import {
   ApplicationPanelToolbar,
   ApplicationPanelToolbarActionsMain,
+  ApplicationPanelToolsContainer,
 } from "~/components/general/application-panel/application-panel";
 import { WorkspacesType } from "~/reducers/workspaces";
 import { SearchFormElement } from "~/components/general/form-element";
@@ -109,17 +110,19 @@ class CoursepickerToolbar extends React.Component<
     return (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
-          <SearchFormElement
-            updateField={this.updateSearchWithQuery}
-            name="workspace-search"
-            id="searchCourses"
-            onFocus={this.onInputFocus}
-            onBlur={this.onInputBlur}
-            placeholder={this.props.i18n.text.get(
-              "plugin.coursepicker.search.placeholder"
-            )}
-            value={this.state.searchquery}
-          />
+          <ApplicationPanelToolsContainer>
+            <SearchFormElement
+              updateField={this.updateSearchWithQuery}
+              name="workspace-search"
+              id="searchCourses"
+              onFocus={this.onInputFocus}
+              onBlur={this.onInputBlur}
+              placeholder={this.props.i18n.text.get(
+                "plugin.coursepicker.search.placeholder"
+              )}
+              value={this.state.searchquery}
+            />
+          </ApplicationPanelToolsContainer>
         </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>
     );

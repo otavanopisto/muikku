@@ -9,11 +9,11 @@ import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import { WorkspaceMaterialEditorType } from "~/reducers/workspaces";
 import {
-  setWorkspaceMaterialEditorState,
   SetWorkspaceMaterialEditorStateTriggerType,
-  updateWorkspaceMaterialContentNode,
+  setWorkspaceMaterialEditorState,
   UpdateWorkspaceMaterialContentNodeTriggerType,
-} from "~/actions/workspaces";
+  updateWorkspaceMaterialContentNode,
+} from "~/actions/workspaces/material";
 
 /**
  * ConfirmPublishPageWithAnswersDialogProps

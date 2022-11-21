@@ -24,7 +24,7 @@ jobs:
       - name: Prepare maven settings
         run: python prepare-maven.py
       - name: Build with Maven
-        run: mvn install --settings ~/.m2/mySettings.xml -Pdummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin,matriculation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
+        run: mvn install --settings ~/.m2/mySettings.xml -Pdummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,timed-notifications-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
       - name: Set Muikku host
         run: echo "127.0.0.1 dev.muikku.fi" | sudo tee -a /etc/hosts
       - name: Test REST

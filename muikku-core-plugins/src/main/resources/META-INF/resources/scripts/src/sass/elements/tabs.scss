@@ -9,6 +9,11 @@
   margin-top: 10px;
 }
 
+.tabs--chat {
+  margin-top: 0;
+  order: 2;
+}
+
 .tabs--notes {
   width: 100%;
 }
@@ -46,6 +51,10 @@
   @include breakpoint($breakpoint-pad) {
     display: flex;
   }
+}
+
+.tabs__tab-labels--chat {
+  border-bottom: none;
 }
 
 .tabs__tab-labels--application-panel {
@@ -98,6 +107,22 @@
 
   @include breakpoint($breakpoint-pad) {
     cursor: pointer;
+  }
+}
+
+.tabs__tab--chat {
+  border-bottom: none;
+  border-left: none;
+  border-radius: 0;
+  border-right: none;
+  border-top: none;
+  margin: 0;
+
+  &.active {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    margin-bottom: none;
   }
 }
 
@@ -203,23 +228,6 @@
 
     &:last-child {
       padding: 10px 20px;
-    }
-  }
-}
-
-.tabs__tab--mobile-only-tab {
-  @include breakpoint($breakpoint-pad) {
-    background: $color-default;
-    border: 0;
-    color: $color-text-default;
-    font-weight: 600;
-  }
-
-  &.active {
-    @include breakpoint($breakpoint-pad) {
-      background: $color-default;
-      border: 0;
-      color: $color-text-default;
     }
   }
 }

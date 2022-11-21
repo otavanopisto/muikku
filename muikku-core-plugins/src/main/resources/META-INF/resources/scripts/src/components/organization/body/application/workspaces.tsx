@@ -9,10 +9,8 @@ import useInfinityScroll from "~/hooks/useInfinityScroll";
 import Workspace from "./workspaces/workspace";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/ref-wrapper.scss";
-import {
-  loadMoreOrganizationWorkspacesFromServer,
-  LoadMoreWorkspacesFromServerTriggerType,
-} from "~/actions/workspaces";
+import { LoadMoreWorkspacesFromServerTriggerType } from "~/actions/workspaces";
+import { loadMoreOrganizationWorkspacesFromServer } from "~/actions/workspaces/organization";
 
 import {
   WorkspacesStateType,

@@ -12,6 +12,7 @@ import "~/sass/elements/label.scss";
 import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
+import { Panel } from "~/components/general/panel";
 
 /**
  * AnnouncementsPanelProps
@@ -152,8 +153,8 @@ class AnnouncementsPanel extends React.Component<
               {announcement.workspaces && announcement.workspaces.length ? (
                 <div className="labels item-list__announcement-workspaces">
                   <span className="label">
-                    <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                    <span className="label__text label__text--announcement-workspace">
+                    <span className="label__icon label__icon--workspace icon-books"></span>
+                    <span className="label__text label__text--workspace">
                       {announcement.workspaces[0].name}{" "}
                       {announcement.workspaces[0].nameExtension
                         ? "(" + announcement.workspaces[0].nameExtension + ")"
@@ -198,15 +199,15 @@ class AnnouncementsPanel extends React.Component<
     );
 
     return (
-      <div className="panel panel--announcements">
-        <div className="panel__header">
-          <div className="panel__header-icon panel__header-icon--announcements icon-paper-plane"></div>
-          <h2 className="panel__header-title">
-            {this.props.i18n.text.get("plugin.frontPage.announcements.title")}
-          </h2>
-        </div>
+      <Panel
+        header={this.props.i18n.text.get(
+          "plugin.frontPage.announcements.title"
+        )}
+        icon="icon-paper-plane"
+        modifier="announcements"
+      >
         {this.props.announcements.length ? (
-          <div className="panel__body">
+          <>
             <div
               className="item-list item-list--panel-announcements"
               style={this.props.overflow && { overflow: "auto" }}
@@ -216,10 +217,10 @@ class AnnouncementsPanel extends React.Component<
             {this.props.announcements.length > itemsPerPage
               ? renderPaginationBody
               : null}
-          </div>
+          </>
         ) : (
           <div
-            className="panel__body panel__body--empty"
+            className="empty empty--front-page"
             aria-label={this.props.i18n.text.get(
               "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel"
             )}
@@ -229,7 +230,7 @@ class AnnouncementsPanel extends React.Component<
             )}
           </div>
         )}
-      </div>
+      </Panel>
     );
   }
 }

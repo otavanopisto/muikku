@@ -978,7 +978,18 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     throw new SchoolDataBridgeInternalException("Malformed group identifier");
   }
 
-
+  @Override
+  public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    String path = String.format("/students/students/%d/guidanceCounselors", pyramusStudentId);
+    if (onlyMessageReceivers != null) {
+      path += "?onlyMessageRecipients=" + onlyMessageReceivers.toString().toLowerCase();
+    }
+    
+    return entityFactory.createEntities(pyramusClient.get(path, StudentGroupUser[].class));
+  }
+  
   private Person findPyramusPerson(Long personId) {
     Person person = pyramusClient.get("/persons/persons/" + personId,
         fi.otavanopisto.pyramus.rest.model.Person.class);
@@ -1632,6 +1643,5 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return pyramusClient.get(String.format("/students/students/%d/amICounselor", studentId), Boolean.class);
 
   }
-  
-  
+
 }

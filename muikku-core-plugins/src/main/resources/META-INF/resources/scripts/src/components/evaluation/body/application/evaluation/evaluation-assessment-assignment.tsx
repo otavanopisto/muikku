@@ -139,7 +139,7 @@ class EvaluationAssessmentAssignment extends React.Component<
         )()) as MaterialContentNodeType;
 
         const evaluation = (await promisify(
-          mApi().workspace.workspaces.materials.evaluations.read(
+          mApi().evaluation.workspaces.materials.evaluations.read(
             workspace.id,
             assigment.id,
             {

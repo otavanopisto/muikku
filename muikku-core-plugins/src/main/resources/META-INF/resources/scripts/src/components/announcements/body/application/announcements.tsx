@@ -62,8 +62,8 @@ class Announcement extends React.Component<
           <div className="labels">
             {this.props.announcement.workspaces.map((workspace) => (
               <span className="label" key={workspace.id}>
-                <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                <span className="label__text label__text--announcement-workspace">
+                <span className="label__icon label__icon--workspace icon-books"></span>
+                <span className="label__text label__text--workspace">
                   {workspace.name}{" "}
                   {workspace.nameExtension
                     ? "(" + workspace.nameExtension + ")"

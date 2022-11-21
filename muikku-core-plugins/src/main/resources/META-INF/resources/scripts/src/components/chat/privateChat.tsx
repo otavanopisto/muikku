@@ -1,17 +1,19 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
 import "~/sass/elements/chat.scss";
 import "~/sass/elements/wcag.scss";
 import { IBareMessageType } from "./chat";
 import { ChatMessage } from "./chatMessage";
-import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
-
+import { requestPrescense } from "~/helper-functions/chat";
+import { IChatContact } from "./chat";
+import { obtainNick } from "~/helper-functions/chat";
 /**
  * IPrivateChatProps
  */
 interface IPrivateChatProps {
   initializingStanza: Element;
+  setTabNotification: (NewTabTitle?: string) => void;
+  roster: IChatContact[];
   leaveChat: () => void;
   connection: Strophe.Connection;
   jid: string;
@@ -49,7 +51,6 @@ export class PrivateChat extends React.Component<
   private messagesEnd: React.RefObject<HTMLDivElement>;
   private isScrollDetached = false;
   private chatRef: React.RefObject<HTMLDivElement>;
-
   /**
    * constructor
    * @param props props
@@ -85,7 +86,6 @@ export class PrivateChat extends React.Component<
     this.onTextFieldFocus = this.onTextFieldFocus.bind(this);
     this.onTextFieldBlur = this.onTextFieldBlur.bind(this);
     this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
-    this.requestPrescense = this.requestPrescense.bind(this);
     this.isScrolledToTop = this.isScrolledToTop.bind(this);
     this.loadMessages = this.loadMessages.bind(this);
   }
@@ -117,9 +117,9 @@ export class PrivateChat extends React.Component<
       // this.onPrivateChatMessage(this.props.initializingStanza);
     }
 
-    this.requestPrescense();
-    this.obtainNick();
+    this.setContactName();
     this.loadMessages();
+    requestPrescense(this.props.jid, this.props.connection);
   }
 
   /**
@@ -131,29 +131,13 @@ export class PrivateChat extends React.Component<
   }
 
   /**
-   * obtainNick
+   * setContactName
    */
-  async obtainNick() {
-    const user: any = (await promisify(
-      mApi().chat.userInfo.read(this.props.jid.split("@")[0], {}),
-      "callback"
-    )()) as any;
+  async setContactName() {
+    const user = await obtainNick(this.props.jid);
     this.setState({
-      nick: user.name,
+      nick: user.name ? user.name : user.nick,
     });
-  }
-
-  /**
-   * requestPrescense
-   */
-  requestPrescense() {
-    this.props.connection.send(
-      $pres({
-        from: this.props.connection.jid,
-        to: this.props.jid,
-        type: "probe",
-      })
-    );
   }
 
   /**
@@ -205,7 +189,6 @@ export class PrivateChat extends React.Component<
           .up()
           .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
       );
-
       const newMessage: IBareMessageType = {
         nick: null,
         message: text,
@@ -252,7 +235,6 @@ export class PrivateChat extends React.Component<
       const date = new Date();
       const userId = from.split("@")[0];
       const stanzaId: string = null;
-
       const messageReceived: IBareMessageType = {
         nick: fromNick,
         message: content,
@@ -266,6 +248,13 @@ export class PrivateChat extends React.Component<
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
+      this.props.setTabNotification(
+        this.props.i18n.text.get(
+          "plugin.chat.notification.newMessage",
+          this.state.nick
+        )
+      );
+
       this.setState(
         {
           messages: newMessagesList,

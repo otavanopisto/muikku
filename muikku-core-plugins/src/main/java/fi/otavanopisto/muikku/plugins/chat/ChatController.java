@@ -41,13 +41,17 @@ public class ChatController {
   
   @Inject
   private WorkspaceChatSettingsDAO workspaceChatSettingsDAO;
-  
+
   public boolean isChatAvailable() {
-    if (sessionController.isLoggedIn()) {
+    return sessionController.isLoggedIn() ? isChatAvailable(sessionController.getLoggedUser()) : false;
+  }
+  
+  public boolean isChatAvailable(SchoolDataIdentifier userIdentifier) {
+    if (userIdentifier != null) {
       
       // Chat is always available for admins
       
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
       if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {
         return true;
       }
@@ -60,7 +64,7 @@ public class ChatController {
             .map(identifier -> SchoolDataIdentifier.fromId(identifier))
             .collect(Collectors.toSet());
 
-        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
         if (userSchoolDataIdentifier != null) {
           OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
           if (organization != null) {
@@ -73,6 +77,16 @@ public class ChatController {
     return false;
   }
 
+  /**
+   * Returns true if chat is available and enabled to given user
+   * 
+   * @param userEntity
+   * @return
+   */
+  public boolean isChatEnabled(UserEntity userEntity) {
+    return isChatAvailable(userEntity.defaultSchoolDataIdentifier()) && findUserChatSettings(userEntity) != null;
+  }
+  
   public UserChatSettings findUserChatSettings(UserEntity userEntity) {
     return userChatSettingsDAO.findByUserEntityId(userEntity.getId());
   }

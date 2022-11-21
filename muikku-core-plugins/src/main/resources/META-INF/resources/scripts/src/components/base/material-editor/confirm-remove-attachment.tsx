@@ -12,9 +12,9 @@ import {
   WorkspaceMaterialEditorType,
 } from "~/reducers/workspaces";
 import {
-  deleteWorkspaceMaterialContentNode,
   DeleteWorkspaceMaterialContentNodeTriggerType,
-} from "~/actions/workspaces";
+  deleteWorkspaceMaterialContentNode,
+} from "~/actions/workspaces/material";
 
 /**
  * ConfirmRemoveAttachmentProps

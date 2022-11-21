@@ -66,8 +66,8 @@ class AnnouncementsAside extends React.Component<
                       announcement.workspaces.length ? (
                         <div className="labels item-list__announcement-workspaces">
                           <span className="label">
-                            <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                            <span className="label__text label__text--announcement-workspace">
+                            <span className="label__icon label__icon--workspace icon-books"></span>
+                            <span className="label__text label__text--workspace">
                               {announcement.workspaces[0].name}{" "}
                               {announcement.workspaces[0].nameExtension
                                 ? "(" +

@@ -622,6 +622,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return null;
   }
 
+  @Override
+  public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
   public void updateUserAddress(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier identifier, String street,
       String postalCode, String city, String country) {
     // TODO Auto-generated method stub

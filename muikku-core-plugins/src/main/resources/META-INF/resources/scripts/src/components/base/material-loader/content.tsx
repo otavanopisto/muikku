@@ -9,6 +9,7 @@ import BinaryMaterialLoader from "~/components/base/material-loader/binary";
 interface MaterialLoaderContentProps extends MaterialLoaderProps {
   answersChecked: boolean;
   answersVisible: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stateConfiguration: any;
 }
 
@@ -81,19 +82,16 @@ function onModification(props: MaterialLoaderContentProps) {
  * @param props props
  */
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
-  if (props.isViewRestricted) {
-    return (
-      <div
-        className="material-page__content material-page__content--view-restricted"
-        onClick={stopPropagation}
-      >
-        {props.i18n.text.get("plugin.workspace.materialViewRestricted")}
-      </div>
-    );
+  let className = "material-page__content-wrapper";
+
+  if (props.material.contentHiddenForUser) {
+    className =
+      "material-page__content material-page__content--view-restricted";
   }
+
   return (
     <>
-      <div className="material-page__content-wrapper" onClick={stopPropagation}>
+      <div className={className} onClick={stopPropagation}>
         {props.loadCompositeReplies &&
         typeof props.compositeReplies === "undefined" ? null : (
           <Base

@@ -11,11 +11,12 @@ import Button from "~/components/general/button";
 import equals = require("deep-equal");
 import { WorkspaceJournalType } from "~/reducers/workspaces";
 import {
-  createWorkspaceJournalForCurrentWorkspace,
-  updateWorkspaceJournalInCurrentWorkspace,
   CreateWorkspaceJournalForCurrentWorkspaceTriggerType,
+  createWorkspaceJournalForCurrentWorkspace,
   UpdateWorkspaceJournalInCurrentWorkspaceTriggerType,
-} from "~/actions/workspaces";
+  updateWorkspaceJournalInCurrentWorkspace,
+} from "~/actions/workspaces/journals";
+import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 
 /**
  * NewEditJournalProps
@@ -23,7 +24,7 @@ import {
 interface NewEditJournalProps {
   children: React.ReactElement<any>;
   i18n: i18nType;
-  journal?: WorkspaceJournalType;
+  journal?: WorkspaceJournalWithComments;
   createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType;
   updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType;
 }

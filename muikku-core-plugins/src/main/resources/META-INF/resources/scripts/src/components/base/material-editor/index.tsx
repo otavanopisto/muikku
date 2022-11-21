@@ -2,23 +2,16 @@ import * as React from "react";
 import "~/sass/elements/material-editor.scss";
 import "~/sass/elements/form.scss";
 import { bindActionCreators } from "redux";
-import {
-  setWorkspaceMaterialEditorState,
-  SetWorkspaceMaterialEditorStateTriggerType,
-  updateWorkspaceMaterialContentNode,
-  UpdateWorkspaceMaterialContentNodeTriggerType,
-  createWorkspaceMaterialAttachment,
-  CreateWorkspaceMaterialAttachmentTriggerType,
-  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
-  requestWorkspaceMaterialContentNodeAttachments,
-} from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
+import Link from "~/components/general/link";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceType,
   MaterialContentNodeType,
+  MaterialViewRestriction,
+  AssignmentType,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -37,6 +30,17 @@ import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import { PageLocation, UploadingValue } from "~/@types/shared";
+import { AnyActionType } from "~/actions";
+import {
+  setWorkspaceMaterialEditorState,
+  updateWorkspaceMaterialContentNode,
+  createWorkspaceMaterialAttachment,
+  requestWorkspaceMaterialContentNodeAttachments,
+  CreateWorkspaceMaterialAttachmentTriggerType,
+  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  SetWorkspaceMaterialEditorStateTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+} from "~/actions/workspaces/material";
 
 /**
  * MaterialEditorProps
@@ -178,6 +182,7 @@ const CKEditorConfig = (
         "muikku-organizerfield",
         "muikku-sorterfield",
         "muikku-mathexercisefield",
+        "muikku-journalfield",
       ],
     },
     {
@@ -205,8 +210,36 @@ const CKEditorConfig = (
   removePlugins: "image,exportpdf,wsc",
   extraPlugins: disablePlugins
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"
-    : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax",
+    : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax,muikku-journalfield",
 });
+
+/**
+ * MaterialPageTypeConfic
+ */
+interface MaterialPageTypeConfic {
+  type: AssignmentType;
+  classNameMod: string;
+  text: string;
+}
+
+const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
+  {
+    type: "EXERCISE",
+    classNameMod: "material-editor-dropdown-exercise",
+    text: "plugin.workspace.materialsManagement.pageType.excercise",
+  },
+  {
+    type: "EVALUATED",
+    classNameMod: "material-editor-dropdown-assignment",
+    text: "plugin.workspace.materialsManagement.pageType.evaluated",
+  },
+  {
+    type: "JOURNAL",
+    classNameMod: "material-editor-dropdown-journal",
+    text: "plugin.workspace.materialsManagement.pageType.journal",
+  },
+];
+
 /* eslint-enable camelcase */
 
 // First we need to modify the material content nodes end point to be able to receive hidden
@@ -225,9 +258,8 @@ class MaterialEditor extends React.Component<
   constructor(props: MaterialEditorProps) {
     super(props);
     this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
-    this.toggleViewRestrictionStatus =
-      this.toggleViewRestrictionStatus.bind(this);
-    this.cycleAssignmentType = this.cycleAssignmentType.bind(this);
+    this.cycleViewRestrictionStatus =
+      this.cycleViewRestrictionStatus.bind(this);
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
@@ -309,17 +341,23 @@ class MaterialEditor extends React.Component<
   }
 
   /**
-   * toggleViewRestrictionStatus
+   * cycleViewRestrictionStatus
    */
-  toggleViewRestrictionStatus() {
+  cycleViewRestrictionStatus() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
         viewRestrict:
-          this.props.editorState.currentDraftNodeValue.viewRestrict === "NONE"
-            ? "LOGGED_IN"
-            : "NONE",
+          this.props.editorState.currentDraftNodeValue.viewRestrict ===
+          MaterialViewRestriction.NONE
+            ? MaterialViewRestriction.WORKSPACE_MEMBERS
+            : this.props.editorState.currentDraftNodeValue.viewRestrict ===
+              MaterialViewRestriction.WORKSPACE_MEMBERS
+            ? MaterialViewRestriction.LOGGED_IN
+            : this.props.editorState.currentDraftNodeValue.viewRestrict ===
+                MaterialViewRestriction.LOGGED_IN &&
+              MaterialViewRestriction.NONE,
       },
       isDraft: true,
     });
@@ -327,23 +365,23 @@ class MaterialEditor extends React.Component<
 
   /**
    * cycleAssignmentType
+   * @param type type
    */
-  cycleAssignmentType() {
-    this.props.updateWorkspaceMaterialContentNode({
-      workspace: this.props.editorState.currentNodeWorkspace,
-      material: this.props.editorState.currentDraftNodeValue,
-      update: {
-        assignmentType: !this.props.editorState.currentDraftNodeValue
-          .assignmentType
-          ? "EXERCISE"
-          : this.props.editorState.currentDraftNodeValue.assignmentType ===
-            "EXERCISE"
-          ? "EVALUATED"
-          : null,
-      },
-      isDraft: true,
-    });
-  }
+  handleChangeAssignmentType =
+    (type: AssignmentType) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      this.props.updateWorkspaceMaterialContentNode({
+        workspace: this.props.editorState.currentNodeWorkspace,
+        material: this.props.editorState.currentDraftNodeValue,
+        update: {
+          assignmentType:
+            this.props.editorState.currentDraftNodeValue.assignmentType !== type
+              ? type
+              : null,
+        },
+        isDraft: true,
+      });
+    };
 
   /**
    * cycleCorrectAnswers
@@ -505,30 +543,66 @@ class MaterialEditor extends React.Component<
   /**
    * Builds locale string depending what page component is used
    * and if page is already view restricted
-   * @param isRestricted isRestricted
+   * @param viewRestriction viewRestriction
    * @returns localeString
    */
-  buildRestrictViewLocale = (isRestricted: boolean): string => {
+  buildRestrictViewLocale = (
+    viewRestriction: MaterialViewRestriction
+  ): string => {
     let localeString: string;
     switch (this.props.locationPage) {
-      case "Help":
-        localeString = isRestricted
-          ? this.props.i18n.text.get(
+      case "Help": {
+        switch (viewRestriction) {
+          case MaterialViewRestriction.NONE:
+            localeString = this.props.i18n.text.get(
+              "plugin.workspace.helpManagement.enableViewRestrictionToMembersPageTooltip"
+            );
+            break;
+
+          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+            localeString = this.props.i18n.text.get(
+              "plugin.workspace.helpManagement.enableViewRestrictionToLoggedInPageTooltip"
+            );
+            break;
+
+          case MaterialViewRestriction.LOGGED_IN:
+            localeString = this.props.i18n.text.get(
               "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
-            )
-          : this.props.i18n.text.get(
-              "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip"
             );
+            break;
+
+          default:
+            break;
+        }
+
         break;
-      case "Materials":
-        localeString = isRestricted
-          ? this.props.i18n.text.get(
+      }
+      case "Materials": {
+        switch (viewRestriction) {
+          case MaterialViewRestriction.NONE:
+            localeString = this.props.i18n.text.get(
+              "plugin.workspace.materialsManagement.enableViewRestrictionToMembersPageTooltip"
+            );
+            break;
+
+          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+            localeString = this.props.i18n.text.get(
+              "plugin.workspace.materialsManagement.enableViewRestrictionToLoggedInPageTooltip"
+            );
+            break;
+
+          case MaterialViewRestriction.LOGGED_IN:
+            localeString = this.props.i18n.text.get(
               "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
-            )
-          : this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip"
             );
+            break;
+
+          default:
+            break;
+        }
+
         break;
+      }
       default:
         localeString = "";
         break;
@@ -619,6 +693,88 @@ class MaterialEditor extends React.Component<
   }
 
   /**
+   * assignmentPageType
+   * @returns assignment page type
+   */
+  assignmentPageType = () => {
+    if (this.props.editorState.currentDraftNodeValue.assignmentType) {
+      switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
+        case "EXERCISE":
+          return "exercise";
+
+        case "EVALUATED":
+          return "assignment";
+
+        case "JOURNAL":
+          return "journal";
+
+        default:
+          return "theory";
+      }
+    }
+    return "theory";
+  };
+
+  /**
+   * Assignment page type icon if assignment type has been set
+   * @param type type
+   * @returns assignment page type icon
+   */
+  assignmentPageIcon = (type: AssignmentType) => {
+    switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
+      case "EXERCISE":
+        return "books";
+
+      case "EVALUATED":
+        return "evaluate";
+
+      case "JOURNAL":
+        return "book";
+
+      default:
+        return undefined;
+    }
+  };
+
+  /**
+   * renderAssignmentPageButton
+   * @param materialPageConfig materialPageConfig
+   * @param key key
+   * @returns assignment page type button
+   */
+  renderAssignmentPageButton = (
+    materialPageConfig: MaterialPageTypeConfic,
+    key: string | number
+  ) => {
+    const { assignmentType } = this.props.editorState.currentDraftNodeValue;
+
+    const currentAssignmentType = assignmentType || null;
+
+    const isActive =
+      currentAssignmentType &&
+      currentAssignmentType === materialPageConfig.type;
+
+    const activePageTypeClassName = isActive
+      ? "link--material-editor-dropdown-active"
+      : "";
+
+    const pageTypeClassName = materialPageConfig.classNameMod
+      ? "link--" + materialPageConfig.classNameMod
+      : "";
+
+    return (
+      <Link
+        key={key}
+        className={`link link--full link--material-editor-dropdown ${pageTypeClassName} ${activePageTypeClassName}`}
+        onClick={this.handleChangeAssignmentType(materialPageConfig.type)}
+      >
+        <span className="link__icon icon-puzzle"></span>
+        <span>{this.props.i18n.text.get(materialPageConfig.text)}</span>
+      </Link>
+    );
+  };
+
+  /**
    * render
    */
   render() {
@@ -634,13 +790,9 @@ class MaterialEditor extends React.Component<
         />
       );
     }
-    const materialPageType = this.props.editorState.currentDraftNodeValue
-      .assignmentType
-      ? this.props.editorState.currentDraftNodeValue.assignmentType ===
-        "EXERCISE"
-        ? "exercise"
-        : "assignment"
-      : "textual";
+
+    const materialPageType = this.assignmentPageType();
+
     const assignmentPageType = "material-editor-" + materialPageType;
 
     const comparerPoints = [
@@ -655,12 +807,17 @@ class MaterialEditor extends React.Component<
       "type",
       "viewRestrict",
     ];
+
     let canPublish = false;
     for (const point of comparerPoints) {
       if (
         !equals(
-          (this.props.editorState.currentNodeValue as any)[point],
-          (this.props.editorState.currentDraftNodeValue as any)[point]
+          this.props.editorState.currentNodeValue[
+            point as keyof MaterialContentNodeType
+          ],
+          this.props.editorState.currentDraftNodeValue[
+            point as keyof MaterialContentNodeType
+          ]
         )
       ) {
         canPublish = true;
@@ -692,16 +849,26 @@ class MaterialEditor extends React.Component<
       hideShowButtonModifiers.push("material-editor-enabled");
     }
 
-    const isViewRestricted =
-      this.props.editorState.currentDraftNodeValue.viewRestrict === "LOGGED_IN";
     const viewRestrictionButtonModifiers = [
       "material-editor-restrict-page",
       "material-editor",
     ];
-    if (isViewRestricted) {
-      viewRestrictionButtonModifiers.push("material-editor-disabled");
-    } else {
-      viewRestrictionButtonModifiers.push("material-editor-enabled");
+
+    switch (this.props.editorState.currentDraftNodeValue.viewRestrict) {
+      case MaterialViewRestriction.NONE:
+        viewRestrictionButtonModifiers.push("material-editor-enabled");
+        break;
+
+      case MaterialViewRestriction.LOGGED_IN:
+        viewRestrictionButtonModifiers.push("material-editor-disabled");
+        break;
+
+      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        viewRestrictionButtonModifiers.push("material-editor-members-only");
+        break;
+
+      default:
+        break;
     }
 
     const exerciseRevealType =
@@ -733,8 +900,9 @@ class MaterialEditor extends React.Component<
             "plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"
           );
 
-    const canRestrictViewLocale =
-      this.buildRestrictViewLocale(isViewRestricted);
+    const canRestrictViewLocale = this.buildRestrictViewLocale(
+      this.props.editorState.currentDraftNodeValue.viewRestrict
+    );
 
     const editorButtonSet = (
       <div className="material-editor__buttonset">
@@ -771,16 +939,17 @@ class MaterialEditor extends React.Component<
               <ButtonPill
                 buttonModifiers={viewRestrictionButtonModifiers}
                 icon="restriction"
-                onClick={this.toggleViewRestrictionStatus}
+                onClick={this.cycleViewRestrictionStatus}
               />
             </Dropdown>
           ) : null}
           {this.props.editorState.canChangePageType ? (
             <Dropdown
-              openByHover
-              modifier="material-management-tooltip"
-              content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip"
+              modifier="material-editor-page-type"
+              openByHover={false}
+              persistent
+              items={MATERIAL_PAGE_TYPE_CONFIGS.map((config, index) =>
+                this.renderAssignmentPageButton(config, index)
               )}
             >
               <ButtonPill
@@ -790,7 +959,6 @@ class MaterialEditor extends React.Component<
                   assignmentPageType,
                 ]}
                 icon="puzzle"
-                onClick={this.cycleAssignmentType}
               />
             </Dropdown>
           ) : null}
@@ -1003,9 +1171,6 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),
-        /**
-         * component
-         */
         component: (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
@@ -1092,7 +1257,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,

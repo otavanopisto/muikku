@@ -13,7 +13,7 @@ import Users from "./application/users";
 import UserGroups from "./application/usergroups";
 import OrganizationWorkspaces from "./application/workspaces";
 import WorkspacesAside from "./application/workspaces/aside";
-// import Reports from './application/reports';
+
 import { i18nType } from "~/reducers/base/i18n";
 import { ButtonPill } from "~/components/general/button";
 import WorkspaceDialog from "../dialogs/new-workspace";
@@ -141,11 +141,7 @@ class OrganizationManagementApplication extends React.Component<
    * render
    */
   render() {
-    const title = (
-      <h2 className="application-panel__header-title">
-        {this.props.i18n.text.get("plugin.organization.pageTitle")}
-      </h2>
-    );
+    const title = this.props.i18n.text.get("plugin.organization.pageTitle");
     const usersPrimaryAction = (
       <UserDialog>
         <ButtonPill buttonModifiers="organization" icon="plus" />
@@ -226,7 +222,6 @@ class OrganizationManagementApplication extends React.Component<
 
     return (
       <ApplicationPanel
-        modifier="organization"
         title={title}
         onTabChange={this.onTabChange}
         activeTab={this.state.activeTab}

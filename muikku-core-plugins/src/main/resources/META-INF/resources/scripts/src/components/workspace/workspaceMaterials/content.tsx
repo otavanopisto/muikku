@@ -19,6 +19,7 @@ import {
   MaterialCompositeRepliesListType,
   MaterialContentNodeType,
   WorkspaceEditModeStateType,
+  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 
 import "~/sass/elements/buttons.scss";
@@ -27,20 +28,22 @@ import "~/sass/elements/material-admin.scss";
 import Toc, { TocTopic, TocElement } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
-import {
-  updateWorkspaceMaterialContentNode,
-  UpdateWorkspaceMaterialContentNodeTriggerType,
-  setWholeWorkspaceMaterials,
-  SetWholeWorkspaceMaterialsTriggerType,
-} from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
 import { AnyActionType } from "~/actions/index";
+import { StatusType } from "~/reducers/base/status";
+import {
+  updateWorkspaceMaterialContentNode,
+  setWholeWorkspaceMaterials,
+  SetWholeWorkspaceMaterialsTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+} from "~/actions/workspaces/material";
 
 /**
  * ContentProps
  */
 interface ContentProps {
   i18n: i18nType;
+  status: StatusType;
   materials: MaterialContentNodeListType;
   materialReplies: MaterialCompositeRepliesListType;
   activeNodeId: number;
@@ -50,8 +53,6 @@ interface ContentProps {
   workspaceEditMode: WorkspaceEditModeStateType;
   doNotSetHashes?: boolean;
   enableTouch?: boolean;
-  isLoggedIn: boolean;
-  isStudent: boolean;
 }
 
 /**
@@ -381,6 +382,64 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   }
 
   /**
+   * buildViewRestrictionModifiers
+   * @param viewRestrict viewRestrict
+   * @param section section
+   */
+  buildViewRestrictionModifiers = (
+    viewRestrict: MaterialViewRestriction,
+    section: boolean
+  ) => {
+    if (section) {
+      switch (viewRestrict) {
+        case MaterialViewRestriction.LOGGED_IN:
+          return "toc__section-container--view-restricted-to-logged-in";
+
+        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          return "toc__section-container--view-restricted-to-members";
+
+        default:
+          return null;
+      }
+    } else {
+      switch (viewRestrict) {
+        case MaterialViewRestriction.LOGGED_IN:
+          return "toc__item--view-restricted-to-logged-in";
+
+        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          return "toc__item--view-restricted-to-members";
+
+        default:
+          return null;
+      }
+    }
+  };
+
+  /**
+   * buildViewRestrictionLocaleString
+   * @param viewRestrict viewRestrict
+   * @returns locale string
+   */
+  buildViewRestrictionLocaleString = (
+    viewRestrict: MaterialViewRestriction
+  ) => {
+    switch (viewRestrict) {
+      case MaterialViewRestriction.LOGGED_IN:
+        return this.props.i18n.text.get(
+          "plugin.workspace.materialViewRestricted"
+        );
+
+      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        return this.props.i18n.text.get(
+          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -398,25 +457,41 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         )}
       >
         {this.state.materials.map((node, nodeIndex) => {
-          const isSectionViewRestricted =
-            node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn;
+          // Boolean if there is view Restriction for toc topic
+          const isTocTopicViewRestricted =
+            node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
+            node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
 
-          const isSectionViewRestrictedVisible =
-            node.viewRestrict === "LOGGED_IN" && !this.props.isStudent;
+          // section is restricted in following cases:
+          // section is restricted for logged in users and users is not logged in...
+          // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
+          const isTocTopicViewRestrictedFromUser =
+            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+              !this.props.status.loggedIn) ||
+            (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+              !this.props.workspace.isCourseMember &&
+              (this.props.status.isStudent || !this.props.status.loggedIn));
 
-          const iconTopic: string = isSectionViewRestrictedVisible
-            ? "restriction"
-            : null;
+          const iconTopic: string =
+            isTocTopicViewRestricted &&
+            !this.props.status.isStudent &&
+            this.props.status.loggedIn
+              ? "restriction"
+              : null;
 
-          const iconTitleTopic: string = isSectionViewRestrictedVisible
-            ? this.props.i18n.text.get(
-                "plugin.workspace.materialViewRestricted"
-              )
-            : null;
+          const iconTitleTopic: string =
+            isTocTopicViewRestricted &&
+            !this.props.status.isStudent &&
+            this.props.status.loggedIn
+              ? this.buildViewRestrictionLocaleString(node.viewRestrict)
+              : null;
 
-          const classNameTopic: string = isSectionViewRestrictedVisible
-            ? "toc__section-container--view-restricted"
-            : "toc__section-container";
+          const classNameTopic: string =
+            isTocTopicViewRestricted &&
+            !this.props.status.isStudent &&
+            this.props.status.loggedIn
+              ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
+              : "toc__section-container";
 
           const topic = (
             <TocTopic
@@ -432,168 +507,179 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               iconAfter={iconTopic}
               iconAfterTitle={iconTitleTopic}
             >
-              {node.children
-                .map((subnode) => {
-                  if (isSectionViewRestricted) {
-                    return null;
-                  }
+              {!isTocTopicViewRestrictedFromUser &&
+                node.children
+                  .map((subnode) => {
+                    // Boolean if there is view Restriction for toc element
+                    const isTocElementViewRestricted =
+                      subnode.viewRestrict ===
+                        MaterialViewRestriction.LOGGED_IN ||
+                      subnode.viewRestrict ===
+                        MaterialViewRestriction.WORKSPACE_MEMBERS;
 
-                  const isViewRestrictedVisible =
-                    subnode.viewRestrict === "LOGGED_IN" &&
-                    !this.props.isStudent;
+                    const isAssignment = subnode.assignmentType === "EVALUATED";
+                    const isExercise = subnode.assignmentType === "EXERCISE";
+                    const isJournal = subnode.assignmentType === "JOURNAL";
 
-                  const isAssignment = subnode.assignmentType === "EVALUATED";
-                  const isExercise = subnode.assignmentType === "EXERCISE";
+                    //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
+                    const modifier = isAssignment
+                      ? "assignment"
+                      : isExercise
+                      ? "exercise"
+                      : isJournal
+                      ? "journal"
+                      : null;
 
-                  //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
-                  const modifier = isAssignment
-                    ? "assignment"
-                    : isExercise
-                    ? "exercise"
-                    : null;
+                    let icon: string | null = null;
+                    let iconTitle: string | null = null;
+                    let className: string | null = null;
 
-                  let icon: string | null = null;
-                  let iconTitle: string | null = null;
-                  let className: string | null = null;
+                    const compositeReplies =
+                      this.props.materialReplies &&
+                      this.props.materialReplies.find(
+                        (reply) =>
+                          reply.workspaceMaterialId ===
+                          subnode.workspaceMaterialId
+                      );
 
-                  const compositeReplies =
-                    this.props.materialReplies &&
-                    this.props.materialReplies.find(
-                      (reply) =>
-                        reply.workspaceMaterialId ===
-                        subnode.workspaceMaterialId
-                    );
+                    let showEvenIfHidden = false;
 
-                  let showEvenIfHidden = false;
-
-                  if (subnode.hidden && compositeReplies) {
-                    showEvenIfHidden =
-                      compositeReplies && compositeReplies.submitted !== null;
-                  }
-
-                  if (compositeReplies) {
-                    switch (compositeReplies.state) {
-                      case "ANSWERED":
-                        icon = "check";
-                        className = "toc__item--answered";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.exerciseDoneTooltip"
-                        );
-                        break;
-                      case "SUBMITTED":
-                        icon = "check";
-                        className = "toc__item--submitted";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentDoneTooltip"
-                        );
-                        break;
-                      case "WITHDRAWN":
-                        icon = "check";
-                        className = "toc__item--withdrawn";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentWithdrawnTooltip"
-                        );
-                        break;
-                      case "INCOMPLETE":
-                        icon = "thumb-down";
-                        className = "toc__item--incomplete";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentIncompleteTooltip"
-                        );
-                        break;
-                      case "FAILED":
-                        icon = "thumb-down";
-                        className = "toc__item--failed";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentFailedTooltip"
-                        );
-                        break;
-                      case "PASSED":
-                        icon = "thumb-up";
-                        className = "toc__item--passed";
-                        iconTitle = this.props.i18n.text.get(
-                          "plugin.workspace.materials.assignmentPassedTooltip"
-                        );
-                        break;
-                      case "UNANSWERED":
-                      default:
-                        break;
+                    if (subnode.hidden && compositeReplies) {
+                      showEvenIfHidden =
+                        compositeReplies && compositeReplies.submitted !== null;
                     }
-                  }
 
-                  if (isViewRestrictedVisible) {
-                    icon = "restriction";
-                    className = "toc__item--view-restricted";
-                    iconTitle = this.props.i18n.text.get(
-                      "plugin.workspace.materialViewRestricted"
-                    );
-                  }
-
-                  const pageElement = (
-                    <TocElement
-                      modifier={modifier}
-                      ref={subnode.workspaceMaterialId + ""}
-                      key={subnode.workspaceMaterialId}
-                      isActive={
-                        this.props.activeNodeId === subnode.workspaceMaterialId
+                    if (compositeReplies) {
+                      switch (compositeReplies.state) {
+                        case "ANSWERED":
+                          icon = "check";
+                          className = "toc__item--answered";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.exerciseDoneTooltip"
+                          );
+                          break;
+                        case "SUBMITTED":
+                          icon = "check";
+                          className = "toc__item--submitted";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentDoneTooltip"
+                          );
+                          break;
+                        case "WITHDRAWN":
+                          icon = "check";
+                          className = "toc__item--withdrawn";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentWithdrawnTooltip"
+                          );
+                          break;
+                        case "INCOMPLETE":
+                          icon = "thumb-down";
+                          className = "toc__item--incomplete";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentIncompleteTooltip"
+                          );
+                          break;
+                        case "FAILED":
+                          icon = "thumb-down";
+                          className = "toc__item--failed";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentFailedTooltip"
+                          );
+                          break;
+                        case "PASSED":
+                          icon = "thumb-up";
+                          className = "toc__item--passed";
+                          iconTitle = this.props.i18n.text.get(
+                            "plugin.workspace.materials.assignmentPassedTooltip"
+                          );
+                          break;
+                        case "UNANSWERED":
+                        default:
+                          break;
                       }
-                      className={className}
-                      isHidden={subnode.hidden || node.hidden}
-                      disableScroll
-                      iconAfter={icon}
-                      iconAfterTitle={iconTitle}
-                      hash={
-                        this.props.doNotSetHashes
-                          ? null
-                          : "p-" + subnode.workspaceMaterialId
-                      }
-                    >
-                      {subnode.title}
-                    </TocElement>
-                  );
-
-                  if (!isEditable) {
-                    if (subnode.hidden && !showEvenIfHidden) {
-                      return null;
                     }
-                    return pageElement;
-                  } else {
-                    return (
-                      <Draggable
-                        interactionData={subnode}
-                        interactionGroup="TOC_SUBNODE"
+
+                    if (
+                      isTocElementViewRestricted &&
+                      !this.props.status.isStudent &&
+                      this.props.status.loggedIn
+                    ) {
+                      icon = "restriction";
+                      className = this.buildViewRestrictionModifiers(
+                        subnode.viewRestrict,
+                        false
+                      );
+                      iconTitle = this.buildViewRestrictionLocaleString(
+                        subnode.viewRestrict
+                      );
+                    }
+
+                    const pageElement = (
+                      <TocElement
+                        modifier={modifier}
+                        ref={subnode.workspaceMaterialId + ""}
                         key={subnode.workspaceMaterialId}
-                        className="toc__item--drag-container"
-                        handleSelector=".toc__item--drag-handle"
-                        onInteractionWith={this.onInteractionBetweenSubnodes.bind(
-                          this,
-                          subnode
-                        )}
-                        onDropInto={this.onDropBetweenSubnodes.bind(
-                          this,
-                          subnode
-                        )}
-                        ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
-                        enableTouch={this.props.enableTouch}
+                        isActive={
+                          this.props.activeNodeId ===
+                          subnode.workspaceMaterialId
+                        }
+                        className={className}
+                        isHidden={subnode.hidden || node.hidden}
+                        disableScroll
+                        iconAfter={icon}
+                        iconAfterTitle={iconTitle}
+                        hash={
+                          this.props.doNotSetHashes
+                            ? null
+                            : "p-" + subnode.workspaceMaterialId
+                        }
                       >
-                        <div className="toc__item--drag-handle icon-move"></div>
-                        {pageElement}
-                      </Draggable>
+                        {subnode.title}
+                      </TocElement>
                     );
-                  }
-                })
-                .concat(
-                  isEditable ? (
-                    <Droppable
-                      key="LAST"
-                      interactionData={node.workspaceMaterialId}
-                      interactionGroup="TOC_SUBNODE"
-                      className="toc__element--drag-placeholder-container"
-                    ></Droppable>
-                  ) : (
-                    []
-                  )
-                )}
+
+                    if (!isEditable) {
+                      if (subnode.hidden && !showEvenIfHidden) {
+                        return null;
+                      }
+                      return pageElement;
+                    } else {
+                      return (
+                        <Draggable
+                          interactionData={subnode}
+                          interactionGroup="TOC_SUBNODE"
+                          key={subnode.workspaceMaterialId}
+                          className="toc__item--drag-container"
+                          handleSelector=".toc__item--drag-handle"
+                          onInteractionWith={this.onInteractionBetweenSubnodes.bind(
+                            this,
+                            subnode
+                          )}
+                          onDropInto={this.onDropBetweenSubnodes.bind(
+                            this,
+                            subnode
+                          )}
+                          ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
+                          enableTouch={this.props.enableTouch}
+                        >
+                          <div className="toc__item--drag-handle icon-move"></div>
+                          {pageElement}
+                        </Draggable>
+                      );
+                    }
+                  })
+                  .concat(
+                    isEditable ? (
+                      <Droppable
+                        key="LAST"
+                        interactionData={node.workspaceMaterialId}
+                        interactionGroup="TOC_SUBNODE"
+                        className="toc__element--drag-placeholder-container"
+                      ></Droppable>
+                    ) : (
+                      []
+                    )
+                  )}
             </TocTopic>
           );
 
@@ -635,13 +721,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    status: state.status,
     materials: state.workspaces.currentMaterials,
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
-    isLoggedIn: state.status.loggedIn,
-    isStudent: state.status.loggedIn && state.status.isStudent,
   };
 }
 

@@ -379,7 +379,7 @@ class Message extends React.Component<MessageProps, MessageState> {
             this.props.message.sender.archived ? null : (
               <Link
                 tabIndex={0}
-                className="link link--application-list-item-footer"
+                className="link link--application-list"
                 onClick={this.handleOpenNewMessage("person")}
               >
                 {this.props.i18n.text.get("plugin.communicator.reply")}
@@ -389,7 +389,7 @@ class Message extends React.Component<MessageProps, MessageState> {
             this.props.message.sender.archived ? null : (
               <Link
                 tabIndex={0}
-                className="link link--application-list-item-footer"
+                className="link link--application-list"
                 onClick={this.handleOpenNewMessage("all")}
               >
                 {this.props.i18n.text.get("plugin.communicator.replyAll")}

@@ -6,7 +6,7 @@ import i18n from "./base/i18n";
 import { title } from "./base/title";
 import websocket from "./util/websocket";
 import { messages } from "./main-function/messages";
-import { organizationWorkspaces, workspaces } from "./workspaces";
+import { workspaces } from "./workspaces";
 import { announcements } from "./announcements";
 import { userIndex } from "./user-index";
 import {
@@ -19,7 +19,6 @@ import { discussion } from "~/reducers/discussion";
 import { guider } from "./main-function/guider";
 import { profile } from "./main-function/profile";
 import { records } from "~/reducers/main-function/records";
-import { vops } from "~/reducers/main-function/vops";
 import { hops } from "~/reducers/main-function/hops";
 import { yo, eligibilitySubjects } from "~/reducers/main-function/records/yo";
 import { summary } from "~/reducers/main-function/records/summary";
@@ -28,11 +27,14 @@ import { combineReducers } from "redux";
 import { evaluations } from "./main-function/evaluation/index";
 import { ceepos } from "./main-function/ceepos";
 import { calendar } from "./main-function/calendar";
+import { organizationWorkspaces } from "./workspaces/organization";
+import { contacts } from "./base/contacts";
 
 export default combineReducers({
   announcements,
   calendar,
   ceepos,
+  contacts,
   discussion,
   easyToUse,
   eligibilitySubjects,
@@ -55,7 +57,6 @@ export default combineReducers({
   userGroups,
   userIndex,
   userSelect,
-  vops,
   websocket,
   workspaces,
   yo,

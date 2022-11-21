@@ -37,19 +37,19 @@ public class CoursePickerTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       try {
         navigate("/coursepicker", false);
-        waitForVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
+        waitForVisible(".application-panel__actions-aside");
   //      Course selector
-        waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(1)");
-        waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(2)");
-        waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(3)");
+        waitForPresent(".application-panel__actions-aside select > option:nth-child(1)");
+        waitForPresent(".application-panel__actions-aside select > option:nth-child(2)");
+        waitForPresent(".application-panel__actions-aside select > option:nth-child(3)");
   //      Search field
         waitForVisible(".application-panel__toolbar-actions-main input");
   //      Side navigation
-        waitForVisible(".application-panel__helper-container");
+        waitForVisible(".application-panel__content-aside");
   //      Course list and course
 //      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
-        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
-        boolean elementExists = getWebDriver().findElements(By.cssSelector(".application-panel__main-container .application-list__item.course")).size() > 0;
+        waitForElementToAppear(".application-panel__content-main .application-list__item.course", 10, 5000);
+        boolean elementExists = getWebDriver().findElements(By.cssSelector(".application-panel__content-main .application-list__item.course")).size() > 0;
         assertTrue(elementExists);
       }finally{
         deleteWorkspace(workspace.getId());
@@ -75,9 +75,9 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", false);
 //      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
-        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
-        waitForPresent("div.application-panel__main-container .application-list__item-header--course .application-list__header-primary");
-        waitAndClick("div.application-panel__main-container .application-list__item-header--course .application-list__header-primary");
+        waitForElementToAppear(".application-panel__content-main .application-list__item.course", 10, 5000);
+        waitForPresent(".application-panel__content-main .application-list__item-header--course .application-list__header-primary");
+        waitAndClick(".application-panel__content-main .application-list__item-header--course .application-list__header-primary");
         waitForVisible(".course--open .application-list__item-content-body p");  
         assertText(".course--open .application-list__item-content-body p", "test course for testing");
       }finally {
@@ -118,8 +118,8 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", false);
 //      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
-        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
-        waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        waitForElementToAppear(".application-panel__content-main .application-list__item.course", 10, 5000);
+        waitForVisible(".application-panel__content-main.loader-empty .application-list__item-header--course");
         scrollToEnd();
         waitForMoreThanSize(".application-list__item.course", 27);
         assertCount(".application-list__item.course", 35);
@@ -155,8 +155,8 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", false);
 //      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
-        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
-        waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        waitForElementToAppear(".application-panel__content-main .application-list__item.course", 10, 5000);
+        waitForVisible(".application-panel__content-main.loader-empty .application-list__item-header--course");
         waitAndSendKeys(".application-panel__toolbar-actions-main input", "pot");
         waitAndSendKeys(".application-panel__toolbar-actions-main input", "ato");
         waitUntilElementCount(".application-list__item-header--course", 1);
@@ -196,9 +196,9 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", false);
 //      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
-        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
-        waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-        waitAndClick(".application-panel__helper-container.application-panel__helper-container--coursepicker .menu-wrapper .menu:first-child .menu__item:nth-child(3)");
+        waitForElementToAppear(".application-panel__content-main .application-list__item.course", 10, 5000);
+        waitForVisible(".application-panel__content-main.loader-empty .application-list__item-header--course");
+        waitAndClick(".application-panel__content-aside .menu-wrapper .menu:first-child .menu__item:nth-child(3)");
         waitForVisible(".application-list__item-header--course .application-list__header-primary");
         assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "testcourse 7 (test extension)");
       }finally {
