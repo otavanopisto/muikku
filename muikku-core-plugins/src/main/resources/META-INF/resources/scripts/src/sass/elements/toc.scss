@@ -100,7 +100,7 @@
 .toc__element--drag-placeholder-container:nth-child(2) {
   border: 2px dashed $color-default-separator-border;
   height: 1.75rem;
-  margin: 0 12px;
+  margin: 0 12px 5px;
 }
 
 .toc__section--drag-container,
@@ -117,17 +117,17 @@
   cursor: grab;
   display: flex;
   font-size: 0.8125rem;
-  height: 1.375rem;
+  height: 1.37rem;
   justify-content: center;
   position: absolute;
-  right: 7px;
-  top: 4px;
-  width: 1.375rem;
+  right: 8px;
+  top: 3px;
+  width: 1.37rem;
   z-index: 9999;
 }
 
 .toc__section--drag-handle {
-  top: 0;
+  top: 4px;
 }
 
 .toc__item--exercise {
@@ -170,16 +170,16 @@
   }
 }
 
-.toc__section-container--view-restricted-to-logged-in .toc__section-title,
+.toc__section-container--view-restricted-to-logged-in .toc__section-title-container,
 .toc__item--view-restricted-to-logged-in {
-  .toc__icon {
+  .toc__icon.icon-restriction {
     background: $color-view-restricted;
   }
 }
 
-.toc__section-container--view-restricted-to-members .toc__section-title,
+.toc__section-container--view-restricted-to-members .toc__section-title-container,
 .toc__item--view-restricted-to-members {
-  .toc__icon {
+  .toc__icon.icon-restriction {
     background: $color-tertiary;
   }
 }
