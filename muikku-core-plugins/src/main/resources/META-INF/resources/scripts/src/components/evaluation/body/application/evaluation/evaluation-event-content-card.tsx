@@ -295,53 +295,47 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
       case EvaluationEnum.INTERIM_EVALUATION:
         return (
-          <>
-            <div className="evaluation-modal__event-meta">
-              <span className="evaluation-modal__event-author">{author}</span>{" "}
+          <div className="evaluation-modal__event-meta">
+            <span className="evaluation-modal__event-author">{author}</span>{" "}
+            {i18n.text.get(
+              "plugin.evaluation.evaluationModal.events.interimEvaluation.1"
+            )}{" "}
+            <span className="evaluation-modal__event-type state-CANCELLED">
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.interimEvaluation.1"
-              )}{" "}
-              <span className="evaluation-modal__event-type state-CANCELLED">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.interimEvaluation.2"
-                )}
-              </span>
-            </div>
-          </>
+                "plugin.evaluation.evaluationModal.events.interimEvaluation.2"
+              )}
+            </span>
+          </div>
         );
 
       case EvaluationEnum.INTERIM_EVALUATION_REQUEST:
         return (
-          <>
-            <div className="evaluation-modal__event-meta">
-              <span className="evaluation-modal__event-author">{author}</span>{" "}
+          <div className="evaluation-modal__event-meta">
+            <span className="evaluation-modal__event-author">{author}</span>{" "}
+            {i18n.text.get(
+              "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.1"
+            )}{" "}
+            <span className="evaluation-modal__event-type state-REQUESTED">
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.1"
-              )}{" "}
-              <span className="evaluation-modal__event-type state-REQUESTED">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.2"
-                )}
-              </span>
-            </div>
-          </>
+                "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.2"
+              )}
+            </span>
+          </div>
         );
 
       case EvaluationEnum.INTERIM_EVALUATION_REQUEST_CANCELLED:
         return (
-          <>
-            <div className="evaluation-modal__event-meta">
-              <span className="evaluation-modal__event-author">{author}</span>{" "}
+          <div className="evaluation-modal__event-meta">
+            <span className="evaluation-modal__event-author">{author}</span>{" "}
+            {i18n.text.get(
+              "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.1"
+            )}{" "}
+            <span className="evaluation-modal__event-type state-CANCELLED">
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.1"
-              )}{" "}
-              <span className="evaluation-modal__event-type state-CANCELLED">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.2"
-                )}
-              </span>
-            </div>
-          </>
+                "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.2"
+              )}
+            </span>
+          </div>
         );
       default:
         return;
