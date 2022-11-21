@@ -129,15 +129,16 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
       >
         {props.name ? (
           <div
-            className={`toc__section-title ${props.isHidden ? "hidden" : ""}`}
+            className={`toc__section-title-container ${
+              props.isHidden ? "hidden" : ""
+            }`}
           >
-            {/**TODO: Styling */}
             <span
               className={`toc__icon toc__icon--section-open-close ${arrowModifier}`}
               onClick={handleToggleHeightClick}
             />
-            {/**TODO: Styling */}
             <Link
+              className="toc__section-title"
               href={props.hash ? "#" + props.hash : null}
               disableSmoothScroll={true}
               onClick={handleLinkClick}

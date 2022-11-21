@@ -28,11 +28,13 @@
   }
 }
 
-.toc__section-title {
+.toc__section-title-container {
   @include text;
 
+  align-items: center;
   display: flex;
-  padding: 5px 8px 5px 5px;
+  margin: 0 4px;
+  padding: 5px 5px 5px 2px;
   text-transform: uppercase;
   user-select: text;
 
@@ -40,6 +42,13 @@
     font-style: italic;
     opacity: 50%;
   }
+}
+
+.toc__section-title {
+  @include text;
+
+  display: flex;
+  width: 100%;
 }
 
 .toc__item {
@@ -54,7 +63,7 @@
   cursor: pointer;
   display: flex;
   font-weight: 300;
-  margin: 2px 4px 2px 15px;
+  margin: 5px;
   padding: 4px;
   position: relative;
   user-select: text;
@@ -155,8 +164,8 @@
 // TODO: better solution for this
 .toc__section-container {
   &.active {
-    .toc__section-title {
-      border-bottom: 3px solid black;
+    .toc__section-title-container {
+      background: $color-default-generic-background;
     }
   }
 }
@@ -226,5 +235,7 @@
 }
 
 .toc__icon--section-open-close {
+  color: inherit;
+  cursor: pointer;
   margin: 0 5px 0 0;
 }
