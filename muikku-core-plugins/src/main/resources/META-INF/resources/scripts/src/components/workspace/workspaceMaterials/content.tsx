@@ -545,14 +545,16 @@ class ContentComponent extends SessionStateComponent<
         tocHeaderExtraContent={
           <div>
             <Dropdown openByHover content={<p>Avaa kaikki</p>}>
-              <ButtonPill
-                icon="cogs"
+              <IconButton
+                icon="arrow-down"
+                buttonModifiers={["toc-open-close-sections"]}
                 onClick={this.handleToggleAllSectionsOpen("open")}
               />
             </Dropdown>
             <Dropdown openByHover content={<p>Sulje kaikki</p>}>
-              <ButtonPill
-                icon="trash"
+              <IconButton
+                icon="arrow-up"
+                buttonModifiers={["toc-open-close-sections"]}
                 onClick={this.handleToggleAllSectionsOpen("close")}
               />
             </Dropdown>
