@@ -387,8 +387,6 @@ public class ElasticSearchProvider implements SearchProvider {
             )
         );
       }
-            
-      System.out.println(query.toString());
       
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)
