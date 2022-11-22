@@ -7,13 +7,19 @@
   @include text;
 }
 
+.toc-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
 .toc__title {
   @include text;
 
   font-size: calc(#{$text-mobile-font-size} * 1.35);
   font-weight: 400;
   line-height: 1;
-  margin: 12px 10px 16px;
+  margin: 12px 10px;
   text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
@@ -22,11 +28,13 @@
   }
 }
 
-.toc__section-title {
+.toc__section-title-container {
   @include text;
 
+  align-items: center;
   display: flex;
-  margin: 12px 8px 12px 10px;
+  margin: 0 4px;
+  padding: 5px 5px 5px 2px;
   text-transform: uppercase;
   user-select: text;
 
@@ -34,6 +42,13 @@
     font-style: italic;
     opacity: 50%;
   }
+}
+
+.toc__section-title {
+  @include text;
+
+  display: flex;
+  width: 100%;
 }
 
 .toc__item {
@@ -48,7 +63,7 @@
   cursor: pointer;
   display: flex;
   font-weight: 300;
-  margin: 6px 4px 6px 8px;
+  margin: 5px;
   padding: 4px;
   position: relative;
   user-select: text;
@@ -69,6 +84,14 @@
     opacity: 50%;
   }
 
+  &.filteredOut {
+    height: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+    overflow: hidden;
+    padding: 0;
+  }
+
   @include breakpoint($breakpoint-desktop-xl) {
     padding: 4px 4px 4px 8px;
   }
@@ -77,7 +100,7 @@
 .toc__element--drag-placeholder-container:nth-child(2) {
   border: 2px dashed $color-default-separator-border;
   height: 1.75rem;
-  margin: 0 12px;
+  margin: 0 12px 5px;
 }
 
 .toc__section--drag-container,
@@ -94,17 +117,17 @@
   cursor: grab;
   display: flex;
   font-size: 0.8125rem;
-  height: 1.375rem;
+  height: 1.37rem;
   justify-content: center;
   position: absolute;
-  right: 7px;
+  right: 8px;
   top: 3px;
-  width: 1.375rem;
+  width: 1.37rem;
   z-index: 9999;
 }
 
 .toc__section--drag-handle {
-  top: 0;
+  top: 4px;
 }
 
 .toc__item--exercise {
@@ -138,16 +161,25 @@
   }
 }
 
-.toc__section-container--view-restricted-to-logged-in .toc__section-title,
+// TODO: better solution for this
+.toc__section-container {
+  &.active {
+    .toc__section-title-container {
+      background: $color-default-generic-background;
+    }
+  }
+}
+
+.toc__section-container--view-restricted-to-logged-in .toc__section-title-container,
 .toc__item--view-restricted-to-logged-in {
-  .toc__icon {
+  .toc__icon.icon-restriction {
     background: $color-view-restricted;
   }
 }
 
-.toc__section-container--view-restricted-to-members .toc__section-title,
+.toc__section-container--view-restricted-to-members .toc__section-title-container,
 .toc__item--view-restricted-to-members {
-  .toc__icon {
+  .toc__icon.icon-restriction {
     background: $color-tertiary;
   }
 }
@@ -200,4 +232,10 @@
   height: 1.25rem;
   justify-content: center;
   width: 1.25rem;
+}
+
+.toc__icon--section-open-close {
+  color: inherit;
+  cursor: pointer;
+  margin: 0 5px 0 0;
 }

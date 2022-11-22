@@ -20,12 +20,15 @@ import {
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 import Tabs, { Tab } from "../general/tabs";
-
-import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
+import { AnyActionType } from "~/actions";
 import { getUserChatId, obtainNick } from "~/helper-functions/chat";
 import { getName } from "~/util/modifiers";
 import { BrowserTabNotification } from "~/util/browser-tab-notification";
-import { Contact } from "~/reducers/base/contacts";
+import {
+  loadContactGroup,
+  LoadContactGroupTriggerType,
+} from "~/actions/base/contacts";
+import { Contacts } from "~/reducers/base/contacts";
 
 export type tabs = "ROOMS" | "PEOPLE";
 
@@ -149,7 +152,6 @@ interface IChatState {
   openChatsJIDS: IOpenChatJID[];
   selectedUserPresence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2.1
   ready: boolean;
-  studyGuiders: Contact[];
   roomNameField: string;
   roomDescField: string;
   // roomPersistent: boolean;
@@ -163,12 +165,12 @@ interface IChatState {
 interface IChatProps {
   settings: UserChatSettingsType;
   status: StatusType;
+  contacts: Contacts;
   currentLocale: string;
   i18n: i18nType;
+  loadContactGroup: LoadContactGroupTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
-
-const roleNode = document.querySelector('meta[name="muikku:role"]');
 
 /**
  * Chat
@@ -192,7 +194,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       connection: null,
       rosterLoaded: false,
       connectionHostname: null,
-      studyGuiders: [],
       roster: [],
       activeTab: "ROOMS",
       isInitialized: false,
@@ -200,7 +201,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       showControlBox:
         JSON.parse(window.sessionStorage.getItem("showControlBox")) || false,
       showNewRoomForm: false,
-      isStudent: roleNode.getAttribute("value") === "STUDENT",
+      isStudent: props.status.isStudent,
       openRoomNumber: null,
 
       // we should have these open
@@ -253,70 +254,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
   };
 
   /**
-   * loadStudentCouncelors
-   */
-  async loadStudentCouncelors() {
-    try {
-      const studentsUserGroups: GuiderUserGroupListType = (await promisify(
-        mApi().usergroup.groups.read({
-          userIdentifier: this.props.status.userSchoolDataIdentifier,
-        }),
-        "callback"
-      )()) as GuiderUserGroupListType;
-
-      const studentsGuidanceCouncelors: Contact[] = [];
-
-      //   This is removed due to a request from counselors. Will be implemented later
-
-      // if (studentsUserGroups && studentsUserGroups.length) {
-      //   const councelGroups = studentsUserGroups.filter(
-      //     (studentsUserGroup) => studentsUserGroup.isGuidanceGroup == true
-      //   );
-      //   await Promise.all(
-      //     councelGroups.map(async (studentsUserGroup) => {
-      //       await promisify(
-      //         mApi().usergroup.groups.staffMembers.read(studentsUserGroup.id, {
-      //           properties:
-      //             "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
-      //         }),
-      //         "callback"
-      //       )().then((result: SummaryStudentsGuidanceCouncelorsType[]) => {
-      //         result.forEach((studentsGuidanceCouncelor) => {
-      //           if (
-      //             !studentsGuidanceCouncelors.some(
-      //               (existingStudentCouncelor) =>
-      //                 existingStudentCouncelor.userEntityId ===
-      //                 studentsGuidanceCouncelor.userEntityId
-      //             )
-      //           ) {
-      //             studentsGuidanceCouncelors.push(studentsGuidanceCouncelor);
-      //           }
-      //         });
-      //       });
-      //     })
-      //   );
-      // }
-
-      // studentsGuidanceCouncelors.sort((x, y) => {
-      //   const a = x.lastName.toUpperCase(),
-      //     b = y.lastName.toUpperCase();
-      //   return a == b ? 0 : a > b ? 1 : -1;
-      // });
-
-      this.setState({
-        studyGuiders: studentsGuidanceCouncelors,
-      });
-    } catch (e) {
-      this.props.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.chat.notification.counselorLoadFailed"
-        ),
-        "error"
-      );
-    }
-  }
-
-  /**
    * getRoster gets roster from openfire and stores it in the component state
    */
   getRoster = async () => {
@@ -365,7 +302,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
    */
   loadPersonList = () => {
     if (this.props.status.isStudent) {
-      this.loadStudentCouncelors();
+      this.props.loadContactGroup("counselors");
+      1;
       this.getRoster();
     } else {
       this.getRoster();
@@ -958,9 +896,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     );
     const expectedId =
       (this.state.isStudent ? "muikku-student-" : "muikku-staff-") +
-      document
-        .querySelector('meta[name="muikku:loggedUserId"]')
-        .getAttribute("value");
+      this.props.status.userId.toString();
 
     let prebind: IPrebindResponseType = null;
     const isRestore = !!session;
@@ -1190,25 +1126,27 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     {this.props.i18n.text.get("plugin.chat.people.counselors")}
                   </div>
                   <div className="chat__controlbox-people-listing">
-                    {this.state.studyGuiders.length > 0 ? (
-                      this.state.studyGuiders.map((counselor) => {
-                        const person: IChatContact = {
-                          jid: getUserChatId(counselor.userEntityId, "staff"),
-                          name: getName(counselor, true),
-                        };
-                        return (
-                          <Person
-                            modifier="counselor"
-                            person={person}
-                            toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
-                              this,
-                              person.jid,
-                              true
-                            )}
-                            key={counselor.userEntityId}
-                          />
-                        );
-                      })
+                    {this.props.contacts.counselors.list.length > 0 ? (
+                      this.props.contacts.counselors.list
+                        .filter((c) => c.chatAvailable)
+                        .map((counselor) => {
+                          const person: IChatContact = {
+                            jid: getUserChatId(counselor.userEntityId, "staff"),
+                            name: getName(counselor, true),
+                          };
+                          return (
+                            <Person
+                              modifier="counselor"
+                              person={person}
+                              toggleJoinLeavePrivateChatRoom={this.toggleJoinLeavePrivateChatRoom.bind(
+                                this,
+                                person.jid,
+                                true
+                              )}
+                              key={counselor.userEntityId}
+                            />
+                          );
+                        })
                     ) : (
                       <div className="chat__controlbox-empty-item">
                         {this.props.i18n.text.get("plugin.chat.people.empty")}
@@ -1314,6 +1252,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               (r) => r.type === "muc" && r.jid === chat.roomJID
             ) ? (
               <Groupchat
+                status={this.props.status}
                 removeChatRoom={this.removeChatRoom.bind(this, chat.roomJID)}
                 requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(
                   this,
@@ -1337,6 +1276,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
             .filter((r) => r.type === "user")
             .map((pchat) => (
               <PrivateChat
+                status={this.props.status}
                 setTabNotification={this.handleTabNotification}
                 jid={pchat.jid}
                 roster={this.state.roster}
@@ -1361,6 +1301,7 @@ function mapStateToProps(state: StateType) {
   return {
     currentLocale: state.locales.current,
     status: state.status,
+    contacts: state.contacts,
     settings: state.profile.chatSettings,
     i18n: state.i18n,
   };
@@ -1370,8 +1311,11 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({ displayNotification }, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    { displayNotification, loadContactGroup },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

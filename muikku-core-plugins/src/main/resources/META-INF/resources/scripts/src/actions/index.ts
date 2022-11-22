@@ -17,7 +17,7 @@ type DeferredAction = (
   getState: () => any
 ) => any;
 
-import { SET_LOCALE } from "./base/locales";
+import { LOCALE_SET, LOCALE_UPDATE } from "./base/locales";
 import {
   ADD_NOTIFICATION,
   CLOSE_NOTIFICATION_DIALOG,
@@ -318,7 +318,8 @@ export type ActionType =
   | UPDATE_ONE_MESSAGE_THREAD
   | DELETE_MESSAGE_THREAD
   | UPDATE_MESSAGES_SIGNATURE
-  | SET_LOCALE
+  | LOCALE_SET
+  | LOCALE_UPDATE
   | ADD_NOTIFICATION
   | HIDE_NOTIFICATION
   | LOGOUT
