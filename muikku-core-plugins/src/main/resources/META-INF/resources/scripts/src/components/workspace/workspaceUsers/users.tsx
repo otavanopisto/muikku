@@ -470,8 +470,8 @@ class WorkspaceUsers extends React.Component<
             />
             <MobileOnlyTabs
               onTabChange={this.onTabChange}
+              renderAllComponents
               activeTab={this.state.activeTab}
-              modifier="workspace-users"
               tabs={[
                 {
                   id: "ACTIVE",
