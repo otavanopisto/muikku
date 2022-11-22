@@ -1,0 +1,261 @@
+import * as React from "react";
+import "~/sass/elements/rich-text.scss";
+import { StateType } from "~/reducers";
+import { Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
+import { connect } from "react-redux";
+import { i18nType } from "~/reducers/base/i18n";
+import { EvaluationState } from "~/reducers/main-function/evaluation";
+import Link from "~/components/general/link";
+import {
+  MaterialCompositeRepliesType,
+  WorkspaceType,
+} from "~/reducers/workspaces";
+import { AssessmentRequest } from "~/@types/evaluation";
+import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
+import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-intermin-evaluation";
+
+/**
+ * EvaluationEventContentCardProps
+ */
+interface AssessmentListProps {
+  i18n: i18nType;
+  evaluation: EvaluationState;
+  workspaces: WorkspaceType[];
+  selectedAssessment: AssessmentRequest;
+}
+
+/**
+ * Creates evaluation diary event component
+ *
+ * @param props props
+ * @returns JSX.Element
+ */
+const AssessmentList: React.FC<AssessmentListProps> = (props) => {
+  const { evaluation, i18n, workspaces, selectedAssessment } = props;
+
+  const [listOfAssignmentIds, setListOfAssignmentIds] = React.useState<
+    number[]
+  >([]);
+
+  React.useEffect(() => {
+    if (
+      evaluation.evaluationDiaryEntries.state === "READY" &&
+      evaluation.evaluationDiaryEntries.data &&
+      evaluation.evaluationDiaryEntries.data.length > 0
+    ) {
+      setListOfAssignmentIds(
+        evaluation.evaluationDiaryEntries.data.map((dEntry) => dEntry.id)
+      );
+    }
+  }, [
+    evaluation.evaluationDiaryEntries.data,
+    evaluation.evaluationDiaryEntries.state,
+  ]);
+
+  /**
+   * Handles close all material contents click
+   */
+  const handleCloseAllMaterialContentClick = () => {
+    setListOfAssignmentIds([]);
+  };
+
+  /**
+   * Handles open all material contents click
+   */
+  const handleOpenAllMaterialContentClick = () => {
+    if (
+      evaluation.evaluationCurrentStudentAssigments &&
+      evaluation.evaluationCurrentStudentAssigments.data
+    ) {
+      const numberList =
+        evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
+          (item) => item.id
+        );
+
+      setListOfAssignmentIds(numberList);
+    }
+  };
+
+  /**
+   * Shows hidden evaluation assignment if it's has been submitted and assignment
+   * is set to be hidden
+   *
+   * @param compositeReply assignment compositereply
+   * @returns boolean whether to show assignment or not
+   */
+  const showAsHiddenEvaluationAssignment = (
+    compositeReply?: MaterialCompositeRepliesType
+  ): boolean => compositeReply && compositeReply.submitted !== null;
+
+  /**
+   * Handles close specific material content
+   *
+   * @param materialId materialId
+   */
+  const handleCloseSpecificMaterialContent = (materialId: number) => {
+    const updatedList = listOfAssignmentIds.filter((id) => id !== materialId);
+
+    setListOfAssignmentIds(updatedList);
+  };
+
+  /**
+   * Handles open Material click
+   *
+   * @param id id
+   */
+  const handleOpenMaterialClick = (id: number) => {
+    const updatedList = [...listOfAssignmentIds];
+
+    const index = updatedList.findIndex((itemId) => itemId === id);
+
+    if (index !== -1) {
+      updatedList.splice(index, 1);
+    } else {
+      updatedList.push(id);
+    }
+
+    setListOfAssignmentIds(updatedList);
+  };
+
+  /**
+   * renderEvaluationAssessmentAssignments
+   */
+  const renderEvaluationAssessmentAssignments =
+    evaluation.evaluationCurrentStudentAssigments.data &&
+    evaluation.evaluationCurrentStudentAssigments.data.assigments.length > 0 ? (
+      evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
+        (item, i) => {
+          /**
+           * Possible composite reply
+           */
+          const compositeReply =
+            evaluation.evaluationCompositeReplies &&
+            evaluation.evaluationCompositeReplies.data &&
+            evaluation.evaluationCompositeReplies.data.find(
+              (cReply) => cReply.workspaceMaterialId === item.id
+            );
+
+          let showAsHidden = false;
+
+          /**
+           * If item is set to be hidden check is student has submitted it before
+           * it was set to hidden
+           */
+          if (item.hidden) {
+            showAsHidden = showAsHiddenEvaluationAssignment(compositeReply);
+          }
+
+          /**
+           * Don't show assignment
+           */
+          if (item.hidden && !showAsHidden) {
+            return null;
+          }
+
+          const workspace = workspaces.find(
+            (eWorkspace) =>
+              eWorkspace.id === selectedAssessment.workspaceEntityId
+          );
+
+          const open = listOfAssignmentIds.includes(item.id);
+
+          // For simplicity, we'll use intermin evaluation as its own component
+          if (item.assignmentType === "INTERIM_EVALUATION") {
+            return (
+              <EvaluationAssessmentInterminEvaluation
+                key={i}
+                workspace={workspace}
+                open={open}
+                assigment={item}
+                compositeReply={compositeReply}
+                showAsHidden={showAsHidden}
+                onClickOpen={handleOpenMaterialClick}
+                onSave={handleCloseSpecificMaterialContent}
+                selectedAssessment={selectedAssessment}
+              />
+            );
+          }
+
+          // Otherwise, it's an assignment component which includes EVALAUTE and EXERCISE type assignments
+          return (
+            <EvaluationAssessmentAssignment
+              key={i}
+              workspace={workspace}
+              open={open}
+              assigment={item}
+              compositeReply={compositeReply}
+              showAsHidden={showAsHidden}
+              onClickOpen={handleOpenMaterialClick}
+              onSave={handleCloseSpecificMaterialContent}
+              selectedAssessment={selectedAssessment}
+            />
+          );
+        }
+      )
+    ) : (
+      <div className="empty">
+        <span>
+          {i18n.text.get(
+            "plugin.evaluation.evaluationModal.noAssignmentsTitle"
+          )}
+        </span>
+      </div>
+    );
+
+  return (
+    <div className="evaluation-modal__content">
+      <div className="evaluation-modal__content-title">
+        <>
+          {i18n.text.get("plugin.evaluation.evaluationModal.assignmentsTitle")}
+          {evaluation.evaluationCurrentStudentAssigments.state === "READY" &&
+          evaluation.evaluationCompositeReplies.state === "READY" ? (
+            <div className="evaluation-modal__content-actions">
+              <Link
+                className="link link--evaluation-close-open"
+                onClick={handleCloseAllMaterialContentClick}
+              >
+                {i18n.text.get("plugin.evaluation.evaluationModal.closeAll")}
+              </Link>
+              <Link
+                className="link link--evaluation-close-open"
+                onClick={handleOpenAllMaterialContentClick}
+              >
+                {i18n.text.get("plugin.evaluation.evaluationModal.openAll")}
+              </Link>
+            </div>
+          ) : null}
+        </>
+      </div>
+      <div className="evaluation-modal__content-body">
+        {evaluation.evaluationCurrentStudentAssigments.state === "READY" &&
+        evaluation.evaluationCompositeReplies.state === "READY" ? (
+          renderEvaluationAssessmentAssignments
+        ) : (
+          <div className="loader-empty" />
+        )}
+      </div>
+    </div>
+  );
+};
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+    evaluation: state.evaluations,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AssessmentList);

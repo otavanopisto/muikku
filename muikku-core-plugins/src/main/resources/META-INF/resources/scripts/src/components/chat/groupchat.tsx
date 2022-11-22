@@ -1,6 +1,7 @@
 import * as React from "react";
 import mApi from "~/lib/mApi";
 import { i18nType } from "~/reducers/base/i18n";
+import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/chat.scss";
 import "~/sass/elements/wcag.scss";
 import promisify from "~/util/promisify";
@@ -18,6 +19,7 @@ import DeleteRoomDialog from "./deleteMUCDialog";
  * IGroupChatProps
  */
 interface IGroupChatProps {
+  status: StatusType;
   chat: IAvailableChatRoomType;
   nick: string;
   leaveChatRoom: () => void;
@@ -71,8 +73,6 @@ interface IGroupChatState {
   active: boolean;
 }
 
-const roleNode = document.querySelector('meta[name="muikku:role"]');
-
 /**
  * Groupchat
  */
@@ -99,7 +99,7 @@ export class Groupchat extends React.Component<
       messages: [],
       processedMessages: [],
       openChatSettings: false,
-      isStudent: roleNode.getAttribute("value") === "STUDENT",
+      isStudent: props.status.isStudent,
       isOwner: false,
       isModerator: false,
       showRoomInfo: false,
@@ -1122,8 +1122,7 @@ export class Groupchat extends React.Component<
                         className="chat__occupants-item chat__occupants-item--has-access-to-pm"
                         onClick={this.props.joinPrivateChat.bind(
                           null,
-                          staffOccupant.occupant.jid,
-                          null
+                          staffOccupant.occupant.jid
                         )}
                         key={staffOccupant.occupant.userId}
                       >
@@ -1162,8 +1161,7 @@ export class Groupchat extends React.Component<
                             ? null
                             : this.props.joinPrivateChat.bind(
                                 this,
-                                studentOccupant.occupant.jid,
-                                null
+                                studentOccupant.occupant.jid
                               )
                         }
                         key={studentOccupant.occupant.userId}

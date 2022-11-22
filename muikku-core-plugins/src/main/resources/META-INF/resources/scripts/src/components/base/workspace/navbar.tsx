@@ -23,6 +23,7 @@ import {
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { Assessment } from "~/reducers/workspaces";
+import { AnyActionType } from "~/actions";
 
 /**
  * ItemDataElement
@@ -45,6 +46,7 @@ interface ItemDataElement {
 interface WorkspaceNavbarProps {
   activeTrail?: string;
   i18n: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   status: StatusType;
   title: string;
@@ -286,6 +288,7 @@ class WorkspaceNavbar extends React.Component<
 
     const assessmentRequestMenuItem = assessmentRequestItem ? (
       <Link
+        key="link--assessment-request"
         onClick={this.onRequestEvaluationOrCancel.bind(this, canCancelRequest)}
         className="link link--full link--menu link--assessment-request"
       >
@@ -303,11 +306,6 @@ class WorkspaceNavbar extends React.Component<
         </span>
       </Link>
     ) : null;
-
-    const trueNavigation: Array<React.ReactElement<any>> = [];
-    if (this.props.navigation) {
-      trueNavigation.push(this.props.navigation);
-    }
 
     let editModeSwitch = null;
     if (this.props.workspaceEditMode.available) {
@@ -343,57 +341,59 @@ class WorkspaceNavbar extends React.Component<
         mobileTitle={this.props.title}
         isProfileContainedInThisApp={false}
         modifier={navbarModifiers}
-        navigation={trueNavigation}
+        navigation={this.props.navigation}
         navbarItems={[assessmentRequestItem].concat(
-          itemData.map((item) => {
-            if (!item.condition) {
-              return null;
-            }
-            return {
-              modifier: item.modifier,
-              item: (
-                <Dropdown
-                  openByHover
-                  key={item.text}
-                  content={this.props.i18n.text.get(item.text)}
-                >
-                  <Link
-                    tabIndex={this.props.activeTrail == item.trail ? 0 : null}
-                    as={this.props.activeTrail == item.trail ? "span" : null}
-                    openInNewTab={item.openInNewTab}
-                    href={
-                      this.props.activeTrail !== item.trail ? item.href : null
-                    }
-                    to={
-                      item.to && this.props.activeTrail !== item.trail
-                        ? item.href
-                        : null
-                    }
-                    className={`link link--icon link--full link--workspace-navbar ${
-                      this.props.activeTrail === item.trail ? "active" : ""
-                    }`}
-                    aria-label={
-                      this.props.activeTrail == item.trail
-                        ? this.props.i18n.text.get(
-                            "plugin.wcag.mainNavigation.currentPage.aria.label"
-                          ) +
-                          " " +
-                          this.props.i18n.text.get(item.text)
-                        : this.props.i18n.text.get(item.text)
-                    }
-                    role="menuitem"
+          itemData
+            .map((item) => {
+              if (!item.condition) {
+                return null;
+              }
+              return {
+                modifier: item.modifier,
+                item: (
+                  <Dropdown
+                    openByHover
+                    key={item.text}
+                    content={this.props.i18n.text.get(item.text)}
                   >
-                    <span className={`link__icon icon-${item.icon}`} />
-                    {item.badge ? (
-                      <span className="indicator indicator--workspace">
-                        {item.badge >= 100 ? "99+" : item.badge}
-                      </span>
-                    ) : null}
-                  </Link>
-                </Dropdown>
-              ),
-            };
-          })
+                    <Link
+                      tabIndex={this.props.activeTrail == item.trail ? 0 : null}
+                      as={this.props.activeTrail == item.trail ? "span" : null}
+                      openInNewTab={item.openInNewTab}
+                      href={
+                        this.props.activeTrail !== item.trail ? item.href : null
+                      }
+                      to={
+                        item.to && this.props.activeTrail !== item.trail
+                          ? item.href
+                          : null
+                      }
+                      className={`link link--icon link--full link--workspace-navbar ${
+                        this.props.activeTrail === item.trail ? "active" : ""
+                      }`}
+                      aria-label={
+                        this.props.activeTrail == item.trail
+                          ? this.props.i18n.text.get(
+                              "plugin.wcag.mainNavigation.currentPage.aria.label"
+                            ) +
+                            " " +
+                            this.props.i18n.text.get(item.text)
+                          : this.props.i18n.text.get(item.text)
+                      }
+                      role="menuitem"
+                    >
+                      <span className={`link__icon icon-${item.icon}`} />
+                      {item.badge ? (
+                        <span className="indicator indicator--workspace">
+                          {item.badge >= 100 ? "99+" : item.badge}
+                        </span>
+                      ) : null}
+                    </Link>
+                  </Dropdown>
+                ),
+              };
+            })
+            .filter((item) => !!item)
         )}
         defaultOptions={
           this.props.status.loggedIn
@@ -415,37 +415,41 @@ class WorkspaceNavbar extends React.Component<
               ]
         }
         menuItems={[assessmentRequestMenuItem].concat(
-          itemData.map((item: ItemDataElement) => {
-            if (!item.condition) {
-              return null;
-            }
-            return (
-              <Link
-                key={item.modifier}
-                href={this.props.activeTrail !== item.trail ? item.href : null}
-                to={
-                  item.to && this.props.activeTrail !== item.trail
-                    ? item.href
-                    : null
-                }
-                className={`link link--full link--menu ${
-                  this.props.activeTrail === item.trail ? "active" : ""
-                }`}
-              >
-                <span
-                  className={`link__icon link__icon--workspace icon-${item.icon}`}
-                />
-                {item.badge ? (
-                  <span className="indicator indicator--workspace">
-                    {item.badge >= 100 ? "99+" : item.badge}
+          itemData
+            .map((item: ItemDataElement) => {
+              if (!item.condition) {
+                return null;
+              }
+              return (
+                <Link
+                  key={item.modifier}
+                  href={
+                    this.props.activeTrail !== item.trail ? item.href : null
+                  }
+                  to={
+                    item.to && this.props.activeTrail !== item.trail
+                      ? item.href
+                      : null
+                  }
+                  className={`link link--full link--menu ${
+                    this.props.activeTrail === item.trail ? "active" : ""
+                  }`}
+                >
+                  <span
+                    className={`link__icon link__icon--workspace icon-${item.icon}`}
+                  />
+                  {item.badge ? (
+                    <span className="indicator indicator--workspace">
+                      {item.badge >= 100 ? "99+" : item.badge}
+                    </span>
+                  ) : null}
+                  <span className="link--menu-text">
+                    {this.props.i18n.text.get(item.text)}
                   </span>
-                ) : null}
-                <span className="link--menu-text">
-                  {this.props.i18n.text.get(item.text)}
-                </span>
-              </Link>
-            );
-          })
+                </Link>
+              );
+            })
+            .filter((item) => !!item)
         )}
         extraContent={[
           <EvaluationRequestDialog
@@ -484,7 +488,7 @@ function mapStateToProps(state: StateType) {
  *
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<any>) =>
+const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
   bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar);
@@ -504,6 +508,8 @@ function getTextForAssessmentState(
 ) {
   let text;
   switch (state) {
+    case "interim_evaluation":
+    case "interim_evaluation_request":
     case "unassessed":
       text = "plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip";
       break;
@@ -550,6 +556,12 @@ function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
     case "pass":
       icon = "pass";
       break;
+    case "interim_evaluation":
+      icon = "pass";
+      break;
+    case "interim_evaluation_request":
+      icon = "pending";
+      break;
     default:
       icon = "canceled";
       break;
@@ -579,6 +591,12 @@ function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
       break;
     case "pass":
       className = "passed";
+      break;
+    case "interim_evaluation":
+      className = "interim-evaluation";
+      break;
+    case "interim_evaluation_request":
+      className = "interim-request";
       break;
     case "unassessed":
     default:
@@ -648,7 +666,9 @@ function canCancelAssessmentRequest(
         assessmentState[i].state === "unassessed" ||
         assessmentState[i].state === "pass" ||
         assessmentState[i].state === "incomplete" ||
-        assessmentState[i].state === "fail"
+        assessmentState[i].state === "fail" ||
+        assessmentState[i].state === "interim_evaluation" ||
+        assessmentState[i].state === "interim_evaluation_request"
       ) {
         return false;
       }

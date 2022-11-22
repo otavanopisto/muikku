@@ -125,7 +125,7 @@ export const useExcerciseAssignments = (
      * existing data
      */
     if (
-      tabOpen === "EXCERCISE" &&
+      tabOpen === "EXERCISE" &&
       excerciseAssignmentsData.excerciseAssignments.length === 0
     ) {
       loadExcercisenData(workspaceId);

@@ -1,5 +1,9 @@
 import * as React from "react";
-import { MaterialContentNodeType, WorkspaceType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeType,
+  WorkspaceInterimEvaluationRequest,
+  WorkspaceType,
+} from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import "~/sass/elements/evaluation.scss";
@@ -10,6 +14,8 @@ import { AnyActionType } from "~/actions/index";
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
+import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
+import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 
 /**
  * EvaluationMaterialProps
@@ -18,6 +24,7 @@ export interface EvaluationMaterialProps {
   i18n: i18nType;
   material: MaterialContentNodeType;
   compositeReply?: MaterialCompositeRepliesType;
+  interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
   workspace: WorkspaceType;
   userEntityId: number;
 }
@@ -51,6 +58,47 @@ export class EvaluationMaterial extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const isAssignment =
+      this.props.material.assignment.assignmentType === "EVALUATED" ||
+      this.props.material.assignment.assignmentType === "EXERCISE";
+
+    const isInterimEvaluation =
+      this.props.material.assignment.assignmentType === "INTERIM_EVALUATION";
+
+    const hasEvaluation =
+      this.props.compositeReply &&
+      this.props.compositeReply.evaluationInfo &&
+      (this.props.compositeReply.state === "INCOMPLETE" ||
+        this.props.compositeReply.state === "PASSED" ||
+        this.props.compositeReply.state === "FAILED" ||
+        this.props.compositeReply.state === "WITHDRAWN");
+
+    let evalStateClassName = "";
+    let evalStateIcon = "";
+
+    if (this.props.compositeReply) {
+      switch (this.props.compositeReply.state) {
+        case "INCOMPLETE":
+          evalStateClassName =
+            "material-page__assignment-assessment--incomplete";
+          evalStateIcon = "icon-thumb-down";
+          break;
+        case "FAILED":
+          evalStateClassName = "material-page__assignment-assessment--failed";
+          evalStateIcon = "icon-thumb-down";
+          break;
+        case "PASSED":
+          evalStateClassName = "material-page__assignment-assessment--passed";
+          evalStateIcon = "icon-thumb-up";
+          break;
+        case "WITHDRAWN":
+          evalStateClassName =
+            "material-page__assignment-assessment--withdrawn";
+          evalStateIcon = "";
+          break;
+      }
+    }
+
     return (
       <MaterialLoader
         material={this.props.material}
@@ -61,14 +109,48 @@ export class EvaluationMaterial extends React.Component<
         modifiers="evaluation-material-page"
         usedAs={"evaluationTool"}
         userEntityId={this.props.userEntityId}
+        answerable={true}
       >
         {(props, state, stateConfiguration) => (
           <div className="evaluation-modal__item-body">
+            {isAssignment && !isInterimEvaluation && hasEvaluation ? (
+              <div
+                className={`material-page__assignment-assessment ${evalStateClassName}`}
+              >
+                <div
+                  className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
+                ></div>
+
+                <MaterialLoaderAssesment {...props} {...state} />
+              </div>
+            ) : null}
+
             <MaterialLoaderContent
               {...props}
               {...state}
               stateConfiguration={stateConfiguration}
             />
+
+            {isInterimEvaluation && (
+              <>
+                <MaterialLoaderExternalContent
+                  {...props}
+                  {...state}
+                  stateConfiguration={stateConfiguration}
+                />
+                {hasEvaluation && (
+                  <div
+                    className={`material-page__assignment-assessment material-page__assignment-assessment--interminEvaluation ${evalStateClassName}`}
+                  >
+                    <div
+                      className={`material-page__assignment-assessment-icon material-page__assignment-assessment--interminEvaluation ${evalStateIcon}`}
+                    ></div>
+
+                    <MaterialLoaderAssesment {...props} {...state} />
+                  </div>
+                )}
+              </>
+            )}
 
             <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
           </div>

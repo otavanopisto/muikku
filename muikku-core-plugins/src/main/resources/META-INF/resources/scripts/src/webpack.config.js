@@ -27,7 +27,7 @@ if (mode === "production") {
     loader: "null-loader",
   });
   rules.push({
-    test: path.resolve(__dirname, "node_modules/redux-devtools-extension"),
+    test: path.resolve(__dirname, "node_modules/@redux-devtools/extension"),
     loader: "null-loader",
   });
 }

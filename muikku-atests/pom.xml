@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.193-SNAPSHOT</version>
+    <version>1.1.195-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -19,7 +19,7 @@
     <selenium-java.version>4.1.3</selenium-java.version>
     <wiremock.version>2.6.0</wiremock.version>
     <mysql-connector-java.version>5.1.49</mysql-connector-java.version>
-    <wildfly-download-url>https://github.com/wildfly/wildfly/releases/download/26.1.1.Final/wildfly-26.1.1.Final.zip</wildfly-download-url>
+    <wildfly-download-url>https://github.com/wildfly/wildfly/releases/download/26.1.2.Final/wildfly-26.1.2.Final.zip</wildfly-download-url>
   </properties>
 
   <dependencies>
@@ -90,14 +90,14 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.184-SNAPSHOT</version>
+      <version>0.7.186-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.184-SNAPSHOT</version>
+      <version>0.7.186-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 

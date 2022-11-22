@@ -11,7 +11,6 @@ import {
   updateWorkspaceEvaluationToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
-import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
 import Button from "~/components/general/button";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
@@ -27,7 +26,7 @@ import {
   updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form.scss";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 
 /**
@@ -37,7 +36,7 @@ interface WorkspaceEditorProps {
   i18n: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
-  locale: LocaleListType;
+  locale: LocaleState;
   selectedAssessment: AssessmentRequest;
   type?: "new" | "edit";
   editorLabel?: string;
@@ -394,11 +393,9 @@ class WorkspaceEditor extends SessionStateComponent<
            * onSuccess
            */
           onSuccess: () => {
-            cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-            this.setStateAndClear(
-              {
-                literalEvaluation: "",
-              },
+            // Clears localstorage on success
+            this.justClear(
+              ["literalEvaluation", "grade", "selectedPriceOption"],
               this.state.draftId
             );
 
@@ -432,13 +429,18 @@ class WorkspaceEditor extends SessionStateComponent<
           );
         }
 
+        const { existingBilledPriceObject } = this.state;
+
+        const billingPriceDisabled =
+          existingBilledPriceObject && !existingBilledPriceObject.editable;
+
         /**
-         * Updating price if "billingPrice" is not undefined
+         * Updating price if "billingPrice" is not undefined or is not disabled
          * otherwise just updates evaluation
          */
         this.props.updateWorkspaceEvaluationToServer({
           type: "edit",
-          billingPrice,
+          billingPrice: !billingPriceDisabled && billingPrice,
           workspaceEvaluation: {
             identifier: latestEvent.identifier,
             assessorIdentifier: status.userSchoolDataIdentifier,
@@ -452,11 +454,9 @@ class WorkspaceEditor extends SessionStateComponent<
            * onSuccess
            */
           onSuccess: () => {
-            cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-            this.setStateAndClear(
-              {
-                literalEvaluation: "",
-              },
+            // Clears localstorage on success
+            this.justClear(
+              ["literalEvaluation", "grade", "selectedPriceOption"],
               this.state.draftId
             );
 
@@ -505,11 +505,9 @@ class WorkspaceEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-            },
+          // Clears localstorage on success
+          this.justClear(
+            ["literalEvaluation", "grade", "selectedPriceOption"],
             this.state.draftId
           );
 
@@ -907,7 +905,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
         <div className="form__buttons form__buttons--evaluation">
           <Button
-            buttonModifiers="evaluate-workspace"
+            buttonModifiers="dialog-execute"
             onClick={this.handleEvaluationSave}
             disabled={this.state.locked}
           >
@@ -918,7 +916,7 @@ class WorkspaceEditor extends SessionStateComponent<
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
-            buttonModifiers="evaluate-cancel"
+            buttonModifiers="dialog-cancel"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -926,7 +924,7 @@ class WorkspaceEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-              buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="dialog-clear"
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >

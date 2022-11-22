@@ -186,10 +186,6 @@ class ExcerciseEditor extends SessionStateComponent<
       locked: true,
     });
 
-    if (this.props.onClose) {
-      this.props.onClose();
-    }
-
     try {
       await promisify(
         mApi().evaluation.workspace.user.workspacematerial.assessment.create(
@@ -204,10 +200,6 @@ class ExcerciseEditor extends SessionStateComponent<
       )().then(async (data: AssignmentEvaluationSaveReturn) => {
         await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
-        this.setState({
-          locked: false,
-        });
-
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
@@ -215,6 +207,23 @@ class ExcerciseEditor extends SessionStateComponent<
         });
 
         this.props.updateMaterialEvaluationData(data);
+
+        this.justClear(
+          ["literalEvaluation", "needsSupplementation"],
+          this.state.draftId
+        );
+
+        // Clears localstorage on success
+        this.setState(
+          {
+            locked: false,
+          },
+          () => {
+            if (this.props.onClose) {
+              this.props.onClose();
+            }
+          }
+        );
       });
     } catch (error) {
       this.props.displayNotification(
@@ -254,9 +263,6 @@ class ExcerciseEditor extends SessionStateComponent<
       locked: true,
     });
 
-    if (this.props.onClose) {
-      this.props.onClose();
-    }
     try {
       await promisify(
         mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(
@@ -282,9 +288,22 @@ class ExcerciseEditor extends SessionStateComponent<
           workspaceMaterialId: workspaceMaterialId,
         });
 
-        this.setState({
-          locked: false,
-        });
+        // Clears localstorage on success
+        this.justClear(
+          ["literalEvaluation", "needsSupplementation"],
+          this.state.draftId
+        );
+
+        this.setState(
+          {
+            locked: false,
+          },
+          () => {
+            if (this.props.onClose) {
+              this.props.onClose();
+            }
+          }
+        );
       });
     } catch (error) {
       this.props.displayNotification(
@@ -449,7 +468,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
         <div className="form__buttons form__buttons--evaluation">
           <Button
-            buttonModifiers="evaluate-assignment"
+            buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked}
           >
@@ -460,7 +479,7 @@ class ExcerciseEditor extends SessionStateComponent<
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
-                buttonModifiers="evaluate-cancel"
+                buttonModifiers="dialog-cancel"
                 disabled={this.state.locked}
               >
                 {this.props.i18n.text.get(
@@ -471,7 +490,7 @@ class ExcerciseEditor extends SessionStateComponent<
           ) : (
             <Button
               onClick={this.props.onClose}
-              buttonModifiers="evaluate-cancel"
+              buttonModifiers="dialog-cancel"
               disabled={this.state.locked}
             >
               {this.props.i18n.text.get(
@@ -482,7 +501,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
           {this.recovered && (
             <Button
-              buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="dialog-clear"
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >

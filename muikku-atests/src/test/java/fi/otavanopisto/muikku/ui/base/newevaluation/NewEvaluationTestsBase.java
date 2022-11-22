@@ -67,6 +67,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .addCourseStudent(course1.getId(), courseStudent)
+        .mockEmptyStudyActivity()
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -78,7 +79,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       try {
       logout();
-      mockBuilder.mockLogin(student);
+      mockBuilder
+        .mockLogin(student);
       login();
     
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -91,7 +93,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".button--muikku-submit-assignment");
 
       waitForElementToBeClickable(".button--muikku-withdraw-assignment");
-      
+      waitAndClick(".link--workspace-assessment");
+      waitForVisible(".dialog .dialog__content");
+
+      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
       mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
         .mockCompositeGradingScales()
@@ -100,20 +105,51 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, false)
         .mockStaffCompositeCourseAssessmentRequests()
         .mockWorkspaceBasePrice(course1.getId(), courseBasePrices)
-        .mockWorkspaceBilledPriceUpdate(String.valueOf(price/2));
-      
-      logout();
-      
-      mockBuilder
-      .removeMockCourseStudent(courseStudent);
-      
-      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
-      mockBuilder
+        .mockWorkspaceBilledPriceUpdate(String.valueOf(price/2))
         .addCourseStudent(course1.getId(), courseStudent)
         .build();
+      sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+      waitAndClick(".button--standard-ok");
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+
+      
+      waitAndClick(".link--workspace-assessment");
+      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      mockBuilder
+        .addCourseStudent(course1.getId(), courseStudent)
+        .mockAssessmentRequests(student.getId(), course1.getId(), null, null, false, false, dateNow)
+        .build();
+      waitForVisible(".dialog .dialog__content");
+      waitAndClick(".button--standard-ok");
+
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+
+      waitAndClick(".link--workspace-assessment");
+      waitForVisible(".dialog .dialog__content");
+
+      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
+      mockBuilder
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
+        .addCourseStudent(course1.getId(), courseStudent)
+        .build();
+      sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+      waitAndClick(".button--standard-ok");
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+      logout();      
       
       mockBuilder.mockLogin(admin);
       login();
+      assertPresent(".navbar__item--communicator .indicator");
+      navigate("/communicator", false);
+      waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
+      assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester (Test Study Programme)");
+      assertText(".application-list__item-counter", "3");
+      waitAndClick("div.application-list__item.message");
+      assertText(".application-list__item-content-body", "Student Tester (Test Study Programme) lähetti arviointipyynnön työtilassa testcourse (test extension).\n" + 
+          "Arviointipyynnön teksti\n" + 
+          "Hello!");
+
+      assertText(".application-list__item--communicator-message:nth-of-type(2) .application-list__item-content-header", "Arviointipyyntö peruttu opiskelijalta Student Tester (Test Study Programme) työtilassa testcourse (test extension)");
       navigate(String.format("/evaluation"), false);
       waitAndClick(".button-pill--evaluate");
       
@@ -142,7 +178,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addCourseStudent(course1.getId(), courseStudent)
         .mockCourseActivities();
       
-      waitAndClick(".form__buttons--evaluation .button--evaluate-workspace");
+      waitAndClick(".form__buttons--evaluation .button--dialog-execute");
       waitForPresent(".dialog--evaluation-archive-student.dialog--visible .button--standard-ok");
       waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".dialog--evaluation-archive-student.dialog--visible", 3, 2000);
       assertText(".evaluation-modal__event .evaluation-modal__event-grade.state-PASSED", "Excellent");
@@ -238,7 +274,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
         addTextToCKEditor("Test evaluation.");
         selectOption("#assignmentEvaluationGrade", "PYRAMUS-1");
-        waitAndClick(".button--evaluate-assignment");
+        waitAndClick(".button--dialog-execute");
         
         waitForVisible(".evaluation-modal__item-header.state-EVALUATED");
         waitForVisible(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED");
@@ -496,7 +532,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresent(".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents");
         addTextToCKEditor("Test supplementation request.");
 
-        waitAndClick(".form__buttons--evaluation a.button--evaluate-supplementation");
+        waitAndClick(".form__buttons--evaluation a.button--dialog-execute");
         waitForNotVisible(".evaluation-modal__evaluate-drawer");
         waitForVisible(".evaluation-modal__header-title");
         assertTextIgnoreCase(".evaluation-modal__event.state-INCOMPLETE .evaluation-modal__event-meta", "Admin User pyysi täydennystä");

@@ -255,6 +255,10 @@ public class ForumController {
   public List<WorkspaceForumArea> listWorkspaceForumAreas(WorkspaceEntity workspaceEntity) {
     return workspaceForumAreaDAO.listByWorkspaceEntity(workspaceEntity);
   }
+  
+  public WorkspaceForumArea findByAreaId(Long areaId) {
+    return workspaceForumAreaDAO.findByAreaId(areaId);
+  }
 
   public List<ForumThread> listForumThreads(ForumArea forumArea, int firstResult, int maxResults) {
     return listForumThreads(forumArea, firstResult, maxResults, false);

@@ -4,14 +4,14 @@
 
   <groupId>fi.otavanopisto.muikku</groupId>
   <artifactId>bom</artifactId>
-  <version>1.1.193-SNAPSHOT</version>
+  <version>1.1.195-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Muikku BOM</name>
 
   <properties>
     <!-- WildFly -->
 
-    <wildfly.version>26.1.1.Final</wildfly.version>
+    <wildfly.version>26.1.2.Final</wildfly.version>
 
     <!-- Commons -->
 
@@ -33,7 +33,7 @@
 
     <!-- Muikku -->
 
-    <muikku.version>1.1.193-SNAPSHOT</muikku.version>
+    <muikku.version>1.1.195-SNAPSHOT</muikku.version>
 
     <!-- Webapp-permission -->
 

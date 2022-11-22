@@ -21,6 +21,7 @@ import "~/sass/elements/form.scss";
  * DicussionNewThreadProps
  */
 interface DicussionNewThreadProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   i18n: i18nType;
   discussion: DiscussionType;
@@ -37,6 +38,7 @@ interface DicussionNewThreadState {
   locked: boolean;
   threadPinned: boolean;
   threadLocked: boolean;
+  threadSubscribed: boolean;
   selectedAreaId: number;
 }
 
@@ -71,6 +73,7 @@ class DicussionNewThread extends SessionStateComponent<
 
     this.togglePinned = this.togglePinned.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
+    this.toggleSubscribeThread = this.toggleSubscribeThread.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onAreaChange = this.onAreaChange.bind(this);
@@ -150,7 +153,7 @@ class DicussionNewThread extends SessionStateComponent<
    * createThread
    * @param closeDialog closeDialog
    */
-  createThread(closeDialog: () => any) {
+  createThread(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
@@ -158,6 +161,7 @@ class DicussionNewThread extends SessionStateComponent<
       forumAreaId: this.state.selectedAreaId,
       locked: this.state.threadLocked,
       sticky: this.state.threadPinned,
+      subscribe: this.state.threadSubscribed,
       message: this.state.text,
       title: this.state.title,
       /**
@@ -216,6 +220,16 @@ class DicussionNewThread extends SessionStateComponent<
   }
 
   /**
+   * toggleLocked
+   */
+  toggleSubscribeThread() {
+    this.setStateAndStore(
+      { threadSubscribed: !this.state.threadSubscribed },
+      this.state.selectedAreaId
+    );
+  }
+
+  /**
    * onAreaChange
    * @param e e
    */
@@ -255,7 +269,7 @@ class DicussionNewThread extends SessionStateComponent<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => void) => [
       <div key="1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
@@ -317,6 +331,20 @@ class DicussionNewThread extends SessionStateComponent<
               )}
             </label>
           </div>
+          <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
+            <input
+              id="messageLocked"
+              type="checkbox"
+              className="env-dialog__input"
+              checked={this.state.threadSubscribed}
+              onChange={this.toggleSubscribeThread}
+            />
+            <label htmlFor="messageLocked" className="env-dialog__input-label">
+              {this.props.i18n.text.get(
+                "plugin.discussion.createmessage.subscribe"
+              )}
+            </label>
+          </div>
         </div>
       ) : (
         <div key="2" className="env-dialog__row env-dialog__row--options" />
@@ -342,7 +370,7 @@ class DicussionNewThread extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"

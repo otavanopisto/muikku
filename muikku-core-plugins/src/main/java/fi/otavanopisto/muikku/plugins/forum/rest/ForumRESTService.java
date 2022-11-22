@@ -36,17 +36,23 @@ import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
-import fi.otavanopisto.muikku.plugins.forum.events.ForumThreadMessageSent;
+import fi.otavanopisto.muikku.plugins.forum.events.ForumMessageSent;
 import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
+import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
+import fi.otavanopisto.muikku.plugins.forum.wall.ForumAreaSubscription;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.CurrentUserSession;
@@ -74,6 +80,9 @@ public class ForumRESTService extends PluginRESTService {
   private ForumController forumController;
   
   @Inject
+  private ForumAreaSubsciptionController forumAreaSubscriptionController;
+  
+  @Inject
   private ForumThreadSubsciptionController forumThreadSubscriptionController;
 
   @Inject
@@ -86,10 +95,16 @@ public class ForumRESTService extends PluginRESTService {
   private ForumRESTModels restModels;
   
   @Inject
-  private Event<ForumThreadMessageSent> forumThreadMessageSent;
+  private Event<ForumMessageSent> forumMessageSent;
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
   /**
    * GET mapi().forum.isAvailable
@@ -522,6 +537,8 @@ public class ForumRESTService extends PluginRESTService {
           newThread.getSticky(), 
           newThread.getLocked());
 
+      forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, null));
+      
       return Response.ok(
         restModels.restModel(thread)
       ).build();
@@ -760,7 +777,7 @@ public class ForumRESTService extends PluginRESTService {
           }
         }
         
-        forumThreadMessageSent.fire(new ForumThreadMessageSent(forumThread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl));
+        forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), forumThread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, null));
         
         return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply))).build();
       } else {
@@ -830,6 +847,101 @@ public class ForumRESTService extends PluginRESTService {
   }
   
   /**
+   * mApi().forum.areas.toggleSubscription.create(2)
+   * 
+   * @param areaId
+   * @return
+   */
+  @POST
+  @Path("/areas/{AREAID}/toggleSubscription")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response toggleForumAreaSubscription(@PathParam ("AREAID") Long areaId) {
+    try {
+      ForumArea forumArea = forumController.getForumArea(areaId);
+      if (forumArea == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum area not found").build();
+      }
+      
+      UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+      ForumAreaSubscription forumAreaSubscription = forumAreaSubscriptionController.findByAreaAndUserEntity(forumArea, loggedUserEntity);
+      if (forumAreaSubscription == null) {
+        ForumAreaSubscription subscription = forumAreaSubscriptionController.createForumAreaSubsciption(forumArea, loggedUserEntity);
+        return Response.ok(createAreaSubscriptionRestModel(subscription)).build();
+      } else {
+        forumAreaSubscriptionController.deleteSubscription(forumAreaSubscription);
+        return Response.noContent().build();
+      }
+      
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Failed to create forum area subscription", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+  
+  /**
+   * mApi().forum.subscriptionAreas.read(13)
+   * 
+   * @param userEntityId
+   * @return
+   * 
+   * returns a list of user's subscripted threads
+   */
+  @GET
+  @Path ("/subscriptionAreas/{USERID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listAreaSubscriptionsByUser(@PathParam("USERID") Long userId) {
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userId);
+    
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("User entity not found").build();
+    }
+    
+    if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_READ_ENVIRONMENT_MESSAGES)) {
+      if (userEntityController.isStudent(sessionController.getLoggedUserEntity()) && !sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
+        return Response.status(Status.FORBIDDEN).entity("You can list your own subscriptions only").build();
+      }
+      return Response.ok(createAreaSubscriptionRestModel(forumAreaSubscriptionController.listByUser(userEntity).toArray(new ForumAreaSubscription[0]))).build();
+    } else
+      return Response.status(Status.FORBIDDEN).build();
+  }
+  
+  private ForumAreaSubscriptionRESTModel createAreaSubscriptionRestModel(ForumAreaSubscription entity) {
+    
+    Long workspaceEntityId = null;
+    String workspaceUrlName = null;
+    String workspaceName = null;
+    
+    WorkspaceForumArea workspaceForumArea = forumController.findByAreaId(entity.getForumArea().getId());
+
+    if (workspaceForumArea != null) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForumArea.getWorkspace());
+      if (workspaceEntity != null) {
+        workspaceEntityId = workspaceEntity.getId();
+        workspaceUrlName = workspaceEntity.getUrlName();
+        workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
+      }
+    }
+    ForumArea forumArea = entity.getForumArea();
+    Long numThreads = forumController.getThreadCount(forumArea);
+    
+    ForumAreaRESTModel area = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), 
+        forumArea.getDescription(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, numThreads); 
+    
+    return new ForumAreaSubscriptionRESTModel(entity.getId(), entity.getForumArea().getId(), entity.getUser(), area, workspaceEntityId, workspaceUrlName, workspaceName);
+  }
+  
+  private List<ForumAreaSubscriptionRESTModel> createAreaSubscriptionRestModel(ForumAreaSubscription... entries) {
+    List<ForumAreaSubscriptionRESTModel> result = new ArrayList<>();
+
+    for (ForumAreaSubscription entry : entries) {
+      result.add(createAreaSubscriptionRestModel(entry));
+    }
+
+    return result;
+  }
+  
+  /**
    * mApi().forum.areas.threads.toggleSubscription.create(2,5)
    * 
    * @param areaId
@@ -863,8 +975,7 @@ public class ForumRESTService extends PluginRESTService {
       ForumThreadSubscription forumThreadSubscription = forumThreadSubscriptionController.findByThreadAndUserEntity(forumThread, loggedUSerEntity);
       if (forumThreadSubscription == null) {
         ForumThreadSubscription forumSubscription = forumThreadSubscriptionController.createForumThreadSubsciption(forumThread, loggedUSerEntity);
-        ForumThreadRESTModel threadRest = restModels.restModel(forumSubscription.getForumThread());
-        return Response.ok(new ForumThreadSubscriptionRESTModel(forumSubscription.getId(), forumSubscription.getForumThread().getId(), forumSubscription.getUser(), threadRest)).build();
+        return Response.ok(createThreadSubscriptionRestModel(forumSubscription)).build();
       } else {
         forumThreadSubscriptionController.deleteSubscription(forumThreadSubscription);
         return Response.noContent().build();
@@ -884,9 +995,9 @@ public class ForumRESTService extends PluginRESTService {
    * returns a list of user's subscripted threads
    */
   @GET
-  @Path ("/subscriptions/threads/{USERID}")
+  @Path ("/subscriptionThreads/{USERID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listThreadSubscriptionsByUser(@PathParam ("USERID") Long userId) {
+  public Response listThreadSubscriptionsByUser(@PathParam("USERID") Long userId) {
     
     UserEntity userEntity = userEntityController.findUserEntityById(userId);
     
@@ -898,16 +1009,29 @@ public class ForumRESTService extends PluginRESTService {
       if (userEntityController.isStudent(sessionController.getLoggedUserEntity()) && !sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
         return Response.status(Status.FORBIDDEN).entity("You can list your own subscriptions only").build();
       }
-      
       return Response.ok(createThreadSubscriptionRestModel(forumThreadSubscriptionController.listByUser(userEntity).toArray(new ForumThreadSubscription[0]))).build();
     } else
       return Response.status(Status.FORBIDDEN).build();
   }
   
   private ForumThreadSubscriptionRESTModel createThreadSubscriptionRestModel(ForumThreadSubscription entity) {
+    Long workspaceEntityId = null;
+    String workspaceUrlName = null;
+    String workspaceName = null;
+    
+    WorkspaceForumArea workspaceForumArea = forumController.findByAreaId(entity.getForumThread().getForumArea().getId());
+
+    if (workspaceForumArea != null) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForumArea.getWorkspace());
+      if (workspaceEntity != null) {
+        workspaceEntityId = workspaceEntity.getId();
+        workspaceUrlName = workspaceEntity.getUrlName();
+        workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
+      }
+    }
     ForumThreadRESTModel threadRest = restModels.restModel(entity.getForumThread());
     
-    return new ForumThreadSubscriptionRESTModel(entity.getId(), entity.getForumThread().getId(), entity.getUser(), threadRest);
+    return new ForumThreadSubscriptionRESTModel(entity.getId(), entity.getForumThread().getId(), entity.getUser(), threadRest, workspaceEntityId, workspaceUrlName, workspaceName);
   }
   
   private List<ForumThreadSubscriptionRESTModel> createThreadSubscriptionRestModel(ForumThreadSubscription... entries) {

@@ -100,6 +100,26 @@
   }
 }
 
+.material-page__title--journal {
+  border-left: 3px solid $color-journal-page;
+  padding: 0 0 0 6px;
+
+  @include breakpoint($breakpoint-pad) {
+    border-left: 5px solid $color-journal-page;
+    padding: 0 0 0 15px;
+  }
+}
+
+.material-page__title--interim-evaluation {
+  border-left: 3px solid $color-interim-evaluation;
+  padding: 0 0 0 6px;
+
+  @include breakpoint($breakpoint-pad) {
+    border-left: 5px solid $color-interim-evaluation;
+    padding: 0 0 0 15px;
+  }
+}
+
 .material-page__title-meta {
   color: $color-info;
   font-style: italic;
@@ -107,6 +127,17 @@
 }
 
 .material-page__content {
+  margin: 15px 0;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0;
+    padding: 0 20px;
+  }
+}
+
+.material-page__content-disclaimer {
+  font-style: italic;
   margin: 15px 0;
   padding: 0 10px;
 
@@ -811,7 +842,9 @@
 }
 
 // Memo field
-.material-page__memofield-wrapper {
+.material-page__memofield-wrapper,
+.material-page__journalfield-wrapper,
+.material-page__interim-evaluation-wrapper {
   display: block;
   padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
   position: relative;
@@ -842,6 +875,32 @@
     min-height: 150px;
   }
   /* stylelint-enable selector-class-pattern */
+}
+
+// Journal field overrides
+.material-page__journalfield-wrapper {
+
+  /* stylelint-disable selector-class-pattern */
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+    border: 2px solid $color-journal-page;
+  }
+
+  .cke_wysiwyg_div {
+    min-height: 250px;
+  }
+  /* stylelint-enable selector-class-pattern */
+}
+
+.material-page__interim-evaluation-field-label {
+  display: block;
+  font-weight: 600;
+}
+
+// Interim evaluation request field overrides
+.material-page__interim-evaluation-wrapper {
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+    border: 2px solid $color-interim-evaluation;
+  }
 }
 
 .material-page__memofield {
@@ -963,6 +1022,10 @@
     padding: 5px;
     text-decoration: none;
     width: auto;
+
+    .external-link-indicator {
+      display: none;
+    }
   }
 }
 

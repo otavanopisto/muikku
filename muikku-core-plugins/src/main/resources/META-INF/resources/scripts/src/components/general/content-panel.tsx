@@ -14,9 +14,13 @@ import "~/sass/elements/loaders.scss";
  */
 interface ContentPanelProps {
   modifier: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   title?: React.ReactElement<any> | string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside?: React.ReactElement<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpenNavigation?: () => any;
 }
 
@@ -82,6 +86,7 @@ export default class ContentPanel extends React.Component<
    * onTouchStart
    * @param e e
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTouchStart(e: React.TouchEvent<any>) {
     this.setState({ dragging: true });
     this.touchCordX = e.changedTouches[0].pageX;
@@ -95,6 +100,7 @@ export default class ContentPanel extends React.Component<
    * onTouchMove
    * @param e e
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTouchMove(e: React.TouchEvent<any>) {
     let diffX = e.changedTouches[0].pageX - this.touchCordX;
     const diffY = e.changedTouches[0].pageY - this.touchCordY;
@@ -124,6 +130,7 @@ export default class ContentPanel extends React.Component<
    * onTouchEnd
    * @param e e
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTouchEnd(e: React.TouchEvent<any>) {
     const width = (
       document.querySelector(
@@ -169,6 +176,7 @@ export default class ContentPanel extends React.Component<
    * closeNavigationByOverlay
    * @param e e
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   closeNavigationByOverlay(e: React.MouseEvent<any>) {
     const isOverlay = e.target === e.currentTarget;
     const isLink = checkLinkClicked(e.target as HTMLElement);

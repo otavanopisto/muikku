@@ -28,6 +28,20 @@
   }
 }
 
+.panel-group--info {
+  order: 2;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33.333%;
+    flex-flow: row wrap;
+    max-width: 33.333%;
+  }
+}
+
 .panel-group--workspace-main {
   order: 2;
 
@@ -97,20 +111,6 @@
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 100%;
-  }
-}
-
-.panel--latest-messages {
-  order: 2;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: 50%;
-    max-width: 50%;
-  }
-
-  @include breakpoint($breakpoint-desktop) {
-    flex-basis: 33.333%;
-    max-width: 33.333%;
   }
 }
 
@@ -190,6 +190,7 @@
   flex-flow: row nowrap;
   flex-grow: 1;
   flex-shrink: 0;
+  height: 38px;
   justify-content: flex-start;
   margin: 0;
   padding: 5px;
@@ -228,6 +229,11 @@
     height: 38px;
     width: 38px;
   }
+}
+
+.panel__header-icon--wall {
+  background-color: $color-index-text-for-panels-title-wall-icon-background;
+  color: $color-index-text-for-panels-title-wall-icon-color;
 }
 
 .panel__header-icon--continue-studies {
@@ -295,12 +301,15 @@
   font-weight: 300;
   height: $panel-header-title-height-mobile;
   line-height: 1;
-  margin: 0 0 0 10px;
   text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.5rem;
     height: $panel-header-title-height-desktop;
+  }
+
+  &:not(:first-child) {
+    margin: 0 0 0 10px;
   }
 }
 
@@ -321,7 +330,8 @@
   }
 }
 
-.panel__body--empty {
+.panel__body--empty,
+.panel__body-content--empty {
   font-style: italic;
   padding: 10px;
 }
@@ -352,7 +362,7 @@
 
 .panel__body-title {
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   padding: 10px 10px 0; // Bottom padding is omitted as panel__body-content has top padding
 }
 

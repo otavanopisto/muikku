@@ -698,7 +698,7 @@ class ManagementPanel extends React.Component<
     }
 
     return (
-      <div className="application-panel-wrapper">
+      <>
         <ApplicationPanel
           modifier="workspace-management"
           title={this.props.i18n.text.get(
@@ -1314,7 +1314,7 @@ class ManagementPanel extends React.Component<
             </div>
           </section>
         </ApplicationPanel>
-      </div>
+      </>
     );
   }
 }

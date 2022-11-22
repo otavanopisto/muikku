@@ -119,10 +119,6 @@
   flex-grow: 0;
   flex-shrink: 0;
   padding: 5px 0;
-
-  @include breakpoint($breakpoint-pad) {
-    padding: 0 10px;
-  }
 }
 
 .evaluation-modal__content-footer {
@@ -208,14 +204,19 @@
   }
 }
 
+.evaluation-modal__event-arrow--journal-comment {
+  margin: 5px 5px 5px 0;
+  padding: 3px 3px 3px 0;
+}
+
 .evaluation-modal__event-arrow--right {
   transform: rotate(0deg);
-  transition: transform 300ms ease-out;
+  transition: transform 150ms ease-out;
 }
 
 .evaluation-modal__event-arrow--down {
   transform: rotate(90deg);
-  transition: transform 300ms ease-in;
+  transition: transform 150ms ease-in;
 }
 
 .evaluation-modal__event-date {
@@ -350,6 +351,7 @@
   border-radius: 2px;
   margin: 10px 0;
   padding: 0 10px;
+  padding-bottom: 10px;
 }
 
 .evaluation-modal__item-header {
@@ -389,7 +391,11 @@
 }
 
 .evaluation-modal__item-header-title--journal {
-  border-left-color: $color-journal;
+  border-left-color: $color-journal-entry;
+}
+
+.evaluation-modal__item-header-title--journal-mandatory {
+  border-left-color: $color-journal-page;
 }
 
 .evaluation-modal__item-header-title--assignment {
@@ -400,8 +406,11 @@
   border-left-color: $color-exercise;
 }
 
+.evaluation-modal__item-header-title--interim-evaluation {
+  border-left-color: $color-interim-evaluation;
+}
+
 .evaluation-modal__item-header-title--active-dialog {
-  color: $color-assignment;
   cursor: default;
 }
 
@@ -498,6 +507,43 @@
   margin: 5px 0;
 }
 
+// Evaluation item's footer
+.evaluation-modal__item-footer {
+  padding: 5px 10px;
+}
+
+// Evaluation item's footer
+.evaluation-modal__item-actions {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  padding: 5px 10px;
+}
+
+// Evaluation item's subheader
+.evaluation-modal__item-subheader {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 1rem;
+  justify-content: flex-start;
+}
+
+.evaluation-modal__item-subheader--journal-comment {
+  cursor: pointer;
+}
+
+// Evaluation journal item's comments
+.evaluation-modal__item--journal-comment {
+  background: lighten($color-tertiary, 30%);
+  border: 0;
+  border-radius: 3px;
+}
+
+.evaluation-modal__item-body--journal-comment {
+  padding: 5px 10px;
+}
+
 // Evaluation assessment drawer
 .evaluation-modal__evaluate-drawer {
   background: $color-default;
@@ -527,7 +573,12 @@
 }
 
 .evaluation-modal__evaluate-drawer--assignment,
-.evaluation-modal__evaluate-drawer--excercise {
+.evaluation-modal__evaluate-drawer--excercise,
+.evaluation-modal__evaluate-drawer--interim-evaluation {
+  z-index: 211;
+}
+
+.evaluation-modal__evaluate-drawer--journal-comment {
   z-index: 201;
 }
 
@@ -541,24 +592,6 @@
   position: relative;
   white-space: nowrap;
   width: 100%;
-}
-
-.evaluation-modal__evaluate-drawer-header--assignment {
-  .evaluation-modal__evaluate-drawer-header-title {
-    color: $color-assignment;
-  }
-}
-
-.evaluation-modal__evaluate-drawer-header--workspace {
-  .evaluation-modal__evaluate-drawer-header-title {
-    color: $color-info;
-  }
-}
-
-.evaluation-modal__evaluate-drawer-header--supplementation {
-  .evaluation-modal__evaluate-drawer-header-title {
-    color: $color-incomplete;
-  }
 }
 
 .evaluation-modal__evaluate-drawer-header-title {
@@ -582,7 +615,7 @@
 }
 
 .evaluation-modal__evaluate-drawer-content {
-  height: calc(100% - 55px);
+  height: calc(100% - 65px);
   overflow: auto;
   overscroll-behavior: contain;
   padding: 10px;

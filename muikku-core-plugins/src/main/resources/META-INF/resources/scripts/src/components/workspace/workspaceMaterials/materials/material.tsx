@@ -26,6 +26,8 @@ import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
 import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
+import { AnyActionType } from "~/actions";
+import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 
 /**
  * WorkspaceMaterialProps
@@ -82,10 +84,13 @@ class WorkspaceMaterial extends React.Component<
   render() {
     const isAssignment =
       this.props.materialContentNode.assignmentType === "EVALUATED" ||
-      this.props.materialContentNode.assignmentType === "EXERCISE";
+      this.props.materialContentNode.assignmentType === "EXERCISE" ||
+      this.props.materialContentNode.assignmentType === "INTERIM_EVALUATION";
+
     const isEvaluatedAsPassed =
       this.props.compositeReplies &&
       this.props.compositeReplies.state === "PASSED";
+
     const hasEvaluation =
       this.props.compositeReplies &&
       this.props.compositeReplies.evaluationInfo &&
@@ -93,9 +98,11 @@ class WorkspaceMaterial extends React.Component<
         this.props.compositeReplies.state === "PASSED" ||
         this.props.compositeReplies.state === "FAILED" ||
         this.props.compositeReplies.state === "WITHDRAWN");
+
     const isBinary = this.props.materialContentNode.type === "binary";
     let evalStateClassName = "";
     let evalStateIcon = "";
+
     if (this.props.compositeReplies) {
       switch (this.props.compositeReplies.state) {
         case "INCOMPLETE":
@@ -158,8 +165,14 @@ class WorkspaceMaterial extends React.Component<
                   {...state}
                   stateConfiguration={stateConfiguration}
                 />
+                <MaterialLoaderExternalContent
+                  {...props}
+                  {...state}
+                  stateConfiguration={stateConfiguration}
+                />
                 <div className="material-page__de-floater"></div>
-                {!isEvaluatedAsPassed ? (
+                {!isEvaluatedAsPassed &&
+                !props.material.contentHiddenForUser ? (
                   <MaterialLoaderButtons
                     {...props}
                     {...state}
@@ -205,7 +218,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 

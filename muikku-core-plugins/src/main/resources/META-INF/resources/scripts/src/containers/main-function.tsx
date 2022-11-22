@@ -20,7 +20,6 @@ import {
   loadUserWorkspaceCurriculumFiltersFromServer,
   setWorkspaceStateFilters,
   loadUserWorkspaceEducationFiltersFromServer,
-  loadUserWorkspaceOrganizationFiltersFromServer,
 } from "~/actions/workspaces";
 import {
   loadLastWorkspaceFromServer,
@@ -47,6 +46,9 @@ import {
   loadDiscussionThreadsFromServer,
   loadDiscussionThreadFromServer,
   setDiscussionWorkpaceId,
+  loadSubscribedDiscussionThreadList,
+  showOnlySubscribedThreads,
+  loadSubscribedDiscussionAreaList,
 } from "~/actions/discussion";
 import { loadAnnouncement, loadAnnouncements } from "~/actions/announcements";
 import AnnouncementsBody from "../components/announcements/body";
@@ -77,7 +79,6 @@ import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
   setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords,
   setLocationToHopsInTranscriptOfRecords,
   setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
@@ -85,7 +86,6 @@ import {
   setLocationToInfoInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
-import { updateVops } from "~/actions/main-function/vops";
 import { updateHops } from "~/actions/main-function/hops";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
 import {
@@ -114,8 +114,11 @@ import {
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
+import { DiscussionPatchType } from "~/reducers/discussion";
+import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
+import { loadContactGroup } from "~/actions/base/contacts";
 
 moment.locale("fi");
 
@@ -317,11 +320,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords() as Action
       );
-    } else if (givenLocation === "vops") {
-      this.props.store.dispatch(
-        setLocationToVopsInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(updateVops() as Action);
     } else if (givenLocation === "hops") {
       this.props.store.dispatch(
         setLocationToHopsInTranscriptOfRecords() as Action
@@ -407,28 +405,67 @@ export default class MainFunction extends React.Component<
    * @param location location
    */
   loadDiscussionData(location: string[]) {
-    if (location.length <= 2) {
-      //The link is expected to be like # none, in this case it will collapse to null, page 1
-      //Else it can be #1 in that case it will collapse to area 1, page 1
-      //Or otherwise #1/2 in that case it will collapse to area 1 page 2
+    const state = this.props.store.getState();
+
+    // Load subscribed areas and threads every time
+    this.props.store.dispatch(loadSubscribedDiscussionAreaList({}) as Action);
+    this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
+    if (location.includes("subs")) {
+      const payload: DiscussionPatchType = {
+        current: state.discussion.current && undefined,
+        areaId: undefined,
+      };
+
+      this.props.store.dispatch({
+        type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+        payload,
+      });
 
       this.props.store.dispatch(
-        loadDiscussionThreadsFromServer({
-          areaId: parseInt(location[0]) || null,
-          page: parseInt(location[1]) || 1,
-        }) as Action
+        showOnlySubscribedThreads({ value: true }) as Action
       );
     } else {
-      //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
-      //and there can be a page as #1/2/3/4
-      this.props.store.dispatch(
-        loadDiscussionThreadFromServer({
-          areaId: parseInt(location[0]),
-          page: parseInt(location[1]),
-          threadId: parseInt(location[2]),
-          threadPage: parseInt(location[3]) || 1,
-        }) as Action
-      );
+      state.discussion.subscribedThreadOnly &&
+        this.props.store.dispatch(
+          showOnlySubscribedThreads({ value: false }) as Action
+        );
+
+      if (location.length <= 2) {
+        const payload: DiscussionPatchType = {
+          areaId: undefined,
+        };
+
+        // As first item of location array is areaId
+        // And if there is not area, then redux state must be updated to
+        // to indicate this. So setting area id to undefined
+        !location[0] &&
+          this.props.store.dispatch({
+            type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+            payload,
+          });
+
+        //The link is expected to be like # none, in this case it will collapse to null, page 1
+        //Else it can be #1 in that case it will collapse to area 1, page 1
+        //Or otherwise #1/2 in that case it will collapse to area 1 page 2
+        this.props.store.dispatch(
+          loadDiscussionThreadsFromServer({
+            areaId: parseInt(location[0]) || null,
+            page: parseInt(location[1]) || 1,
+            forceRefresh: true,
+          }) as Action
+        );
+      } else {
+        //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
+        //and there can be a page as #1/2/3/4
+        this.props.store.dispatch(
+          loadDiscussionThreadFromServer({
+            areaId: parseInt(location[0]),
+            page: parseInt(location[1]),
+            threadId: parseInt(location[2]),
+            threadPage: parseInt(location[3]) || 1,
+          }) as Action
+        );
+      }
     }
   }
 
@@ -566,6 +603,9 @@ export default class MainFunction extends React.Component<
    * @returns JSX.Element
    */
   renderIndexBody() {
+    this.loadlib(
+      `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+    );
     this.updateFirstTime();
     if (this.itsFirstTime) {
       this.props.websocket &&
@@ -955,6 +995,7 @@ export default class MainFunction extends React.Component<
       this.loadlib(
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
+      this.props.store.dispatch(loadContactGroup("counselors") as Action);
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(

@@ -11,6 +11,7 @@ import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
 import { i18nType } from "~/reducers/base/i18n";
 import NoteInformationDialog from "./dialogs/note-information-dialog";
+import { isOverdue } from "~/helper-functions/dates";
 
 /**
  * NotesListItemProps
@@ -180,7 +181,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
     }
 
-    if (overdue) {
+    if (overdue && status !== NotesItemStatus.APPROVED) {
       updatedModifiers.push("overdue");
     }
 
@@ -246,7 +247,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const renderStatus = () => {
       const statuses: JSX.Element[] = [];
 
-      if (overdue) {
+      if (overdue && status !== NotesItemStatus.APPROVED) {
         statuses.push(
           <div
             key="note-overdue"
@@ -528,11 +529,3 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
 NotesListItem.displayName = "NotesListItem";
 
 export default React.memo(NotesListItem);
-
-/**
- * Checks if note is expired or late
- * @param dueDate due date to check agains
- * @returns Whether note is expired or late
- */
-const isOverdue = (dueDate: Date | null) =>
-  dueDate !== null && moment(new Date()).isAfter(new Date(dueDate));

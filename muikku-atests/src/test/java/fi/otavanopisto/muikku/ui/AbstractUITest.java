@@ -850,6 +850,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
       wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
       sleep(interval);
+      waitForPresent(elementWithText);
       text = findElement(elementWithText).getText();
     }
     if(!StringUtils.equalsIgnoreCase(text, newText))
@@ -933,8 +934,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String localeText = getElementText("a.button-pill--current-language>span");
     if(localeText.equalsIgnoreCase("EN")) {
       waitAndClick(".button-pill--current-language");
-      waitAndClick(".link--language-picker-dropdown .link__locale--fi");
-      waitUntilContentChanged("a.button-pill--current-language>span", "EN");
+      waitAndClickAndConfirmTextChanges(".link--language-picker-dropdown .link__locale--fi", "a.button-pill--current-language>span", "fi", 3, 1500);
     }  
   }
   
@@ -943,9 +943,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String localeText = getElementText("a.button-pill--current-language>span");
     if(localeText.equalsIgnoreCase("FI")) {
       waitAndClick(".button-pill--current-language");
-      waitAndClick(".link--language-picker-dropdown .link__locale--en");
-      waitUntilContentChanged("a.button-pill--current-language>span", "FI");
-    }  
+      waitAndClickAndConfirmTextChanges(".link--language-picker-dropdown .link__locale--en", "a.button-pill--current-language>span", "en", 3, 1500);
+    }
   }
   
   protected String getElementText(String selector) {

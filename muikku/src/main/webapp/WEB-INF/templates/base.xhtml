@@ -137,7 +137,7 @@
       <link
         rel="stylesheet"
         type="text/css"
-        href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.4.1/style.css"
+        href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.4.2/style.css"
       />
       <link
         href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=cyrillic"
@@ -152,23 +152,10 @@
     <body>
       <div id="app"></div>
 
-      <!-- TODO: please lets find a way to do this with a rest endpoint -->
-      <h:form id="language-picker" style="display: none" pt:aria-hidden="true">
-        <ui:repeat value="#{i18n.languages}" var="locale">
-          <a
-            jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}"
-            data-locale="#{locale}"
-          >
-            #{i18n.text['plugin.navigation.language.' .concat(locale)]}
-          </a>
-        </ui:repeat>
-      </h:form>
       <h:form style="display: none" pt:aria-hidden="true">
         <a jsf:action="#{logoutWidgetBackingBean.logout}" id="logout"></a>
       </h:form>
-      <a id="locale" style="display: none" aria-hidden="true"
-        >#{languageWidgetBackingBean.language}</a
-      >
+
       <a
         id="login"
         style="display: none"

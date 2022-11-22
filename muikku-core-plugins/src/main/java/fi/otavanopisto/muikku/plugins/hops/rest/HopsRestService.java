@@ -55,7 +55,6 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
@@ -74,6 +73,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
+import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -113,9 +113,6 @@ public class HopsRestService {
   private CourseMetaController courseMetaController;
 
   @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
-
-  @Inject
   private WebSocketMessenger webSocketMessenger;
 
   @Inject
@@ -127,6 +124,9 @@ public class HopsRestService {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
+  @Inject
+  private UserGroupGuidanceController userGroupGuidanceController;
+  
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -256,15 +256,7 @@ public class HopsRestService {
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
-    schoolDataBridgeSessionController.startSystemSession();
-    List<UserEntity> recipients = new ArrayList<>();
-
-    try {
-      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
 
     recipients.add(studentEntity);
 
@@ -339,7 +331,7 @@ public class HopsRestService {
             } else {
               item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
               item.setCourseId(suggestion.getWorkspaceEntityId());
-              item.setCourseName(workspaceEntityController.getName(workspaceEntity));
+              item.setCourseName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
             }
             items.add(item);
           }
@@ -624,7 +616,7 @@ public class HopsRestService {
 
       item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
       item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
-      item.setName(workspaceEntityController.getName(workspaceEntity));
+      item.setName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
       item.setId(hopsSuggestion.getId());
       item.setCourseNumber(hopsSuggestion.getCourseNumber());
       item.setCreated(hopsSuggestion.getCreated());
@@ -647,7 +639,7 @@ public class HopsRestService {
 
       item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
       item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
-      item.setName(workspaceEntityController.getName(workspaceEntity));
+      item.setName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
       item.setId(hopsSuggestion.getId());
       item.setCourseNumber(hopsSuggestion.getCourseNumber());
       item.setCreated(hopsSuggestion.getCreated());
@@ -707,15 +699,7 @@ public class HopsRestService {
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
-    schoolDataBridgeSessionController.startSystemSession();
-    List<UserEntity> recipients = new ArrayList<>();
-
-    try {
-      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
 
     recipients.add(studentEntity);
     HopsOptionalSuggestion hopsOptionalSuggestion = hopsController.findOptionalSuggestionByStudentIdentifier(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
@@ -781,15 +765,7 @@ public class HopsRestService {
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
-    schoolDataBridgeSessionController.startSystemSession();
-    List<UserEntity> recipients = new ArrayList<>();
-
-    try {
-      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
 
     recipients.add(studentEntity);
     HopsStudentChoice hopsStudentChoice = hopsController.findStudentChoiceByStudentIdentifier(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
@@ -861,19 +837,15 @@ public class HopsRestService {
 
     User student = userSchoolDataController.findUser(schoolDataIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
-    User counselor;
+    
     List<String> counselorList = new ArrayList<>();
 
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      List<UserEntity> counselorEntities = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
-      for (UserEntity counselorEntity : counselorEntities) {
-        counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
-        counselorList.add(counselor.getDisplayName());
+    List<UserEntity> counselorEntities = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
+    for (UserEntity counselorEntity : counselorEntities) {
+      UserEntityName counselorName = userEntityController.getName(counselorEntity);
+      if (counselorName != null) {
+        counselorList.add(counselorName.getDisplayName());
       }
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
     }
 
     return Response.ok(createRestModel(
@@ -935,15 +907,7 @@ public class HopsRestService {
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
-    schoolDataBridgeSessionController.startSystemSession();
-    List<UserEntity> recipients = new ArrayList<>();
-
-    try {
-      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
 
     recipients.add(studentEntity);
 

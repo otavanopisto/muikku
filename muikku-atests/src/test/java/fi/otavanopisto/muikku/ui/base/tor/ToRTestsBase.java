@@ -26,6 +26,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -106,6 +107,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForContent(".workspace-assessment__literal .workspace-assessment__literal-data", 5);
         assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
+        archiveUserByEmail(student.getEmail());
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -184,7 +186,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
         addTextToCKEditor("Test evaluation.");
         selectOption("#assignmentEvaluationGrade", "PYRAMUS-1");
-        waitAndClick(".button--evaluate-assignment");
+        waitAndClick(".button--dialog-execute");
         
         waitForVisible(".evaluation-modal__item-header.state-EVALUATED");
         waitForVisible(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED");
@@ -205,6 +207,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForVisible(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p");
         assertTextIgnoreCase(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p", "Test evaluation.");
       } finally {
+          archiveUserByEmail(student.getEmail());
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());
       }
@@ -256,6 +259,7 @@ public class ToRTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label", "Äidinkieli");
       assertTextIgnoreCase(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label + div.application-sub-panel__summary-item-description", "Osallistumisoikeuteen vaaditut kurssisuoritukset 5 / 5");
     }finally {
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -288,6 +292,7 @@ public class ToRTestsBase extends AbstractUITest {
       waitForVisible(".application-sub-panel__notification-body--studies-yo-subjects>div");
       assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään ainetta kirjoitettavaksesi. Valitse aineet HOPS-lomakkeelta.");
     }finally {
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -296,52 +301,99 @@ public class ToRTestsBase extends AbstractUITest {
   public void studiesSummaryTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(5l, 5l, "Studentos", "Tester", "studento@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111195-1252", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    student.addCounselor(new StudentGroupUser(1l, 1l));
     Builder mockBuilder = mocker();
     
     try{
       mockBuilder
-        .addStudentGroup(2l, 1l, "Admins guidance", "Admins guidance group for users", 1l, false, true)
-        .addStudent(student)
         .addStaffMember(admin)
+        .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
         .mockMatriculationEligibility(true)
         .mockLogin(student)
         .build();
         login();
-        mockBuilder.addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockPersons().mockStudents().mockStudyProgrammes().mockStudentGroups();
-        selectFinnishLocale();        
-        navigate("/records", false);
-        
-        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
-        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");
-        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date");
-        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date span", "01.01.2012");
+      selectFinnishLocale();        
+      navigate("/records", false);
+      
+      waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
+      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");
+      waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date");
+      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date span", "01.01.2012");
 //  TODO: This.
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivä");
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date span", "10.11.2021");
-        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(3) .application-sub-panel__item-title", "Ohjaajasi");        
-        findElementOrReloadAndFind(".item-list--student-councelors .item-list__user-name", 5, 5000);
-        assertTextIgnoreCase(".item-list--student-councelors .item-list__user-name", "Admin User");
-        assertTextIgnoreCase(".item-list--student-councelors .item-list__user-email", "admin@example.com");
-        assertPresent(".item-list--student-councelors .button-pill--new-message");
-        
-        waitForPresent(".application-sub-panel__card-header--summary-evaluated");
-        assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
-        waitForPresent(".application-sub-panel__card-highlight--summary-evaluated");
-        assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-evaluated", "0");
-        
-        waitForPresent(".application-sub-panel__card-header--summary-activity");
-        assertTextIgnoreCase(".application-sub-panel__card-header--summary-activity", "Aktiivisuus");
-        waitForPresent(".application-sub-panel__card-highlight--summary-activity");
-        assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-activity", "1");
+      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(3) .application-sub-panel__item-title", "Ohjaajasi");        
+      findElementOrReloadAndFind(".item-list--student-counselors .item-list__user-name", 5, 5000);
+      assertTextIgnoreCase(".item-list--student-counselors .item-list__user-name", "Admin User");
+      assertTextIgnoreCase(".item-list--student-counselors .item-list__user-email", "admin@example.com");
+      assertPresent(".item-list--student-counselors .button-pill--new-message");
+      
+      waitForPresent(".application-sub-panel__card-header--summary-evaluated");
+      assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
+      waitForPresent(".application-sub-panel__card-highlight--summary-evaluated");
+      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-evaluated", "0");
+      
+      waitForPresent(".application-sub-panel__card-header--summary-activity");
+      assertTextIgnoreCase(".application-sub-panel__card-header--summary-activity", "Aktiivisuus");
+      waitForPresent(".application-sub-panel__card-highlight--summary-activity");
+      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-activity", "1");
 
-        waitForPresent(".application-sub-panel__card-header--summary-returned");
-        assertTextIgnoreCase(".application-sub-panel__card-header--summary-returned", "Palautetut tehtävät");
-        waitForPresent(".application-sub-panel__card-highlight--summary-returned");
-        assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
+      waitForPresent(".application-sub-panel__card-header--summary-returned");
+      assertTextIgnoreCase(".application-sub-panel__card-header--summary-returned", "Palautetut tehtävät");
+      waitForPresent(".application-sub-panel__card-highlight--summary-returned");
+      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
     } finally {
+      archiveUserByEmail(student.getEmail());
+      deleteUserGroupUsers();
+      mockBuilder.wiremockReset();
+    }
+  }
+
+  @Test
+  public void taskTest() throws Exception {
+    MockStudent student = new MockStudent(2l, 2l, "Studentos", "Tester", "studento@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111195-1252", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    
+    try{
+      mockBuilder
+        .addStudent(student)
+        .mockStudentCourseStats(student.getId(), 25)
+        .mockMatriculationEligibility(true)
+        .mockEmptyStudyActivity()
+        .mockLogin(student)
+        .build();
+        login();
+      mockBuilder.addStudentToStudentGroup(2l, student).mockPersons().mockStudents().mockStudyProgrammes().mockStudentGroups();
+      selectEnglishLocale();
+      navigate("/records", false);
+      
+      waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
+      waitAndClick(".button-pill--add-note span");
+      
+      sendKeys(".env-dialog__input", "Task for myself.");
+      addTextToCKEditor("Do some stuff!");
+      waitAndClick(".button--dialog-execute");
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+      
+      assertText(".notes .notes__item .notes__item-header span", "Task for myself.");
+      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+//    "more actions" vertical menu
+      waitAndClick(".notes .notes__item .icon-more_vert");
+//    Mark as done link
+      waitAndClick(".dropdown__container-item");
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+      assertText(".notes .notes__item .notes__item-status.notes__item-status--done", "Done");
+      
+      waitAndClick(".notes .notes__item .icon-trash");
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+      waitAndClick(".tabs--notes #archived");
+      assertText(".notes .notes__item .notes__item-header span", "Task for myself.");
+      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+    } finally {
+      archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();
       mockBuilder.wiremockReset();
     }

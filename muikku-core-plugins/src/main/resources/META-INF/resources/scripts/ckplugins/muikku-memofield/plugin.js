@@ -34,7 +34,7 @@
       editor.addCommand('muikkumemofield', new CKEDITOR.dialogCommand('muikkumemofield', {
       }));
       editor.ui.addButton && editor.ui.addButton('MuikkuMemoField', {
-        label: "Muikku memo field properties",
+        label: editor.lang['muikku-memofield'].toolbarMenu,
         command: 'muikkumemofield',
         toolbar: 'insert,20'
       });

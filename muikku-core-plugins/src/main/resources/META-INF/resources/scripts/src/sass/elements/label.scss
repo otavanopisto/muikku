@@ -55,7 +55,7 @@
   }
 }
 
-.label__icon--announcement-workspace {
+.label__icon--workspace {
   color: $color-workspace;
 }
 
@@ -71,7 +71,7 @@
   }
 }
 
-.label__text--announcement-workspace,
+.label__text--workspace,
 .label__text--announcement-usergroup {
   font-size: calc(#{$text-mobile-font-size} / 1.1);
 

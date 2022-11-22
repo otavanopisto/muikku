@@ -1902,7 +1902,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       // Evaluation info for evaluable materials
 
-      if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED || reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE) {
+      if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
+          reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
+          reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
         compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
       }
       return Response.ok(compositeReply).build();
@@ -1953,7 +1955,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         // Evaluation info for evaluable materials
 
-        if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED || reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE) {
+        if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
+            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
+            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
           compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
         }
 
@@ -3247,6 +3251,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceController.findWorkspaceEntityById(workspaceEntityId),
         sessionController.getLoggedUserEntity(),
         restModel.getContent(),
+        null,
         restModel.getTitle());
     return Response.ok(toRestModel(workspaceJournalEntry)).build();
 
@@ -3518,15 +3523,15 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private WorkspaceJournalCommentRESTModel toRestModel(WorkspaceEntity workspaceEntity, WorkspaceJournalComment workspaceJournalComment) {
     UserEntity author = userEntityController.findUserEntityById(workspaceJournalComment.getCreator());
-    User user = author == null ? null : userController.findUserByUserEntityDefaults(author);
+    UserEntityName userEntityName = author == null ? null : userEntityController.getName(author);
     WorkspaceJournalCommentRESTModel result = new WorkspaceJournalCommentRESTModel();
     result.setId(workspaceJournalComment.getId());
     result.setJournalEntryId(workspaceJournalComment.getJournalEntry().getId());
     result.setAuthorId(workspaceJournalComment.getCreator());
     result.setComment(workspaceJournalComment.getComment());
     result.setCreated(workspaceJournalComment.getCreated());
-    result.setFirstName(user == null ? null : user.getFirstName());
-    result.setLastName(user == null ? null : user.getLastName());
+    result.setFirstName(userEntityName == null ? null : userEntityName.getFirstName());
+    result.setLastName(userEntityName == null ? null : userEntityName.getLastName());
     if (workspaceJournalComment.getParent() != null) {
       result.setParentCommentId(workspaceJournalComment.getParent().getId());
     }
@@ -3552,6 +3557,20 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.setTitle(workspaceJournalEntry.getTitle());
     result.setCreated(workspaceJournalEntry.getCreated());
     result.setCommentCount(workspaceJournalController.getCommentCount(workspaceJournalEntry));
+    result.setIsMaterialField(workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null);
+
+    if (workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null) {
+      
+      String[] identifiers = workspaceJournalEntry.getMaterialFieldReplyIdentifier().split("-");
+      
+      Long replyId = Long.parseLong(identifiers[1]);
+      
+      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
+      
+      if (reply != null) {
+        result.setWorkspaceMaterialReplyState(reply.getState());
+      }
+    }
 
     return result;
   }

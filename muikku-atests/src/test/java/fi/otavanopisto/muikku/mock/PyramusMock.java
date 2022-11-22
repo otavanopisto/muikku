@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -509,14 +510,33 @@ public class PyramusMock {
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(subject))
-              .withStatus(200)));          
+              .withStatus(200)));
+          
+          stubFor(get(urlEqualTo(String.format("/1/common/subjectByCode/%s", subject.getCode())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(subject))
+              .withStatus(200)));
         }
-        
         stubFor(get(urlEqualTo("/1/common/subjects"))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(pmock.objectMapper.writeValueAsString(pmock.subjects))
-            .withStatus(200)));
+                .willReturn(aResponse()
+                  .withHeader("Content-Type", "application/json")
+                  .withBody(pmock.objectMapper.writeValueAsString(pmock.subjects))
+                  .withStatus(200)));
+
+//      Following is a hack I'm not terribly proud of, but it silences records view errors for now.
+//      Could mock subjects like in prod. but waiting for dynamically working system to this.
+        List<String> codes = new ArrayList<>();
+        codes.addAll(Arrays.asList("%C3%A4i", "s2", "rub", "ena", "ma", "ue", "et", "hi", "yh", "fy", "ke", "bi", "ge", "te", "ot"));
+        for (String code : codes) { 
+            Subject subject = pmock.getSubjects().get(0);
+            stubFor(get(urlEqualTo(String.format("/1/common/subjectByCode/%s", code)))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(subject))
+                .withStatus(200)));            
+        }
+
         return this;
       }
       
@@ -638,12 +658,21 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(studentArray))
               .withStatus(200)));
           
+          if (!mockStudent.getCounselors().isEmpty()) {
+            stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/guidanceCounselors", mockStudent.getId())))
+                .withQueryParam("onlyMessageRecipients", matching(".*"))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(mockStudent.getCounselors()))
+                .withStatus(200)));
+          }
+          
           stubFor(get(urlMatching(String.format("/1/persons/persons/%d/students", student.getPersonId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(studentArray))
               .withStatus(200)));
-          
+
           studentsList.add(student);
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
           payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
@@ -773,10 +802,7 @@ public class PyramusMock {
         List<String> tags = new ArrayList<>();
         List<StaffMember> staffs = new ArrayList<>();
         for (MockStaffMember mockStaffMember : pmock.staffMembers) {
-          Set<Long> staffStudyProgrammes = new HashSet<>();
-          staffStudyProgrammes.add(1l);
-          staffStudyProgrammes.add(2l);
-          StaffMember staffMember = new StaffMember(mockStaffMember.getId(), mockStaffMember.getPersonId(), mockStaffMember.getOrganizationId(), null, mockStaffMember.getFirstName(), mockStaffMember.getLastName(), null, mockStaffMember.getRole(), tags, variables, staffStudyProgrammes);
+          StaffMember staffMember = new StaffMember(mockStaffMember.getId(), mockStaffMember.getPersonId(), mockStaffMember.getOrganizationId(), null, mockStaffMember.getFirstName(), mockStaffMember.getLastName(), null, mockStaffMember.getRole(), tags, variables, mockStaffMember.getStaffStudyProgrammes());
 
           stubFor(get(urlEqualTo(String.format("/1/staff/members/%d", staffMember.getId())))
             .willReturn(aResponse()
@@ -848,10 +874,33 @@ public class PyramusMock {
       
       public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
         List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
-        CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
-        assessmentRequests.add(assessmentRequest);
+        
+        if (courseStudentId != null && requestText != null) {
+          CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
+          assessmentRequests.add(assessmentRequest);
+          
+          stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, assessmentRequest.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
+              .withStatus(200)));
+          
+          stubFor(post(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
+              .withStatus(200)));
+        }
+
         
         stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
+            .withStatus(200)));
+
+        stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId)))
+            .withQueryParam("archived", matching("false"))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
@@ -862,13 +911,6 @@ public class PyramusMock {
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
               .withStatus(200)));
-        
-        stubFor(get(urlEqualTo(String.format("/1/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, assessmentRequest.getId())))
-            .willReturn(aResponse()
-              .withHeader("Content-Type", "application/json")
-              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
-              .withStatus(200)));
-              
         return this;
       }
 
@@ -1227,6 +1269,10 @@ public class PyramusMock {
           .willReturn(aResponse()
             .withStatus(302)
             .withHeader("Location", "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));
+        
+        if (loggable instanceof MockStudent) {
+          mockEmptyStudyActivity();
+        }
         
         return this;
       }

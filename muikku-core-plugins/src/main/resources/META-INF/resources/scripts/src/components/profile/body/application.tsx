@@ -41,9 +41,8 @@ class ProfileApplication extends React.Component<
       return null;
     }
     return (
-      <div className="application-panel-wrapper">
+      <>
         <ApplicationPanel
-          modifier="profile"
           title={this.props.status.profile.displayName}
           asideBefore={this.props.aside}
         >
@@ -55,7 +54,7 @@ class ProfileApplication extends React.Component<
           <WorkList />
           <Purchases />
         </ApplicationPanel>
-      </div>
+      </>
     );
   }
 }

@@ -1,6 +1,5 @@
 import { ActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-
 import { UserGroupType, UserType } from "~/reducers/user-index";
 import { Reducer } from "redux";
 

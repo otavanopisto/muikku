@@ -7,7 +7,6 @@ import { AnyActionType } from "~/actions/index";
 import { StatusType } from "~/reducers/base/status";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import SessionStateComponent from "~/components/general/session-state-component";
-import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
 import Button from "~/components/general/button";
 import {
   UpdateWorkspaceSupplementation,
@@ -20,7 +19,7 @@ import {
   updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form.scss";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import { AssessmentRequest } from "~/@types/evaluation";
 
@@ -31,7 +30,7 @@ interface SupplementationEditorProps {
   i18n: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
-  locale: LocaleListType;
+  locale: LocaleState;
   selectedAssessment: AssessmentRequest;
   type?: "new" | "edit";
   eventId?: string;
@@ -210,17 +209,8 @@ class SupplementationEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
-
-          /**
-           * Removes "new" items from localstorage
-           */
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-            },
-            this.state.draftId
-          );
+          // Removes "new" items from localstorage
+          this.justClear(["literalEvaluation"], this.state.draftId);
 
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
 
@@ -270,17 +260,9 @@ class SupplementationEditor extends SessionStateComponent<
          * onSuccess
          */
         onSuccess: () => {
-          cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
+          // Removes "new" items from localstorage
+          this.justClear(["literalEvaluation"], this.state.draftId);
 
-          /**
-           * Removes "edit" items from localstorage
-           */
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-            },
-            this.state.draftId
-          );
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
 
           this.setState({ locked: false });
@@ -363,7 +345,7 @@ class SupplementationEditor extends SessionStateComponent<
 
         <div className="form__buttons form__buttons--evaluation">
           <Button
-            buttonModifiers="evaluate-supplementation"
+            buttonModifiers="dialog-execute"
             onClick={this.handleEvaluationSupplementationSave}
             disabled={this.state.locked}
           >
@@ -374,7 +356,7 @@ class SupplementationEditor extends SessionStateComponent<
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
-            buttonModifiers="evaluate-cancel"
+            buttonModifiers="dialog-cancel"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -382,7 +364,7 @@ class SupplementationEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-              buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="dialog-clear"
               disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >

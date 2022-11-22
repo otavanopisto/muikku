@@ -27,7 +27,7 @@ import {
   EvaluationGradeSystem,
 } from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
@@ -50,7 +50,7 @@ interface AssignmentEditorProps {
   compositeReplies: MaterialCompositeRepliesType;
   evaluations: EvaluationState;
   status: StatusType;
-  locale: LocaleListType;
+  locale: LocaleState;
   editorLabel?: string;
   modifiers?: string[];
   isRecording: boolean;
@@ -297,13 +297,22 @@ class AssignmentEditor extends SessionStateComponent<
           this.props.onAssigmentSave(this.props.materialAssignment.materialId);
         }
 
-        if (this.props.onClose) {
-          this.props.onClose();
-        }
+        // Clears localstorage on success
+        this.justClear(
+          ["literalEvaluation", "assignmentEvaluationType", "grade"],
+          this.state.draftId
+        );
 
-        this.setState({
-          locked: false,
-        });
+        this.setState(
+          {
+            locked: false,
+          },
+          () => {
+            if (this.props.onClose) {
+              this.props.onClose();
+            }
+          }
+        );
       });
     } catch (error) {
       notificationActions.displayNotification(
@@ -374,13 +383,22 @@ class AssignmentEditor extends SessionStateComponent<
           this.props.onAssigmentSave(this.props.materialAssignment.materialId);
         }
 
-        if (this.props.onClose) {
-          this.props.onClose();
-        }
+        // Clears localstorage on success
+        this.justClear(
+          ["literalEvaluation", "assignmentEvaluationType", "grade"],
+          this.state.draftId
+        );
 
-        this.setState({
-          locked: false,
-        });
+        this.setState(
+          {
+            locked: false,
+          },
+          () => {
+            if (this.props.onClose) {
+              this.props.onClose();
+            }
+          }
+        );
       });
     } catch (error) {
       notificationActions.displayNotification(
@@ -681,7 +699,7 @@ class AssignmentEditor extends SessionStateComponent<
 
         <div className="form__buttons form__buttons--evaluation">
           <Button
-            buttonModifiers="evaluate-assignment"
+            buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
           >
@@ -692,7 +710,7 @@ class AssignmentEditor extends SessionStateComponent<
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
-                buttonModifiers="evaluate-cancel"
+                buttonModifiers="dialog-cancel"
                 disabled={this.state.locked || this.props.isRecording}
               >
                 {this.props.i18n.text.get(
@@ -704,7 +722,7 @@ class AssignmentEditor extends SessionStateComponent<
             <Button
               onClick={this.props.onClose}
               disabled={this.state.locked || this.props.isRecording}
-              buttonModifiers="evaluate-cancel"
+              buttonModifiers="dialog-cancel"
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -714,7 +732,7 @@ class AssignmentEditor extends SessionStateComponent<
 
           {this.recovered && (
             <Button
-              buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="dialog-clear"
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >

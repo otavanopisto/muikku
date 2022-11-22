@@ -1,3 +1,5 @@
+import { MaterialCompositeRepliesStateType } from "./../reducers/workspaces/index";
+import { JournalComment } from "~/@types/journal";
 import {
   WorkspaceType,
   MaterialContentNodeListType,
@@ -14,6 +16,9 @@ export enum EvaluationEnum {
   EVALUATION_REQUEST = "EVALUATION_REQUEST",
   SUPPLEMENTATION_REQUEST = "SUPPLEMENTATION_REQUEST",
   EVALUATION_REQUEST_CANCELLED = "EVALUATION_REQUEST_CANCELLED",
+  INTERIM_EVALUATION_REQUEST = "INTERIM_EVALUATION_REQUEST",
+  INTERIM_EVALUATION_REQUEST_CANCELLED = "INTERIM_EVALUATION_REQUEST_CANCELLED",
+  INTERIM_EVALUATION = "INTERIM_EVALUATION",
 }
 
 /**
@@ -81,6 +86,14 @@ export interface EvaluationAssignmentContent {
 }
 
 /**
+ * EvaluationJournalFilters
+ */
+export interface EvaluationJournalFilters {
+  showMandatory: boolean;
+  showOthers: boolean;
+}
+
+/**
  * Interface for evaluation study diary event
  */
 export interface EvaluationStudyDiaryEvent {
@@ -93,6 +106,22 @@ export interface EvaluationStudyDiaryEvent {
   title: string;
   userEntityId: number;
   workspaceEntityId: number;
+  /**
+   * Whether journal is "mandatory" assignment and material field
+   */
+  isMaterialField: boolean;
+  /**
+   * Material field reply status. ANSWERED | "SUBMITTED" are only ones
+   * that matters
+   */
+  workspaceMaterialReplyState: MaterialCompositeRepliesStateType | null;
+}
+
+/**
+ * EvaluationJournalCommentsByJournal
+ */
+export interface EvaluationJournalCommentsByJournal {
+  [journalEntryId: number]: JournalComment[];
 }
 
 /**
@@ -106,6 +135,7 @@ export interface EvaluationWorkspaceSubject extends WorkspaceSubject {
  * AssessmentRequest
  */
 export interface AssessmentRequest {
+  interimEvaluationRequest: boolean;
   assessmentRequestDate: string | null;
   assignmentsDone: number;
   assignmentsTotal: number;
@@ -123,6 +153,11 @@ export interface AssessmentRequest {
   workspaceUrlName: string;
   workspaceUserEntityId: number;
   workspaceUserIdentifier: string;
+  /**
+   * If request is interim evaluation request id is latest interim evaluation request.
+   * Otherwise id is related evaluation request.
+   */
+  id: number;
   subjects: EvaluationWorkspaceSubject[];
 }
 
@@ -312,6 +347,16 @@ export interface AssignmentEvaluationGradeRequest {
   assessorIdentifier: string;
   gradingScaleIdentifier: string;
   gradeIdentifier: string;
+  verbalAssessment: string;
+  assessmentDate: number;
+  audioAssessments: AudioAssessment[];
+}
+
+/**
+ * AssignmentInterminEvaluationRequest
+ */
+export interface AssignmentInterminEvaluationRequest {
+  assessorIdentifier: string;
   verbalAssessment: string;
   assessmentDate: number;
   audioAssessments: AudioAssessment[];

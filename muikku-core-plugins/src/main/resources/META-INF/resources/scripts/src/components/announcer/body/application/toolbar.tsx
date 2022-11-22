@@ -160,9 +160,9 @@ class AnnouncerToolbar extends React.Component<
               onClick={this.onGoBackClick}
             />
 
-            <div className="application-panel__tool--current-folder">
-              <span className="application-panel__tool-icon icon-folder"></span>
-              <span className="application-panel__tool-title">
+            <div className="application-panel__mobile-current-folder">
+              <span className="application-panel__mobile-current-folder-icon icon-folder"></span>
+              <span className="application-panel__mobile-current-folder-title">
                 {this.props.i18n.text.get(
                   "plugin.announcer.cat." + this.props.announcements.location
                 )}
@@ -211,9 +211,9 @@ class AnnouncerToolbar extends React.Component<
       return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
-            <div className="application-panel__tool--current-folder">
-              <span className="glyph application-panel__tool-icon icon-folder"></span>
-              <span className="application-panel__tool-title">
+            <div className="application-panel__mobile-current-folder">
+              <span className="glyph application-panel__mobile-current-folder-icon icon-folder"></span>
+              <span className="application-panel__mobile-current-folder-title">
                 {this.props.i18n.text.get(
                   "plugin.announcer.cat." + this.props.announcements.location
                 )}

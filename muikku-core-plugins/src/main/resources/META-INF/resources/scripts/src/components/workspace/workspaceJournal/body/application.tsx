@@ -2,8 +2,8 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import HoverButton from "~/components/general/hover-button";
-import Toolbar from "./application/toolbar";
-import WorkspaceJournals from "./application/journals";
+import Toolbar from "./application/workspace-journals-toolbar";
+import WorkspaceJournalsList from "./application/workspace-journals-list";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
@@ -14,19 +14,24 @@ import { StatusType } from "~/reducers/base/status";
 import { getName } from "~/util/modifiers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
-import {
-  loadCurrentWorkspaceJournalsFromServer,
-  LoadCurrentWorkspaceJournalsFromServerTriggerType,
-} from "~/actions/workspaces";
 import NewJournal from "~/components/workspace/workspaceJournal/dialogs/new-edit-journal";
+import { AnyActionType } from "~/actions";
+import {
+  LoadCurrentWorkspaceJournalsFromServerTriggerType,
+  loadCurrentWorkspaceJournalsFromServer,
+} from "~/actions/workspaces/journals";
+import WorkspaceJournalView from "./application/workspace-journal-view";
+import { JournalsState } from "~/reducers/workspaces/journals";
 
 /**
  * WorkspaceJournalApplicationProps
  */
 interface WorkspaceJournalApplicationProps {
-  aside: React.ReactElement<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  aside?: React.ReactElement<any>;
   i18n: i18nType;
   workspace: WorkspaceType;
+  journalsState: JournalsState;
   status: StatusType;
   loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType;
 }
@@ -75,7 +80,7 @@ class WorkspaceJournalApplication extends React.Component<
     if (this.props.workspace) {
       primaryOption =
         !this.props.status.isStudent &&
-        this.props.workspace.journals &&
+        this.props.journalsState &&
         this.props.workspace.students ? (
           <div className="form-element form-element--main-action">
             <label htmlFor="selectJournal" className="visually-hidden">
@@ -84,7 +89,7 @@ class WorkspaceJournalApplication extends React.Component<
             <select
               id="selectJournal"
               className="form-element__select form-element__select--main-action"
-              value={this.props.workspace.journals.userEntityId || ""}
+              value={this.props.journalsState.userEntityId || ""}
               onChange={this.onWorkspaceJournalFilterChange}
             >
               <option value="">
@@ -122,22 +127,22 @@ class WorkspaceJournalApplication extends React.Component<
     }
 
     return (
-      <div className="application-panel-wrapper">
+      <>
         <ApplicationPanel
           asideBefore={this.props.aside}
-          modifier="workspace-journal"
           toolbar={toolbar}
           title={title}
           primaryOption={primaryOption}
         >
-          <WorkspaceJournals />
+          <WorkspaceJournalView />
+          <WorkspaceJournalsList />
         </ApplicationPanel>
         {this.props.status.isStudent ? (
           <NewJournal>
             <HoverButton icon="plus" modifier="new-message" />
           </NewJournal>
         ) : null}
-      </div>
+      </>
     );
   }
 }
@@ -150,6 +155,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
+    journalsState: state.journals,
     status: state.status,
   };
 }
@@ -158,7 +164,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { loadCurrentWorkspaceJournalsFromServer },
     dispatch

@@ -245,6 +245,12 @@
 .notes__item-status--ongoing {
   background-color: lighten($color-cancel, 42%);
   color: darken($color-cancel, 15%);
+  margin: 0 0 0 10px;
+}
+
+.notes__item-status--pending {
+  background-color: lighten($color-info, 52%);
+  color: darken($color-info, 15%);
 }
 
 .notes__item-status--pending {

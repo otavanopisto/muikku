@@ -30,9 +30,6 @@ import {
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
 import ExcerciseEditor from "./editors/excercise-editor";
-import RecordingsList from "~/components/general/voice-recorder/recordings-list";
-import { RecordValue } from "~/@types/recorder";
-import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
 /**
  * EvaluationCardProps
@@ -83,7 +80,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     this.state = {
       openDrawer: false,
       openContent: false,
-      isLoading: false,
+      isLoading: true,
       materialNode: undefined,
       showCloseEditorWarning: false,
       isRecording: false,
@@ -139,7 +136,7 @@ class EvaluationAssessmentAssignment extends React.Component<
         )()) as MaterialContentNodeType;
 
         const evaluation = (await promisify(
-          mApi().workspace.workspaces.materials.evaluations.read(
+          mApi().evaluation.workspaces.materials.evaluations.read(
             workspace.id,
             assigment.id,
             {
@@ -510,17 +507,6 @@ class EvaluationAssessmentAssignment extends React.Component<
     const { compositeReply, showAsHidden } = this.props;
     const materialTypeClass = this.materialTypeClass();
 
-    const recordings =
-      compositeReply &&
-      compositeReply.evaluationInfo &&
-      compositeReply.evaluationInfo.audioAssessments.map(
-        (aAssessment) =>
-          ({
-            ...aAssessment,
-            url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
-          } as RecordValue)
-      );
-
     let contentOpen: string | number = 0;
 
     if (
@@ -609,11 +595,7 @@ class EvaluationAssessmentAssignment extends React.Component<
         <SlideDrawer
           showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
-          closeIconModifiers={
-            this.props.assigment.assignmentType === "EVALUATED"
-              ? ["evaluation", "assignment-drawer-close"]
-              : ["evaluation", "excercise-drawer-close"]
-          }
+          closeIconModifiers={["evaluation"]}
           modifiers={
             this.props.assigment.assignmentType === "EVALUATED"
               ? ["assignment"]
@@ -671,40 +653,6 @@ class EvaluationAssessmentAssignment extends React.Component<
         </SlideDrawer>
 
         <AnimateHeight duration={400} height={contentOpen}>
-          {compositeReply &&
-          compositeReply.evaluationInfo &&
-          (compositeReply.evaluationInfo.text || recordings.length > 0) ? (
-            <>
-              {compositeReply.evaluationInfo.text ? (
-                <div className="evaluation-modal__item-literal-assessment">
-                  <div className="evaluation-modal__item-literal-assessment-label">
-                    {this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
-                    )}
-                  </div>
-
-                  <div className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal">
-                    <CkeditorContentLoader
-                      html={compositeReply.evaluationInfo.text}
-                    />
-                  </div>
-                </div>
-              ) : null}
-
-              {recordings.length > 0 ? (
-                <div className="evaluation-modal__item-verbal-assessment">
-                  <div className="evaluation-modal__item-verbal-assessment-label">
-                    {this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.audioAssessments"
-                    )}
-                  </div>
-                  <div className="voice-container">
-                    <RecordingsList records={recordings} noDeleteFunctions />
-                  </div>
-                </div>
-              ) : null}
-            </>
-          ) : null}
           {this.state.isLoading ? (
             <div className="loader-empty" />
           ) : this.props.workspace && this.state.materialNode ? (

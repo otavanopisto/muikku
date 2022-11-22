@@ -1,3 +1,4 @@
+import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
@@ -7,6 +8,7 @@ import {
   WhoAmIType,
 } from "~/reducers/base/status";
 import promisify from "~/util/promisify";
+import { Role } from "../../reducers/base/status";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -42,7 +44,7 @@ export interface LoadWorkspaceStatusInfoType {
  * @param whoAmIReadyCb whoAmIReadyCb
  */
 async function loadWhoAMI(
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   whoAmIReadyCb: () => void
 ) {
   const whoAmI = <WhoAmIType>(
@@ -55,6 +57,11 @@ async function loadWhoAMI(
       loggedIn: !!whoAmI.id,
       userId: whoAmI.id,
       hasImage: whoAmI.hasImage,
+      hasFees: whoAmI.hasEvaluationFees,
+      isActiveUser: whoAmI.isActive,
+      role: whoAmI.role,
+      isStudent: whoAmI.role === Role.STUDENT,
+      userSchoolDataIdentifier: whoAmI.identifier,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
           "CREATE_ANNOUNCEMENT"
@@ -109,6 +116,11 @@ async function loadWhoAMI(
     },
   });
 
+  dispatch({
+    type: "LOCALE_UPDATE",
+    payload: whoAmI.locale,
+  });
+
   whoAmIReadyCb();
 }
 
@@ -117,7 +129,9 @@ async function loadWhoAMI(
  * loadChatActive
  * @param dispatch dispatch
  */
-async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
+async function loadChatActive(
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+) {
   const isActive = <boolean>(
     await promisify(mApi().chat.isActive.read(), "callback")()
   );
@@ -137,7 +151,9 @@ async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
  * loadChatAvailable
  * @param dispatch dispatch
  */
-async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
+async function loadChatAvailable(
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+) {
   const isAvailable = <boolean>(
     await promisify(mApi().chat.isAvailable.read(), "callback")()
   );
@@ -156,7 +172,9 @@ async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
  * loadWorklistAvailable
  * @param dispatch dispatch
  */
-async function loadWorklistAvailable(dispatch: (arg: AnyActionType) => any) {
+async function loadWorklistAvailable(
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+) {
   const isAvailable = <boolean>(
     await promisify(mApi().worklist.isAvailable.read(), "callback")()
   );
@@ -177,14 +195,15 @@ async function loadWorklistAvailable(dispatch: (arg: AnyActionType) => any) {
  * @param permissions permissions
  */
 async function loadForumIsAvailable(
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   permissions: string[]
 ) {
   const isAvailable = <boolean>(
     await promisify(mApi().forum.isAvailable.read(), "callback")()
   );
   const areaPermissions = isAvailable
-    ? <any>(
+    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      <any>(
         await promisify(
           mApi().forum.environmentAreaPermissions.read(),
           "callback"
@@ -209,23 +228,6 @@ async function loadForumIsAvailable(
 }
 
 /**
- * loadHopsEnabled
- * @param dispatch dispatch
- */
-async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
-  const value = <any>(
-    await promisify(mApi().user.property.read("hops.enabled"), "callback")()
-  );
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      hopsEnabled: value.value,
-    },
-  });
-}
-
-/**
  * loadWorkspacePermissions
  * @param workspaceId workspaceId
  * @param dispatch dispatch
@@ -233,7 +235,7 @@ async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
  */
 async function loadWorkspacePermissions(
   workspaceId: number,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   readyCb: () => void
 ) {
   const permissions = <string[]>(
@@ -323,7 +325,7 @@ const loadStatus: LoadStatusType = function loadStatus(
   whoAmIReadyCb: () => void
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     if (getState().status.loggedIn) {
@@ -332,7 +334,6 @@ const loadStatus: LoadStatusType = function loadStatus(
       loadChatAvailable(dispatch);
       loadWorklistAvailable(dispatch);
       loadForumIsAvailable(dispatch, getState().status.profile.permissions);
-      loadHopsEnabled(dispatch);
     } else {
       loadWhoAMI(dispatch, whoAmIReadyCb);
     }
@@ -346,7 +347,7 @@ const loadStatus: LoadStatusType = function loadStatus(
 const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
   function loadWorkspaceStatusInfo(readyCb: () => void) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const worspaceId = getState().status.currentWorkspaceId;

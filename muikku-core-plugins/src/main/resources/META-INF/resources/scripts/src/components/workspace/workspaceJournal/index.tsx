@@ -39,6 +39,7 @@ export default class WorkspaceJournalBody extends React.Component<
    * onOpenNavigation
    */
   onOpenNavigation() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.refs.content as any).getWrappedInstance().refresh();
   }
 
@@ -46,7 +47,7 @@ export default class WorkspaceJournalBody extends React.Component<
    * render
    */
   render() {
-    const aside = <Aside />;
+    const aside = <Aside key="workspaceJournalBody-aside" />;
     return (
       <div>
         <WorkspaceNavbar

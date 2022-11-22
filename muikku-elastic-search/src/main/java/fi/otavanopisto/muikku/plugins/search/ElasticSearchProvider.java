@@ -310,7 +310,7 @@ public class ElasticSearchProvider implements SearchProvider {
       
       if (studyProgrammeIdentifiers != null && !studyProgrammeIdentifiers.isEmpty()) {
         Set<String> studyProgrammeStrings = studyProgrammeIdentifiers.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toSet());
-        query.must(termsQuery("studyProgrammeIdentifier.untouched", studyProgrammeStrings.toArray()));
+        query.must(termsQuery("studyProgrammeIdentifier", studyProgrammeStrings.toArray()));
       }
 
       // #6170: If both group and workspace filters have been provided, possibly treat them as a join rather than an intersection
@@ -387,7 +387,7 @@ public class ElasticSearchProvider implements SearchProvider {
             )
         );
       }
-            
+      
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)
           .from(start)
