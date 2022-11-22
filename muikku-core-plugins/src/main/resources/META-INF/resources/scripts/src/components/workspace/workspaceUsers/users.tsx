@@ -469,9 +469,9 @@ class WorkspaceUsers extends React.Component<
             />
             <Tabs
               onTabChange={this.onTabChange}
-              renderAllComponents
               activeTab={this.state.activeTab}
               i18n={this.props.i18n}
+              modifier="workspace-users"
               tabs={[
                 {
                   id: "ACTIVE",
