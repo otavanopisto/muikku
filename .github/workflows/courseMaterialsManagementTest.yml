@@ -22,10 +22,10 @@ jobs:
       - name: Prepare maven settings
         run: python prepare-maven.py
       - name: Build with Maven
-        run: mvn install --settings ~/.m2/mySettings.xml -Pdummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin,matriculation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
+        run: mvn clean install --settings ~/.m2/mySettings.xml -Pdummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin,matriculation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
       - name: Set Muikku host
         run: echo "127.0.0.1 dev.muikku.fi" | sudo tee -a /etc/hosts
       - name: Test with headless chrome
         run: |
             cd muikku-atests
-            mvn verify --settings ~/.m2/mySettings.xml -Dmaven.javadoc.skip=true -Dit.browser=chrome_headless -Dit.package="course/materials/management" -Pui-it
+            mvn clean verify --settings ~/.m2/mySettings.xml -Dmaven.javadoc.skip=true -Dit.browser=chrome_headless -Dit.package="course/materials/management" -Pui-it

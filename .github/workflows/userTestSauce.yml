@@ -31,7 +31,7 @@ jobs:
       - name: Prepare maven settings
         run: python prepare-maven.py
       - name: Build with Maven
-        run: mvn install --settings ~/.m2/mySettings.xml -Pdummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin,matriculation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
+        run: mvn clean install --settings ~/.m2/mySettings.xml -Pdummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin,matriculation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
       - name: Set Muikku host
         run: echo "127.0.0.1 dev.muikku.fi" | sudo tee -a /etc/hosts
       - name: Check sauce connect
@@ -43,7 +43,7 @@ jobs:
       - name: Test with chrome
         run: |
             cd muikku-atests
-            mvn verify --settings ~/.m2/mySettings.xml -Psauce-it -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser="chrome" -Dit.browser.version="latest" -Dit.browser.resolution="1280x1024" -Dit.platform="Windows 10" -Dit.package="user" -Dit.sauce.username=${{secrets.SAUCE_USERNAME}} -Dit.sauce.accessKey=${{secrets.SAUCE_KEY}} -Dit.sauce.tunnelId=${{github.run_id}}
+            mvn clean verify --settings ~/.m2/mySettings.xml -Psauce-it -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser="chrome" -Dit.browser.version="latest" -Dit.browser.resolution="1280x1024" -Dit.platform="Windows 10" -Dit.package="user" -Dit.sauce.username=${{secrets.SAUCE_USERNAME}} -Dit.sauce.accessKey=${{secrets.SAUCE_KEY}} -Dit.sauce.tunnelId=${{github.run_id}}
       - name: Read sc_client.pid file
         if: ${{ always() }}
         id: getscpid
