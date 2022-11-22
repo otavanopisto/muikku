@@ -88,9 +88,9 @@ public class IndexPageTestsBase extends AbstractUITest {
       try{
         waitForVisible(".navbar .button-pill--profile");
         assertVisible(".navbar .button-pill--profile");
-        waitForVisible(".item-list--panel-workspaces .item-list__text-body");
-        assertVisible(".item-list--panel-workspaces .item-list__text-body");
-        assertTextIgnoreCase(".item-list--panel-workspaces .item-list__text-body", "testcourse (test extension)");
+        waitForVisible(".item-list--workspaces .item-list__text-body");
+        assertVisible(".item-list--workspaces .item-list__text-body");
+        assertTextIgnoreCase(".item-list--workspaces .item-list__text-body", "testcourse (test extension)");
       } finally {
         deleteWorkspace(workspace.getId());
       }

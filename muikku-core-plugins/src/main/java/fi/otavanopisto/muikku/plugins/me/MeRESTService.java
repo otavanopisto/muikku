@@ -1,21 +1,25 @@
-package fi.otavanopisto.muikku.rest.user;
+package fi.otavanopisto.muikku.plugins.me;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -23,10 +27,13 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.session.local.LocalSession;
+import fi.otavanopisto.muikku.session.local.LocalSessionController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
@@ -48,6 +55,10 @@ public class MeRESTService {
   private SessionController sessionController;
   
   @Inject
+  @LocalSession
+  private LocalSessionController localSessionController;
+
+  @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
@@ -61,11 +72,65 @@ public class MeRESTService {
 
   @Inject
   private UserGroupGuidanceController userGroupGuidanceController;
+
+  @Inject
+  private ChatController chatController;
+  
+  /**
+   * Returns the server side locale for current user or default if not logged in.
+   * 
+   * Returns:
+   * {
+   *    lang: "en"
+   * }
+   */
+  @GET
+  @Path("/locale")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response getLocale() {
+    Locale locale = localSessionController.getLocale();
+    String lang = (locale == null || locale.getLanguage() == null) ? "fi" : locale.getLanguage().toLowerCase();
+
+    return Response.ok(new LanguageSelectionRestModel(lang)).build();
+  }
+
+  /**
+   * Sets the server side locale for current user.
+   * 
+   * Payload:
+   * {
+   *    lang: "en"
+   * }
+   * 
+   * Available languages en/fi
+   * 
+   * @param selection
+   * @return
+   */
+  @POST
+  @Path("/locale")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response setLocale(LanguageSelectionRestModel selection) {
+    if (selection == null || StringUtils.isBlank(selection.getLang())) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    Locale locale = LocaleUtils.toLocale(selection.getLang());
+    localSessionController.setLocale(locale);
+    
+    if (localSessionController.isLoggedIn()) {
+      userEntityController.updateLocale(localSessionController.getLoggedUserEntity(), locale);
+    }
+    
+    return Response.noContent().build();
+  }
   
   @GET
   @Path("/guidanceCounselors")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listGuidanceCounselors(@QueryParam("properties") String properties) {
+  public Response listGuidanceCounselors(
+      @QueryParam("onlyChatEnabled") @DefaultValue("false") boolean onlyChatEnabled,
+      @QueryParam("properties") String properties) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -81,6 +146,12 @@ public class MeRESTService {
     List<fi.otavanopisto.muikku.rest.model.StaffMember> staffMembers = new ArrayList<>();
     
     for (UserEntity userEntity : guidanceCouncelors) {
+      boolean chatEnabled = chatController.isChatEnabled(userEntity);
+
+      if (onlyChatEnabled && !chatEnabled) {
+        continue;
+      }
+      
       boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
       SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
       UserEntityName userEntityName = userEntityController.getName(userEntity);
@@ -103,7 +174,7 @@ public class MeRESTService {
         }
       }
 
-      staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
+      staffMembers.add(new GuidanceCounselorRestModel(
           userEntity.defaultSchoolDataIdentifier().toId(),
           userEntity.getId(),
           userEntityName.getFirstName(),
@@ -112,11 +183,11 @@ public class MeRESTService {
           propertyMap,
           organizationRESTModel,
           usdi.getRole() != null && usdi.getRole().getArchetype() != null ? usdi.getRole().getArchetype().name() : null,
-          hasImage));
+          hasImage,
+          chatEnabled));
     }
     
     return Response.ok(staffMembers).build();
   }
-  
   
 }

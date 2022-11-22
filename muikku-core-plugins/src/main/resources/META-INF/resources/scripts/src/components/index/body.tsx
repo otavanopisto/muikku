@@ -1,11 +1,10 @@
 import MainFunctionNavbar from "../base/main-function/navbar";
 import ScreenContainer from "../general/screen-container";
 import AnnouncementsPanel from "./body/announcements-panel";
-import ContinueStudiesPanel from "./body/continue-studies-panel";
-import NextStudiesPanel from "./body/next-studies-panel";
 import LastMessagesPanel from "./body/latest-messages-panel";
 import WallPanel from "./body/wall-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
+import StudiesPanel from "./body/studies-panel";
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 import { StateType } from "~/reducers";
@@ -45,12 +44,10 @@ class IndexBody extends React.Component<
             </h1>
             <div className="panel-group panel-group--studies">
               {this.props.status.isStudent ? (
-                <>
-                  <ContinueStudiesPanel />
-                  <NextStudiesPanel />
-                </>
-              ) : null}
-              <WorkspacesPanel />
+                <StudiesPanel />
+              ) : (
+                <WorkspacesPanel />
+              )}
             </div>
             <div className="panel-group panel-group--info">
               {this.props.status.isStudent ? <WallPanel /> : null}

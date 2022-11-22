@@ -19,7 +19,7 @@ import {
   updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form.scss";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import { AssessmentRequest } from "~/@types/evaluation";
 
@@ -30,7 +30,7 @@ interface SupplementationEditorProps {
   i18n: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
-  locale: LocaleListType;
+  locale: LocaleState;
   selectedAssessment: AssessmentRequest;
   type?: "new" | "edit";
   eventId?: string;

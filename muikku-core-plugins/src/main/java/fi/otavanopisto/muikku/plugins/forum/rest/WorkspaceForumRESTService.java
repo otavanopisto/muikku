@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -38,6 +39,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
+import fi.otavanopisto.muikku.plugins.forum.events.ForumMessageSent;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumMessage;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
@@ -46,6 +48,7 @@ import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -59,6 +62,10 @@ public class WorkspaceForumRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 5295688968589424274L;
 
+  @Inject
+  @BaseUrl
+  private String baseUrl;
+  
   @Inject
   private Logger logger;
   
@@ -76,6 +83,9 @@ public class WorkspaceForumRESTService extends PluginRESTService {
 
   @Inject
   private ForumRESTModels restModels;
+  
+  @Inject
+  private Event<ForumMessageSent> forumMessageSent;
   
   @GET
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas")
@@ -479,6 +489,8 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           newThread.getSticky(), 
           newThread.getLocked());
   
+      forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, workspaceEntity.getUrlName()));
+
       return Response.ok(
         restModels.restModel(thread)
       ).build();
@@ -771,6 +783,9 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           }
         }
         
+        forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), forumThread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, workspaceEntity.getUrlName()));
+
+
         return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply))).build();
       } else {
         return Response.status(Status.FORBIDDEN).build();
