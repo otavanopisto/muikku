@@ -32,13 +32,13 @@ import {
   EvaluationGradeSystem,
 } from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
-import { LocaleListType } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import { AssignmentEvaluationSaveReturn } from "~/@types/evaluation";
 import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
+import { LocaleState } from "~/reducers/base/locales";
 
 /**
  * AssignmentEditorProps
@@ -51,7 +51,7 @@ interface InterimEvaluationEditorProps {
   compositeReplies: MaterialCompositeRepliesType;
   evaluations: EvaluationState;
   status: StatusType;
-  locale: LocaleListType;
+  locale: LocaleState;
   editorLabel?: string;
   modifiers?: string[];
   isRecording: boolean;
