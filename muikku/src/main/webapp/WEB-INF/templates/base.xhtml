@@ -152,23 +152,10 @@
     <body>
       <div id="app"></div>
 
-      <!-- TODO: please lets find a way to do this with a rest endpoint -->
-      <h:form id="language-picker" style="display: none" pt:aria-hidden="true">
-        <ui:repeat value="#{i18n.languages}" var="locale">
-          <a
-            jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}"
-            data-locale="#{locale}"
-          >
-            #{i18n.text['plugin.navigation.language.' .concat(locale)]}
-          </a>
-        </ui:repeat>
-      </h:form>
       <h:form style="display: none" pt:aria-hidden="true">
         <a jsf:action="#{logoutWidgetBackingBean.logout}" id="logout"></a>
       </h:form>
-      <a id="locale" style="display: none" aria-hidden="true"
-        >#{languageWidgetBackingBean.language}</a
-      >
+
       <a
         id="login"
         style="display: none"

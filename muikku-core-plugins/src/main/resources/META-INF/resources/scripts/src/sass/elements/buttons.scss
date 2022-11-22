@@ -2206,6 +2206,15 @@
   }
 }
 
+.button-icon--toc-filter,
+.button-icon--toc-open-close-sections {
+  color: $color-default-contrast;
+  font-size: 1rem;
+  height: 1.5rem;
+  margin: 0 10px 0 0;
+  width: 1.5rem;
+}
+
 .button-icon--reading-ruler-active {
   background: $color-default-contrast;
   border-radius: 100%;

@@ -27,7 +27,7 @@ import {
   EvaluationGradeSystem,
 } from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
@@ -50,7 +50,7 @@ interface AssignmentEditorProps {
   compositeReplies: MaterialCompositeRepliesType;
   evaluations: EvaluationState;
   status: StatusType;
-  locale: LocaleListType;
+  locale: LocaleState;
   editorLabel?: string;
   modifiers?: string[];
   isRecording: boolean;

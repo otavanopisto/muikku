@@ -18,7 +18,7 @@ import {
   ShortWorkspaceUserWithActiveStatusType,
 } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
-import { MobileOnlyTabs } from "~/components/general/tabs";
+import { Tabs } from "~/components/general/tabs";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
@@ -467,10 +467,11 @@ class WorkspaceUsers extends React.Component<
                 "plugin.workspace.users.students.searchStudents"
               )}
             />
-            <MobileOnlyTabs
+            <Tabs
               onTabChange={this.onTabChange}
               renderAllComponents
               activeTab={this.state.activeTab}
+              i18n={this.props.i18n}
               tabs={[
                 {
                   id: "ACTIVE",

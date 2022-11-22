@@ -17,7 +17,7 @@ type DeferredAction = (
   getState: () => any
 ) => any;
 
-import { SET_LOCALE } from "./base/locales";
+import { LOCALE_SET, LOCALE_UPDATE } from "./base/locales";
 import {
   ADD_NOTIFICATION,
   CLOSE_NOTIFICATION_DIALOG,
@@ -302,6 +302,11 @@ import {
   JOURNALS_FILTTERS_CHANGE,
 } from "./workspaces/journals";
 
+import {
+  CONTACT_LOAD_GROUP,
+  CONTACT_UPDATE_GROUP_STATE,
+} from "./base/contacts";
+
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD
   | UPDATE_MESSAGES_STATE
@@ -314,7 +319,8 @@ export type ActionType =
   | UPDATE_ONE_MESSAGE_THREAD
   | DELETE_MESSAGE_THREAD
   | UPDATE_MESSAGES_SIGNATURE
-  | SET_LOCALE
+  | LOCALE_SET
+  | LOCALE_UPDATE
   | ADD_NOTIFICATION
   | HIDE_NOTIFICATION
   | LOGOUT
@@ -531,6 +537,8 @@ export type ActionType =
   | EVALUATION_JOURNAL_COMMENTS_LOAD
   | EVALUATION_JOURNAL_COMMENTS_INITIALIZED
   | EVALUATION_JOURNAL_COMMENTS_DELETE
-  | EVALUATION_JOURNAL_COMMENTS_CREATE;
+  | EVALUATION_JOURNAL_COMMENTS_CREATE
+  | CONTACT_LOAD_GROUP
+  | CONTACT_UPDATE_GROUP_STATE;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

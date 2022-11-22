@@ -161,6 +161,8 @@ const updateYO: updateYOTriggerType = function updateYO() {
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
+    const state = getState();
+
     try {
       //      let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
       //      let now: Number = new Date().getTime();
@@ -193,9 +195,7 @@ const updateYO: updateYOTriggerType = function updateYO() {
 
       const eligibility: any = await promisify(
         mApi().records.studentMatriculationEligibility.read(
-          document
-            .querySelector('meta[name="muikku:loggedUser"]')
-            .getAttribute("value")
+          state.status.userSchoolDataIdentifier
         ),
         "callback"
       )();

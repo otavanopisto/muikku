@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.schooldata;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -290,7 +291,12 @@ public class WorkspaceEntityController {
           if (signupEndDouble != null) {
             long itemLong = (long) (signupEndDouble * 1000);
             Date signupEnd = new Date(itemLong);
-            if (signupEnd.before(new Date())) {
+            // Checking if signupEnd + 1 day is earlier than today. 
+            // The reason: SignupEnd time is always 00:00:00 so it cannot be directly compared to the present time or the result is incorrect if signupEnd has same date as today
+            Calendar c = Calendar.getInstance();
+            c.setTime(signupEnd);
+            c.add(Calendar.DATE, 1);
+            if (c.getTime().before(new Date())) {
               return false;
             }
           }

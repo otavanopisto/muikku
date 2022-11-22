@@ -10,7 +10,7 @@ import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import { JournalComment } from "~/@types/journal";
 
@@ -20,7 +20,7 @@ import { JournalComment } from "~/@types/journal";
 interface JournalCommentEditorProps {
   i18n: i18nType;
   status: StatusType;
-  locale: LocaleListType;
+  locale: LocaleState;
   journalComment?: JournalComment;
   locked: boolean;
   journalEventId: number;

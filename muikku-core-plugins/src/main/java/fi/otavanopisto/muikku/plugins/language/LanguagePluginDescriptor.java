@@ -25,8 +25,8 @@ public class LanguagePluginDescriptor implements PluginDescriptor, LocalizedPlug
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.language.LanguagePluginMessages", LocaleUtils.toLocale("fi"))));
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.language.LanguagePluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.GLOBAL, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.language.LanguagePluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.GLOBAL, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.language.LanguagePluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
 

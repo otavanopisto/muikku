@@ -475,11 +475,7 @@ class MaterialLoader extends React.Component<
   async create() {
     const { usedAs = "default", userEntityId } = this.props;
 
-    let userEntityIdToLoad = parseInt(
-      document
-        .querySelector('meta[name="muikku:loggedUserId"]')
-        .getAttribute("value")
-    );
+    let userEntityIdToLoad = this.props.status.userId;
 
     if (usedAs === "evaluationTool" && userEntityId) {
       userEntityIdToLoad = userEntityId;

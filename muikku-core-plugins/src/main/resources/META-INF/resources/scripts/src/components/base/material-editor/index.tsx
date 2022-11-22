@@ -16,7 +16,7 @@ import {
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
 import { StatusType } from "~/reducers/base/status";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import DeleteWorkspaceMaterialDialog from "./delete-dialog";
 import Dropdown from "~/components/general/dropdown";
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
@@ -50,7 +50,7 @@ interface MaterialEditorProps {
   i18n: i18nType;
   status: StatusType;
   editorState: WorkspaceMaterialEditorType;
-  locale: LocaleListType;
+  locale: LocaleState;
   locationPage: PageLocation;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType;

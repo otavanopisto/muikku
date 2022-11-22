@@ -28,11 +28,13 @@ import { evaluations } from "./main-function/evaluation/index";
 import { ceepos } from "./main-function/ceepos";
 import { calendar } from "./main-function/calendar";
 import { organizationWorkspaces } from "./workspaces/organization";
+import { contacts } from "./base/contacts";
 
 export default combineReducers({
   announcements,
   calendar,
   ceepos,
+  contacts,
   discussion,
   easyToUse,
   eligibilitySubjects,
