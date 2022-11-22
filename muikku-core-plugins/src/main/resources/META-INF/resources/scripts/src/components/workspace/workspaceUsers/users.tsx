@@ -35,6 +35,7 @@ import {
   loadStudentsOfWorkspace,
   LoadUsersOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
+import { MobileOnlyTabs } from "~/components/general/tabs";
 
 /**
  * WorkspaceUsersProps
@@ -467,10 +468,9 @@ class WorkspaceUsers extends React.Component<
                 "plugin.workspace.users.students.searchStudents"
               )}
             />
-            <Tabs
+            <MobileOnlyTabs
               onTabChange={this.onTabChange}
               activeTab={this.state.activeTab}
-              i18n={this.props.i18n}
               modifier="workspace-users"
               tabs={[
                 {
