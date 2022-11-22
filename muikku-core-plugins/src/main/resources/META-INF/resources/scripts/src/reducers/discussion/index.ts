@@ -188,7 +188,7 @@ const initialDiscussionState: DiscussionType = {
   totalPages: 1,
   current: null,
   currentState: "READY",
-  currentPage: 1,
+  currentPage: 2,
   currentTotalPages: 1,
   currentReplies: [],
 };

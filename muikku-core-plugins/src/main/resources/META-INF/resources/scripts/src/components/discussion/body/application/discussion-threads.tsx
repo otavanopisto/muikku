@@ -126,6 +126,10 @@ class DDiscussionThreads extends React.Component<
   getToThread(thread: DiscussionThreadType) {
     if (this.props.discussion.areaId === thread.forumAreaId) {
       window.location.hash =
+        thread.forumAreaId + "/" + this.props.discussion.page;
+      "/" + thread.id + "/1";
+    } else {
+      window.location.hash =
         thread.forumAreaId +
         "/" +
         this.props.discussion.page +
@@ -133,7 +137,6 @@ class DDiscussionThreads extends React.Component<
         thread.id +
         "/1";
     }
-    window.location.hash = thread.forumAreaId + "/1" + "/" + thread.id + "/1";
   }
 
   /**

@@ -97,14 +97,19 @@ class DiscussionCurrentThread extends React.Component<
         this.props.discussion.current.id +
         "/" +
         n;
+    } else {
+      const areaId = this.props.discussion.areaId
+        ? this.props.discussion.areaId
+        : 0;
+      window.location.hash =
+        areaId +
+        "/" +
+        this.props.discussion.page +
+        "/" +
+        this.props.discussion.current.id +
+        "/" +
+        n;
     }
-    window.location.hash =
-      this.props.discussion.current.forumAreaId +
-      "/1" +
-      "/" +
-      this.props.discussion.current.id +
-      "/" +
-      n;
   }
 
   /**
