@@ -906,7 +906,7 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
   }
   
-private ForumAreaSubscriptionRESTModel createAreaSubscriptionRestModel(ForumAreaSubscription entity) {
+  private ForumAreaSubscriptionRESTModel createAreaSubscriptionRestModel(ForumAreaSubscription entity) {
     
     Long workspaceEntityId = null;
     String workspaceUrlName = null;
@@ -919,7 +919,7 @@ private ForumAreaSubscriptionRESTModel createAreaSubscriptionRestModel(ForumArea
       if (workspaceEntity != null) {
         workspaceEntityId = workspaceEntity.getId();
         workspaceUrlName = workspaceEntity.getUrlName();
-        workspaceName = workspaceEntityController.getName(workspaceEntity);
+        workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
       }
     }
     ForumArea forumArea = entity.getForumArea();
@@ -1026,7 +1026,7 @@ private ForumAreaSubscriptionRESTModel createAreaSubscriptionRestModel(ForumArea
       if (workspaceEntity != null) {
         workspaceEntityId = workspaceEntity.getId();
         workspaceUrlName = workspaceEntity.getUrlName();
-        workspaceName = workspaceEntityController.getName(workspaceEntity);
+        workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
       }
     }
     ForumThreadRESTModel threadRest = restModels.restModel(entity.getForumThread());

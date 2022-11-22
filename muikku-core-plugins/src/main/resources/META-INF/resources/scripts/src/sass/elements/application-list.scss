@@ -305,6 +305,12 @@
   font-weight: 400;
 }
 
+.application-list__indicator-badge--interim-evaluation-request {
+  background-color: $color-interim-evaluation;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
 .application-list__header-item-date {
   text-align: right;
   width: 5.2rem;
@@ -851,7 +857,6 @@
 .application-list__item-header--journal-entry {
   cursor: pointer;
   flex-flow: row wrap;
-  margin: 0 0 15px;
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row nowrap;

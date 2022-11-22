@@ -5,6 +5,10 @@ public class LanguageSelectionRestModel {
   public LanguageSelectionRestModel() {
   }
   
+  public LanguageSelectionRestModel(String lang) {
+    this.lang = lang;
+  }
+  
   public String getLang() {
     return lang;
   }

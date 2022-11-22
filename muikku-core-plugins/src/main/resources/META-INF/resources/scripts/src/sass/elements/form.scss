@@ -49,6 +49,10 @@
 
 .form__buttons--evaluation {
   justify-content: center;
+
+  .button {
+    margin: 0 5px;
+  }
 }
 
 .form__subdivision {

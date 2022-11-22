@@ -19,7 +19,7 @@ import {
   updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form.scss";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import { AssessmentRequest } from "~/@types/evaluation";
 
@@ -30,7 +30,7 @@ interface SupplementationEditorProps {
   i18n: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
-  locale: LocaleListType;
+  locale: LocaleState;
   selectedAssessment: AssessmentRequest;
   type?: "new" | "edit";
   eventId?: string;
@@ -345,7 +345,7 @@ class SupplementationEditor extends SessionStateComponent<
 
         <div className="form__buttons form__buttons--evaluation">
           <Button
-            buttonModifiers="evaluate-supplementation"
+            buttonModifiers="dialog-execute"
             onClick={this.handleEvaluationSupplementationSave}
             disabled={this.state.locked}
           >
@@ -356,7 +356,7 @@ class SupplementationEditor extends SessionStateComponent<
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
-            buttonModifiers="evaluate-cancel"
+            buttonModifiers="dialog-cancel"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -364,7 +364,7 @@ class SupplementationEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-              buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="dialog-clear"
               disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >

@@ -17,7 +17,10 @@ import notificationActions, {
 } from "~/actions/base/notifications";
 import { EvaluationAssigmentData } from "../../../@types/evaluation";
 import { EvaluationEnum, BilledPriceRequest } from "../../../@types/evaluation";
-import { MaterialCompositeRepliesType } from "../../../reducers/workspaces/index";
+import {
+  MaterialCompositeRepliesType,
+  WorkspaceInterimEvaluationRequest,
+} from "../../../reducers/workspaces/index";
 import {
   WorkspaceUserEntity,
   AssignmentEvaluationSaveReturn,
@@ -76,6 +79,11 @@ export type EVALUATION_ASSESSMENT_EVENTS_STATE_UPDATE = SpecificActionType<
 export type EVALUATION_ASSESSMENT_EVENTS_LOAD = SpecificActionType<
   "EVALUATION_ASSESSMENT_EVENTS_LOAD",
   EvaluationEvent[]
+>;
+
+export type EVALUATION_INTERMIN_REQUESTS_LOAD = SpecificActionType<
+  "EVALUATION_INTERMIN_REQUESTS_LOAD",
+  WorkspaceInterimEvaluationRequest[]
 >;
 
 export type EVALUATION_REQUESTS_STATE_UPDATE = SpecificActionType<
@@ -435,6 +443,17 @@ export interface SaveEvaluationAssignmentSupplementation {
 export interface DeleteAssessmentRequest {
   (data: {
     workspaceUserEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * DeleteInterimEvaluationRequest
+ */
+export interface DeleteInterimEvaluationRequest {
+  (data: {
+    interimEvaluatiomRequestId: number;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -1621,6 +1640,14 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       try {
         const [assigments] = await Promise.all([
           (async () => {
+            const assignmentsInterim =
+              <MaterialAssignmentType[]>await promisify(
+                mApi().workspace.workspaces.materials.read(workspaceId, {
+                  assignmentType: "INTERIM_EVALUATION",
+                }),
+                "callback"
+              )() || [];
+
             const assignmentsExcercise =
               <MaterialAssignmentType[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
@@ -1638,6 +1665,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
               )() || [];
 
             const assignments = [
+              ...assignmentsInterim,
               ...assignmentsEvaluated,
               ...assignmentsExcercise,
             ];
@@ -1975,6 +2003,47 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
           ),
           "callback"
         )().then(() => {
+          dispatch(loadEvaluationAssessmentRequestsFromServer());
+        });
+      } catch (error) {
+        dispatch(
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.deleteRequest.error",
+              error.message
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * Delete interim evaluation request
+ * @param param0 param0
+ * @param param0.interimEvaluatiomRequestId interimEvaluatiomRequestId
+ */
+const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
+  function deleteAssessmentRequest({ interimEvaluatiomRequestId }) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        await promisify(
+          mApi().evaluation.interimEvaluationRequest.del(
+            interimEvaluatiomRequestId
+          ),
+          "callback"
+        )().then(() => {
+          notificationActions.displayNotification(
+            "Välipalautepyyntö poistettu onnistuneesti",
+            "success"
+          );
+
           dispatch(loadEvaluationAssessmentRequestsFromServer());
         });
       } catch (error) {
@@ -2450,6 +2519,7 @@ export {
   loadBasePriceFromServer,
   archiveStudent,
   deleteAssessmentRequest,
+  deleteInterimEvaluationRequest,
   loadEvaluationJournalCommentsFromServer,
   createEvaluationJournalComment,
   updateEvaluationJournalComment,

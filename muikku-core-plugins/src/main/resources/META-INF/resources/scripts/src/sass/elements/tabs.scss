@@ -232,6 +232,25 @@
   }
 }
 
+// Mobile only tabs
+
+.tabs__tab--mobile-only-tab {
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border: 0;
+    color: $color-text-default;
+    font-weight: 600;
+  }
+
+  &.active {
+    @include breakpoint($breakpoint-pad) {
+      background: $color-default;
+      border: 0;
+      color: $color-text-default;
+    }
+  }
+}
+
 .tabs__tab-data--workspace-students {
   padding: 0;
 

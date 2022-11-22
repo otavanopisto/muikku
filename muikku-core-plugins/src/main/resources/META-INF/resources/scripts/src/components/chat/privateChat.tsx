@@ -7,10 +7,12 @@ import { i18nType } from "~/reducers/base/i18n";
 import { requestPrescense } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
 import { obtainNick } from "~/helper-functions/chat";
+import { StatusType } from "~/reducers/base/status";
 /**
  * IPrivateChatProps
  */
 interface IPrivateChatProps {
+  status: StatusType;
   initializingStanza: Element;
   setTabNotification: (NewTabTitle?: string) => void;
   roster: IChatContact[];
@@ -35,8 +37,6 @@ interface IPrivateChatState {
   canLoadMoreMessages: boolean;
   lastMessageStamp: string;
 }
-
-const roleNode = document.querySelector('meta[name="muikku:role"]');
 
 /**
  * PrivateChat
@@ -67,7 +67,7 @@ export class PrivateChat extends React.Component<
       messageNotification: !!this.props.initializingStanza,
       currentMessageToBeSent: "",
       targetPrescense: "xa",
-      isStudent: roleNode.getAttribute("value") === "STUDENT",
+      isStudent: props.status.isStudent,
       loadingMessages: false,
       canLoadMoreMessages: true,
       lastMessageStamp: null,

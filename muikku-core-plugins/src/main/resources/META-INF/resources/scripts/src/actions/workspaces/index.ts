@@ -19,6 +19,7 @@ import {
   WorkspaceSignUpDetails,
   WorkspaceCurriculumFilterType,
   WorkspaceActivityType,
+  WorkspaceInterimEvaluationRequest,
 } from "~/reducers/workspaces";
 import {
   ShortWorkspaceUserWithActiveStatusType,
@@ -73,6 +74,12 @@ export type UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS = SpecificActionType<
   "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS",
   WorkspaceAssessmentRequestType[]
 >;
+
+export type UPDATE_CURRENT_WORKSPACE_INTERIM_EVALUATION_REQUESTS =
+  SpecificActionType<
+    "UPDATE_CURRENT_WORKSPACE_INTERIM_EVALUATION_REQUESTS",
+    WorkspaceInterimEvaluationRequest[]
+  >;
 
 export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<
   "UPDATE_WORKSPACE_ASSESSMENT_STATE",
@@ -171,6 +178,61 @@ export interface workspaceStudentsQueryDataType {
   maxResults?: number | null;
   active?: boolean;
 }
+
+/**
+ * UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger
+ */
+export interface UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger {
+  (data?: {
+    requestData: WorkspaceInterimEvaluationRequest;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * Updates current workspace interim evaluation requests list in redux state.
+ * If requestData doesn't exist in the list, it will be pushed to the list.
+ * If requestData exists in the list, it will be updated.
+ * @param data data
+ */
+const updateCurrentWorkspaceInterimEvaluationRequests: UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger =
+  function loadUserWorkspacesFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const { requestData, success } = data || {};
+      const { currentWorkspace } = getState().workspaces;
+
+      if (!currentWorkspace) {
+        return;
+      }
+
+      const { interimEvaluationRequests } = currentWorkspace;
+
+      const { id } = requestData;
+
+      const newWorkspaceInterimEvaluationRequests = interimEvaluationRequests;
+
+      const index = interimEvaluationRequests.findIndex(
+        (request) => request.id === id
+      );
+
+      if (index === -1) {
+        newWorkspaceInterimEvaluationRequests.push(requestData);
+      } else {
+        newWorkspaceInterimEvaluationRequests[index] = requestData;
+      }
+      dispatch({
+        type: "UPDATE_CURRENT_WORKSPACE_INTERIM_EVALUATION_REQUESTS",
+        payload: newWorkspaceInterimEvaluationRequests,
+      });
+      if (success) {
+        success();
+      }
+    };
+  };
 
 /**
  * LoadTemplatesFromServerTriggerType
@@ -455,11 +517,12 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         }
 
         /* let assesments: WorkspaceStudentAssessmentsType; */
-        let assessmentRequests: Array<WorkspaceAssessmentRequestType>;
+        let assessmentRequests: WorkspaceAssessmentRequestType[];
+        let interimEvaluationRequests: WorkspaceInterimEvaluationRequest[];
         let activity: WorkspaceActivityType;
         let additionalInfo: WorkspaceAdditionalInfoType;
         let contentDescription: MaterialContentNodeType;
-        let producers: Array<WorkspaceProducerType>;
+        let producers: WorkspaceProducerType[];
         let isCourseMember: boolean;
         let journals: WorkspaceJournalsType;
         let details: WorkspaceDetailsType;
@@ -470,6 +533,8 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           workspace,
           // eslint-disable-next-line prefer-const
           assessmentRequests,
+          // eslint-disable-next-line prefer-const
+          interimEvaluationRequests,
           // eslint-disable-next-line prefer-const
           activity,
           // eslint-disable-next-line prefer-const
@@ -504,6 +569,18 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                   .read(data.workspaceId, {
                     studentIdentifier: state.status.userSchoolDataIdentifier,
                   }),
+                "callback"
+              )()
+          ),
+
+          reuseExistantValue(
+            true,
+            workspace && workspace.interimEvaluationRequests,
+            () =>
+              promisify(
+                mApi().evaluation.workspace.interimEvaluationRequests.read(
+                  data.workspaceId
+                ),
                 "callback"
               )()
           ),
@@ -596,7 +673,9 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )
             : null,
         ])) as any;
+
         workspace.assessmentRequests = assessmentRequests;
+        workspace.interimEvaluationRequests = interimEvaluationRequests;
         workspace.activity = activity;
         workspace.additionalInfo = additionalInfo;
         workspace.contentDescription = contentDescription;
@@ -1293,6 +1372,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["studentAssessments"];
     delete actualOriginal["activityStatistics"];
     delete actualOriginal["assessmentRequests"];
+    delete actualOriginal["interimEvaluationRequests"];
     delete actualOriginal["additionalInfo"];
     delete actualOriginal["staffMembers"];
     delete actualOriginal["students"];
@@ -2523,5 +2603,6 @@ export {
   updateWorkspaceEditModeState,
   updateCurrentWorkspaceActivity,
   updateCurrentWorkspaceAssessmentRequest,
+  updateCurrentWorkspaceInterimEvaluationRequests,
   setAvailableCurriculums,
 };

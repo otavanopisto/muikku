@@ -131,6 +131,12 @@ public class AssessmentRequestController {
     case SUPPLEMENTATION_REQUESTED:
       state = WorkspaceAssessmentState.INCOMPLETE;
       break;
+    case INTERIM_EVALUATION_REQUESTED:
+      state = WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST;
+      break;
+    case INTERIM_EVALUATION:
+      state = WorkspaceAssessmentState.INTERIM_EVALUATION;
+      break;
     case ONGOING:
     case TRANSFERRED:
     default:
@@ -141,7 +147,14 @@ public class AssessmentRequestController {
     // Return the state
     // TODO Refactor functionality using this method to just use WorkspaceActivity instead
 
-    return new WorkspaceAssessmentState(activity.getWorkspaceSubjectIdentifier(), state, activity.getDate(), activity.getText(), activity.getGrade(), activity.getGradeDate());
+    return new WorkspaceAssessmentState(
+        activity.getWorkspaceSubjectIdentifier(),
+        state,
+        activity.getDate(),
+        activity.getText(),
+        activity.getGrade(),
+        activity.getGradeDate(),
+        activity.getPassingGrade());
   }
 
   public List<WorkspaceAssessmentState> getAllWorkspaceAssessmentStates(WorkspaceUserEntity workspaceUserEntity) {
@@ -189,6 +202,12 @@ public class AssessmentRequestController {
       case SUPPLEMENTATION_REQUESTED:
         state = WorkspaceAssessmentState.INCOMPLETE;
         break;
+      case INTERIM_EVALUATION_REQUESTED:
+        state = WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST;
+        break;
+      case INTERIM_EVALUATION:
+        state = WorkspaceAssessmentState.INTERIM_EVALUATION;
+        break;
       case ONGOING:
       case TRANSFERRED:
       default:
@@ -199,7 +218,14 @@ public class AssessmentRequestController {
       // Return the state
       // TODO Refactor functionality using this method to just use WorkspaceActivity instead
 
-      assessmentStates.add(new WorkspaceAssessmentState(activity.getWorkspaceSubjectIdentifier(), state, activity.getDate(), activity.getText(), activity.getGrade(), activity.getGradeDate()));
+      assessmentStates.add(new WorkspaceAssessmentState(
+          activity.getWorkspaceSubjectIdentifier(),
+          state,
+          activity.getDate(),
+          activity.getText(),
+          activity.getGrade(),
+          activity.getGradeDate(),
+          activity.getPassingGrade()));
     }
 
     return assessmentStates;

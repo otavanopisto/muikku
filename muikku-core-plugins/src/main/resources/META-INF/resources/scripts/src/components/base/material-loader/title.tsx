@@ -47,6 +47,9 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
       case "JOURNAL":
         return "journal";
 
+      case "INTERIM_EVALUATION":
+        return "interim-evaluation";
+
       default:
         return "theory";
     }

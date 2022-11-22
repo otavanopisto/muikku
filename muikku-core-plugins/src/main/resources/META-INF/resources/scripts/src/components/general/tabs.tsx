@@ -202,6 +202,73 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   );
 };
 
+interface MobileOnlyTabsProps {
+  onTabChange: (id: string, hash?: string) => void;
+  activeTab: string;
+  /** General class modifier */
+  modifier?: string;
+  tabs: Array<Tab>;
+  renderAllComponents?: boolean;
+}
+
+/**
+ * Tabs that are only seen in mobile
+ * @param props Component props
+ * @returns JSX.element
+ */
+export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
+  const { tabs, modifier, activeTab, onTabChange, renderAllComponents } = props;
+
+  return (
+    <div className="tabs">
+      <div className="tabs__tab-labels tabs__tab-labels--mobile">
+        {tabs.map((tab, index) => (
+          <div
+            className={`tabs__tab tabs__tab--mobile-only-tab ${
+              modifier ? "tabs__tab--" + modifier : ""
+            } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+              tab.id === activeTab ? "active" : ""
+            }`}
+            key={tab.id}
+            onClick={onTabChange.bind(this, tab.id, tab.hash)}
+          >
+            {tab.name}
+          </div>
+        ))}
+      </div>
+      <div className="tabs__tab-labels tabs__tab-labels--desktop">
+        {tabs.map((tab, index) => (
+          <div
+            className={`tabs__tab tabs__tab--mobile-only-tab ${
+              modifier ? "tabs__tab--" + modifier : ""
+            } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+              tab.id === activeTab ? "active" : ""
+            }`}
+            key={tab.id}
+            onClick={onTabChange.bind(this, tab.id, tab.hash)}
+          >
+            {tab.name}
+          </div>
+        ))}
+      </div>
+      <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
+        {tabs
+          .filter((t) => renderAllComponents || t.id === activeTab)
+          .map((t) => (
+            <div
+              key={t.id}
+              className={`tabs__tab-data ${
+                t.type ? "tabs__tab-data--" + t.type : ""
+              }  ${t.id === activeTab ? "active" : ""}`}
+            >
+              {t.component}
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+};
+
 /**
  * mapStateToProps
  * @param state Redux state
