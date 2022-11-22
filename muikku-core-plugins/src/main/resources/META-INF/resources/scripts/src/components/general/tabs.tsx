@@ -269,7 +269,6 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
   );
 };
 
-
 /**
  * mapStateToProps
  * @param state Redux state
