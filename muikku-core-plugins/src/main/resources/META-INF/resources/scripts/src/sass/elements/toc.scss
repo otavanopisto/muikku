@@ -142,6 +142,10 @@
   border-color: $color-journal-page;
 }
 
+.toc__item--interim-evaluation {
+  border-color: $color-interim-evaluation;
+}
+
 .toc__item--submitted {
   .toc__icon {
     background: $color-submitted;

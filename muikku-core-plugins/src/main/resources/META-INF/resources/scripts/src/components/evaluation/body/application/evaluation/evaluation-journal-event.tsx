@@ -365,8 +365,12 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </AnimateHeight>
 
       <SlideDrawer
+        title={i18n.text.get(
+          "plugin.evaluation.evaluationModal.journalComments.newComment.editorTitle"
+        )}
+        closeIconModifiers={["evaluation"]}
+        modifiers={["journal-comment"]}
         show={createNewActive}
-        title={title}
         onClose={handleNewCommentCancel}
       >
         <JournalCommentEditor
@@ -381,8 +385,12 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </SlideDrawer>
 
       <SlideDrawer
+        title={i18n.text.get(
+          "plugin.evaluation.evaluationModal.journalComments.editComment.editorTitle"
+        )}
         show={commentToEdit !== undefined}
-        title={title}
+        closeIconModifiers={["evaluation"]}
+        modifiers={["journal-comment"]}
         onClose={handleNewCommentCancel}
       >
         <JournalCommentEditor

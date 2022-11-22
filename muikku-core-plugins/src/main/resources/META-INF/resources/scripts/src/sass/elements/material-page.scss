@@ -110,6 +110,16 @@
   }
 }
 
+.material-page__title--interim-evaluation {
+  border-left: 3px solid $color-interim-evaluation;
+  padding: 0 0 0 6px;
+
+  @include breakpoint($breakpoint-pad) {
+    border-left: 5px solid $color-interim-evaluation;
+    padding: 0 0 0 15px;
+  }
+}
+
 .material-page__title-meta {
   color: $color-info;
   font-style: italic;
@@ -117,6 +127,17 @@
 }
 
 .material-page__content {
+  margin: 15px 0;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0;
+    padding: 0 20px;
+  }
+}
+
+.material-page__content-disclaimer {
+  font-style: italic;
   margin: 15px 0;
   padding: 0 10px;
 
@@ -821,7 +842,9 @@
 }
 
 // Memo field
-.material-page__memofield-wrapper {
+.material-page__memofield-wrapper,
+.material-page__journalfield-wrapper,
+.material-page__interim-evaluation-wrapper {
   display: block;
   padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
   position: relative;
@@ -854,32 +877,12 @@
   /* stylelint-enable selector-class-pattern */
 }
 
-// Journal fieold
+// Journal field overrides
 .material-page__journalfield-wrapper {
-  display: block;
-  padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
-  position: relative;
-
-  .material-page__field-answer-synchronizer {
-    left: 0;
-  }
-
-  // Necessary evil as material editor uses the same class names to provide wysiwyg experience close to the actualy material page render
-  // but unfortunately it does affect taskfields with ckeditors as well so this is needed to override padding rules.
 
   /* stylelint-disable selector-class-pattern */
-  .cke_editable.cke_wysiwyg_div {
-    padding: 0 8px;
-  }
-
   .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
-    background: $color-default;
     border: 2px solid $color-journal-page;
-    border-radius: 2px;
-    box-sizing: border-box;
-    margin: 4px 0 0;
-    max-width: 100%;
-    min-width: 100%;
   }
 
   .cke_wysiwyg_div {
@@ -888,8 +891,19 @@
   /* stylelint-enable selector-class-pattern */
 }
 
-.material-page__memofield,
-.material-page__journalfield {
+.material-page__interim-evaluation-field-label {
+  display: block;
+  font-weight: 600;
+}
+
+// Interim evaluation request field overrides
+.material-page__interim-evaluation-wrapper {
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+    border: 2px solid $color-interim-evaluation;
+  }
+}
+
+.material-page__memofield {
   @include taskfield-text;
   @include taskfield-defaults;
 
@@ -1008,6 +1022,10 @@
     padding: 5px;
     text-decoration: none;
     width: auto;
+
+    .external-link-indicator {
+      display: none;
+    }
   }
 }
 

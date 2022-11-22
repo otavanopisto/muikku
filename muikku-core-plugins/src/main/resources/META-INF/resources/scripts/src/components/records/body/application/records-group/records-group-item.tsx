@@ -42,9 +42,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const getAssessmentData = (assessment: Assessment) => {
     let evalStateClassName = "";
     let evalStateIcon = "";
-    let assessmentIsPending = null;
-    let assessmentIsIncomplete = null;
-    let assessmentIsUnassessed = null;
+    let assessmentIsPending = false;
+    let assessmentIsIncomplete = false;
+    let assessmentIsUnassessed = false;
+    let assessmentIsInterim = false;
 
     switch (assessment.state) {
       case "pass":
@@ -67,7 +68,21 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         evalStateIcon = "";
         assessmentIsIncomplete = true;
         break;
+
+      case "interim_evaluation_request":
+        assessmentIsPending = true;
+        assessmentIsInterim = true;
+        evalStateClassName = "workspace-assessment--interim-evaluation-request";
+        evalStateIcon = "icon-assessment-pending";
+        break;
+      case "interim_evaluation":
+        assessmentIsInterim = true;
+        evalStateClassName = "workspace-assessment--interim-evaluation";
+        evalStateIcon = "icon-thumb-up";
+        break;
+
       case "unassessed":
+      default:
         assessmentIsUnassessed = true;
     }
 
@@ -80,6 +95,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
       assessmentIsPending,
       assessmentIsUnassessed,
       assessmentIsIncomplete,
+      assessmentIsInterim,
       literalAssessment,
     };
   };
@@ -105,18 +121,15 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
             assessmentIsIncomplete,
             assessmentIsUnassessed,
             literalAssessment,
+            assessmentIsInterim,
           } = getAssessmentData(a);
 
-          /**
-           * Find subject data, that contains basic information about that subject
-           */
+          // Find subject data, that contains basic information about that subject
           const subjectData = workspace.subjects.find(
             (s) => s.identifier === a.workspaceSubjectIdentifier
           );
 
-          /**
-           * If not found, return nothing
-           */
+          // If not found, return nothing
           if (!subjectData) {
             return;
           }
@@ -129,95 +142,150 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               })`
             : undefined;
 
-          return !assessmentIsUnassessed && !assessmentIsPending ? (
-            <div
-              key={a.workspaceSubjectIdentifier}
-              className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-            >
+          // Interim assessments use same style as reqular assessment requests
+          // Only changing factor is whether is it pending or not and its indicated by
+          // label "Interim evaluation request" or "Interim evaluation"
+          if (assessmentIsInterim) {
+            return (
               <div
-                className={`workspace-assessment__icon ${evalStateIcon}`}
-              ></div>
-              {subjectCodeString && (
-                <div className="workspace-assessment__subject">
-                  <span className="workspace-assessment__subject-data">
-                    {subjectCodeString}
+                key={a.workspaceSubjectIdentifier}
+                className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
+              >
+                <div
+                  className={`workspace-assessment__icon ${evalStateIcon}`}
+                ></div>
+                <div className="workspace-assessment__date">
+                  <span className="workspace-assessment__date-label">
+                    {i18n.text.get(
+                      "plugin.records.workspace.assessment.date.label"
+                    )}
+                    :
+                  </span>
+                  <span className="workspace-assessment__date-data">
+                    {i18n.time.format(a.date)}
                   </span>
                 </div>
-              )}
-
-              <div className="workspace-assessment__date">
-                <span className="workspace-assessment__date-label">
-                  {i18n.text.get(
-                    "plugin.records.workspace.assessment.date.label"
-                  )}
-                  :
-                </span>
-
-                <span className="workspace-assessment__date-data">
-                  {i18n.time.format(a.date)}
-                </span>
-              </div>
-              <div className="workspace-assessment__grade">
-                <span className="workspace-assessment__grade-label">
-                  {i18n.text.get(
-                    "plugin.records.workspace.assessment.grade.label"
-                  )}
-                  :
-                </span>
-                <span className="workspace-assessment__grade-data">
-                  {assessmentIsIncomplete
-                    ? i18n.text.get(
-                        "plugin.records.workspace.assessment.grade.incomplete.data"
-                      )
-                    : a.grade}
-                </span>
-              </div>
-              <div className="workspace-assessment__literal">
-                <div className="workspace-assessment__literal-label">
-                  {i18n.text.get(
-                    "plugin.records.workspace.assessment.literal.label"
-                  )}
-                  :
+                <div className="workspace-assessment__literal">
+                  <div className="workspace-assessment__literal-label">
+                    {assessmentIsPending
+                      ? i18n.text.get(
+                          "plugin.records.workspace.assessment.interimEvaluationrequest.label"
+                        )
+                      : i18n.text.get(
+                          "plugin.records.workspace.assessment.interimEvaluation"
+                        )}
+                    :
+                  </div>
+                  <div
+                    className="workspace-assessment__literal-data rich-text"
+                    dangerouslySetInnerHTML={{ __html: literalAssessment }}
+                  ></div>
                 </div>
+              </div>
+            );
+          }
+          // Else block only happens for regular workspace assessments
+          else {
+            if (
+              !assessmentIsUnassessed &&
+              !assessmentIsPending &&
+              !assessmentIsInterim
+            ) {
+              return (
                 <div
-                  className="workspace-assessment__literal-data rich-text"
-                  dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                ></div>
-              </div>
-            </div>
-          ) : (
-            <div
-              key={a.workspaceSubjectIdentifier}
-              className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-            >
-              <div
-                className={`workspace-assessment__icon ${evalStateIcon}`}
-              ></div>
-              <div className="workspace-assessment__date">
-                <span className="workspace-assessment__date-label">
-                  {i18n.text.get(
-                    "plugin.records.workspace.assessment.date.label"
+                  key={a.workspaceSubjectIdentifier}
+                  className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
+                >
+                  <div
+                    className={`workspace-assessment__icon ${evalStateIcon}`}
+                  ></div>
+                  {subjectCodeString && (
+                    <div className="workspace-assessment__subject">
+                      <span className="workspace-assessment__subject-data">
+                        {subjectCodeString}
+                      </span>
+                    </div>
                   )}
-                  :
-                </span>
-                <span className="workspace-assessment__date-data">
-                  {i18n.time.format(a.date)}
-                </span>
-              </div>
-              <div className="workspace-assessment__literal">
-                <div className="workspace-assessment__literal-label">
-                  {i18n.text.get(
-                    "plugin.records.workspace.assessment.request.label"
-                  )}
-                  :
+
+                  <div className="workspace-assessment__date">
+                    <span className="workspace-assessment__date-label">
+                      {i18n.text.get(
+                        "plugin.records.workspace.assessment.date.label"
+                      )}
+                      :
+                    </span>
+
+                    <span className="workspace-assessment__date-data">
+                      {i18n.time.format(a.date)}
+                    </span>
+                  </div>
+
+                  <div className="workspace-assessment__grade">
+                    <span className="workspace-assessment__grade-label">
+                      {i18n.text.get(
+                        "plugin.records.workspace.assessment.grade.label"
+                      )}
+                      :
+                    </span>
+                    <span className="workspace-assessment__grade-data">
+                      {assessmentIsIncomplete
+                        ? i18n.text.get(
+                            "plugin.records.workspace.assessment.grade.incomplete.data"
+                          )
+                        : a.grade}
+                    </span>
+                  </div>
+
+                  <div className="workspace-assessment__literal">
+                    <div className="workspace-assessment__literal-label">
+                      {i18n.text.get(
+                        "plugin.records.workspace.assessment.literal.label"
+                      )}
+                      :
+                    </div>
+                    <div
+                      className="workspace-assessment__literal-data rich-text"
+                      dangerouslySetInnerHTML={{ __html: literalAssessment }}
+                    ></div>
+                  </div>
                 </div>
+              );
+            } else {
+              return (
                 <div
-                  className="workspace-assessment__literal-data rich-text"
-                  dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                ></div>
-              </div>
-            </div>
-          );
+                  key={a.workspaceSubjectIdentifier}
+                  className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
+                >
+                  <div
+                    className={`workspace-assessment__icon ${evalStateIcon}`}
+                  ></div>
+                  <div className="workspace-assessment__date">
+                    <span className="workspace-assessment__date-label">
+                      {i18n.text.get(
+                        "plugin.records.workspace.assessment.date.label"
+                      )}
+                      :
+                    </span>
+                    <span className="workspace-assessment__date-data">
+                      {i18n.time.format(a.date)}
+                    </span>
+                  </div>
+                  <div className="workspace-assessment__literal">
+                    <div className="workspace-assessment__literal-label">
+                      {i18n.text.get(
+                        "plugin.records.workspace.assessment.request.label"
+                      )}
+                      :
+                    </div>
+                    <div
+                      className="workspace-assessment__literal-data rich-text"
+                      dangerouslySetInnerHTML={{ __html: literalAssessment }}
+                    ></div>
+                  </div>
+                </div>
+              );
+            }
+          }
         })}
       </>
     );

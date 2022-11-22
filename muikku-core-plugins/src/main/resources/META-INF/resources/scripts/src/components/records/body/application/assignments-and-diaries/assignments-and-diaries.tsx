@@ -9,9 +9,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { i18nType } from "~/reducers/base/i18n";
-import ApplicationList, {
-  ApplicationListItemHeader,
-} from "~/components/general/application-list";
+import ApplicationList from "~/components/general/application-list";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "../../../../../reducers/base/status";
 import Material from "../current-record/material";
@@ -22,14 +20,10 @@ import { useExcerciseAssignments } from "./hooks/useExcercises";
 import { useCompositeReply } from "./hooks/useCompositeReply";
 import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 import Link from "~/components/general/link";
-
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/application-sub-panel.scss";
-import {
-  ApplicationListItem,
-  ApplicationListItemBody,
-} from "../../../../general/application-list";
 import { bindActionCreators } from "redux";
+import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
 
 /**
  * AssignmentsAndDiariesProps
@@ -43,7 +37,10 @@ interface AssignmentsAndDiariesProps {
   displayNotification: DisplayNotificationTriggerType;
 }
 
-export type AssignmentsTabType = "EVALUATED" | "EXCERCISE";
+export type AssignmentsTabType =
+  | "EVALUATED"
+  | "EXERCISE"
+  | "INTERIM_EVALUATION";
 
 /**
  * AssignmentsAndDiaries
@@ -66,6 +63,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const [journalsOpen, setJournalsOpen] = React.useState<number[]>([]);
   const [excerciseOpen, setExcerciseOpen] = React.useState<number[]>([]);
   const [evaluatedOpen, setEvaluatedOpen] = React.useState<number[]>([]);
+  const [interimOpen, setInterimOpen] = React.useState<number[]>([]);
 
   const { evaluatedAssignmentsData } = useEvaluatedAssignments(
     workspaceId,
@@ -75,6 +73,13 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   );
 
   const { excerciseAssignmentsData } = useExcerciseAssignments(
+    workspaceId,
+    activeTab,
+    i18n,
+    displayNotification
+  );
+
+  const { interimEvaluationeAssignmentsData } = useInterimEvaluationAssigments(
     workspaceId,
     activeTab,
     i18n,
@@ -108,7 +113,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    * @param type type
    */
   const handleOpenAllAssignmentsByTypeClick =
-    (type: "EXERCISE" | "EVALUATED") =>
+    (type: AssignmentsTabType) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       switch (type) {
         case "EXERCISE": {
@@ -127,6 +132,15 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           break;
         }
 
+        case "INTERIM_EVALUATION": {
+          const list =
+            interimEvaluationeAssignmentsData.interimEvaluationAssignments.map(
+              (e) => e.id
+            );
+          setInterimOpen(list);
+          break;
+        }
+
         default:
           break;
       }
@@ -137,7 +151,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    * @param type type
    */
   const handleCloseAllAssignmentsByTypeClick =
-    (type: "EXERCISE" | "EVALUATED") =>
+    (type: AssignmentsTabType) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       switch (type) {
         case "EXERCISE":
@@ -146,6 +160,10 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 
         case "EVALUATED":
           setEvaluatedOpen([]);
+          break;
+
+        case "INTERIM_EVALUATION":
+          setInterimOpen([]);
           break;
 
         default:
@@ -159,7 +177,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    * @param type type
    */
   const handleAssignmentByTypeClick =
-    (id: number, type: "EXERCISE" | "EVALUATED") =>
+    (id: number, type: AssignmentsTabType) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       switch (type) {
         case "EXERCISE": {
@@ -189,6 +207,21 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           }
 
           setEvaluatedOpen(updatedList);
+          break;
+        }
+
+        case "INTERIM_EVALUATION": {
+          const updatedList = [...interimOpen];
+
+          const index = updatedList.indexOf(id);
+
+          if (index !== -1) {
+            updatedList.splice(index, 1);
+          } else {
+            updatedList.push(id);
+          }
+
+          setInterimOpen(updatedList);
           break;
         }
 
@@ -314,6 +347,54 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             />
           );
         })
+      ) : (
+        <div className="empty">
+          <span>{props.i18n.text.get("plugin.records.noexercises")}</span>
+        </div>
+      )}
+    </ApplicationList>
+  );
+
+  /**
+   * Renders materials
+   * @returns JSX.Element
+   */
+  const renderInterminEvaluationMaterialsList = (
+    <ApplicationList>
+      {interimEvaluationeAssignmentsData.interimEvaluationAssignments.length ? (
+        interimEvaluationeAssignmentsData.interimEvaluationAssignments.map(
+          (m) => {
+            let showHiddenAssignment = false;
+
+            const compositeReply = compositeReplyData.compositeReplies.find(
+              (c) => c.workspaceMaterialId === m.assignment.id
+            );
+
+            if (m.assignment && m.assignment.hidden) {
+              if (compositeReply && compositeReply.submitted !== null) {
+                showHiddenAssignment = true;
+              }
+            }
+            if (m.assignment && m.assignment.hidden && !showHiddenAssignment) {
+              return null;
+            }
+
+            const open = interimOpen.includes(m.id);
+
+            return (
+              <Material
+                key={m.id}
+                material={m}
+                i18n={i18n}
+                workspace={workspace}
+                compositeReply={compositeReply}
+                status={status}
+                open={open}
+                onMaterialClick={handleAssignmentByTypeClick}
+              />
+            );
+          }
+        )
       ) : (
         <div className="empty">
           <span>{props.i18n.text.get("plugin.records.noexercises")}</span>
@@ -501,6 +582,56 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               <div className="loader-empty" />
             ) : (
               renderExcerciseMaterialsList
+            )}
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
+      ),
+    },
+    {
+      id: "INTERIM_EVALUATION",
+      name: "Välipalautteet",
+      type: "interim_evaluations",
+      component: (
+        <ApplicationSubPanel modifier="studies-exercises">
+          <ApplicationSubPanel.Header modifier="studies-exercises">
+            {/* <span>{props.i18n.text.get("plugin.records.exercises.title")}</span> */}
+            <span>Välipalautteet:</span>
+            <span>
+              <Link
+                className="link link--studies-close-open"
+                disabled={
+                  interimEvaluationeAssignmentsData.isLoading ||
+                  interimEvaluationeAssignmentsData.interimEvaluationAssignments
+                    .length === 0
+                }
+                onClick={handleOpenAllAssignmentsByTypeClick(
+                  "INTERIM_EVALUATION"
+                )}
+              >
+                {props.i18n.text.get("plugin.records.openClose.openAll")}
+              </Link>
+              <Link
+                className="link link--studies-close-open"
+                disabled={
+                  interimEvaluationeAssignmentsData.isLoading ||
+                  interimEvaluationeAssignmentsData.interimEvaluationAssignments
+                    .length === 0
+                }
+                onClick={handleCloseAllAssignmentsByTypeClick(
+                  "INTERIM_EVALUATION"
+                )}
+              >
+                {props.i18n.text.get("plugin.records.openClose.closeAll")}
+              </Link>
+            </span>
+          </ApplicationSubPanel.Header>
+
+          <ApplicationSubPanel.Body>
+            {interimEvaluationeAssignmentsData.isLoading ||
+            compositeReplyData.isLoading ? (
+              <div className="loader-empty" />
+            ) : (
+              renderInterminEvaluationMaterialsList
             )}
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>

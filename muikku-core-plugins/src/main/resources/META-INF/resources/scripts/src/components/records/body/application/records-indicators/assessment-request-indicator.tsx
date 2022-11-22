@@ -44,6 +44,22 @@ export const AssessmentRequestIndicator: React.FC<
         <span className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending" />
       </Dropdown>
     );
+  } else if (assessment.state === "interim_evaluation_request") {
+    return (
+      <Dropdown
+        openByHover
+        content={
+          <span>
+            {i18n.text.get(
+              "plugin.records.workspace.interimEvaluationPending",
+              props.i18n.time.format(assessment.date)
+            )}
+          </span>
+        }
+      >
+        <span className="application-list__indicator-badge application-list__indicator-badge--interim-evaluation-request icon-assessment-pending" />
+      </Dropdown>
+    );
   }
   return null;
 };

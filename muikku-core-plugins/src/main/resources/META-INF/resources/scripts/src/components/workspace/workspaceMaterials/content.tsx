@@ -735,6 +735,8 @@ class ContentComponent extends SessionStateComponent<
                     const isAssignment = subnode.assignmentType === "EVALUATED";
                     const isExercise = subnode.assignmentType === "EXERCISE";
                     const isJournal = subnode.assignmentType === "JOURNAL";
+                    const isInterimEvaluation =
+                      subnode.assignmentType === "INTERIM_EVALUATION";
                     const isTheory = subnode.assignmentType === null;
 
                     // Boolean if toc element is filtered out
@@ -751,6 +753,8 @@ class ContentComponent extends SessionStateComponent<
                       ? "exercise"
                       : isJournal
                       ? "journal"
+                      : isInterimEvaluation
+                      ? "interim-evaluation"
                       : null;
 
                     let icon: string | null = null;

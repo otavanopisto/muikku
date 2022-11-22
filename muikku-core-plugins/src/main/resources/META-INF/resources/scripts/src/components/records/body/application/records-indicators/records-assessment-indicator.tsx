@@ -47,9 +47,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
       >
         <span
           className={`application-list__indicator-badge application-list__indicator-badge--course ${
-            assessment.state === "pass" || assessment.state === "pending_pass"
-              ? "state-PASSED"
-              : "state-FAILED"
+            assessment.passingGrade ? "state-PASSED" : "state-FAILED"
           }`}
         >
           {shortenGrade(assessment.grade)}

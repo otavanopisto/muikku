@@ -130,14 +130,14 @@ class GuiderStudents extends BodyScrollLoader<
     } else if (this.props.guiderStudentsState === "ERROR") {
       return (
         <div className="empty">
-          {this.props.i18n.text.get("plugin.guider.errormessage.users")}
+          {this.props.i18n.text.get("plugin.guider.errorMessage.users")}
         </div>
       );
     } else if (this.props.guider.students.length === 0) {
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.guider.errormessage.nostudents")}
+            {this.props.i18n.text.get("plugin.guider.errorMessage.nostudents")}
           </span>
         </div>
       );

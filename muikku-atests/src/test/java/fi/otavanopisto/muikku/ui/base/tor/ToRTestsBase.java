@@ -186,7 +186,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
         addTextToCKEditor("Test evaluation.");
         selectOption("#assignmentEvaluationGrade", "PYRAMUS-1");
-        waitAndClick(".button--evaluate-assignment");
+        waitAndClick(".button--dialog-execute");
         
         waitForVisible(".evaluation-modal__item-header.state-EVALUATED");
         waitForVisible(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED");
