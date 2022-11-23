@@ -2,8 +2,6 @@ name: Course headless tests
 on: 
   pull_request:
     branches: [devel, master]
-  push:
-    branches: [j11]
 jobs:
   testing:
     env:
