@@ -8,47 +8,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
-import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
-import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
 
 @Indexable (
   indexName = IndexedCommunicatorMessage.INDEX_NAME,
   typeName = IndexedCommunicatorMessage.TYPE_NAME
-//    options = {
-//      @IndexableFieldOption (
-//        name = "communicatorMessageThreadId",
-//        type = IndexableFieldType.LONG
-//      ),
-//      @IndexableFieldOption (
-//        name = "senderId",
-//        type = IndexableFieldType.LONG
-//      ),
-//      @IndexableFieldOption (
-//        name = "sender",
-//        type = "IndexedCommunicatorMessageSender",
-//        index = "not_analyzed"
-//      ),
-//      @IndexableFieldOption (
-//        name = "recipients",
-//        type = "List<IndexedCommunicatorMessageRecipient>",
-//        index = "not_analyzed"
-//      ),
-//      @IndexableFieldOption (
-//          name = "groupRecipients",
-//          type = "List<IndexedCommunicatorMessageGroupRecipient>",
-//          index = "not_analyzed"
-//        ),
-//      @IndexableFieldOption (
-//        name = "searchId",
-//        type = "Long",
-//        index = "not_analyzed"
-//      ),
-//      @IndexableFieldOption (
-//        name = "created",
-//        type = "Date",
-//        index = "not_analyzed"
-//     )
-//   }
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexedCommunicatorMessage {
