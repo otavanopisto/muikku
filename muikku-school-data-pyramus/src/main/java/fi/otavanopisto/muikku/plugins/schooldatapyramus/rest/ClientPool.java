@@ -24,9 +24,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.ext.ContextResolver;
 
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 @ApplicationScoped
 @Singleton
@@ -69,13 +69,8 @@ public class ClientPool {
     if ("development".equals(System.getProperties().getProperty("system.environment"))) {
       clientBuilder = trustSelfSignedCerts(clientBuilder);
     }
-
-//    ObjectMapper objectMapper = new ObjectMapper();
-//    objectMapper.registerModule(new JSR310Module());
-
     ClientBuilder builder = clientBuilder
         .register(new JacksonConfigurator())
-//        .register(new JacksonJaxbJsonProvider(objectMapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS))
         .register(new BrowserCacheFeature());
     
     return builder.build();

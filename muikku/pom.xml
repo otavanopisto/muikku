@@ -271,11 +271,6 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>3.3.1</version>
         <configuration>
-<!--           <archive> -->
-<!--             <manifestEntries> -->
-<!--               <Dependencies>org.apache.commons.io,org.apache.commons.collections,org.apache.commons.codec,org.apache.httpcomponents,com.h2database.h2,org.jboss.resteasy.resteasy-jaxb-provider,org.jboss.resteasy.resteasy-jackson2-provider</Dependencies> -->
-<!--             </manifestEntries> -->
-<!--           </archive> -->
           <classifier>${classifier}</classifier>
         </configuration>
       </plugin>

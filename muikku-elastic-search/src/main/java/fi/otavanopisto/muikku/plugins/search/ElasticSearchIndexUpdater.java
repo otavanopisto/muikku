@@ -168,11 +168,6 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   }
   
   private void updateMapping(String indexName, ElasticMappingProperties properties) throws IOException {
-//      Map<String, ElasticMappingProperties> mappings = new HashMap<>();
-//      mappings.put(propertyName, properties);
-//      String mapping = new ObjectMapper()
-//        .writeValueAsString(mappings);
-
     String mapping = new ObjectMapper().writeValueAsString(properties);
     
     PutMappingRequest mappingRequest = new PutMappingRequest(indexName);
@@ -270,18 +265,14 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     try {
       elasticClient.close();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException("KÄÄK");
+      logger.log(Level.SEVERE, "Couldn't deinitialize connection.", e);
     }
-    //node.close();
   }
 
   @Override
   public void addOrUpdateIndex(String indexName, String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JSR310Module());
-//    mapper.registerModule(new JavaTimeModule()); // ???
     
     String json;
     try {
@@ -304,9 +295,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     try {
       elasticClient.delete(deleteRequest, RequestOptions.DEFAULT);
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException("KÄÄK");
+      logger.log(Level.SEVERE, String.format("Couldn't delete a document %s from index %s.", id, indexName), e);
     }
   }
 
@@ -316,6 +305,4 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   }
 
   private RestHighLevelClient elasticClient;
-  //private Node node;
-
 }
