@@ -716,15 +716,16 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
           )()
         );
 
+        const hash = window.location.hash.replace("#", "").split("/");
+
+        const areaId = discussion.areaId ? discussion.areaId : 0;
+
+        const areaString = hash.includes("subs")
+          ? "subs"
+          : areaId + "/" + discussion.page;
+
         window.location.hash =
-          newThread.forumAreaId +
-          "/" +
-          (newThread.forumAreaId === discussion.areaId
-            ? discussion.page
-            : "1") +
-          "/" +
-          newThread.id +
-          "/1";
+          areaString + "/" + newThread.forumAreaId + "/" + newThread.id + "/1";
 
         // If user want to subscribe data when creating new
         if (data.subscribe) {
@@ -867,7 +868,7 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
       }
 
       const actualThreadPage = data.threadPage || discussion.currentPage;
-      const actualPage = data.page || discussion.page;
+      // const actualPage = data.page || discussion.page;
 
       dispatch({
         type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
@@ -940,18 +941,10 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
           current: newCurrentThread,
           currentReplies: replies,
           currentState: "READY",
-          page: actualPage,
+          // page: actualPage,
           currentPage: actualThreadPage,
           threads: newThreads,
         };
-
-        //In a nutshell, if I go from all areas to a specific thread, then once going back it will cause it to load twice
-        //back as it will detect a change of area, from a specific area to all areas.
-        //this is only worth setting if the load happened in the specific area, that is the discussion threads state is not
-        //ready but the current one is
-        if (discussion.state !== "READY") {
-          newProps.areaId = data.areaId;
-        }
 
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",

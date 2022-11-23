@@ -55,7 +55,7 @@ interface DiscussionToolbarState {}
 /**
  * CommunicatorToolbar
  */
-class CommunicatorToolbar extends React.Component<
+class DiscussionToolbar extends React.Component<
   DiscussionToolbarProps,
   DiscussionToolbarState
 > {
@@ -294,7 +294,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommunicatorToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionToolbar);

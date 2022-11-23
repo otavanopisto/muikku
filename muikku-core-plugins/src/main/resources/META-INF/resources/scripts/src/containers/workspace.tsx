@@ -714,10 +714,10 @@ export default class Workspace extends React.Component<
         //and there can be a page as #1/2/3/4
         this.props.store.dispatch(
           loadDiscussionThreadFromServer({
-            areaId: parseInt(location[0]),
-            page: parseInt(location[1]),
-            threadId: parseInt(location[2]),
-            threadPage: parseInt(location[3]) || 1,
+            areaId: parseInt(location[2]),
+            // page: parseInt(location[1]),
+            threadId: parseInt(location[3]),
+            threadPage: parseInt(location[4]) || 1,
           }) as Action
         );
       }

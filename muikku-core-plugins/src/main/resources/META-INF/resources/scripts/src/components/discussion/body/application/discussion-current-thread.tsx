@@ -86,30 +86,24 @@ class DiscussionCurrentThread extends React.Component<
    * @param n n
    */
   getToPage(n: number) {
-    if (
-      this.props.discussion.areaId === this.props.discussion.current.forumAreaId
-    ) {
-      window.location.hash =
-        this.props.discussion.current.forumAreaId +
-        "/" +
-        this.props.discussion.page +
-        "/" +
-        this.props.discussion.current.id +
-        "/" +
-        n;
-    } else {
-      const areaId = this.props.discussion.areaId
-        ? this.props.discussion.areaId
-        : 0;
-      window.location.hash =
-        areaId +
-        "/" +
-        this.props.discussion.page +
-        "/" +
-        this.props.discussion.current.id +
-        "/" +
-        n;
-    }
+    const hash = window.location.hash.replace("#", "").split("/");
+
+    const areaId = this.props.discussion.areaId
+      ? this.props.discussion.areaId
+      : 0;
+
+    const areaString = hash.includes("subs")
+      ? "subs"
+      : areaId + "/" + this.props.discussion.page;
+
+    window.location.hash =
+      areaString +
+      "/" +
+      this.props.discussion.current.forumAreaId +
+      "/" +
+      this.props.discussion.current.id +
+      "/" +
+      n;
   }
 
   /**

@@ -78,6 +78,7 @@ export interface DiscussionSubscribedThread {
 export interface DiscussionThreadType {
   created: string;
   creator: DiscussionUserType;
+  entryPoint: number[];
   forumAreaId: number;
   id: number;
   lastModified: string;
@@ -188,7 +189,7 @@ const initialDiscussionState: DiscussionType = {
   totalPages: 1,
   current: null,
   currentState: "READY",
-  currentPage: 2,
+  currentPage: 1,
   currentTotalPages: 1,
   currentReplies: [],
 };
