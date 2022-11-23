@@ -36,7 +36,6 @@ public class MaterialFieldCollection {
       materialFields.clear();
     }
     if (StringUtils.isNotBlank(html)) {
-      // TODO Make sure this works
       StringReader htmlReader = new StringReader(String.format("<document>%s</document>", html));
       try {
         InputSource inputSource = new InputSource(htmlReader);
