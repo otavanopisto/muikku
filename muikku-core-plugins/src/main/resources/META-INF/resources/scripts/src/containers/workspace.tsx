@@ -667,19 +667,29 @@ export default class Workspace extends React.Component<
     this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
 
     if (location.includes("subs")) {
-      const payload: DiscussionPatchType = {
-        current: state.discussion.current && undefined,
-        areaId: undefined,
-      };
+      if (location.length <= 2) {
+        const payload: DiscussionPatchType = {
+          current: state.discussion.current && undefined,
+          areaId: undefined,
+        };
 
-      this.props.store.dispatch({
-        type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
-        payload,
-      });
+        this.props.store.dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+          payload,
+        });
 
-      this.props.store.dispatch(
-        showOnlySubscribedThreads({ value: true }) as Action
-      );
+        this.props.store.dispatch(
+          showOnlySubscribedThreads({ value: true }) as Action
+        );
+      } else {
+        this.props.store.dispatch(
+          loadDiscussionThreadFromServer({
+            areaId: parseInt(location[1]),
+            threadId: parseInt(location[2]),
+            threadPage: parseInt(location[3]) || 1,
+          }) as Action
+        );
+      }
     } else {
       state.discussion.subscribedThreadOnly &&
         this.props.store.dispatch(
