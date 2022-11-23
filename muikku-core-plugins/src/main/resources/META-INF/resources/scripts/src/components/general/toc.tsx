@@ -5,6 +5,8 @@
  */
 
 import * as React from "react";
+import AnimateHeight from "react-animate-height";
+import { useLocalStorage } from "usehooks-ts";
 import Link from "~/components/general/link";
 import "~/sass/elements/toc.scss";
 
@@ -12,36 +14,45 @@ import "~/sass/elements/toc.scss";
  * TocProps
  */
 interface TocProps {
-  tocTitle?: string;
+  tocHeaderTitle?: string;
+  tocHeaderExtraContent?: React.ReactNode;
 }
 
 /**
  * Toc
+ * @param props TocProps
+ * @returns JSX.Element
  */
-export default class Toc extends React.Component<
-  TocProps,
-  Record<string, unknown>
-> {
-  /**
-   * Component render method
-   * @returns JSX.Element
-   */
-  render() {
-    return (
-      <div className="toc">
-        {this.props.tocTitle ? (
-          <h2 className="toc__title">{this.props.tocTitle}</h2>
-        ) : null}
-        {this.props.children}
-      </div>
-    );
-  }
-}
+export const Toc: React.FC<TocProps> = (props) => (
+  <div className="toc">
+    <div className="toc-header">
+      {props.tocHeaderTitle && (
+        <h2 className="toc__title">{props.tocHeaderTitle}</h2>
+      )}
+      {props.tocHeaderExtraContent && props.tocHeaderExtraContent}
+    </div>
+
+    {props.children}
+  </div>
+);
 
 /**
  * TocTopicProps
  */
 interface TocTopicProps {
+  /**
+   * Topic id is combination of workspace material folder id + something user related
+   */
+  topicId: number | string;
+  /**
+   * If some of topic's children is active, topic is active
+   */
+  isActive: boolean;
+
+  /**
+   * Toc topic class modifiers
+   */
+  modifiers?: string[];
   name?: string;
   icon?: string;
   className?: string;
@@ -50,47 +61,111 @@ interface TocTopicProps {
   iconAfter?: string;
   iconAfterTitle?: string;
   iconAfterColor?: string;
+  children?: React.ReactNode;
 }
 
-/**
- * TocTopicState
- */
-interface TocTopicState {}
+export type ToggleOpenHandle = {
+  toggleOpen: (type?: "open" | "close") => void;
+};
 
 /**
- * TocTopic
+ * TocTopic component with toggle open functionality with ref forwarding
  */
-export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
-  /**
-   * Component render method
-   * @returns JSX.Element
-   */
-  render() {
+const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
+  (props, ref) => {
+    const [height, setHeight] = useLocalStorage<number | string>(
+      `tocTopic-${props.topicId}`,
+      "auto"
+    );
+
+    /**
+     * Toggles open state
+     * @param type "open" | "handle"
+     */
+    const toggleHeight = (type?: "open" | "close") => {
+      if (type) {
+        setHeight(type === "open" ? "auto" : 0);
+      } else {
+        setHeight(height === 0 ? "auto" : 0);
+      }
+    };
+
+    // Way to expose toggleHeight to parent component
+    React.useImperativeHandle(ref, () => ({
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      toggleOpen: (type) => {
+        toggleHeight(type);
+      },
+    }));
+
+    /**
+     * Handles toggle open and close clicks
+     */
+    const handleToggleHeightClick = () => {
+      toggleHeight();
+    };
+
+    /**
+     * Handles Link click. Opens topic if it's closed
+     * @param e e
+     */
+    const handleLinkClick = (e: React.MouseEvent) => {
+      if (height === 0) {
+        toggleHeight("open");
+      }
+    };
+
+    const arrowModifier = height === 0 ? "icon-arrow-right" : "icon-arrow-down";
+
     return (
-      <div className={this.props.className}>
-        {this.props.name ? (
-          <Link
-            className={`toc__section-title ${
-              this.props.isHidden ? "hidden" : ""
+      <div
+        className={`toc__section-container ${props.isActive ? "active" : ""} ${
+          props.modifiers
+            ? props.modifiers
+                .map((m) => `toc__section-container--${m}`)
+                .join(" ")
+            : ""
+        }`}
+      >
+        {props.name ? (
+          <div
+            className={`toc__section-title-container ${
+              props.isHidden ? "hidden" : ""
             }`}
-            href={this.props.hash ? "#" + this.props.hash : null}
-            disableSmoothScroll={true}
           >
-            <span className="toc__text-body">{this.props.name}</span>
-            {this.props.iconAfter ? (
+            <span
+              className={`toc__icon toc__icon--section-open-close ${arrowModifier}`}
+              onClick={handleToggleHeightClick}
+            />
+            <Link
+              className="toc__section-title"
+              href={props.hash ? "#" + props.hash : null}
+              disableSmoothScroll={true}
+              onClick={handleLinkClick}
+            >
+              <span className="toc__text-body">{props.name}</span>
+            </Link>
+            {props.iconAfter ? (
               <span
-                title={this.props.iconAfterTitle}
-                className={`toc__icon icon-${this.props.iconAfter}`}
-                style={{ color: this.props.iconAfterColor }}
+                title={props.iconAfterTitle}
+                className={`toc__icon icon-${props.iconAfter}`}
+                style={{ color: props.iconAfterColor }}
               ></span>
             ) : null}
-          </Link>
+          </div>
         ) : null}
-        {this.props.children}
+        <AnimateHeight duration={200} height={height} easing="ease-in">
+          {/**TODO: Styling */}
+          <div>{props.children}</div>
+        </AnimateHeight>
       </div>
     );
   }
-}
+);
+
+TocTopic.displayName = "TocTopic";
+
+export default TocTopic;
 
 /**
  * TocElementProps
@@ -98,15 +173,22 @@ export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
 interface TocElementProps {
   isActive: boolean;
   isHidden: boolean;
+  /**
+   * If element is filtered out for some reason
+   * @default false
+   */
+  isFilteredOut?: boolean;
   className?: string;
   modifier?: string;
   hash?: number | string;
   href?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick?: () => any;
   children: string;
   iconAfter?: string;
   iconAfterTitle?: string;
   iconAfterColor?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onScrollToSection?: () => any;
   scrollPadding?: number;
   disableScroll?: boolean;
@@ -129,27 +211,45 @@ export class TocElement extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const {
+      isActive,
+      isHidden,
+      isFilteredOut = false,
+      className,
+      modifier,
+      hash,
+      href,
+      onClick,
+      children,
+      iconAfter,
+      iconAfterTitle,
+      iconAfterColor,
+      onScrollToSection,
+      scrollPadding,
+      disableScroll,
+    } = this.props;
+
     return (
       <Link
-        className={`toc__item ${this.props.isActive ? "active" : ""} ${
-          this.props.className ? this.props.className : ""
-        } ${this.props.isHidden ? "hidden" : ""} ${
-          this.props.modifier ? "toc__item--" + this.props.modifier : ""
+        className={`toc__item ${isActive ? "active" : ""} ${
+          className ? className : ""
+        } ${isHidden ? "hidden" : ""} ${isFilteredOut ? "filteredOut" : ""} ${
+          modifier ? "toc__item--" + modifier : ""
         }`}
-        onScrollToSection={this.props.onScrollToSection}
-        scrollPadding={this.props.scrollPadding}
-        disableScroll={this.props.disableScroll}
-        href={this.props.hash ? "#" + this.props.hash : null}
-        to={this.props.href}
-        onClick={this.props.onClick}
+        onScrollToSection={onScrollToSection}
+        scrollPadding={scrollPadding}
+        disableScroll={disableScroll}
+        href={hash ? "#" + hash : null}
+        to={href}
+        onClick={onClick}
         ref="element"
       >
-        <span className="toc__text-body">{this.props.children}</span>
-        {this.props.iconAfter ? (
+        <span className="toc__text-body">{children}</span>
+        {iconAfter ? (
           <span
-            title={this.props.iconAfterTitle}
-            className={`toc__icon icon-${this.props.iconAfter}`}
-            style={{ color: this.props.iconAfterColor }}
+            title={iconAfterTitle}
+            className={`toc__icon icon-${iconAfter}`}
+            style={{ color: iconAfterColor }}
           ></span>
         ) : null}
       </Link>

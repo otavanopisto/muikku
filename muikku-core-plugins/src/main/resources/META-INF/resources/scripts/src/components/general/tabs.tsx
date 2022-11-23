@@ -53,18 +53,6 @@ interface TabsProps {
   useWithHash?: boolean;
 }
 
-/**
- * MobileOnlyTabsProps
- */
-interface MobileOnlyTabsProps {
-  onTabChange: (id: string, hash?: string) => void;
-  activeTab: string;
-  /** General class modifier */
-  modifier?: string;
-  tabs: Array<Tab>;
-  renderAllComponents?: boolean;
-}
-
 const defaultProps = {
   useWithHash: false,
 };
@@ -213,6 +201,15 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     </div>
   );
 };
+
+interface MobileOnlyTabsProps {
+  onTabChange: (id: string, hash?: string) => void;
+  activeTab: string;
+  /** General class modifier */
+  modifier?: string;
+  tabs: Array<Tab>;
+  renderAllComponents?: boolean;
+}
 
 /**
  * Tabs that are only seen in mobile

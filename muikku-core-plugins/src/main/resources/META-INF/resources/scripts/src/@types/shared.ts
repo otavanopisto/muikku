@@ -11,7 +11,12 @@ export type PageLocation = "Home" | "Help" | "Materials";
 /**
  * Loading items state type
  */
-export type LoadingState = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+export type LoadingState =
+  | "WAITING"
+  | "LOADING"
+  | "LOADING_MORE"
+  | "ERROR"
+  | "READY";
 
 /**
  * Taskfield saving state type

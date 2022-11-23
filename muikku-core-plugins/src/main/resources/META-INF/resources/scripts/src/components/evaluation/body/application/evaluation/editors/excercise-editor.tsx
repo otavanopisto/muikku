@@ -468,7 +468,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
         <div className="form__buttons form__buttons--evaluation">
           <Button
-            buttonModifiers="evaluate-assignment"
+            buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked}
           >
@@ -479,7 +479,7 @@ class ExcerciseEditor extends SessionStateComponent<
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
-                buttonModifiers="evaluate-cancel"
+                buttonModifiers="dialog-cancel"
                 disabled={this.state.locked}
               >
                 {this.props.i18n.text.get(
@@ -490,7 +490,7 @@ class ExcerciseEditor extends SessionStateComponent<
           ) : (
             <Button
               onClick={this.props.onClose}
-              buttonModifiers="evaluate-cancel"
+              buttonModifiers="dialog-cancel"
               disabled={this.state.locked}
             >
               {this.props.i18n.text.get(
@@ -501,7 +501,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
           {this.recovered && (
             <Button
-              buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="dialog-clear"
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >

@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.evaluation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -19,18 +20,24 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.mail.MailType;
+import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestCancellationDAO;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.InterimEvaluationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
@@ -62,7 +69,10 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
+import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class EvaluationController {
 
@@ -72,6 +82,12 @@ public class EvaluationController {
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private Mailer mailer;
+
+  @Inject
+  private SessionController sessionController;
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
@@ -81,6 +97,9 @@ public class EvaluationController {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -99,6 +118,9 @@ public class EvaluationController {
   
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
   @Inject
   private LocaleController localeController;
@@ -120,6 +142,9 @@ public class EvaluationController {
   
   @Inject
   private AssessmentRequestCancellationDAO assessmentRequestCancellationDAO;
+  
+  @Inject
+  private InterimEvaluationRequestDAO interimEvaluationRequestDAO;
   
   /* Workspace activity */
   
@@ -174,6 +199,30 @@ public class EvaluationController {
         activity.setText(supplementationRequest.getRequestText());
         activity.setDate(supplementationRequest.getRequestDate());
         activity.setState(WorkspaceActivityState.SUPPLEMENTATION_REQUESTED);
+      }
+      
+      // Interim evaluation request, if one exists and is newer than activity date so far
+      
+      InterimEvaluationRequest interimEvaluationRequest = findLatestInterimEvaluationRequest(userEntity, workspaceEntity, Boolean.FALSE);
+      if (interimEvaluationRequest != null && interimEvaluationRequest.getRequestDate().after(activity.getDate())) {
+        activity.setText(interimEvaluationRequest.getRequestText());
+        activity.setDate(interimEvaluationRequest.getRequestDate());
+        activity.setState(WorkspaceActivityState.INTERIM_EVALUATION_REQUESTED);
+      }
+      
+      // Interim evaluation, if one exists and is newer than activity date so far
+      
+      List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(
+          workspaceEntity,
+          WorkspaceMaterialAssignmentType.INTERIM_EVALUATION,
+          BooleanPredicate.IGNORE);
+      for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+        WorkspaceMaterialEvaluation evaluation = findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+        if (evaluation != null && evaluation.getEvaluated().after(activity.getDate())) {
+          activity.setText(evaluation.getVerbalAssessment());
+          activity.setDate(evaluation.getEvaluated());
+          activity.setState(WorkspaceActivityState.INTERIM_EVALUATION);
+        }
       }
       
       // Optional assignment statistics
@@ -237,6 +286,101 @@ public class EvaluationController {
     return activities;
   }
   
+  public InterimEvaluationRequest findInterimEvaluationRequestById(Long interimEvaluationRequestId) {
+    return interimEvaluationRequestDAO.findById(interimEvaluationRequestId);
+  }
+  
+  public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceEntity workspaceEntity) {
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndWorkspace(userEntity.getId(), workspaceEntity.getId());
+    if (requests.size() == 0) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(InterimEvaluationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
+  }
+  
+  public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceEntity workspaceEntity, Boolean archived) {
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndWorkspaceAndArchived(userEntity.getId(), workspaceEntity.getId(), archived);
+    if (requests.size() == 0) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(InterimEvaluationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
+  }
+  
+  public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceMaterial workspaceMaterial) {
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndMaterial(userEntity.getId(), workspaceMaterial.getId());
+    if (requests.size() == 0) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(InterimEvaluationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
+  }
+  
+  public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceMaterial workspaceMaterial, Boolean archived) {
+    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), archived);
+    if (requests.size() == 0) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(InterimEvaluationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
+  }
+  
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(Long workspaceEntityId, Boolean archived) {
+    return interimEvaluationRequestDAO.listByWorkspaceAndArchived(workspaceEntityId, archived);
+  }
+
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(Collection<Long> workspaceEntityIds, Boolean archived) {
+    return interimEvaluationRequestDAO.listByWorkspacesAndArchived(workspaceEntityIds, archived);
+  }
+  
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(Long userEntityId, Long workspaceEntityId) {
+    return interimEvaluationRequestDAO.listByUserAndWorkspace(userEntityId, workspaceEntityId);
+  }
+
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(UserEntity userEntity, WorkspaceMaterial workspaceMaterial, Boolean archived) {
+    return interimEvaluationRequestDAO.listByUserAndMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), archived);
+  }
+  
+  public void archiveInterimEvaluationRequest(InterimEvaluationRequest interimEvaluationRequest) {
+    interimEvaluationRequestDAO.archive(interimEvaluationRequest);
+  }
+  
+  public InterimEvaluationRequest createInterimEvaluationRequest(Long workspaceMaterialId, String requestText) {
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(workspaceMaterial);
+    Long userEntityId = sessionController.getLoggedUserEntity().getId();
+    Date requestDate = new Date();
+    InterimEvaluationRequest interimEvaluationRequest =  interimEvaluationRequestDAO.createInterimEvaluationRequest(
+        userEntityId,
+        workspaceEntity.getId(),
+        workspaceMaterialId,
+        requestDate,
+        requestText);
+    sendInterimEvaluationRequestMessage(interimEvaluationRequest);
+    return interimEvaluationRequest;
+  }
+  
+  public InterimEvaluationRequest cancelInterimEvaluationRequest(InterimEvaluationRequest interimEvaluationRequest, boolean sendCancellationMessage) {
+    interimEvaluationRequest = interimEvaluationRequestDAO.updateInterimEvalutionRequest(
+        interimEvaluationRequest,
+        new Date(),
+        interimEvaluationRequest.getRequestText(),
+        Boolean.TRUE);
+    if (sendCancellationMessage) {
+      sendInterimEvaluationRequestCancelledMessage(interimEvaluationRequest);
+    }
+    return interimEvaluationRequest;
+  }
+  
   public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Long workspaceMaterialId, Date requestDate, String requestText) {
     SupplementationRequest supplementationRequest = supplementationRequestDAO.createSupplementationRequest(
         userEntityId,
@@ -282,10 +426,42 @@ public class EvaluationController {
         evaluated, 
         verbalAssessment);
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-    // Null grade is translated to passed as it's likely to be an exercise evaluation
+
+    // Null grade is translated to passed as it's likely to be an exercise or interim evaluation
+    
     WorkspaceMaterialReplyState state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
+    }
+    
+    // #4595: Communicator message about interim evaluation
+    
+    if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
+      WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(workspaceMaterial);
+      String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
+      String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());      
+      String messageTitle = localeController.getText(
+          sessionController.getLocale(),
+          "plugin.workspace.interimEvaluation.notificationTitle",
+          new String[] {workspaceName});
+      String messageBody = localeController.getText(
+          sessionController.getLocale(),
+          "plugin.workspace.interimEvaluation.notificationContent",
+          new String[] {workspaceUrl, workspaceName, verbalAssessment});
+      
+      CommunicatorMessageCategory category = communicatorController.persistCategory("interimEvaluationRequests");
+      CommunicatorMessage communicatorMessage = communicatorController.createMessage(
+          communicatorController.createMessageId(),
+          sessionController.getLoggedUserEntity(),
+          Arrays.asList(student),
+          null,
+          null,
+          null,
+          category,
+          messageTitle,
+          messageBody,
+          Collections.<Tag>emptySet());
+      communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
     }
 
     return evaluation;
@@ -364,7 +540,7 @@ public class EvaluationController {
   public List<WorkspaceMaterialEvaluation> listWorkspaceMaterialEvaluationsByWorkspaceMaterialId(Long workspaceMaterialId){
     return workspaceMaterialEvaluationDAO.listByWorkspaceMaterialId(workspaceMaterialId);
   }
-
+  
   public SupplementationRequest updateSupplementationRequest(SupplementationRequest supplementationRequest, Long userEntityId, Date requestDate, String requestText) {
     SchoolDataIdentifier workspaceSubjectIdentifier = supplementationRequest.getWorkspaceSubjectIdentifier() != null ? SchoolDataIdentifier.fromId(supplementationRequest.getWorkspaceSubjectIdentifier()) : null;
     supplementationRequest = supplementationRequestDAO.updateSupplementationRequest(
@@ -704,6 +880,102 @@ public class EvaluationController {
         messageContent,
         Collections.<Tag>emptySet());
     communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
+  }
+  
+  private void sendInterimEvaluationRequestMessage(InterimEvaluationRequest interimEvaluationRequest) {
+    
+    // Gather message contents
+    
+    UserEntity sender = userEntityController.findUserEntityById(interimEvaluationRequest.getUserEntityId());
+    String senderName = userEntityController.getName(sender).getDisplayNameWithLine();
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(interimEvaluationRequest.getWorkspaceEntityId());
+    String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getWorkspaceMaterialId());
+    List<UserEntity> teachers = new ArrayList<>();
+    List<String> teacherEmails = new ArrayList<>();
+    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
+    if (workspaceTeachers.isEmpty()) {
+      logger.log(Level.WARNING, String.format("Interim evaluation request message not sent as workspace %d has no teachers", workspaceEntity.getId()));
+      return;
+    }
+    for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
+      UserEntity teacher = workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity();
+      teachers.add(teacher);
+      teacherEmails.add(userEmailEntityController.getUserDefaultEmailAddress(teacher, false));
+    }
+    
+    // Construct message
+    
+    String messageTitle = localeController.getText(
+        sessionController.getLocale(),
+        "plugin.communicator.interimevaluationrequest.title",
+        new String[] {senderName, workspaceName});
+    String messageBody = localeController.getText(
+        sessionController.getLocale(),
+        "plugin.communicator.interimevaluationrequest.body",
+        new String[] {senderName, workspaceName, workspaceMaterial.getTitle(), interimEvaluationRequest.getRequestText()});
+    
+    // Send the mail
+    
+    mailer.sendMail(MailType.HTML, teacherEmails, messageTitle, messageBody);
+    
+    // Create a corresponding communicator message (but don't fire a sent event to avoid mail about a new message)
+    
+    CommunicatorMessageCategory category = communicatorController.persistCategory("interimEvaluationRequests");
+    communicatorController.postMessage(
+        sender, 
+        category.getName(),
+        messageTitle, 
+        messageBody, 
+        teachers);
+  }
+
+  private void sendInterimEvaluationRequestCancelledMessage(InterimEvaluationRequest interimEvaluationRequest) {
+    
+    // Gather message contents
+    
+    UserEntity sender = userEntityController.findUserEntityById(interimEvaluationRequest.getUserEntityId());
+    String senderName = userEntityController.getName(sender).getDisplayNameWithLine();
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(interimEvaluationRequest.getWorkspaceEntityId());
+    String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getWorkspaceMaterialId());
+    List<UserEntity> teachers = new ArrayList<>();
+    List<String> teacherEmails = new ArrayList<>();
+    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
+    if (workspaceTeachers.isEmpty()) {
+      logger.log(Level.WARNING, String.format("Interim evaluation request message not sent as workspace %d has no teachers", workspaceEntity.getId()));
+      return;
+    }
+    for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
+      UserEntity teacher = workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity();
+      teachers.add(teacher);
+      teacherEmails.add(userEmailEntityController.getUserDefaultEmailAddress(teacher, false));
+    }
+    
+    // Construct message
+    
+    String messageTitle = localeController.getText(
+        sessionController.getLocale(),
+        "plugin.communicator.interimevaluationrequest.title.cancelled",
+        new String[] {senderName, workspaceName});
+    String messageBody = localeController.getText(
+        sessionController.getLocale(),
+        "plugin.communicator.interimevaluationrequest.body.cancelled",
+        new String[] {senderName, workspaceName, workspaceMaterial.getTitle()});
+    
+    // Send the mail
+    
+    mailer.sendMail(MailType.HTML, teacherEmails, messageTitle, messageBody);
+    
+    // Create a corresponding communicator message (but don't fire a sent event to avoid mail about a new message)
+    
+    CommunicatorMessageCategory category = communicatorController.persistCategory("interimEvaluationRequests");
+    communicatorController.postMessage(
+        sender, 
+        category.getName(),
+        messageTitle, 
+        messageBody, 
+        teachers);
   }
 
 }

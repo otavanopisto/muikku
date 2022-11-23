@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -658,12 +657,21 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(studentArray))
               .withStatus(200)));
           
+          if (!mockStudent.getCounselors().isEmpty()) {
+            stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/guidanceCounselors", mockStudent.getId())))
+                .withQueryParam("onlyMessageRecipients", matching(".*"))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(mockStudent.getCounselors()))
+                .withStatus(200)));
+          }
+          
           stubFor(get(urlMatching(String.format("/1/persons/persons/%d/students", student.getPersonId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(studentArray))
               .withStatus(200)));
-          
+
           studentsList.add(student);
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
           payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
