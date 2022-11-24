@@ -1370,9 +1370,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
         workspaceEntity,
         WorkspaceMaterialAssignmentType.EVALUATED);
-    result.put("assignmentsTotal", new Long(evaluatedAssignments.size()));
-
-    // Done number of evaluated assignments
+    result.put("assignmentsTotal", Long.valueOf(evaluatedAssignments.size()));
+    
+    // Done number of evaluated assignments  
 
     List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
     replyStates.add(WorkspaceMaterialReplyState.FAILED);

@@ -324,7 +324,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         }
       }
 
-      String curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()).toId() : null;
+      SchoolDataIdentifier curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()) : null;
       SchoolDataIdentifier organizationIdentifier = (studyProgramme != null && studyProgramme.getOrganizationId() != null) ? identifierMapper.getOrganizationIdentifier(studyProgramme.getOrganizationId()) : null;
 
       boolean evaluationFees = studyProgramme != null && Boolean.TRUE.equals(studyProgramme.getHasEvaluationFees());

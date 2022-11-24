@@ -12,8 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.RequestSpecification;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 import fi.otavanopisto.muikku.TestRole;
 import fi.otavanopisto.muikku.atests.Announcement;
@@ -202,14 +202,44 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
   
   private void testListAndFind(RequestSpecification request, TestRole role, int expectedCount) {
     Response response = request.get("/announcer/announcements");
-    
     response.then().statusCode(200).body("id.size()", is(expectedCount));
-      
+
     List<Long> ids = response.body().jsonPath().getList("id", Long.class);
     for (Long announcementId : ids) {
-      Response findResponse = request
-        .get("/announcer/announcements/{ID}", announcementId);
-      assertEquals(String.format("Role %s cannot find listed announcement %d.", role, announcementId), 200, findResponse.statusCode());
+      switch (role) {
+      case ADMIN:
+        asAdmin()
+        .get("/announcer/announcements/{ID}", announcementId)
+        .then()
+        .statusCode(200);
+        break;
+      case MANAGER:
+        asManager()
+        .get("/announcer/announcements/{ID}", announcementId)
+        .then()
+        .statusCode(200);
+        break;
+      case TEACHER:
+        asTeacher()
+        .get("/announcer/announcements/{ID}", announcementId)
+        .then()
+        .statusCode(200);
+        break;
+      case STUDENT:
+        asStudent()
+        .get("/announcer/announcements/{ID}", announcementId)
+        .then()
+        .statusCode(200);
+        break;
+      case EVERYONE:
+        asEveryone()
+        .get("/announcer/announcements/{ID}", announcementId)
+        .then()
+        .statusCode(200);
+        break;
+      default:
+        break;
+      }
     }
   }
     

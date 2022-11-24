@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.rest.test;
 
-import com.jayway.restassured.specification.RequestSpecification;
+import io.restassured.specification.RequestSpecification;
 
 import fi.otavanopisto.muikku.TestRole;
 

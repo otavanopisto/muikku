@@ -22,7 +22,7 @@ public class PyramusUser extends AbstractUser implements User {
                      String language,
                      String municipality,
                      String school,
-                     String curriculumIdentifier,
+                     SchoolDataIdentifier curriculumIdentifier,
                      SchoolDataIdentifier organizationIdentifier,
                      OffsetDateTime studyStartDate,
                      OffsetDateTime studyEndDate,
