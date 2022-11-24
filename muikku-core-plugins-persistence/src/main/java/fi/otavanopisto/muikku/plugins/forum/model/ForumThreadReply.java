@@ -52,6 +52,6 @@ public class ForumThreadReply extends ForumMessage implements ContextReference {
   @ManyToOne
   private ForumThreadReply parentReply;
 
-  @Formula("(select count(*) from forumthreadreply f where f.parentReply_id = id)")
+  @Formula("(select count(*) from ForumThreadReply f where f.parentReply_id = id)")
   private Long childReplyCount;
 }

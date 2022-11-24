@@ -1466,6 +1466,7 @@
 }
 
 // Buttons used in Material pages
+.muikku-submit-interim-evaluation,
 .button--muikku-submit-journal,
 .button--muikku-submit-exercise,
 .button--muikku-show-correct-answers-button,
@@ -1479,6 +1480,11 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+}
+
+.button--muikku-submit-interim-evaluation {
+  background-color: $color-interim-evaluation;
+  color: $color-default;
 }
 
 .button--muikku-submit-journal {
@@ -1742,6 +1748,17 @@
   &:hover {
     background: $color-journal-page;
     border-color: $color-journal-page;
+  }
+}
+
+.button-pill--material-editor-interim-evaluation {
+  background: $color-interim-evaluation;
+  border-color: $color-interim-evaluation;
+  color: $color-default;
+
+  &:hover {
+    background: $color-interim-evaluation;
+    border-color: $color-interim-evaluation;
   }
 }
 
@@ -2140,36 +2157,6 @@
   }
 }
 
-.button--evaluate-assignment {
-  background-color: $color-assignment;
-  color: $color-default;
-  margin: 0 5px;
-}
-
-.button--evaluate-supplementation {
-  background: $color-incomplete;
-  color: $color-default;
-  margin: 0 5px;
-}
-
-.button--evaluate-workspace {
-  background: $color-success;
-  color: $color-default;
-  margin: 0 5px;
-}
-
-.button--evaluate-remove-draft {
-  background: $color-clear;
-  color: $color-default;
-  margin: 0 5px;
-}
-
-.button--evaluate-cancel {
-  background: $color-button-cancel-background;
-  color: $color-default;
-  margin: 0 5px;
-}
-
 .button--whatsapp-me {
   background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
   color: $color-default;
@@ -2177,25 +2164,8 @@
 }
 
 .button-icon--evaluation {
-  &.button-icon--excercise-drawer-close {
-    color: $color-default-contrast;
-    font-size: 2rem;
-  }
-
-  &.button-icon--assignment-drawer-close {
-    color: $color-assignment;
-    font-size: 2rem;
-  }
-
-  &.button-icon--workspace-drawer-close {
-    color: $color-info;
-    font-size: 2rem;
-  }
-
-  &.button-icon--supplementation-drawer-close {
-    color: $color-incomplete;
-    font-size: 2rem;
-  }
+  color: $color-info;
+  font-size: 2rem;
 
   &.disabled,
   &:disabled {
@@ -2234,6 +2204,15 @@
     background-color: transparent;
     color: $color-disabled;
   }
+}
+
+.button-icon--toc-filter,
+.button-icon--toc-open-close-sections {
+  color: $color-default-contrast;
+  font-size: 1rem;
+  height: 1.5rem;
+  margin: 0 10px 0 0;
+  width: 1.5rem;
 }
 
 .button-icon--reading-ruler-active {

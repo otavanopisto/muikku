@@ -13,6 +13,7 @@ import {
 } from "~/reducers/workspaces";
 import { AssessmentRequest } from "~/@types/evaluation";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
+import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-intermin-evaluation";
 
 /**
  * EvaluationEventContentCardProps
@@ -159,6 +160,24 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
 
           const open = listOfAssignmentIds.includes(item.id);
 
+          // For simplicity, we'll use intermin evaluation as its own component
+          if (item.assignmentType === "INTERIM_EVALUATION") {
+            return (
+              <EvaluationAssessmentInterminEvaluation
+                key={i}
+                workspace={workspace}
+                open={open}
+                assigment={item}
+                compositeReply={compositeReply}
+                showAsHidden={showAsHidden}
+                onClickOpen={handleOpenMaterialClick}
+                onSave={handleCloseSpecificMaterialContent}
+                selectedAssessment={selectedAssessment}
+              />
+            );
+          }
+
+          // Otherwise, it's an assignment component which includes EVALAUTE and EXERCISE type assignments
           return (
             <EvaluationAssessmentAssignment
               key={i}

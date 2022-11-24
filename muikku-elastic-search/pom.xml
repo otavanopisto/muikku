@@ -15,16 +15,23 @@
 	<description>Muikku Elasic Search plugin</description>
 
 	<properties>
-		<elasticsearch.version>2.1.2</elasticsearch.version>
-	</properties>
+      <elasticsearch.version>7.17.6</elasticsearch.version>
+      
+      <!-- 
+        Lucene version that the above version of elasticsearch is using. Used to override (fix) 
+        the version of the lucene packages that would otherwise get incompatible managed version
+        from the Wildfly pom import in bom.
+      -->
+      <elasticsearch.lucene.version>8.11.1</elasticsearch.lucene.version>
+    </properties>
   
   <dependencies>
 
     <!-- CDI -->
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -47,13 +54,59 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Lucene packages used by elasticsearch-rest-high-level-client which are given incorrect version from Wildfly pom import in bom -->
+    
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-misc</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-facet</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queries</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queryparser</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+      <scope>compile</scope>
     </dependency>
     
     <!-- Elastic Search -->
 
     <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-high-level-client</artifactId>
       <version>${elasticsearch.version}</version>
     </dependency>
     
@@ -74,5 +127,5 @@
       <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
     
-	</dependencies> 
+  </dependencies> 
 </project>

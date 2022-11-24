@@ -501,7 +501,7 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.fileRemoveFailed"
+              "plugin.guider.errorMessage.fileRemoveFailed"
             ),
             "error"
           )
@@ -758,7 +758,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          getState().i18n.text.get("plugin.guider.errorMessage.user"),
           "error"
         )
       );
@@ -900,7 +900,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          getState().i18n.text.get("plugin.guider.errorMessage.user"),
           "error"
         )
       );
@@ -986,7 +986,7 @@ const loadStudentContactLogs: LoadContactLogsTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            getState().i18n.text.get("plugin.guider.errorMessage.user"),
             "error"
           )
         );
@@ -1517,7 +1517,7 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.contactLogs.contactLogComment.onEdit"
+              "plugin.guider.errorMessage.contactLogs.contactLogComment.onEdit"
             ),
             "error"
           )
@@ -1618,7 +1618,7 @@ async function removeLabelFromUserUtil(
     }
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get("plugin.guider.errormessage.label.remove"),
+        getState().i18n.text.get("plugin.guider.errorMessage.label.remove"),
         "error"
       )
     );
@@ -1668,7 +1668,7 @@ async function addLabelToUserUtil(
     }
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get("plugin.guider.errormessage.label.add"),
+        getState().i18n.text.get("plugin.guider.errorMessage.label.add"),
         "error"
       )
     );
@@ -1789,7 +1789,7 @@ const updateLabelFilters: UpdateLabelFiltersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.labels"),
+            getState().i18n.text.get("plugin.guider.errorMessage.labels"),
             "error"
           )
         );
@@ -1827,7 +1827,7 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.workspaces"),
+            getState().i18n.text.get("plugin.guider.errorMessage.workspaces"),
             "error"
           )
         );
@@ -1863,7 +1863,7 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.userGroups"),
+            getState().i18n.text.get("plugin.guider.errorMessage.userGroups"),
             "error"
           )
         );
@@ -1886,7 +1886,7 @@ const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.createUpdateLabels.missing.title"
+              "plugin.guider.errorMessage.createUpdateLabels.missing.title"
             ),
             "error"
           )
@@ -1918,7 +1918,7 @@ const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.label.create"),
+            getState().i18n.text.get("plugin.guider.errorMessage.label.create"),
             "error"
           )
         );
@@ -1942,7 +1942,7 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.createUpdateLabels.missing.title"
+              "plugin.guider.errorMessage.createUpdateLabels.missing.title"
             ),
             "error"
           )
@@ -1989,7 +1989,7 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.label.update"),
+            getState().i18n.text.get("plugin.guider.errorMessage.label.update"),
             "error"
           )
         );
@@ -2026,7 +2026,7 @@ const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.label.remove"),
+            getState().i18n.text.get("plugin.guider.errorMessage.label.remove"),
             "error"
           )
         );
@@ -2060,7 +2060,7 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.purchaseproducts"
+              "plugin.guider.errorMessage.purchaseproducts"
             ),
             "error"
           )
@@ -2099,7 +2099,7 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.purchasefailed"
+              "plugin.guider.errorMessage.purchasefailed"
             ),
             "error"
           )
@@ -2131,7 +2131,7 @@ const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.deletefailed"),
+            getState().i18n.text.get("plugin.guider.errorMessage.deletefailed"),
             "error"
           )
         );
@@ -2167,7 +2167,7 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.completefailed"
+              "plugin.guider.errorMessage.completefailed"
             ),
             "error"
           )

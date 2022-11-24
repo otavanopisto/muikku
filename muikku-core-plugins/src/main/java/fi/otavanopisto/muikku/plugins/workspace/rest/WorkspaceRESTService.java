@@ -1370,9 +1370,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
         workspaceEntity,
         WorkspaceMaterialAssignmentType.EVALUATED);
-    result.put("assignmentsTotal", new Long(evaluatedAssignments.size()));
-
-    // Done number of evaluated assignments
+    result.put("assignmentsTotal", Long.valueOf(evaluatedAssignments.size()));
+    
+    // Done number of evaluated assignments  
 
     List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
     replyStates.add(WorkspaceMaterialReplyState.FAILED);
@@ -1902,7 +1902,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       // Evaluation info for evaluable materials
 
-      if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED || reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE) {
+      if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
+          reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
+          reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
         compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
       }
       return Response.ok(compositeReply).build();
@@ -1953,7 +1955,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         // Evaluation info for evaluable materials
 
-        if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED || reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE) {
+        if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
+            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
+            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
           compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
         }
 

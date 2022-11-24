@@ -7,8 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.commons.lang3.StringUtils;
-import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -34,13 +36,14 @@ public class MaterialFieldCollection {
       materialFields.clear();
     }
     if (StringUtils.isNotBlank(html)) {
-      StringReader htmlReader = new StringReader(html);
+      StringReader htmlReader = new StringReader(String.format("<document>%s</document>", html));
       try {
-        DOMParser parser = new DOMParser();
         InputSource inputSource = new InputSource(htmlReader);
-        parser.parse(inputSource);
-        Document document = parser.getDocument();
-        NodeList objectNodeList = document.getElementsByTagName("object");
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document document = dBuilder.parse(inputSource);
+        Element documentElement = document.getDocumentElement();
+        NodeList objectNodeList = documentElement.getElementsByTagName("object");
         for (int i = 0, l = objectNodeList.getLength(); i < l; i++) {
           Node objectNode = objectNodeList.item(i);
           if (objectNode instanceof Element) {

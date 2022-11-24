@@ -232,6 +232,8 @@
   }
 }
 
+// Mobile only tabs
+
 .tabs__tab--mobile-only-tab {
   @include breakpoint($breakpoint-pad) {
     background: $color-default;

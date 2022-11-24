@@ -18,7 +18,7 @@ import java.util.Set;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import fi.otavanopisto.muikku.AbstractPyramusMocks;
 import fi.otavanopisto.muikku.TestUtilities;
@@ -73,7 +73,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   private static void loginMock(Long userId, String email, String firstName, String lastName) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
@@ -109,7 +109,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   public static void personsPyramusMocks() throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Map<String, String> variables = null;
     List<String> tags = null;
@@ -502,7 +502,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   
   @SuppressWarnings("unused")
   private static StaffMember mockStaffMember(Long personId, Long staffMemberId, Long organizationId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     Set<Long> staffStudyProgrammes = new HashSet<>();
     staffStudyProgrammes.add(1l);
@@ -543,7 +543,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   private static void mockStudyProgrammes() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     StudyProgrammeCategory spc = new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false);
     StudyProgramme sp = new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, null, false, false);
@@ -581,7 +581,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   public static void workspacePyramusMock(Long id, String name, String description) throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
@@ -643,7 +643,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
 
   public static void studentGroupsMocks() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime lastmodified = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
@@ -659,7 +659,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   public static void adminMock() throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
     
     Map<String, String> variables = null;
     List<String> tags = null;
@@ -766,7 +766,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   private static Person mockPerson(Long personId, OffsetDateTime birthday, String socialSecurityNumber, Sex sex, Long defaultUserId) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Person person = new Person(personId, birthday, socialSecurityNumber, sex, false, "empty", defaultUserId);
     String personJson = objectMapper.writeValueAsString(person);
@@ -781,7 +781,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   public static void mockCommons() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     Subject subject = new Subject((long) 1, "tc_11", "Test course", (long) 1, false);
     String subjectJson = objectMapper.writeValueAsString(subject);
@@ -864,7 +864,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
 
   public static void mockCourseTypes() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     fi.otavanopisto.pyramus.rest.model.CourseType courseType = new fi.otavanopisto.pyramus.rest.model.CourseType((long) 1, "Nonstop", false);
     CourseType[] courseTypeArray = { courseType };
@@ -887,7 +887,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   public static void mockContactTypes() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     ContactType contactType = new ContactType((long)1, "Koti", false, false);
     ContactType[] contactTypes = { contactType };
@@ -909,7 +909,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   public static void mockAssessedStudent1Workspace1(MockCourseStudent courseStudent, Long assessorId) throws JsonProcessingException {
     // TODO: Move to new mocker.
     
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 //    CourseStudent courseStudent = new CourseStudent(3l, 1l, 1l, OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), false, null, null, null, null, null);
     OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
     CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 1l, assessorId, assessmentCreated, "Test evaluation.", Boolean.TRUE);

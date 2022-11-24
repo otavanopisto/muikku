@@ -24,11 +24,20 @@ export interface WhoAmIType {
   hasEvaluationFees: boolean;
   hasImage: boolean;
   id: number;
+  /**
+   * Whether user is active
+   */
+  isActive: boolean;
+  /**
+   * PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
+   */
+  identifier: string;
   organizationIdentifier: string;
+  locale: string;
   nickName: string;
   isDefaultOrganization: boolean;
   permissions: string[];
-  roles: string[];
+  role: Role;
   studyProgrammeName: string;
   studyProgrammeIdentifier: string;
   addresses: string;
@@ -41,9 +50,9 @@ export interface WhoAmIType {
 export interface StatusType {
   loggedIn: boolean;
   userId: number;
+  userSchoolDataIdentifier: string;
   permissions: any;
   contextPath: string;
-  userSchoolDataIdentifier: string;
   isActiveUser: boolean;
   role: Role;
   isStudent: boolean;
@@ -105,7 +114,6 @@ export enum Role {
 const workspaceIdNode = document.querySelector(
   'meta[name="muikku:workspaceId"]'
 );
-const roleNode = document.querySelector('meta[name="muikku:role"]');
 
 // _MUIKKU_LOCALE should be taken from the html
 /**
@@ -119,33 +127,20 @@ export default function status(
       document
         .querySelector('meta[name="muikku:loggedIn"]')
         .getAttribute("value")
-    ), //whoami.id
-    userId:
-      parseInt(
-        document
-          .querySelector('meta[name="muikku:loggedUserId"]')
-          .getAttribute("value")
-      ) || null, // whoami.id
-    role: <Role>(
-      document.querySelector('meta[name="muikku:role"]').getAttribute("value")
-    ),
+    ), //whoami.id is checked if exists
+    userId: null, // whoami.id
+    userSchoolDataIdentifier: null, // whoami.identifier
+    role: undefined, // whoami.role
     permissions: {},
     contextPath: "", // always empty
-    userSchoolDataIdentifier: document
-      .querySelector('meta[name="muikku:loggedUser"]')
-      .getAttribute("value"), // missing
     isActiveUser: JSON.parse(
       document
         .querySelector('meta[name="muikku:activeUser"]')
         .getAttribute("value")
-    ), // missing
-    hasFees: JSON.parse(
-      document
-        .querySelector('meta[name="muikku:hasFees"]')
-        .getAttribute("value")
-    ),
+    ), // whoamI.isActive
+    hasFees: false, // whoami.hasEvaluationFees
     profile: null,
-    isStudent: roleNode.getAttribute("value") === "STUDENT", // check if roles contain STUDENT
+    isStudent: false, // check if role is STUDENT
     currentWorkspaceInfo: null,
     hasImage: false,
     imgVersion: new Date().getTime(),

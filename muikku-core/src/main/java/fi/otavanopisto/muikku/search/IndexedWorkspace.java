@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
 import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
 
 @Indexable (
@@ -23,64 +24,47 @@ import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
   options = {
     @IndexableFieldOption (
       name = "identifier",
-      type = "multi_field",
-      multiFields = {
-        @IndexableFieldMultiField(name = "identifier", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-      }
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "name",
-      type = "multi_field",
+      type = IndexableFieldType.TEXT,
       multiFields = {
-        @IndexableFieldMultiField(name = "name", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+        @IndexableFieldMultiField(name = "name", type = IndexableFieldType.TEXT),
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
       }
     ),
     @IndexableFieldOption (
       name = "educationTypeIdentifier",
-      type = "multi_field",
-      multiFields = {
-        @IndexableFieldMultiField(name = "educationTypeIdentifier", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-      }
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "educationSubTypeIdentifier",
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "curriculumIdentifiers",
-      type = "multi_field",
-      multiFields = {
-        @IndexableFieldMultiField(name = "curriculumIdentifiers", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-      }
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "signupPermissionGroups",
-      type = "multi_field",
-      multiFields = {
-        @IndexableFieldMultiField(name = "signupPermissionGroups", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-      }
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "organizationIdentifier",
-      type = "multi_field",
-      multiFields = {
-        @IndexableFieldMultiField(name = "organizationIdentifier", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-      }
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "workspaceTypeId",
-      type = "multi_field",
-      multiFields = {
-        @IndexableFieldMultiField(name = "workspaceTypeId", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-      }
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "access",
-      type = "string",
-      index = "not_analyzed"
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "viewLink",
+      type = IndexableFieldType.KEYWORD
     )
   },
   subObjects = {
@@ -88,20 +72,24 @@ import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
       name = "subjects",
       options = {
         @IndexableFieldOption (
+          name = "identifier",
+          type = IndexableFieldType.KEYWORD
+        ),
+        @IndexableFieldOption (
           name = "subjectIdentifier",
-          type = "multi_field",
-          multiFields = {
-            @IndexableFieldMultiField(name = "identifier", type="string", index = "analyzed"),
-            @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-          }
+          type = IndexableFieldType.KEYWORD
+        ),
+        @IndexableFieldOption (
+          name = "subjectCode",
+          type = IndexableFieldType.KEYWORD
         ),
         @IndexableFieldOption (
           name = "lengthUnitIdentifier",
-          type = "multi_field",
-          multiFields = {
-            @IndexableFieldMultiField(name = "identifier", type="string", index = "analyzed"),
-            @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-          }
+          type = IndexableFieldType.KEYWORD
+        ),
+        @IndexableFieldOption (
+          name = "lengthUnitSymbol",
+          type = IndexableFieldType.KEYWORD
         )
       }
     )
@@ -110,7 +98,7 @@ import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexedWorkspace {
 
-  public static final String INDEX_NAME = "muikku_workspaces";
+  public static final String INDEX_NAME = "muikku_workspace";
   public static final String TYPE_NAME = "Workspace";
   
   @IndexId
