@@ -105,23 +105,11 @@ class DiscussionToolbar extends React.Component<
    * @param e e
    */
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    //TODO this is a retarded way to do things if we ever update to a SPA
-    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
-    if (history.replaceState) {
-      const canGoBack =
-        (!document.referrer ||
-          document.referrer.indexOf(window.location.host) !== -1) &&
-        history.length;
-      if (canGoBack) {
-        history.back();
-      } else {
-        const splitted = location.hash.split("/");
-        history.replaceState("", "", splitted[0] + "/" + splitted[1]);
-        window.dispatchEvent(new HashChangeEvent("hashchange"));
-      }
+    const hash = window.location.hash.replace("#", "").split("/");
+    if (hash.includes("subs")) {
+      location.hash = "subs";
     } else {
-      const splitted = location.hash.split("/");
-      location.hash = splitted[0] + "/" + splitted[1];
+      location.hash = hash[0] + "/" + hash[1];
     }
   }
 
