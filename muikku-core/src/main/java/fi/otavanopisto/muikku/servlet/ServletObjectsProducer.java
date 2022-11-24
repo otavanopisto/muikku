@@ -19,15 +19,4 @@ public class ServletObjectsProducer {
     return servletObjectsContainer.getBaseUrl();
   }
   
-  /**
-   * Producer for the ContextPath annotation.
-   * 
-   * @return The current context path
-   */
-  @Produces 
-  @ContextPath
-  public String produceContextPath() {
-    return servletObjectsContainer.getContextPath();
-  }
-  
 }

@@ -49,11 +49,11 @@ public class SearchIndexer {
     }
   }
   
-  public void remove(String indexName, String name, Object entity) {
+  public void remove(String indexName, String typeName, Object entity) {
     try {
       Map<String, Object> indexEntity = indexEntityProcessor.process(entity);
       if (indexEntity != null) {
-        remove(indexName, name, indexEntity.get("id").toString());
+        remove(indexName, typeName, indexEntity.get("id").toString());
       }
     } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
       logger.log(Level.WARNING, "Entity processing exception", e);
