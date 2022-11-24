@@ -42,7 +42,7 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import Dropdown from "~/components/general/dropdown";
-import { ButtonPill, IconButton } from "~/components/general/button";
+import { IconButton } from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 
 /**
@@ -122,7 +122,13 @@ class ContentComponent extends SessionStateComponent<
     this.state = {
       ...this.getRecoverStoredState(
         {
-          assignmentTypeFilters: ["THEORY", "EVALUATED", "EXERCISE", "JOURNAL"],
+          assignmentTypeFilters: [
+            "THEORY",
+            "EVALUATED",
+            "EXERCISE",
+            "JOURNAL",
+            "INTERIM_EVALUATION",
+          ],
           sessionId,
         },
         sessionId
@@ -650,6 +656,27 @@ class ContentComponent extends SessionStateComponent<
                       >
                         {this.props.i18n.text.get(
                           "plugin.workspace.materials.tocFilter.journal"
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="INTERIM_EVALUATION"
+                        id="interim-evaluation-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "INTERIM_EVALUATION"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="interim-evaluation-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.interim"
                         )}
                       </label>
                     </div>
