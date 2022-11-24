@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.195-SNAPSHOT</version>
+    <version>1.1.195</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -276,7 +276,7 @@
                 <autoCreate>true</autoCreate>
                 <createOptions>
                   <virtualbox-memory>10000</virtualbox-memory>
-                  <virtualbox-no-share></virtualbox-no-share>
+                  <virtualbox-no-share />
                 </createOptions>
               </machine>
               <dockerHost>unix:///var/run/docker.sock</dockerHost>
@@ -409,7 +409,7 @@
               <persistenceXml>${basedir}/src/test/resources/persistence_for_generation_purpose.xml</persistenceXml>
               <createDropStatements>false</createDropStatements>
               <omitDialectFromFileName>true</omitDialectFromFileName>
-              <outputFileNamePrefix></outputFileNamePrefix>
+              <outputFileNamePrefix />
               <outputFileNameSuffix>createDatabase</outputFileNameSuffix>
               <packages>
                 <param>fi.otavanopisto.muikku.plugins.schooldatapyramus.model</param>
@@ -676,7 +676,7 @@
                 <autoCreate>true</autoCreate>
                 <createOptions>
                   <virtualbox-memory>10000</virtualbox-memory>
-                  <virtualbox-no-share></virtualbox-no-share>
+                  <virtualbox-no-share />
                 </createOptions>
               </machine>
               <dockerHost>unix:///var/run/docker.sock</dockerHost>
@@ -805,7 +805,7 @@
               <persistenceXml>${basedir}/src/test/resources/persistence_for_generation_purpose.xml</persistenceXml>
               <createDropStatements>false</createDropStatements>
               <omitDialectFromFileName>true</omitDialectFromFileName>
-              <outputFileNamePrefix></outputFileNamePrefix>
+              <outputFileNamePrefix />
               <outputFileNameSuffix>createDatabase</outputFileNameSuffix>
               <packages>
                 <param>fi.otavanopisto.muikku.plugins.schooldatapyramus.model</param>
@@ -1158,7 +1158,7 @@
                 <autoCreate>true</autoCreate>
                 <createOptions>
                   <virtualbox-memory>10000</virtualbox-memory>
-                  <virtualbox-no-share></virtualbox-no-share>
+                  <virtualbox-no-share />
                 </createOptions>
               </machine>
               <dockerHost>unix:///var/run/docker.sock</dockerHost>
@@ -1296,7 +1296,7 @@
               <persistenceXml>${basedir}/src/test/resources/persistence_for_generation_purpose.xml</persistenceXml>
               <createDropStatements>false</createDropStatements>
               <omitDialectFromFileName>true</omitDialectFromFileName>
-              <outputFileNamePrefix></outputFileNamePrefix>
+              <outputFileNamePrefix />
               <outputFileNameSuffix>createDatabase</outputFileNameSuffix>
               <packages>
                 <param>fi.otavanopisto.muikku.plugins.schooldatapyramus.model</param>
