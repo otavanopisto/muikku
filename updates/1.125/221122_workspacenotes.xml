@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
-  <sql>create table WorkspaceNote (id bigint not null auto_increment, archived bit not null, Workspace bigint not null, note longtext, owner bigint not null, primary key (id));</sql>
+  <sql>create table WorkspaceNote (id bigint not null auto_increment, archived bit not null, Workspace bigint not null, title varchar(255), note longtext, owner bigint not null, primary key (id));</sql>
 </update> 
