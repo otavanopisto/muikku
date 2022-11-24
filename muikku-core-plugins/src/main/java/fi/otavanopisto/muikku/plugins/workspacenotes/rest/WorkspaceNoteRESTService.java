@@ -102,11 +102,13 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   }
   
   /*
-   * mApi() call (mApi().workspaceNote.workspace.user.update(
-   *  workspaceEntityId,
-   *  userEntityId, 
-   *  workspaceNoteId, 
-   *  workspaceNoteRestModel) 
+   * mApi() call mApi().workspacenote.workspacenote.update( workspaceNoteId, WorkspaceNoteRestModel) 
+   *  
+   *  Parameter rest model must contain owner & workspaceEntityId
+   *  
+   *  example:
+   *  {owner: 14, workspaceEntityId: 23, title: "Title", workspaceNote: "updatedNote"}
+   *  
    *  
    *  Editable field is only title & workspaceNote 
    *  
@@ -126,9 +128,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    *  403 Forbidden if userEntityId does not match with logged user
    */
   @PUT
-  @Path ("/worspace/{WORKSPACEID}/user/{USERID}/{NOTEID}")
+  @Path ("/workspacenote/{WORKSPACENOTEID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateNote(@PathParam ("WORKSPACEID") Long workspaceEntityId, @PathParam ("USERID") Long userEntityId, @PathParam ("WORKSPACENOTEID") Long workspaceNoteId, WorkspaceNoteRestModel restModel) {
+  public Response updateWorkspaceNote(@PathParam ("WORKSPACENOTEID") Long workspaceNoteId, WorkspaceNoteRestModel restModel) {
     
     WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
     
@@ -136,14 +138,18 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (userEntityId == null) {
+    if (restModel.getOwner() == null) {
       return Response.status(Status.BAD_REQUEST).build();
     } 
+    
+    if(restModel.getWorkspaceEntityId() == null || !restModel.getWorkspaceEntityId().equals(workspaceNote.getWorkspace())) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
     
     // users can only update their own notes (except admins)
     EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
-    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+    if (!restModel.getOwner().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return Response.status(Status.FORBIDDEN).build();
       }
@@ -263,7 +269,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     return Response.ok(workspaceNoteList).build();
   }
   
-  /* mApi() call (mApi().workspaceNote.archive.del(workspaceNoteId)) 
+  /* mApi() call (mApi().workspacenote.archive.del(workspaceNoteId)) 
    * 
    * returns no content
    * 
@@ -288,6 +294,8 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).build();
     }
 
+    workspaceNoteController.archive(workspaceNote);
+    
     return Response
         .noContent()
         .build();
