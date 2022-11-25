@@ -172,7 +172,6 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     restModel.setWorkspaceEntityId(workspaceNote.getWorkspace());
     restModel.setTitle(workspaceNote.getTitle());
     restModel.setWorkspaceNote(workspaceNote.getNote());
-    restModel.setIsArchived(workspaceNote.getArchived());
 
     return restModel;
   }

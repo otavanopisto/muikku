@@ -42,19 +42,10 @@ public class WorkspaceNoteRestModel {
     this.owner = owner;
   }
 
-  public Boolean getIsArchived() {
-    return isArchived;
-  }
-
-  public void setIsArchived(Boolean isArchived) {
-    this.isArchived = isArchived;
-  }
-
   private Long id;
   private String title;
   private String workspaceNote;
   private Long workspaceEntityId;
   private Long owner;
-  private Boolean isArchived;
 
 }
