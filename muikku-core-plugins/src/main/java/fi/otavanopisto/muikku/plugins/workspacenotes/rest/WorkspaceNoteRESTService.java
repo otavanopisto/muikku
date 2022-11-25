@@ -279,13 +279,13 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    * */
   
   @DELETE
-  @Path ("/{WORKSPACENOTEID}/archive")
+  @Path ("/archive")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response archive(@PathParam ("WORKSPACENOTEID") Long workspaceNoteId) {
-    WorkspaceNote workspaceNote= workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
+  public Response archive(WorkspaceNoteRestModel payload) {
+    WorkspaceNote workspaceNote= workspaceNoteController.findWorkspaceNoteById(payload.getId());
     
     if (workspaceNote == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceNote(%d) not found", workspaceNoteId)).build();
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceNote(%d) not found", payload.getId())).build();
     }
     
     // Archiving is only allowed if you're the owner of the workspace note
