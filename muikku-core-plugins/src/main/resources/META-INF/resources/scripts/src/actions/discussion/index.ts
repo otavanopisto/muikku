@@ -869,7 +869,6 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
       }
 
       const actualThreadPage = data.threadPage || discussion.currentPage;
-      // const actualPage = data.page || discussion.page;
 
       dispatch({
         type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
@@ -942,7 +941,6 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
           current: newCurrentThread,
           currentReplies: replies,
           currentState: "READY",
-          // page: actualPage,
           currentPage: actualThreadPage,
           threads: newThreads,
         };
