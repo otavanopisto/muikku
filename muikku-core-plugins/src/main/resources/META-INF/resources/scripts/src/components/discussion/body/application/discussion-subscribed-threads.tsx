@@ -133,16 +133,6 @@ class DiscussionSubscribedThreads extends React.Component<
       (relatedToWorkspace && inThatWorkspace) ||
       (!relatedToWorkspace && !inThatWorkspace)
     ) {
-      // // Opened area is where thread belongs to
-      // if (this.props.discussion.areaId === thread.forumAreaId) {
-      //   window.location.hash =
-      //     thread.forumAreaId +
-      //     "/" +
-      //     this.props.discussion.page +
-      //     "/" +
-      //     thread.id +
-      //     "/1";
-      // }
       window.location.hash =
         "subs/" + thread.forumAreaId + "/" + thread.id + "/1";
     }
