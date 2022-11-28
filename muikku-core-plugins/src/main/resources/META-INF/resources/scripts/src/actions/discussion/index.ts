@@ -564,6 +564,7 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
       //Avoid loading if it's the same area
       if (
         !data.forceRefresh &&
+        discussion.threads.length > 0 &&
         discussion.areaId === data.areaId &&
         discussion.state === "READY" &&
         discussion.page === data.page
