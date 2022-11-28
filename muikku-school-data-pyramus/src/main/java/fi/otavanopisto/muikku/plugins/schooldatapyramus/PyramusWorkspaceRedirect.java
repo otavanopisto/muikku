@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
 import java.io.IOException;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,10 +29,13 @@ public class PyramusWorkspaceRedirect extends HttpServlet {
   
   @Inject
   private PyramusIdentifierMapper pyramusIdentifierMapper;
-  
+
+  /**
+   * Note: This is Instance as otherwise it's injected too early on container start and is always null.
+   */
   @Inject
   @BaseUrl
-  private String baseUrl;
+  private Instance<String> baseUrlInstance;
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -49,6 +53,8 @@ public class PyramusWorkspaceRedirect extends HttpServlet {
       resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
+    
+    String baseUrl = baseUrlInstance.get();
     
     resp.sendRedirect(String.format("%s/workspace/%s", baseUrl, workspaceEntity.getUrlName()));
   }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>create table InterimEvaluationRequest (id bigint not null auto_increment, archived bit not null, cancellationDate datetime, requestDate datetime not null, requestText longtext, userEntityId bigint not null, workspaceEntityId bigint not null, workspaceMaterialId bigint not null, primary key (id));</sql>
+  <sql>create index IDXa7bme79aj51sfyvim3tj26iek on InterimEvaluationRequest (workspaceEntityId, userEntityId);</sql>
+  <sql>create index IDXkya30sqshucu9u3l1x5bchqc3 on InterimEvaluationRequest (workspaceMaterialId, userEntityId);</sql>
+
+</update> 

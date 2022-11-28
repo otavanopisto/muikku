@@ -10,7 +10,7 @@ public abstract class AbstractUser implements User {
   public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
       String studyProgrammeName, String studyProgrammeEducationType, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility,
+      boolean evaluationFees, SchoolDataIdentifier curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility,
       Set<SchoolDataIdentifier> studyProgrammeIdentifiers) {
     super();
     this.identifier = identifier;
@@ -159,11 +159,11 @@ public abstract class AbstractUser implements User {
   }
 
   @Override
-  public String getCurriculumIdentifier() {
+  public SchoolDataIdentifier getCurriculumIdentifier() {
     return curriculumIdentifier;
   }
 
-  public void setCurriculumIdentifier(String curriculumIdentifier) {
+  public void setCurriculumIdentifier(SchoolDataIdentifier curriculumIdentifier) {
     this.curriculumIdentifier = curriculumIdentifier;
   }
 
@@ -216,7 +216,7 @@ public abstract class AbstractUser implements User {
   private OffsetDateTime studyTimeEnd;
   private boolean hidden;
   private boolean evaluationFees;
-  private String curriculumIdentifier;
+  private SchoolDataIdentifier curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
   private boolean matriculationEligibility;

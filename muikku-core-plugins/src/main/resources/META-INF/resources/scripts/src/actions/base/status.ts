@@ -8,6 +8,7 @@ import {
   WhoAmIType,
 } from "~/reducers/base/status";
 import promisify from "~/util/promisify";
+import { Role } from "../../reducers/base/status";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -56,6 +57,11 @@ async function loadWhoAMI(
       loggedIn: !!whoAmI.id,
       userId: whoAmI.id,
       hasImage: whoAmI.hasImage,
+      hasFees: whoAmI.hasEvaluationFees,
+      isActiveUser: whoAmI.isActive,
+      role: whoAmI.role,
+      isStudent: whoAmI.role === Role.STUDENT,
+      userSchoolDataIdentifier: whoAmI.identifier,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
           "CREATE_ANNOUNCEMENT"
@@ -108,6 +114,11 @@ async function loadWhoAMI(
         curriculumName: whoAmI.curriculumName,
       },
     },
+  });
+
+  dispatch({
+    type: "LOCALE_UPDATE",
+    payload: whoAmI.locale,
   });
 
   whoAmIReadyCb();

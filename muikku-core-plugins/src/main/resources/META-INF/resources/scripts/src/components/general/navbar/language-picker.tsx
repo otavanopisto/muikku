@@ -5,17 +5,20 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState, LocaleType } from "~/reducers/base/locales";
 import { StateType } from "~/reducers";
 import "~/sass/elements/dropdown.scss";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
+import { AnyActionType } from "../../../actions/index";
+
+const LOCALES: LocaleType[] = ["fi", "en"];
 
 /**
  * LanguagePickerProps
  */
 interface LanguagePickerProps {
-  locales: LocaleListType;
+  locales: LocaleState;
   i18n: i18nType;
   setLocale: SetLocaleTriggerType;
 }
@@ -33,22 +36,35 @@ class LanguagePicker extends React.Component<
   LanguagePickerState
 > {
   /**
+   * Handles set locale click
+   * @param locale locale
+   */
+  handleSetLocaleClick =
+    (locale: LocaleType) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      this.props.setLocale({
+        locale: locale,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onSuccess: () => window.location.reload(),
+      });
+    };
+
+  /**
    * Component render method
-   * @returns JSX.Element
    */
   render() {
     return (
       <Dropdown
         modifier="language-picker"
-        items={this.props.locales.available.map((locale) => (
+        items={LOCALES.map((locale) => (
           <Link
-            key={locale.name}
+            key={locale}
             className={`link link--full link--language-picker-dropdown`}
-            onClick={this.props.setLocale.bind(this, locale.locale)}
+            onClick={this.handleSetLocaleClick(locale)}
             role="menuitem"
           >
-            <span className={`link__locale link__locale--${locale.locale}`}>
-              {locale.name}
+            <span className={`link__locale link__locale--${locale}`}>
+              {this.props.i18n.text.get(`plugin.navigation.language.${locale}`)}
             </span>
           </Link>
         ))}
@@ -90,7 +106,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-const mapDispatchToProps = (dispatch: Dispatch<any>) =>
+const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
   bindActionCreators({ setLocale }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(LanguagePicker);

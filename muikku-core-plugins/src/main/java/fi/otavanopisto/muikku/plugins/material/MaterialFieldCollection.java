@@ -1,70 +1,58 @@
 package fi.otavanopisto.muikku.plugins.material;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-import org.cyberneko.html.parsers.DOMParser;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.FieldMeta;
 
 public class MaterialFieldCollection {
-  
+
   public MaterialFieldCollection() {
   }
-  
+
   public MaterialFieldCollection(String html) {
     parseFields(html);
   }
-  
+
   public void parseFields(String html) {
     if (!materialFields.isEmpty()) {
       materialFields.clear();
     }
     if (StringUtils.isNotBlank(html)) {
-      StringReader htmlReader = new StringReader(html);
       try {
-        DOMParser parser = new DOMParser();
-        InputSource inputSource = new InputSource(htmlReader);
-        parser.parse(inputSource);
-        Document document = parser.getDocument();
-        NodeList objectNodeList = document.getElementsByTagName("object");
-        for (int i = 0, l = objectNodeList.getLength(); i < l; i++) {
-          Node objectNode = objectNodeList.item(i);
-          if (objectNode instanceof Element) {
-            Element objectElement = (Element) objectNode;
-            if (isMuikkuField(objectElement)) {
-              String fieldType = objectElement.getAttribute("type");
-              NodeList paramNodes = objectElement.getElementsByTagName("param");
-              String content = null;
-              for (int j = 0, jl = paramNodes.getLength(); j < jl; j++) {
-                Node paramNode = paramNodes.item(j);
-                if (paramNode instanceof Element) {
-                  Element paramElement = (Element) paramNode;
-                  if ("content".equals(paramElement.getAttribute("name"))) {
-                    content = paramElement.getAttribute("value");
-                    break;
-                  }
-                }
+        Document document = Jsoup.parse(html, "", Parser.htmlParser());
+        Elements elements = document.getElementsByTag("object");
+        for (int i = 0; i < elements.size(); i++) {
+          Element element = elements.get(i);
+          if (isMuikkuField(element)) {
+            String fieldType = element.attr("type");
+            Elements params = element.getElementsByTag("param");
+            String content = null;
+            for (int j = 0; j < params.size(); j++) {
+              Element param = params.get(j);
+              if ("content".equals(param.attr("name"))) {
+                content = param.attr("value");
+                break;
               }
-              if (StringUtils.isNotBlank(content)) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                FieldMeta fieldMeta = objectMapper.readValue(content, FieldMeta.class);
-                materialFields.put(fieldMeta.getName(), new MaterialField(fieldMeta.getName(), fieldType, content));
-              }
+            }
+            if (StringUtils.isNotBlank(content)) {
+              ObjectMapper objectMapper = new ObjectMapper();
+              objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+              FieldMeta fieldMeta = objectMapper.readValue(content, FieldMeta.class);
+              materialFields.put(fieldMeta.getName(), new MaterialField(fieldMeta.getName(), fieldType, content));
             }
           }
         }
@@ -73,20 +61,17 @@ public class MaterialFieldCollection {
         // TODO Proper exception handling
         throw new IllegalArgumentException("Malformed document structure: " + html);
       }
-      finally {
-        htmlReader.close();
-      }
     }
   }
-  
+
   public boolean hasField(String name) {
     return materialFields.containsKey(name);
   }
-  
+
   public MaterialField getField(String name) {
     return materialFields.get(name);
   }
-  
+
   public Set<String> getFieldNames() {
     return materialFields.keySet();
   }
@@ -94,7 +79,7 @@ public class MaterialFieldCollection {
   public List<MaterialField> getFields() {
     return Collections.unmodifiableList(new ArrayList<>(materialFields.values()));
   }
-  
+
   public List<MaterialField> getNewFields(MaterialFieldCollection collection) {
     List<MaterialField> fields = new ArrayList<MaterialField>();
     Set<String> names = materialFields.keySet();
@@ -103,7 +88,7 @@ public class MaterialFieldCollection {
         fields.add(getField(name));
       }
     }
-    
+
     return Collections.unmodifiableList(fields);
   }
 
@@ -117,16 +102,17 @@ public class MaterialFieldCollection {
         if (!myField.equals(referenceField)) {
           fields.add(myField);
         }
-        // #5277: Since even unchanged connect fields could already be corrupt in database, always treat them as updated :| 
+        // #5277: Since even unchanged connect fields could already be corrupt in
+        // database, always treat them as updated :|
         else if ("application/vnd.muikku.field.connect".equals(myField.getType())) {
           fields.add(myField);
         }
       }
     }
-    
+
     return Collections.unmodifiableList(fields);
   }
-  
+
   public List<MaterialField> getRemovedFields(MaterialFieldCollection collection) {
     List<MaterialField> fields = new ArrayList<MaterialField>();
     Set<String> names = collection.getFieldNames();
@@ -135,15 +121,15 @@ public class MaterialFieldCollection {
         fields.add(collection.getField(name));
       }
     }
-    
+
     return Collections.unmodifiableList(fields);
   }
-  
+
   private boolean isMuikkuField(Element element) {
-    String type = element.getAttribute("type");
-    return StringUtils.startsWith(type,  "application/vnd.muikku.field.");
+    String type = element.attr("type");
+    return StringUtils.startsWith(type, "application/vnd.muikku.field.");
   }
-  
+
   private HashMap<String, MaterialField> materialFields = new HashMap<String, MaterialField>();
 
 }

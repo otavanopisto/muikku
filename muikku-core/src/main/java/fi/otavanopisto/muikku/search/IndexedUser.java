@@ -10,39 +10,61 @@ import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
 
 @Indexable (
   indexName = IndexedUser.INDEX_NAME,
   typeName = IndexedUser.TYPE_NAME,
   options = {
     @IndexableFieldOption (
-      name = "email",
-      type = "string",
-      index = "not_analyzed"
+      name = "identifier",
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
-      name = "organizationIdentifier",
-      type = "multi_field",
+      name = "schoolDataSource",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "archetype",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "firstName",
+      type = IndexableFieldType.TEXT,
       multiFields = {
-        @IndexableFieldMultiField(name = "organizationIdentifier", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
       }
     ),
     @IndexableFieldOption (
-        name = "studyProgrammeIdentifier",
-        type = "multi_field",
-        multiFields = {
-          @IndexableFieldMultiField(name = "studyProgrammeIdentifier", type="string", index = "analyzed"),
-          @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-        }
-      )
+      name = "lastName",
+      type = IndexableFieldType.TEXT,
+      multiFields = {
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
+      }
+    ),
+    @IndexableFieldOption (
+      name = "email",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "studyProgrammeIdentifier",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "curriculumIdentifier",
+      type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "organizationIdentifier",
+      type = IndexableFieldType.KEYWORD
+    )
   }
 )
 public class IndexedUser {
 
-  public static final String INDEX_NAME = "muikku";
+  public static final String INDEX_NAME = "muikku_user";
   public static final String TYPE_NAME = "User";
-  
+
   public IndexedUser() {
   }
 
@@ -172,11 +194,12 @@ public class IndexedUser {
     return evaluationFees;
   }
 
-  public String getCurriculumIdentifier() {
+  @IndexField (toId = true)
+  public SchoolDataIdentifier getCurriculumIdentifier() {
     return curriculumIdentifier;
   }
 
-  public void setCurriculumIdentifier(String curriculumIdentifier) {
+  public void setCurriculumIdentifier(SchoolDataIdentifier curriculumIdentifier) {
     this.curriculumIdentifier = curriculumIdentifier;
   }
 
@@ -270,7 +293,7 @@ public class IndexedUser {
   private OffsetDateTime studyTimeEnd;
   private boolean hidden;
   private boolean evaluationFees;
-  private String curriculumIdentifier;
+  private SchoolDataIdentifier curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
   private EnvironmentRoleArchetype archetype;

@@ -25,7 +25,11 @@ import {
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-import Toc, { TocTopic, TocElement } from "~/components/general/toc";
+import TocTopic, {
+  Toc,
+  TocElement,
+  ToggleOpenHandle,
+} from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
@@ -37,6 +41,9 @@ import {
   SetWholeWorkspaceMaterialsTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
+import Dropdown from "~/components/general/dropdown";
+import { IconButton } from "~/components/general/button";
+import SessionStateComponent from "~/components/general/session-state-component";
 
 /**
  * ContentProps
@@ -60,6 +67,8 @@ interface ContentProps {
  */
 interface ContentState {
   materials: MaterialContentNodeListType;
+  assignmentTypeFilters: string[];
+  sessionId: string;
 }
 
 /**
@@ -89,18 +98,41 @@ function isScrolledIntoView(el: HTMLElement) {
 /**
  * ContentComponent
  */
-class ContentComponent extends React.Component<ContentProps, ContentState> {
+class ContentComponent extends SessionStateComponent<
+  ContentProps,
+  ContentState
+> {
   private storedLastUpdateServerExecution: Function;
   private originalMaterials: MaterialContentNodeListType;
+  private topicRefs: ToggleOpenHandle[];
 
   /**
    * constructor
    * @param props props
    */
   constructor(props: ContentProps) {
-    super(props);
+    super(props, "workspaceMaterialsContent");
+
+    const sessionId = props.status.loggedIn
+      ? `${props.workspace.id}.${props.status.userId}`
+      : `${props.workspace.id}`;
+
+    this.topicRefs = [];
 
     this.state = {
+      ...this.getRecoverStoredState(
+        {
+          assignmentTypeFilters: [
+            "THEORY",
+            "EVALUATED",
+            "EXERCISE",
+            "JOURNAL",
+            "INTERIM_EVALUATION",
+          ],
+          sessionId,
+        },
+        sessionId
+      ),
       materials: props.materials,
     };
 
@@ -382,6 +414,49 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   }
 
   /**
+   * handleOpenAllSections
+   * @param type type
+   */
+  handleToggleAllSectionsOpen =
+    (type: "close" | "open") =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      for (const ref of this.topicRefs) {
+        ref.toggleOpen(type);
+      }
+    };
+
+  /**
+   * handleToggleAssignmentFilterChange
+   * @param e e
+   */
+  handleToggleAssignmentFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const clickedValue = e.target.value;
+
+    const newAssignmentFilter = [...this.state.assignmentTypeFilters];
+
+    // Get possible existing index of clicked value
+    const indexOfActiveFilter = newAssignmentFilter.findIndex(
+      (f) => f === clickedValue
+    );
+
+    if (indexOfActiveFilter !== -1) {
+      newAssignmentFilter.splice(indexOfActiveFilter, 1);
+    } else {
+      newAssignmentFilter.push(clickedValue);
+    }
+
+    // Using session component to store filters
+    this.setStateAndStore(
+      {
+        assignmentTypeFilters: newAssignmentFilter,
+      },
+      this.state.sessionId
+    );
+  };
+
+  /**
    * buildViewRestrictionModifiers
    * @param viewRestrict viewRestrict
    * @param section section
@@ -393,10 +468,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     if (section) {
       switch (viewRestrict) {
         case MaterialViewRestriction.LOGGED_IN:
-          return "toc__section-container--view-restricted-to-logged-in";
+          return "view-restricted-to-logged-in";
 
         case MaterialViewRestriction.WORKSPACE_MEMBERS:
-          return "toc__section-container--view-restricted-to-members";
+          return "view-restricted-to-members";
 
         default:
           return null;
@@ -440,6 +515,24 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   };
 
   /**
+   * Check if section is active by looking if any of its children are active
+   *
+   * @param section section
+   * @returns boolean if section is active
+   */
+  isSectionActive = (section: MaterialContentNodeType) => {
+    const { activeNodeId } = this.props;
+
+    for (const m of section.children) {
+      if (m.workspaceMaterialId === activeNodeId) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -452,9 +545,149 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     return (
       <Toc
-        tocTitle={this.props.i18n.text.get(
+        tocHeaderTitle={this.props.i18n.text.get(
           "plugin.workspace.materials.tocTitle"
         )}
+        tocHeaderExtraContent={
+          <div>
+            <Dropdown openByHover content={<p>Avaa kaikki</p>}>
+              <IconButton
+                icon="arrow-down"
+                buttonModifiers={["toc-open-close-sections"]}
+                onClick={this.handleToggleAllSectionsOpen("open")}
+              />
+            </Dropdown>
+            <Dropdown openByHover content={<p>Sulje kaikki</p>}>
+              <IconButton
+                icon="arrow-up"
+                buttonModifiers={["toc-open-close-sections"]}
+                onClick={this.handleToggleAllSectionsOpen("close")}
+              />
+            </Dropdown>
+            <Dropdown
+              content={
+                <>
+                  <div className="dropdown__container-item">
+                    <div className="filter-category">
+                      <div className="filter-category__label">
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="THEORY"
+                        id="theory-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "THEORY"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="theory-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.theory"
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="EXERCISE"
+                        id="exercise-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "EXERCISE"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="exercise-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.exercise"
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="EVALUATED"
+                        id="assignment-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "EVALUATED"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="assignment-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.assignment"
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="JOURNAL"
+                        id="journal-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "JOURNAL"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="journal-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.journal"
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                  <div className="dropdown__container-item">
+                    <div className="filter-item filter-item--workspace-page">
+                      <input
+                        type="checkbox"
+                        value="INTERIM_EVALUATION"
+                        id="interim-evaluation-page-filter"
+                        checked={this.state.assignmentTypeFilters.includes(
+                          "INTERIM_EVALUATION"
+                        )}
+                        onChange={this.handleToggleAssignmentFilterChange}
+                      />
+                      <label
+                        htmlFor="interim-evaluation-page-filter"
+                        className="filter-item__label"
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materials.tocFilter.interim"
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                </>
+              }
+            >
+              <IconButton icon="filter" buttonModifiers={["toc-filter"]} />
+            </Dropdown>
+          </div>
+        }
       >
         {this.state.materials.map((node, nodeIndex) => {
           // Boolean if there is view Restriction for toc topic
@@ -486,15 +719,24 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               ? this.buildViewRestrictionLocaleString(node.viewRestrict)
               : null;
 
-          const classNameTopic: string =
+          const topicClassMods: string[] =
             isTocTopicViewRestricted &&
             !this.props.status.isStudent &&
             this.props.status.loggedIn
-              ? this.buildViewRestrictionModifiers(node.viewRestrict, true)
-              : "toc__section-container";
+              ? [this.buildViewRestrictionModifiers(node.viewRestrict, true)]
+              : [];
 
           const topic = (
             <TocTopic
+              ref={(ref) => {
+                this.topicRefs[nodeIndex] = ref;
+              }}
+              isActive={this.isSectionActive(node)}
+              topicId={
+                this.props.status.loggedIn
+                  ? `${node.workspaceMaterialId}_${this.props.status.userId}`
+                  : node.workspaceMaterialId
+              }
               name={node.title}
               isHidden={node.hidden}
               key={node.workspaceMaterialId}
@@ -503,7 +745,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                   ? null
                   : "s-" + node.workspaceMaterialId
               }
-              className={classNameTopic}
+              modifiers={topicClassMods}
               iconAfter={iconTopic}
               iconAfterTitle={iconTitleTopic}
             >
@@ -520,6 +762,16 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     const isAssignment = subnode.assignmentType === "EVALUATED";
                     const isExercise = subnode.assignmentType === "EXERCISE";
                     const isJournal = subnode.assignmentType === "JOURNAL";
+                    const isInterimEvaluation =
+                      subnode.assignmentType === "INTERIM_EVALUATION";
+                    const isTheory = subnode.assignmentType === null;
+
+                    // Boolean if toc element is filtered out
+                    // if there is filters, then only elements that match the filters are shown
+                    const filteredOut =
+                      !this.state.assignmentTypeFilters.includes(
+                        subnode.assignmentType || (isTheory && "THEORY")
+                      );
 
                     //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
                     const modifier = isAssignment
@@ -528,6 +780,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                       ? "exercise"
                       : isJournal
                       ? "journal"
+                      : isInterimEvaluation
+                      ? "interim-evaluation"
                       : null;
 
                     let icon: string | null = null;
@@ -625,6 +879,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                         }
                         className={className}
                         isHidden={subnode.hidden || node.hidden}
+                        isFilteredOut={filteredOut}
                         disableScroll
                         iconAfter={icon}
                         iconAfterTitle={iconTitle}

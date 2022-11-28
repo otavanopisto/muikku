@@ -152,6 +152,34 @@ const STATES = [
     "button-disabled": false,
     "fields-read-only": true,
   },
+  {
+    "assignment-type": "INTERIM_EVALUATION",
+    state: ["UNANSWERED", "ANSWERED"],
+    "button-class": "muikku-submit-interim-evaluation",
+    "button-text":
+      "plugin.workspace.materialsLoader.submitInterimEvaluationRequestButton",
+    "success-state": "SUBMITTED",
+    "button-disabled": false,
+    "fields-read-only": false,
+  },
+  {
+    "assignment-type": "INTERIM_EVALUATION",
+    state: "SUBMITTED",
+    "button-class": "muikku-submit-interim-evaluation",
+    "button-text":
+      "plugin.workspace.materialsLoader.cancelInterimEvaluationRequestButton",
+    "success-state": "ANSWERED",
+    "button-disabled": false,
+    "fields-read-only": true,
+  },
+  {
+    "assignment-type": "INTERIM_EVALUATION",
+    state: "PASSED",
+    "button-class": "muikku-evaluated-assignment",
+    "button-text": "plugin.workspace.materialsLoader.evaluatedAssignmentButton",
+    "button-disabled": true,
+    "fields-read-only": true,
+  },
 ];
 
 /**
@@ -229,7 +257,7 @@ export interface MaterialLoaderProps {
 
   onAnswerChange?: (name: string, value?: boolean) => any;
   onAnswerCheckableChange?: (answerCheckable: boolean) => any;
-  onPushAnswer?: () => any;
+  onPushAnswer?: (params?: any) => any;
   onToggleAnswersVisible?: () => any;
   invisible?: boolean;
   answersVisible?: boolean;
@@ -332,7 +360,9 @@ class MaterialLoader extends React.Component<
       //lets try and get the state configuration
       this.stateConfiguration = STATES.filter(
         (state: any) =>
-          //by assignment type first
+          // by assignment type first. If it is not found, then it is not answerable
+          // There two type situation. First is for normal workspace material use and
+          // second is for evaluation use.
           state["assignment-type"] === props.material.assignmentType
       ).find((state: any) => {
         //then by state, if no composite reply is given assume UNANSWERED
@@ -445,11 +475,7 @@ class MaterialLoader extends React.Component<
   async create() {
     const { usedAs = "default", userEntityId } = this.props;
 
-    let userEntityIdToLoad = parseInt(
-      document
-        .querySelector('meta[name="muikku:loggedUserId"]')
-        .getAttribute("value")
-    );
+    let userEntityIdToLoad = this.props.status.userId;
 
     if (usedAs === "evaluationTool" && userEntityId) {
       userEntityIdToLoad = userEntityId;
@@ -501,8 +527,9 @@ class MaterialLoader extends React.Component<
    * onPushAnswer
    * This gets called once an answer is pushed with the button to push the answer
    * To change its state
+   * @param params params
    */
-  onPushAnswer() {
+  onPushAnswer(params?: any) {
     //So now we need that juicy success state
     if (this.stateConfiguration["success-state"]) {
       //Get the composite reply
@@ -610,6 +637,9 @@ class MaterialLoader extends React.Component<
 
       case "JOURNAL":
         return "journal";
+
+      case "INTERIM_EVALUATION":
+        return "interim-evaluation";
 
       default:
         return "theory";

@@ -11,8 +11,6 @@ import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-
 public class WidgetComponentHandler extends ComponentHandler {
 
 	private static final String WIDGET_PATH = "/widgets/%s.xhtml";

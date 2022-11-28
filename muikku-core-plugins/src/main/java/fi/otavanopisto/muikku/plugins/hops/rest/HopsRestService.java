@@ -331,7 +331,7 @@ public class HopsRestService {
             } else {
               item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
               item.setCourseId(suggestion.getWorkspaceEntityId());
-              item.setCourseName(workspaceEntityController.getName(workspaceEntity));
+              item.setCourseName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
             }
             items.add(item);
           }
@@ -616,7 +616,7 @@ public class HopsRestService {
 
       item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
       item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
-      item.setName(workspaceEntityController.getName(workspaceEntity));
+      item.setName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
       item.setId(hopsSuggestion.getId());
       item.setCourseNumber(hopsSuggestion.getCourseNumber());
       item.setCreated(hopsSuggestion.getCreated());
@@ -639,7 +639,7 @@ public class HopsRestService {
 
       item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
       item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
-      item.setName(workspaceEntityController.getName(workspaceEntity));
+      item.setName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
       item.setId(hopsSuggestion.getId());
       item.setCourseNumber(hopsSuggestion.getCourseNumber());
       item.setCreated(hopsSuggestion.getCreated());
