@@ -188,8 +188,8 @@ export interface CreateDiscussionThreadTriggerType {
     sticky: boolean;
     title: string;
     subscribe: boolean;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -203,8 +203,8 @@ export interface ModifyDiscussionThreadTriggerType {
     message: string;
     sticky: boolean;
     title: string;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -248,8 +248,8 @@ export interface DeleteCurrentDiscussionThreadTriggerType {
 export interface DeleteDiscussionThreadReplyFromCurrentTriggerType {
   (data: {
     reply: DiscussionThreadReplyType;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -260,8 +260,8 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
   (data: {
     reply: DiscussionThreadReplyType;
     message: string;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
