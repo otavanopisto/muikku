@@ -241,11 +241,8 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
           <div
             className={`tabs__tab tabs__tab--mobile-only-tab ${
               modifier ? "tabs__tab--" + modifier : ""
-            } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
-              tab.id === activeTab ? "active" : ""
-            }`}
+            } `}
             key={tab.id}
-            onClick={onTabChange.bind(this, tab.id, tab.hash)}
           >
             {tab.name}
           </div>
