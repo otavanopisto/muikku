@@ -218,8 +218,8 @@ export interface LoadDiscussionThreadFromServerTriggerType {
     threadId: number;
     threadPage?: number;
     forceRefresh?: boolean;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -230,8 +230,8 @@ export interface ReplyToCurrentDiscussionThreadTriggerType {
   (data: {
     message: string;
     parentId?: number;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -239,7 +239,7 @@ export interface ReplyToCurrentDiscussionThreadTriggerType {
  * DeleteCurrentDiscussionThreadTriggerType
  */
 export interface DeleteCurrentDiscussionThreadTriggerType {
-  (data: { success?: () => any; fail?: () => any }): AnyActionType;
+  (data: { success?: () => void; fail?: () => void }): AnyActionType;
 }
 
 /**
@@ -1097,7 +1097,7 @@ const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
 const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType =
   function deleteDiscussionThreadReplyFromCurrent(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1203,7 +1203,7 @@ const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
  * LoadDiscussionAreasFromServerTriggerType
  */
 export interface LoadDiscussionAreasFromServerTriggerType {
-  (callback?: () => any): AnyActionType;
+  (callback?: () => void): AnyActionType;
 }
 
 /**
@@ -1250,8 +1250,8 @@ export interface CreateDiscussionAreaTriggerType {
     name: string;
     description: string;
     subscribe: boolean;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -1329,8 +1329,8 @@ export interface UpdateDiscussionAreaTriggerType {
     id: number;
     name: string;
     description: string;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -1398,7 +1398,7 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
  * DeleteDiscussionAreaTriggerType
  */
 export interface DeleteDiscussionAreaTriggerType {
-  (data: { id: number; success?: () => any; fail?: () => any }): AnyActionType;
+  (data: { id: number; success?: () => void; fail?: () => void }): AnyActionType;
 }
 
 /**
