@@ -1398,7 +1398,11 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
  * DeleteDiscussionAreaTriggerType
  */
 export interface DeleteDiscussionAreaTriggerType {
-  (data: { id: number; success?: () => void; fail?: () => void }): AnyActionType;
+  (data: {
+    id: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
 }
 
 /**
