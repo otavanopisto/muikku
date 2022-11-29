@@ -104,10 +104,15 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   public SchoolDataIdentifier getLoggedUser() {
     return implementation.getLoggedUser();
   }
+
+  @Override
+  public String getAuthSource() {
+    return implementation.getAuthSource();
+  }
   
   @Override
-  public void login(String dataSource, String identifier) {
-    implementation.login(dataSource, identifier);
+  public void login(String authSource, String dataSource, String identifier) {
+    implementation.login(authSource, dataSource, identifier);
   }
   
   private SessionController implementation;
