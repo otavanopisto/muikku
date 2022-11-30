@@ -202,13 +202,15 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   );
 };
 
+/**
+ * MobileOnlyTabsProps
+ */
 interface MobileOnlyTabsProps {
   onTabChange: (id: string, hash?: string) => void;
   activeTab: string;
   /** General class modifier */
   modifier?: string;
   tabs: Array<Tab>;
-  renderAllComponents?: boolean;
 }
 
 /**
@@ -217,51 +219,94 @@ interface MobileOnlyTabsProps {
  * @returns JSX.element
  */
 export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
-  const { tabs, modifier, activeTab, onTabChange, renderAllComponents } = props;
+  const { tabs, modifier, activeTab, onTabChange } = props;
+  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
+  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+  const a11yConfig = {
+    enabled: true,
+  };
 
+  const paginationConfig = {
+    el: ".tabs__pagination-container",
+    modifierClass: "tabs__pagination-container--",
+  };
+
+  /**
+   * Creates an array from tab ids from given tabs
+   * @param tabs array of tabs
+   * @returns an array of strings
+   */
+  const createAllTabs = (tabs: Tab[]) => tabs.map((tab) => tab.id);
+
+  const allTabs = createAllTabs(tabs);
+
+  const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
+  const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
+
+  const nextHash = tabs.find((tab) => tab.id === nextSlide);
+  const prevHash = tabs.find((tab) => tab.id === prevSlide);
   return (
-    <div className="tabs">
-      <div className="tabs__tab-labels tabs__tab-labels--mobile">
-        {tabs.map((tab, index) => (
-          <div
-            className={`tabs__tab tabs__tab--mobile-only-tab ${
-              modifier ? "tabs__tab--" + modifier : ""
-            } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
-              tab.id === activeTab ? "active" : ""
-            }`}
-            key={tab.id}
-            onClick={onTabChange.bind(this, tab.id, tab.hash)}
-          >
-            {tab.name}
-          </div>
-        ))}
-      </div>
-      <div className="tabs__tab-labels tabs__tab-labels--desktop">
-        {tabs.map((tab, index) => (
-          <div
-            className={`tabs__tab tabs__tab--mobile-only-tab ${
-              modifier ? "tabs__tab--" + modifier : ""
-            } `}
-            key={tab.id}
-          >
-            {tab.name}
-          </div>
-        ))}
-      </div>
-      <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
-        {tabs
-          .filter((t) => renderAllComponents || t.id === activeTab)
-          .map((t) => (
-            <div
-              key={t.id}
-              className={`tabs__tab-data ${
-                t.type ? "tabs__tab-data--" + t.type : ""
-              }  ${t.id === activeTab ? "active" : ""}`}
-            >
+    <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
+      {isMobileWidth ? (
+        <Swiper
+          onSlidePrevTransitionStart={onTabChange.bind(
+            this,
+            prevSlide,
+            prevHash
+          )}
+          onSlideNextTransitionStart={onTabChange.bind(
+            this,
+            nextSlide,
+            nextHash
+          )}
+          modules={[A11y, Pagination]}
+          a11y={a11yConfig}
+          pagination={paginationConfig}
+          className="tabs__tab-data-container tabs__tab-data-container--mobile"
+        >
+          {tabs.map((t: Tab) => (
+            <SwiperSlide key={t.id}>
+              <div className="tabs__mobile-tab">
+                <div className="tabs__pagination-container"> </div>
+                <div>{t.name}</div>
+                {t.mobileAction ? (
+                  t.mobileAction
+                ) : (
+                  <div className="tabs__mobile-tab-spacer" />
+                )}
+              </div>
               {t.component}
-            </div>
+            </SwiperSlide>
           ))}
-      </div>
+        </Swiper>
+      ) : (
+        <>
+          <div className="tabs__tab-labels tabs__tab-labels--desktop">
+            {tabs.map((tab, index) => (
+              <div
+                className={`tabs__tab tabs__tab--mobile-only-tab ${
+                  modifier ? "tabs__tab--" + modifier : ""
+                } `}
+                key={tab.id}
+              >
+                {tab.name}
+              </div>
+            ))}
+          </div>
+          <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
+            {tabs.map((t) => (
+              <div
+                key={t.id}
+                className={`tabs__tab-data ${
+                  t.type ? "tabs__tab-data--" + t.type : ""
+                }`}
+              >
+                {t.component}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };
