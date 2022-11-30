@@ -34,6 +34,14 @@ public class WorkspaceNoteRestModel {
     this.workspaceEntityId = workspaceEntityId;
   }
 
+  public Long getNextSiblingId() {
+    return nextSiblingId;
+  }
+
+  public void setNextSiblingId(Long nextSiblingId) {
+    this.nextSiblingId = nextSiblingId;
+  }
+
   public Long getOwner() {
     return owner;
   }
@@ -46,6 +54,7 @@ public class WorkspaceNoteRestModel {
   private String title;
   private String workspaceNote;
   private Long workspaceEntityId;
+  private Long nextSiblingId;
   private Long owner;
 
 }
