@@ -34,6 +34,14 @@ public class WorkspaceNoteRestModel {
     this.workspaceEntityId = workspaceEntityId;
   }
 
+  public Long getNextSiblingId() {
+    return nextSiblingId;
+  }
+
+  public void setNextSiblingId(Long nextSiblingId) {
+    this.nextSiblingId = nextSiblingId;
+  }
+
   public Long getOwner() {
     return owner;
   }
@@ -42,19 +50,11 @@ public class WorkspaceNoteRestModel {
     this.owner = owner;
   }
 
-  public Boolean getIsArchived() {
-    return isArchived;
-  }
-
-  public void setIsArchived(Boolean isArchived) {
-    this.isArchived = isArchived;
-  }
-
   private Long id;
   private String title;
   private String workspaceNote;
   private Long workspaceEntityId;
+  private Long nextSiblingId;
   private Long owner;
-  private Boolean isArchived;
 
 }

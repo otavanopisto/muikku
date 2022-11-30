@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
-
 @Entity
 public class WorkspaceNote {
 
@@ -48,6 +47,14 @@ public class WorkspaceNote {
   public void setOwner(Long owner) {
     this.owner = owner;
   }
+  
+  public Integer getOrderNumber() {
+    return orderNumber;
+  }
+
+  public void setOrderNumber(Integer orderNumber) {
+    this.orderNumber = orderNumber;
+  }
 
   public Boolean getArchived() {
     return archived;
@@ -64,6 +71,7 @@ public class WorkspaceNote {
   @Column 
   private String title;
   
+  @NotNull
   @Column (nullable = false)
   private Long workspace;
   
@@ -73,6 +81,10 @@ public class WorkspaceNote {
   @NotNull
   @Column (nullable=false)
   private Long owner;
+  
+  @NotNull
+  @Column (nullable=false)
+  private Integer orderNumber;
   
   @Column (nullable = false)
   private Boolean archived = Boolean.FALSE;

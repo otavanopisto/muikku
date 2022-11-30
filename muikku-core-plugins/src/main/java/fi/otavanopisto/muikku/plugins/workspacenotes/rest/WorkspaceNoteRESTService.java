@@ -162,9 +162,57 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     return Response.ok(updatedRestModel).build();
   }
   
+  @PUT
+  @Path ("/workspacenote/{WORKSPACENOTEID}/updateorder")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateOrder(@PathParam ("WORKSPACENOTEID") Long workspaceNoteId, WorkspaceNoteRestModel restModel) {
+    
+    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
+    
+    if (workspaceNote == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (restModel.getOwner() == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    } 
+    
+    if(restModel.getWorkspaceEntityId() == null || !restModel.getWorkspaceEntityId().equals(workspaceNote.getWorkspace())) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // users can only update their own notes (except admins)
+    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
+    
+    if (!restModel.getOwner().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    WorkspaceNote referenceNote = null;
+    
+    if (restModel.getNextSiblingId() != null) {
+      referenceNote = workspaceNoteController.findWorkspaceNoteById(restModel.getNextSiblingId());
+    }
+    
+    if (referenceNote == null) {
+      Integer maximumOrderNumber = workspaceNoteController.getMaximumOrderNumberByOwnerAndWorkspace(restModel.getWorkspaceEntityId(), restModel.getOwner());
+      workspaceNote = workspaceNoteController.updateOrderNumber(workspaceNote, ++maximumOrderNumber);
+    } else {
+      workspaceNote = workspaceNoteController.moveAbove(workspaceNote, referenceNote);
+    }
+    
+    WorkspaceNoteRestModel updatedRestModel = toRestModel(workspaceNote);
+    
+    return Response.ok(updatedRestModel).build();
+  }
+  
   private WorkspaceNoteRestModel toRestModel(WorkspaceNote workspaceNote) {
     
     UserEntity userEntity = userEntityController.findUserEntityById(workspaceNote.getOwner());
+    
+    WorkspaceNote nextSibling = workspaceNoteController.findWorkspaceNoteNextSibling(workspaceNote);
+    Long nextSiblingId = nextSibling != null ? nextSibling.getId() : null;
     
     WorkspaceNoteRestModel restModel = new WorkspaceNoteRestModel();
     restModel.setId(workspaceNote.getId());
@@ -172,7 +220,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     restModel.setWorkspaceEntityId(workspaceNote.getWorkspace());
     restModel.setTitle(workspaceNote.getTitle());
     restModel.setWorkspaceNote(workspaceNote.getNote());
-    restModel.setIsArchived(workspaceNote.getArchived());
+    restModel.setNextSiblingId(nextSiblingId);
 
     return restModel;
   }
