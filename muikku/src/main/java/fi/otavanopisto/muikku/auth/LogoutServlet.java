@@ -14,9 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import fi.otavanopisto.muikku.auth.AuthSourceController;
-import fi.otavanopisto.muikku.auth.AuthenticationProvider;
-import fi.otavanopisto.muikku.auth.AuthenticationResult;
 import fi.otavanopisto.muikku.auth.AuthenticationResult.Status;
 import fi.otavanopisto.muikku.events.LogoutEvent;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
@@ -26,7 +23,8 @@ import fi.otavanopisto.muikku.session.local.LocalSessionController;
 
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
-  private static final long serialVersionUID = 1L;
+
+  private static final long serialVersionUID = -3642338807691092622L;
 
   @Inject
   private Logger logger;

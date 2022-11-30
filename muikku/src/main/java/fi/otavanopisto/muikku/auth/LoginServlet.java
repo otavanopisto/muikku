@@ -15,10 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.otavanopisto.muikku.auth.AuthSourceController;
-import fi.otavanopisto.muikku.auth.AuthenticationProvider;
-import fi.otavanopisto.muikku.auth.AuthenticationResult;
-import fi.otavanopisto.muikku.auth.LoginSessionBean;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.security.AuthSource;
 import fi.otavanopisto.muikku.session.local.LocalSession;
@@ -26,7 +22,8 @@ import fi.otavanopisto.muikku.session.local.LocalSessionController;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-  private static final long serialVersionUID = 1L;
+
+  private static final long serialVersionUID = -1021113743275507874L;
 
   @Inject
   private Logger logger;
