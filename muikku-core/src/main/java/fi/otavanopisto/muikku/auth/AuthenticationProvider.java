@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.auth;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 import fi.otavanopisto.muikku.model.security.AuthSource;
 
@@ -35,7 +35,7 @@ public interface AuthenticationProvider {
    *
    * @throws AuthenticationException
    */
-  public AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters);
+  public AuthenticationResult processLogin(HttpServletRequest request, AuthSource authSource);
 
   /**
    * Processes the logout request.

@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.scribe.builder.api.Api;
@@ -87,7 +88,7 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
   }
 
   @Override
-  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
+  protected AuthenticationResult processResponse(HttpServletRequest servletRequest, AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
     ObjectMapper objectMapper = new ObjectMapper();
 
     String verifier = getFirstRequestParameter(requestParameters, "code");
@@ -120,7 +121,7 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
       return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
     
-    return processLogin(authSource, requestParameters, whoAmI.getId().toString(), whoAmI.getEmails(), whoAmI.getFirstName(), whoAmI.getLastName());
+    return processLogin(servletRequest, authSource, requestParameters, whoAmI.getId().toString(), whoAmI.getEmails(), whoAmI.getFirstName(), whoAmI.getLastName());
   }
 
   @Override

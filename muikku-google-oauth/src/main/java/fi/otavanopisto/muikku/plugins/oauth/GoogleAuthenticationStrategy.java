@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.scribe.builder.api.Api;
 import org.scribe.model.OAuthRequest;
@@ -76,7 +77,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
   }
   
   @Override
-  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
+  protected AuthenticationResult processResponse(HttpServletRequest servletRequest, AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
     ObjectMapper objectMapper = new ObjectMapper();
 
     String verifier = getFirstRequestParameter(requestParameters, "code");
@@ -116,7 +117,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
     }
 
     if (userInfo != null)
-      return processLogin(authSource, requestParameters, userInfo.getId(), Arrays.asList(userInfo.getEmail()), userInfo.getGivenName(), userInfo.getFamilyName());
+      return processLogin(servletRequest, authSource, requestParameters, userInfo.getId(), Arrays.asList(userInfo.getEmail()), userInfo.getGivenName(), userInfo.getFamilyName());
     else {
       return new AuthenticationResult(AuthenticationResult.Status.GRANT);
     }

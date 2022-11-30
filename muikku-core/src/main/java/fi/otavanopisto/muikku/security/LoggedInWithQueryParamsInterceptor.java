@@ -42,7 +42,7 @@ public class LoggedInWithQueryParamsInterceptor implements Serializable {
             redirectUrl += "?" + httpServletRequest.getQueryString();
           }
         }
-        return "/login.jsf?faces-redirect=true&redirectUrl=" + URLEncoder.encode(redirectUrl, "UTF-8");
+        return "/login?redirectUrl=" + URLEncoder.encode(redirectUrl, "UTF-8");
       }
     }
     else {

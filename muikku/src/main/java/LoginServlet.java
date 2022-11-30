@@ -1,7 +1,6 @@
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.auth.AuthSourceController;
 import fi.otavanopisto.muikku.auth.AuthenticationProvider;
@@ -46,10 +46,8 @@ public class LoginServlet extends HttpServlet {
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
-      Map<String, String[]> requestParameters = request.getParameterMap();
-
-      Long authSourceId = null;
-      String redirectUrl = null;
+      Long authSourceId = NumberUtils.createLong(request.getParameter("authSourceId"));
+      String redirectUrl = request.getParameter("redirectUrl");
 
       if (authSourceId == null) {
         authSourceId = loginSessionBean.getAuthSourceId();
@@ -79,7 +77,7 @@ public class LoginServlet extends HttpServlet {
           AuthenticationProvider authenticationProvider = authSourceController.findAuthenticationProvider(authSource);
           if (authenticationProvider != null) {
             
-            AuthenticationResult result = authenticationProvider.processLogin(authSource, requestParameters);
+            AuthenticationResult result = authenticationProvider.processLogin(request, authSource);
             if (StringUtils.isNotBlank(result.getRedirectUrl())) {
               response.sendRedirect(result.getRedirectUrl());
             } else {
@@ -96,6 +94,11 @@ public class LoginServlet extends HttpServlet {
                 case NEW_ACCOUNT:
                   // User created new account
                 break;
+                case LOGOUT:
+                case LOGOUT_WITH_REDIRECT:
+                  logger.log(Level.SEVERE, String.format("Login returned with invalid state: %s", result.getStatus()));
+                  response.sendRedirect(NavigationRules.INTERNAL_ERROR);
+                return;
                 case CONFLICT:
                   switch (result.getConflictReason()) {
                     case EMAIL_BELONGS_TO_ANOTHER_USER:
