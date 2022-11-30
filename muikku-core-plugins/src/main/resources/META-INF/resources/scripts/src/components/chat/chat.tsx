@@ -256,46 +256,46 @@ class Chat extends React.Component<IChatProps, IChatState> {
   /**
    * getRoster gets roster from openfire and stores it in the component state
    */
-  getRoster = async () => {
-    const stanza = $iq({
-      from: this.state.connection.jid,
-      type: "get",
-    }).c("query", { xmlns: Strophe.NS.ROSTER });
+  // getRoster = async () => {
+  //   const stanza = $iq({
+  //     from: this.state.connection.jid,
+  //     type: "get",
+  //   }).c("query", { xmlns: Strophe.NS.ROSTER });
 
-    const jids: IChatContact[] = [];
+  //   const jids: IChatContact[] = [];
 
-    const answerStanza: Element = await new Promise((resolve) => {
-      this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
-        resolve(answerStanza);
-      });
-    });
+  //   const answerStanza: Element = await new Promise((resolve) => {
+  //     this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
+  //       resolve(answerStanza);
+  //     });
+  //   });
 
-    const rosterStanza = answerStanza.querySelectorAll("query item");
+  //   const rosterStanza = answerStanza.querySelectorAll("query item");
 
-    rosterStanza.forEach((r) => {
-      const jId = r.getAttribute("jid");
-      jids.push({ jid: jId });
-    });
+  //   rosterStanza.forEach((r) => {
+  //     const jId = r.getAttribute("jid");
+  //     jids.push({ jid: jId });
+  //   });
 
-    if (jids.length > 0) {
-      const chatRoster: IChatContact[] = [];
-      await Promise.all(
-        jids.map(async (contact: IChatContact) => {
-          await promisify(
-            mApi().chat.userInfo.read(contact.jid.split("@")[0], {}),
-            "callback"
-          )().then((user: IChatContact) => {
-            chatRoster.push({
-              ...user,
-              jid: contact.jid,
-            });
-          });
-        })
-      );
+  //   if (jids.length > 0) {
+  //     const chatRoster: IChatContact[] = [];
+  //     await Promise.all(
+  //       jids.map(async (contact: IChatContact) => {
+  //         await promisify(
+  //           mApi().chat.userInfo.read(contact.jid.split("@")[0], {}),
+  //           "callback"
+  //         )().then((user: IChatContact) => {
+  //           chatRoster.push({
+  //             ...user,
+  //             jid: contact.jid,
+  //           });
+  //         });
+  //       })
+  //     );
 
-      this.setState({ roster: chatRoster });
-    }
-  };
+  //     this.setState({ roster: chatRoster });
+  //   }
+  // };
 
   /**
    * loadPersonList loads the person list subjectively
@@ -303,10 +303,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
   loadPersonList = () => {
     if (this.props.status.isStudent) {
       this.props.loadContactGroup("counselors");
-      1;
-      this.getRoster();
-    } else {
-      this.getRoster();
     }
   };
 
@@ -377,12 +373,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       roomDescField: e.target.value,
     });
   }
-
-  // public toggleRoomPersistent() {
-  //   this.setState({
-  //     roomPersistent: !this.state.roomPersistent,
-  //   });
-  // }
 
   /**
    * updateChatRoomConfig
