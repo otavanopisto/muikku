@@ -743,44 +743,47 @@ class Chat extends React.Component<IChatProps, IChatState> {
   /**
    * listExistantChatRooms
    */
-  listExistantChatRooms() {
+  async listExistantChatRooms() {
     const stanza = $iq({
       from: this.state.connection.jid,
       to: "conference." + this.state.connectionHostname,
       type: "get",
     }).c("query", { xmlns: Strophe.NS.DISCO_ITEMS });
-    this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
-      const rooms = answerStanza.querySelectorAll("query item");
-      const currentRooms = [...this.state.availableMucRooms];
-      rooms.forEach((n) => {
-        const roomJID = n.getAttribute("jid");
-        const roomName = n.getAttribute("name");
-        const existsAlreadyIndex = currentRooms.findIndex(
-          (r) => r.roomJID === roomJID
-        );
-        if (existsAlreadyIndex >= 0) {
-          const newReplacement: IAvailableChatRoomType = {
-            roomJID,
-            roomName,
-            roomDesc: currentRooms[existsAlreadyIndex].roomDesc,
-            // roomPersistent: currentRooms[existsAlreadyIndex].roomPersistent,
-          };
-          currentRooms[existsAlreadyIndex] = newReplacement;
-        } else {
-          currentRooms.push({
-            roomJID,
-            roomName,
-            roomDesc: null,
-            // roomPersistent: null,
-          });
-        }
-      });
 
-      this.setState({
-        availableMucRooms: currentRooms.sort((a, b) =>
-          a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())
-        ),
+    const answerStanza: Element = await new Promise((resolve) => {
+      this.state.connection.sendIQ(stanza, (answerStanza) => {
+        resolve(answerStanza);
       });
+    });
+
+    const rooms = answerStanza.querySelectorAll("query item");
+    const currentRooms = [...this.state.availableMucRooms];
+    rooms.forEach((n) => {
+      const roomJID = n.getAttribute("jid");
+      const roomName = n.getAttribute("name");
+      const existsAlreadyIndex = currentRooms.findIndex(
+        (r) => r.roomJID === roomJID
+      );
+      if (existsAlreadyIndex >= 0) {
+        const newReplacement: IAvailableChatRoomType = {
+          roomJID,
+          roomName,
+          roomDesc: currentRooms[existsAlreadyIndex].roomDesc,
+        };
+        currentRooms[existsAlreadyIndex] = newReplacement;
+      } else {
+        currentRooms.push({
+          roomJID,
+          roomName,
+          roomDesc: null,
+        });
+      }
+    });
+
+    this.setState({
+      availableMucRooms: currentRooms.sort((a, b) =>
+        a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())
+      ),
     });
   }
 
