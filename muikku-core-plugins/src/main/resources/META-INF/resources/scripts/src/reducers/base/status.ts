@@ -159,7 +159,7 @@ export default function status(
       // remove the old session on logout
       window.sessionStorage.removeItem("strophe-bosh-session");
       // trigger the logout
-      $("#logout").click();
+      window.location.replace("/logout");
 
       return {
         ...state,
