@@ -32,7 +32,7 @@ public class WorkspaceNoteController {
         title,
         note, 
         workspaceId, 
-        maximumOrderNumber++,
+        ++maximumOrderNumber,
         Boolean.FALSE);
   }
   
