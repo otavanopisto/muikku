@@ -33,9 +33,15 @@ public interface AuthenticationProvider {
   /**
    * Processes the login request.
    *
-   * @param requestContext
    * @throws AuthenticationException
    */
   public AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters);
-  
+
+  /**
+   * Processes the logout request.
+   *
+   * @throws AuthenticationException
+   */
+  public AuthenticationResult processLogout(AuthSource authSource);
+
 }

@@ -3,6 +3,8 @@ package fi.otavanopisto.muikku.auth;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
@@ -46,6 +48,7 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
   }
   
   @Override
+  @Transactional(TxType.REQUIRES_NEW)
   public AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters) {
     if (!"rsp".equals(getFirstRequestParameter(requestParameters, "_stg"))) {
       String[] scopes;

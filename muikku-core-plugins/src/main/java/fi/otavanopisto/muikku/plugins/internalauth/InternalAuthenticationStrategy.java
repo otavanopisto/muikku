@@ -53,6 +53,11 @@ public class InternalAuthenticationStrategy extends AbstractAuthenticationStrate
   }
 
   @Override
+  public AuthenticationResult processLogout(AuthSource authSource) {
+    return new AuthenticationResult(Status.LOGOUT);
+  }
+
+  @Override
   public String getDescription() {
     return "Muikku account";
   }

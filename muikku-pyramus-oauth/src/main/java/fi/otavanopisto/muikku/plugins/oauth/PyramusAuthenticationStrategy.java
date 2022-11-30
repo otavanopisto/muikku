@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.scribe.builder.api.Api;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.auth.AuthenticationProvider;
 import fi.otavanopisto.muikku.auth.AuthenticationResult;
+import fi.otavanopisto.muikku.auth.AuthenticationResult.Status;
 import fi.otavanopisto.muikku.auth.OAuthAuthenticationStrategy;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.security.AuthSource;
@@ -121,6 +123,17 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
     return processLogin(authSource, requestParameters, whoAmI.getId().toString(), whoAmI.getEmails(), whoAmI.getFirstName(), whoAmI.getLastName());
   }
 
+  @Override
+  public AuthenticationResult processLogout(AuthSource authSource) {
+    String redirectUrl = pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.logoutUrl");
+    if (StringUtils.isNotBlank(redirectUrl)) {
+      return new AuthenticationResult(Status.LOGOUT_WITH_REDIRECT, redirectUrl);
+    } else {
+      logger.log(Level.SEVERE, "Cannot fulfill Pyramus OAuth logout as the logout url is not specified");
+      return new AuthenticationResult(Status.LOGOUT);
+    }
+  }
+  
   @SuppressWarnings("unused")
   @JsonIgnoreProperties(ignoreUnknown = true)
   private static class PyramusAccessToken {
@@ -147,5 +160,5 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
     @JsonProperty("refresh_token")
     private String refreshToken;
   }
-  
+
 }

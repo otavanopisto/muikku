@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.auth.AuthenticationProvider;
 import fi.otavanopisto.muikku.auth.AuthenticationResult;
 import fi.otavanopisto.muikku.auth.OAuthAuthenticationStrategy;
+import fi.otavanopisto.muikku.auth.AuthenticationResult.Status;
 import fi.otavanopisto.muikku.model.security.AuthSource;
 import fi.otavanopisto.muikku.plugins.oauth.scribe.GoogleApi20;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -121,6 +122,12 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
     }
   }
   
+  @Override
+  public AuthenticationResult processLogout(AuthSource authSource) {
+    // Note: this doesn't log out of Google - sometimes the desired outcome, sometimes not
+    return new AuthenticationResult(Status.LOGOUT);
+  }
+
   @SuppressWarnings ("unused")
   @JsonIgnoreProperties (ignoreUnknown = true)
   private static class GoogleAccessToken {
