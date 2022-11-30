@@ -1,3 +1,4 @@
+package fi.otavanopisto.muikku.auth;
 
 import java.io.IOException;
 import java.util.EnumSet;
