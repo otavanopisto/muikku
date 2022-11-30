@@ -75,7 +75,7 @@
   display: none;
 
   .tabs__tab--mobile-only-tab {
-    cursor: default
+    cursor: default;
   }
 
   @include breakpoint($breakpoint-pad) {
