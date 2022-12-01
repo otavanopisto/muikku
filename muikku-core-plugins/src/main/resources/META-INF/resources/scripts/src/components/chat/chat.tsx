@@ -970,15 +970,14 @@ class Chat extends React.Component<IChatProps, IChatState> {
         name: this.props.i18n.text.get("plugin.chat.tabs.label.rooms"),
         component: (
           <div className="chat__panel chat__panel--controlbox">
-            <div className="chat__panel-header chat__panel-header--controlbox">
-              {!this.state.isStudent && (
+            {!this.state.isStudent && (
+              <div className="chat__panel-header chat__panel-header--controlbox">
                 <span
                   onClick={this.toggleCreateChatRoomForm}
                   className="chat__button chat__button--new-room icon-plus"
                 ></span>
-              )}
-            </div>
-
+              </div>
+            )}
             <div className="chat__panel-body chat__panel-body--controlbox">
               <div className="chat__controlbox-rooms-heading">
                 {this.props.i18n.text.get("plugin.chat.rooms.others")}
