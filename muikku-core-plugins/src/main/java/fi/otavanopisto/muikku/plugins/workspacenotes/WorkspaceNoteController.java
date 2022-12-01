@@ -27,12 +27,18 @@ public class WorkspaceNoteController {
   public WorkspaceNote createWorkspaceNote(Long owner, String title, String note, Long workspaceId) {
     
     Integer maximumOrderNumber = workspaceNoteDAO.getMaximumOrderNumberByOwnerAndWorkspace(workspaceId, owner);
+    
+    if (maximumOrderNumber == null) {
+      maximumOrderNumber = 0;
+    } else {
+      ++maximumOrderNumber;
+    }
     return workspaceNoteDAO.create(
         owner, 
         title,
         note, 
         workspaceId, 
-        ++maximumOrderNumber,
+        maximumOrderNumber,
         Boolean.FALSE);
   }
   
