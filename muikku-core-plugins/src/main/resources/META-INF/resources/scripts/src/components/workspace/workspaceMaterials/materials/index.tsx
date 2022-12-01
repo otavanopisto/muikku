@@ -24,7 +24,7 @@ import ContentPanel, {
 import ProgressData from "../../progressData";
 
 import WorkspaceMaterial from "./material";
-import { ButtonPill } from "~/components/general/button";
+import { ButtonPill, IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
@@ -32,6 +32,8 @@ import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import {
+  materialShowOrHideExtraTools,
+  MaterialShowOrHideExtraToolsTriggerType,
   setWorkspaceMaterialEditorState,
   createWorkspaceMaterialContentNode,
   updateWorkspaceMaterialContentNode,
@@ -60,6 +62,7 @@ interface WorkspaceMaterialsProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType;
 }
 
 /**
@@ -349,6 +352,13 @@ class WorkspaceMaterials extends React.Component<
       });
     });
   }
+
+  /**
+   * handleOpenMaterialExtraToolsDrawerClick
+   */
+  handleOpenMaterialExtraToolsDrawerClick = () => {
+    this.props.materialShowOrHideExtraTools();
+  };
 
   /**
    * onOpenNavigation
@@ -733,6 +743,7 @@ class WorkspaceMaterials extends React.Component<
               transform: "translateY(" + -this.state.defaultOffset + "px)",
             }}
           />
+
           {/*TOP OF THE CHAPTER*/}
           <h2
             className={`content-panel__chapter-title ${
@@ -809,7 +820,15 @@ class WorkspaceMaterials extends React.Component<
 
     return (
       <ContentPanel
-        aside={progressData}
+        aside={
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {progressData}{" "}
+            <IconButton
+              icon="cogs"
+              onClick={this.handleOpenMaterialExtraToolsDrawerClick}
+            />
+          </div>
+        }
         onOpenNavigation={this.onOpenNavigation}
         modifier="materials"
         navigation={this.props.navigation}
@@ -850,6 +869,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       setWorkspaceMaterialEditorState,
       createWorkspaceMaterialContentNode,
       updateWorkspaceMaterialContentNode,
+      materialShowOrHideExtraTools,
     },
     dispatch
   );

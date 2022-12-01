@@ -1,0 +1,34 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.note-item--drag-container {
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.note-item--drag-handle {
+  align-items: center;
+  background: $color-default;
+  border-radius: 100%;
+  color: $color-material-page-admin-panel-main-color;
+  cursor: grab;
+  display: flex;
+  font-size: 0.8125rem;
+  height: 1.37rem;
+  justify-content: center;
+  position: absolute;
+  right: 8px;
+  top: 3px;
+  width: 1.37rem;
+  z-index: 9999;
+}
+
+.draggable-element {
+  display: inline-block;
+  overflow: hidden;
+  transition: width 0.3s;
+  width: 80px;
+}

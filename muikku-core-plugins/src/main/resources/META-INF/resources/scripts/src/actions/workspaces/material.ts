@@ -97,6 +97,14 @@ export type DELETE_MATERIAL_CONTENT_NODE = SpecificActionType<
   MaterialContentNodeType
 >;
 
+/**
+ * MATERIAL_UPDATE_SHOW_EXTRA_TOOLS
+ */
+export type MATERIAL_UPDATE_SHOW_EXTRA_TOOLS = SpecificActionType<
+  "MATERIAL_UPDATE_SHOW_EXTRA_TOOLS",
+  undefined
+>;
+
 type ApiPath = "materials" | "help";
 
 /**
@@ -226,6 +234,13 @@ export interface LoadWholeWorkspaceHelpTriggerType {
     includeHidden: boolean,
     callback?: (nodes: Array<MaterialContentNodeType>) => any
   ): AnyActionType;
+}
+
+/**
+ * UpdateMaterialShowExtraToolsTriggerType
+ */
+export interface MaterialShowOrHideExtraToolsTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -1224,6 +1239,17 @@ const setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType =
     };
   };
 
+/**
+ * updateMaterialShowExtraTool
+ */
+const materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType =
+  function updateMaterialShowExtraTool() {
+    return {
+      type: "MATERIAL_UPDATE_SHOW_EXTRA_TOOLS",
+      payload: undefined,
+    };
+  };
+
 export {
   requestWorkspaceMaterialContentNodeAttachments,
   createWorkspaceMaterialContentNode,
@@ -1237,4 +1263,5 @@ export {
   setWholeWorkspaceMaterials,
   setWholeWorkspaceHelp,
   loadWholeWorkspaceHelp,
+  materialShowOrHideExtraTools,
 };

@@ -11,12 +11,14 @@ import MaterialEditor from "~/components/base/material-editor";
 import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
 import EnrollmentDialog from "../enrollment-dialog";
+import MaterialExtraToolDrawer from "./extra-tools-drawer";
 
 /**
  * WorkspaceMaterialsBodyProps
  */
 interface WorkspaceMaterialsBodyProps {
   workspaceUrl: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (newId: number) => any;
   enrollmentDialogOpen: boolean;
   signupDialogOpen: boolean;
@@ -45,6 +47,7 @@ export default class WorkspaceMaterialsBody extends React.Component<
    * onOpenNavigation
    */
   onOpenNavigation() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.refs.content as any).getWrappedInstance().refresh();
   }
 
@@ -68,6 +71,7 @@ export default class WorkspaceMaterialsBody extends React.Component<
           onClose={this.props.onCloseSignupDialog}
         />
         <MaterialEditor locationPage="Materials" />
+        <MaterialExtraToolDrawer />
         <Materials
           onOpenNavigation={this.onOpenNavigation}
           navigation={navigationComponent}

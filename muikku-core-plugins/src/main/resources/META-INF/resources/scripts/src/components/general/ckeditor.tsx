@@ -223,6 +223,7 @@ export default class CKEditor extends React.Component<
       getCKEDITOR().instances[this.name].destroy();
       this.setupCKEditor(nextProps);
     } else if ((nextProps.children || "") !== this.currentData) {
+      this.currentData = nextProps.children || "";
       this.enableCancelChangeTrigger();
       getCKEDITOR().instances[this.name].setData(nextProps.children || "");
     }
