@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
@@ -115,7 +115,7 @@ public class PyramusMock {
 
       public Builder() {
 //        Some defaults for mocks
-        pmock.objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        pmock.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         
         GradingScale gs = new GradingScale(1l, "Pass/Fail", "Passed or failed scale", false);
         List<Grade> grades = new ArrayList<>();
@@ -658,12 +658,21 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(studentArray))
               .withStatus(200)));
           
+          if (!mockStudent.getCounselors().isEmpty()) {
+            stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/guidanceCounselors", mockStudent.getId())))
+                .withQueryParam("onlyMessageRecipients", matching(".*"))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(mockStudent.getCounselors()))
+                .withStatus(200)));
+          }
+          
           stubFor(get(urlMatching(String.format("/1/persons/persons/%d/students", student.getPersonId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(studentArray))
               .withStatus(200)));
-          
+
           studentsList.add(student);
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
           payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));

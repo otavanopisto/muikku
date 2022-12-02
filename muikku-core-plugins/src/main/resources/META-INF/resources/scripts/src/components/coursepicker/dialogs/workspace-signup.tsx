@@ -110,11 +110,7 @@ class WorkspaceSignupDialog extends React.Component<
     const workspaceSignUpDetails =
       this.props.workspaceSignUpDetails || this.props.currentWorkspace;
 
-    const hasFees = JSON.parse(
-      document
-        .querySelector('meta[name="muikku:hasFees"]')
-        .getAttribute("value")
-    );
+    const hasFees = this.props.status.hasFees;
 
     /**
      * content

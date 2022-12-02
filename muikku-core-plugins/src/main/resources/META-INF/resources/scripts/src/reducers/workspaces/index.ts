@@ -38,7 +38,9 @@ export type WorkspaceAssessementStateType =
   | "pending_fail"
   | "pass"
   | "fail"
-  | "incomplete";
+  | "incomplete"
+  | "interim_evaluation_request"
+  | "interim_evaluation";
 
 /**
  * Assessment
@@ -47,6 +49,7 @@ export interface Assessment {
   date: string;
   state: WorkspaceAssessementStateType;
   grade: string;
+  passingGrade: boolean;
   text: string;
   workspaceSubjectIdentifier: string | null;
 }
@@ -223,6 +226,20 @@ export interface WorkspaceAssessmentRequestType {
 }
 
 /**
+ * WorkspaceInterminEvaluationRequest
+ */
+export interface WorkspaceInterimEvaluationRequest {
+  id: number;
+  userEntityId: number;
+  workspaceEntityId: number;
+  workspaceMaterialId: number;
+  requestDate: Date;
+  cancellationDate: Date;
+  requestText: string;
+  archived: boolean;
+}
+
+/**
  * WorkspaceSubjectType
  */
 export interface WorkspaceSubjectType {
@@ -382,11 +399,12 @@ export interface WorkspaceType {
   forumStatistics?: WorkspaceForumStatisticsType;
   studentAssessments?: WorkspaceStudentAssessmentsType;
   activityStatistics?: WorkspaceActivityStatisticsType;
-  assessmentRequests?: Array<WorkspaceAssessmentRequestType>;
+  assessmentRequests?: WorkspaceAssessmentRequestType[];
+  interimEvaluationRequests?: WorkspaceInterimEvaluationRequest[];
   additionalInfo?: WorkspaceAdditionalInfoType;
   staffMembers?: WorkspaceStaffListType;
   staffMemberSelect?: UserSelectType;
-  producers?: Array<WorkspaceProducerType>;
+  producers?: WorkspaceProducerType[];
   contentDescription?: MaterialContentNodeType;
   activityLogs?: ActivityLogType[];
   students?: WorkspaceStudentListType;
@@ -399,7 +417,7 @@ export interface WorkspaceType {
   journals?: WorkspaceJournalsType;
 
   // These are only in organizationlistings
-  teachers?: Array<UserStaffType>;
+  teachers?: UserStaffType[];
   studentCount?: number;
 }
 
@@ -609,7 +627,11 @@ export enum MaterialViewRestriction {
   WORKSPACE_MEMBERS = "WORKSPACE_MEMBERS",
 }
 
-export type AssignmentType = "EXERCISE" | "EVALUATED" | "JOURNAL";
+export type AssignmentType =
+  | "EXERCISE"
+  | "EVALUATED"
+  | "JOURNAL"
+  | "INTERIM_EVALUATION";
 
 /**
  * MaterialContentNodeType
@@ -863,6 +885,16 @@ export const workspaces: Reducer<WorkspacesType> = (
         currentWorkspace: {
           ...state.currentWorkspace,
           assessmentRequests: action.payload,
+        },
+      };
+    }
+
+    case "UPDATE_CURRENT_WORKSPACE_INTERIM_EVALUATION_REQUESTS": {
+      return {
+        ...state,
+        currentWorkspace: {
+          ...state.currentWorkspace,
+          interimEvaluationRequests: action.payload,
         },
       };
     }

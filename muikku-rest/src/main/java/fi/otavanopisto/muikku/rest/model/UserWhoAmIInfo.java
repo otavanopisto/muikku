@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.Set;
 
 import fi.otavanopisto.muikku.model.users.UserOnlineStatus;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 
 public class UserWhoAmIInfo extends UserBasicInfo {
 
@@ -25,7 +26,8 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               boolean isDefaultOrganization,
               boolean isActive,
               Set<String> permissions,
-              Set<String> roles,
+              EnvironmentRoleArchetype role,
+              String locale,
               String displayName,
               String emails,
               String addresses,
@@ -46,8 +48,9 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.isDefaultOrganization = isDefaultOrganization;
     this.isActive = isActive;
     this.onlineStatus = onlineStatus;
+    this.role = role;
+    this.locale = locale;
     this.setPermissions(permissions);
-    this.setRoles(roles);
     this.displayName = displayName;
     this.emails = emails;
     this.addresses = addresses;
@@ -120,14 +123,6 @@ public class UserWhoAmIInfo extends UserBasicInfo {
 
   public void setPermissions(Set<String> permissions) {
     this.permissions = permissions;
-  }
-
-  public Set<String> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(Set<String> roles) {
-    this.roles = roles;
   }
 
   public boolean getIsActive() {
@@ -209,6 +204,22 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   public void setOnlineStatus(UserOnlineStatus onlineStatus) {
     this.onlineStatus = onlineStatus;
   }
+  
+  public String getLocale() {
+    return locale;
+  }
+
+  public void setLocale(String locale) {
+    this.locale = locale;
+  }
+
+  public EnvironmentRoleArchetype getRole() {
+    return role;
+  }
+
+  public void setRole(EnvironmentRoleArchetype role) {
+    this.role = role;
+  }
 
   private String studyProgrammeName;
   private String studyProgrammeIdentifier;
@@ -218,7 +229,6 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private String organizationIdentifier;
   private boolean isDefaultOrganization;
   private Set<String> permissions;
-  private Set<String> roles;
   private boolean isActive;
   private String displayName;
   private String emails;
@@ -229,5 +239,6 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;
   private UserOnlineStatus onlineStatus;
-  
+  private String locale;
+  private EnvironmentRoleArchetype role;
 }

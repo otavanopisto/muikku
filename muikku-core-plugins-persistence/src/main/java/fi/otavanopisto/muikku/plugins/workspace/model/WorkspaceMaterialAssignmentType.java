@@ -3,5 +3,6 @@ package fi.otavanopisto.muikku.plugins.workspace.model;
 public enum WorkspaceMaterialAssignmentType {
   EXERCISE,
   EVALUATED,
-  JOURNAL
+  JOURNAL,
+  INTERIM_EVALUATION
 }

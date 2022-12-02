@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 import fi.otavanopisto.muikku.AbstractRESTTest;
 
@@ -20,7 +20,7 @@ public class SystemRESTTestsIT extends AbstractRESTTest {
     
     response.then()
       .statusCode(200)
-      .content(is("pong"));
+      .body(is("pong"));
   }
 
 }

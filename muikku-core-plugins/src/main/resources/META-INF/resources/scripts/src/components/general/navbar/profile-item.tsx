@@ -63,6 +63,12 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         href: "mailto:helpdesk@muikkuverkko.fi",
       },
       {
+        icon: "support",
+        text: "plugin.profileBadge.links.opinvoimala",
+        href: "https://www.opinvoimala.fi",
+        openInNewTab: "_blank",
+      },
+      {
         icon: "ruler",
         text: "plugin.wcag.readingRuler.link.label",
         onClick: this.props.openReadingRuler,

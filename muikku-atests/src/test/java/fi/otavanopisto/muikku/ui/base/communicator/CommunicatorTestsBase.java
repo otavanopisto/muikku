@@ -261,8 +261,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
       long sender = fetchUserIdByEmail(student.getEmail());
       try{
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-        createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
         createCommunicatorUserLabel(recipient, "test");
+        sleep(1000);
+        createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
+        
         navigate("/communicator", false);
 
         waitAndClick(".application-list__item-content-aside .form-element--item-selection-container input");
@@ -274,8 +276,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         
         waitAndClick(".application-panel__content-aside a[href^='#label-']");
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary span");
+        waitUntilCountOfElements(".application-list__item-body--communicator-message", 1);
         assertText(".application-list__item-header--communicator-message .application-list__header-primary span", "Student Tester (Test Study Programme)");
-        waitForPresent(".application-list__item-body--communicator-message span");
         assertText(".application-list__item-body--communicator-message span", "Another one");
       }finally{
         deleteCommunicatorUserLabels(recipient);

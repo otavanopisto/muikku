@@ -57,6 +57,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
     this.timeout = setTimeout(
       this.props.setHopsTo.bind(null, hops),
       1000
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as any;
   }
 
@@ -93,9 +94,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       <CompulsoryEducationHopsWizard
         user="student"
         usePlace="studies"
-        studentId={document
-          .querySelector('meta[name="muikku:loggedUser"]')
-          .getAttribute("value")}
+        studentId={this.props.status.userSchoolDataIdentifier}
         phase={parseInt(this.props.hops.hopsPhase)}
         disabled={false}
         superVisorModifies={false}
@@ -140,6 +139,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     records: (state as any).records,
     hops: state.hops,
     status: state.status,

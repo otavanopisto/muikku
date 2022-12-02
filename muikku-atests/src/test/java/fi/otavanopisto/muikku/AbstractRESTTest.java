@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku;
 
-import static com.jayway.restassured.RestAssured.certificate;
-
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -14,14 +13,13 @@ import org.junit.Before;
 import org.junit.Rule;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.config.ObjectMapperConfig;
-import com.jayway.restassured.config.RestAssuredConfig;
-import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
-
+import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory;
 import fi.otavanopisto.muikku.rest.test.PyramusMocksRest;
 import fi.otavanopisto.muikku.rest.test.RestTestRequest;
 
@@ -43,19 +41,17 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
   
   @Before
   public void setupRestAssured() throws JsonProcessingException {
-    RestAssured.baseURI = getAppUrl(true) + "/rest";
-    RestAssured.port = getPortHttps();
-    RestAssured.authentication = certificate(getKeystoreFile(), getKeystorePass());
-    RestAssured.config = RestAssuredConfig.config().objectMapperConfig(
-        ObjectMapperConfig.objectMapperConfig().jackson2ObjectMapperFactory(new Jackson2ObjectMapperFactory() {
+      RestAssured.baseURI = getAppUrl(false) + "/rest";
+      RestAssured.port = getPortHttp();
 
-          @SuppressWarnings("rawtypes")
+      RestAssured.config = RestAssured.config
+        .objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(new Jackson2ObjectMapperFactory() {
+        
           @Override
-          public com.fasterxml.jackson.databind.ObjectMapper create(Class cls, String charset) {
-            com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            objectMapper.registerModule(new JSR310Module());
-            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-            return objectMapper;
+          public ObjectMapper create(Type cls, String charset) {
+            return new ObjectMapper()
+              .registerModule(new JavaTimeModule())
+              .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
           }
         }));
   }
