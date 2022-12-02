@@ -31,6 +31,7 @@ import {
   loadCurrentWorkspaceUserGroupPermissions,
   loadWorkspaceChatStatus,
   setAvailableCurriculums,
+  loadLastWorkspacesFromServer,
 } from "~/actions/workspaces";
 import {
   loadAnnouncementsAsAClient,
@@ -298,6 +299,7 @@ export default class Workspace extends React.Component<
           this.props.store.dispatch(
             updateLastWorkspace({
               url: location.origin + location.pathname,
+              workspaceId: state.workspaces.currentWorkspace.id,
               workspaceName: state.workspaces.currentWorkspace.name,
               materialName:
                 state.workspaces.currentMaterials[0].children[0].title,
@@ -342,6 +344,7 @@ export default class Workspace extends React.Component<
           this.props.store.dispatch(
             updateLastWorkspace({
               url: location.origin + location.pathname + newHash,
+              workspaceId: state.workspaces.currentWorkspace.id,
               workspaceName: state.workspaces.currentWorkspace.name,
               materialName: materialChapter.children[indexFound].title,
             }) as Action
@@ -874,6 +877,8 @@ export default class Workspace extends React.Component<
           state.status.currentWorkspaceId
         ) as Action
       );
+
+      this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
       this.props.store.dispatch(
         loadWholeWorkspaceMaterials(
           state.status.currentWorkspaceId,

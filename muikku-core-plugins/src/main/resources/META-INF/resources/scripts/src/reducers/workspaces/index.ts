@@ -428,6 +428,7 @@ export type WorkspaceUpdateType = Partial<WorkspaceType>;
  */
 export interface WorkspaceMaterialReferenceType {
   workspaceName: string;
+  workspaceId: number;
   materialName: string;
   url: string;
 }
@@ -753,7 +754,7 @@ export interface WorkspacesType {
   state: WorkspacesStateType;
   // Last workspace that was opened
   lastWorkspace?: WorkspaceMaterialReferenceType;
-
+  lastWorkspaces?: WorkspaceMaterialReferenceType[];
   // Following is data related to current workspace
   currentWorkspace?: WorkspaceType;
   currentHelp?: MaterialContentNodeListType;
@@ -789,6 +790,7 @@ export interface WorkspacesType {
 const initialWorkspacesState: WorkspacesType = {
   state: "LOADING",
   lastWorkspace: null,
+  lastWorkspaces: [],
   currentWorkspace: null,
   currentHelp: null,
   currentMaterials: null,
@@ -865,6 +867,9 @@ export const workspaces: Reducer<WorkspacesType> = (
 
     case "UPDATE_LAST_WORKSPACE":
       return { ...state, lastWorkspace: action.payload };
+
+    case "UPDATE_LAST_WORKSPACES":
+      return { ...state, lastWorkspaces: action.payload };
 
     case "SET_CURRENT_WORKSPACE":
       return { ...state, currentWorkspace: action.payload };

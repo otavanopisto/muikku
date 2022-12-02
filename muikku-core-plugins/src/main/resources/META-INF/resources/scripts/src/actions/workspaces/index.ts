@@ -44,6 +44,7 @@ import {
   MaterialContentNodeType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
+import workspace from "~/reducers/workspace";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -58,6 +59,11 @@ export type UPDATE_USER_WORKSPACES = SpecificActionType<
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<
   "UPDATE_LAST_WORKSPACE",
   WorkspaceMaterialReferenceType
+>;
+
+export type UPDATE_LAST_WORKSPACES = SpecificActionType<
+  "UPDATE_LAST_WORKSPACES",
+  WorkspaceMaterialReferenceType[]
 >;
 
 export type SET_CURRENT_WORKSPACE = SpecificActionType<
@@ -347,12 +353,58 @@ const loadLastWorkspaceFromServer: LoadLastWorkspaceFromServerTriggerType =
     ) => {
       try {
         dispatch({
-          type: "UPDATE_LAST_WORKSPACE",
-          payload: <WorkspaceMaterialReferenceType>(
+          type: "UPDATE_LAST_WORKSPACES",
+          payload: <WorkspaceMaterialReferenceType[]>(
             JSON.parse(
               (
                 (await promisify(
-                  mApi().user.property.read("last-workspace"),
+                  mApi().user.property.read("last-workspaces"),
+                  "callback"
+                )()) as any
+              ).value
+            )
+          ),
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.errormessage.lastWorkspaceLoadFailed"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * LoadLastWorkspacesFromServerTriggerType
+ */
+export interface LoadLastWorkspacesFromServerTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * loadLastWorkspacesFromServer
+ */
+const loadLastWorkspacesFromServer: LoadLastWorkspacesFromServerTriggerType =
+  function loadLastWorkspacesFromServer() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "UPDATE_LAST_WORKSPACES",
+          payload: <WorkspaceMaterialReferenceType[]>(
+            JSON.parse(
+              (
+                (await promisify(
+                  mApi().user.property.read("last-workspaces"),
                   "callback"
                 )()) as any
               ).value
@@ -389,19 +441,44 @@ export interface UpdateLastWorkspaceTriggerType {
 const updateLastWorkspace: UpdateLastWorkspaceTriggerType =
   function updateLastWorkspace(newReference) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
     ) => {
       try {
+        // Make a deep copy of the current state of last workspaces
+        const lastWorkspaces = JSON.parse(
+          JSON.stringify(getState().workspaces.lastWorkspaces)
+        ) as WorkspaceMaterialReferenceType[];
+
+        // Location for the newReference according to workspaceId
+        const existingReferenceLocation = lastWorkspaces.findIndex(
+          (lw) => lw.workspaceId === newReference.workspaceId
+        );
+
+        // If there is a reference with the same workspaceId, we remove the old one
+        if (existingReferenceLocation !== -1) {
+          lastWorkspaces.splice(existingReferenceLocation, 1);
+        }
+
+        // If there still are 3 entries, we remove the last one
+        if (lastWorkspaces.length === 3) {
+          lastWorkspaces.pop();
+        }
+
+        // Place the new reference on the top of the array
+        lastWorkspaces.unshift(newReference);
+
         await promisify(
           mApi().user.property.create({
-            key: "last-workspace",
-            value: JSON.stringify(newReference),
+            key: "last-workspaces",
+            value: JSON.stringify(lastWorkspaces),
           }),
           "callback"
         )();
+
         dispatch({
-          type: "UPDATE_LAST_WORKSPACE",
-          payload: newReference,
+          type: "UPDATE_LAST_WORKSPACES",
+          payload: lastWorkspaces,
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -2581,6 +2658,7 @@ export {
   signupIntoWorkspace,
   loadUserWorkspacesFromServer,
   loadLastWorkspaceFromServer,
+  loadLastWorkspacesFromServer,
   setCurrentWorkspace,
   requestAssessmentAtWorkspace,
   cancelAssessmentAtWorkspace,
