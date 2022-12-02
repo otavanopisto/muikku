@@ -15,9 +15,11 @@ import { profile } from "./main-function/profile";
 import { notebook } from "./notebook/notebook";
 import { combineReducers } from "redux";
 import { journals } from "./workspaces/journals";
+import { contacts } from "./base/contacts";
 
 export default combineReducers({
   announcements,
+  contacts,
   discussion,
   easyToUse,
   evaluations,

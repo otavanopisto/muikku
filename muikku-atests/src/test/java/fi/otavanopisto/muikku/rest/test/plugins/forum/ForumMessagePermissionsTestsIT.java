@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumAreaRESTModel;
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumMessageUserRESTModel;

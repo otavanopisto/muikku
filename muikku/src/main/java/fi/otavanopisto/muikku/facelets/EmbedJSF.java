@@ -13,8 +13,6 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-
 public class EmbedJSF extends TagHandler {
 
   public EmbedJSF(TagConfig config) {

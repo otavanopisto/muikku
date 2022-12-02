@@ -13,8 +13,6 @@ import javax.faces.view.facelets.TagException;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-
 public class WidgetSpaceComponentHandler extends ComponentHandler {
 
 	public WidgetSpaceComponentHandler(ComponentConfig config) {

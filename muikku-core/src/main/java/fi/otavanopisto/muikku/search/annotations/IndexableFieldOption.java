@@ -4,6 +4,8 @@ public @interface IndexableFieldOption {
   
   String name();
   IndexableFieldMultiField[] multiFields() default {};
-  String type();
-  String index() default "";
+  IndexableFieldType type();
+  boolean index() default true;
+  boolean sortable() default false;
+  
 }

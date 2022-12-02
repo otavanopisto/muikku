@@ -1086,21 +1086,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to retrieve workspace from school data source (%s)", e.getMessage())).build();
     }
 
-    if ((payload.getDescription() != null) || (payload.getName() != null)) {
-      try {
-        if ((!StringUtils.equals(payload.getName(), workspace.getName())) ||
-            (!StringUtils.equals(payload.getDescription(), workspace.getDescription())) ||
-            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension()))) {
-          workspace.setName(payload.getName());
-          workspace.setNameExtension(payload.getNameExtension());
-          workspace.setDescription(payload.getDescription());
-          workspace = workspaceController.updateWorkspace(workspace);
-        }
-      } catch (Exception e) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to update workspace data into school data source (%s)", e.getMessage())).build();
-      }
-    }
-
     if (payload.getNumVisits() != null) {
       if (workspaceVisitController.getNumVisits(workspaceEntity) != payload.getNumVisits().longValue()) {
         return Response.status(Status.NOT_IMPLEMENTED).entity("Updating number of visit via this endpoint is currently unimplemented").build();
@@ -1123,6 +1108,22 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Reindex the workspace so that Elasticsearch can react to publish and visibility
 
     workspaceIndexer.indexWorkspace(workspaceEntity);
+
+    if ((payload.getDescription() != null) || (payload.getName() != null)) {
+      try {
+        if ((!StringUtils.equals(payload.getName(), workspace.getName())) ||
+            (!StringUtils.equals(payload.getDescription(), workspace.getDescription())) ||
+            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension()))) {
+          workspace.setName(payload.getName());
+          workspace.setNameExtension(payload.getNameExtension());
+          workspace.setDescription(payload.getDescription());
+          workspace = workspaceController.updateWorkspace(workspace);
+        }
+      }
+      catch (Exception e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to update workspace data into school data source (%s)", e.getMessage())).build();
+      }
+    }
 
     EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
 
@@ -1370,9 +1371,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
         workspaceEntity,
         WorkspaceMaterialAssignmentType.EVALUATED);
-    result.put("assignmentsTotal", new Long(evaluatedAssignments.size()));
-
-    // Done number of evaluated assignments
+    result.put("assignmentsTotal", Long.valueOf(evaluatedAssignments.size()));
+    
+    // Done number of evaluated assignments  
 
     List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
     replyStates.add(WorkspaceMaterialReplyState.FAILED);

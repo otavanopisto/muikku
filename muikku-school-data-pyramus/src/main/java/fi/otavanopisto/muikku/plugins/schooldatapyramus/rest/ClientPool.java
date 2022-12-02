@@ -24,6 +24,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.ext.ContextResolver;
 
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 

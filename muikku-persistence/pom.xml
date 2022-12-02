@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.195-SNAPSHOT</version>
+    <version>1.1.196-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -21,17 +21,34 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
-    <!-- CDI -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.annotation</groupId>
+      <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+    </dependency>
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.spec.javax.interceptor</groupId>
-      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+      
+    <!-- CDI -->
+
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -45,24 +62,17 @@
 
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-infinispan</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.hibernate</groupId>
+      <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <!-- Muikku -->
-
 
     <dependency>
       <groupId>fi.otavanopisto</groupId>
@@ -72,11 +82,10 @@
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-processor-plugin</artifactId>
-        <version>2.2.4</version>
+        <version>4.5</version>
         <executions>
           <execution>
             <id>process</id>
