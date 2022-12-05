@@ -162,6 +162,17 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     return Response.ok(updatedRestModel).build();
   }
   
+  /* mApi().workspacenote.workspacenote.updateorder.update(
+   * workspaceNoteId, {owner: 14, nextSiblingId:2, workspaceEntityId:23})
+   * 
+   * Method for drag and drop-kind of thing.
+   * 
+   * Errors:
+   * 404 Not found if can't find workspaceNote
+   * 400 Bad request if workspaceEntityId/owner is null or given workspaceEntityId does not match with workspaceEntityId in WorkspaceNote
+   * 403 Forbidden if updater is someone else than owner/administrator
+   */
+  
   @PUT
   @Path ("/workspacenote/{WORKSPACENOTEID}/updateorder")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
