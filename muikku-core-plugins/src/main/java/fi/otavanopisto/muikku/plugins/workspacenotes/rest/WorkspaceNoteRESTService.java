@@ -211,16 +211,12 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     
     UserEntity userEntity = userEntityController.findUserEntityById(workspaceNote.getOwner());
     
-    WorkspaceNote nextSibling = workspaceNoteController.findWorkspaceNoteNextSibling(workspaceNote);
-    Long nextSiblingId = nextSibling != null ? nextSibling.getId() : null;
-    
     WorkspaceNoteRestModel restModel = new WorkspaceNoteRestModel();
     restModel.setId(workspaceNote.getId());
     restModel.setOwner(userEntity.getId());
     restModel.setWorkspaceEntityId(workspaceNote.getWorkspace());
     restModel.setTitle(workspaceNote.getTitle());
     restModel.setWorkspaceNote(workspaceNote.getNote());
-    restModel.setNextSiblingId(nextSiblingId);
 
     return restModel;
   }

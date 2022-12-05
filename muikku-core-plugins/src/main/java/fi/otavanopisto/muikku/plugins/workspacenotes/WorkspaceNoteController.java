@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.workspacenotes;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -15,13 +14,15 @@ public class WorkspaceNoteController {
   private WorkspaceNoteDAO workspaceNoteDAO;
   
   public List<WorkspaceNote> listByOwnerAndArchived(Long owner) {
-    return workspaceNoteDAO.listByOwnerAndArchived(owner);
+    List<WorkspaceNote> workspaceNotes = workspaceNoteDAO.listByOwnerAndArchived(owner);
+    workspaceNotes.sort(Comparator.comparing(WorkspaceNote::getOrderNumber));
+    return workspaceNotes; 
   }
   
   public List<WorkspaceNote> listByWorkspaceAndOwnerAndArchived(Long workspaceEntityId, Long owner){
-    List<WorkspaceNote> notes = workspaceNoteDAO.listByOwnerAndWorkspaceAndArchived(owner, workspaceEntityId);
-    sortWorkspaceNotes(notes);
-    return notes;
+    List<WorkspaceNote> workspaceNotes = workspaceNoteDAO.listByOwnerAndWorkspaceAndArchived(owner, workspaceEntityId);
+    workspaceNotes.sort(Comparator.comparing(WorkspaceNote::getOrderNumber));
+    return workspaceNotes;
   }
   
   public WorkspaceNote createWorkspaceNote(Long owner, String title, String note, Long workspaceId) {
@@ -59,23 +60,6 @@ public class WorkspaceNoteController {
     return workspaceNoteDAO.updateOrderNumber(workspaceNote, newOrderNumber);
     
   }
-
-  /**
-   * Sorts the given list of workspace notes.
-   * 
-   * @param workspaceNotes
-   *          The list of workspace notes to sort
-   */
-  public void sortWorkspaceNotes(List<WorkspaceNote> workspaceNotes) {
-    Collections.sort(workspaceNotes, new Comparator<WorkspaceNote>() {
-      @Override
-      public int compare(WorkspaceNote o1, WorkspaceNote o2) {
-        int o1OrderNumber = o1.getOrderNumber() == null ? 0 : o1.getOrderNumber();
-        int o2OrderNumber = o2.getOrderNumber() == null ? 0 : o2.getOrderNumber();
-        return o1OrderNumber - o2OrderNumber;
-      }
-    });
-  }
   
   /**
    * Updates the order numbers of workspace notes so that
@@ -94,7 +78,8 @@ public class WorkspaceNoteController {
     // Workspace notes with order number >= reference order number
     List<WorkspaceNote> subsequentNodes = workspaceNoteDAO.listByOrderNumberEqualOrGreater(referenceNode);
     // Sort workspace notes according to order number
-    sortWorkspaceNotes(subsequentNodes);
+    subsequentNodes.sort(Comparator.comparing(WorkspaceNote::getOrderNumber));
+
     // note order number = referenceOrderNumber, subsequent notes =
     // ++referenceOrderNumber
     workspaceNote = workspaceNoteDAO.updateOrderNumber(workspaceNote, referenceOrderNumber);
