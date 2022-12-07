@@ -76,7 +76,7 @@ export const NoteList: React.FC<NoteListProps> = (props) => {
    */
   const handleElementDrag = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
-      updateNotebookEntriesOrder(dragIndex, hoverIndex, false);
+      updateNotebookEntriesOrder(dragIndex, hoverIndex, true);
     },
     [updateNotebookEntriesOrder]
   );
@@ -84,7 +84,7 @@ export const NoteList: React.FC<NoteListProps> = (props) => {
   /**
    * handleDropElement
    */
-  const handleElementDragEnd = React.useCallback(
+  const handleElementDrop = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       updateNotebookEntriesOrder(dragIndex, hoverIndex, true);
     },
@@ -140,8 +140,8 @@ export const NoteList: React.FC<NoteListProps> = (props) => {
           id={note.id}
           index={index}
           active={editOrder}
-          onDragElement={handleElementDrag}
-          onDragEndElement={handleElementDragEnd}
+          onElementDrag={handleElementDrag}
+          onElementDrop={handleElementDrop}
         >
           <NoteListItem
             key={note.id}
@@ -159,7 +159,7 @@ export const NoteList: React.FC<NoteListProps> = (props) => {
       deleteNotebookEntry,
       editOrder,
       handleElementDrag,
-      handleElementDragEnd,
+      handleElementDrop,
       noteInTheEditor,
       openedItems,
       toggleNotebookEditor,

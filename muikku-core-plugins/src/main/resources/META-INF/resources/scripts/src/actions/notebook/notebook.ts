@@ -54,11 +54,6 @@ export type NOTEBOOK_SET_CUT_CONTENT = SpecificActionType<
   string
 >;
 
-export type NOTEBOOK_UPDATE_ENTRIES_ORDER = SpecificActionType<
-  "NOTEBOOK_UPDATE_ENTRIES_ORDER",
-  WorkspaceNote[]
->;
-
 // Notebook trigger types
 
 /**
@@ -240,37 +235,61 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
 
       // dragged and dropped note
       const dragNote = notes[dragIndex];
-      // note that will be next to the dragged note
-      const nextSiblingNote = notes[hoverIndex];
-
-      // update order to server if dragged note is dropped
-      // to place
-      if (dropped) {
-        await promisify(
-          mApi().workspacenote.workspacenote.updateorder.update(dragNote.id, {
-            owner: dragNote.owner,
-            nextSiblingId: nextSiblingNote.id,
-            workspaceEntityId: dragNote.workspaceEntityId,
-          }),
-          "callback"
-        )();
-      }
 
       // Updated order...
-      let updatedList = update(notes, {
+      const updatedList = update(notes, {
         $splice: [
           [dragIndex, 1],
           [hoverIndex, 0, notes[dragIndex]],
         ],
       });
 
-      // repair updated orders entries nextSiblingIds
-      // with correct values. Last entry will have nextSiblingId null.
-      updatedList = updatedList.map((entry, index) => ({
-        ...entry,
-        nextSiblingId:
-          updatedList.length - 1 === index ? null : updatedList[index + 1].id,
-      }));
+      // update order to server if dragged note is dropped
+      // to place
+      if (dropped) {
+        // Find index of dragged note after update
+        // This is also needed to find next sibling note
+        // to update order to server
+        const draggedNoteIndexAfterUpdate = updatedList.findIndex(
+          (note) => note.id === dragNote.id
+        );
+
+        // dragged note after update
+        const noteToUpdate = updatedList[draggedNoteIndexAfterUpdate];
+
+        // next sibling note after update
+        // can be undefined if dragged note is dropped to last place
+        const nextSiblingNote = updatedList[draggedNoteIndexAfterUpdate + 1];
+
+        if (noteToUpdate) {
+          try {
+            await promisify(
+              mApi().workspacenote.workspacenote.updateorder.update(
+                noteToUpdate.id,
+                {
+                  owner: noteToUpdate.owner,
+                  nextSiblingId:
+                    (nextSiblingNote && nextSiblingNote.id) || null,
+                  workspaceEntityId: noteToUpdate.workspaceEntityId,
+                }
+              ),
+              "callback"
+            )();
+          } catch (err) {
+            dispatch({
+              type: "NOTEBOOK_UPDATE_STATE",
+              payload: "ERROR",
+            });
+
+            dispatch(
+              displayNotification(
+                "Virhe päivittäessä muistiinpanojen järjestystä",
+                "error"
+              )
+            );
+          }
+        }
+      }
 
       dispatch({
         type: "NOTEBOOK_UPDATE_ENTRIES",
@@ -301,6 +320,14 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
         const updatedList = [...state.notebook.notes];
 
         updatedList.push(entry);
+
+        /*         // repair updated orders entries nextSiblingIds
+        // with correct values. Last entry will have nextSiblingId null.
+        updatedList = updatedList.map((entry, index) => ({
+          ...entry,
+          nextSiblingId:
+            updatedList.length - 1 === index ? null : updatedList[index + 1].id,
+        })); */
 
         dispatch({
           type: "NOTEBOOK_CREATE_ENTRY",
@@ -404,6 +431,14 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
       );
 
       updatedList.splice(index, 1);
+
+      /* // repair updated orders entries nextSiblingIds
+      // with correct values. Last entry will have nextSiblingId null.
+      updatedList = updatedList.map((entry, index) => ({
+        ...entry,
+        nextSiblingId:
+          updatedList.length - 1 === index ? null : updatedList[index + 1].id,
+      })); */
 
       dispatch({
         type: "NOTEBOOK_DELETE_ENTRY",

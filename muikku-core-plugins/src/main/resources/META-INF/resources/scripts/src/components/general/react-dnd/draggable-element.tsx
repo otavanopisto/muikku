@@ -23,8 +23,8 @@ export interface DraggableElementProps {
   id: any;
   index: number;
   active: boolean;
-  onDragElement: (dragIndex: number, hoverIndex: number) => void;
-  onDragEndElement: (dragIndex: number, hoverIndex: number) => void;
+  onElementDrag: (dragIndex: number, hoverIndex: number) => void;
+  onElementDrop: (dragIndex: number, hoverIndex: number) => void;
 }
 
 /**
@@ -41,8 +41,8 @@ export const DraggableElement: FC<DraggableElementProps> = ({
   id,
   children,
   index,
-  onDragElement,
-  onDragEndElement,
+  onElementDrag,
+  onElementDrop,
   active,
 }) => {
   const previewRef = useRef<HTMLDivElement>(null);
@@ -60,14 +60,10 @@ export const DraggableElement: FC<DraggableElementProps> = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     item: { type: ItemTypes.CARD, id, index },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, jsdoc/require-jsdoc
-    collect: (monitor: any) => ({
+    collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.4 : 1,
     }),
   });
-
-  React.useEffect(() => {
-    preview(previewRef, { captureDraggingState: true });
-  }, [preview]);
 
   const [{ handlerId }, drop] = useDrop<
     DraggableElementItem,
@@ -84,7 +80,7 @@ export const DraggableElement: FC<DraggableElementProps> = ({
     },
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    hover(item: DraggableElementItem, monitor) {
+    hover(item, monitor) {
       if (!previewRef.current) {
         return;
       }
@@ -124,7 +120,7 @@ export const DraggableElement: FC<DraggableElementProps> = ({
       }
 
       // Time to actually perform the action
-      onDragElement(dragIndex, hoverIndex);
+      onElementDrag(dragIndex, hoverIndex);
 
       // Note: we're mutating the monitor item here!
       // Generally it's better to avoid mutations,
@@ -134,11 +130,12 @@ export const DraggableElement: FC<DraggableElementProps> = ({
     },
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    drop: (item: DraggableElementItem, monitor) => {
+    /* drop: (item: DraggableElementItem, monitor) => {
       if (monitor.canDrop()) {
-        onDragEndElement(item.index, index);
+        console.log("drop");
+        onElementDrop(item.index, index);
       }
-    },
+    }, */
   });
 
   drag(preview(previewRef));

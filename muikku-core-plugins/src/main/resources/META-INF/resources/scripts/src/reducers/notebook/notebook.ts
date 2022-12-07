@@ -19,10 +19,10 @@ export interface WorkspaceNote {
   title: string;
   workspaceNote: string;
   /**
-   * id of the sibling that is after this note.
-   * Null if this is the last note
+   * Backend uses this to determine the order of the notes
+   * This is not used in the frontend
    */
-  nextSiblingId?: number;
+  nextSiblingId: null;
 }
 
 /**

@@ -11,8 +11,31 @@ import {
   MaterialShowOrHideExtraToolsTriggerType,
   materialShowOrHideExtraTools,
 } from "../../../actions/workspaces/material";
-import { DndProvider } from "react-dnd-multi-backend";
-import { HTML5toTouch } from "rdndmb-html5-to-touch";
+import {
+  DndProvider,
+  MouseTransition,
+  MultiBackendOptions,
+  TouchTransition,
+} from "react-dnd-multi-backend";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
+
+export const HTML5toTouch: MultiBackendOptions = {
+  backends: [
+    {
+      id: "html5",
+      backend: HTML5Backend,
+      transition: MouseTransition,
+    },
+    {
+      id: "touch",
+      backend: TouchBackend,
+      options: { enableMouseEvents: true },
+      preview: true,
+      transition: TouchTransition,
+    },
+  ],
+};
 
 /**
  * SlideDrawerProps
