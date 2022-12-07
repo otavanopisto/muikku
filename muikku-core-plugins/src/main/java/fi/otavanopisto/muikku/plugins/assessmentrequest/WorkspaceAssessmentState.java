@@ -4,13 +4,15 @@ import java.util.Date;
 
 public class WorkspaceAssessmentState {
 
-  public static final String UNASSESSED = "unassessed";       // no request, no grade
-  public static final String PENDING = "pending";             // active request, no grade
-  public static final String PENDING_PASS = "pending_pass";   // active request, earlier passing grade
-  public static final String PENDING_FAIL = "pending_fail";   // active request, earlier failing grade
-  public static final String PASS = "pass";                   // no request, passing grade
-  public static final String FAIL = "fail";                   // no request, failing grade
-  public static final String INCOMPLETE = "incomplete";       // teacher has requested changes
+  public static final String UNASSESSED = "unassessed";                                   // no request, no grade
+  public static final String PENDING = "pending";                                         // active request, no grade
+  public static final String PENDING_PASS = "pending_pass";                               // active request, earlier passing grade
+  public static final String PENDING_FAIL = "pending_fail";                               // active request, earlier failing grade
+  public static final String PASS = "pass";                                               // no request, passing grade
+  public static final String FAIL = "fail";                                               // no request, failing grade
+  public static final String INCOMPLETE = "incomplete";                                   // teacher has requested changes
+  public static final String INTERIM_EVALUATION_REQUEST = "interim_evaluation_request";   // interim evaluation request
+  public static final String INTERIM_EVALUATION = "interim_evaluation";                   // interim evaluation
 
   public WorkspaceAssessmentState() {
   }
@@ -33,13 +35,14 @@ public class WorkspaceAssessmentState {
     this.text = text;
   }
 
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text, String grade, Date gradeDate) {
+  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text, String grade, Date gradeDate, Boolean passingGrade) {
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
     this.state = state;
     this.date = date;
     this.text = text;
     this.grade = grade;
     this.gradeDate = gradeDate;
+    this.passingGrade = passingGrade;
   }
 
   public String getState() {
@@ -90,9 +93,18 @@ public class WorkspaceAssessmentState {
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
   }
 
+  public Boolean isPassingGrade() {
+    return passingGrade;
+  }
+
+  public void setPassingGrade(Boolean passingGrade) {
+    this.passingGrade = passingGrade;
+  }
+
   private Date date;
   private String state;
   private String grade;
+  private Boolean passingGrade;
   private Date gradeDate;
   private String text;
   private String workspaceSubjectIdentifier;

@@ -38,6 +38,19 @@
   }
 }
 
+.link--index {
+  text-decoration: underline;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.link--index-text-link {
+  text-decoration: underline;
+  vertical-align: top;
+}
+
 .link--frontpage {
   color: $color-link-frontpage-text;
   font-size: 0.9375rem;
@@ -445,6 +458,12 @@
 .link--workspace-assessment-pending {
   &::before {
     background: $color-assessment-pending;
+  }
+}
+
+.link--workspace-assessment-interim-request {
+  &::before {
+    background: $color-interim-evaluation;
   }
 }
 

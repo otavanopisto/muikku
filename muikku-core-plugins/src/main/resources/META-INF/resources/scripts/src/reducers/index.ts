@@ -1,6 +1,6 @@
 import { EasyToUseFunctionState } from "./easy-to-use-functions/index";
 import { i18nType } from "./base/i18n";
-import { LocaleListType } from "./base/locales";
+import { LocaleState } from "./base/locales";
 import { NotificationState } from "./base/notifications";
 import { CredentialsType } from "./base/credentials";
 import { StatusType } from "./base/status";
@@ -31,6 +31,7 @@ import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
 import { Calendar } from "./main-function/calendar";
 import { JournalsState } from "./workspaces/journals";
+import { Contacts } from "./base/contacts";
 
 /**
  * StateType
@@ -38,8 +39,9 @@ import { JournalsState } from "./workspaces/journals";
 export interface StateType {
   notifications: NotificationState;
   i18n: i18nType;
-  locales: LocaleListType;
+  locales: LocaleState;
   status: StatusType;
+  contacts: Contacts;
   title: string;
   websocket?: WebsocketStateType;
   yo?: YOType;

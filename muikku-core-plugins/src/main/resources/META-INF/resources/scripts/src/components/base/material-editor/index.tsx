@@ -16,7 +16,7 @@ import {
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
 import { StatusType } from "~/reducers/base/status";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import DeleteWorkspaceMaterialDialog from "./delete-dialog";
 import Dropdown from "~/components/general/dropdown";
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
@@ -50,7 +50,7 @@ interface MaterialEditorProps {
   i18n: i18nType;
   status: StatusType;
   editorState: WorkspaceMaterialEditorType;
-  locale: LocaleListType;
+  locale: LocaleState;
   locationPage: PageLocation;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType;
@@ -237,6 +237,11 @@ const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
     type: "JOURNAL",
     classNameMod: "material-editor-dropdown-journal",
     text: "plugin.workspace.materialsManagement.pageType.journal",
+  },
+  {
+    type: "INTERIM_EVALUATION",
+    classNameMod: "material-editor-dropdown-interim-evaluation",
+    text: "plugin.workspace.materialsManagement.pageType.interimEvaluation",
   },
 ];
 
@@ -708,32 +713,14 @@ class MaterialEditor extends React.Component<
         case "JOURNAL":
           return "journal";
 
+        case "INTERIM_EVALUATION":
+          return "interim-evaluation";
+
         default:
           return "theory";
       }
     }
     return "theory";
-  };
-
-  /**
-   * Assignment page type icon if assignment type has been set
-   * @param type type
-   * @returns assignment page type icon
-   */
-  assignmentPageIcon = (type: AssignmentType) => {
-    switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
-      case "EXERCISE":
-        return "books";
-
-      case "EVALUATED":
-        return "evaluate";
-
-      case "JOURNAL":
-        return "book";
-
-      default:
-        return undefined;
-    }
   };
 
   /**

@@ -13,8 +13,6 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-
 import fi.otavanopisto.muikku.model.widgets.LocatedWidget;
 import fi.otavanopisto.muikku.model.widgets.Widget;
 

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -630,7 +631,7 @@ public class UserRESTService extends AbstractRESTService {
         studyEndDate,
         studyTimeEnd,
         userEntity == null ? null : userEntity.getLastLogin(),
-        user.getCurriculumIdentifier(),
+        user.getCurriculumIdentifier() != null ? user.getCurriculumIdentifier().toId() : null,
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
         null,
@@ -1674,13 +1675,13 @@ public class UserRESTService extends AbstractRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     SchoolDataIdentifier userIdentifier = userEntity == null ? null : sessionController.getLoggedUser();
 
-    // User roles
+    // User role
     
-    Set<String> roleSet = new HashSet<String>();
+    EnvironmentRoleArchetype role = null;
     if (userIdentifier != null) {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
           findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
-      roleSet.add(userSchoolDataIdentifier.getRole().getArchetype().toString());
+      role = userSchoolDataIdentifier.getRole().getArchetype();
     }
     
     // Environment level permissions
@@ -1714,7 +1715,7 @@ public class UserRESTService extends AbstractRESTService {
     
     if (user != null) {
       if (user.getCurriculumIdentifier() != null) {
-        SchoolDataIdentifier curriculumId = SchoolDataIdentifier.fromId(user.getCurriculumIdentifier());
+        SchoolDataIdentifier curriculumId = user.getCurriculumIdentifier();
       
         Curriculum curriculum = courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
         curriculumName = curriculum == null ? null : curriculum.getName();
@@ -1764,6 +1765,9 @@ public class UserRESTService extends AbstractRESTService {
       }
     }
     
+    Locale localeObj = sessionController.getLocale();
+    String locale = (localeObj == null || localeObj.getLanguage() == null) ? "fi" : localeObj.getLanguage().toLowerCase();
+
     // Result object
     UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
         userEntity == null ? null : userEntity.getId(),
@@ -1775,13 +1779,14 @@ public class UserRESTService extends AbstractRESTService {
         user == null || user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
         hasImage,
         user == null ? false : user.getHasEvaluationFees(),
-        user == null ? null : user.getCurriculumIdentifier(),
+        user == null || user.getCurriculumIdentifier() == null ? null : user.getCurriculumIdentifier().toId(),
         curriculumName,
         organizationIdentifier,
         isDefaultOrganization,
         currentUserSession.isActive(),
         permissionSet,
-        roleSet,
+        role,
+        locale,
         user == null ? null : user.getDisplayName(),
         emails,
         addresses,

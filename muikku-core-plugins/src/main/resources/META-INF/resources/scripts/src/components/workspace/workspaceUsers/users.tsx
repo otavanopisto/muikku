@@ -18,7 +18,7 @@ import {
   ShortWorkspaceUserWithActiveStatusType,
 } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
-import { MobileOnlyTabs } from "~/components/general/tabs";
+import { Tabs } from "~/components/general/tabs";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
@@ -35,6 +35,7 @@ import {
   loadStudentsOfWorkspace,
   LoadUsersOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
+import { MobileOnlyTabs } from "~/components/general/tabs";
 
 /**
  * WorkspaceUsersProps

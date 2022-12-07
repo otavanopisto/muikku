@@ -23,6 +23,7 @@ import {
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { Assessment } from "~/reducers/workspaces";
+import { AnyActionType } from "~/actions";
 
 /**
  * ItemDataElement
@@ -45,6 +46,7 @@ interface ItemDataElement {
 interface WorkspaceNavbarProps {
   activeTrail?: string;
   i18n: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   status: StatusType;
   title: string;
@@ -486,7 +488,7 @@ function mapStateToProps(state: StateType) {
  *
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<any>) =>
+const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
   bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar);
@@ -506,6 +508,8 @@ function getTextForAssessmentState(
 ) {
   let text;
   switch (state) {
+    case "interim_evaluation":
+    case "interim_evaluation_request":
     case "unassessed":
       text = "plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip";
       break;
@@ -552,6 +556,12 @@ function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
     case "pass":
       icon = "pass";
       break;
+    case "interim_evaluation":
+      icon = "pass";
+      break;
+    case "interim_evaluation_request":
+      icon = "pending";
+      break;
     default:
       icon = "canceled";
       break;
@@ -581,6 +591,12 @@ function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
       break;
     case "pass":
       className = "passed";
+      break;
+    case "interim_evaluation":
+      className = "interim-evaluation";
+      break;
+    case "interim_evaluation_request":
+      className = "interim-request";
       break;
     case "unassessed":
     default:
@@ -650,7 +666,9 @@ function canCancelAssessmentRequest(
         assessmentState[i].state === "unassessed" ||
         assessmentState[i].state === "pass" ||
         assessmentState[i].state === "incomplete" ||
-        assessmentState[i].state === "fail"
+        assessmentState[i].state === "fail" ||
+        assessmentState[i].state === "interim_evaluation" ||
+        assessmentState[i].state === "interim_evaluation_request"
       ) {
         return false;
       }

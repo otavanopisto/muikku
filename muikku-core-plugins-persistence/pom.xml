@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fi.otavanopisto.muikku</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.1.194-SNAPSHOT</version>
+		<version>1.1.196-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -15,6 +15,25 @@
 	<description>Muikku Core Plugins Persistence</description>
 
 	<dependencies>
+      
+      <!-- JPA -->
+
+      <dependency>
+        <groupId>org.jboss.spec.javax.annotation</groupId>
+        <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+      </dependency>
+      
+      <dependency>
+        <groupId>jakarta.persistence</groupId>
+        <artifactId>jakarta.persistence-api</artifactId>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>jakarta.validation</groupId>
+        <artifactId>jakarta.validation-api</artifactId>
+        <scope>provided</scope>
+      </dependency>
 
 		<!-- Hibernate -->
 
@@ -26,28 +45,16 @@
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-infinispan</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate</groupId>
+			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-java8</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
         <dependency>
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
@@ -64,11 +71,10 @@
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>org.bsc.maven</groupId>
 				<artifactId>maven-processor-plugin</artifactId>
-				<version>2.2.4</version>
+				<version>4.5</version>
 				<executions>
 					<execution>
 						<id>process</id>

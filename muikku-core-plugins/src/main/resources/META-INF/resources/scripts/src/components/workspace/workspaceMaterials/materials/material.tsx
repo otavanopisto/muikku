@@ -27,6 +27,7 @@ import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
+import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 
 /**
  * WorkspaceMaterialProps
@@ -83,10 +84,13 @@ class WorkspaceMaterial extends React.Component<
   render() {
     const isAssignment =
       this.props.materialContentNode.assignmentType === "EVALUATED" ||
-      this.props.materialContentNode.assignmentType === "EXERCISE";
+      this.props.materialContentNode.assignmentType === "EXERCISE" ||
+      this.props.materialContentNode.assignmentType === "INTERIM_EVALUATION";
+
     const isEvaluatedAsPassed =
       this.props.compositeReplies &&
       this.props.compositeReplies.state === "PASSED";
+
     const hasEvaluation =
       this.props.compositeReplies &&
       this.props.compositeReplies.evaluationInfo &&
@@ -94,9 +98,11 @@ class WorkspaceMaterial extends React.Component<
         this.props.compositeReplies.state === "PASSED" ||
         this.props.compositeReplies.state === "FAILED" ||
         this.props.compositeReplies.state === "WITHDRAWN");
+
     const isBinary = this.props.materialContentNode.type === "binary";
     let evalStateClassName = "";
     let evalStateIcon = "";
+
     if (this.props.compositeReplies) {
       switch (this.props.compositeReplies.state) {
         case "INCOMPLETE":
@@ -155,6 +161,11 @@ class WorkspaceMaterial extends React.Component<
                 <MaterialLoaderEditorButtonSet {...props} {...state} />
                 <MaterialLoaderTitle {...props} {...state} />
                 <MaterialLoaderContent
+                  {...props}
+                  {...state}
+                  stateConfiguration={stateConfiguration}
+                />
+                <MaterialLoaderExternalContent
                   {...props}
                   {...state}
                   stateConfiguration={stateConfiguration}

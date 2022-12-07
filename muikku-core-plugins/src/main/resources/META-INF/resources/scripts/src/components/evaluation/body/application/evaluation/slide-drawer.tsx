@@ -66,15 +66,7 @@ const SlideDrawer = React.forwardRef<
           : ""
       }`}
     >
-      <header
-        className={`evaluation-modal__evaluate-drawer-header ${
-          modifiers
-            ? modifiers
-                .map((m) => `evaluation-modal__evaluate-drawer-header--${m}`)
-                .join(" ")
-            : ""
-        }`}
-      >
+      <header className="evaluation-modal__evaluate-drawer-header">
         <div className="evaluation-modal__evaluate-drawer-header-title">
           {title}
         </div>
