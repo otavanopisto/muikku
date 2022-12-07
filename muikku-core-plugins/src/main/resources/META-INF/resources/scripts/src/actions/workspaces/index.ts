@@ -56,11 +56,6 @@ export type UPDATE_USER_WORKSPACES = SpecificActionType<
   WorkspaceListType
 >;
 
-export type UPDATE_LAST_WORKSPACE = SpecificActionType<
-  "UPDATE_LAST_WORKSPACE",
-  WorkspaceMaterialReferenceType
->;
-
 export type UPDATE_LAST_WORKSPACES = SpecificActionType<
   "UPDATE_LAST_WORKSPACES",
   WorkspaceMaterialReferenceType[]

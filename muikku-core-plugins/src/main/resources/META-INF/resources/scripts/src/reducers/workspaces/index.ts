@@ -865,9 +865,6 @@ export const workspaces: Reducer<WorkspacesType> = (
     case "UPDATE_AVAILABLE_CURRICULUMS":
       return { ...state, availableCurriculums: action.payload };
 
-    case "UPDATE_LAST_WORKSPACE":
-      return { ...state, lastWorkspace: action.payload };
-
     case "UPDATE_LAST_WORKSPACES":
       return { ...state, lastWorkspaces: action.payload };
 
