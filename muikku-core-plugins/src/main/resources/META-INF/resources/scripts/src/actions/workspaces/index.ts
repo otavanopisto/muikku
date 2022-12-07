@@ -336,52 +336,6 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
   };
 
 /**
- * LoadLastWorkspaceFromServerTriggerType
- */
-export interface LoadLastWorkspaceFromServerTriggerType {
-  (): AnyActionType;
-}
-
-/**
- * loadLastWorkspaceFromServer
- */
-const loadLastWorkspaceFromServer: LoadLastWorkspaceFromServerTriggerType =
-  function loadLastWorkspaceFromServer() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      try {
-        dispatch({
-          type: "UPDATE_LAST_WORKSPACES",
-          payload: <WorkspaceMaterialReferenceType[]>(
-            JSON.parse(
-              (
-                (await promisify(
-                  mApi().user.property.read("last-workspaces"),
-                  "callback"
-                )()) as any
-              ).value
-            )
-          ),
-        });
-      } catch (err) {
-        if (!(err instanceof MApiError)) {
-          throw err;
-        }
-        dispatch(
-          actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.errormessage.lastWorkspaceLoadFailed"
-            ),
-            "error"
-          )
-        );
-      }
-    };
-  };
-
-/**
  * LoadLastWorkspacesFromServerTriggerType
  */
 export interface LoadLastWorkspacesFromServerTriggerType {
@@ -438,7 +392,7 @@ export interface UpdateLastWorkspaceTriggerType {
  * updateLastWorkspace
  * @param newReference newReference
  */
-const updateLastWorkspace: UpdateLastWorkspaceTriggerType =
+const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
   function updateLastWorkspace(newReference) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -2657,7 +2611,6 @@ export {
   loadMoreWorkspacesFromServer,
   signupIntoWorkspace,
   loadUserWorkspacesFromServer,
-  loadLastWorkspaceFromServer,
   loadLastWorkspacesFromServer,
   setCurrentWorkspace,
   requestAssessmentAtWorkspace,
@@ -2666,7 +2619,7 @@ export {
   loadStaffMembersOfWorkspace,
   loadWorkspaceChatStatus,
   updateAssignmentState,
-  updateLastWorkspace,
+  updateLastWorkspaces,
   loadStudentsOfWorkspace,
   toggleActiveStateOfStudentOfWorkspace,
   loadWorkspaceDetailsInCurrentWorkspace,
