@@ -69,18 +69,11 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
   ]);
 
   /**
-   * Handles create or edit journal feedback click
-   * by setting feedbackEditorOpen to true
+   * Handles journal feedback editor change click
+   * Opens or closes the editor
    */
-  const handleCreateOrEditJournalFeedback = () => {
-    setFeedbackEditorOpen(true);
-  };
-
-  /**
-   * Handles close journal feedback editor click
-   */
-  const handleCancelJournalFeedback = () => {
-    setFeedbackEditorOpen(false);
+  const handleJournalFeedbackEditorStateClick = () => {
+    setFeedbackEditorOpen(!feedbackEditorOpen);
   };
 
   /**
@@ -231,7 +224,8 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
               <div className="evaluation-modal__item-actions">
                 <Link
                   className="link link--evaluation"
-                  onClick={handleCreateOrEditJournalFeedback}
+                  onClick={handleJournalFeedbackEditorStateClick}
+                  disabled={feedbackEditorOpen}
                 >
                   {props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.journalFeedback.editButton"
@@ -263,7 +257,8 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
               <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-feedback">
                 <Link
                   className="link link--evaluation"
-                  onClick={handleCreateOrEditJournalFeedback}
+                  onClick={handleJournalFeedbackEditorStateClick}
+                  disabled={feedbackEditorOpen}
                 >
                   {props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.journalFeedBackLink"
@@ -338,13 +333,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
         title={props.i18n.text.get(
           "plugin.evaluation.evaluationModal.journalFeedBackTitle"
         )}
-        onClose={handleCancelJournalFeedback}
+        onClose={handleJournalFeedbackEditorStateClick}
       >
         <JournalFeedbackEditor
           journalFeedback={journalFeedback}
           userEntityId={props.selectedAssessment.userEntityId}
           workspaceEntityId={props.selectedAssessment.workspaceEntityId}
-          onClose={handleCancelJournalFeedback}
+          onClose={handleJournalFeedbackEditorStateClick}
         />
       </SlideDrawer>
     </div>

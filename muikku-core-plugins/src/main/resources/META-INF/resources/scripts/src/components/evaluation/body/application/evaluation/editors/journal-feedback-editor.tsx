@@ -9,7 +9,7 @@ import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
-import { LocaleListType } from "~/reducers/base/locales";
+import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import { EvaluationJournalFeedback } from "~/@types/evaluation";
 import {
@@ -22,7 +22,7 @@ import {
  */
 interface JournalFeedbackEditorProps {
   i18n: i18nType;
-  locale: LocaleListType;
+  locale: LocaleState;
   journalFeedback?: EvaluationJournalFeedback;
   userEntityId: number;
   workspaceEntityId: number;
