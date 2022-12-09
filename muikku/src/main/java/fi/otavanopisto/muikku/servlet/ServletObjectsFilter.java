@@ -12,8 +12,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 
-import fi.otavanopisto.muikku.servlet.ServletObjectsContainer;
-
 @WebFilter (urlPatterns = "/*")
 public class ServletObjectsFilter implements Filter {
   
@@ -27,12 +25,11 @@ public class ServletObjectsFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 	  if (req instanceof HttpServletRequest) {
-	    HttpServletRequest request = (HttpServletRequest) req;
-	    servletObjectsContainer.setContextPath(request.getContextPath());
+            HttpServletRequest request = (HttpServletRequest) req;
 	    String currentUrl = request.getRequestURL().toString();
 	    String pathInfo = request.getRequestURI();
 	    servletObjectsContainer.setBaseUrl(currentUrl.substring(0, currentUrl.length() - pathInfo.length()) + request.getContextPath());
-	  }
+	  } 
 	  chain.doFilter(req, resp);
 	}
 

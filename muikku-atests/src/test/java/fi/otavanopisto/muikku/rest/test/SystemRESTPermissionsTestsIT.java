@@ -7,7 +7,7 @@ import java.util.EnumSet;
 
 import org.junit.Test;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 import fi.otavanopisto.muikku.AbstractRESTTest;
 import fi.otavanopisto.muikku.TestRole;

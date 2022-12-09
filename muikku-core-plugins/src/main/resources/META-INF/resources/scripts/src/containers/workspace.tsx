@@ -1075,10 +1075,7 @@ export default class Workspace extends React.Component<
            * @param workspace workspace
            */
           success: (workspace) => {
-            if (
-              !workspace.students &&
-              state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS
-            ) {
+            if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
               this.props.store.dispatch(
                 loadStudentsOfWorkspace({
                   workspace,

@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.resteasy.core.Dispatcher;
+import org.jboss.resteasy.spi.Dispatcher;
 import org.jboss.resteasy.core.ResourceMethodRegistry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,8 +54,8 @@ public class MetaRESTService extends AbstractRESTService {
 
     ResourceMethodRegistry registry = (ResourceMethodRegistry) dispatcher.getRegistry();
 
-    Set<Entry<String, java.util.List<org.jboss.resteasy.core.ResourceInvoker>>> entries = registry.getBounded().entrySet();
-    for (Entry<String, java.util.List<org.jboss.resteasy.core.ResourceInvoker>> entry : entries) {
+    Set<Entry<String, java.util.List<org.jboss.resteasy.spi.ResourceInvoker>>> entries = registry.getBounded().entrySet();
+    for (Entry<String, java.util.List<org.jboss.resteasy.spi.ResourceInvoker>> entry : entries) {
       String path = entry.getKey();
       resources.add(path);
     }

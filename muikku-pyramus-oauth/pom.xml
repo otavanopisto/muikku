@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.195-SNAPSHOT</version>
+    <version>1.1.196-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -16,11 +16,19 @@
 
   <dependencies>
 
+    <!-- Jackson -->
+    
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
     <!-- CDI -->
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -42,13 +50,7 @@
 
     <dependency>
       <groupId>org.jboss.spec.javax.faces</groupId>
-      <artifactId>jboss-jsf-api_2.2_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.sun.faces</groupId>
-      <artifactId>jsf-impl</artifactId>
+      <artifactId>jboss-jsf-api_2.3_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -64,7 +66,7 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.186-SNAPSHOT</version>
+      <version>0.7.190-SNAPSHOT</version>
     </dependency>
 
   </dependencies>

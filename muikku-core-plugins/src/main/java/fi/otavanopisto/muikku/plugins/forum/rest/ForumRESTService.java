@@ -1015,7 +1015,6 @@ public class ForumRESTService extends PluginRESTService {
   }
   
   private ForumThreadSubscriptionRESTModel createThreadSubscriptionRestModel(ForumThreadSubscription entity) {
-    
     Long workspaceEntityId = null;
     String workspaceUrlName = null;
     String workspaceName = null;
