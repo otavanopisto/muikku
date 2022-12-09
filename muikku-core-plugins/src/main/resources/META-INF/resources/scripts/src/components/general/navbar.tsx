@@ -3,15 +3,17 @@ import ProfileItem from "./navbar/profile-item";
 import Drawer from "./navbar/drawer";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
 import "~/sass/elements/navbar.scss";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { availableLanguages } from "~/locales/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * NavbarProps
  */
-interface NavbarProps {
+interface NavbarProps extends WithTranslation {
   modifier: string;
   navbarItems: {
     modifier?: string;
@@ -22,7 +24,7 @@ interface NavbarProps {
   navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>;
   mobileTitle?: string;
   extraContent?: any;
-  i18n: i18nType;
+  i18nn: i18nType;
   isProfileContainedInThisApp: boolean;
 }
 
@@ -80,7 +82,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             this.props.modifier ? "navbar--" + this.props.modifier : ""
           }`}
           id="stick"
-          aria-label={this.props.i18n.text.get(
+          aria-label={this.props.i18nn.text.get(
             "plugin.wcag.mainNavigation.aria.label"
           )}
         >
@@ -89,7 +91,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
               <Dropdown
                 openByHover
                 key="frontpage"
-                content={this.props.i18n.text.get("plugin.home.home")}
+                content={this.props.i18nn.text.get("plugin.home.home")}
               >
                 <a href="/" className="navbar__logo-link">
                   <img
@@ -99,7 +101,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
                         : "/gfx/oo-branded-site-logo-text-white.png"
                     }`}
                     width="175"
-                    alt={this.props.i18n.text.get(
+                    alt={this.props.i18nn.text.get(
                       "plugin.site.logo.linkBackToFrontPage"
                     )}
                   />
@@ -109,7 +111,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             <ul
               className="navbar__items"
               role="menubar"
-              aria-label={this.props.i18n.text.get(
+              aria-label={this.props.i18nn.text.get(
                 "plugin.wcag.mainNavigation.aria.label"
               )}
             >
@@ -153,7 +155,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             <ul
               className="navbar__default-options"
               role="menubar"
-              aria-label={this.props.i18n.text.get(
+              aria-label={this.props.i18nn.text.get(
                 "plugin.wcag.alternateNavigation.aria.label"
               )}
             >
@@ -168,6 +170,18 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
               </li>
               <li role="none" key="language-picker">
                 <LanguagePicker />
+              </li>
+              <li>
+                <select
+                  defaultValue={this.props.i18n.language}
+                  onChange={(e) =>
+                    this.props.i18n.changeLanguage(e.target.value)
+                  }
+                >
+                  {availableLanguages.map((language) => (
+                    <option key={language}>{language}</option>
+                  ))}
+                </select>
               </li>
             </ul>
           </div>
@@ -192,7 +206,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
   };
 }
 
@@ -204,4 +218,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(Navbar)
+);

@@ -1,6 +1,5 @@
 import Link from "~/components/general/link";
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import {
   AnnouncementListType,
@@ -13,12 +12,14 @@ import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { Panel } from "~/components/general/panel";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * AnnouncementsPanelProps
  */
-interface AnnouncementsPanelProps {
-  i18n: i18nType;
+interface AnnouncementsPanelProps extends WithTranslation {
+  i18nn: i18nType;
   status: StatusType;
   announcements: AnnouncementListType;
   overflow?: boolean;
@@ -56,8 +57,7 @@ class AnnouncementsPanel extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
    */
   componentDidUpdate(prevProps: AnnouncementsPanelProps) {
     if (
@@ -90,10 +90,10 @@ class AnnouncementsPanel extends React.Component<
    * @returns label with correct locale string
    */
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
-    let label = this.props.i18n.text.get("plugin.wcag.pager.goToPage.label");
+    let label = this.props.i18nn.text.get("plugin.wcag.pager.goToPage.label");
 
     if (selected) {
-      label = this.props.i18n.text.get("plugin.wcag.pager.current.label");
+      label = this.props.i18nn.text.get("plugin.wcag.pager.current.label");
     }
 
     return label;
@@ -101,7 +101,7 @@ class AnnouncementsPanel extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const { announcements, currentPage, itemsPerPage } = this.state;
@@ -148,7 +148,7 @@ class AnnouncementsPanel extends React.Component<
                 {announcement.caption}
               </span>
               <span className="item-list__announcement-date">
-                {this.props.i18n.time.format(announcement.startDate)}
+                {this.props.i18nn.time.format(announcement.startDate)}
               </span>
               {announcement.workspaces && announcement.workspaces.length ? (
                 <div className="labels item-list__announcement-workspaces">
@@ -180,7 +180,7 @@ class AnnouncementsPanel extends React.Component<
     const renderPaginationBody = (
       <div
         className="item-list__item item-list__item--announcements"
-        aria-label={this.props.i18n.text.get("plugin.wcag.pager.label")}
+        aria-label={this.props.i18nn.text.get("plugin.wcag.pager.label")}
       >
         <span className="item-list__text-body item-list__text-body--multiline--footer">
           <PagerV2
@@ -200,9 +200,7 @@ class AnnouncementsPanel extends React.Component<
 
     return (
       <Panel
-        header={this.props.i18n.text.get(
-          "plugin.frontPage.announcements.title"
-        )}
+        header={this.props.t("announcements")}
         icon="icon-paper-plane"
         modifier="announcements"
       >
@@ -221,11 +219,11 @@ class AnnouncementsPanel extends React.Component<
         ) : (
           <div
             className="empty empty--front-page"
-            aria-label={this.props.i18n.text.get(
+            aria-label={this.props.i18nn.text.get(
               "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel"
             )}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nn.text.get(
               "plugin.frontPage.announcements.noAnnouncements"
             )}
           </div>
@@ -237,24 +235,23 @@ class AnnouncementsPanel extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18n: state.i18n,
+    i18nn: state.i18n,
     announcements: state.announcements.announcements,
   };
 }
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
  */
 function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementsPanel);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncementsPanel)
+);

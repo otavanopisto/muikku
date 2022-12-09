@@ -16,13 +16,14 @@ import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DescriptionPanelProps
  */
-interface DescriptionPanelProps {
+interface DescriptionPanelProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18n: i18nType;
+  i18nn: i18nType;
   isInFrontPage?: boolean;
   workspaceEditMode: WorkspaceEditModeStateType;
 }
@@ -48,9 +49,7 @@ class DescriptionPanel extends React.Component<
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
           <h2 className="panel__header-title">
-            {this.props.i18n.text.get(
-              "plugin.workspace.index.descriptionTitle"
-            )}
+            {this.props.t("introduction")}
           </h2>
         </div>
         <div className="panel__body">
@@ -96,7 +95,7 @@ class DescriptionPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
   };
@@ -109,4 +108,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel)
+);

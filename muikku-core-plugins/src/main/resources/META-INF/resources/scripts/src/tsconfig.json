@@ -18,7 +18,8 @@
     "paths": {
       "~/*": ["./*"]
     },
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules"]
 }

@@ -7,12 +7,13 @@ import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 
 import "~/sass/elements/panel.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * LastMessagesPanelProps
  */
-interface LastMessagesPanelProps {
-  i18n: i18nType;
+interface LastMessagesPanelProps extends WithTranslation {
+  i18nn: i18nType;
   lastThreads: MessageThreadListType;
 }
 
@@ -32,13 +33,14 @@ class LastMessagesPanel extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+    const { i18nn } = this.props;
+
     return (
       <Panel
         modifier="latest-messages"
         icon="icon-envelope"
-        header={this.props.i18n.text.get(
-          "plugin.frontPage.latestMessages.title"
-        )}
+        header={t("newestMessages")}
       >
         {this.props.lastThreads.length ? (
           <div className="item-list item-list--panel-latest-messages">
@@ -63,18 +65,16 @@ class LastMessagesPanel extends React.Component<
                     {thread.caption}
                   </span>
                   <span className="item-list__latest-message-date">
-                    {this.props.i18n.time.format(thread.created)}
+                    <span className="item-list__latest-message-date">
+                      {i18nn.time.format(thread.created)}
+                    </span>
                   </span>
                 </span>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="empty empty--front-page">
-            {this.props.i18n.text.get(
-              "plugin.frontPage.latestMessages.noMessages"
-            )}
-          </div>
+          <div className="empty empty--front-page">Ei viestejä</div>
         )}
       </Panel>
     );
@@ -87,7 +87,7 @@ class LastMessagesPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
     lastThreads: state.messages.threads,
   };
 }
@@ -99,4 +99,7 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LastMessagesPanel);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withTranslation()(LastMessagesPanel));

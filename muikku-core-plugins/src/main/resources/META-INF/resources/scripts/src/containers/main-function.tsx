@@ -119,6 +119,7 @@ import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/worksp
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 import { loadContactGroup } from "~/actions/base/contacts";
+import "../locales/i18n";
 
 moment.locale("fi");
 

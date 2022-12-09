@@ -71,6 +71,7 @@ import {
   loadWorkspaceCompositeMaterialReplies,
   setCurrentWorkspaceMaterialsActiveNodeId,
 } from "~/actions/workspaces/material";
+import "../locales/i18n";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 

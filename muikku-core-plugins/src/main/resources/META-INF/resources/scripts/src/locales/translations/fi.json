@@ -1,0 +1,11 @@
+{
+  "common": {
+    "workspaces": "Työtilat",
+    "noWorkspaces": "Ei työtiloja",
+    "newestMessages": "Uusimmat viestit",
+    "announcements": "Tiedotteet",
+    "studentApplication": "Hae opiskelijaksi",
+    "openMaterials": "Avoimet materiaalit",
+    "introduction": "Esittely"
+  }
+}
