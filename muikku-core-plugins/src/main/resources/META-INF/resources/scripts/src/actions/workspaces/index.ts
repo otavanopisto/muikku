@@ -574,8 +574,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           ),
 
           status.loggedIn
-            ?
-              reuseExistantValue(
+            ? reuseExistantValue(
                 true,
                 workspace && workspace.interimEvaluationRequests,
                 () =>
