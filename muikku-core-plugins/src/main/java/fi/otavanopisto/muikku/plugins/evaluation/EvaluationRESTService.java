@@ -71,7 +71,6 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -155,8 +154,6 @@ public class EvaluationRESTService extends PluginRESTService {
   @Inject
   private ActivityLogController activityLogController;
   
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/activity")
@@ -1474,21 +1471,16 @@ public class EvaluationRESTService extends PluginRESTService {
   private RestWorkspaceJournalFeedback createRestModel(WorkspaceJournalFeedback journalFeedback) {
     RestWorkspaceJournalFeedback restFeedback = new RestWorkspaceJournalFeedback();
     UserEntity creatorEntity = userEntityController.findUserEntityById(journalFeedback.getCreator());
-    User creator = null;
-    
+
+    String creatorName = null;
     if (creatorEntity != null) {
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        creator = userController.findUserByUserEntityDefaults(creatorEntity);
-      }
-      finally {
-        schoolDataBridgeSessionController.endSystemSession();
-      }
+      UserEntityName userEntityName = userEntityController.getName(creatorEntity);
+      creatorName = userEntityName != null ? userEntityName.getDisplayName() : null; 
     }
     restFeedback.setId(journalFeedback.getId());
     restFeedback.setCreated(journalFeedback.getCreated());
     restFeedback.setCreator(journalFeedback.getCreator());
-    restFeedback.setCreatorName(creator.getDisplayName());
+    restFeedback.setCreatorName(creatorName);
     restFeedback.setFeedback(journalFeedback.getFeedback());
     restFeedback.setStudent(journalFeedback.getStudent());
     restFeedback.setWorkspaceEntityId(journalFeedback.getWorkspaceEntityId());
