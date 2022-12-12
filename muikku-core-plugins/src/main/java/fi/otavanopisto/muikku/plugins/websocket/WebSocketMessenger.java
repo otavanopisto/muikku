@@ -1,11 +1,12 @@
 package fi.otavanopisto.muikku.plugins.websocket;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -38,8 +39,13 @@ public class WebSocketMessenger {
   public void init() {
     sessions = new ConcurrentHashMap<>();
   }
+
+  public void sendMessage(String eventType, Object data, Collection<UserEntity> recipients) {
+    Set<Long> recipientIds = recipients.stream().map(UserEntity::getId).collect(Collectors.toSet());
+    sendMessageByIds(eventType, data, recipientIds);
+  }
   
-  public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
+  public void sendMessageByIds(String eventType, Object data, Collection<Long> recipientIds) {
     WebSocketMessage message = new WebSocketMessage(eventType, data);
     ObjectMapper mapper = new ObjectMapper();
     String strMessage = null;
@@ -51,11 +57,6 @@ public class WebSocketMessenger {
       return;
     }
 
-    List<Long> recipientIds = new ArrayList<Long>(recipients.size());
-    for (UserEntity userEntity : recipients) {
-      recipientIds.add(userEntity.getId());
-    }
-    
     for (String ticket : sessions.keySet()) {
       Session session = sessions.get(ticket);
       try {
