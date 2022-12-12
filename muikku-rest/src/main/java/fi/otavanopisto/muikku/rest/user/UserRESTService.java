@@ -1766,7 +1766,7 @@ public class UserRESTService extends AbstractRESTService {
       }
     }
     
-    UserOnlineStatus onlineStatus = userEntity.getOnlineStatus();
+    UserOnlineStatus onlineStatus = userEntity != null ? userEntity.getOnlineStatus() : null;
     
     Locale localeObj = sessionController.getLocale();
     String locale = (localeObj == null || localeObj.getLanguage() == null) ? "fi" : localeObj.getLanguage().toLowerCase();
