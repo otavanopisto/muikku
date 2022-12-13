@@ -1101,6 +1101,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
       workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
+    
+    if (payload.getLanguage() != null && !workspaceEntity.getLanguage().equals(payload.getLanguage())) {
+      workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
+    }
 
     workspaceEntity = workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
     workspaceEntity = workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
@@ -2489,6 +2493,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntity.getAccess(),
         workspaceEntity.getArchived(),
         workspaceEntity.getPublished(),
+        workspaceEntity.getLanguage(),
         name,
         nameExtension,
         description,

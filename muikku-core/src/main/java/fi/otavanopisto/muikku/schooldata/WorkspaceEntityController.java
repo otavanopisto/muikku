@@ -36,6 +36,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -91,7 +92,7 @@ public class WorkspaceEntityController {
       return null;
     }
     
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, organizationEntity, WorkspaceAccess.LOGGED_IN, Boolean.FALSE, Boolean.FALSE);
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, organizationEntity, WorkspaceAccess.LOGGED_IN, Boolean.FALSE, Boolean.FALSE, WorkspaceLanguage.fi);
     
     return workspaceEntity;
   }
@@ -168,6 +169,10 @@ public class WorkspaceEntityController {
 
   public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
     return workspaceEntityDAO.updateAccess(workspaceEntity, access);
+  }
+  
+  public WorkspaceEntity updateLanguage(WorkspaceEntity workspaceEntity, WorkspaceLanguage language) {
+    return workspaceEntityDAO.updateLanguage(workspaceEntity, language);
   }
 
   public WorkspaceEntity updateOrganizationEntity(WorkspaceEntity workspaceEntity, OrganizationEntity organizationEntity) {
