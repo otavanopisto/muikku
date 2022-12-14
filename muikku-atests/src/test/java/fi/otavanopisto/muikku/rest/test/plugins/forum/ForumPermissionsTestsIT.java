@@ -23,7 +23,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(forum)
       .post("/forum/areas");
     
-    areaId = new Long(response.body().jsonPath().getInt("id"));
+    areaId = response.body().jsonPath().getLong("id");
   }
   
   @After
@@ -43,7 +43,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
 
-    permanentDeleteArea(new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteArea(response.body().jsonPath().getLong("id"));
   }
   
   @Test
@@ -58,7 +58,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
 
-    permanentDeleteArea(new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteArea(response.body().jsonPath().getLong("id"));
   }
   
   @Test
@@ -73,7 +73,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
 
-    permanentDeleteArea(new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteArea(response.body().jsonPath().getLong("id"));
   }
   
   @Test
@@ -172,7 +172,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(forum)
       .post("/forum/areas");
 
-    Long id = new Long(response.body().jsonPath().getInt("id"));
+    Long id = response.body().jsonPath().getLong("id");
 
     Response deleteResponse = asAdmin()
       .delete("/forum/areas/{ID}", id);
@@ -193,7 +193,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(forum)
       .post("/forum/areas");
 
-    Long id = new Long(response.body().jsonPath().getInt("id"));
+    Long id = response.body().jsonPath().getLong("id");
 
     asManager()
       .delete("/forum/areas/{ID}", id)
@@ -212,7 +212,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(forum)
       .post("/forum/areas");
 
-    Long id = new Long(response.body().jsonPath().getInt("id"));
+    Long id = response.body().jsonPath().getLong("id");
 
     asTeacher()
       .delete("/forum/areas/{ID}", id)
@@ -231,7 +231,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(forum)
       .post("/forum/areas");
 
-    Long id = new Long(response.body().jsonPath().getInt("id"));
+    Long id = response.body().jsonPath().getLong("id");
 
     asStudent()
       .delete("/forum/areas/{ID}", id)
