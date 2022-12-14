@@ -1,11 +1,171 @@
 {
   "common": {
-    "workspaces": "Työtilat",
-    "noWorkspaces": "Ei työtiloja",
-    "newestMessages": "Uusimmat viestit",
-    "announcements": "Tiedotteet",
-    "studentApplication": "Hae opiskelijaksi",
-    "openMaterials": "Avoimet materiaalit",
-    "introduction": "Esittely"
+    "actions": {
+      "addRoom": "Lisää huone",
+      "back": "Takaisin",
+      "cancel": "Peruuta",
+      "close": "Sulje",
+      "comment": "Kommentoi",
+      "confirmSave": "Olen varma",
+      "confirmRemove": "Suorita poisto",
+      "create": "Luo",
+      "edit": "Muokkaa",
+      "edit_comment": "Muokkaa kommenttia",
+      "download_one": "Lataa",
+      "download_other": "Lataa kaikki",
+      "hide": "Piilota",
+      "hide_comments": "Piilota kommentit",
+      "next": "Seuraava",
+      "previous": "Edellinen",
+      "remove": "Poista",
+      "removing": "Poistetaan",
+      "remove_comment": "Poista kommentti",
+      "remove_draft": "Poista luonnos",
+      "removeRoom": "Poista huone",
+      "reportError": "Ilmoita ongelmasta",
+      "returnHome": "Muikun etusivulle",
+      "restore": "Palauta",
+      "save": "Tallenna",
+      "send": "Lähetä",
+      "sent": "Lähetetty",
+      "share": "Jaa",
+      "show": "Näytä",
+      "show_comments": "Näytä kommentit",
+      "update": "Päivitä",
+      "quote": "Lainaa"
+    }
+  },
+  "labels": {
+    "create": "Luo",
+    "edit": "Muokkaa",
+    "remove": "Poista"
+  },
+
+  "evaluation": {
+    "actions": {
+      "confirmRemove_evaluationRequest": "Kyllä, poista arviointipyyntö",
+      "confirmRemove_interimEvaluationRequest": "Kyllä, poista välipalautepyyntö",
+      "remove": "Poista arviointi",
+      "remove_evaluationRequest": "Poista arviointipyyntö",
+      "remove_interimEvaluationRequest": "Poista välipalautepyyntö",
+      "remove_student": "Kyllä, arkistoi opiskelija",
+      "openAll": "Avaa kaikki",
+      "hideAll": "Piilota kaikki",
+      "archiveStudent": "Arkistoi opiskelija",
+      "evaluateStudent": "Arvioi opiskelija",
+      "markImportant": "Merkitse tärkeäksi",
+      "markNonImportant": "Merkitse vähemmän tärkeäksi",
+      "grade": "Anna kurssiarvio",
+      "improveGrade": "Anna korotus",
+      "askSupplementation": "Pyydä täydennystä",
+      "pickModule": "Valitse arvioitava moduuli"
+    }
+  },
+
+  "hops": {},
+
+  "messages": {
+    "actions": {
+      "hide_comments": "Piilota vastaukset",
+      "remove": "Poista",
+      "remove_comment": "Poista vastaus",
+      "remove_label": "Poista tunniste",
+      "addSignature": "Lisää allekirjoitus",
+      "reply": "Vastaa",
+      "replyAll": "Vastaa kaikille",
+      "show_comments": "Näytä vastaukset"
+    },
+
+    "labels": {
+      "edit": "Muokkaa viestiä",
+      "lock": "Lukitse viesti",
+      "pin": "Kiinnitä viesti",
+      "remove": "Poista viesti",
+      "reply": "Vastaa viestiin",
+      "subscribeArea": "Tilaa keskustelualue",
+      "subscribeThread": "Tilaa viestiketju"
+    }
+  },
+
+  "tasks": {
+    "actions": {
+      "approve": "Merkitse hyväksytyksi",
+      "incomplete": "Merkitse keskeneräiseksi",
+      "done": "Merkitse tehdyksi",
+      "requestApproval": "Lähetä hyväksyttäväksi",
+      "cancelApprovalRequest": "Peruuta hyväksyntäpyyntö"
+    }
+  },
+
+  "workspaces": {
+    "actions": {
+      "appointment": "Varaa aika",
+      "cancel_assignment": "Peruuta tehtävän palautus",
+      "cancel_interimEvaluationRequest": "Peruuta välipalautepyyntö",
+      "continue": "Jatka",
+      "copy": "Tee kopio",
+      "checkOut": "Tutustu",
+      "create": "Luo kurssi",
+      "create_journal": "Uusi merkintä",
+      "download_file": "Lataa tiedosto",
+      "edit": "Muokkaa kurssia",
+      "edit_journal": "Muokkaa merkintää",
+      "hide_answers": "Piilota oikeat vastaukset",
+      "hide_supplementationRequest": "Piilota täydennyspyyntö",
+      "readMore": "Lue lisää",
+      "record": "Aloita nauhoitus",
+      "recordStop": "Lopeta nauhoitus",
+      "save": "Tallenna muutokset",
+      "save_journal": "Julkaise merkintä",
+      "send_assignment": "Palauta tehtävä",
+      "send_interimEvaluationRequest": "Lähetä välipalautepyyntö",
+      "sent_assignment": "Tehtävä palautettu",
+      "show_anwers": "Näytä oikeat vastaukset",
+      "show_supplementationRequest": "Näytä täydennyspyyntö",
+      "signIn": "Ilmoittaudu",
+      "update_assignment": "Palauta tehtävä uudelleen"
+    }
+  },
+
+  "userGroups": {
+    "actions": {
+      "edit": "Muokkaa käyttäjäryhmää",
+      "create": "Luo uusi käyttäjäryhmä"
+    }
+  },
+
+  "contactInfo": {
+    "actions": {
+      "confirmSave": "Tiedot ovat oikein",
+      "save": "Päivitä tietoja"
+    }
+  },
+
+  "orders": {
+    "actions": {
+      "pay": "Maksa tilaus",
+      "create": "Hyväksy tilaus",
+      "confirmSave": "Kyllä, viimeistele tilaus",
+      "confirmRemove": "Kyllä, poista tilaus"
+    }
+  },
+
+  "flags": {
+    "actions": {
+      "remove": "Poista lippu",
+      "share": "Jaa lippu"
+    },
+    "labels": {
+      "edit": "Muokkaa lippua",
+      "create": "Luo uusi lippu"
+    }
+  },
+
+  "contactLogs": {
+    "labels": {
+      "edit": "Muokkaa yhteydenottoa",
+      "create": "Luo uusi yhteydenotto",
+      "remove": "Poista yhteydenotto"
+    }
   }
 }
