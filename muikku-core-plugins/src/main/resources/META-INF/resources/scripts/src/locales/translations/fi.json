@@ -6,6 +6,7 @@
       "cancel": "Peruuta",
       "close": "Sulje",
       "comment": "Kommentoi",
+      "confirmCancel": "Kyllä, peruuta",
       "confirmSave": "Olen varma",
       "confirmRemove": "Suorita poisto",
       "create": "Luo",
@@ -35,6 +36,7 @@
       "quote": "Lainaa"
     }
   },
+
   "labels": {
     "create": "Luo",
     "edit": "Muokkaa",
@@ -58,7 +60,8 @@
       "grade": "Anna kurssiarvio",
       "improveGrade": "Anna korotus",
       "askSupplementation": "Pyydä täydennystä",
-      "pickModule": "Valitse arvioitava moduuli"
+      "pickModule": "Valitse arvioitava moduuli",
+      "confirmCancel": "Ymmärrän ja haluan poistua"
     }
   },
 
