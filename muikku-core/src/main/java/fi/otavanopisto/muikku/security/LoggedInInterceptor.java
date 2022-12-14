@@ -18,7 +18,7 @@ import fi.otavanopisto.security.LoggedIn;
  * Interceptor for @LoggedIn annotation. Checks that the user calling the annotated method has logged in. 
  * Uses Identity for checks on user login status.
  * 
- * This is meant to work with JSF and Rewrite.
+ * This is meant for JSF/Rewrite combination as it will return a redirect url if user is not logged in.
  */
 @LoggedIn
 @Interceptor
