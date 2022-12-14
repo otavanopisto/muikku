@@ -18,6 +18,7 @@
       "hide_comments": "Piilota kommentit",
       "next": "Seuraava",
       "previous": "Edellinen",
+      "quote": "Lainaa",
       "remove": "Poista",
       "removing": "Poistetaan",
       "remove_comment": "Poista kommentti",
@@ -32,8 +33,7 @@
       "share": "Jaa",
       "show": "Näytä",
       "show_comments": "Näytä kommentit",
-      "update": "Päivitä",
-      "quote": "Lainaa"
+      "update": "Päivitä"
     }
   },
 
@@ -45,23 +45,23 @@
 
   "evaluation": {
     "actions": {
+      "askSupplementation": "Pyydä täydennystä",
+      "archiveStudent": "Arkistoi opiskelija",
+      "confirmCancel": "Ymmärrän ja haluan poistua",
       "confirmRemove_evaluationRequest": "Kyllä, poista arviointipyyntö",
       "confirmRemove_interimEvaluationRequest": "Kyllä, poista välipalautepyyntö",
+      "evaluateStudent": "Arvioi opiskelija",
+      "grade": "Anna kurssiarvio",
+      "hideAll": "Piilota kaikki",
+      "improveGrade": "Anna korotus",
+      "markNonImportant": "Merkitse vähemmän tärkeäksi",
+      "markImportant": "Merkitse tärkeäksi",
+      "openAll": "Avaa kaikki",
+      "pickModule": "Valitse arvioitava moduuli",
       "remove": "Poista arviointi",
       "remove_evaluationRequest": "Poista arviointipyyntö",
       "remove_interimEvaluationRequest": "Poista välipalautepyyntö",
-      "remove_student": "Kyllä, arkistoi opiskelija",
-      "openAll": "Avaa kaikki",
-      "hideAll": "Piilota kaikki",
-      "archiveStudent": "Arkistoi opiskelija",
-      "evaluateStudent": "Arvioi opiskelija",
-      "markImportant": "Merkitse tärkeäksi",
-      "markNonImportant": "Merkitse vähemmän tärkeäksi",
-      "grade": "Anna kurssiarvio",
-      "improveGrade": "Anna korotus",
-      "askSupplementation": "Pyydä täydennystä",
-      "pickModule": "Valitse arvioitava moduuli",
-      "confirmCancel": "Ymmärrän ja haluan poistua"
+      "remove_student": "Kyllä, arkistoi opiskelija"
     }
   },
 
