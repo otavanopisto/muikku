@@ -55,7 +55,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
 
-      Double price = new Double(75);
+      Double price = 75d;
       WorklistBasePriceRestModel courseBasePrices = new WorklistBasePriceRestModel();
       courseBasePrices.put(course1.getCourseModules().iterator().next().getId(), price);
       
