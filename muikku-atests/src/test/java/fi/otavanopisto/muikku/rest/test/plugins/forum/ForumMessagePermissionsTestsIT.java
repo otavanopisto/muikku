@@ -32,7 +32,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(forum)
       .post("/forum/areas");
 
-    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+    forumAreaId = response.body().jsonPath().getLong("id");
 
     // Create thread
     
@@ -43,7 +43,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(thread)
       .post("/forum/areas/{ID}/threads", forumAreaId);
     
-    threadId = new Long(response.body().jsonPath().getInt("id"));
+    threadId = response.body().jsonPath().getLong("id");
 
     // Create reply
     
@@ -55,7 +55,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(reply)
       .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
 
-    replyId = new Long(response.body().jsonPath().getInt("id"));
+    replyId = response.body().jsonPath().getLong("id");
   }
   
   @After
@@ -78,7 +78,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteThread(forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThread(forumAreaId, response.body().jsonPath().getLong("id"));
   }
   
   @Test
@@ -94,7 +94,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteThread(forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThread(forumAreaId, response.body().jsonPath().getLong("id"));
   }
   
   @Test
@@ -110,7 +110,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteThread(forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThread(forumAreaId, response.body().jsonPath().getLong("id"));
   }
   
   @Test
@@ -126,7 +126,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteThread(forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThread(forumAreaId, response.body().jsonPath().getLong("id"));
   }
   
   @Test
@@ -142,7 +142,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteThreadReply(forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThreadReply(forumAreaId, threadId, response.body().jsonPath().getLong("id"));
   }
 
   @Test
@@ -158,7 +158,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteThreadReply(forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThreadReply(forumAreaId, threadId, response.body().jsonPath().getLong("id"));
   }
 
   @Test
@@ -174,7 +174,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteThreadReply(forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThreadReply(forumAreaId, threadId, response.body().jsonPath().getLong("id"));
   }
 
   @Test
@@ -190,7 +190,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteThreadReply(forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThreadReply(forumAreaId, threadId, response.body().jsonPath().getLong("id"));
   }
   
   @Test
