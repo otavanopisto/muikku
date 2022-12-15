@@ -25,16 +25,21 @@ import {
   ArchiveStudent,
   archiveStudent,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { t } from "i18next";
 
 /**
  * ArchiveDialogProps
  */
-interface ArchiveDialogProps extends AssessmentRequest {
+interface ArchiveDialogProps
+  extends AssessmentRequest,
+    WithTranslation<["common", "evaluation"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   place: "card" | "modal";
   isOpen?: boolean;
-  onClose?: () => any;
-  i18n: i18nType;
+  onClose?: () => void;
+  i18nn: i18nType;
   archiveStudent: ArchiveStudent;
   evaluations: EvaluationState;
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
@@ -113,27 +118,21 @@ class ArchiveDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.archiveStudent.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonArchiveLabel"
-          )}
+          {t("evaluation:actions.remove_student")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={this.props.onClose ? this.props.onClose : closeDialog}
         >
           {this.props.place === "card"
-            ? this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel"
-              )
-            : this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.noLabel"
-              )}
+            ? t("common:actions.cancel")
+            : "Ei (TODO: Translate)"}
         </Button>
       </div>
     );
@@ -142,10 +141,10 @@ class ArchiveDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div
         dangerouslySetInnerHTML={this.createHtmlMarkup(
-          this.props.i18n.text.get(
+          this.props.i18nn.text.get(
             "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.description",
             studentNameString
           )
@@ -156,7 +155,7 @@ class ArchiveDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         modifier="evaluation-archive-student"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nn.text.get(
           "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.title"
         )}
         content={content}
@@ -174,7 +173,7 @@ class ArchiveDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
     evaluations: state.evaluations,
   };
 }
@@ -195,4 +194,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ArchiveDialog);
+export default withTranslation(["common", "evaluation"])(
+  connect(mapStateToProps, mapDispatchToProps)(ArchiveDialog)
+);

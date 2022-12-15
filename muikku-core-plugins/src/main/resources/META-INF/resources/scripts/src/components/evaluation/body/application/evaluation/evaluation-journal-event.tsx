@@ -25,6 +25,7 @@ import {
   loadEvaluationJournalCommentsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationStudyDiaryEvent } from "~/@types/evaluation";
+import { useTranslation } from "react-i18next";
 import {
   UpdateEvaluationJournalCommentTriggerType,
   updateEvaluationJournalComment,
@@ -38,7 +39,7 @@ import {
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventProps extends EvaluationStudyDiaryEvent {
-  i18n: i18nType;
+  i18nn: i18nType;
   open: boolean;
   onClickOpen?: (diaryId: number) => void;
   evaluation: EvaluationState;
@@ -63,7 +64,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     userEntityId,
     workspaceEntityId,
     id,
-    i18n,
+    i18nn,
     commentCount,
     createEvaluationJournalComment,
     updateEvaluationJournalComment,
@@ -79,6 +80,8 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     JournalComment | undefined
   >(undefined);
   const [editorLocked, setEditorLocked] = React.useState(false);
+
+  const { t } = useTranslation(["common", "evaluation"]);
 
   React.useEffect(() => {
     if (!createNewActive && commentToEdit === undefined) {
@@ -266,14 +269,11 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           onClick={handleOpenContentClick}
         >
           {title}
-          {isDraft &&
-            i18n.text.get(
-              "plugin.evaluation.evaluationModal.journalEntry.statusDraft"
-            )}
+          {isDraft && t("common:actions.remove_draft")}
           <div className="evaluation-modal__item-meta">
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
-                {i18n.text.get(
+                {i18nn.text.get(
                   "plugin.evaluation.evaluationModal.journalEntry.writtenLabel"
                 )}
               </span>
@@ -297,7 +297,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           >
             <div className={arrowClasses + " icon-arrow-right"} />
             <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
-              {i18n.text.get(
+              {i18nn.text.get(
                 "plugin.evaluation.evaluationModal.journalComments.title"
               )}{" "}
               ({commentCount})
@@ -311,7 +311,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
               ) : comments && comments.length === 0 ? (
                 <div className="empty">
                   <span>
-                    {i18n.text.get(
+                    {i18nn.text.get(
                       "plugin.evaluation.evaluationModal.journalComments.noComments"
                     )}
                   </span>
@@ -337,7 +337,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
             <div>
               <Link className="link" onClick={handleCreateNewComment}>
-                {i18n.text.get(
+                {i18nn.text.get(
                   "plugin.evaluation.evaluationModal.journalComments.newCommentButton"
                 )}
               </Link>
@@ -347,7 +347,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </AnimateHeight>
 
       <SlideDrawer
-        title={i18n.text.get(
+        title={i18nn.text.get(
           "plugin.evaluation.evaluationModal.journalComments.newComment.editorTitle"
         )}
         closeIconModifiers={["evaluation"]}
@@ -367,7 +367,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </SlideDrawer>
 
       <SlideDrawer
-        title={i18n.text.get(
+        title={i18nn.text.get(
           "plugin.evaluation.evaluationModal.journalComments.editComment.editorTitle"
         )}
         show={commentToEdit !== undefined}
@@ -396,7 +396,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
     evaluation: state.evaluations,
   };
 }

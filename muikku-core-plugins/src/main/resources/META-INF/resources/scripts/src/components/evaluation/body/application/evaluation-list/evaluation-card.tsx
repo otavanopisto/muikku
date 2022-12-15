@@ -21,6 +21,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { ButtonPill, IconButton } from "~/components/general/button";
 import "~/sass/elements/evaluation-card.scss";
 import "~/sass/elements/buttons.scss";
+import { useTranslation } from "react-i18next";
 
 /**
  * EvaluationCardProps
@@ -54,6 +55,8 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     loadEvaluationAssessmentRequestsFromServer,
     ...rest
   } = props;
+
+  const { t } = useTranslation(["common", "evaluation"]);
 
   /**
    * Handles importance click
@@ -247,12 +250,8 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         <ButtonPill
           aria-label={
             rest.interimEvaluationRequest
-              ? i18n.text.get(
-                  "plugin.evaluation.card.button.deleteInterimRequest.title"
-                )
-              : i18n.text.get(
-                  "plugin.evaluation.card.button.deleteRequest.title"
-                )
+              ? t("evaluation:actions.remove_interimEvaluationRequest")
+              : t("evaluation:actions.remove_evaluationRequest")
           }
           buttonModifiers="archive-request"
           icon="trash"
@@ -262,9 +261,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       selectedWorkspaceId === rest.workspaceEntityId ? (
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
-          aria-label={i18n.text.get(
-            "plugin.evaluation.card.button.archiveButtonLabel"
-          )}
+          aria-label={t("evaluation:actions.archiveStudent")}
           buttonModifiers="archive-student"
           icon="archive"
         />
@@ -333,9 +330,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       <div className="evaluation-card__footer">
         <div className="evaluation-card__button-set">
           <IconButton
-            aria-label={i18n.text.get(
-              "plugin.evaluation.card.button.markImportantButtonLabel"
-            )}
+            aria-label={t("evaluation:actions.markImportant")}
             onClick={handleImportanceClick("important")}
             buttonModifiers={
               evaluationImportantClassesMod
@@ -345,9 +340,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
             icon="star-full"
           />
           <IconButton
-            aria-label={i18n.text.get(
-              "plugin.evaluation.card.button.markNonImportantButtonLabel"
-            )}
+            aria-label={t("evaluation:actions.markNonImportant")}
             onClick={handleImportanceClick("unimportant")}
             buttonModifiers={
               evaluationUnimportantClassesMod
@@ -363,9 +356,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
 
           <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
             <ButtonPill
-              aria-label={i18n.text.get(
-                "plugin.evaluation.card.button.evaluateButtonLabel"
-              )}
+              aria-label={t("evaluation:actions.evaluateStudent")}
               buttonModifiers="evaluate"
               icon="evaluate"
             />
