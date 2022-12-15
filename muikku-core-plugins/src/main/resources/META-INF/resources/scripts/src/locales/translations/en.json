@@ -1,11 +1,1 @@
-{
-  "common": {
-    "workspaces": "Workspaces",
-    "noWorkspaces": "No workspaces",
-    "newestMessages": "Newest messages",
-    "announcements": "Announcements",
-    "studentApplication": "Student application",
-    "openMaterials": "Open materials",
-    "introduction": "Introduction"
-  }
-}
+{}

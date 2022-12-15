@@ -52,7 +52,7 @@
       "confirmRemove_interimEvaluationRequest": "Kyllä, poista välipalautepyyntö",
       "evaluateStudent": "Arvioi opiskelija",
       "grade": "Anna kurssiarvio",
-      "hideAll": "Piilota kaikki",
+      "closeAll": "Sulje kaikki",
       "improveGrade": "Anna korotus",
       "markNonImportant": "Merkitse vähemmän tärkeäksi",
       "markImportant": "Merkitse tärkeäksi",
@@ -66,7 +66,6 @@
   },
 
   "hops": {},
-
   "messages": {
     "actions": {
       "hide_comments": "Piilota vastaukset",
