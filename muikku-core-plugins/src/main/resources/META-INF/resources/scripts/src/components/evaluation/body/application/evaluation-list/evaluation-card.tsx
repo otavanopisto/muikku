@@ -21,13 +21,19 @@ import { i18nType } from "~/reducers/base/i18n";
 import { ButtonPill, IconButton } from "~/components/general/button";
 import "~/sass/elements/evaluation-card.scss";
 import "~/sass/elements/buttons.scss";
-import { useTranslation } from "react-i18next";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 
 /**
  * EvaluationCardProps
  */
-interface EvaluationCardProps extends AssessmentRequest {
-  i18n: i18nType;
+interface EvaluationCardProps
+  extends AssessmentRequest,
+    WithTranslation<["common", "evaluation"]> {
+  i18nn: i18nType;
   selectedWorkspaceId?: number;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   updateEvaluationImportance: (object: UpdateImportanceObject) => void;
@@ -50,7 +56,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     importantAssessments,
     unimportantAssessments,
     updateEvaluationImportance,
-    i18n,
+    i18nn,
     needsReloadRequests,
     loadEvaluationAssessmentRequestsFromServer,
     ...rest
@@ -280,7 +286,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         {renderFilterByWorkspaceLink}
         <div className="evaluation-card__content-row">
           <span className="evaluation-card__content-label">
-            {i18n.text.get("plugin.evaluation.card.joinedWorkspaceLabel")}
+            {i18nn.text.get("plugin.evaluation.card.joinedWorkspaceLabel")}
           </span>
           <span className="evaluation-card__content-data">
             {enrollmentDate}
@@ -295,10 +301,10 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         >
           <span className="evaluation-card__content-label">
             {rest.interimEvaluationRequest
-              ? i18n.text.get(
+              ? i18nn.text.get(
                   "plugin.evaluation.card.interimEvaluationRequestedLabel"
                 )
-              : i18n.text.get(
+              : i18nn.text.get(
                   "plugin.evaluation.card.evaluationRequestedLabel"
                 )}
           </span>
@@ -314,7 +320,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
           }`}
         >
           <span className="evaluation-card__content-label">
-            {i18n.text.get("plugin.evaluation.card.evaluatedLabel")}
+            {i18nn.text.get("plugin.evaluation.card.evaluatedLabel")}
           </span>
           <span className="evaluation-card__content-data">
             {evaluationDate}
@@ -322,7 +328,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         </div>
         <div className="evaluation-card__content-row">
           <span className="evaluation-card__content-label">
-            {i18n.text.get("plugin.evaluation.card.assignmentsDoneLabel")}
+            {i18nn.text.get("plugin.evaluation.card.assignmentsDoneLabel")}
           </span>
           {renderTasksDone}
         </div>
@@ -373,7 +379,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
   };
 }
 
@@ -388,4 +394,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EvaluationCard);
+export default withTranslation(["common", "evaluation"])(
+  connect(mapStateToProps, mapDispatchToProps)(EvaluationCard)
+);

@@ -32,12 +32,14 @@ import {
   updateCurrentStudentCompositeRepliesData,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import WarningDialog from "../../../../dialogs/close-warning";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AssignmentEditorProps
  */
-interface AssignmentEditorProps {
-  i18n: i18nType;
+interface AssignmentEditorProps
+  extends WithTranslation<["common", "evaluation"]> {
+  i18nn: i18nType;
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
@@ -227,7 +229,7 @@ class ExcerciseEditor extends SessionStateComponent<
       });
     } catch (error) {
       this.props.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nn.text.get(
           "plugin.evaluation.notifications.saveAssigmentGrade.error",
           error.message
         ),
@@ -307,7 +309,7 @@ class ExcerciseEditor extends SessionStateComponent<
       });
     } catch (error) {
       this.props.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nn.text.get(
           "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
           error.message
         ),
@@ -453,7 +455,7 @@ class ExcerciseEditor extends SessionStateComponent<
               height={!this.state.needsSupplementation ? "auto" : 0}
             >
               <label htmlFor="assignmentEvaluationGrade">
-                {this.props.i18n.text.get(
+                {this.props.i18nn.text.get(
                   "plugin.evaluation.evaluationModal.audioAssessments"
                 )}
               </label>
@@ -472,9 +474,7 @@ class ExcerciseEditor extends SessionStateComponent<
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
+            {this.props.t("common:actions.save")}
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
@@ -482,9 +482,7 @@ class ExcerciseEditor extends SessionStateComponent<
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked}
               >
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-                )}
+                {this.props.t("common:actions.cancel")}
               </Button>
             </WarningDialog>
           ) : (
@@ -493,9 +491,7 @@ class ExcerciseEditor extends SessionStateComponent<
               buttonModifiers="dialog-cancel"
               disabled={this.state.locked}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-              )}
+              {this.props.t("common:actions.cancel")}
             </Button>
           )}
 
@@ -505,9 +501,7 @@ class ExcerciseEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
+              {this.props.t("common:actions.remove_draft")}
             </Button>
           )}
         </div>
@@ -515,7 +509,7 @@ class ExcerciseEditor extends SessionStateComponent<
         {this.props.isRecording && (
           <div className="form__row form__row--evaluation-warning">
             <div className="recording-warning">
-              {this.props.i18n.text.get(
+              {this.props.i18nn.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
               )}
             </div>
@@ -532,7 +526,7 @@ class ExcerciseEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
   };
@@ -549,4 +543,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExcerciseEditor);
+export default withTranslation(["common", "evaluation"])(
+  connect(mapStateToProps, mapDispatchToProps)(ExcerciseEditor)
+);

@@ -22,12 +22,14 @@ import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import { AssessmentRequest } from "~/@types/evaluation";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SupplementationEditorProps
  */
-interface SupplementationEditorProps {
-  i18n: i18nType;
+interface SupplementationEditorProps
+  extends WithTranslation<["common", "evaluation"]> {
+  i18nn: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
@@ -349,18 +351,14 @@ class SupplementationEditor extends SessionStateComponent<
             onClick={this.handleEvaluationSupplementationSave}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
+            {this.props.t("common:actions.save")}
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-            )}
+            {this.props.t("common:actions.cancel")}
           </Button>
           {this.recovered && (
             <Button
@@ -368,9 +366,7 @@ class SupplementationEditor extends SessionStateComponent<
               disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
+              {this.props.t("common:actions.remove_draft")}
             </Button>
           )}
         </div>
@@ -385,7 +381,7 @@ class SupplementationEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,
@@ -406,7 +402,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SupplementationEditor);
+export default withTranslation(["common", "evaluation"])(
+  connect(mapStateToProps, mapDispatchToProps)(SupplementationEditor)
+);

@@ -16,12 +16,14 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import Dropdown from "~/components/general/dropdown";
 import { ButtonPill } from "~/components/general/button";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * EvaluationSortersProps
  */
-interface EvaluationSortersProps {
-  i18n: i18nType;
+interface EvaluationSortersProps
+  extends WithTranslation<["common", "evaluation"]> {
+  i18nn: i18nType;
   evaluations: EvaluationState;
   updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction;
 }
@@ -108,12 +110,12 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="amount-asc"
-          content={this.props.i18n.text.get(
+          content={this.props.i18nn.text.get(
             "plugin.evaluation.sorter.byDate.ascending"
           )}
         >
           <ButtonPill
-            aria-label={this.props.i18n.text.get(
+            aria-label={this.props.i18nn.text.get(
               "plugin.evaluation.sorter.byDate.ascending"
             )}
             onClick={this.handleClickSorter("sort-amount-asc")}
@@ -128,12 +130,12 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="amount-desc"
-          content={this.props.i18n.text.get(
+          content={this.props.i18nn.text.get(
             "plugin.evaluation.sorter.byDate.descending"
           )}
         >
           <ButtonPill
-            aria-label={this.props.i18n.text.get(
+            aria-label={this.props.i18nn.text.get(
               "plugin.evaluation.sorter.byDate.descending"
             )}
             onClick={this.handleClickSorter("sort-amount-desc")}
@@ -148,12 +150,12 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="alpha-asc"
-          content={this.props.i18n.text.get(
+          content={this.props.i18nn.text.get(
             "plugin.evaluation.sorter.byLastname.ascending"
           )}
         >
           <ButtonPill
-            aria-label={this.props.i18n.text.get(
+            aria-label={this.props.i18nn.text.get(
               "plugin.evaluation.sorter.byLastname.ascending"
             )}
             onClick={this.handleClickSorter("sort-alpha-asc")}
@@ -168,12 +170,12 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="alpha-desc"
-          content={this.props.i18n.text.get(
+          content={this.props.i18nn.text.get(
             "plugin.evaluation.sorter.byLastname.descending"
           )}
         >
           <ButtonPill
-            aria-label={this.props.i18n.text.get(
+            aria-label={this.props.i18nn.text.get(
               "plugin.evaluation.sorter.byLastname.descending"
             )}
             onClick={this.handleClickSorter("sort-alpha-desc")}
@@ -190,12 +192,12 @@ class EvaluationSorters extends React.Component<
             <Dropdown
               openByHover
               key="workspace-alpha-asc"
-              content={this.props.i18n.text.get(
+              content={this.props.i18nn.text.get(
                 "plugin.evaluation.sorter.byWorkspace.ascending"
               )}
             >
               <ButtonPill
-                aria-label={this.props.i18n.text.get(
+                aria-label={this.props.i18nn.text.get(
                   "plugin.evaluation.sorter.byWorkspace.ascending"
                 )}
                 onClick={this.handleClickSorter("sort-workspace-alpha-asc")}
@@ -210,12 +212,12 @@ class EvaluationSorters extends React.Component<
             <Dropdown
               openByHover
               key="workspace-alpha-desc"
-              content={this.props.i18n.text.get(
+              content={this.props.i18nn.text.get(
                 "plugin.evaluation.sorter.byWorkspace.descending"
               )}
             >
               <ButtonPill
-                aria-label={this.props.i18n.text.get(
+                aria-label={this.props.i18nn.text.get(
                   "plugin.evaluation.sorter.byWorkspace.descending"
                 )}
                 onClick={this.handleClickSorter("sort-workspace-alpha-desc")}
@@ -239,7 +241,7 @@ class EvaluationSorters extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
     evaluations: state.evaluations,
   };
 }
@@ -252,4 +254,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateEvaluationSortFunctionToServer }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EvaluationSorters);
+export default withTranslation(["common", "evaluation"])(
+  connect(mapStateToProps, mapDispatchToProps)(EvaluationSorters)
+);

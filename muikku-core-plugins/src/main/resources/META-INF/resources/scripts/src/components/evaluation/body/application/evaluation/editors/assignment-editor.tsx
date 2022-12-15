@@ -38,12 +38,14 @@ import {
 } from "~/@types/evaluation";
 import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * AssignmentEditorProps
  */
-interface AssignmentEditorProps {
-  i18n: i18nType;
+interface AssignmentEditorProps
+  extends WithTranslation<["common", "evaluation"]> {
+  i18nn: i18nType;
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
@@ -316,7 +318,7 @@ class AssignmentEditor extends SessionStateComponent<
       });
     } catch (error) {
       notificationActions.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nn.text.get(
           "plugin.evaluation.notifications.saveAssigmentGrade.error",
           error.message
         ),
@@ -402,7 +404,7 @@ class AssignmentEditor extends SessionStateComponent<
       });
     } catch (error) {
       notificationActions.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nn.text.get(
           "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
           error.message
         ),
@@ -622,7 +624,7 @@ class AssignmentEditor extends SessionStateComponent<
               }
             >
               <label htmlFor="assignmentEvaluationGrade">
-                {this.props.i18n.text.get(
+                {this.props.i18nn.text.get(
                   "plugin.evaluation.evaluationModal.audioAssessments"
                 )}
               </label>
@@ -637,7 +639,7 @@ class AssignmentEditor extends SessionStateComponent<
         <div className="form__row">
           <fieldset className="form__fieldset">
             <legend className="form__legend">
-              {this.props.i18n.text.get(
+              {this.props.i18nn.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
               )}
             </legend>
@@ -652,7 +654,7 @@ class AssignmentEditor extends SessionStateComponent<
                   onChange={this.handleAssignmentEvaluationChange}
                 />
                 <label htmlFor="assignmentEvaluationTypeGRADED">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nn.text.get(
                     "plugin.evaluation.evaluationModal.assignmentGradeLabel"
                   )}
                 </label>
@@ -667,7 +669,7 @@ class AssignmentEditor extends SessionStateComponent<
                   onChange={this.handleAssignmentEvaluationChange}
                 />
                 <label htmlFor="assignmentEvaluationTypeINCOMPLETE">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nn.text.get(
                     "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
                   )}
                 </label>
@@ -678,7 +680,7 @@ class AssignmentEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="assignmentEvaluationGrade">
-              {this.props.i18n.text.get(
+              {this.props.i18nn.text.get(
                 "plugin.evaluation.evaluationModal.assignmentGradeLabel"
               )}
             </label>
@@ -703,9 +705,7 @@ class AssignmentEditor extends SessionStateComponent<
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
+            {this.props.t("common:actions.save")}
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
@@ -713,9 +713,7 @@ class AssignmentEditor extends SessionStateComponent<
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked || this.props.isRecording}
               >
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-                )}
+                {this.props.t("common:actions.cancel")}
               </Button>
             </WarningDialog>
           ) : (
@@ -724,9 +722,7 @@ class AssignmentEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               buttonModifiers="dialog-cancel"
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-              )}
+              {this.props.t("common:actions.cancel")}
             </Button>
           )}
 
@@ -736,9 +732,7 @@ class AssignmentEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
+              {this.props.t("common:actions.remove_draft")}
             </Button>
           )}
         </div>
@@ -746,7 +740,7 @@ class AssignmentEditor extends SessionStateComponent<
         {this.props.isRecording && (
           <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
             <div className="recording-warning">
-              {this.props.i18n.text.get(
+              {this.props.i18nn.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
               )}
             </div>
@@ -763,7 +757,7 @@ class AssignmentEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nn: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,
@@ -783,4 +777,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AssignmentEditor);
+export default withTranslation(["common", "evaluation"])(
+  connect(mapStateToProps, mapDispatchToProps)(AssignmentEditor)
+);
