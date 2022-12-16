@@ -20,11 +20,13 @@ import {
   WorkspaceListType,
   WorkspaceType,
 } from "~/reducers/workspaces";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CoursepickerWorkspacesProps
  */
-interface CoursepickerWorkspacesProps {
+interface CoursepickerWorkspacesProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
@@ -115,11 +117,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ loadMoreWorkspacesFromServer }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CoursepickerWorkspaces);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(CoursepickerWorkspaces)
+);

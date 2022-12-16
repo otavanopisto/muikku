@@ -13,6 +13,7 @@ import {
 } from "~/components/general/application-panel/application-panel";
 import { WorkspacesType } from "~/reducers/workspaces";
 import { SearchFormElement } from "~/components/general/form-element";
+import { AnyActionType } from "~/actions";
 
 /**
  * CoursepickerToolbarProps
@@ -60,7 +61,8 @@ class CoursepickerToolbar extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {
     if (
       !this.focused &&
       (nextProps.workspaces.activeFilters.query || "") !==
@@ -117,6 +119,7 @@ class CoursepickerToolbar extends React.Component<
               id="searchCourses"
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
+              // TODO: Translate this with new i18next
               placeholder={this.props.i18nOLD.text.get(
                 "plugin.coursepicker.search.placeholder"
               )}
@@ -144,7 +147,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

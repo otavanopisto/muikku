@@ -16,11 +16,13 @@ import {
   WorkspaceCurriculumFilterType,
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps {
+interface NavigationAsideProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   workspaces: WorkspacesType;
   status: StatusType;
@@ -51,6 +53,7 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
+          // TODO: Translate this using i18next
           name={this.props.i18nOLD.text.get(
             "plugin.coursepicker.filters.title"
           )}
@@ -93,6 +96,7 @@ class NavigationAside extends React.Component<
           )}
         </NavigationTopic>
         <NavigationTopic
+          // TODO: Translate this using i18next
           name={this.props.i18nOLD.text.get(
             "plugin.coursepicker.filters.curriculum"
           )}
@@ -134,6 +138,7 @@ class NavigationAside extends React.Component<
         </NavigationTopic>
         {this.props.workspaces.availableFilters.organizations.length > 1 ? (
           <NavigationTopic
+            // TODO: Translate this using i18next
             name={this.props.i18nOLD.text.get(
               "plugin.coursepicker.filters.organization"
             )}
@@ -197,8 +202,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);
