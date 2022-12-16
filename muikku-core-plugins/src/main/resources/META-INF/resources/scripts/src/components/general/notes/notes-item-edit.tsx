@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
@@ -24,7 +24,7 @@ import CKEditor from "../ckeditor";
 interface NotesItemEditProps {
   selectedNotesItem?: NotesItemRead;
   children: React.ReactElement;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   onNotesItemSaveUpdateClick?: (
     journalId: number,
     updatedNotesItem: NotesItemUpdate,
@@ -120,7 +120,7 @@ class NotesItemEdit extends SessionStateComponent<
       >
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.tasks.createEditnote.title.label"
             )}
           </label>
@@ -136,7 +136,7 @@ class NotesItemEdit extends SessionStateComponent<
 
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.records.tasks.priority.label")}
+            {this.props.i18nOLD.text.get("plugin.records.tasks.priority.label")}
           </label>
           <select
             className="env-dialog__select"
@@ -150,17 +150,17 @@ class NotesItemEdit extends SessionStateComponent<
           >
             <option value={NotesItemPriority.HIGH}>
               {" "}
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.tasks.priority.high.label"
               )}
             </option>
             <option value={NotesItemPriority.NORMAL}>
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.tasks.priority.normal.label"
               )}
             </option>
             <option value={NotesItemPriority.LOW}>
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.tasks.priority.low.label"
               )}
             </option>
@@ -170,7 +170,7 @@ class NotesItemEdit extends SessionStateComponent<
       <div key="edit-note-2" className="env-dialog__row env-dialog__row--dates">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.tasks.createEditnote.startdate.label"
             )}
           </label>
@@ -185,7 +185,7 @@ class NotesItemEdit extends SessionStateComponent<
               this.handleNotesItemChange("startDate", date)
             }
             locale={outputCorrectDatePickerLocale(
-              this.props.i18n.time.getLocale()
+              this.props.i18nOLD.time.getLocale()
             )}
             dateFormat="P"
             minDate={new Date()}
@@ -194,7 +194,7 @@ class NotesItemEdit extends SessionStateComponent<
         </div>
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.tasks.createEditnote.enddate.label"
             )}
           </label>
@@ -207,7 +207,7 @@ class NotesItemEdit extends SessionStateComponent<
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
             locale={outputCorrectDatePickerLocale(
-              this.props.i18n.time.getLocale()
+              this.props.i18nOLD.time.getLocale()
             )}
             dateFormat="P"
             minDate={
@@ -221,7 +221,7 @@ class NotesItemEdit extends SessionStateComponent<
       <div key="edit-note-3" className="env-dialog__row">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.tasks.createEditnote.content.label"
             )}
           </label>
@@ -243,10 +243,10 @@ class NotesItemEdit extends SessionStateComponent<
           buttonModifiers={["dialog-execute"]}
           onClick={this.handleUpdateClick(closeDialog)}
         >
-          {this.props.i18n.text.get("plugin.records.tasks.send")}
+          {this.props.i18nOLD.text.get("plugin.records.tasks.send")}
         </Button>
         <Button buttonModifiers={["dialog-cancel"]} onClick={closeDialog}>
-          {this.props.i18n.text.get("plugin.records.tasks.cancel")}
+          {this.props.i18nOLD.text.get("plugin.records.tasks.cancel")}
         </Button>
       </div>
     );
@@ -254,7 +254,9 @@ class NotesItemEdit extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="modify-message"
-        title={this.props.i18n.text.get("plugin.records.tasks.editnote.topic")}
+        title={this.props.i18nOLD.text.get(
+          "plugin.records.tasks.editnote.topic"
+        )}
         content={content}
         footer={footer}
         onOpen={this.clearUp}
@@ -271,7 +273,7 @@ class NotesItemEdit extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

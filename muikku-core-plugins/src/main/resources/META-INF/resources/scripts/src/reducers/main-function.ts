@@ -2,7 +2,7 @@ import { easyToUse } from "./easy-to-use-functions/index";
 import { notifications } from "./base/notifications";
 import { locales } from "./base/locales";
 import status from "./base/status";
-import i18n from "./base/i18n";
+import i18nOLD from "./base/i18nOLD";
 import { title } from "./base/title";
 import websocket from "./util/websocket";
 import { messages } from "./main-function/messages";
@@ -41,7 +41,7 @@ export default combineReducers({
   evaluations,
   guider,
   hops,
-  i18n,
+  i18nOLD,
   locales,
   messages,
   notifications,

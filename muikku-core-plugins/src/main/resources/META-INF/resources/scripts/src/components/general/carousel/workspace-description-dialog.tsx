@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -15,7 +15,7 @@ import { Suggestion } from "~/@types/shared";
  * WorkspaceSignupDialogProps
  */
 interface WorkspaceDescriptionDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   children?: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => void;
@@ -94,7 +94,7 @@ class WorkspaceDescriptionDialog extends React.Component<
     return (
       <Dialog
         modifier="course-description"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.records.descriptionDialog.title"
         )}
         content={content}
@@ -114,7 +114,7 @@ class WorkspaceDescriptionDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -11,7 +11,7 @@ import { Groupchat } from "./groupchat";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
 import { PrivateChat } from "./privateChat";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Link from "~/components/general/link";
 import Dropdown from "~/components/general/dropdown";
 import {
@@ -167,7 +167,7 @@ interface IChatProps {
   status: StatusType;
   contacts: Contacts;
   currentLocale: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   loadContactGroup: LoadContactGroupTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -439,7 +439,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
         );
       } catch (err) {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.chat.notification.roomCreateFail"),
+          this.props.i18nOLD.text.get(
+            "plugin.chat.notification.roomCreateFail"
+          ),
           "error"
         );
       }
@@ -856,7 +858,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       this.joinPrivateChat(userFrom, stanza);
       if (document.hidden) {
         this.tabNotification.on(
-          this.props.i18n.text.get(
+          this.props.i18nOLD.text.get(
             "plugin.chat.notification.newMessage",
             userName
           )
@@ -974,7 +976,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       {
         id: "ROOMS",
         type: "chat",
-        name: this.props.i18n.text.get("plugin.chat.tabs.label.rooms"),
+        name: this.props.i18nOLD.text.get("plugin.chat.tabs.label.rooms"),
         component: (
           <div className="chat__panel chat__panel--controlbox">
             <div className="chat__panel-header chat__panel-header--controlbox">
@@ -988,7 +990,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
             <div className="chat__panel-body chat__panel-body--controlbox">
               <div className="chat__controlbox-rooms-heading">
-                {this.props.i18n.text.get("plugin.chat.rooms.others")}
+                {this.props.i18nOLD.text.get("plugin.chat.rooms.others")}
               </div>
               <div className="chat__controlbox-rooms-listing">
                 {this.getNotWorkspaceMucRooms().length > 0 ? (
@@ -1008,13 +1010,13 @@ class Chat extends React.Component<IChatProps, IChatState> {
                   ))
                 ) : (
                   <div className="chat__controlbox-empty-item">
-                    {this.props.i18n.text.get("plugin.chat.rooms.empty")}
+                    {this.props.i18nOLD.text.get("plugin.chat.rooms.empty")}
                   </div>
                 )}
               </div>
 
               <div className="chat__controlbox-rooms-heading">
-                {this.props.i18n.text.get("plugin.chat.rooms.workspace")}
+                {this.props.i18nOLD.text.get("plugin.chat.rooms.workspace")}
               </div>
               <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
                 {this.getWorkspaceMucRooms().length > 0 ? (
@@ -1035,7 +1037,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                   ))
                 ) : (
                   <div className="chat__controlbox-empty-item">
-                    {this.props.i18n.text.get("plugin.chat.rooms.empty")}
+                    {this.props.i18nOLD.text.get("plugin.chat.rooms.empty")}
                   </div>
                 )}
               </div>
@@ -1044,7 +1046,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 <div className="chat__subpanel">
                   <div className="chat__subpanel-header chat__subpanel-header--new-room">
                     <div className="chat__subpanel-title">
-                      {this.props.i18n.text.get("plugin.chat.title.createRoom")}
+                      {this.props.i18nOLD.text.get(
+                        "plugin.chat.title.createRoom"
+                      )}
                     </div>
                     <div
                       onClick={this.toggleCreateChatRoomForm}
@@ -1058,7 +1062,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
                           htmlFor="newChatRoomName"
                           className="chat__label"
                         >
-                          {this.props.i18n.text.get("plugin.chat.room.name")}*
+                          {this.props.i18nOLD.text.get("plugin.chat.room.name")}
+                          *
                         </label>
                         <input
                           id="newChatRoomName"
@@ -1073,7 +1078,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
                           htmlFor="newChatRoomDesc"
                           className="chat__label"
                         >
-                          {this.props.i18n.text.get("plugin.chat.room.desc")}*
+                          {this.props.i18nOLD.text.get("plugin.chat.room.desc")}
+                          *
                         </label>
                         <textarea
                           id="newChatRoomDesc"
@@ -1085,20 +1091,20 @@ class Chat extends React.Component<IChatProps, IChatState> {
                       <input
                         className="chat__submit chat__submit--new-room"
                         type="submit"
-                        value={this.props.i18n.text.get(
+                        value={this.props.i18nOLD.text.get(
                           "plugin.chat.button.addRoom"
                         )}
                       />
                       <div className="chat__subpanel-row chat__subpanel-row--mandatory">
                         *-
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.chat.room.mandatoryFields"
                         )}
                       </div>
                       {this.state.missingFields ? (
                         <div className="chat__subpanel-row chat__subpanel-row--emessage">
                           <p>
-                            {this.props.i18n.text.get(
+                            {this.props.i18nOLD.text.get(
                               "plugin.chat.room.missingFields"
                             )}
                           </p>
@@ -1115,7 +1121,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       {
         id: "PEOPLE",
         type: "chat",
-        name: this.props.i18n.text.get("plugin.chat.tabs.label.people"),
+        name: this.props.i18nOLD.text.get("plugin.chat.tabs.label.people"),
 
         component: (
           <div className="chat__panel chat__panel--controlbox">
@@ -1123,7 +1129,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
               {this.props.status.isStudent ? (
                 <>
                   <div className="chat__controlbox-private-chat-heading">
-                    {this.props.i18n.text.get("plugin.chat.people.counselors")}
+                    {this.props.i18nOLD.text.get(
+                      "plugin.chat.people.counselors"
+                    )}
                   </div>
                   <div className="chat__controlbox-people-listing">
                     {this.props.contacts.counselors.list.length > 0 ? (
@@ -1149,7 +1157,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         })
                     ) : (
                       <div className="chat__controlbox-empty-item">
-                        {this.props.i18n.text.get("plugin.chat.people.empty")}
+                        {this.props.i18nOLD.text.get(
+                          "plugin.chat.people.empty"
+                        )}
                       </div>
                     )}
                   </div>
@@ -1157,7 +1167,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               ) : (
                 <>
                   <div className="chat__controlbox-private-chat-heading">
-                    {this.props.i18n.text.get("plugin.chat.people.students")}
+                    {this.props.i18nOLD.text.get("plugin.chat.people.students")}
                   </div>
                   <div className="chat__controlbox-people-listing">
                     {this.state.roster.length > 0 ? (
@@ -1185,7 +1195,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
                       ))
                     ) : (
                       <div className="chat__controlbox-empty-item">
-                        {this.props.i18n.text.get("plugin.chat.people.empty")}
+                        {this.props.i18nOLD.text.get(
+                          "plugin.chat.people.empty"
+                        )}
                       </div>
                     )}
                   </div>
@@ -1223,7 +1235,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         }}
                       >
                         <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{this.props.i18n.text.get(item.text)}</span>
+                        <span>{this.props.i18nOLD.text.get(item.text)}</span>
                       </Link>
                     )
                 )}
@@ -1266,7 +1278,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 leaveChatRoom={this.leaveChatRoom.bind(this, chat.roomJID)}
                 chat={chat}
                 onUpdateChatRoomConfig={this.updateChatRoomConfig.bind(this, i)}
-                i18n={this.props.i18n}
+                i18nOLD={this.props.i18nOLD}
                 active={chat.newest && chat.newest}
               />
             ) : null
@@ -1284,7 +1296,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 key={pchat.jid}
                 leaveChat={this.leavePrivateChat.bind(this, pchat.jid)}
                 connection={this.state.connection}
-                i18n={this.props.i18n}
+                i18nOLD={this.props.i18nOLD}
               />
             ))}
         </div>
@@ -1303,7 +1315,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     contacts: state.contacts,
     settings: state.profile.chatSettings,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -5,7 +5,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
@@ -19,7 +19,7 @@ import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
  * DeleteJournalProps
  */
 interface DeleteJournalProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   journal: WorkspaceJournalWithComments;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
@@ -88,7 +88,7 @@ class DeleteJournal extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        {this.props.i18n.text.get(
+        {this.props.i18nOLD.text.get(
           "plugin.workspace.journal.deleteEntry.dialog.description"
         )}
       </div>
@@ -105,7 +105,7 @@ class DeleteJournal extends React.Component<
           onClick={this.deleteJournal.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.journal.deleteEntry.dialog.deleteButton"
           )}
         </Button>
@@ -113,7 +113,7 @@ class DeleteJournal extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.journal.deleteEntry.dialog.cancelButton"
           )}
         </Button>
@@ -123,7 +123,7 @@ class DeleteJournal extends React.Component<
     return (
       <Dialog
         modifier="delete-journal"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.workspace.journal.deleteEntry.dialog.title"
         )}
         content={content}
@@ -141,7 +141,7 @@ class DeleteJournal extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

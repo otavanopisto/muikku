@@ -93,7 +93,7 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
 
       return dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.records.summary.errormessage.contactLoad." + groupName,
             err.message
           ),

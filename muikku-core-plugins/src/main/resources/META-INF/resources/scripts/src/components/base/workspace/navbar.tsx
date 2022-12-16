@@ -4,7 +4,7 @@ import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -45,7 +45,7 @@ interface ItemDataElement {
  */
 interface WorkspaceNavbarProps {
   activeTrail?: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   status: StatusType;
@@ -260,7 +260,7 @@ class WorkspaceNavbar extends React.Component<
                 content={getTextForAssessmentState(
                   canCancelRequest,
                   assessmentState.state,
-                  this.props.i18n
+                  this.props.i18nOLD
                 )}
               >
                 <Link
@@ -273,7 +273,7 @@ class WorkspaceNavbar extends React.Component<
                   aria-label={getTextForAssessmentState(
                     canCancelRequest,
                     assessmentState.state,
-                    this.props.i18n
+                    this.props.i18nOLD
                   )}
                   className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(
                     assessmentState.state
@@ -301,7 +301,7 @@ class WorkspaceNavbar extends React.Component<
           {getTextForAssessmentState(
             canCancelRequest,
             assessmentState.state,
-            this.props.i18n
+            this.props.i18nOLD
           )}
         </span>
       </Link>
@@ -312,7 +312,7 @@ class WorkspaceNavbar extends React.Component<
       editModeSwitch = (
         <span key="edit-mode-switch">
           <label htmlFor="editingMasterSwitch" className="visually-hidden">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.wcag.mainNavigation.editingMasterSwitch"
             )}
           </label>
@@ -354,7 +354,7 @@ class WorkspaceNavbar extends React.Component<
                   <Dropdown
                     openByHover
                     key={item.text}
-                    content={this.props.i18n.text.get(item.text)}
+                    content={this.props.i18nOLD.text.get(item.text)}
                   >
                     <Link
                       tabIndex={this.props.activeTrail == item.trail ? 0 : null}
@@ -373,12 +373,12 @@ class WorkspaceNavbar extends React.Component<
                       }`}
                       aria-label={
                         this.props.activeTrail == item.trail
-                          ? this.props.i18n.text.get(
+                          ? this.props.i18nOLD.text.get(
                               "plugin.wcag.mainNavigation.currentPage.aria.label"
                             ) +
                             " " +
-                            this.props.i18n.text.get(item.text)
-                          : this.props.i18n.text.get(item.text)
+                            this.props.i18nOLD.text.get(item.text)
+                          : this.props.i18nOLD.text.get(item.text)
                       }
                       role="menuitem"
                     >
@@ -406,7 +406,7 @@ class WorkspaceNavbar extends React.Component<
                 <ForgotPasswordDialog key="forgot-password-dialog">
                   <Link className="link link--forgot-password link--forgot-password-main-function">
                     <span>
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.forgotpassword.forgotLink"
                       )}
                     </span>
@@ -444,7 +444,7 @@ class WorkspaceNavbar extends React.Component<
                     </span>
                   ) : null}
                   <span className="link--menu-text">
-                    {this.props.i18n.text.get(item.text)}
+                    {this.props.i18nOLD.text.get(item.text)}
                   </span>
                 </Link>
               );
@@ -475,7 +475,7 @@ class WorkspaceNavbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     title: state.title,
     currentWorkspace: state.workspaces.currentWorkspace,
@@ -498,13 +498,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar);
  *
  * @param canCancelRequest canCancelRequest
  * @param state state
- * @param i18n i18n
+ * @param i18nOLD i18nOLD
  * @returns localized text
  */
 function getTextForAssessmentState(
   canCancelRequest: boolean,
   state: WorkspaceAssessementStateType,
-  i18n: i18nType
+  i18nOLD: i18nType
 ) {
   let text;
   switch (state) {
@@ -529,7 +529,7 @@ function getTextForAssessmentState(
       break;
   }
 
-  return i18n.text.get(text);
+  return i18nOLD.text.get(text);
 }
 
 /**

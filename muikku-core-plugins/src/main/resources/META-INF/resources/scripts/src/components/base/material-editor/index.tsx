@@ -4,7 +4,7 @@ import "~/sass/elements/form.scss";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Link from "~/components/general/link";
 import {
   WorkspaceMaterialEditorType,
@@ -47,7 +47,7 @@ import {
  */
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   editorState: WorkspaceMaterialEditorType;
   locale: LocaleState;
@@ -559,19 +559,19 @@ class MaterialEditor extends React.Component<
       case "Help": {
         switch (viewRestriction) {
           case MaterialViewRestriction.NONE:
-            localeString = this.props.i18n.text.get(
+            localeString = this.props.i18nOLD.text.get(
               "plugin.workspace.helpManagement.enableViewRestrictionToMembersPageTooltip"
             );
             break;
 
           case MaterialViewRestriction.WORKSPACE_MEMBERS:
-            localeString = this.props.i18n.text.get(
+            localeString = this.props.i18nOLD.text.get(
               "plugin.workspace.helpManagement.enableViewRestrictionToLoggedInPageTooltip"
             );
             break;
 
           case MaterialViewRestriction.LOGGED_IN:
-            localeString = this.props.i18n.text.get(
+            localeString = this.props.i18nOLD.text.get(
               "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
             );
             break;
@@ -585,19 +585,19 @@ class MaterialEditor extends React.Component<
       case "Materials": {
         switch (viewRestriction) {
           case MaterialViewRestriction.NONE:
-            localeString = this.props.i18n.text.get(
+            localeString = this.props.i18nOLD.text.get(
               "plugin.workspace.materialsManagement.enableViewRestrictionToMembersPageTooltip"
             );
             break;
 
           case MaterialViewRestriction.WORKSPACE_MEMBERS:
-            localeString = this.props.i18n.text.get(
+            localeString = this.props.i18nOLD.text.get(
               "plugin.workspace.materialsManagement.enableViewRestrictionToLoggedInPageTooltip"
             );
             break;
 
           case MaterialViewRestriction.LOGGED_IN:
-            localeString = this.props.i18n.text.get(
+            localeString = this.props.i18nOLD.text.get(
               "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
             );
             break;
@@ -639,7 +639,7 @@ class MaterialEditor extends React.Component<
    * @returns progress string
    */
   handleUploadingTextProcesser = (percent: number) => `
-      ${this.props.i18n.text.get(
+      ${this.props.i18nOLD.text.get(
         "plugin.guider.user.details.files.uploading"
       )} ${percent}%`;
 
@@ -756,7 +756,7 @@ class MaterialEditor extends React.Component<
         onClick={this.handleChangeAssignmentType(materialPageConfig.type)}
       >
         <span className="link__icon icon-puzzle"></span>
-        <span>{this.props.i18n.text.get(materialPageConfig.text)}</span>
+        <span>{this.props.i18nOLD.text.get(materialPageConfig.text)}</span>
       </Link>
     );
   };
@@ -875,15 +875,15 @@ class MaterialEditor extends React.Component<
     const correctAnswersTooltips =
       !this.props.editorState.currentDraftNodeValue.correctAnswers ||
       this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
-        ? this.props.i18n.text.get(
+        ? this.props.i18nOLD.text.get(
             "plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip"
           )
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
           "ON_REQUEST"
-        ? this.props.i18n.text.get(
+        ? this.props.i18nOLD.text.get(
             "plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip"
           )
-        : this.props.i18n.text.get(
+        : this.props.i18nOLD.text.get(
             "plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"
           );
 
@@ -902,10 +902,10 @@ class MaterialEditor extends React.Component<
               modifier="material-management-tooltip"
               content={
                 isHidden
-                  ? this.props.i18n.text.get(
+                  ? this.props.i18nOLD.text.get(
                       "plugin.workspace.materialsManagement.showPageTooltip"
                     )
-                  : this.props.i18n.text.get(
+                  : this.props.i18nOLD.text.get(
                       "plugin.workspace.materialsManagement.hidePageTooltip"
                     )
               }
@@ -971,7 +971,7 @@ class MaterialEditor extends React.Component<
             <Dropdown
               openByHover
               modifier="material-management-tooltip"
-              content={this.props.i18n.text.get(
+              content={this.props.i18nOLD.text.get(
                 "plugin.workspace.materialsManagement.publishPageTooltip"
               )}
             >
@@ -986,7 +986,7 @@ class MaterialEditor extends React.Component<
             <Dropdown
               openByHover
               modifier="material-management-tooltip"
-              content={this.props.i18n.text.get(
+              content={this.props.i18nOLD.text.get(
                 "plugin.workspace.materialsManagement.revertToPublishedPageTooltip"
               )}
             >
@@ -1006,7 +1006,7 @@ class MaterialEditor extends React.Component<
               <Dropdown
                 openByHover
                 modifier="material-management-tooltip"
-                content={this.props.i18n.text.get(
+                content={this.props.i18nOLD.text.get(
                   "plugin.workspace.materialsManagement.deletePageTooltip"
                 )}
               >
@@ -1040,7 +1040,7 @@ class MaterialEditor extends React.Component<
         id: "content",
         type: "material-editor",
         mobileAction: closeDialog,
-        name: this.props.i18n.text.get(
+        name: this.props.i18nOLD.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
         component: (
@@ -1094,7 +1094,7 @@ class MaterialEditor extends React.Component<
         id: "metadata",
         type: "material-editor",
         mobileAction: closeDialog,
-        name: this.props.i18n.text.get(
+        name: this.props.i18nOLD.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
         component: (
@@ -1104,7 +1104,7 @@ class MaterialEditor extends React.Component<
             {this.props.editorState.canSetProducers ? (
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.workspace.materialsManagement.editorView.subTitle.producers"
                   )}
                 </h3>
@@ -1117,7 +1117,7 @@ class MaterialEditor extends React.Component<
                       producers={
                         this.props.editorState.currentDraftNodeValue.producers
                       }
-                      i18n={this.props.i18n}
+                      i18nOLD={this.props.i18nOLD}
                     />
                   </div>
                 ) : null}
@@ -1127,20 +1127,20 @@ class MaterialEditor extends React.Component<
             {this.props.editorState.canSetLicense ? (
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.workspace.materialsManagement.editorView.subTitle.license"
                   )}
                 </h3>
                 <div className="material-editor__add-license-container">
                   <LicenseSelector
                     wcagLabel="materialLicense"
-                    wcagDesc={this.props.i18n.text.get(
+                    wcagDesc={this.props.i18nOLD.text.get(
                       "plugin.wcag.materialLicense.label"
                     )}
                     modifier="material-editor"
                     value={this.props.editorState.currentDraftNodeValue.license}
                     onChange={this.updateLicense}
-                    i18n={this.props.i18n}
+                    i18nOLD={this.props.i18nOLD}
                   />
                 </div>
               </div>
@@ -1155,7 +1155,7 @@ class MaterialEditor extends React.Component<
         id: "attachments",
         type: "material-editor",
         mobileAction: closeDialog,
-        name: this.props.i18n.text.get(
+        name: this.props.i18nOLD.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),
         component: (
@@ -1167,7 +1167,7 @@ class MaterialEditor extends React.Component<
               onFileInputChange={this.onFilesUpload}
               modifier="material-editor"
               displayNotificationOnError
-              fileTooLargeErrorText={this.props.i18n.text.get(
+              fileTooLargeErrorText={this.props.i18nOLD.text.get(
                 "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
               )}
               files={
@@ -1179,17 +1179,17 @@ class MaterialEditor extends React.Component<
                 `/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/materials/${a.path}`
               }
               deleteDialogElement={ConfirmRemoveAttachment}
-              hintText={this.props.i18n.text.get(
+              hintText={this.props.i18nOLD.text.get(
                 "plugin.workspace.fileField.fieldHint"
               )}
-              deleteFileText={this.props.i18n.text.get(
+              deleteFileText={this.props.i18nOLD.text.get(
                 "plugin.workspace.fileField.removeLink"
               )}
-              downloadFileText={this.props.i18n.text.get(
+              downloadFileText={this.props.i18nOLD.text.get(
                 "plugin.workspace.fileField.downloadLink"
               )}
               showURL
-              notificationOfSuccessText={this.props.i18n.text.get(
+              notificationOfSuccessText={this.props.i18nOLD.text.get(
                 "plugin.workspace.fileFieldUpload.uploadSuccessful"
               )}
               displayNotificationOnSuccess
@@ -1233,7 +1233,7 @@ class MaterialEditor extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     editorState: state.workspaces.materialEditor,
     status: state.status,
     locale: state.locales,

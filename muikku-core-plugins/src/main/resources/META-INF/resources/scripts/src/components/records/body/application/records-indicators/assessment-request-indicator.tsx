@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { Assessment } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -11,7 +11,7 @@ import Dropdown from "~/components/general/dropdown";
  */
 interface AssessmentRequestIndicatorProps {
   assessment: Assessment;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -22,7 +22,7 @@ interface AssessmentRequestIndicatorProps {
 export const AssessmentRequestIndicator: React.FC<
   AssessmentRequestIndicatorProps
 > = (props) => {
-  const { assessment, i18n } = props;
+  const { assessment, i18nOLD } = props;
 
   if (
     assessment.state === "pending" ||
@@ -34,9 +34,9 @@ export const AssessmentRequestIndicator: React.FC<
         openByHover
         content={
           <span>
-            {i18n.text.get(
+            {i18nOLD.text.get(
               "plugin.records.workspace.pending",
-              props.i18n.time.format(assessment.date)
+              props.i18nOLD.time.format(assessment.date)
             )}
           </span>
         }
@@ -50,9 +50,9 @@ export const AssessmentRequestIndicator: React.FC<
         openByHover
         content={
           <span>
-            {i18n.text.get(
+            {i18nOLD.text.get(
               "plugin.records.workspace.interimEvaluationPending",
-              props.i18n.time.format(assessment.date)
+              props.i18nOLD.time.format(assessment.date)
             )}
           </span>
         }
@@ -70,7 +70,7 @@ export const AssessmentRequestIndicator: React.FC<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

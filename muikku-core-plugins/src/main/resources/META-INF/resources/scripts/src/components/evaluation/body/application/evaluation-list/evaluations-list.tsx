@@ -15,7 +15,7 @@ import {
   updateEvaluationSortFunctionToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { UpdateImportanceObject } from "~/@types/evaluation";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import { AnyActionType } from "~/actions";
 
@@ -23,7 +23,7 @@ import { AnyActionType } from "~/actions";
  * EvaluationListProps
  */
 interface EvaluationListProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   evaluations: EvaluationState;
   updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction;
@@ -447,10 +447,10 @@ export class EvaluationList extends React.Component<
           <div className="empty">
             <span>
               {selectedWorkspaceId === undefined
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.evaluation.cardlist.allrequesthandled"
                   )
-                : this.props.i18n.text.get(
+                : this.props.i18nOLD.text.get(
                     "plugin.evaluation.cardlist.noStudentsAtWorkspace"
                   )}
             </span>
@@ -496,7 +496,7 @@ const byDate =
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     evaluations: state.evaluations,
   };
 }

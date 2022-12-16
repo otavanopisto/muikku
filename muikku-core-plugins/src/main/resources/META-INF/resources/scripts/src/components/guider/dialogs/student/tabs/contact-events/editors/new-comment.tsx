@@ -1,4 +1,4 @@
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -17,7 +17,7 @@ import * as moment from "moment";
  * ReplyThreadDrawerProps
  */
 interface NewContactLogEventCommentProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   contactEventtId: number;
   studentUserEntityId: number;
   createContactLogEventComment: CreateContactLogEventCommentTriggerType;
@@ -119,7 +119,7 @@ class NewContactLogEventComment extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const editorTitle = this.props.i18n.text.get(
+    const editorTitle = this.props.i18nOLD.text.get(
       "plugin.guider.user.dialog.newComment.title"
     );
 
@@ -127,7 +127,7 @@ class NewContactLogEventComment extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.content"
             )}
           </label>
@@ -149,14 +149,16 @@ class NewContactLogEventComment extends SessionStateComponent<
           onClick={this.createComment}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnEditorClose}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.i18nOLD.text.get(
+            "plugin.discussion.createmessage.cancel"
+          )}
         </Button>
         {this.recovered ? (
           <Button
@@ -164,7 +166,7 @@ class NewContactLogEventComment extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
@@ -177,7 +179,7 @@ class NewContactLogEventComment extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.guider.user.dialog.newComment.title"
               )}
             </header>
@@ -197,7 +199,7 @@ class NewContactLogEventComment extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

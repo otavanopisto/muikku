@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
@@ -32,7 +32,7 @@ import {
  * NavigationAsideProps
  */
 interface NavigationAsideProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspace: WorkspaceType;
   journalsState: JournalsState;
   status: StatusType;
@@ -146,7 +146,7 @@ class NavigationAside extends React.Component<
         icon="user"
         onClick={this.handleOnStudentClick(null)}
       >
-        {this.props.i18n.text.get(
+        {this.props.i18nOLD.text.get(
           "plugin.workspace.journal.studentFilter.showAll"
         )}
       </NavigationElement>
@@ -169,7 +169,7 @@ class NavigationAside extends React.Component<
     return (
       <Navigation key="journal-navigation-11">
         <NavigationTopic
-          name={this.props.i18n.text.get(
+          name={this.props.i18nOLD.text.get(
             "plugin.workspace.journal.filters.title"
           )}
         >
@@ -178,7 +178,7 @@ class NavigationAside extends React.Component<
             isActive={filters.showMandatory}
             onClick={this.handleChangeJournalFilterClick("showMandatory")}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.workspace.journal.filters.mandatory.label"
             )}
           </NavigationElement>
@@ -187,7 +187,7 @@ class NavigationAside extends React.Component<
             isActive={filters.showOthers}
             onClick={this.handleChangeJournalFilterClick("showOthers")}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.workspace.journal.filters.other.label"
             )}
           </NavigationElement>
@@ -195,7 +195,7 @@ class NavigationAside extends React.Component<
 
         {!this.props.status.isStudent && (
           <NavigationTopic
-            name={this.props.i18n.text.get(
+            name={this.props.i18nOLD.text.get(
               "plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title"
             )}
           >
@@ -214,7 +214,7 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     journalsState: state.journals,
     status: state.status,

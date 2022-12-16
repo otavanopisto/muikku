@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
@@ -19,7 +19,7 @@ import useInfinityScroll from "~/hooks/useInfinityScroll";
  * OrganizationUserGroupsProps
  */
 interface OrganizationUserGroupsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   userGroups: Array<UserGroupType>;
   userGroupsState: WorkspacesStateType;
   userGroupsHasMore: boolean;
@@ -47,7 +47,7 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
     return (
       <div className="empty">
         <span>
-          {props.i18n.text.get(
+          {props.i18nOLD.text.get(
             "plugin.organization.userGroups.error.loadError"
           )}
         </span>
@@ -57,7 +57,7 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
     return (
       <div className="empty">
         <span>
-          {props.i18n.text.get(
+          {props.i18nOLD.text.get(
             "plugin.organization.userGroups.searchResult.empty"
           )}
         </span>
@@ -99,7 +99,7 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     userGroups: state.userGroups.list,
     userGroupsState: state.userGroups.state,
     userGroupsHasMore: state.userGroups.hasMore,

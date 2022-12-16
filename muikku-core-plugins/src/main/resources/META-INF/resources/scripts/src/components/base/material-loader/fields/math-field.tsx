@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import MathField from "./better-math-field";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/math-field.scss";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
@@ -21,7 +21,7 @@ interface MathFieldProps {
   content: {
     name: string;
   };
-  i18n: i18nType;
+  i18nOLD: i18nType;
   userId: number;
   usedAs: UsedAs;
   readOnly?: boolean;
@@ -137,7 +137,7 @@ export default class TextField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18n={this.props.i18n}
+          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         <MathField
@@ -150,26 +150,26 @@ export default class TextField extends React.Component<
           editorClassName="material-page__mathfield-editor"
           imageClassName="material-page__mathfield-image"
           toolbarClassName="material-page__mathfield-toolbar"
-          i18n={{
-            symbols: this.props.i18n.text.get(
+          i18nOLD={{
+            symbols: this.props.i18nOLD.text.get(
               "plugin.workspace.mathField.symbols"
             ),
-            relations: this.props.i18n.text.get(
+            relations: this.props.i18nOLD.text.get(
               "plugin.workspace.mathField.relations"
             ),
-            geometryAndVectors: this.props.i18n.text.get(
+            geometryAndVectors: this.props.i18nOLD.text.get(
               "plugin.workspace.mathField.geometryAndVectors"
             ),
-            setTheoryNotation: this.props.i18n.text.get(
+            setTheoryNotation: this.props.i18nOLD.text.get(
               "plugin.workspace.mathField.setTheoryNotation"
             ),
-            mathFormulas: this.props.i18n.text.get(
+            mathFormulas: this.props.i18nOLD.text.get(
               "plugin.workspace.mathField.addMathFormula"
             ),
-            operators: this.props.i18n.text.get(
+            operators: this.props.i18nOLD.text.get(
               "plugin.workspace.mathField.operators"
             ),
-            image: this.props.i18n.text.get(
+            image: this.props.i18nOLD.text.get(
               "plugin.workspace.mathField.addImage"
             ),
           }}

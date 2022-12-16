@@ -23,7 +23,7 @@ export function MaterialLoaderCorrectAnswerCounter(
   return (
     <div className="material-page__correct-answers">
       <span className="material-page__correct-answers-label">
-        {props.i18n.text.get(
+        {props.i18nOLD.text.get(
           "plugin.workspace.materialsLoader.correctAnswersCountLabel"
         )}
       </span>

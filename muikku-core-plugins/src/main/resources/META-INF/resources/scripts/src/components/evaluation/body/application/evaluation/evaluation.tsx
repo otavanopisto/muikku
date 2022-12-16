@@ -16,7 +16,7 @@ import {
 import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
 import { StatusType } from "~/reducers/base/status";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import ArchiveDialog from "../../../dialogs/archive";
 import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
@@ -41,7 +41,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface EvaluationDrawerProps
   extends WithTranslation<["common", "evaluation"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   onClose?: () => void;
   evaluation: EvaluationState;
@@ -609,7 +609,7 @@ export class Evaluation extends React.Component<
       ) : (
         <div className="empty">
           <span>
-            {this.props.i18nn.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.evaluation.evaluationModal.noEvents"
             )}
           </span>
@@ -663,7 +663,7 @@ export class Evaluation extends React.Component<
           <div className="evaluation-modal__content-wrapper">
             <div className="evaluation-modal__content">
               <div className="evaluation-modal__content-title">
-                {this.props.i18nn.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.evaluation.evaluationModal.events.title"
                 )}
               </div>
@@ -733,7 +733,7 @@ export class Evaluation extends React.Component<
                     return (
                       <div key={subject.identifier}>
                         <SlideDrawer
-                          title={this.props.i18nn.text.get(
+                          title={this.props.i18nOLD.text.get(
                             "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
                           )}
                           closeIconModifiers={["evaluation"]}
@@ -743,7 +743,7 @@ export class Evaluation extends React.Component<
                         >
                           <WorkspaceEditor
                             eventId={eventByIdOpened}
-                            editorLabel={this.props.i18nn.text.get(
+                            editorLabel={this.props.i18nOLD.text.get(
                               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                             )}
                             workspaceSubjectToBeEvaluatedIdentifier={
@@ -766,7 +766,7 @@ export class Evaluation extends React.Component<
                           />
                         </SlideDrawer>
                         <SlideDrawer
-                          title={this.props.i18nn.text.get(
+                          title={this.props.i18nOLD.text.get(
                             "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
                           )}
                           closeIconModifiers={["evaluation"]}
@@ -779,7 +779,7 @@ export class Evaluation extends React.Component<
                         >
                           <SupplementationEditor
                             eventId={eventByIdOpened}
-                            editorLabel={this.props.i18nn.text.get(
+                            editorLabel={this.props.i18nOLD.text.get(
                               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
                             )}
                             onClose={
@@ -800,7 +800,7 @@ export class Evaluation extends React.Component<
                   <>
                     <div>
                       <SlideDrawer
-                        title={this.props.i18nn.text.get(
+                        title={this.props.i18nOLD.text.get(
                           "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
                         )}
                         closeIconModifiers={["evaluation"]}
@@ -810,7 +810,7 @@ export class Evaluation extends React.Component<
                       >
                         <WorkspaceEditor
                           eventId={eventByIdOpened}
-                          editorLabel={this.props.i18nn.text.get(
+                          editorLabel={this.props.i18nOLD.text.get(
                             "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                           )}
                           selectedAssessment={this.props.selectedAssessment}
@@ -824,7 +824,7 @@ export class Evaluation extends React.Component<
                       </SlideDrawer>
                     </div>
                     <SlideDrawer
-                      title={this.props.i18nn.text.get(
+                      title={this.props.i18nOLD.text.get(
                         "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
                       )}
                       closeIconModifiers={["evaluation"]}
@@ -836,7 +836,7 @@ export class Evaluation extends React.Component<
                     >
                       <SupplementationEditor
                         eventId={eventByIdOpened}
-                        editorLabel={this.props.i18nn.text.get(
+                        editorLabel={this.props.i18nOLD.text.get(
                           "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
                         )}
                         onClose={
@@ -862,7 +862,7 @@ export class Evaluation extends React.Component<
                       onChange={this.handleSelectSubjectEvaluationChange}
                     >
                       <option value="">
-                        {this.props.i18nn.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.evaluation.evaluationModal.events.selectSubject"
                         )}
                       </option>
@@ -939,7 +939,7 @@ export class Evaluation extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluation: state.evaluations,
     currentWorkspace: state.workspaces.currentWorkspace,

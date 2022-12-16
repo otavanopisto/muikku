@@ -1,4 +1,4 @@
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
@@ -19,7 +19,7 @@ import "~/sass/elements/form.scss";
  * ModifyThreadReplyDrawerProps
  */
 interface ModifyThreadReplyDrawerProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   reply?: DiscussionThreadReplyType;
   modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType;
   onClickCancel: () => void;
@@ -154,9 +154,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
+      this.props.i18nOLD.text.get("plugin.discussion.editmessage.topic") +
       " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
 
     /**
      * content
@@ -165,7 +165,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.content"
             )}
           </label>
@@ -190,14 +190,16 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
           onClick={this.modifyReply.bind(this)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnCancelClick}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.i18nOLD.text.get(
+            "plugin.discussion.createmessage.cancel"
+          )}
         </Button>
         {this.recovered ? (
           <Button
@@ -205,7 +207,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
@@ -218,7 +220,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get("plugin.discussion.editmessage.topic")}
+              {this.props.i18nOLD.text.get(
+                "plugin.discussion.editmessage.topic"
+              )}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>
@@ -235,7 +239,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -8,7 +8,7 @@ import Button from "~/components/general/button";
 import Toolbar from "./application/toolbar";
 import NewEditAnnouncement from "../dialogs/new-edit-announcement";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
@@ -18,7 +18,7 @@ import "~/sass/elements/loaders.scss";
  */
 interface AnnouncerApplicationProps {
   aside: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -38,11 +38,11 @@ class AnnouncerApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.announcer.pageTitle");
+    const title = this.props.i18nOLD.text.get("plugin.announcer.pageTitle");
     const primaryOption = (
       <NewEditAnnouncement>
         <Button buttonModifiers="primary-function">
-          {this.props.i18n.text.get("plugin.announcer.button.create")}
+          {this.props.i18nOLD.text.get("plugin.announcer.button.create")}
         </Button>
       </NewEditAnnouncement>
     );
@@ -75,7 +75,7 @@ class AnnouncerApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

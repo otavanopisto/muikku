@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/feed.scss";
@@ -19,7 +19,7 @@ interface FeedProps {
     feed: string;
   }>;
 
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -79,14 +79,16 @@ class Feed extends React.Component<FeedProps, FeedState> {
                   rel="noreferrer"
                   className={`link link--feed-${entry.feed}`}
                 >
-                  {this.props.i18n.text.get("plugin.feeds.readMore.label")} (
+                  {this.props.i18nOLD.text.get("plugin.feeds.readMore.label")} (
                   {entry.feed === "nettilukio"
                     ? "nettilukio.fi"
                     : "nettiperuskoulu.fi"}
                   )
                   <span className="visually-hidden">
                     {entry.title}
-                    {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+                    {this.props.i18nOLD.text.get(
+                      "plugin.wcag.externalLink.label"
+                    )}
                   </span>
                   <span
                     role="presentation"
@@ -96,7 +98,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
               </div>
               <div className="feed__item-meta">
                 <span className="feed__item-date">
-                  {this.props.i18n.time.format(entry.publicationDate)}
+                  {this.props.i18nOLD.time.format(entry.publicationDate)}
                 </span>
               </div>
             </div>
@@ -114,7 +116,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

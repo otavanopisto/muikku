@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   WorkspaceListType,
   WorkspaceType,
@@ -24,7 +24,7 @@ import ItemList from "~/components/general/item-list";
  * WorkspacesPanelProps
  */
 interface WorkspacesPanelProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   workspaces: WorkspaceListType;
   lastWorkspace: WorkspaceMaterialReferenceType;
@@ -37,7 +37,7 @@ interface WorkspacesPanelProps {
  * @returns  JSX.element
  */
 const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
-  const { i18n, status, workspaces, lastWorkspace } = props;
+  const { i18nOLD, status, workspaces, lastWorkspace } = props;
 
   const { nextSuggestions } = useNextCourseSuggestions(
     props.status.userSchoolDataIdentifier,
@@ -49,12 +49,12 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
     <Panel
       icon="icon-books"
       modifier="workspaces"
-      header={i18n.text.get("plugin.frontPage.studies.title")}
+      header={i18nOLD.text.get("plugin.frontPage.studies.title")}
     >
       {lastWorkspace ? (
         <>
           <Panel.BodyTitle>
-            {i18n.text.get("plugin.frontPage.studies.continue.title")}
+            {i18nOLD.text.get("plugin.frontPage.studies.continue.title")}
           </Panel.BodyTitle>
           <Panel.BodyContent>
             <ItemList modifier="continue-studies">
@@ -63,7 +63,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
               </ItemList.Item>
               <ItemList.ItemFooter modifier="continue-studies">
                 <span>
-                  {props.i18n.text.get(
+                  {props.i18nOLD.text.get(
                     "plugin.frontPage.latestWorkspace.material.part1"
                   )}
                 </span>
@@ -82,7 +82,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       {nextSuggestions.nextCourses.length > 0 ? (
         <>
           <Panel.BodyTitle>
-            {i18n.text.get("plugin.frontPage.studies.next.title")}
+            {i18nOLD.text.get("plugin.frontPage.studies.next.title")}
           </Panel.BodyTitle>
           <Panel.BodyContent>
             <ItemList modifier="suggestions">
@@ -99,13 +99,13 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                     <Link
                       className="link--index"
                       aria-label={
-                        props.i18n.text.get(
+                        props.i18nOLD.text.get(
                           "plugin.frontPage.suggestedWorkspaces.checkOut"
                         ) + workspace.name
                       }
                       href={`/workspace/${workspace.urlName}`}
                     >
-                      {props.i18n.text.get(
+                      {props.i18nOLD.text.get(
                         "plugin.frontPage.suggestedWorkspaces.checkOut"
                       )}
                     </Link>
@@ -120,12 +120,12 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                       <Link
                         className="link--index"
                         aria-label={
-                          props.i18n.text.get(
+                          props.i18nOLD.text.get(
                             "plugin.frontPage.suggestedWorkspaces.signUp"
                           ) + workspace.name
                         }
                       >
-                        {props.i18n.text.get(
+                        {props.i18nOLD.text.get(
                           "plugin.frontPage.suggestedWorkspaces.signUp"
                         )}
                       </Link>
@@ -139,7 +139,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       ) : null}
 
       <Panel.BodyTitle>
-        {i18n.text.get("plugin.frontPage.studies.workspaces.title")}
+        {i18nOLD.text.get("plugin.frontPage.studies.workspaces.title")}
       </Panel.BodyTitle>
       {workspaces.length ? (
         <Panel.BodyContent>
@@ -178,17 +178,21 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
         <Panel.BodyContent modifier="empty">
           {status.isStudent ? (
             <>
-              {i18n.text.get("plugin.frontPage.workspaces.noWorkspaces.part1")}{" "}
+              {i18nOLD.text.get(
+                "plugin.frontPage.workspaces.noWorkspaces.part1"
+              )}{" "}
               <Link href="/coursepicker" className="link link--index-text-link">
-                {i18n.text.get(
+                {i18nOLD.text.get(
                   "plugin.frontPage.workspaces.noWorkspaces.coursepicker"
                 )}
               </Link>{" "}
-              {i18n.text.get("plugin.frontPage.workspaces.noWorkspaces.part2")}
+              {i18nOLD.text.get(
+                "plugin.frontPage.workspaces.noWorkspaces.part2"
+              )}
             </>
           ) : (
             <>
-              {i18n.text.get(
+              {i18nOLD.text.get(
                 "plugin.frontPage.workspaces.noWorkspaces.teacher"
               )}
             </>
@@ -206,7 +210,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspaces: state.workspaces.userWorkspaces,
     lastWorkspace: state.workspaces.lastWorkspace,
   };

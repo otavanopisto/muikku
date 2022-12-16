@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { RecordsType } from "~/reducers/main-function/records";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
@@ -26,7 +26,7 @@ import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wi
  * YOProps
  */
 interface YOProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   records: RecordsType;
   hops: HOPSType;
   yo: YOType;
@@ -77,7 +77,7 @@ class YO extends React.Component<YOProps, YOState> {
    * @returns JSX.Element
    */
   render() {
-    const i18n = this.props.i18n;
+    const i18nOLD = this.props.i18nOLD;
 
     if (
       this.props.records.location !== "yo" ||
@@ -97,14 +97,14 @@ class YO extends React.Component<YOProps, YOState> {
             ))
           ) : (
             <div>
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.yo.noMatriculationSubjectsSelected"
               )}
             </div>
           )
         ) : (
           <div>
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.yo.participationRights.loading"
             )}
           </div>
@@ -120,7 +120,7 @@ class YO extends React.Component<YOProps, YOState> {
                   <div key={exam.id}>
                     <div className="application-sub-panel__notification-content">
                       <span className="application-sub-panel__notification-content-title">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.records.yo.button.signUp.hasAssigned"
                         )}
                       </span>
@@ -129,7 +129,7 @@ class YO extends React.Component<YOProps, YOState> {
                       {!this.state.succesfulEnrollments.includes(exam.id) ? (
                         <>
                           <span className="application-sub-panel__notification-content-label">
-                            {i18n.text.get(
+                            {i18nOLD.text.get(
                               "plugin.records.matriculation.enrollmentDate"
                             )}
                           </span>
@@ -154,7 +154,7 @@ class YO extends React.Component<YOProps, YOState> {
                       }
                     >
                       <Button className="button button--yo-signup">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.records.yo.button.signUp.active",
                           new Date(exam.ends).toLocaleDateString("fi-Fi")
                         )}
@@ -170,18 +170,18 @@ class YO extends React.Component<YOProps, YOState> {
         // Github issue: #4840
         <div>
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get("plugin.records.yo.title")}
+            {this.props.i18nOLD.text.get("plugin.records.yo.title")}
           </h2>
           <div className="application-sub-panel application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">
-              {this.props.i18n.text.get("plugin.records.yo.abiStatus.title")}
+              {this.props.i18nOLD.text.get("plugin.records.yo.abiStatus.title")}
             </div>
             {this.props.yo.eligibility != null ? (
               this.props.yo.eligibilityStatus == "ELIGIBLE" ? (
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.records.yo.abiStatus.content.finished"
                       )}
                     </div>
@@ -198,7 +198,7 @@ class YO extends React.Component<YOProps, YOState> {
                     <div
                       className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete"
                       dangerouslySetInnerHTML={{
-                        __html: i18n.text.get(
+                        __html: i18nOLD.text.get(
                           "plugin.records.matriculation.notEligible",
                           this.props.yo.eligibility.coursesCompleted,
                           this.props.yo.eligibility.coursesRequired,
@@ -219,7 +219,7 @@ class YO extends React.Component<YOProps, YOState> {
           </div>
           <div className="application-sub-panel  application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.yo.participationRights.title"
               )}
             </div>
@@ -243,7 +243,7 @@ class YO extends React.Component<YOProps, YOState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     records: state.records,
     hops: state.hops,
     yo: state.yo,

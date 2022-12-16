@@ -5,7 +5,7 @@ import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { displayNotification } from "~/actions/base/notifications";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import EvaluationJournalEvent from "./evaluation-journal-event";
 import Link from "~/components/general/link";
@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventProps {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   evaluation: EvaluationState;
 }
 
@@ -30,7 +30,7 @@ interface EvaluationDiaryEventProps {
 const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
   props
 ) => {
-  const { evaluation, i18nn } = props;
+  const { evaluation, i18nOLD } = props;
 
   const { t } = useTranslation(["evaluation"]);
 
@@ -153,7 +153,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
     ) : (
       <div className="empty">
         <span>
-          {i18nn.text.get("plugin.evaluation.evaluationModal.noJournals")}
+          {i18nOLD.text.get("plugin.evaluation.evaluationModal.noJournals")}
         </span>
       </div>
     );
@@ -162,7 +162,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
         <>
-          {i18nn.text.get("plugin.evaluation.evaluationModal.journalTitle")}
+          {i18nOLD.text.get("plugin.evaluation.evaluationModal.journalTitle")}
           {evaluation.evaluationDiaryEntries.state === "READY" ? (
             <div className="evaluation-modal__content-actions">
               <Link
@@ -220,7 +220,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     evaluation: state.evaluations,
   };
 }

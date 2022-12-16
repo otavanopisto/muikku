@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   AssignmentType,
   MaterialCompositeRepliesType,
@@ -27,7 +27,7 @@ import Dropdown from "~/components/general/dropdown";
 interface MaterialProps {
   material: MaterialContentNodeType;
   workspace: WorkspaceType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   compositeReply: MaterialCompositeRepliesType;
   open: boolean;
@@ -113,7 +113,7 @@ export default class Material extends React.Component<
               openByHover
               content={
                 <span>
-                  {this.props.i18n.time.format(
+                  {this.props.i18nOLD.time.format(
                     compositeReply.evaluationInfo.date
                   )}
                 </span>
@@ -133,7 +133,7 @@ export default class Material extends React.Component<
               openByHover
               content={
                 <span>
-                  {this.props.i18n.time.format(
+                  {this.props.i18nOLD.time.format(
                     compositeReply.evaluationInfo.date
                   )}
                 </span>

@@ -1,7 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import CopyWizard from "~/components/workspace/workspaceManagement/body/copyWizard";
@@ -11,7 +11,7 @@ import { StateType } from "~/reducers";
  * CopyWizardDialogProps
  */
 interface CopyWizardDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   children: React.ReactElement<any>;
 }
 
@@ -46,7 +46,7 @@ class CopyWizardDialog extends React.Component<
     return (
       <Dialog
         disableScroll={true}
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.workspace.management.copyWorkspace"
         )}
         content={content}
@@ -64,7 +64,7 @@ class CopyWizardDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

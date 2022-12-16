@@ -229,7 +229,7 @@ const createStudent: CreateStudentTriggerType = function createStudent(data) {
 
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.organization.create.student.success"
           ),
           "success"
@@ -254,7 +254,7 @@ const createStudent: CreateStudentTriggerType = function createStudent(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.organization.create.student.error",
             err as any as string
           ),
@@ -288,7 +288,7 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
 
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.organization.update.student.success"
           ),
           "success"
@@ -312,7 +312,9 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.organization.update.student.error"),
+          getState().i18nOLD.text.get(
+            "plugin.organization.update.student.error"
+          ),
           "error"
         )
       );
@@ -340,7 +342,7 @@ const createStaffmember: CreateStaffmemberTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.organization.create.staff.success"
             ),
             "success"
@@ -364,7 +366,9 @@ const createStaffmember: CreateStaffmemberTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.organization.create.staff.error"),
+            getState().i18nOLD.text.get(
+              "plugin.organization.create.staff.error"
+            ),
             "error"
           )
         );
@@ -395,7 +399,7 @@ const updateStaffmember: UpdateStaffmemberTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.organization.update.staff.success"
             ),
             "success"
@@ -419,7 +423,9 @@ const updateStaffmember: UpdateStaffmemberTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.organization.update.staff.error"),
+            getState().i18nOLD.text.get(
+              "plugin.organization.update.staff.error"
+            ),
             "error"
           )
         );
@@ -465,7 +471,7 @@ const updateUsergroup: UpdateUsergroupTriggerType = function updateUsergroup(
       data.success && data.success();
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.organization.update.usergroup.success"
           ),
           "success"
@@ -474,7 +480,7 @@ const updateUsergroup: UpdateUsergroupTriggerType = function updateUsergroup(
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.organization.update.usergroup.error"
           ),
           "error"
@@ -521,7 +527,7 @@ const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
       data.success && data.success();
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.organization.create.usergroup.success"
           ),
           "success"
@@ -530,7 +536,7 @@ const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.organization.create.usergroup.error"
           ),
           "error"
@@ -571,7 +577,7 @@ const loadStudyprogrammes: LoadStudyprogrammesTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("TODO: Error"),
+            getState().i18nOLD.text.get("TODO: Error"),
             "error"
           )
         );
@@ -615,7 +621,7 @@ const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
           "error"
         )
       );
@@ -667,7 +673,7 @@ const loadStaff: LoadUsersTriggerType = function loadStaff(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
           "error"
         )
       );
@@ -747,7 +753,7 @@ const loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("Load failed"),
+          getState().i18nOLD.text.get("Load failed"),
           "error"
         )
       );
@@ -808,7 +814,7 @@ const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("Loadmore failed"),
+          getState().i18nOLD.text.get("Loadmore failed"),
           "error"
         )
       );
@@ -856,7 +862,7 @@ const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("TODO"),
+            getState().i18nOLD.text.get("TODO"),
             "error"
           )
         );
@@ -903,7 +909,7 @@ const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
             "error"
           )
         );
@@ -950,7 +956,7 @@ const loadAllCurrentUserGroupStudents: LoadUsersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
             "error"
           )
         );
@@ -1014,7 +1020,7 @@ const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
           "error"
         )
       );
@@ -1076,7 +1082,7 @@ const loadSelectorStudents: LoadUsersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
             "error"
           )
         );
@@ -1139,7 +1145,7 @@ const loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
           "error"
         )
       );
@@ -1201,7 +1207,7 @@ const loadSelectorUserGroups: LoadUsersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
             "error"
           )
         );

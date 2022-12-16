@@ -1,4 +1,4 @@
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
@@ -20,7 +20,7 @@ import "~/sass/elements/form.scss";
  * ReplyThreadProps
  */
 interface ReplyThreadProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   children: React.ReactElement<any>;
   reply?: DiscussionThreadReplyType;
   quote?: string;
@@ -200,9 +200,9 @@ class ReplyThread extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.reply.topic") +
+      this.props.i18nOLD.text.get("plugin.discussion.reply.topic") +
       " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
 
     /**
      * content
@@ -213,7 +213,7 @@ class ReplyThread extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor" key="1">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.content"
             )}
           </label>
@@ -241,14 +241,16 @@ class ReplyThread extends SessionStateComponent<
           onClick={this.createReply.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.i18nOLD.text.get(
+            "plugin.discussion.createmessage.cancel"
+          )}
         </Button>
         {this.recovered ? (
           <Button
@@ -256,7 +258,7 @@ class ReplyThread extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
@@ -267,7 +269,7 @@ class ReplyThread extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="reply-thread"
-        title={this.props.i18n.text.get("plugin.discussion.reply.topic")}
+        title={this.props.i18nOLD.text.get("plugin.discussion.reply.topic")}
         content={content}
         footer={footer}
         onOpen={this.onDialogOpen}
@@ -285,7 +287,7 @@ class ReplyThread extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     currentId: state.discussion.current.id,
   };
 }

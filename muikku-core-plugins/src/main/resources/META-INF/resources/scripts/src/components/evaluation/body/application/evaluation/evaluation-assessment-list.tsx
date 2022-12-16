@@ -4,7 +4,7 @@ import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import Link from "~/components/general/link";
 import {
@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
  * EvaluationEventContentCardProps
  */
 interface AssessmentListProps {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   evaluation: EvaluationState;
   workspaces: WorkspaceType[];
   selectedAssessment: AssessmentRequest;
@@ -33,7 +33,7 @@ interface AssessmentListProps {
  * @returns JSX.Element
  */
 const AssessmentList: React.FC<AssessmentListProps> = (props) => {
-  const { evaluation, i18nn, workspaces, selectedAssessment } = props;
+  const { evaluation, i18nOLD, workspaces, selectedAssessment } = props;
 
   const { t } = useTranslation(["evaluation"]);
 
@@ -199,7 +199,7 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
     ) : (
       <div className="empty">
         <span>
-          {i18nn.text.get(
+          {i18nOLD.text.get(
             "plugin.evaluation.evaluationModal.noAssignmentsTitle"
           )}
         </span>
@@ -210,7 +210,9 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
         <>
-          {i18nn.text.get("plugin.evaluation.evaluationModal.assignmentsTitle")}
+          {i18nOLD.text.get(
+            "plugin.evaluation.evaluationModal.assignmentsTitle"
+          )}
           {evaluation.evaluationCurrentStudentAssigments.state === "READY" &&
           evaluation.evaluationCompositeReplies.state === "READY" ? (
             <div className="evaluation-modal__content-actions">
@@ -248,7 +250,7 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     evaluation: state.evaluations,
   };
 }

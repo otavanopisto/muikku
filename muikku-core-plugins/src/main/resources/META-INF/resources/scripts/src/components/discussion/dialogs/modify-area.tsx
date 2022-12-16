@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { DiscussionType } from "~/reducers/discussion";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
@@ -20,7 +20,7 @@ import { StateType } from "~/reducers";
  * DiscussionModifyAreaProps
  */
 interface DiscussionModifyAreaProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   discussion: DiscussionType;
   children: React.ReactElement<any>;
   updateDiscussionArea: UpdateDiscussionAreaTriggerType;
@@ -187,13 +187,13 @@ class DiscussionModifyArea extends SessionStateComponent<
       <div className="env-dialog__row" key="1">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaName" className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.discussion.editArea.name")}
+            {this.props.i18nOLD.text.get("plugin.discussion.editArea.name")}
           </label>
           <input
             id="forumAreaName"
             type="text"
             className="env-dialog__input env-dialog__input--new-discussion-area-name"
-            placeholder={this.props.i18n.text.get(
+            placeholder={this.props.i18nOLD.text.get(
               "plugin.discussion.editArea.name"
             )}
             value={this.state.name}
@@ -205,7 +205,9 @@ class DiscussionModifyArea extends SessionStateComponent<
       <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaDescription" className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.discussion.editArea.description")}
+            {this.props.i18nOLD.text.get(
+              "plugin.discussion.editArea.description"
+            )}
           </label>
           <textarea
             id="forumAreaDescription"
@@ -228,14 +230,14 @@ class DiscussionModifyArea extends SessionStateComponent<
           onClick={this.modifyArea.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.editArea.send")}
+          {this.props.i18nOLD.text.get("plugin.discussion.editArea.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.editArea.cancel")}
+          {this.props.i18nOLD.text.get("plugin.discussion.editArea.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -243,7 +245,9 @@ class DiscussionModifyArea extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get("plugin.discussion.editArea.clearDraft")}
+            {this.props.i18nOLD.text.get(
+              "plugin.discussion.editArea.clearDraft"
+            )}
           </Button>
         ) : null}
       </div>
@@ -252,7 +256,7 @@ class DiscussionModifyArea extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="modify-area"
-        title={this.props.i18n.text.get("plugin.discussion.editArea.topic")}
+        title={this.props.i18nOLD.text.get("plugin.discussion.editArea.topic")}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
@@ -269,7 +273,7 @@ class DiscussionModifyArea extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
   };
 }

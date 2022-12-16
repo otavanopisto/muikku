@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "reducers/base/i18n";
+import { i18nType } from "reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/evaluation.scss";
 import { ButtonPill } from "~/components/general/button";
@@ -27,7 +27,7 @@ import { AnyActionType } from "~/actions";
  * EvaluationToolbarProps
  */
 interface EvaluationToolbarProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   title: string;
   updateEvaluationSearch: UpdateEvaluationSearch;
   evaluations: EvaluationState;
@@ -91,7 +91,7 @@ class EvaluationToolbar extends React.Component<
           id="filterEvaluated"
         />
         <label htmlFor="filterEvaluated">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.evaluation.workspace.filter.checkbox.evaluated"
           )}
         </label>
@@ -104,7 +104,7 @@ class EvaluationToolbar extends React.Component<
           id="filterAssessmentRequest"
         />
         <label htmlFor="filterAssessmentRequest">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.evaluation.workspace.filter.checkbox.requestEvaluation"
           )}
         </label>
@@ -119,7 +119,7 @@ class EvaluationToolbar extends React.Component<
           id="filterSupplementationRequest"
         />
         <label htmlFor="filterSupplementationRequest">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.evaluation.workspace.filter.checkbox.hasSupplementationRequest"
           )}
         </label>
@@ -132,7 +132,7 @@ class EvaluationToolbar extends React.Component<
           id="filterNotEvaluated"
         />
         <label htmlFor="filterNotEvaluated">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.evaluation.workspace.filter.checkbox.noevaluation"
           )}
         </label>
@@ -146,7 +146,7 @@ class EvaluationToolbar extends React.Component<
             updateField={this.handleSearchFormElementChange}
             name="guider-search"
             id="searchUsers"
-            placeholder={this.props.i18n.text.get(
+            placeholder={this.props.i18nOLD.text.get(
               "plugin.evaluation.freeSearch"
             )}
             value={this.props.evaluations.evaluationSearch}
@@ -168,7 +168,7 @@ class EvaluationToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     evaluations: state.evaluations,
   };
 }

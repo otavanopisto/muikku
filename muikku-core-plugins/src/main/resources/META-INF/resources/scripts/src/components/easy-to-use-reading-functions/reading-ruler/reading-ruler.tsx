@@ -5,14 +5,14 @@ import { bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * ReadingRulerPortalProps
  */
 interface ReadingRulerPortalProps {
   active: boolean;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   onClose?: () => void;
 }
 
@@ -26,7 +26,7 @@ export const ReadingRuler: React.FC<ReadingRulerPortalProps> = (props) => (
     {
       <ReadingRulerBase
         active={props.active}
-        i18n={props.i18n}
+        i18nOLD={props.i18nOLD}
         onClose={props.onClose}
       />
     }
@@ -39,7 +39,7 @@ export const ReadingRuler: React.FC<ReadingRulerPortalProps> = (props) => (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

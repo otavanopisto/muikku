@@ -2,7 +2,7 @@ import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
@@ -26,7 +26,7 @@ interface DeleteRequestDialogProps
   children: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => void;
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   deleteAssessmentRequest: DeleteAssessmentRequest;
   deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest;
 }
@@ -131,12 +131,12 @@ class DeleteRequestDialog extends React.Component<
       <div
         dangerouslySetInnerHTML={this.createHtmlMarkup(
           this.props.interimEvaluationRequest
-            ? this.props.i18nn.text.get(
+            ? this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.deleteInterimRequest.confirmationDialog.description",
                 studentNameString,
                 workspaceNameString
               )
-            : this.props.i18nn.text.get(
+            : this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.description",
                 studentNameString,
                 workspaceNameString
@@ -151,10 +151,10 @@ class DeleteRequestDialog extends React.Component<
         modifier="evaluation-archive-request"
         title={
           this.props.interimEvaluationRequest
-            ? this.props.i18nn.text.get(
+            ? this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.deleteInterimRequest.confirmationDialog.title"
               )
-            : this.props.i18nn.text.get(
+            : this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.title"
               )
         }
@@ -173,7 +173,7 @@ class DeleteRequestDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

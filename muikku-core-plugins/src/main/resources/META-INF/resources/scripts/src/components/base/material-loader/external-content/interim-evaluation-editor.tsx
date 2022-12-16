@@ -171,7 +171,7 @@ class InterimEvaluationEditor extends React.Component<
         )()) as WorkspaceInterimEvaluationRequest;
 
         this.props.displayNotification(
-          this.props.i18n.text.get(
+          this.props.i18nOLD.text.get(
             "plugin.workspace.materialsLoader.cancelInterimEvaluationRequest.success"
           ),
           "success"
@@ -190,7 +190,7 @@ class InterimEvaluationEditor extends React.Component<
         );
       } catch (error) {
         this.props.displayNotification(
-          this.props.i18n.text.get(
+          this.props.i18nOLD.text.get(
             "plugin.workspace.materialsLoader.cancelInterimEvaluationRequest.error"
           ),
           "error"
@@ -207,7 +207,7 @@ class InterimEvaluationEditor extends React.Component<
         )()) as WorkspaceInterimEvaluationRequest;
 
         this.props.displayNotification(
-          this.props.i18n.text.get(
+          this.props.i18nOLD.text.get(
             "plugin.workspace.materialsLoader.submitInterimEvaluationRequest.success"
           ),
           "success"
@@ -226,7 +226,7 @@ class InterimEvaluationEditor extends React.Component<
         );
       } catch (error) {
         this.props.displayNotification(
-          this.props.i18n.text.get(
+          this.props.i18nOLD.text.get(
             "plugin.workspace.materialsLoader.submitInterimEvaluationRequest.error"
           ),
           "error"
@@ -284,7 +284,7 @@ class InterimEvaluationEditor extends React.Component<
             buttonModifiers={this.props.stateConfiguration["button-class"]}
             onClick={this.handlePushInterimRequest}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               this.props.stateConfiguration["button-text"]
             )}
           </Button>
@@ -297,7 +297,7 @@ class InterimEvaluationEditor extends React.Component<
             buttonModifiers="muikku-show-correct-answers-button"
             onClick={this.props.onToggleAnswersVisible}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               this.props.answersVisible
                 ? "plugin.workspace.materialsLoader.hideAnswers"
                 : "plugin.workspace.materialsLoader.showAnswers"
@@ -320,7 +320,7 @@ class InterimEvaluationEditor extends React.Component<
 
         {creatingInterimEvaluationRequestBlocked && !isEvaluated ? (
           <div className="material-page__content-disclaimer rich-text">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.workspace.materialsLoader.interimEvaluationDisclaimer"
             )}
           </div>

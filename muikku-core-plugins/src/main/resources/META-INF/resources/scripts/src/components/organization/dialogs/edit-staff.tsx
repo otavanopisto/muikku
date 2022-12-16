@@ -11,7 +11,7 @@ import {
   updateStaffmember,
   UpdateStaffmemberTriggerType,
 } from "~/actions/main-function/users";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
@@ -23,7 +23,7 @@ import { UserType } from "~/reducers/user-index";
  */
 interface OrganizationUserProps {
   children?: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   data?: UserType;
   studyprogrammes: StudyprogrammeTypes;
@@ -179,19 +179,19 @@ class OrganizationUser extends React.Component<
             id="staffRole"
             name="role"
             modifiers="new-user"
-            label={this.props.i18n.text.get(
+            label={this.props.i18nOLD.text.get(
               "plugin.organization.users.addUser.label.role"
             )}
             updateField={this.updateField}
             value={this.props.data.role}
           >
             <option value="MANAGER">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.organization.users.role.MANAGER"
               )}
             </option>
             <option value="TEACHER">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.organization.users.role.TEACHER"
               )}
             </option>
@@ -205,7 +205,7 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             valid={this.state.firstNameValid}
             mandatory={true}
-            label={this.props.i18n.text.get(
+            label={this.props.i18nOLD.text.get(
               "plugin.organization.users.addUser.label.firstName"
             )}
             updateField={this.updateField}
@@ -217,7 +217,7 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             valid={this.state.lastNameValid}
             mandatory={true}
-            label={this.props.i18n.text.get(
+            label={this.props.i18nOLD.text.get(
               "plugin.organization.users.addUser.label.lastName"
             )}
             updateField={this.updateField}
@@ -230,7 +230,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.emailValid}
             mandatory={true}
             updateField={this.updateField}
-            label={this.props.i18n.text.get(
+            label={this.props.i18nOLD.text.get(
               "plugin.organization.users.addUser.label.email"
             )}
           />
@@ -245,10 +245,10 @@ class OrganizationUser extends React.Component<
     const footer = (closePortal: () => any) => (
       <FormActionsElement
         locked={this.state.locked}
-        executeLabel={this.props.i18n.text.get(
+        executeLabel={this.props.i18nOLD.text.get(
           "plugin.organization.users.editUser.execute"
         )}
-        cancelLabel={this.props.i18n.text.get(
+        cancelLabel={this.props.i18nOLD.text.get(
           "plugin.organization.users.addUser.cancel"
         )}
         executeClick={this.saveUser.bind(this, closePortal)}
@@ -259,7 +259,7 @@ class OrganizationUser extends React.Component<
     return (
       <Dialog
         modifier="new-user"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.organization.users.editUser.title"
         )}
         content={content}
@@ -277,7 +277,7 @@ class OrganizationUser extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     studyprogrammes: state.studyprogrammes,
   };

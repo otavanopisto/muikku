@@ -14,7 +14,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { ChromePicker, ColorState } from "react-color";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 
 import "~/sass/elements/form.scss";
@@ -34,7 +34,7 @@ interface CommunicatorLabelUpdateDialogProps {
   label: MessagesNavigationItemType;
   isOpen?: boolean;
   onClose?: () => any;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   messages: MessagesType;
   updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType;
   removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType;
@@ -77,7 +77,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
     this.state = {
       displayColorPicker: false,
       color: props.label.color,
-      name: props.label.text(props.i18n),
+      name: props.label.text(props.i18nOLD),
       removed: false,
       locked: false,
     };
@@ -127,7 +127,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
     this.setState({
       color: props.label.color,
       removed: false,
-      name: props.label.text(props.i18n),
+      name: props.label.text(props.i18nOLD),
     });
   }
 
@@ -186,7 +186,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
     };
 
     if (
-      (this.state.name !== this.props.label.text(this.props.i18n) ||
+      (this.state.name !== this.props.label.text(this.props.i18nOLD) ||
         this.state.color !== this.props.label.color) &&
       !this.state.removed
     ) {
@@ -229,7 +229,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
           disabled={this.state.locked}
           onClick={this.update.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.communicator.label.edit.button.send"
           )}
         </Button>
@@ -238,7 +238,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
           disabled={this.state.locked}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.communicator.label.edit.button.cancel"
           )}
         </Button>
@@ -248,10 +248,10 @@ class CommunicatorLabelUpdateDialog extends React.Component<
           onClick={this.removeLabel}
         >
           {this.state.removed
-            ? this.props.i18n.text.get(
+            ? this.props.i18nOLD.text.get(
                 "plugin.communicator.label.edit.button.removed"
               )
-            : this.props.i18n.text.get(
+            : this.props.i18nOLD.text.get(
                 "plugin.communicator.label.edit.button.remove"
               )}
         </Button>
@@ -302,13 +302,13 @@ class CommunicatorLabelUpdateDialog extends React.Component<
         <div className="dialog__container dialog__container--label-form">
           <div className="form-element form-element--edit-label">
             <label htmlFor="communicatorLabelName">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.communicator.label.editLabelDialog.name"
               )}
             </label>
             <input
               id="communicatorLabelName"
-              placeholder={this.props.i18n.text.get(
+              placeholder={this.props.i18nOLD.text.get(
                 "plugin.communicator.label.editLabelDialog.name"
               )}
               value={this.state.name}
@@ -327,7 +327,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
         onKeyStroke={this.handleKeydown}
         onOpen={this.resetState}
         modifier="communicator-edit-label"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.communicator.label.edit.caption"
         )}
         content={content}
@@ -346,7 +346,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     messages: state.messages,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

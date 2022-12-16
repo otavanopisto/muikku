@@ -9,7 +9,7 @@ import { HTMLAttributeAnchorTarget } from "react";
 import { Redirect } from "react-router-dom";
 import "~/sass/elements/link.scss";
 import { scrollToSection } from "~/util/modifiers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
@@ -35,7 +35,7 @@ interface LinkProps
   scrollPadding?: number;
   disableScroll?: boolean;
   disableSmoothScroll?: boolean;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -203,7 +203,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
         return (
           <>
             <span className="visually-hidden">
-              {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+              {this.props.i18nOLD.text.get("plugin.wcag.externalLink.label")}
             </span>
             <span
               role="presentation"
@@ -237,7 +237,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["disableScroll"];
     delete elementProps["as"];
     delete elementProps["disableSmoothScroll"];
-    delete elementProps["i18n"];
+    delete elementProps["i18nOLD"];
 
     if (
       (elementProps.href == null &&
@@ -270,7 +270,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
           ) : this.props.openInNewTab ? (
             <>
               <span className="visually-hidden">
-                {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+                {this.props.i18nOLD.text.get("plugin.wcag.externalLink.label")}
               </span>
               <span
                 role="presentation"
@@ -315,7 +315,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

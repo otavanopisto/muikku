@@ -3,7 +3,7 @@ import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import mApi from "~/lib/mApi";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
@@ -27,7 +27,7 @@ interface GuiderLabelShareDialogProps {
   label: GuiderUserLabelType;
   isOpen?: boolean;
   onClose?: () => any;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   displayNotification: DisplayNotificationTriggerType;
   userIndex: UserIndexType;
 }
@@ -179,7 +179,7 @@ class GuiderLabelShareDialog extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.guider.flags.editFlagDialog.cancel"
           )}
         </Button>
@@ -187,7 +187,9 @@ class GuiderLabelShareDialog extends React.Component<
           buttonModifiers={["success", "standard-ok"]}
           onClick={this.share.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get("plugin.guider.flags.shareFlagDialog.save")}
+          {this.props.i18nOLD.text.get(
+            "plugin.guider.flags.shareFlagDialog.save"
+          )}
         </Button>
       </div>
     );
@@ -216,7 +218,7 @@ class GuiderLabelShareDialog extends React.Component<
         onClose={this.props.onClose}
         onOpen={this.getShares}
         modifier="guider-share-label"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.guider.flags.shareFlagDialog.title",
           this.props.label.name
         )}
@@ -236,7 +238,7 @@ class GuiderLabelShareDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     userIndex: state.userIndex,
   };
 }

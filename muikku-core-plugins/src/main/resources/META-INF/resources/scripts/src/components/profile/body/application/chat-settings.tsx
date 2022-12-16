@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { ProfileType } from "~/reducers/main-function/profile";
 import {
   saveProfileProperty,
@@ -23,7 +23,7 @@ import { SimpleActionExecutor } from "~/actions/executor";
  * ChatSettingsProps
  */
 interface ChatSettingsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -130,7 +130,7 @@ class ChatSettings extends React.Component<
       )
       .onAllSucceed(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.saved"),
+          this.props.i18nOLD.text.get("plugin.profile.properties.saved"),
           "success"
         );
 
@@ -138,7 +138,7 @@ class ChatSettings extends React.Component<
       })
       .onOneFails(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.failed"),
+          this.props.i18nOLD.text.get("plugin.profile.properties.failed"),
           "error"
         );
 
@@ -182,14 +182,16 @@ class ChatSettings extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get("plugin.profile.titles.chatSettings")}
+            {this.props.i18nOLD.text.get("plugin.profile.titles.chatSettings")}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="chatVisibility">
-                    {this.props.i18n.text.get("plugin.profile.chat.visibility")}
+                    {this.props.i18nOLD.text.get(
+                      "plugin.profile.chat.visibility"
+                    )}
                   </label>
                   <select
                     id="chatVisibility"
@@ -202,12 +204,14 @@ class ChatSettings extends React.Component<
                     onChange={this.onChatVisibilityChange}
                   >
                     <option value="VISIBLE_TO_ALL">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.chat.visibleToAll"
                       )}
                     </option>
                     <option value="DISABLED">
-                      {this.props.i18n.text.get("plugin.profile.chat.disabled")}
+                      {this.props.i18nOLD.text.get(
+                        "plugin.profile.chat.disabled"
+                      )}
                     </option>
                   </select>
                 </div>
@@ -215,7 +219,7 @@ class ChatSettings extends React.Component<
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="chatNickname">
-                    {this.props.i18n.text.get("plugin.profile.chat.setNick")}
+                    {this.props.i18nOLD.text.get("plugin.profile.chat.setNick")}
                   </label>
                   <input
                     id="chatNickname"
@@ -231,7 +235,7 @@ class ChatSettings extends React.Component<
                 </div>
 
                 <div className="form-element__description">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.profile.chat.setNickDescription"
                   )}
                 </div>
@@ -243,7 +247,7 @@ class ChatSettings extends React.Component<
                   onClick={this.save}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18n.text.get("plugin.profile.save.button")}
+                  {this.props.i18nOLD.text.get("plugin.profile.save.button")}
                 </Button>
               </div>
             </div>
@@ -260,7 +264,7 @@ class ChatSettings extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     profile: state.profile,
     status: state.status,
   };

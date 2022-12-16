@@ -1,7 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 
 import "~/sass/elements/form.scss";
@@ -23,7 +23,7 @@ import {
  * UpdateAddressDialogProps
  */
 interface UpdateAddressDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   children: React.ReactElement<any>;
   profile: ProfileType;
 
@@ -151,14 +151,14 @@ class UpdateAddressDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         <p>
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.profile.changeAddressMunicipality.dialog.desription"
           )}
         </p>
         <form>
           <div className="form-element form-element--profile">
             <label htmlFor="profileStreetAddress">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.profile.changeAddressMunicipality.dialog.streetField.label"
               )}
             </label>
@@ -173,7 +173,7 @@ class UpdateAddressDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profilePostalCode">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label"
               )}
             </label>
@@ -188,7 +188,7 @@ class UpdateAddressDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileCity">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.profile.changeAddressMunicipality.dialog.cityField.label"
               )}
             </label>
@@ -203,7 +203,7 @@ class UpdateAddressDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileCountry">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.profile.changeAddressMunicipality.dialog.countryField.label"
               )}
             </label>
@@ -218,7 +218,7 @@ class UpdateAddressDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileMunicipality">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"
               )}
             </label>
@@ -246,7 +246,7 @@ class UpdateAddressDialog extends React.Component<
           onClick={this.update.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.profile.changeAddressMunicipality.dialog.button.saveLabel"
           )}
         </Button>
@@ -255,7 +255,7 @@ class UpdateAddressDialog extends React.Component<
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.profile.changeAddressMunicipality.dialog.button.cancelLabel"
           )}
         </Button>
@@ -263,7 +263,7 @@ class UpdateAddressDialog extends React.Component<
     );
     return (
       <Dialog
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.profile.changeAddressMunicipality.dialog.title"
         )}
         content={content}
@@ -282,7 +282,7 @@ class UpdateAddressDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     profile: state.profile,
   };
 }

@@ -13,7 +13,7 @@ import {
   updateWorkspaceSupplementationToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/evaluation.scss";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
@@ -29,7 +29,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface SupplementationEditorProps
   extends WithTranslation<["common", "evaluation"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
@@ -381,7 +381,7 @@ class SupplementationEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,

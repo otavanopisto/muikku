@@ -1,11 +1,11 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * FrontpageFooterProps
  */
 interface FrontpageFooterProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -29,26 +29,30 @@ export default class FrontpageFooter extends React.Component<
         <div className="footer__container">
           <div className="footer__item footer__item--contact">
             <h2 className="footer__header">
-              {this.props.i18n.text.get("plugin.footer.contact.title")}
+              {this.props.i18nOLD.text.get("plugin.footer.contact.title")}
             </h2>
             <p className="footer__subitem">
               <span className="glyph icon-location"></span>
               <b>
-                {this.props.i18n.text.get("plugin.footer.streetAddress.label")}
+                {this.props.i18nOLD.text.get(
+                  "plugin.footer.streetAddress.label"
+                )}
               </b>
               <span>Otavantie 2 B, 50670 Otava</span>
             </p>
             <p className="footer__subitem">
               <span className="glyph icon-phone"></span>
               <b>
-                {this.props.i18n.text.get("plugin.footer.phoneNumber.label")}
+                {this.props.i18nOLD.text.get("plugin.footer.phoneNumber.label")}
               </b>
               <span>044 794 3552</span>
             </p>
             <p className="footer__subitem">
               <span className="glyph icon-envelope-alt"></span>
               <b>
-                {this.props.i18n.text.get("plugin.footer.emailAddress.label")}
+                {this.props.i18nOLD.text.get(
+                  "plugin.footer.emailAddress.label"
+                )}
               </b>
               <span>info@otavia.fi</span>
             </p>
@@ -59,11 +63,13 @@ export default class FrontpageFooter extends React.Component<
                 className="link link--privacy-policy"
                 rel="noreferrer"
               >
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.footer.ooPrivacyPolicy.label"
                 )}
                 <span className="visually-hidden">
-                  {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+                  {this.props.i18nOLD.text.get(
+                    "plugin.wcag.externalLink.label"
+                  )}
                 </span>
                 <span
                   role="presentation"
@@ -78,11 +84,13 @@ export default class FrontpageFooter extends React.Component<
                 className="link link--accessibility-statement"
                 rel="noreferrer"
               >
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.footer.accesibilityStatement.text"
                 )}
                 <span className="visually-hidden">
-                  {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+                  {this.props.i18nOLD.text.get(
+                    "plugin.wcag.externalLink.label"
+                  )}
                 </span>
                 <span
                   role="presentation"
@@ -116,7 +124,7 @@ export default class FrontpageFooter extends React.Component<
             >
               <img src="/gfx/plagscan-logo-white.png" alt="Plagscan logo" />
               <span className="visually-hidden">
-                {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+                {this.props.i18nOLD.text.get("plugin.wcag.externalLink.label")}
               </span>
               <span
                 role="presentation"
@@ -124,7 +132,7 @@ export default class FrontpageFooter extends React.Component<
               />
             </a>
             <span className="footer__item--plagscan-text">
-              {this.props.i18n.text.get("plugin.footer.plagscan.text")}
+              {this.props.i18nOLD.text.get("plugin.footer.plagscan.text")}
             </span>
             <a
               href="https://drive.google.com/file/d/1IDQWdh2N1EoaJe60uS1m9tyY5znaohzz/view?usp=sharing"
@@ -133,11 +141,11 @@ export default class FrontpageFooter extends React.Component<
               rel="noreferrer"
             >
               (
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.footer.plagScanPrivacyPolicy.label"
               )}
               <span className="visually-hidden">
-                {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+                {this.props.i18nOLD.text.get("plugin.wcag.externalLink.label")}
               </span>
               <span
                 role="presentation"

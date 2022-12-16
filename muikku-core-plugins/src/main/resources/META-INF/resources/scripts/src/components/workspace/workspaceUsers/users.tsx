@@ -3,7 +3,7 @@ import { Dispatch, connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { IconButton } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
@@ -43,7 +43,7 @@ import { MobileOnlyTabs } from "~/components/general/tabs";
 interface WorkspaceUsersProps {
   status: StatusType;
   workspace: WorkspaceType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   loadStaffMembers: LoadUsersOfWorkspaceTriggerType;
   loadStudents: LoadUsersOfWorkspaceTriggerType;
 }
@@ -377,11 +377,13 @@ class WorkspaceUsers extends React.Component<
     return (
       <ApplicationPanel
         modifier="workspace-users"
-        title={this.props.i18n.text.get("plugin.workspace.users.pageTitle")}
+        title={this.props.i18nOLD.text.get("plugin.workspace.users.pageTitle")}
       >
         <ApplicationSubPanel modifier="workspace-users">
           <ApplicationSubPanel.Header modifier="workspace-users">
-            {this.props.i18n.text.get("plugin.workspace.users.teachers.title")}
+            {this.props.i18nOLD.text.get(
+              "plugin.workspace.users.teachers.title"
+            )}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body modifier="workspace-users">
             <ApplicationList
@@ -405,12 +407,12 @@ class WorkspaceUsers extends React.Component<
                         },
                       ]}
                       initialSubject={getWorkspaceMessage(
-                        this.props.i18n,
+                        this.props.i18nOLD,
                         this.props.status,
                         this.props.workspace
                       )}
                       initialMessage={getWorkspaceMessage(
-                        this.props.i18n,
+                        this.props.i18nOLD,
                         this.props.status,
                         this.props.workspace,
                         true
@@ -455,7 +457,9 @@ class WorkspaceUsers extends React.Component<
         </ApplicationSubPanel>
         <ApplicationSubPanel modifier="workspace-users">
           <ApplicationSubPanel.Header modifier="workspace-users">
-            {this.props.i18n.text.get("plugin.workspace.users.students.title")}
+            {this.props.i18nOLD.text.get(
+              "plugin.workspace.users.students.title"
+            )}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body modifier="workspace-users">
             <SearchFormElement
@@ -464,7 +468,7 @@ class WorkspaceUsers extends React.Component<
               updateField={this.updateSearch}
               id="WorkspaceUserFilter"
               name="workspace-user-filter"
-              placeholder={this.props.i18n.text.get(
+              placeholder={this.props.i18nOLD.text.get(
                 "plugin.workspace.users.students.searchStudents"
               )}
             />
@@ -475,7 +479,7 @@ class WorkspaceUsers extends React.Component<
               tabs={[
                 {
                   id: "ACTIVE",
-                  name: this.props.i18n.text.get(
+                  name: this.props.i18nOLD.text.get(
                     "plugin.workspace.users.students.link.active"
                   ),
                   type: "workspace-students",
@@ -486,7 +490,7 @@ class WorkspaceUsers extends React.Component<
                           activeStudents
                         ) : (
                           <div className="loaded-empty">
-                            {this.props.i18n.text.get(
+                            {this.props.i18nOLD.text.get(
                               "plugin.workspaces.users.activeStudents.empty"
                             )}
                           </div>
@@ -497,7 +501,7 @@ class WorkspaceUsers extends React.Component<
                 },
                 {
                   id: "INACTIVE",
-                  name: this.props.i18n.text.get(
+                  name: this.props.i18nOLD.text.get(
                     "plugin.workspace.users.students.link.inactive"
                   ),
                   type: "workspace-students",
@@ -512,7 +516,7 @@ class WorkspaceUsers extends React.Component<
                           inactiveStudents
                         ) : (
                           <div className="loaded-empty">
-                            {this.props.i18n.text.get(
+                            {this.props.i18nOLD.text.get(
                               "plugin.workspaces.users.inActiveStudents.empty"
                             )}
                           </div>
@@ -532,12 +536,12 @@ class WorkspaceUsers extends React.Component<
             extraNamespace="workspace-students"
             initialSelectedItems={[currentStudentBeingSentMessage]}
             initialSubject={getWorkspaceMessage(
-              this.props.i18n,
+              this.props.i18nOLD,
               this.props.status,
               this.props.workspace
             )}
             initialMessage={getWorkspaceMessage(
-              this.props.i18n,
+              this.props.i18nOLD,
               this.props.status,
               this.props.workspace,
               true
@@ -562,7 +566,7 @@ class WorkspaceUsers extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };

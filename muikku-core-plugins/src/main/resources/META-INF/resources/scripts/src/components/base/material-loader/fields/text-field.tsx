@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import AutosizeInput from "react-input-autosize";
@@ -38,7 +38,7 @@ interface TextFieldProps {
   ) => any;
   readOnly?: boolean;
   initialValue?: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   usedAs: UsedAs;
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
@@ -119,7 +119,7 @@ export default class TextField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18n !== nextProps.i18n ||
+      this.props.i18nOLD !== nextProps.i18nOLD ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -268,7 +268,7 @@ export default class TextField extends React.Component<
       correctAnswersummaryComponent = actuallyCorrectAnswers.length ? (
         <span className="material-page__field-answer-examples">
           <span className="material-page__field-answer-examples-title">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               answersAreExample
                 ? "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
                 : "plugin.workspace.assigment.checkAnswers.correctSummary.title"
@@ -451,7 +451,7 @@ export default class TextField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18n={this.props.i18n}
+          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         {this.props.content.hint ? (

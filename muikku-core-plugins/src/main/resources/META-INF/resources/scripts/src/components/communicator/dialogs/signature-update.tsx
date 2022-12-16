@@ -9,7 +9,7 @@ import {
   UpdateSignatureTriggerType,
 } from "~/actions/main-function/messages";
 import { MessageSignatureType } from "~/reducers/main-function/messages";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
@@ -27,7 +27,7 @@ interface CommunicatorSignatureUpdateDialogProps {
   onClose: () => any;
   signature: MessageSignatureType;
   updateSignature: UpdateSignatureTriggerType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -110,12 +110,12 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
           buttonModifiers="dialog-execute"
           onClick={this.update.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.communicator.settings.signature.create"
           )}
         </Button>
         <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.communicator.confirmSignatureRemovalDialog.cancelButton"
           )}
         </Button>
@@ -141,7 +141,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
         onKeyStroke={this.handleKeydown}
         onOpen={this.resetState}
         modifier="update-signature"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.communicator.settings.signature"
         )}
         content={content}
@@ -160,7 +160,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     signature: state.messages.signature,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

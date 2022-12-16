@@ -6,7 +6,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
@@ -22,7 +22,7 @@ import { StateType } from "~/reducers";
  * DiscussionDeleteThreadComponentProps
  */
 interface DiscussionDeleteThreadComponentProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   reply?: DiscussionThreadReplyType;
   deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType;
   deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType;
@@ -109,8 +109,8 @@ class DiscussionDeleteThreadComponent extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.reply
-          ? this.props.i18n.text.get("plugin.discussion.removeReply.text")
-          : this.props.i18n.text.get(
+          ? this.props.i18nOLD.text.get("plugin.discussion.removeReply.text")
+          : this.props.i18nOLD.text.get(
               "plugin.discussion.confirmThreadRemovalDialog.text"
             )}
       </div>
@@ -126,7 +126,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
           onClick={this.deleteComponent.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.discussion.confirmThreadRemovalDialog.confirmButton"
           )}
         </Button>
@@ -134,7 +134,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.discussion.confirmThreadRemovalDialog.cancelButton"
           )}
         </Button>
@@ -146,8 +146,8 @@ class DiscussionDeleteThreadComponent extends React.Component<
         modifier="delete-area"
         title={
           this.props.reply
-            ? this.props.i18n.text.get("plugin.discussion.removeReply")
-            : this.props.i18n.text.get("plugin.discussion.removeThread")
+            ? this.props.i18nOLD.text.get("plugin.discussion.removeReply")
+            : this.props.i18nOLD.text.get("plugin.discussion.removeThread")
         }
         content={content}
         footer={footer}
@@ -164,7 +164,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

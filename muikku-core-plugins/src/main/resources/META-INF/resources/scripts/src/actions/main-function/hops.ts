@@ -92,7 +92,7 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.records.hops.errormessage.hopsLoadFailed"
           ),
           "error"
@@ -128,7 +128,7 @@ const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.records.hops.errormessage.hopsUpdateFailed"
           ),
           "error"

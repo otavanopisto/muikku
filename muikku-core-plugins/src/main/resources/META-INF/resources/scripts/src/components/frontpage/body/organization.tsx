@@ -1,12 +1,12 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Button, { ButtonSocial } from "~/components/general/button";
 
 /**
  * FrontpageOrganizationProps
  */
 interface FrontpageOrganizationProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -29,7 +29,7 @@ export default class FrontpageOrganization extends React.Component<
       <section
         id="organization"
         className="screen-container__section"
-        aria-label={this.props.i18n.text.get(
+        aria-label={this.props.i18nOLD.text.get(
           "plugin.wcag.frontPageSectionOrganizationLabel"
         )}
       >
@@ -49,7 +49,9 @@ export default class FrontpageOrganization extends React.Component<
             <div className="ordered-container__item ordered-container__item--organization-social-media">
               <div className="ordered-container__item-subcontainer ordered-container__item-subcontainer--organization-social-media">
                 <h2 className="ordered-container__subcontainer-header--social-media">
-                  {this.props.i18n.text.get("plugin.organization.some.title")}
+                  {this.props.i18nOLD.text.get(
+                    "plugin.organization.some.title"
+                  )}
                 </h2>
                 <ButtonSocial
                   openInNewTab="_blank"
@@ -73,7 +75,7 @@ export default class FrontpageOrganization extends React.Component<
                 <div
                   className="ordered-container__subcontainer-content ordered-container__subcontainer-content--organization-description"
                   dangerouslySetInnerHTML={{
-                    __html: this.props.i18n.text.get(
+                    __html: this.props.i18nOLD.text.get(
                       "plugin.organization.description"
                     ),
                   }}

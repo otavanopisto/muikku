@@ -1,7 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import { bindActionCreators } from "redux";
@@ -18,7 +18,7 @@ import { WorkspaceType } from "~/reducers/workspaces";
  * DeactivateReactivateUserDialogProps
  */
 interface DeactivateReactivateUserDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 
   user: ShortWorkspaceUserWithActiveStatusType;
   toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType;
@@ -73,7 +73,7 @@ class DeactivateReactivateUserDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         <span>
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             this.props.user.active
               ? "plugin.workspace.users.student.archiveDialog.description"
               : "plugin.workspace.users.student.unarchiveDialog.description",
@@ -97,7 +97,7 @@ class DeactivateReactivateUserDialog extends React.Component<
           }
           onClick={this.toggleActiveStatus.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             this.props.user.active
               ? "plugin.workspace.users.student.archiveDialog.archiveButton"
               : "plugin.workspace.users.student.unarchiveDialog.archiveButton"
@@ -107,7 +107,7 @@ class DeactivateReactivateUserDialog extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             this.props.user.active
               ? "plugin.workspace.users.student.archiveDialog.cancelButton"
               : "plugin.workspace.users.student.unarchiveDialog.cancelButton"
@@ -119,7 +119,7 @@ class DeactivateReactivateUserDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           this.props.user.active
             ? "plugin.workspace.users.student.archiveDialog.title"
             : "plugin.workspace.users.student.unarchiveDialog.title"
@@ -138,7 +138,7 @@ class DeactivateReactivateUserDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
   };
 }

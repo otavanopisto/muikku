@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { getName } from "~/util/modifiers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/rich-text.scss";
@@ -41,7 +41,7 @@ import {
  */
 interface DiscussionThreadsProps {
   discussion: DiscussionType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   subscribeDiscussionThread: SubscribeDiscussionThread;
   unsubscribeDiscussionThread: UnsubscribeDiscustionThread;
@@ -88,10 +88,10 @@ class DDiscussionThreads extends React.Component<
    * @returns label with correct locale string
    */
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
-    let label = this.props.i18n.text.get("plugin.wcag.pager.goToPage.label");
+    let label = this.props.i18nOLD.text.get("plugin.wcag.pager.goToPage.label");
 
     if (selected) {
-      label = this.props.i18n.text.get("plugin.wcag.pager.current.label");
+      label = this.props.i18nOLD.text.get("plugin.wcag.pager.current.label");
     }
 
     return label;
@@ -158,7 +158,7 @@ class DDiscussionThreads extends React.Component<
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.communicator.empty.topic")}
+            {this.props.i18nOLD.text.get("plugin.communicator.empty.topic")}
           </span>
         </div>
       );
@@ -194,7 +194,7 @@ class DDiscussionThreads extends React.Component<
               firstName={user.firstName}
               hasImage={user.hasImage}
               userCategory={userCategory}
-              avatarAriaLabel={this.props.i18n.text.get(
+              avatarAriaLabel={this.props.i18nOLD.text.get(
                 "plugin.wcag.userAvatar.label"
               )}
             />
@@ -227,7 +227,7 @@ class DDiscussionThreads extends React.Component<
                   <Dropdown
                     openByHover
                     modifier="discussion-tooltip"
-                    content={this.props.i18n.text.get(
+                    content={this.props.i18nOLD.text.get(
                       "plugin.discussion.unsubscribe.thread"
                     )}
                   >
@@ -244,7 +244,7 @@ class DDiscussionThreads extends React.Component<
                   <Dropdown
                     openByHover
                     modifier="discussion-tooltip"
-                    content={this.props.i18n.text.get(
+                    content={this.props.i18nOLD.text.get(
                       "plugin.discussion.subscribe.thread"
                     )}
                   >
@@ -278,13 +278,13 @@ class DDiscussionThreads extends React.Component<
                       user,
                       this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                     )}
-                  , {this.props.i18n.time.format(thread.created)}
+                  , {this.props.i18nOLD.time.format(thread.created)}
                 </span>
               </div>
               <div className="application-list__item-footer-content-aside">
                 <div className="application-list__item-counter-container">
                   <span className="application-list__item-counter-title">
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.discussion.titleText.replyCount"
                     )}{" "}
                   </span>
@@ -294,10 +294,10 @@ class DDiscussionThreads extends React.Component<
                 </div>
                 <div className="application-list__item-date">
                   <span>
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.discussion.titleText.lastMessage"
                     )}{" "}
-                    {this.props.i18n.time.format(thread.updated)}
+                    {this.props.i18nOLD.time.format(thread.updated)}
                   </span>
                 </div>
               </div>
@@ -334,7 +334,7 @@ class DDiscussionThreads extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     status: state.status,
   };

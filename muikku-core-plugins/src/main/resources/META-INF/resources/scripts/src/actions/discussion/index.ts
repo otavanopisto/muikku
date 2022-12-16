@@ -676,7 +676,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.discussion.errormessage.createMessage.missing.title"
             ),
             "error"
@@ -686,7 +686,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.discussion.errormessage.createMessage.missing.content"
             ),
             "error"
@@ -775,7 +775,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.discussion.errormessage.createMessage.missing.title"
             ),
             "error"
@@ -785,7 +785,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.discussion.errormessage.createMessage.missing.content"
             ),
             "error"
@@ -1142,7 +1142,7 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.discussion.errormessage.deleteReply"
             ),
             "error"
@@ -1278,7 +1278,7 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.discussion.errormessage.createForumArea.missing.areaName"
             ),
             "error"
@@ -1357,7 +1357,7 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.discussion.errormessage.createForumArea.missing.areaName"
             ),
             "error"

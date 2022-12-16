@@ -1,6 +1,6 @@
 import * as React from "react";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import { v4 as uuidv4 } from "uuid";
@@ -31,7 +31,7 @@ interface MultiSelectFieldProps {
     name: string,
     newValue: any
   ) => any;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
@@ -120,7 +120,7 @@ export default class MultiSelectField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18n !== nextProps.i18n ||
+      this.props.i18nOLD !== nextProps.i18nOLD ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -283,7 +283,7 @@ export default class MultiSelectField extends React.Component<
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.assigment.checkAnswers.correctSummary.title"
               )}
             </span>
@@ -312,7 +312,7 @@ export default class MultiSelectField extends React.Component<
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
               )}
             </span>
@@ -378,7 +378,7 @@ export default class MultiSelectField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18n={this.props.i18n}
+          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         <span

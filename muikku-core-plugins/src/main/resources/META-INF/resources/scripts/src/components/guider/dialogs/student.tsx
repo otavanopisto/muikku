@@ -6,7 +6,7 @@ import Dialog, {
 import Tabs from "~/components/general/tabs";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
@@ -49,7 +49,7 @@ interface StudentDialogProps {
   currentStudentStatus: GuiderCurrentStudentStateType;
   onClose?: () => void;
   onOpen?: () => void;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
@@ -157,7 +157,7 @@ class StudentDialog extends React.Component<
     const tabs = [
       {
         id: "STUDIES",
-        name: this.props.i18n.text.get(
+        name: this.props.i18nOLD.text.get(
           "plugin.guider.user.tabs.title.situation"
         ),
         type: "guider-student",
@@ -165,7 +165,7 @@ class StudentDialog extends React.Component<
       },
       {
         id: "GUIDANCE_RELATIONS",
-        name: this.props.i18n.text.get(
+        name: this.props.i18nOLD.text.get(
           "plugin.guider.user.tabs.title.guidanceRelations"
         ),
         type: "guider-student",
@@ -175,7 +175,7 @@ class StudentDialog extends React.Component<
       },
       {
         id: "STUDY_HISTORY",
-        name: this.props.i18n.text.get(
+        name: this.props.i18nOLD.text.get(
           "plugin.guider.user.tabs.title.studyHistory"
         ),
         type: "guider-student",
@@ -310,7 +310,7 @@ class StudentDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     currentStudentStatus: state.guider.currentStudentState,
     guider: state.guider,

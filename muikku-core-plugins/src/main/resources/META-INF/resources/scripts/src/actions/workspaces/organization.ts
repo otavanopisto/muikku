@@ -210,7 +210,7 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.errormessage.workspaceLoadFailed"
             ),
             "error"
@@ -249,7 +249,7 @@ const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizat
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.coursepicker.errormessage.curriculumFilters"
             ),
             "error"
@@ -305,7 +305,7 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.organization.workspaces.notification.selectStaff.error"
             ),
             "error"
@@ -365,7 +365,7 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.organization.workspaces.notification.selectStudents.error"
             ),
             "error"
@@ -513,7 +513,7 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.save.error"
             ),
             "error"
@@ -624,7 +624,7 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
       }
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.organization.workspaces.notification.workspace.create.error"
           ),
           "error"

@@ -9,7 +9,7 @@ import {
 import { sortNotesItemsBy } from "./helpers/filters";
 import NotesListItem from "./notes-item-list-item";
 import NotesItemListWithoutAnimation from "./notes-list-test";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * NotesItemListContentProps
@@ -35,7 +35,7 @@ interface NotesItemListContentProps {
     updatedNotesItem: NotesItemUpdate,
     onSuccess?: () => void
   ) => void;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -45,7 +45,7 @@ interface NotesItemListContentProps {
  */
 const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
   const {
-    i18n,
+    i18nOLD,
     filters,
     userId,
     notesItems,
@@ -64,10 +64,13 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
 
   return (
     <div className="notes__content">
-      <NotesItemListWithoutAnimation isLoadingList={isLoadingList} i18n={i18n}>
+      <NotesItemListWithoutAnimation
+        isLoadingList={isLoadingList}
+        i18nOLD={i18nOLD}
+      >
         {filteredNotesItemList.map((j) => (
           <NotesListItem
-            i18n={i18n}
+            i18nOLD={i18nOLD}
             key={j.id}
             ref={React.createRef()}
             notesItem={j}

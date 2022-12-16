@@ -6,14 +6,14 @@ import Link from "~/components/general/link";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import $ from "~/lib/jquery";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 
 /**
  * LoginButtonProps
  */
 interface LoginButtonProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   modifier?: string;
 }
 
@@ -53,7 +53,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
         }`}
         onClick={this.login}
       >
-        <span>{this.props.i18n.text.get("plugin.login.buttonLabel")}</span>
+        <span>{this.props.i18nOLD.text.get("plugin.login.buttonLabel")}</span>
       </Link>
     );
   }
@@ -65,7 +65,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

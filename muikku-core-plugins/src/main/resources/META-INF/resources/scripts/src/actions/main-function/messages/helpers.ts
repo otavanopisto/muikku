@@ -234,7 +234,7 @@ export async function loadMessagesHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
+        getState().i18nOLD.text.get(
           "plugin.communicator.errormessage.msgsLoadFailed"
         ),
         "error"
@@ -290,7 +290,7 @@ export async function setLabelStatusCurrentMessage(
       if (!messageLabel) {
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.labelDoesNotExist"
             ),
             "error"
@@ -316,7 +316,7 @@ export async function setLabelStatusCurrentMessage(
   } catch (err) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
+        getState().i18nOLD.text.get(
           "plugin.communicator.errormessage.labelingFailed"
         ),
         "error"
@@ -370,7 +370,7 @@ export function setLabelStatusSelectedMessages(
           //TODO translate this
           dispatch(
             notificationActions.displayNotification(
-              getState().i18n.text.get(
+              getState().i18nOLD.text.get(
                 "plugin.communicator.errormessage.labelDoesNotExist"
               ),
               "error"
@@ -396,7 +396,7 @@ export function setLabelStatusSelectedMessages(
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.communicator.errormessage.labelingFailed"
           ),
           "error"

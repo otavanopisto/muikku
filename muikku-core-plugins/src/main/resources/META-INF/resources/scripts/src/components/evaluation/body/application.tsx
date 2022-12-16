@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
-import { i18nType } from "reducers/base/i18n";
+import { i18nType } from "reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import EvaluationToolbar from "./application/toolbar";
 import EvaluationList from "./application/evaluation-list/evaluations-list";
@@ -21,7 +21,7 @@ import { AnyActionType } from "~/actions";
  * EvaluationApplicationProps
  */
 interface EvaluationApplicationProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   currentWorkspace: WorkspaceType;
   evaluations: EvaluationState;
@@ -66,7 +66,7 @@ class EvaluationApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.evaluation.title");
+    const title = this.props.i18nOLD.text.get("plugin.evaluation.title");
     const currentWorkspace = this.props.currentWorkspace;
 
     const workspaces = [...this.props.evaluations.evaluationWorkspaces];
@@ -106,7 +106,7 @@ class EvaluationApplication extends React.Component<
     const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectCourses" className="visually-hidden">
-          {this.props.i18n.text.get("plugin.coursepicker.select.label")}
+          {this.props.i18nOLD.text.get("plugin.coursepicker.select.label")}
         </label>
 
         <select
@@ -115,11 +115,13 @@ class EvaluationApplication extends React.Component<
           className="form-element__select form-element__select--main-action"
         >
           <option value="">
-            {this.props.i18n.text.get("plugin.evaluation.allRequests")}
+            {this.props.i18nOLD.text.get("plugin.evaluation.allRequests")}
           </option>
           {workspaceOptions.length > 0 ? (
             <optgroup
-              label={this.props.i18n.text.get("plugin.evaluation.workspaces")}
+              label={this.props.i18nOLD.text.get(
+                "plugin.evaluation.workspaces"
+              )}
             >
               {workspaceOptions}
             </optgroup>
@@ -152,7 +154,7 @@ class EvaluationApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
     currentWorkspace: state.workspaces.currentWorkspace,

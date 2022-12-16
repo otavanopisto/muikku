@@ -9,7 +9,7 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { DiscussionType } from "~/reducers/discussion";
 import NewArea from "../../dialogs/new-area";
 import ModifyArea from "../../dialogs/modify-area";
@@ -39,7 +39,7 @@ import {
  * DiscussionToolbarProps
  */
 interface DiscussionToolbarProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   discussion: DiscussionType;
   status: StatusType;
   showOnlySubscribedThreads: ShowOnlySubscribedThreads;
@@ -227,7 +227,7 @@ class CommunicatorToolbar extends React.Component<
 
           <div className="form-element">
             <label htmlFor="discussionAreaSelect" className="visually-hidden">
-              {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
+              {this.props.i18nOLD.text.get("plugin.wcag.areaSelect.label")}
             </label>
             <select
               id="discussionAreaSelect"
@@ -236,10 +236,12 @@ class CommunicatorToolbar extends React.Component<
               value={this.selectValue()}
             >
               <option value="">
-                {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
+                {this.props.i18nOLD.text.get(
+                  "plugin.discussion.browseareas.all"
+                )}
               </option>
               <option value="subs">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.discussion.browseareas.subscribtions"
                 )}
               </option>
@@ -253,7 +255,7 @@ class CommunicatorToolbar extends React.Component<
                   <option key={area.id} value={area.id}>
                     {area.name}{" "}
                     {subscribed &&
-                      `(${this.props.i18n.text.get(
+                      `(${this.props.i18nOLD.text.get(
                         "plugin.discussion.subscribed.area.label"
                       )})`}
                   </option>
@@ -273,7 +275,7 @@ class CommunicatorToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     status: state.status,
   };

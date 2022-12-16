@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
@@ -17,7 +17,7 @@ import { Note } from "./wall/note";
  * Wall properties
  */
 export interface WallProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -27,27 +27,27 @@ export interface WallProps {
  * @param props WallProps
  */
 const WallPanel: React.FC<WallProps> = (props) => {
-  const { i18n, status, displayNotification } = props;
+  const { i18nOLD, status, displayNotification } = props;
   const { notes, updateNoteStatus, updateNote } = useOnGoingNotes(
     status,
-    i18n,
+    i18nOLD,
     displayNotification
   );
 
   return (
     <Panel
-      header={props.i18n.text.get("plugin.frontPage.wall.title")}
+      header={props.i18nOLD.text.get("plugin.frontPage.wall.title")}
       modifier="wall"
       icon="icon-star-empty"
     >
       <Panel.BodyTitle>
-        {props.i18n.text.get("plugin.frontPage.wall.subtitle.tasks")}
+        {props.i18nOLD.text.get("plugin.frontPage.wall.subtitle.tasks")}
       </Panel.BodyTitle>
       <Panel.BodyContent>
         {notes.length > 0 ? (
           notes.map((note) => (
             <Note
-              i18n={i18n}
+              i18nOLD={i18nOLD}
               isCreator={note.creator === status.userId}
               key={note.id}
               note={note}
@@ -57,7 +57,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
           ))
         ) : (
           <div className="empty empty--front-page">
-            {i18n.text.get("plugin.frontPage.wall.tasks.empty")}
+            {i18nOLD.text.get("plugin.frontPage.wall.tasks.empty")}
           </div>
         )}
       </Panel.BodyContent>
@@ -72,7 +72,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

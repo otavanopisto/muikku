@@ -5,7 +5,7 @@ import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/message.scss";
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Course from "./courses/course";
 import { StateType } from "~/reducers";
 import ApplicationList, {
@@ -25,7 +25,7 @@ import {
  * CoursepickerWorkspacesProps
  */
 interface CoursepickerWorkspacesProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
@@ -77,7 +77,9 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}
+            {this.props.i18nOLD.text.get(
+              "plugin.coursepicker.searchResult.empty"
+            )}
           </span>
         </div>
       );
@@ -102,7 +104,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspacesState: state.workspaces.state,
     workspacesHasMore: state.workspaces.hasMore,
     workspaces: state.workspaces.availableWorkspaces,

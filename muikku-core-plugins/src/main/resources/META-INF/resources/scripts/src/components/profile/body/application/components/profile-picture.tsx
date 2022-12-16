@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { ProfileType } from "~/reducers/main-function/profile";
 import UploadImageDialog from "../../../dialogs/upload-image";
@@ -15,7 +15,7 @@ import "~/sass/elements/wcag.scss";
  * ProfilePictureProps
  */
 interface ProfilePictureProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   profile: ProfileType;
 }
@@ -122,7 +122,9 @@ class ProfilePicture extends React.Component<
   render() {
     return (
       <div className="form-element">
-        <label>{this.props.i18n.text.get("plugin.profile.image.label")}</label>
+        <label>
+          {this.props.i18nOLD.text.get("plugin.profile.image.label")}
+        </label>
         <div className="application-sub-panel__item-data form-element">
           {!this.props.status.hasImage ? (
             <div className="change-image">
@@ -153,7 +155,7 @@ class ProfilePicture extends React.Component<
                   className="visually-hidden"
                   htmlFor="profilePictureUpload"
                 >
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.wcag.profile.uploadPicture.label"
                   )}
                 </label>
@@ -170,14 +172,14 @@ class ProfilePicture extends React.Component<
                     onClick={this.editCurrentImage}
                   >
                     <span className="icon icon-pencil" />
-                    {this.props.i18n.text.get("plugin.profile.editImage")}
+                    {this.props.i18nOLD.text.get("plugin.profile.editImage")}
                   </Button>
                   <Button
                     buttonModifiers="change-image-delete"
                     onClick={this.deleteCurrentImage}
                   >
                     <span className="icon icon-trash" />
-                    {this.props.i18n.text.get("plugin.profile.deleteImage")}
+                    {this.props.i18nOLD.text.get("plugin.profile.deleteImage")}
                   </Button>
                 </div>
               </div>
@@ -206,7 +208,7 @@ class ProfilePicture extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     profile: state.profile,
   };

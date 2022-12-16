@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { CeeposState } from "~/reducers/main-function/ceepos";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
@@ -17,7 +17,7 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
 
 interface CeeposDoneProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   pay?: boolean;
   done?: boolean;
   status?: number;
@@ -44,13 +44,17 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
           <div className="card__text card__text--ceepos">
             <div className="card__text-row">
               <div className="card__subtitle">
-                {this.props.i18n.text.get("plugin.ceepos.order.product.title")}
+                {this.props.i18nOLD.text.get(
+                  "plugin.ceepos.order.product.title"
+                )}
               </div>
               <div>{this.props.ceepos.purchase.product.Description}</div>
             </div>
             <div className="card__text-row">
               <div className="card__subtitle">
-                {this.props.i18n.text.get("plugin.ceepos.order.product.price")}
+                {this.props.i18nOLD.text.get(
+                  "plugin.ceepos.order.product.price"
+                )}
               </div>
               <div className="card__text-highlight card__text-highlight--ceepos">
                 {this.props.ceepos.purchase.product.Price / 100} €
@@ -58,12 +62,12 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
             </div>
             <div className="card__text-row">
               <div className="card__subtitle">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.ceepos.order.product.created"
                 )}
               </div>
               <div>
-                {this.props.i18n.time.format(
+                {this.props.i18nOLD.time.format(
                   this.props.ceepos.purchase.created
                 )}
               </div>
@@ -72,10 +76,14 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
             this.props.ceepos.purchase.paid !== null ? (
               <div className="card__text-row">
                 <div className="card__subtitle">
-                  {this.props.i18n.text.get("plugin.ceepos.order.product.paid")}
+                  {this.props.i18nOLD.text.get(
+                    "plugin.ceepos.order.product.paid"
+                  )}
                 </div>
                 <div>
-                  {this.props.i18n.time.format(this.props.ceepos.purchase.paid)}
+                  {this.props.i18nOLD.time.format(
+                    this.props.ceepos.purchase.paid
+                  )}
                 </div>
               </div>
             ) : null}
@@ -101,26 +109,30 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
       feedbackData = (
         <div className="card__content card__content--ceepos">
           <div className="card__title card__title--ceepos">
-            {this.props.i18n.text.get("plugin.ceepos.order.title")}
+            {this.props.i18nOLD.text.get("plugin.ceepos.order.title")}
           </div>
           <div className="card__text card__text--ceepos">
             <div className="card__text-row card__text-row--ceepos-feedback">
               {paymentWasSuccessful
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.ceepos.order.done.successful"
                   )
                 : null}
 
               {paymentWasCancelled
-                ? this.props.i18n.text.get("plugin.ceepos.order.done.cancelled")
+                ? this.props.i18nOLD.text.get(
+                    "plugin.ceepos.order.done.cancelled"
+                  )
                 : null}
 
               {paymentWasErrored
-                ? this.props.i18n.text.get("plugin.ceepos.order.done.errored")
+                ? this.props.i18nOLD.text.get(
+                    "plugin.ceepos.order.done.errored"
+                  )
                 : null}
 
               {unknownError
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.ceepos.order.done.unknownError"
                   )
                 : null}
@@ -134,7 +146,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                 buttonModifiers={["back-to-muikku", "info"]}
                 href="/"
               >
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.ceepos.order.backToMuikkuButton.label"
                 )}
               </Button>
@@ -147,7 +159,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                   buttonModifiers={["back-to-muikku", "info"]}
                   href="/"
                 >
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.ceepos.order.backToMuikkuButton.label"
                   )}
                 </Button>
@@ -167,7 +179,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                     this.props.ceepos.purchase
                   )}
                   initialMessage={getErrorMessageContent(
-                    this.props.i18n,
+                    this.props.i18nOLD,
                     this.props.ceepos.purchase,
                     this.props.ceepos.payStatusMessage
                   )}
@@ -176,7 +188,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                     icon="envelope"
                     buttonModifiers={["send-message", "info"]}
                   >
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.ceepos.order.sendMessageButton.label"
                     )}
                   </Button>
@@ -210,7 +222,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     ceepos: state.ceepos,
   };
 }

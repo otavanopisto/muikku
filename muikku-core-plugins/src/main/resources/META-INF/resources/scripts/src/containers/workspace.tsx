@@ -470,7 +470,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.helpPage.title")
+          state.i18nOLD.text.get("plugin.workspace.helpPage.title")
         )
       );
       this.props.store.dispatch(
@@ -531,7 +531,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.discussions.pageTitle")
+          state.i18nOLD.text.get("plugin.workspace.discussions.pageTitle")
         )
       );
       this.props.store.dispatch(
@@ -575,7 +575,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.announcements.pageTitle")
+          state.i18nOLD.text.get("plugin.workspace.announcements.pageTitle")
         )
       );
 
@@ -622,7 +622,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.announcer.pageTitle")
+          state.i18nOLD.text.get("plugin.workspace.announcer.pageTitle")
         )
       );
       this.props.store.dispatch(
@@ -860,7 +860,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.materials.pageTitle")
+          state.i18nOLD.text.get("plugin.workspace.materials.pageTitle")
         )
       );
       this.props.store.dispatch(
@@ -973,7 +973,7 @@ export default class Workspace extends React.Component<
         if (!state.status.canCurrentWorkspaceSignup) {
           this.props.store.dispatch(
             displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.workspace.materials.cannotSignUpWarning"
               ),
               "notice"
@@ -982,10 +982,10 @@ export default class Workspace extends React.Component<
         } else {
           this.props.store.dispatch(
             displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.workspace.materials.notSignedUpWarning"
               ) +
-                ` <a href="#signup">${state.i18n.text.get(
+                ` <a href="#signup">${state.i18nOLD.text.get(
                   "plugin.workspace.materials.notSignedUpWarningLink"
                 )}</a>`,
               "notice"
@@ -1031,7 +1031,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.users.pageTitle")
+          state.i18nOLD.text.get("plugin.workspace.users.pageTitle")
         )
       );
       this.loadWorkspaceUsersData();
@@ -1065,7 +1065,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.journal.pageTitle")
+          state.i18nOLD.text.get("plugin.workspace.journal.pageTitle")
         )
       );
       this.props.store.dispatch(
@@ -1131,7 +1131,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.management.pageTitle")
+          state.i18nOLD.text.get("plugin.workspace.management.pageTitle")
         )
       );
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
@@ -1178,7 +1178,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.permissions.pageTitle")
+          state.i18nOLD.text.get("plugin.workspace.permissions.pageTitle")
         )
       );
       this.props.store.dispatch(
@@ -1228,7 +1228,7 @@ export default class Workspace extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.evaluation.evaluation")
+            .i18nOLD.text.get("plugin.evaluation.evaluation")
         )
       );
       this.props.store.dispatch(

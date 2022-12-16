@@ -2,7 +2,7 @@ import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
@@ -20,7 +20,7 @@ import {
  */
 interface ProfileItemProps {
   modifier: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   logout: LogoutTriggerType;
   openReadingRuler: OpenReadingRuler;
@@ -94,7 +94,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
             openInNewTab={item.openInNewTab}
           >
             <span className={`link__icon icon-${item.icon}`}></span>
-            <span>{this.props.i18n.text.get(item.text)}</span>
+            <span>{this.props.i18nOLD.text.get(item.text)}</span>
           </Link>
         ))}
       >
@@ -103,13 +103,13 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
           role="menuitem"
           tabIndex={0}
           aria-haspopup="true"
-          aria-label={this.props.i18n.text.get(
+          aria-label={this.props.i18nOLD.text.get(
             "plugin.wcag.profileMenu.aria.label"
           )}
         >
           {this.props.status.hasImage ? (
             <img
-              alt={this.props.i18n.text.get(
+              alt={this.props.i18nOLD.text.get(
                 "plugin.profileBadge.links.profileImageAtl"
               )}
               src={getUserImageUrl(
@@ -137,7 +137,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

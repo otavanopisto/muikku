@@ -6,7 +6,7 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
-import { i18nType } from "../../../reducers/base/i18n";
+import { i18nType } from "../../../reducers/base/i18nOLD";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -14,7 +14,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface WarningeDialogProps
   extends WithTranslation<["common", "evaluation"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
@@ -84,7 +84,7 @@ class WarningDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        {this.props.i18nn.text.get(
+        {this.props.i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.description"
         )}
       </div>
@@ -94,7 +94,7 @@ class WarningDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
-        title={this.props.i18nn.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.title"
         )}
         content={content}
@@ -114,7 +114,7 @@ class WarningDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

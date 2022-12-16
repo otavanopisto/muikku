@@ -1,4 +1,4 @@
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
@@ -13,7 +13,7 @@ let AmCharts: any = null;
  * CurrentStudentWorkspaceStatisticsProps
  */
 interface CurrentStudentWorkspaceStatisticsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspace: WorkspaceType;
 }
 
@@ -187,7 +187,7 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "WORKSPACE_VISIT",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.visitsLabel") +
+          this.props.i18nOLD.text.get("plugin.guider.visitsLabel") +
           " <b>[[WORKSPACE_VISIT]]</b>",
         fillAlphas: 0.7,
         lineAlpha: 0.2,
@@ -205,7 +205,7 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "MATERIAL_ASSIGNMENTDONE",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.assignmentsLabel") +
+          this.props.i18nOLD.text.get("plugin.guider.assignmentsLabel") +
           " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         fillAlphas: 0.9,
         lineAlpha: 0.2,
@@ -222,7 +222,7 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "MATERIAL_EXERCISEDONE",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.exercisesLabel") +
+          this.props.i18nOLD.text.get("plugin.guider.exercisesLabel") +
           " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         fillAlphas: 0.9,
         lineAlpha: 0.2,
@@ -335,7 +335,7 @@ class CurrentStudentStatistics extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

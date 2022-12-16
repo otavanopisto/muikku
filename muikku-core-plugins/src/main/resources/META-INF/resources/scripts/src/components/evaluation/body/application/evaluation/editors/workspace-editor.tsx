@@ -20,7 +20,7 @@ import {
   EvaluationEnum,
   EvaluationGradeSystem,
 } from "~/@types/evaluation";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
@@ -35,7 +35,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface WorkspaceEditorProps
   extends WithTranslation<["common", "evaluation"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
@@ -666,7 +666,8 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns Array of price options
    */
   parsePriceOptions = (): EvaluationPriceObject[] | undefined => {
-    const { i18nn, type, workspaceSubjectToBeEvaluatedIdentifier } = this.props;
+    const { i18nOLD, type, workspaceSubjectToBeEvaluatedIdentifier } =
+      this.props;
     const { evaluationAssessmentEvents } = this.props.evaluations;
     let { basePriceFromServer } = this.state;
 
@@ -721,7 +722,7 @@ class WorkspaceEditor extends SessionStateComponent<
        * Full billing -> available for course evaluations and raised grades
        */
       priceOptionsArray.push({
-        name: `${i18nn.text.get(
+        name: `${i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull"
         )} ${basePriceFromServer.toFixed(2)} €`,
         value: basePriceFromServer,
@@ -732,7 +733,7 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       if (!isRaised) {
         priceOptionsArray.push({
-          name: `${i18nn.text.get(
+          name: `${i18nOLD.text.get(
             "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf"
           )} ${(basePriceFromServer / 2).toFixed(2)} €`,
           value: basePriceFromServer / 2,
@@ -743,7 +744,7 @@ class WorkspaceEditor extends SessionStateComponent<
        * No billing -> available for course evaluations and raised grades
        */
       priceOptionsArray.push({
-        name: `${i18nn.text.get(
+        name: `${i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone"
         )} 0,00 €`,
         value: 0,
@@ -767,7 +768,7 @@ class WorkspaceEditor extends SessionStateComponent<
            * ...then add a custom option with the current price
            */
           priceOptionsArray.push({
-            name: `${i18nn.text.get(
+            name: `${i18nOLD.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom"
             )} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
             value: this.state.existingBilledPriceObject.price,
@@ -862,7 +863,7 @@ class WorkspaceEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="workspaceEvaluationGrade">
-              {this.props.i18nn.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.assignmentGradeLabel"
               )}
             </label>
@@ -888,7 +889,7 @@ class WorkspaceEditor extends SessionStateComponent<
           <div className="form__row">
             <div className="form-element">
               <label htmlFor="workspaceEvaluationBilling">
-                {this.props.i18nn.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
                 )}
               </label>
@@ -941,7 +942,7 @@ class WorkspaceEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,

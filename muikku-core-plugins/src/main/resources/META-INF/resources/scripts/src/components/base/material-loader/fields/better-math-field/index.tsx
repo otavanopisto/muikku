@@ -19,7 +19,7 @@ interface MathFieldProps {
   imageClassName: string;
   value: string;
   onChange: (value: string) => any;
-  i18n: {
+  i18nOLD: {
     symbols: string;
     relations: string;
     geometryAndVectors: string;
@@ -245,7 +245,7 @@ export default class MathField extends React.Component<
           isOpen={this.props.toolbarAlwaysVisible || this.state.isFocused}
           onToolbarAction={this.cancelBlur}
           className={this.props.toolbarClassName}
-          i18n={this.props.i18n}
+          i18nOLD={this.props.i18nOLD}
           onCommand={this.onCommand}
           onRequestToOpenMathMode={this.createNewLatex}
           isMathExpanded={this.state.expandMath}

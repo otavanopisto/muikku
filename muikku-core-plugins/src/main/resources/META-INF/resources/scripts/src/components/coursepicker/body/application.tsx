@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Toolbar from "./application/toolbar";
 import CoursepickerWorkspaces from "./application/courses";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as queryString from "query-string";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
@@ -18,7 +18,7 @@ import { StatusType } from "~/reducers/base/status";
  */
 interface CoursepickerApplicationProps {
   aside: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspaces: WorkspacesType;
   status: StatusType;
 }
@@ -70,12 +70,12 @@ class CoursepickerApplication extends React.Component<
       UNPUBLISHED: "plugin.coursepicker.unpublished",
     };
 
-    const title = this.props.i18n.text.get("plugin.coursepicker.pageTitle");
+    const title = this.props.i18nOLD.text.get("plugin.coursepicker.pageTitle");
     const toolbar = <Toolbar />;
     const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectCourses" className="visually-hidden">
-          {this.props.i18n.text.get("plugin.coursepicker.select.label")}
+          {this.props.i18nOLD.text.get("plugin.coursepicker.select.label")}
         </label>
         {this.props.status.loggedIn ? (
           <select
@@ -91,7 +91,9 @@ class CoursepickerApplication extends React.Component<
                 }
                 return (
                   <option key={filter} value={filter}>
-                    {this.props.i18n.text.get(filterTranslationString[filter])}
+                    {this.props.i18nOLD.text.get(
+                      filterTranslationString[filter]
+                    )}
                   </option>
                 );
               }
@@ -103,7 +105,7 @@ class CoursepickerApplication extends React.Component<
             className="form-element__select form-element__select--main-action"
           >
             <option>
-              {this.props.i18n.text.get("plugin.coursepicker.opencourses")}
+              {this.props.i18nOLD.text.get("plugin.coursepicker.opencourses")}
             </option>
           </select>
         )}
@@ -128,7 +130,7 @@ class CoursepickerApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspaces: state.workspaces,
     status: state.status,
   };

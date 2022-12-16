@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -20,7 +20,7 @@ import { StatusType } from "~/reducers/base/status";
  * WorkspaceSignupDialogProps
  */
 interface WorkspaceSignupDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   children?: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => void;
@@ -121,7 +121,7 @@ class WorkspaceSignupDialog extends React.Component<
       <div>
         <div>
           <div className="dialog__content-row">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.workspaceSignUp.courseDescription",
               workspaceSignUpDetails.name,
               workspaceSignUpDetails.nameExtension || ""
@@ -131,18 +131,22 @@ class WorkspaceSignupDialog extends React.Component<
             <div className="form-element dialog__content-row">
               <p>
                 <label>
-                  {this.props.i18n.text.get("plugin.workspaceSignUp.fee.label")}
+                  {this.props.i18nOLD.text.get(
+                    "plugin.workspaceSignUp.fee.label"
+                  )}
                 </label>
               </p>
               <p>
-                {this.props.i18n.text.get("plugin.workspaceSignUp.fee.content")}
+                {this.props.i18nOLD.text.get(
+                  "plugin.workspaceSignUp.fee.content"
+                )}
               </p>
             </div>
           ) : null}
           <div className="form-element dialog__content-row">
             <p>
               <label htmlFor="signUpMessage">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.workspaceSignUp.messageLabel"
                 )}
               </label>
@@ -169,7 +173,9 @@ class WorkspaceSignupDialog extends React.Component<
           onClick={this.signup.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.workspaceSignUp.signupButtonLabel")}
+          {this.props.i18nOLD.text.get(
+            "plugin.workspaceSignUp.signupButtonLabel"
+          )}
         </Button>
       </div>
     );
@@ -177,7 +183,7 @@ class WorkspaceSignupDialog extends React.Component<
     return (
       <Dialog
         modifier="workspace-signup-dialog"
-        title={this.props.i18n.text.get("plugin.workspaceSignUp.title")}
+        title={this.props.i18nOLD.text.get("plugin.workspaceSignUp.title")}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}
@@ -195,7 +201,7 @@ class WorkspaceSignupDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     currentWorkspace: state.workspaces.currentWorkspace,
   };

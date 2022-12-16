@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
@@ -28,7 +28,7 @@ import { suitabilityMap } from "~/@shared/suitability";
  * CourseProps
  */
 interface CourseProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
@@ -134,7 +134,7 @@ class Course extends React.Component<CourseProps, CourseState> {
       const localString =
         suitabilityMap.get(education)[this.props.workspace.mandatority];
 
-      return ` (${this.props.i18n.text.get(localString)})`;
+      return ` (${this.props.i18nOLD.text.get(localString)})`;
     }
   };
 
@@ -217,7 +217,7 @@ class Course extends React.Component<CourseProps, CourseState> {
           {hasFees ? (
             <span
               className="application-list__fee-indicatoricon-coin-euro icon-coin-euro"
-              title={this.props.i18n.text.get(
+              title={this.props.i18nOLD.text.get(
                 "plugin.coursepicker.course.evaluationhasfee"
               )}
             />
@@ -242,8 +242,10 @@ class Course extends React.Component<CourseProps, CourseState> {
                 href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}
               >
                 {this.props.workspace.isCourseMember
-                  ? this.props.i18n.text.get("plugin.coursepicker.course.goto")
-                  : this.props.i18n.text.get(
+                  ? this.props.i18nOLD.text.get(
+                      "plugin.coursepicker.course.goto"
+                    )
+                  : this.props.i18nOLD.text.get(
                       "plugin.coursepicker.course.checkout"
                     )}
               </Button>
@@ -264,7 +266,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                       "coursepicker-course-action",
                     ]}
                   >
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.coursepicker.course.signup"
                     )}
                   </Button>
@@ -286,7 +288,7 @@ class Course extends React.Component<CourseProps, CourseState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     availableCurriculums: state.workspaces.availableFilters.curriculums,
   };

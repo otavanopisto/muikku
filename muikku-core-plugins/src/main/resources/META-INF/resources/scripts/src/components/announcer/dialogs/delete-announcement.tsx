@@ -4,7 +4,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
 import Dialog from "~/components/general/dialog";
 import {
@@ -20,7 +20,7 @@ import { StateType } from "~/reducers";
  * DeleteAnnouncementDialogProps
  */
 interface DeleteAnnouncementDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   announcement?: AnnouncementType;
   children: React.ReactElement<any>;
   deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType;
@@ -102,10 +102,10 @@ class DeleteAnnouncementDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.announcement
-          ? this.props.i18n.text.get(
+          ? this.props.i18nOLD.text.get(
               "plugin.announcer.deleteDialog.description"
             )
-          : this.props.i18n.text.get(
+          : this.props.i18nOLD.text.get(
               "plugin.announcer.deleteDialog.description"
             )}
       </div>
@@ -123,7 +123,7 @@ class DeleteAnnouncementDialog extends React.Component<
           onClick={this.deleteAnnouncement.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.announcer.deleteDialog.deleteButton.label"
           )}
         </Button>
@@ -131,7 +131,7 @@ class DeleteAnnouncementDialog extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.announcer.deleteDialog.cancelButton.label"
           )}
         </Button>
@@ -141,7 +141,9 @@ class DeleteAnnouncementDialog extends React.Component<
     return (
       <Dialog
         modifier="delete-announcement"
-        title={this.props.i18n.text.get("plugin.announcer.deleteDialog.title")}
+        title={this.props.i18nOLD.text.get(
+          "plugin.announcer.deleteDialog.title"
+        )}
         content={content}
         footer={footer}
       >
@@ -158,7 +160,7 @@ class DeleteAnnouncementDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

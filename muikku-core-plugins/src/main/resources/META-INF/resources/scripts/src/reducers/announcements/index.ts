@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { Reducer } from "redux";
 
 /**
@@ -13,7 +13,7 @@ export interface AnnouncerNavigationItemType {
   /**
    * text
    */
-  text(i18n: i18nType): string;
+  text(i18nOLD: i18nType): string;
 }
 
 export type AnnouncerNavigationItemListType =
@@ -26,10 +26,10 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     icon: "folder",
     /**
      * text
-     * @param i18n i18n
+     * @param i18nOLD i18nOLD
      */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.active");
+    text(i18nOLD: i18nType): string {
+      return i18nOLD.text.get("plugin.announcer.cat.active");
     },
   },
   {
@@ -38,10 +38,10 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     icon: "folder",
     /**
      * text
-     * @param i18n i18n
+     * @param i18nOLD i18nOLD
      */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.past");
+    text(i18nOLD: i18nType): string {
+      return i18nOLD.text.get("plugin.announcer.cat.past");
     },
   },
   {
@@ -50,10 +50,10 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     icon: "folder",
     /**
      * text
-     * @param i18n i18n
+     * @param i18nOLD i18nOLD
      */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.mine");
+    text(i18nOLD: i18nType): string {
+      return i18nOLD.text.get("plugin.announcer.cat.mine");
     },
   },
   {
@@ -62,10 +62,10 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     icon: "trash-alt",
     /**
      * text
-     * @param i18n i18n
+     * @param i18nOLD i18nOLD
      */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.archived");
+    text(i18nOLD: i18nType): string {
+      return i18nOLD.text.get("plugin.announcer.cat.archived");
     },
   },
 ];

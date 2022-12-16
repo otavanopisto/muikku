@@ -14,14 +14,14 @@ import {
 import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { useTranslation } from "react-i18next";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventCommentProps {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   journalComment: JournalComment;
   userEntityId: number;
   workspaceEntityId: number;
@@ -113,7 +113,7 @@ const EvaluationJournalEventComment: React.FC<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

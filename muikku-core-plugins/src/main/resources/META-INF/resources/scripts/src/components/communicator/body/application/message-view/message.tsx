@@ -5,7 +5,7 @@ import {
 } from "~/reducers/main-function/messages";
 import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { connect, Dispatch } from "react-redux";
 import { ContactRecipientType, UserType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
@@ -27,7 +27,7 @@ interface MessageProps {
   message: MessageType;
   status: StatusType;
   signature: MessageSignatureType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   labels?: MessageThreadLabelListType;
 }
 
@@ -64,7 +64,7 @@ class Message extends React.Component<MessageProps, MessageState> {
     if (sender.archived === true) {
       return (
         <span key={sender.userEntityId} className="message__user-archived">
-          {this.props.i18n.text.get("plugin.communicator.sender.archived")}
+          {this.props.i18nOLD.text.get("plugin.communicator.sender.archived")}
         </span>
       );
     }
@@ -100,7 +100,7 @@ class Message extends React.Component<MessageProps, MessageState> {
       if (recipient.archived === true) {
         return (
           <span key={recipient.userEntityId} className="message__user-archived">
-            {this.props.i18n.text.get("plugin.communicator.sender.archived")}
+            {this.props.i18nOLD.text.get("plugin.communicator.sender.archived")}
           </span>
         );
       }
@@ -305,7 +305,7 @@ class Message extends React.Component<MessageProps, MessageState> {
             <div className="application-list__item-header-main application-list__item-header-main--communicator-message-participants">
               <span
                 className="application-list__item-header-main-content application-list__item-header-main-content--communicator-sender"
-                aria-label={this.props.i18n.text.get(
+                aria-label={this.props.i18nOLD.text.get(
                   "plugin.wcag.messageSender.aria.label"
                 )}
               >
@@ -313,7 +313,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               </span>
               <span
                 className="application-list__item-header-main-content application-list__item-header-main-content--communicator-recipients"
-                aria-label={this.props.i18n.text.get(
+                aria-label={this.props.i18nOLD.text.get(
                   "plugin.wcag.messageRecipients.aria.label"
                 )}
               >
@@ -322,11 +322,11 @@ class Message extends React.Component<MessageProps, MessageState> {
             </div>
             <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
               <span
-                aria-label={this.props.i18n.text.get(
+                aria-label={this.props.i18nOLD.text.get(
                   "plugin.wcag.messageSendDate.aria.label"
                 )}
               >
-                {this.props.i18n.time.format(this.props.message.created)}
+                {this.props.i18nOLD.time.format(this.props.message.created)}
               </span>
             </div>
           </div>
@@ -337,7 +337,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                   <span
                     className="label"
                     key={label.id}
-                    aria-label={this.props.i18n.text.get(
+                    aria-label={this.props.i18nOLD.text.get(
                       "plugin.wcag.messageLabel.aria.label"
                     )}
                   >
@@ -353,7 +353,7 @@ class Message extends React.Component<MessageProps, MessageState> {
         </div>
         <div
           className="application-list__item-body application-list__item-body--communicator-message-thread"
-          aria-label={this.props.i18n.text.get(
+          aria-label={this.props.i18nOLD.text.get(
             "plugin.wcag.messageContent.aria.label"
           )}
         >
@@ -382,7 +382,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 className="link link--application-list"
                 onClick={this.handleOpenNewMessage("person")}
               >
-                {this.props.i18n.text.get("plugin.communicator.reply")}
+                {this.props.i18nOLD.text.get("plugin.communicator.reply")}
               </Link>
             )}
             {this.props.message.sender.studiesEnded ||
@@ -392,14 +392,14 @@ class Message extends React.Component<MessageProps, MessageState> {
                 className="link link--application-list"
                 onClick={this.handleOpenNewMessage("all")}
               >
-                {this.props.i18n.text.get("plugin.communicator.replyAll")}
+                {this.props.i18nOLD.text.get("plugin.communicator.replyAll")}
               </Link>
             )}
           </footer>
         </div>
         <div
           className="application-list__item-body application-list__item-body--communicator-message-thread"
-          aria-label={this.props.i18n.text.get(
+          aria-label={this.props.i18nOLD.text.get(
             "plugin.wcag.messageContent.aria.label"
           )}
         >
@@ -411,7 +411,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 replyThreadId={this.props.message.communicatorMessageId}
                 messageId={this.props.message.id}
                 initialSelectedItems={replyTarget}
-                initialSubject={this.props.i18n.text.get(
+                initialSubject={this.props.i18nOLD.text.get(
                   "plugin.communicator.createmessage.title.replySubject",
                   this.props.message.caption
                 )}
@@ -426,7 +426,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 messageId={this.props.message.id}
                 initialSelectedItems={replyAllTarget}
                 replyToAll
-                initialSubject={this.props.i18n.text.get(
+                initialSubject={this.props.i18nOLD.text.get(
                   "plugin.communicator.createmessage.title.replySubject",
                   this.props.message.caption
                 )}
@@ -445,7 +445,7 @@ class Message extends React.Component<MessageProps, MessageState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     signature: state.messages && state.messages.signature,
   };

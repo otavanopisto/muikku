@@ -13,7 +13,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -22,7 +22,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * EvaluationMaterialProps
  */
 export interface EvaluationMaterialProps extends WithTranslation<["common"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   material: MaterialContentNodeType;
   compositeReply?: MaterialCompositeRepliesType;
   interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
@@ -168,7 +168,7 @@ export class EvaluationMaterial extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

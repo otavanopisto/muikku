@@ -2,7 +2,7 @@ import Dialog from "./dialog";
 import Portal from "./portal";
 import Button from "~/components/general/button";
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/environment-dialog.scss";
 
 /**
@@ -108,7 +108,7 @@ export class EnvironmentDialogRow extends React.Component<
  */
 interface EnvironmentDialogFormElementProps {
   label: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   modifiers?: string | Array<string>;
 }
 
@@ -144,7 +144,7 @@ export class EnvironmentDialogFormElement extends React.Component<
         }`}
       >
         <label className="env-dialog__label">
-          {this.props.i18n.text.get(this.props.label)}
+          {this.props.i18nOLD.text.get(this.props.label)}
         </label>
         {this.props.children}
       </div>
@@ -162,7 +162,7 @@ interface EnvironmentDialogActionsProps {
   cancelClick: () => any;
   modifiers?: string | Array<string>;
   customButton?: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -211,14 +211,14 @@ export class EnvironmentDialogActionsElement extends React.Component<
           buttonModifiers="dialog-execute"
           onClick={this.props.executeClick}
         >
-          {this.props.i18n.text.get(this.props.executeLabel)}
+          {this.props.i18nOLD.text.get(this.props.executeLabel)}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.props.cancelClick}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(this.props.cancelLabel)}
+          {this.props.i18nOLD.text.get(this.props.cancelLabel)}
         </Button>
         {this.props.customButton}
       </div>

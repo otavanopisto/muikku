@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/activity-badge.scss";
 import "~/sass/elements/empty.scss";
@@ -23,7 +23,7 @@ import ApplicationSubPanel from "~/components/general/application-sub-panel";
  * RecordsProps
  */
 interface RecordsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   records: RecordsType;
   status: StatusType;
 }
@@ -110,7 +110,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   <div className="application-sub-panel__item">
                     <div className="empty">
                       <span>
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.records.courses.empty"
                         )}
                       </span>
@@ -133,13 +133,13 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         }
       >
         <h2 className="application-panel__content-header">
-          {this.props.i18n.text.get("plugin.records.records.title")}
+          {this.props.i18nOLD.text.get("plugin.records.records.title")}
         </h2>
 
         {studentRecords}
         <ApplicationSubPanel>
           <ApplicationSubPanel.Header>
-            {this.props.i18n.text.get("plugin.records.files.title")}
+            {this.props.i18nOLD.text.get("plugin.records.files.title")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
             {this.props.records.files.length ? (
@@ -164,7 +164,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               <ApplicationListItem className="application-list__item application-list__item--studies-file-attacment">
                 <div className="empty">
                   <span>
-                    {this.props.i18n.text.get("plugin.records.files.empty")}
+                    {this.props.i18nOLD.text.get("plugin.records.files.empty")}
                   </span>
                 </div>
               </ApplicationListItem>
@@ -182,7 +182,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     records: state.records,
     status: state.status,
   };

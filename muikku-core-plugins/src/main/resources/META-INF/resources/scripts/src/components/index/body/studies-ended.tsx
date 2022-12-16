@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "reducers";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { Panel } from "~/components/general/panel";
 import "~/sass/elements/rich-text.scss";
 
@@ -9,7 +9,7 @@ import "~/sass/elements/rich-text.scss";
  * StudiesEndedProps
  */
 interface StudiesEndedProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -32,13 +32,13 @@ class StudiesEnded extends React.Component<
       <Panel
         icon="icon-blocked"
         modifier="studies-ended"
-        header={this.props.i18n.text.get(
+        header={this.props.i18nOLD.text.get(
           "plugin.frontpage.inactiveStudent.messageTitle"
         )}
       >
         <div
           dangerouslySetInnerHTML={{
-            __html: this.props.i18n.text.get(
+            __html: this.props.i18nOLD.text.get(
               "plugin.frontpage.inactiveStudent.messageContent"
             ),
           }}
@@ -54,7 +54,7 @@ class StudiesEnded extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

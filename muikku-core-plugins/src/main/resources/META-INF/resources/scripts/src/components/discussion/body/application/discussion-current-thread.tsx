@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   DiscussionType,
   DiscussionUserType,
@@ -44,7 +44,7 @@ import {
  */
 interface DiscussionCurrentThreadProps {
   discussion: DiscussionType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   userId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissions: any;
@@ -223,7 +223,7 @@ class DiscussionCurrentThread extends React.Component<
           firstName={userCreator.firstName}
           hasImage={userCreator.hasImage}
           userCategory={userCategory}
-          avatarAriaLabel={this.props.i18n.text.get(
+          avatarAriaLabel={this.props.i18nOLD.text.get(
             "plugin.wcag.userAvatar.label"
           )}
         />
@@ -267,7 +267,7 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
-                  content={this.props.i18n.text.get(
+                  content={this.props.i18nOLD.text.get(
                     "plugin.discussion.unsubscribe.thread"
                   )}
                 >
@@ -284,7 +284,7 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
-                  content={this.props.i18n.text.get(
+                  content={this.props.i18nOLD.text.get(
                     "plugin.discussion.subscribe.thread"
                   )}
                 >
@@ -311,7 +311,7 @@ class DiscussionCurrentThread extends React.Component<
             aside={
               <span style={{ display: "flex", alignItems: "center" }}>
                 <span>
-                  {this.props.i18n.time.format(
+                  {this.props.i18nOLD.time.format(
                     this.props.discussion.current.created
                   )}
                 </span>
@@ -339,9 +339,9 @@ class DiscussionCurrentThread extends React.Component<
                 {this.props.discussion.current.created !==
                 this.props.discussion.current.lastModified ? (
                   <span className="application-list__item-edited">
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(
+                      this.props.i18nOLD.time.format(
                         this.props.discussion.current.lastModified
                       )
                     )}
@@ -355,7 +355,7 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("answer")}
                     >
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.discussion.reply.message"
                       )}
                     </Link>
@@ -365,7 +365,7 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("quote")}
                     >
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.discussion.reply.quote"
                       )}
                     </Link>
@@ -375,13 +375,15 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("modify")}
                     >
-                      {this.props.i18n.text.get("plugin.discussion.reply.edit")}
+                      {this.props.i18nOLD.text.get(
+                        "plugin.discussion.reply.edit"
+                      )}
                     </Link>
                   ) : null}
                   {canRemoveThread || studentCanRemoveThread ? (
                     <DeleteThreadComponent>
                       <Link className="link link--application-list">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.discussion.reply.delete"
                         )}
                       </Link>
@@ -498,7 +500,7 @@ class DiscussionCurrentThread extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     userId: state.status.userId,
     permissions: state.status.permissions,

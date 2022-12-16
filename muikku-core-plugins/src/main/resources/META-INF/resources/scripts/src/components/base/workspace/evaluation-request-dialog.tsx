@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -18,7 +18,7 @@ import { StatusType } from "~/reducers/base/status";
  * EvaluationRequestDialogProps
  */
 interface EvaluationRequestDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspace: WorkspaceType;
   isOpen: boolean;
   onClose: () => any;
@@ -109,19 +109,19 @@ class EvaluationRequestDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         <div className="dialog__content-row">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.evaluation.requestEvaluation.description"
           )}
         </div>
         {hasFees ? (
           <div className="dialog__content-row">
             <label>
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label"
               )}
             </label>
             <p>
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
               )}
             </p>
@@ -150,7 +150,7 @@ class EvaluationRequestDialog extends React.Component<
           onClick={this.request.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.evaluation.requestEvaluation.requestButton"
           )}
         </Button>
@@ -159,7 +159,7 @@ class EvaluationRequestDialog extends React.Component<
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.evaluation.requestEvaluation.cancelButton"
           )}
         </Button>
@@ -169,7 +169,7 @@ class EvaluationRequestDialog extends React.Component<
     return (
       <Dialog
         modifier="evaluation-request-dialog"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.workspace.evaluation.requestEvaluation.title"
         )}
         content={content}
@@ -187,7 +187,7 @@ class EvaluationRequestDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };

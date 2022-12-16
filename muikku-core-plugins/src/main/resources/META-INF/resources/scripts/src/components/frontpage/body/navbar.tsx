@@ -4,14 +4,14 @@ import LoginButton from "../../base/login-button";
 import ForgotPasswordDialog from "../../base/forgot-password-dialog";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 
 /**
  * FrontpageNavbarProps
  */
 interface FrontpageNavbarProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -51,7 +51,9 @@ class FrontpageNavbar extends React.Component<
                 className="link link--frontpage link--full"
               >
                 <span>
-                  {this.props.i18n.text.get("plugin.navigation.link.studying")}
+                  {this.props.i18nOLD.text.get(
+                    "plugin.navigation.link.studying"
+                  )}
                 </span>
               </Link>
             ),
@@ -61,7 +63,7 @@ class FrontpageNavbar extends React.Component<
             item: (
               <Link href="#news" className="link link--frontpage link--full">
                 <span>
-                  {this.props.i18n.text.get("plugin.navigation.link.news")}
+                  {this.props.i18nOLD.text.get("plugin.navigation.link.news")}
                 </span>
               </Link>
             ),
@@ -74,7 +76,7 @@ class FrontpageNavbar extends React.Component<
                 className="link link--frontpage link--full"
               >
                 <span>
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.navigation.link.organization"
                   )}
                 </span>
@@ -86,7 +88,9 @@ class FrontpageNavbar extends React.Component<
             item: (
               <Link href="#contact" className="link link--frontpage link--full">
                 <span>
-                  {this.props.i18n.text.get("plugin.navigation.link.contact")}
+                  {this.props.i18nOLD.text.get(
+                    "plugin.navigation.link.contact"
+                  )}
                 </span>
               </Link>
             ),
@@ -99,7 +103,7 @@ class FrontpageNavbar extends React.Component<
                 className="link link--frontpage link--highlight link--full"
               >
                 <span>
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.navigation.link.openMaterials"
                   )}
                 </span>
@@ -112,7 +116,9 @@ class FrontpageNavbar extends React.Component<
           <ForgotPasswordDialog key="1">
             <Link tabIndex={0} className="link link--forgot-password">
               <span>
-                {this.props.i18n.text.get("plugin.forgotpassword.forgotLink")}
+                {this.props.i18nOLD.text.get(
+                  "plugin.forgotpassword.forgotLink"
+                )}
               </span>
             </Link>
           </ForgotPasswordDialog>,
@@ -120,12 +126,12 @@ class FrontpageNavbar extends React.Component<
         menuItems={[
           <Link key="studying" href="#studying" className="link link--full">
             <span>
-              {this.props.i18n.text.get("plugin.navigation.link.studying")}
+              {this.props.i18nOLD.text.get("plugin.navigation.link.studying")}
             </span>
           </Link>,
           <Link key="news" href="#news" className="link link--full">
             <span>
-              {this.props.i18n.text.get("plugin.navigation.link.news")}
+              {this.props.i18nOLD.text.get("plugin.navigation.link.news")}
             </span>
           </Link>,
           <Link
@@ -134,12 +140,14 @@ class FrontpageNavbar extends React.Component<
             className="link link--full"
           >
             <span>
-              {this.props.i18n.text.get("plugin.navigation.link.organization")}
+              {this.props.i18nOLD.text.get(
+                "plugin.navigation.link.organization"
+              )}
             </span>
           </Link>,
           <Link key="contact" href="#contact" className="link link--full">
             <span>
-              {this.props.i18n.text.get("plugin.navigation.link.contact")}
+              {this.props.i18nOLD.text.get("plugin.navigation.link.contact")}
             </span>
           </Link>,
           <Link
@@ -148,7 +156,9 @@ class FrontpageNavbar extends React.Component<
             className="link link--highlight link--full"
           >
             <span>
-              {this.props.i18n.text.get("plugin.navigation.link.openMaterials")}
+              {this.props.i18nOLD.text.get(
+                "plugin.navigation.link.openMaterials"
+              )}
             </span>
           </Link>,
         ]}
@@ -162,7 +172,7 @@ class FrontpageNavbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

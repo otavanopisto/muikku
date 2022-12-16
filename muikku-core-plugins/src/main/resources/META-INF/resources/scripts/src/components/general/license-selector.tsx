@@ -1,4 +1,4 @@
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/license-selector.scss";
@@ -10,7 +10,7 @@ import "~/sass/elements/wcag.scss";
 interface LicenseSelectorProps {
   value: string;
   modifier?: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   onChange: (newValue: string) => any;
   wcagLabel?: string;
   wcagDesc?: string;
@@ -40,33 +40,40 @@ interface CCPropsType {
 const CCPROPS = [
   {
     id: "allowModifications",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.subTitle.allowModifications",
+    i18nOLD:
+      "plugin.workspace.materialsManagement.editorView.license.subTitle.allowModifications",
     values: [
       {
         value: null,
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.yes",
+        i18nOLD:
+          "plugin.workspace.materialsManagement.editorView.license.selection.yes",
       },
       {
         value: "nd",
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.no",
+        i18nOLD:
+          "plugin.workspace.materialsManagement.editorView.license.selection.no",
       },
       {
         value: "sa",
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.shareAlike",
+        i18nOLD:
+          "plugin.workspace.materialsManagement.editorView.license.selection.shareAlike",
       },
     ],
   },
   {
     id: "commercialUse",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.subTitle.allowCommercial",
+    i18nOLD:
+      "plugin.workspace.materialsManagement.editorView.license.subTitle.allowCommercial",
     values: [
       {
         value: null,
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.yes",
+        i18nOLD:
+          "plugin.workspace.materialsManagement.editorView.license.selection.yes",
       },
       {
         value: "nc",
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.no",
+        i18nOLD:
+          "plugin.workspace.materialsManagement.editorView.license.selection.no",
       },
     ],
   },
@@ -134,7 +141,7 @@ const CCVALUE = function (version: string, properties: CCPropsType) {
  */
 interface LicensePropertyValueType {
   value: string;
-  i18n: string;
+  i18nOLD: string;
 }
 
 /**
@@ -142,7 +149,7 @@ interface LicensePropertyValueType {
  */
 interface LicensePropertyType {
   id: string;
-  i18n: string;
+  i18nOLD: string;
   values: Array<LicensePropertyValueType>;
 }
 
@@ -151,7 +158,7 @@ interface LicensePropertyType {
  */
 interface LicenseType {
   id: string;
-  i18n: string;
+  i18nOLD: string;
   properties?: Array<LicensePropertyType>;
   propertiesParser?: (value: string) => any;
   propertiesDefault?: any;
@@ -162,7 +169,7 @@ interface LicenseType {
 const LICENSES: Array<LicenseType> = [
   {
     id: "CC4",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.cc4",
+    i18nOLD: "plugin.workspace.materialsManagement.editorView.license.cc4",
     properties: CCPROPS,
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
@@ -171,7 +178,7 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "CC3",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.cc3",
+    i18nOLD: "plugin.workspace.materialsManagement.editorView.license.cc3",
     properties: CCPROPS,
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
@@ -180,7 +187,7 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "CC0",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.cc0",
+    i18nOLD: "plugin.workspace.materialsManagement.editorView.license.cc0",
     // eslint-disable-next-line
     value: () => CC0_URL_SSL,
     // eslint-disable-next-line
@@ -189,13 +196,14 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "text_or_link",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.textOrLink",
+    i18nOLD:
+      "plugin.workspace.materialsManagement.editorView.license.textOrLink",
     // eslint-disable-next-line
     validate: (value: string) => typeof value === "string",
   },
   {
     id: "none",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.none",
+    i18nOLD: "plugin.workspace.materialsManagement.editorView.license.none",
     // eslint-disable-next-line
     value: () => null,
     // eslint-disable-next-line
@@ -324,7 +332,7 @@ export class LicenseSelector extends React.Component<
             >
               {LICENSES.map((l) => (
                 <option key={l.id} value={l.id}>
-                  {this.props.i18n.text.get(l.i18n)}
+                  {this.props.i18nOLD.text.get(l.i18nOLD)}
                 </option>
               ))}
             </select>
@@ -335,7 +343,7 @@ export class LicenseSelector extends React.Component<
                 <div className="form__row" key={property.id}>
                   <fieldset className="form__fieldset">
                     <legend className="form__legend">
-                      {this.props.i18n.text.get(property.i18n)}
+                      {this.props.i18nOLD.text.get(property.i18nOLD)}
                     </legend>
                     <div className="form__fieldset-content form__fieldset-content--horizontal">
                       {property.values.map((v, index) => (
@@ -358,7 +366,7 @@ export class LicenseSelector extends React.Component<
                             )}
                           />
                           <label htmlFor={property.id + index}>
-                            {this.props.i18n.text.get(v.i18n)}
+                            {this.props.i18nOLD.text.get(v.i18nOLD)}
                           </label>
                         </span>
                       ))}
@@ -372,7 +380,7 @@ export class LicenseSelector extends React.Component<
             <div className="license-selector__options-container">
               <div className="form-element">
                 <label htmlFor="workspaceLicenseLinkOrText">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.workspace.materialsManagement.editorView.license.textOrLink"
                   )}
                 </label>

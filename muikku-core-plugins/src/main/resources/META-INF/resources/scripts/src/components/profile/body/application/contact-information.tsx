@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Button, { IconButton } from "~/components/general/button";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { ProfileType } from "~/reducers/main-function/profile";
 import ProfileProperty from "./components/profile-property";
@@ -26,7 +26,7 @@ import { AnyActionType } from "~/actions";
  * ContactInformationProps
  */
 interface ContactInformationProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -205,7 +205,7 @@ class ContactInformation extends React.Component<
         this.setState({ locked: false });
 
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.saved"),
+          this.props.i18nOLD.text.get("plugin.profile.properties.saved"),
           "success"
         );
       })
@@ -213,7 +213,7 @@ class ContactInformation extends React.Component<
         this.setState({ locked: false });
 
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.failed"),
+          this.props.i18nOLD.text.get("plugin.profile.properties.failed"),
           "error"
         );
       });
@@ -258,13 +258,13 @@ class ContactInformation extends React.Component<
       })
       .onAllSucceed(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.saved"),
+          this.props.i18nOLD.text.get("plugin.profile.properties.saved"),
           "success"
         );
       })
       .onOneFails(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.failed"),
+          this.props.i18nOLD.text.get("plugin.profile.properties.failed"),
           "error"
         );
       });
@@ -287,27 +287,27 @@ class ContactInformation extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.profile.titles.contactInformation"
             )}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <ProfileProperty
-                i18n={this.props.i18n}
+                i18nOLD={this.props.i18nOLD}
                 condition={!!this.props.status.profile.emails.length}
                 label="plugin.profile.emails.label"
                 value={this.props.status.profile.emails}
               />
               {/* Displaying multiple addresses seems moot at this point, not gonna remove this entirely though until we are sure it's truly not needed
-            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addresses.label"
+            <ProfileProperty i18nOLD={this.props.i18nOLD} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addresses.label"
               value={this.props.status.profile.addresses} />
             */}
               {this.props.status.isStudent && (
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileStreetAddress">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.changeAddressMunicipality.dialog.streetField.label"
                       )}
                     </label>
@@ -329,7 +329,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profilePostalCode">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label"
                       )}
                     </label>
@@ -351,7 +351,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileCity">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.changeAddressMunicipality.dialog.cityField.label"
                       )}
                     </label>
@@ -371,7 +371,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileCountry">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.changeAddressMunicipality.dialog.countryField.label"
                       )}
                     </label>
@@ -393,7 +393,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileMunicipality">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"
                       )}
                     </label>
@@ -412,7 +412,7 @@ class ContactInformation extends React.Component<
               )}
 
               <ProfileProperty
-                i18n={this.props.i18n}
+                i18nOLD={this.props.i18nOLD}
                 condition={!!this.props.status.profile.phoneNumbers.length}
                 label="plugin.profile.phoneNumbers.label"
                 value={this.props.status.profile.phoneNumbers}
@@ -422,7 +422,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profilePhoneNumber">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.phoneNumber.label"
                       )}
                     </label>
@@ -444,7 +444,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label>
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.whatsappIntegration.label"
                       )}
                     </label>
@@ -463,20 +463,20 @@ class ContactInformation extends React.Component<
                       {this.props.profile.properties["profile-whatsapp"] ===
                       "true" ? (
                         <span>
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.profile.whatsappIntegration.on.label"
                           )}
                         </span>
                       ) : (
                         <span>
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.profile.whatsappIntegration.off.label"
                           )}
                         </span>
                       )}
                     </div>
                     <div className="form-element__description">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.whatsappIntegration.description"
                       )}
                     </div>
@@ -488,14 +488,14 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element form-element--appointment-calendar">
                     <legend className="form__legend">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.appointmentCalendar.legend"
                       )}
                     </legend>
                     <fieldset className="form__fieldset">
                       <div className="form__fieldset-content form__fieldset-content--horizontal">
                         <label htmlFor="profileAppointmentCalendar">
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.profile.appointmentCalendar.label"
                           )}
                         </label>
@@ -518,14 +518,14 @@ class ContactInformation extends React.Component<
                           openInNewTab="_blank"
                           disabled={hasACalendar}
                         >
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.profile.appointmentCalendar.testButton"
                           )}
                         </Button>
                       </div>
                     </fieldset>
                     <div className="form-element__description">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.appointmentCalendar.description"
                       )}
                     </div>
@@ -537,7 +537,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileExtraInfo">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.extraInfo.label"
                       )}
                     </label>
@@ -561,7 +561,7 @@ class ContactInformation extends React.Component<
                   onClick={this.save}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18n.text.get("plugin.profile.save.button")}
+                  {this.props.i18nOLD.text.get("plugin.profile.save.button")}
                 </Button>
               </div>
             </div>
@@ -578,7 +578,7 @@ class ContactInformation extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     profile: state.profile,
     status: state.status,
   };

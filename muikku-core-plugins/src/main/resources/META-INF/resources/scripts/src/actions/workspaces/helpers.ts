@@ -223,7 +223,9 @@ export async function loadWorkspacesHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get("plugin.coursepicker.errormessage.courseLoad"),
+        getState().i18nOLD.text.get(
+          "plugin.coursepicker.errormessage.courseLoad"
+        ),
         "error"
       )
     );
@@ -332,7 +334,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
+        getState().i18nOLD.text.get(
           "plugin.workspace.journal.notification.viewLoadError"
         ),
         "error"

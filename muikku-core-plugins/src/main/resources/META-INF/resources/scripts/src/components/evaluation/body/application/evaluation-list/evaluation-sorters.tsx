@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
@@ -23,7 +23,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface EvaluationSortersProps
   extends WithTranslation<["common", "evaluation"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   evaluations: EvaluationState;
   updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction;
 }
@@ -110,12 +110,12 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="amount-asc"
-          content={this.props.i18nn.text.get(
+          content={this.props.i18nOLD.text.get(
             "plugin.evaluation.sorter.byDate.ascending"
           )}
         >
           <ButtonPill
-            aria-label={this.props.i18nn.text.get(
+            aria-label={this.props.i18nOLD.text.get(
               "plugin.evaluation.sorter.byDate.ascending"
             )}
             onClick={this.handleClickSorter("sort-amount-asc")}
@@ -130,12 +130,12 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="amount-desc"
-          content={this.props.i18nn.text.get(
+          content={this.props.i18nOLD.text.get(
             "plugin.evaluation.sorter.byDate.descending"
           )}
         >
           <ButtonPill
-            aria-label={this.props.i18nn.text.get(
+            aria-label={this.props.i18nOLD.text.get(
               "plugin.evaluation.sorter.byDate.descending"
             )}
             onClick={this.handleClickSorter("sort-amount-desc")}
@@ -150,12 +150,12 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="alpha-asc"
-          content={this.props.i18nn.text.get(
+          content={this.props.i18nOLD.text.get(
             "plugin.evaluation.sorter.byLastname.ascending"
           )}
         >
           <ButtonPill
-            aria-label={this.props.i18nn.text.get(
+            aria-label={this.props.i18nOLD.text.get(
               "plugin.evaluation.sorter.byLastname.ascending"
             )}
             onClick={this.handleClickSorter("sort-alpha-asc")}
@@ -170,12 +170,12 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="alpha-desc"
-          content={this.props.i18nn.text.get(
+          content={this.props.i18nOLD.text.get(
             "plugin.evaluation.sorter.byLastname.descending"
           )}
         >
           <ButtonPill
-            aria-label={this.props.i18nn.text.get(
+            aria-label={this.props.i18nOLD.text.get(
               "plugin.evaluation.sorter.byLastname.descending"
             )}
             onClick={this.handleClickSorter("sort-alpha-desc")}
@@ -192,12 +192,12 @@ class EvaluationSorters extends React.Component<
             <Dropdown
               openByHover
               key="workspace-alpha-asc"
-              content={this.props.i18nn.text.get(
+              content={this.props.i18nOLD.text.get(
                 "plugin.evaluation.sorter.byWorkspace.ascending"
               )}
             >
               <ButtonPill
-                aria-label={this.props.i18nn.text.get(
+                aria-label={this.props.i18nOLD.text.get(
                   "plugin.evaluation.sorter.byWorkspace.ascending"
                 )}
                 onClick={this.handleClickSorter("sort-workspace-alpha-asc")}
@@ -212,12 +212,12 @@ class EvaluationSorters extends React.Component<
             <Dropdown
               openByHover
               key="workspace-alpha-desc"
-              content={this.props.i18nn.text.get(
+              content={this.props.i18nOLD.text.get(
                 "plugin.evaluation.sorter.byWorkspace.descending"
               )}
             >
               <ButtonPill
-                aria-label={this.props.i18nn.text.get(
+                aria-label={this.props.i18nOLD.text.get(
                   "plugin.evaluation.sorter.byWorkspace.descending"
                 )}
                 onClick={this.handleClickSorter("sort-workspace-alpha-desc")}
@@ -241,7 +241,7 @@ class EvaluationSorters extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     evaluations: state.evaluations,
   };
 }

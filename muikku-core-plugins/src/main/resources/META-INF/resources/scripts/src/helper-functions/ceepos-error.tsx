@@ -1,14 +1,14 @@
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { PurchaseType } from "~/reducers/main-function/profile";
 
 /**
  * getErrorMessageContent
- * @param i18n i18n
+ * @param i18nOLD i18nOLD
  * @param order  order
  * @param message  message
  */
 export function getErrorMessageContent(
-  i18n: i18nType,
+  i18nOLD: i18nType,
   order: PurchaseType,
   message?: string
 ) {
@@ -30,14 +30,14 @@ export function getErrorMessageContent(
     "</b></div>" +
     errorMessage +
     "<div><b>" +
-    i18n.text.get("plugin.profile.purchases.orderId") +
+    i18nOLD.text.get("plugin.profile.purchases.orderId") +
     "</b>: " +
     order.id +
     "</div>" +
     "<div><b>" +
-    i18n.text.get("plugin.profile.purchases.date.created") +
+    i18nOLD.text.get("plugin.profile.purchases.date.created") +
     "</b>: " +
-    i18n.time.format(order.created) +
+    i18nOLD.time.format(order.created) +
     "</div>" +
     "</div>";
 

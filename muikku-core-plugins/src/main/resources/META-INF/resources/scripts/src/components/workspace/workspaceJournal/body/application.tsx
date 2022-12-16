@@ -4,7 +4,7 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import HoverButton from "~/components/general/hover-button";
 import Toolbar from "./application/workspace-journals-toolbar";
 import WorkspaceJournalsList from "./application/workspace-journals-list";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
@@ -29,7 +29,7 @@ import { JournalsState } from "~/reducers/workspaces/journals";
 interface WorkspaceJournalApplicationProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside?: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspace: WorkspaceType;
   journalsState: JournalsState;
   status: StatusType;
@@ -72,7 +72,7 @@ class WorkspaceJournalApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18n.text.get(
+    const title = this.props.i18nOLD.text.get(
       "plugin.workspace.journal.pageTitle"
     );
     const toolbar = <Toolbar />;
@@ -84,7 +84,7 @@ class WorkspaceJournalApplication extends React.Component<
         this.props.workspace.students ? (
           <div className="form-element form-element--main-action">
             <label htmlFor="selectJournal" className="visually-hidden">
-              {this.props.i18n.text.get("plugin.wcag.journalSelect.label")}
+              {this.props.i18nOLD.text.get("plugin.wcag.journalSelect.label")}
             </label>
             <select
               id="selectJournal"
@@ -93,7 +93,7 @@ class WorkspaceJournalApplication extends React.Component<
               onChange={this.onWorkspaceJournalFilterChange}
             >
               <option value="">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.workspace.journal.studentFilter.showAll"
                 )}
               </option>
@@ -118,7 +118,7 @@ class WorkspaceJournalApplication extends React.Component<
         ) : (
           <NewJournal>
             <Button buttonModifiers="primary-function">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.journal.newEntryButton.label"
               )}
             </Button>
@@ -153,7 +153,7 @@ class WorkspaceJournalApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     journalsState: state.journals,
     status: state.status,

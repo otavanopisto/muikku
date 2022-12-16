@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/form.scss";
@@ -20,7 +20,7 @@ import { AnyActionType } from "~/actions";
  * HopsProps
  */
 interface HopsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   records: RecordsType;
   status: StatusType;
   hops: HOPSType;
@@ -68,7 +68,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   renderUpperSecondaryHops = () => (
     <section>
       <h2 className="application-panel__content-header">
-        {this.props.i18n.text.get("plugin.records.hops.title")}
+        {this.props.i18nOLD.text.get("plugin.records.hops.title")}
       </h2>
       <HopsGraph onHopsChange={this.setHopsToWithDelay} />
     </section>
@@ -138,7 +138,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     records: (state as any).records,
     hops: state.hops,

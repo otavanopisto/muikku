@@ -14,7 +14,7 @@ import {
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
   updateCurrentStudentCompositeRepliesData,
@@ -45,7 +45,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface AssignmentEditorProps
   extends WithTranslation<["common", "evaluation"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
@@ -318,7 +318,7 @@ class AssignmentEditor extends SessionStateComponent<
       });
     } catch (error) {
       notificationActions.displayNotification(
-        this.props.i18nn.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.evaluation.notifications.saveAssigmentGrade.error",
           error.message
         ),
@@ -404,7 +404,7 @@ class AssignmentEditor extends SessionStateComponent<
       });
     } catch (error) {
       notificationActions.displayNotification(
-        this.props.i18nn.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
           error.message
         ),
@@ -624,7 +624,7 @@ class AssignmentEditor extends SessionStateComponent<
               }
             >
               <label htmlFor="assignmentEvaluationGrade">
-                {this.props.i18nn.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.evaluation.evaluationModal.audioAssessments"
                 )}
               </label>
@@ -639,7 +639,7 @@ class AssignmentEditor extends SessionStateComponent<
         <div className="form__row">
           <fieldset className="form__fieldset">
             <legend className="form__legend">
-              {this.props.i18nn.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
               )}
             </legend>
@@ -654,7 +654,7 @@ class AssignmentEditor extends SessionStateComponent<
                   onChange={this.handleAssignmentEvaluationChange}
                 />
                 <label htmlFor="assignmentEvaluationTypeGRADED">
-                  {this.props.i18nn.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.evaluation.evaluationModal.assignmentGradeLabel"
                   )}
                 </label>
@@ -669,7 +669,7 @@ class AssignmentEditor extends SessionStateComponent<
                   onChange={this.handleAssignmentEvaluationChange}
                 />
                 <label htmlFor="assignmentEvaluationTypeINCOMPLETE">
-                  {this.props.i18nn.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
                   )}
                 </label>
@@ -680,7 +680,7 @@ class AssignmentEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="assignmentEvaluationGrade">
-              {this.props.i18nn.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.assignmentGradeLabel"
               )}
             </label>
@@ -740,7 +740,7 @@ class AssignmentEditor extends SessionStateComponent<
         {this.props.isRecording && (
           <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
             <div className="recording-warning">
-              {this.props.i18nn.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
               )}
             </div>
@@ -757,7 +757,7 @@ class AssignmentEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,

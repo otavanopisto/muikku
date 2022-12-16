@@ -10,7 +10,7 @@ import {
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 import { NotesItemPriority, NotesItemStatus } from "~/@types/notes";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * initialState
@@ -26,13 +26,13 @@ const initialState: UseNotesItem = {
  * Custom hook notesItems list
  *
  * @param studentId "userId"
- * @param i18n i18n
+ * @param i18nOLD i18nOLD
  * @param displayNotification displayNotification
  * @returns notesItems lists and methods to create, update, pin, archive and return archived notesItems
  */
 export const useNotesItem = (
   studentId: number,
-  i18n: i18nType,
+  i18nOLD: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [notesItems, setNotesItem] = React.useState<UseNotesItem>(initialState);
@@ -84,7 +84,10 @@ export const useNotesItem = (
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(
-            i18n.text.get("plugin.records.tasks.notification.load.error", err),
+            i18nOLD.text.get(
+              "plugin.records.tasks.notification.load.error",
+              err
+            ),
             "error"
           );
           setNotesItem((notesItems) => ({
@@ -96,7 +99,7 @@ export const useNotesItem = (
     };
 
     loadNotesItemListData();
-  }, [displayNotification, studentId, i18n]);
+  }, [displayNotification, studentId, i18nOLD]);
 
   React.useEffect(
     () => () => {
@@ -160,7 +163,7 @@ export const useNotesItem = (
         }));
 
         displayNotification(
-          i18n.text.get("plugin.records.tasks.notification.create.success"),
+          i18nOLD.text.get("plugin.records.tasks.notification.create.success"),
           "success"
         );
       } else {
@@ -179,13 +182,13 @@ export const useNotesItem = (
         onSuccess && onSuccess();
 
         displayNotification(
-          i18n.text.get("plugin.records.tasks.notification.create.success"),
+          i18nOLD.text.get("plugin.records.tasks.notification.create.success"),
           "success"
         );
       }
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.create.error", err),
+        i18nOLD.text.get("plugin.records.tasks.notification.create.error", err),
         "error"
       );
       setNotesItem((notesItem) => ({
@@ -238,12 +241,12 @@ export const useNotesItem = (
       onSuccess && onSuccess();
 
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.edit.success"),
+        i18nOLD.text.get("plugin.records.tasks.notification.edit.success"),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.edit.error", err),
+        i18nOLD.text.get("plugin.records.tasks.notification.edit.error", err),
         "error"
       );
       setNotesItem((notesItems) => ({
@@ -302,7 +305,7 @@ export const useNotesItem = (
       onSuccess && onSuccess();
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.pinn.error", err),
+        i18nOLD.text.get("plugin.records.tasks.notification.pinn.error", err),
         "error"
       );
       setNotesItem((notesItems) => ({
@@ -360,12 +363,15 @@ export const useNotesItem = (
       onSuccess && onSuccess();
 
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.archive.success"),
+        i18nOLD.text.get("plugin.records.tasks.notification.archive.success"),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.archive.error", err),
+        i18nOLD.text.get(
+          "plugin.records.tasks.notification.archive.error",
+          err
+        ),
         "error"
       );
       setNotesItem((notesItems) => ({
@@ -423,12 +429,15 @@ export const useNotesItem = (
       onSuccess && onSuccess();
 
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.unarchive.success"),
+        i18nOLD.text.get("plugin.records.tasks.notification.unarchive.success"),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.unarchive.error", err),
+        i18nOLD.text.get(
+          "plugin.records.tasks.notification.unarchive.error",
+          err
+        ),
         "error"
       );
       setNotesItem((notesItems) => ({
@@ -478,12 +487,14 @@ export const useNotesItem = (
       }));
 
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.stateUpdate.success"),
+        i18nOLD.text.get(
+          "plugin.records.tasks.notification.stateUpdate.success"
+        ),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get(
+        i18nOLD.text.get(
           "plugin.records.tasks.notification.stateUpdate.error",
           err
         ),

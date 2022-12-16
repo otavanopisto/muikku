@@ -117,7 +117,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
               }
               dispatch(
                 actions.displayNotification(
-                  getState().i18n.text.get(
+                  getState().i18nOLD.text.get(
                     "plugin.records.yo.errormessage.eligibilityUpdateFailedOnSubject",
                     subject.subjectCode
                   ),
@@ -143,7 +143,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.records.yo.errormessage.eligibilityUpdateFailed"
             ),
             "error"
@@ -227,7 +227,7 @@ const updateYO: updateYOTriggerType = function updateYO() {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.records.yo.errormessage.yoUpdateFailed"
           ),
           "error"

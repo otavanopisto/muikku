@@ -5,7 +5,7 @@ import LastMessagesPanel from "./body/latest-messages-panel";
 import WallPanel from "./body/wall-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
 import StudiesPanel from "./body/studies-panel";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -19,7 +19,7 @@ import "~/sass/elements/wcag.scss";
  */
 interface IndexBodyProps {
   status: StatusType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 //TODO css get rid of ordered container
@@ -40,7 +40,7 @@ class IndexBody extends React.Component<
         {this.props.status.isActiveUser ? (
           <ScreenContainer viewModifiers="index">
             <h1 className="visually-hidden">
-              {this.props.i18n.text.get("plugin.wcag.indexViewHeader")}
+              {this.props.i18nOLD.text.get("plugin.wcag.indexViewHeader")}
             </h1>
             <div className="panel-group panel-group--studies">
               {this.props.status.isStudent ? (
@@ -73,7 +73,7 @@ class IndexBody extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

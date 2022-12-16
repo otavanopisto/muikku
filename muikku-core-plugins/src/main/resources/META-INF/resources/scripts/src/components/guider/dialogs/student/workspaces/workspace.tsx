@@ -1,4 +1,4 @@
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import {
   WorkspaceType,
@@ -28,7 +28,7 @@ import { AnyActionType } from "~/actions";
  */
 interface StudentWorkspaceProps {
   /**Localization */
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspace: WorkspaceType;
 }
 
@@ -184,7 +184,7 @@ class StudentWorkspace extends React.Component<
                 {codeSubjectString}
               </span>
 
-              <GuiderAssessment i18n={this.props.i18n} assessment={a} />
+              <GuiderAssessment i18nOLD={this.props.i18nOLD} assessment={a} />
             </div>
           );
         })}
@@ -198,7 +198,7 @@ class StudentWorkspace extends React.Component<
     const renderCourseActivity = () => (
       <div className="application-sub-panel__item application-sub-panel__item--course-activity">
         <div className="application-sub-panel__item-title">
-          {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}
+          {this.props.i18nOLD.text.get("plugin.guider.assessmentStateLabel")}
         </div>
         <div className="application-sub-panel__item-data">
           {this.props.workspace.activity.assessmentState.map((a) => {
@@ -221,13 +221,14 @@ class StudentWorkspace extends React.Component<
             /**
              * State text by default
              */
-            let resultingStateText = this.props.i18n.text.get(stateText);
+            let resultingStateText = this.props.i18nOLD.text.get(stateText);
 
             /**
              * Add date to string if date is present
              */
             if (a.date) {
-              resultingStateText += " - " + this.props.i18n.time.format(a.date);
+              resultingStateText +=
+                " - " + this.props.i18nOLD.time.format(a.date);
             }
 
             return (
@@ -275,7 +276,7 @@ class StudentWorkspace extends React.Component<
               ) ? (
                 <span className="activity-badge activity-badge--percent">
                   <GuiderWorkspacePercents
-                    i18n={this.props.i18n}
+                    i18nOLD={this.props.i18nOLD}
                     activity={this.props.workspace.activity}
                   />
                 </span>
@@ -286,7 +287,7 @@ class StudentWorkspace extends React.Component<
                * Only show assessment in header line if its not combination workspace
                */
               <GuiderAssessment
-                i18n={this.props.i18n}
+                i18nOLD={this.props.i18nOLD}
                 assessment={this.props.workspace.activity.assessmentState[0]}
               />
             ) : null}
@@ -343,7 +344,7 @@ class StudentWorkspace extends React.Component<
               />
 
               <h4 className="application-sub-panel__item-header">
-                {this.props.i18n.text.get("plugin.guider.assignmentsLabel")}
+                {this.props.i18nOLD.text.get("plugin.guider.assignmentsLabel")}
               </h4>
 
               <CourseActivityRow<WorkspaceActivityType>
@@ -394,7 +395,7 @@ class StudentWorkspace extends React.Component<
               />
 
               <h4 className="application-sub-panel__item-header">
-                {this.props.i18n.text.get("plugin.guider.exercisesLabel")}
+                {this.props.i18nOLD.text.get("plugin.guider.exercisesLabel")}
               </h4>
 
               <CourseActivityRow<WorkspaceActivityType>
@@ -427,7 +428,7 @@ class StudentWorkspace extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 
@@ -447,7 +448,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(StudentWorkspace);
  * CourseActivityRowProps
  */
 interface CourseActivityRowProps<C> {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspace: WorkspaceType;
   labelTranslationString: string;
   conditionalAttribute: keyof C;
@@ -478,7 +479,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
    */
   if (((workspace[mainAttribute] as any)[conditionalAttribute] as number) > 0) {
     if (props.conditionalAttributeLocale) {
-      output = props.i18n.text.get(
+      output = props.i18nOLD.text.get(
         props.conditionalAttributeLocale,
         (props.workspace[props.mainAttribute] as any)[
           props.conditionalAttribute
@@ -494,16 +495,16 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
       output += ", ";
 
       if (props.givenDateAttributeLocale) {
-        output += props.i18n.text.get(
+        output += props.i18nOLD.text.get(
           props.givenDateAttributeLocale,
-          props.i18n.time.format(
+          props.i18nOLD.time.format(
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
             ]
           )
         );
       } else {
-        output += props.i18n.time.format(
+        output += props.i18nOLD.time.format(
           (props.workspace as any)[props.mainAttribute][
             props.givenDateAttribute
           ]
@@ -514,7 +515,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
   return (
     <div className="application-sub-panel__item application-sub-panel__item--course-activity">
       <div className="application-sub-panel__item-title">
-        {props.i18n.text.get(props.labelTranslationString)}
+        {props.i18nOLD.text.get(props.labelTranslationString)}
       </div>
       <div className="application-sub-panel__item-data">
         <span className="application-sub-panel__single-entry">{output}</span>
@@ -528,7 +529,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
  */
 interface GuiderAssessmentProps {
   assessment?: Assessment;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -537,7 +538,7 @@ interface GuiderAssessmentProps {
  * @returns JSX.Element
  */
 const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
-  const { assessment, i18n } = props;
+  const { assessment, i18nOLD } = props;
 
   if (assessment) {
     // We can have situation where course module has PASSED assessment and also it's state is INCOMPLETE
@@ -551,9 +552,9 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
       return (
         <span
           title={
-            i18n.text.get(
+            i18nOLD.text.get(
               "plugin.guider.evaluated",
-              i18n.time.format(assessment.date)
+              i18nOLD.time.format(assessment.date)
             ) + getShortenGradeExtension(assessment.grade)
           }
           className={`application-list__indicator-badge application-list__indicator-badge--course ${modifier}`}
@@ -562,7 +563,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
         </span>
       );
     } else if (assessment.state === "incomplete") {
-      const status = i18n.text.get(
+      const status = i18nOLD.text.get(
         assessment.state === "incomplete"
           ? "plugin.guider.workspace.incomplete"
           : "plugin.guider.workspace.failed"
@@ -574,9 +575,9 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
       return (
         <span
           title={
-            i18n.text.get(
+            i18nOLD.text.get(
               "plugin.guider.evaluated",
-              i18n.time.format(assessment.date)
+              i18nOLD.time.format(assessment.date)
             ) +
             " - " +
             status
@@ -596,7 +597,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
  */
 interface GuiderWorkspacePercentsProps {
   activity?: WorkspaceActivityType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -613,7 +614,7 @@ const GuiderWorkspacePercents: React.FC<GuiderWorkspacePercentsProps> = (
     <>
       <span
         className="activity-badge__item activity-badge__item--assignment-percent"
-        title={props.i18n.text.get(
+        title={props.i18nOLD.text.get(
           "plugin.guider.headerEvaluatedTitle",
           activity.evaluablesDonePercent
         )}
@@ -623,7 +624,7 @@ const GuiderWorkspacePercents: React.FC<GuiderWorkspacePercentsProps> = (
       <span>/</span>
       <span
         className="activity-badge__item activity-badge__item--exercise-percent"
-        title={props.i18n.text.get(
+        title={props.i18nOLD.text.get(
           "plugin.guider.headerExercisesTitle",
           activity.exercisesDonePercent
         )}

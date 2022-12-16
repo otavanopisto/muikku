@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { DiscussionType, DiscussionThreadType } from "~/reducers/discussion";
 import {
   modifyDiscussionThread,
@@ -22,7 +22,7 @@ import "~/sass/elements/form.scss";
  */
 interface ModifyThreadProps {
   children: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   discussion: DiscussionType;
   thread: DiscussionThreadType;
   modifyDiscussionThread: ModifyDiscussionThreadTriggerType;
@@ -200,9 +200,9 @@ class ModifyThread extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
+      this.props.i18nOLD.text.get("plugin.discussion.editmessage.topic") +
       " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
 
     /**
      * content
@@ -212,12 +212,14 @@ class ModifyThread extends SessionStateComponent<
       <div key="1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.discussion.createmessage.title")}
+            {this.props.i18nOLD.text.get(
+              "plugin.discussion.createmessage.title"
+            )}
           </label>
           <input
             id="messageTitle"
             className="env-dialog__input env-dialog__input--new-discussion-thread-title"
-            placeholder={this.props.i18n.text.get(
+            placeholder={this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.title"
             )}
             value={this.state.title}
@@ -237,7 +239,7 @@ class ModifyThread extends SessionStateComponent<
               onChange={this.togglePinned}
             />
             <label htmlFor="messagePinned" className="env-dialog__input-label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.discussion.createmessage.pinned"
               )}
             </label>
@@ -251,7 +253,7 @@ class ModifyThread extends SessionStateComponent<
               onChange={this.toggleLocked}
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.discussion.createmessage.locked"
               )}
             </label>
@@ -261,7 +263,7 @@ class ModifyThread extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.content"
             )}
           </label>
@@ -286,14 +288,16 @@ class ModifyThread extends SessionStateComponent<
           onClick={this.modifyThread.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.i18nOLD.text.get(
+            "plugin.discussion.createmessage.cancel"
+          )}
         </Button>
         {this.recovered ? (
           <Button
@@ -301,7 +305,7 @@ class ModifyThread extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
@@ -312,7 +316,9 @@ class ModifyThread extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="modify-message"
-        title={this.props.i18n.text.get("plugin.discussion.editmessage.topic")}
+        title={this.props.i18nOLD.text.get(
+          "plugin.discussion.editmessage.topic"
+        )}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
@@ -329,7 +335,7 @@ class ModifyThread extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     status: state.status,
   };

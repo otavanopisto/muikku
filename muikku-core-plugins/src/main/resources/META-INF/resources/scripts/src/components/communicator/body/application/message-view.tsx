@@ -5,7 +5,7 @@ import {
   MessageThreadLabelListType,
   MessagesType,
 } from "~/reducers/main-function/messages";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import TouchPager from "~/components/general/touch-pager";
 import { StateType } from "~/reducers";
 import Message from "./message-view/message";
@@ -20,7 +20,7 @@ import "~/sass/elements/message.scss";
  * MessageViewProps
  */
 interface MessageViewProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   messages: MessagesType;
 }
 
@@ -108,7 +108,7 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
 function mapStateToProps(state: StateType) {
   return {
     messages: state.messages,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

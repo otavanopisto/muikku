@@ -1,7 +1,7 @@
 import FrontpageNavbar from "./body/navbar";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 import FrontpageHero from "./body/header";
 import FrontpageStudying from "./body/studying";
@@ -31,7 +31,7 @@ import { StateType } from "~/reducers";
  * FrontpageBodyProps
  */
 interface FrontpageBodyProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -53,16 +53,16 @@ class FrontpageBody extends React.Component<
     return (
       <div>
         <FrontpageNavbar />
-        <FrontpageHero i18nn={this.props.i18n} />
+        <FrontpageHero i18nOLD={this.props.i18nOLD} />
         <ScreenContainer viewModifiers="frontpage">
-          <FrontpageStudying i18n={this.props.i18n} />
-          <FrontpageVideos i18n={this.props.i18n} />
-          <FrontpageNews i18n={this.props.i18n} />
-          <FrontpageInstagram i18n={this.props.i18n} />
-          <FrontpageOrganization i18n={this.props.i18n} />
+          <FrontpageStudying i18nOLD={this.props.i18nOLD} />
+          <FrontpageVideos i18nOLD={this.props.i18nOLD} />
+          <FrontpageNews i18nOLD={this.props.i18nOLD} />
+          <FrontpageInstagram i18nOLD={this.props.i18nOLD} />
+          <FrontpageOrganization i18nOLD={this.props.i18nOLD} />
         </ScreenContainer>
 
-        <FrontpageFooter i18n={this.props.i18n} />
+        <FrontpageFooter i18nOLD={this.props.i18nOLD} />
       </div>
     );
   }
@@ -74,7 +74,7 @@ class FrontpageBody extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

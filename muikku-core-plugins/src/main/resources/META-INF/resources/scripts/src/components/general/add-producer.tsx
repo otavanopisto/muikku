@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/add-producer.scss";
 import "~/sass/elements/wcag.scss";
 
@@ -12,7 +12,7 @@ interface AddProducerProps {
   addProducer: (name: string) => any;
   removeProducer?: (index: number) => any;
   modifier?: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   wcagLabel?: string;
 }
 
@@ -113,7 +113,7 @@ export default class AddProducer extends React.Component<
       >
         {this.props.title ? (
           <h3 className="add-producer__title">
-            {this.props.i18n.text.get(this.props.title)}
+            {this.props.i18nOLD.text.get(this.props.title)}
           </h3>
         ) : null}
         <div className="add-producer__functionality-container">
@@ -129,7 +129,7 @@ export default class AddProducer extends React.Component<
                 className="visually-hidden"
                 htmlFor={this.props.wcagLabel && this.props.wcagLabel}
               >
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
                 )}
               </label>
@@ -144,7 +144,7 @@ export default class AddProducer extends React.Component<
                 value={this.state.currentInputValue}
                 onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}
                 onChange={this.updateInputValue}
-                placeholder={this.props.i18n.text.get(
+                placeholder={this.props.i18nOLD.text.get(
                   "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
                 )}
                 type="text"

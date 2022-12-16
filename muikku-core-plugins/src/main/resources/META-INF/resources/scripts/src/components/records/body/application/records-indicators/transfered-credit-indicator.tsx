@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
@@ -12,7 +12,7 @@ import Dropdown from "~/components/general/dropdown";
  */
 interface TransfereCreditIndicatorProps {
   transferCredit: TransferCreditType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -23,7 +23,7 @@ interface TransfereCreditIndicatorProps {
 const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   props
 ) => {
-  const { i18n, transferCredit } = props;
+  const { i18nOLD, transferCredit } = props;
 
   // this shouldn't come to this, but just in case
   if (transferCredit === null) {
@@ -35,9 +35,9 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
       openByHover
       content={
         <span>
-          {i18n.text.get(
+          {i18nOLD.text.get(
             "plugin.records.transferCreditsDate",
-            i18n.time.format(transferCredit.date)
+            i18nOLD.time.format(transferCredit.date)
           ) + getShortenGradeExtension(transferCredit.grade)}
         </span>
       }
@@ -59,7 +59,7 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

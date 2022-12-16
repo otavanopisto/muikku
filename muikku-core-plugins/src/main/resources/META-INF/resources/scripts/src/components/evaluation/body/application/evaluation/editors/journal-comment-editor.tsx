@@ -8,7 +8,7 @@ import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
@@ -20,7 +20,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface JournalCommentEditorProps
   extends WithTranslation<["common", "evaluation"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   locale: LocaleState;
   journalComment?: JournalComment;
@@ -143,7 +143,7 @@ class JournalCommentEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label>
-              {this.props.i18nn.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.journalComments.formContentLabel"
               )}
             </label>
@@ -193,7 +193,7 @@ class JournalCommentEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     locale: state.locales,
   };

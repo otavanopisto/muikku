@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { DiscussionType } from "~/reducers/discussion";
 import {
   createDiscussionThread,
@@ -23,7 +23,7 @@ import "~/sass/elements/form.scss";
 interface DicussionNewThreadProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   discussion: DiscussionType;
   createDiscussionThread: CreateDiscussionThreadTriggerType;
   status: StatusType;
@@ -261,9 +261,9 @@ class DicussionNewThread extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.createmessage.topic") +
+      this.props.i18nOLD.text.get("plugin.discussion.createmessage.topic") +
       " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
 
     /**
      * content
@@ -273,7 +273,9 @@ class DicussionNewThread extends SessionStateComponent<
       <div key="1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.discussion.createmessage.title")}
+            {this.props.i18nOLD.text.get(
+              "plugin.discussion.createmessage.title"
+            )}
           </label>
           <input
             id="messageTitle"
@@ -285,7 +287,9 @@ class DicussionNewThread extends SessionStateComponent<
         </div>
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageArea" className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.discussion.createmessage.area")}
+            {this.props.i18nOLD.text.get(
+              "plugin.discussion.createmessage.area"
+            )}
           </label>
           <select
             id="messageArea"
@@ -312,7 +316,7 @@ class DicussionNewThread extends SessionStateComponent<
               onChange={this.togglePinned}
             />
             <label htmlFor="messagePinned" className="env-dialog__input-label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.discussion.createmessage.pinned"
               )}
             </label>
@@ -326,7 +330,7 @@ class DicussionNewThread extends SessionStateComponent<
               onChange={this.toggleLocked}
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.discussion.createmessage.locked"
               )}
             </label>
@@ -340,7 +344,7 @@ class DicussionNewThread extends SessionStateComponent<
               onChange={this.toggleSubscribeThread}
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.discussion.createmessage.subscribe"
               )}
             </label>
@@ -352,7 +356,7 @@ class DicussionNewThread extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.content"
             )}
           </label>
@@ -377,14 +381,16 @@ class DicussionNewThread extends SessionStateComponent<
           onClick={this.createThread.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.i18nOLD.text.get(
+            "plugin.discussion.createmessage.cancel"
+          )}
         </Button>
         {this.recovered ? (
           <Button
@@ -392,7 +398,7 @@ class DicussionNewThread extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
@@ -402,7 +408,7 @@ class DicussionNewThread extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-message"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.discussion.createmessage.topic"
         )}
         content={content}
@@ -421,7 +427,7 @@ class DicussionNewThread extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     status: state.status,
   };

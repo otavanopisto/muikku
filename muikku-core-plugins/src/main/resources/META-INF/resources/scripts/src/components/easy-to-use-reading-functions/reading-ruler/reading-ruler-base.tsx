@@ -9,7 +9,7 @@ import { IconButton } from "../../general/button";
 import Dropdown from "../../general/dropdown";
 import { ReadingRulerControllers } from "./reading-ruler-controllers";
 import useIsAtBreakpoint from "../../../hooks/useIsAtBreakpoint";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { throttle } from "lodash";
 
 /**
@@ -17,7 +17,7 @@ import { throttle } from "lodash";
  */
 interface ReadingRulerProps {
   active: boolean;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   onClose?: () => void;
 }
 
@@ -101,7 +101,7 @@ const readingRulerPresetDefault1: Partial<ReadingRulerPresetSettings> = {
 export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
   props = { ...defaultProps, ...props };
 
-  const { onClose, active, i18n } = props;
+  const { onClose, active, i18nOLD } = props;
 
   // States
   const [cursorLocation, setCursorLocation] = React.useState(0);
@@ -466,7 +466,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
       </div>
 
       <ReadingRulerControllers
-        i18n={i18n}
+        i18nOLD={i18nOLD}
         ref={controllers}
         onClose={onClose}
         tools={
@@ -475,7 +475,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               openByHover
               content={
                 <div>
-                  {i18n.text.get(
+                  {i18nOLD.text.get(
                     "plugin.wcag.readingRuler.actions.decreaseRuler"
                   )}
                 </div>
@@ -510,7 +510,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               openByHover
               content={
                 <div>
-                  {i18n.text.get(
+                  {i18nOLD.text.get(
                     "plugin.wcag.readingRuler.actions.increaseRuler"
                   )}
                 </div>
@@ -532,7 +532,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               openByHover
               content={
                 <div>
-                  {i18n.text.get(
+                  {i18nOLD.text.get(
                     "plugin.wcag.readingRuler.actions.invertRulersColors"
                   )}
                 </div>
@@ -550,7 +550,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               openByHover
               content={
                 <div>
-                  {i18n.text.get(
+                  {i18nOLD.text.get(
                     "plugin.wcag.readingRuler.actions.clickThroughRuler"
                   )}
                 </div>
@@ -586,7 +586,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
                 openByHover
                 content={
                   <div>
-                    {i18n.text.get(
+                    {i18nOLD.text.get(
                       "plugin.wcag.readingRuler.actions.chooseRulersColor"
                     )}
                   </div>
@@ -603,7 +603,9 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               openByHover
               content={
                 <div>
-                  {i18n.text.get("plugin.wcag.readingRuler.actions.pinRuler")}
+                  {i18nOLD.text.get(
+                    "plugin.wcag.readingRuler.actions.pinRuler"
+                  )}
                 </div>
               }
             >
@@ -630,7 +632,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               openByHover
               content={
                 <div>
-                  {i18n.text.get("plugin.wcag.readingRuler.actions.preset1")}
+                  {i18nOLD.text.get("plugin.wcag.readingRuler.actions.preset1")}
                 </div>
               }
             >
@@ -653,7 +655,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               openByHover
               content={
                 <div>
-                  {i18n.text.get("plugin.wcag.readingRuler.actions.preset2")}
+                  {i18nOLD.text.get("plugin.wcag.readingRuler.actions.preset2")}
                 </div>
               }
             >
@@ -676,7 +678,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               openByHover
               content={
                 <div>
-                  {i18n.text.get("plugin.wcag.readingRuler.actions.preset3")}
+                  {i18nOLD.text.get("plugin.wcag.readingRuler.actions.preset3")}
                 </div>
               }
             >

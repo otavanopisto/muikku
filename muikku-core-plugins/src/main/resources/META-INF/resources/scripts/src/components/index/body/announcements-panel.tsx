@@ -1,6 +1,6 @@
 import Link from "~/components/general/link";
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import {
   AnnouncementListType,
@@ -18,7 +18,7 @@ import { Panel } from "~/components/general/panel";
  * AnnouncementsPanelProps
  */
 interface AnnouncementsPanelProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   announcements: AnnouncementListType;
   overflow?: boolean;
@@ -90,10 +90,10 @@ class AnnouncementsPanel extends React.Component<
    * @returns label with correct locale string
    */
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
-    let label = this.props.i18n.text.get("plugin.wcag.pager.goToPage.label");
+    let label = this.props.i18nOLD.text.get("plugin.wcag.pager.goToPage.label");
 
     if (selected) {
-      label = this.props.i18n.text.get("plugin.wcag.pager.current.label");
+      label = this.props.i18nOLD.text.get("plugin.wcag.pager.current.label");
     }
 
     return label;
@@ -148,7 +148,7 @@ class AnnouncementsPanel extends React.Component<
                 {announcement.caption}
               </span>
               <span className="item-list__announcement-date">
-                {this.props.i18n.time.format(announcement.startDate)}
+                {this.props.i18nOLD.time.format(announcement.startDate)}
               </span>
               {announcement.workspaces && announcement.workspaces.length ? (
                 <div className="labels item-list__announcement-workspaces">
@@ -180,7 +180,7 @@ class AnnouncementsPanel extends React.Component<
     const renderPaginationBody = (
       <div
         className="item-list__item item-list__item--announcements"
-        aria-label={this.props.i18n.text.get("plugin.wcag.pager.label")}
+        aria-label={this.props.i18nOLD.text.get("plugin.wcag.pager.label")}
       >
         <span className="item-list__text-body item-list__text-body--multiline--footer">
           <PagerV2
@@ -200,7 +200,7 @@ class AnnouncementsPanel extends React.Component<
 
     return (
       <Panel
-        header={this.props.i18n.text.get(
+        header={this.props.i18nOLD.text.get(
           "plugin.frontPage.announcements.title"
         )}
         icon="icon-paper-plane"
@@ -221,11 +221,11 @@ class AnnouncementsPanel extends React.Component<
         ) : (
           <div
             className="empty empty--front-page"
-            aria-label={this.props.i18n.text.get(
+            aria-label={this.props.i18nOLD.text.get(
               "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel"
             )}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.frontPage.announcements.noAnnouncements"
             )}
           </div>
@@ -243,7 +243,7 @@ class AnnouncementsPanel extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     announcements: state.announcements.announcements,
   };
 }

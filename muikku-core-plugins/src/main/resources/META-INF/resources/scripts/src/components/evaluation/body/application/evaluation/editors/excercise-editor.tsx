@@ -1,6 +1,6 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   MaterialEvaluationType,
   MaterialAssignmentType,
@@ -39,7 +39,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface AssignmentEditorProps
   extends WithTranslation<["common", "evaluation"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
@@ -229,7 +229,7 @@ class ExcerciseEditor extends SessionStateComponent<
       });
     } catch (error) {
       this.props.displayNotification(
-        this.props.i18nn.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.evaluation.notifications.saveAssigmentGrade.error",
           error.message
         ),
@@ -309,7 +309,7 @@ class ExcerciseEditor extends SessionStateComponent<
       });
     } catch (error) {
       this.props.displayNotification(
-        this.props.i18nn.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
           error.message
         ),
@@ -455,7 +455,7 @@ class ExcerciseEditor extends SessionStateComponent<
               height={!this.state.needsSupplementation ? "auto" : 0}
             >
               <label htmlFor="assignmentEvaluationGrade">
-                {this.props.i18nn.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.evaluation.evaluationModal.audioAssessments"
                 )}
               </label>
@@ -509,7 +509,7 @@ class ExcerciseEditor extends SessionStateComponent<
         {this.props.isRecording && (
           <div className="form__row form__row--evaluation-warning">
             <div className="recording-warning">
-              {this.props.i18nn.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
               )}
             </div>
@@ -526,7 +526,7 @@ class ExcerciseEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
   };

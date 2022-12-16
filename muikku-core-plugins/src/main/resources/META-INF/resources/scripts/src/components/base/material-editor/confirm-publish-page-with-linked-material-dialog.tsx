@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -19,7 +19,7 @@ import {
  * ConfirmPublishPageWithLinkedMaterialDialogProps
  */
 interface ConfirmPublishPageWithLinkedMaterialDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   materialEditor: WorkspaceMaterialEditorType;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -108,7 +108,7 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         <span>
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.materialsManagement.linkedMaterialCountMessage",
             this.props.materialEditor
               .showUpdateLinkedMaterialsDialogForPublishCount
@@ -128,7 +128,7 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
           onClick={this.confirm.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.confirmButton"
           )}
         </Button>
@@ -137,7 +137,7 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
           onClick={this.cancel.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.cancelButton"
           )}
         </Button>
@@ -151,7 +151,7 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
           this.props.materialEditor.showUpdateLinkedMaterialsDialogForPublish
         }
         onClose={this.cancel}
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.title"
         )}
         content={content}
@@ -167,7 +167,7 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     materialEditor: state.workspaces.materialEditor,
   };
 }

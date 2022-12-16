@@ -9,7 +9,7 @@ import CommunicatorMessages from "./application/messages";
 import MessageView from "./application/message-view";
 import NewMessage from "../dialogs/new-message";
 import SignatureUpdateDialog from "../dialogs/signature-update";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import Button, { ButtonPill } from "~/components/general/button";
@@ -19,7 +19,7 @@ import Button, { ButtonPill } from "~/components/general/button";
  */
 interface CommunicatorApplicationProps {
   aside: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -75,7 +75,7 @@ class CommunicatorApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.communicator.pageTitle");
+    const title = this.props.i18nOLD.text.get("plugin.communicator.pageTitle");
     const icon = (
       <Dropdown
         modifier="main-functions-settings"
@@ -87,7 +87,7 @@ class CommunicatorApplication extends React.Component<
               onClick={this.openDialogSignature.bind(this, closeDropdown)}
             >
               <span>
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.communicator.settings.signature"
                 )}
               </span>
@@ -101,7 +101,7 @@ class CommunicatorApplication extends React.Component<
     const primaryOption = (
       <NewMessage>
         <Button buttonModifiers="primary-function">
-          {this.props.i18n.text.get("plugin.communicator.newMessage.label")}
+          {this.props.i18nOLD.text.get("plugin.communicator.newMessage.label")}
         </Button>
       </NewMessage>
     );
@@ -138,7 +138,7 @@ class CommunicatorApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -1,15 +1,14 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 import Button from "~/components/general/button";
 import Bubble from "~/components/general/bubble";
-import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * FrontpageHeroProps
  */
-interface FrontpageHeroProps extends WithTranslation {
-  i18nn: i18nType;
+interface FrontpageHeroProps {
+  i18nOLD: i18nType;
 }
 
 /**
@@ -20,7 +19,7 @@ interface FrontpageHeroState {}
 /**
  * FrontpageHero
  */
-class FrontpageHero extends React.Component<
+export default class FrontpageHero extends React.Component<
   FrontpageHeroProps,
   FrontpageHeroState
 > {
@@ -34,8 +33,10 @@ class FrontpageHero extends React.Component<
           <div className="hero__item hero__item--frontpage">
             <Bubble
               modifier="application"
-              title={this.props.t("studentApplication")}
-              content={this.props.i18nn.text.get(
+              title={this.props.i18nOLD.text.get(
+                "plugin.header.studentApplicationBubble.title"
+              )}
+              content={this.props.i18nOLD.text.get(
                 "plugin.header.studentApplicationBubble.description"
               )}
             >
@@ -44,7 +45,7 @@ class FrontpageHero extends React.Component<
                 href="https://pyramus.otavanopisto.fi/applications/index.page"
                 openInNewTab="_blank"
               >
-                {this.props.i18nn.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.header.studentApplicationBubble.link"
                 )}
               </Button>
@@ -59,19 +60,21 @@ class FrontpageHero extends React.Component<
               ></img>
               <div className="hero__header-container">
                 <h1 className="hero__header hero__header--frontpage-muikku">
-                  {this.props.i18nn.text.get("plugin.site.title")}
+                  {this.props.i18nOLD.text.get("plugin.site.title")}
                 </h1>
               </div>
             </div>
             <div className="hero__description">
-              {this.props.i18nn.text.get("plugin.header.site.description")}
+              {this.props.i18nOLD.text.get("plugin.header.site.description")}
             </div>
           </div>
           <div className="hero__item hero__item--frontpage">
             <Bubble
               modifier="goto-materials"
-              title={this.props.t("openMaterials")}
-              content={this.props.i18nn.text.get(
+              title={this.props.i18nOLD.text.get(
+                "plugin.header.openMaterialsBubble.title"
+              )}
+              content={this.props.i18nOLD.text.get(
                 "plugin.header.openMaterialsBubble.description"
               )}
             >
@@ -79,7 +82,7 @@ class FrontpageHero extends React.Component<
                 buttonModifiers={["branded", "frontpage-bubble", "warn"]}
                 href="/coursepicker"
               >
-                {this.props.i18nn.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.header.openMaterialsBubble.link"
                 )}
               </Button>
@@ -90,5 +93,3 @@ class FrontpageHero extends React.Component<
     );
   }
 }
-
-export default withTranslation()(FrontpageHero);

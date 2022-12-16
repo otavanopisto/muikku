@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
@@ -20,7 +20,7 @@ import { StateType } from "~/reducers";
  * DiscussionDeleteAreaProps
  */
 interface DiscussionDeleteAreaProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   discussion: DiscussionType;
   children: React.ReactElement<any>;
   deleteDiscussionArea: DeleteDiscussionAreaTriggerType;
@@ -91,7 +91,9 @@ class DiscussionDeleteArea extends React.Component<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => any) => (
-      <div>{this.props.i18n.text.get("plugin.discussion.deletearea.info")}</div>
+      <div>
+        {this.props.i18nOLD.text.get("plugin.discussion.deletearea.info")}
+      </div>
     );
 
     /**
@@ -105,13 +107,13 @@ class DiscussionDeleteArea extends React.Component<
           onClick={this.deleteArea.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.deletearea.send")}
+          {this.props.i18nOLD.text.get("plugin.discussion.deletearea.send")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get("plugin.discussion.deletearea.cancel")}
+          {this.props.i18nOLD.text.get("plugin.discussion.deletearea.cancel")}
         </Button>
       </div>
     );
@@ -119,7 +121,9 @@ class DiscussionDeleteArea extends React.Component<
     return (
       <Dialog
         modifier="delete-area"
-        title={this.props.i18n.text.get("plugin.discussion.deletearea.topic")}
+        title={this.props.i18nOLD.text.get(
+          "plugin.discussion.deletearea.topic"
+        )}
         content={content}
         footer={footer}
       >
@@ -135,7 +139,7 @@ class DiscussionDeleteArea extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
   };
 }

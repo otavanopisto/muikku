@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   DiscussionUserType,
   DiscussionThreadReplyType,
@@ -27,7 +27,7 @@ import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
  */
 interface DiscussionThreadReplyProps {
   discussionItem: DiscussionThreadReplyType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   user: DiscussionUserType;
   avatar?: JSX.Element;
@@ -115,7 +115,9 @@ class DiscussionThreadReply extends React.Component<
       >
         <DiscussionThreadHeader
           aside={
-            <span>{this.props.i18n.time.format(discussionItem.created)}</span>
+            <span>
+              {this.props.i18nOLD.time.format(discussionItem.created)}
+            </span>
           }
         >
           <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">
@@ -134,7 +136,7 @@ class DiscussionThreadReply extends React.Component<
               <DiscussionThreadBody>
                 <div className="rich-text">
                   [
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.discussion.infomessage.message.removed"
                   )}
                   ]
@@ -142,9 +144,11 @@ class DiscussionThreadReply extends React.Component<
 
                 {discussionItem.created !== discussionItem.lastModified ? (
                   <span className="application-list__item-edited">
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(discussionItem.lastModified)
+                      this.props.i18nOLD.time.format(
+                        discussionItem.lastModified
+                      )
                     )}
                   </span>
                 ) : null}
@@ -153,9 +157,11 @@ class DiscussionThreadReply extends React.Component<
               <DiscussionThreadBody html={discussionItem.message}>
                 {discussionItem.created !== discussionItem.lastModified ? (
                   <span className="application-list__item-edited">
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(discussionItem.lastModified)
+                      this.props.i18nOLD.time.format(
+                        discussionItem.lastModified
+                      )
                     )}
                   </span>
                 ) : null}
@@ -171,7 +177,7 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("answer")}
                   >
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.discussion.reply.message"
                     )}
                   </Link>
@@ -183,7 +189,9 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("quote")}
                   >
-                    {this.props.i18n.text.get("plugin.discussion.reply.quote")}
+                    {this.props.i18nOLD.text.get(
+                      "plugin.discussion.reply.quote"
+                    )}
                   </Link>
                 ) : null}
                 {canEditMessage ? (
@@ -193,7 +201,9 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("modify")}
                   >
-                    {this.props.i18n.text.get("plugin.discussion.reply.edit")}
+                    {this.props.i18nOLD.text.get(
+                      "plugin.discussion.reply.edit"
+                    )}
                   </Link>
                 ) : null}
                 {canRemoveMessage ? (
@@ -203,7 +213,7 @@ class DiscussionThreadReply extends React.Component<
                       as="span"
                       className="link link--application-list"
                     >
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.discussion.reply.delete"
                       )}
                     </Link>
@@ -217,10 +227,10 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                   >
                     {parentHasHiddenSiblings
-                      ? this.props.i18n.text.get(
+                      ? this.props.i18nOLD.text.get(
                           "plugin.discussion.reply.showAllReplies"
                         )
-                      : this.props.i18n.text.get(
+                      : this.props.i18nOLD.text.get(
                           "plugin.discussion.reply.hideAllReplies"
                         )}
                   </Link>
@@ -260,7 +270,7 @@ class DiscussionThreadReply extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

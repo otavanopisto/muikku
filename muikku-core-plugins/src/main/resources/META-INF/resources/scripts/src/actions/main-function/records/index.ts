@@ -342,7 +342,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.records.errormessage.recordsLoadFailed "
             ),
             "error"
@@ -496,7 +496,7 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.records.errormessage.userWorkspaceLoadFailed"
             ),
             "error"

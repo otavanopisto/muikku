@@ -13,7 +13,7 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import RecordsGroupItem from "./records-group-item";
 import { StoredCurriculum } from "../records";
 
@@ -24,7 +24,7 @@ interface RecordsGroupProps {
   index: number;
   recordGroup: RecordGroupType;
   storedCurriculumIndex: StoredCurriculum;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -33,7 +33,7 @@ interface RecordsGroupProps {
  * @returns JSX.Element
  */
 export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
-  const { recordGroup, index, storedCurriculumIndex, i18n } = props;
+  const { recordGroup, index, storedCurriculumIndex, i18nOLD } = props;
 
   const [workspaceSortDirection, setWorkspaceSortDirection] = React.useState<
     "asc" | "desc"
@@ -115,7 +115,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
           onClick={handleTransferedWorkspaceSortDirectionClick}
         >
           <h3 className="application-list__header application-list__header--sorter">
-            {i18n.text.get("plugin.records.transferCredits")}
+            {i18nOLD.text.get("plugin.records.transferCredits")}
             {recordGroup.groupCurriculumIdentifier
               ? storedCurriculumIndex[recordGroup.groupCurriculumIdentifier]
               : null}
@@ -171,7 +171,7 @@ const sortByDirection = <T,>(data: T[], key: keyof T, direction: string) =>
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -125,7 +125,7 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.calendar.events.load.error"),
+            getState().i18nOLD.text.get("plugin.calendar.events.load.error"),
             "error"
           )
         );
@@ -166,7 +166,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.calendar.events.create.error"),
+            getState().i18nOLD.text.get("plugin.calendar.events.create.error"),
             "error"
           )
         );
@@ -203,7 +203,7 @@ const updateCalendarEvent: createCalendarEventTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.calendar.events.update.error"),
+            getState().i18nOLD.text.get("plugin.calendar.events.update.error"),
             "error"
           )
         );
@@ -230,7 +230,9 @@ const changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.calendar.events.attendance.error"),
+            getState().i18nOLD.text.get(
+              "plugin.calendar.events.attendance.error"
+            ),
             "error"
           )
         );
@@ -258,7 +260,7 @@ const deleteCalendarEvent: deleteCalendarEventTrigger =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.calendar.events.delete.error"),
+            getState().i18nOLD.text.get("plugin.calendar.events.delete.error"),
             "error"
           )
         );

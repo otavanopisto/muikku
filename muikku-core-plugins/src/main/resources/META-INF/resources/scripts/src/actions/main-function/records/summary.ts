@@ -174,7 +174,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.records.summary.errormessage.summaryUpdateFailed"
           ),
           "error"

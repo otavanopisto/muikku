@@ -2,7 +2,7 @@ import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
@@ -39,7 +39,7 @@ interface ArchiveDialogProps
   place: "card" | "modal";
   isOpen?: boolean;
   onClose?: () => void;
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   archiveStudent: ArchiveStudent;
   evaluations: EvaluationState;
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
@@ -144,7 +144,7 @@ class ArchiveDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div
         dangerouslySetInnerHTML={this.createHtmlMarkup(
-          this.props.i18nn.text.get(
+          this.props.i18nOLD.text.get(
             "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.description",
             studentNameString
           )
@@ -155,7 +155,7 @@ class ArchiveDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         modifier="evaluation-archive-student"
-        title={this.props.i18nn.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.title"
         )}
         content={content}
@@ -173,7 +173,7 @@ class ArchiveDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     evaluations: state.evaluations,
   };
 }

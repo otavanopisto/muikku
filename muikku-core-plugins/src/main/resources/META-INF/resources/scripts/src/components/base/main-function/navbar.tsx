@@ -6,7 +6,7 @@ import Dropdown from "~/components/general/dropdown";
 
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 
@@ -33,7 +33,7 @@ interface ItemDataElement {
  */
 interface MainFunctionNavbarProps {
   activeTrail?: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   navigation?: React.ReactElement<any>;
   status: StatusType;
   messageCount: number;
@@ -161,7 +161,7 @@ class MainFunctionNavbar extends React.Component<
               <Dropdown
                 openByHover
                 key={item.text + i}
-                content={this.props.i18n.text.get(item.text)}
+                content={this.props.i18nOLD.text.get(item.text)}
               >
                 <Link
                   openInNewTab={item.openInNewTab}
@@ -179,12 +179,12 @@ class MainFunctionNavbar extends React.Component<
                   }`}
                   aria-label={
                     this.props.activeTrail == item.trail
-                      ? this.props.i18n.text.get(
+                      ? this.props.i18nOLD.text.get(
                           "plugin.wcag.mainNavigation.currentPage.aria.label"
                         ) +
                         " " +
-                        this.props.i18n.text.get(item.text)
-                      : this.props.i18n.text.get(item.text)
+                        this.props.i18nOLD.text.get(item.text)
+                      : this.props.i18nOLD.text.get(item.text)
                   }
                   role="menuitem"
                 >
@@ -207,13 +207,13 @@ class MainFunctionNavbar extends React.Component<
                 <ForgotPasswordDialog key="1">
                   <Link
                     className="link link--forgot-password link--forgot-password-main-function"
-                    aria-label={this.props.i18n.text.get(
+                    aria-label={this.props.i18nOLD.text.get(
                       "plugin.forgotpassword.forgotLink"
                     )}
                     role="menuitem"
                   >
                     <span>
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.forgotpassword.forgotLink"
                       )}
                     </span>
@@ -234,7 +234,7 @@ class MainFunctionNavbar extends React.Component<
               className={`menu__item-link ${
                 this.props.activeTrail === item.trail ? "active" : ""
               }`}
-              aria-label={this.props.i18n.text.get(item.text)}
+              aria-label={this.props.i18nOLD.text.get(item.text)}
               role="menuitem"
             >
               <span className={`menu__item-link-icon icon-${item.icon}`} />
@@ -244,7 +244,7 @@ class MainFunctionNavbar extends React.Component<
                 </span>
               ) : null}
               <span className="menu__item-link-text">
-                {this.props.i18n.text.get(item.text)}
+                {this.props.i18nOLD.text.get(item.text)}
               </span>
             </Link>
           );
@@ -260,7 +260,7 @@ class MainFunctionNavbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
     title: state.title,

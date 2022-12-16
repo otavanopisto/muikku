@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import mApi from "~/lib/mApi";
 import MatriculationSubjectType from "./matriculation-subject-type";
@@ -14,7 +14,7 @@ import Button from "~/components/general/button";
 interface MatriculationSubjectsListProps {
   initialMatriculationSubjects?: string[];
   onMatriculationSubjectsChange: (matriculationSubjects: string[]) => void;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -117,7 +117,7 @@ class MatriculationSubjectsList extends React.Component<
    * @returns subject name or empty string if not found
    */
   getMatriculationSubjectNameByCode = (code: string): string =>
-    this.props.i18n.text.get(
+    this.props.i18nOLD.text.get(
       `plugin.records.hops.matriculationSubject.${code}`
     );
 
@@ -158,7 +158,7 @@ class MatriculationSubjectsList extends React.Component<
     if (this.state.loading) {
       return (
         <div className="loader">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.records.hops.goals.matriculationSubjectLoading"
           )}
         </div>
@@ -176,7 +176,7 @@ class MatriculationSubjectsList extends React.Component<
               htmlFor={`matriculationSubject` + index}
               className="visually-hidden"
             >
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.wcag.matriculationSubjectSelect.label"
               )}
             </label>
@@ -187,7 +187,7 @@ class MatriculationSubjectsList extends React.Component<
               onChange={this.handleMatriculationSubjectChange.bind(this, index)}
             >
               <option disabled value="">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.records.hops.goals.matriculationSubjectChoose"
                 )}
               </option>
@@ -206,7 +206,7 @@ class MatriculationSubjectsList extends React.Component<
               ]}
               onClick={this.handleMatriculationSubjectRemove.bind(this, index)}
             >
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.hops.goals.matriculationSubjectRemove"
               )}
             </Button>
@@ -222,7 +222,7 @@ class MatriculationSubjectsList extends React.Component<
             buttonModifiers={["primary-function-content", "add-subject-row"]}
             onClick={this.handleMatriculationSubjectAdd.bind(this)}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.goals.matriculationSubjectAdd"
             )}
           </Button>
@@ -238,7 +238,7 @@ class MatriculationSubjectsList extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import LabelUpdateDialog from "../dialogs/label-update";
 import { MessagesType } from "~/reducers/main-function/messages";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 
 import "~/sass/elements/buttons.scss";
@@ -17,7 +17,7 @@ import Navigation, {
  * NavigationProps
  */
 interface NavigationProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   messages: MessagesType;
   openSignatureDialog: () => any;
 }
@@ -41,7 +41,9 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          name={this.props.i18n.text.get("plugin.communicator.folders.title")}
+          name={this.props.i18nOLD.text.get(
+            "plugin.communicator.folders.title"
+          )}
         >
           {this.props.messages.navigation.map((item) => (
             <NavigationElement
@@ -56,12 +58,14 @@ class NavigationAside extends React.Component<
               }
               isEditable={item.type === "label"}
             >
-              {item.text(this.props.i18n)}
+              {item.text(this.props.i18nOLD)}
             </NavigationElement>
           ))}
         </NavigationTopic>
         <NavigationTopic
-          name={this.props.i18n.text.get("plugin.communicator.settings.topic")}
+          name={this.props.i18nOLD.text.get(
+            "plugin.communicator.settings.topic"
+          )}
           classModifier="communicator-settings"
         >
           <NavigationElement
@@ -69,7 +73,9 @@ class NavigationAside extends React.Component<
             isActive={false}
             onClick={this.props.openSignatureDialog}
           >
-            {this.props.i18n.text.get("plugin.communicator.settings.signature")}
+            {this.props.i18nOLD.text.get(
+              "plugin.communicator.settings.signature"
+            )}
           </NavigationElement>
         </NavigationTopic>
       </Navigation>
@@ -83,7 +89,7 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     messages: state.messages,
   };
 }

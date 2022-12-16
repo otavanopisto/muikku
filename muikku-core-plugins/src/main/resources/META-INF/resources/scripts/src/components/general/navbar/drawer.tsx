@@ -10,7 +10,7 @@ import { logout, LogoutTriggerType } from "~/actions/base/status";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import $ from "~/lib/jquery";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import "~/sass/elements/drawer.scss";
@@ -44,7 +44,7 @@ interface DrawerProps {
   modifier: string;
   navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>;
   status: StatusType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   logout: LogoutTriggerType;
   openReadingRuler: OpenReadingRuler;
 }
@@ -245,7 +245,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                   }`}
                   width="157"
                   height="56"
-                  alt={this.props.i18n.text.get(
+                  alt={this.props.i18nOLD.text.get(
                     "plugin.site.logo.linkBackToFrontPage"
                   )}
                 />
@@ -292,7 +292,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                         <span className="menu__item-link-icon icon-user"></span>
                       )}
                       <span className="menu__item-link-text">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.profileBadge.links.personalInfo"
                         )}
                       </span>
@@ -307,7 +307,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     >
                       <span className="menu__item-link-icon icon-question" />
                       <span className="menu__item-link-text">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.profileBadge.links.userGuide"
                         )}
                       </span>
@@ -322,7 +322,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     >
                       <span className="menu__item-link-icon icon-support"></span>
                       <span className="menu__item-link-text">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.profileBadge.links.helpdesk"
                         )}
                       </span>
@@ -346,7 +346,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     >
                       <span className="menu__item-link-icon icon-sign-out"></span>
                       <span className="menu__item-link-text">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.profileBadge.links.logout"
                         )}
                       </span>
@@ -369,7 +369,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

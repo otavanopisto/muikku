@@ -8,7 +8,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   WorkspaceType,
   MaterialContentNodeListType,
@@ -40,7 +40,7 @@ import {
  * HelpMaterialsProps
  */
 interface HelpMaterialsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
@@ -243,7 +243,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         rootParentId: this.props.workspace.details.helpFolderId,
         parentMaterial: section,
         nextSibling,
-        title: this.props.i18n.text.get(
+        title: this.props.i18nOLD.text.get(
           "plugin.workspace.materialsManagement.newPageTitle"
         ),
         makeFolder: false,
@@ -287,7 +287,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         workspace: this.props.workspace,
         rootParentId: this.props.workspace.details.helpFolderId,
         nextSibling,
-        title: this.props.i18n.text.get(
+        title: this.props.i18nOLD.text.get(
           "plugin.workspace.materialsManagement.newPageTitle"
         ),
         makeFolder: true,
@@ -434,12 +434,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   ) => {
     switch (viewRestrict) {
       case MaterialViewRestriction.LOGGED_IN:
-        return this.props.i18n.text.get(
+        return this.props.i18nOLD.text.get(
           "plugin.workspace.materialViewRestricted"
         );
 
       case MaterialViewRestriction.WORKSPACE_MEMBERS:
-        return this.props.i18n.text.get(
+        return this.props.i18nOLD.text.get(
           "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
         );
 
@@ -468,7 +468,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           <Dropdown
             openByHover
             modifier="material-management-tooltip"
-            content={this.props.i18n.text.get(
+            content={this.props.i18nOLD.text.get(
               "plugin.workspace.materialsManagement.createChapterTooltip"
             )}
           >
@@ -484,7 +484,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     const emptyMessage =
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.materialsManagement.empty"
           )}
         </div>
@@ -504,7 +504,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             <Dropdown
               openByHover
               modifier="material-management-tooltip"
-              content={this.props.i18n.text.get(
+              content={this.props.i18nOLD.text.get(
                 "plugin.workspace.materialsManagement.createChapterTooltip"
               )}
             >
@@ -546,7 +546,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                       }}
                     />
                     <span className={`link__icon icon-${item.icon}`}></span>
-                    <span>{this.props.i18n.text.get(item.text)}</span>
+                    <span>{this.props.i18nOLD.text.get(item.text)}</span>
                   </label>
                 );
               }
@@ -559,7 +559,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   }}
                 >
                   <span className={`link__icon icon-${item.icon}`}></span>
-                  <span>{this.props.i18n.text.get(item.text)}</span>
+                  <span>{this.props.i18nOLD.text.get(item.text)}</span>
                 </Link>
               );
             })}
@@ -623,7 +623,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                           <span
                             className={`link__icon icon-${item.icon}`}
                           ></span>
-                          <span>{this.props.i18n.text.get(item.text)}</span>
+                          <span>{this.props.i18nOLD.text.get(item.text)}</span>
                         </label>
                       );
                     }
@@ -636,7 +636,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                         }}
                       >
                         <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{this.props.i18n.text.get(item.text)}</span>
+                        <span>{this.props.i18nOLD.text.get(item.text)}</span>
                       </Link>
                     );
                   })}
@@ -706,7 +706,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                 <Dropdown
                   openByHover
                   modifier="material-management-tooltip"
-                  content={this.props.i18n.text.get(
+                  content={this.props.i18nOLD.text.get(
                     "plugin.workspace.materialsManagement.editChapterTooltip"
                   )}
                 >
@@ -721,10 +721,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   modifier="material-management-tooltip"
                   content={
                     section.hidden
-                      ? this.props.i18n.text.get(
+                      ? this.props.i18nOLD.text.get(
                           "plugin.workspace.materialsManagement.showChapterTooltip"
                         )
-                      : this.props.i18n.text.get(
+                      : this.props.i18nOLD.text.get(
                           "plugin.workspace.materialsManagement.hideChapterTooltip"
                         )
                   }
@@ -762,7 +762,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         onOpenNavigation={this.onOpenNavigation}
         modifier="materials"
         navigation={this.props.navigation}
-        title={this.props.i18n.text.get("plugin.workspace.helpPage.title")}
+        title={this.props.i18nOLD.text.get("plugin.workspace.helpPage.title")}
         ref="content-panel"
       >
         {results}
@@ -779,7 +779,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     workspace: state.workspaces.currentWorkspace,
     materials: state.workspaces.currentHelp,

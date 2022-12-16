@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/journal.scss";
@@ -24,7 +24,7 @@ import { JournalsState } from "~/reducers/workspaces/journals";
  * WorkspaceJournalsProps
  */
 interface WorkspaceJournalsListProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspaceJournalsState: WorkspacesStateType;
   workspaceJournalsHasMore: boolean;
   loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType;
@@ -107,8 +107,10 @@ class WorkspaceJournalsList extends BodyScrollLoader<
         <div className="empty">
           <span>
             {this.props.status.isStudent
-              ? this.props.i18n.text.get("plugin.workspace.journal.noEntries")
-              : this.props.i18n.text.get(
+              ? this.props.i18nOLD.text.get(
+                  "plugin.workspace.journal.noEntries"
+                )
+              : this.props.i18nOLD.text.get(
                   "plugin.workspace.journal.studentHasNoEntries"
                 )}
           </span>
@@ -142,7 +144,7 @@ class WorkspaceJournalsList extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspaceJournalsState: state.journals && state.journals.state,
     workspaceJournalsHasMore: state.journals && state.journals.hasMore,
     workspace: state.workspaces.currentWorkspace,

@@ -131,7 +131,7 @@ export async function loadAnnouncementsHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
+        getState().i18nOLD.text.get(
           "plugin.announcer.errormessage.loadAnnouncements"
         ),
         "error"

@@ -5,7 +5,7 @@ import {
 } from "~/actions/base/notifications";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
@@ -15,7 +15,7 @@ import Button from "~/components/general/button";
  * DisconnectedWarningDialogProps
  */
 interface DisconnectedWarningDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   dialogOpen: boolean;
   dialogMessage: string;
   closeNotificationDialog: CloseNotificationDialogTrigger;
@@ -67,7 +67,9 @@ class DisconnectedWarningDialog extends React.Component<
           buttonModifiers={["disconnect-warning"]}
           onClick={this.cancel(closeDialog)}
         >
-          {this.props.i18n.text.get("plugin.server.unreachable.button.close")}
+          {this.props.i18nOLD.text.get(
+            "plugin.server.unreachable.button.close"
+          )}
         </Button>
       </div>
     );
@@ -75,7 +77,7 @@ class DisconnectedWarningDialog extends React.Component<
     return (
       <Dialog
         isOpen={this.props.dialogOpen}
-        title={this.props.i18n.text.get("plugin.server.unreachable.title")}
+        title={this.props.i18nOLD.text.get("plugin.server.unreachable.title")}
         content={content}
         footer={footer}
         modifier={["disconnect-warning"]}
@@ -91,7 +93,7 @@ class DisconnectedWarningDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     dialogOpen: state.notifications.notificationDialogOpen,
     dialogMessage: state.notifications.dialogMessage,
   };

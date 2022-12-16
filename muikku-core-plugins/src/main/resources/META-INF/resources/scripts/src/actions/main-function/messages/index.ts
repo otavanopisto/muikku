@@ -185,7 +185,7 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.unreadMessageCount"
             ),
             "error"
@@ -229,7 +229,7 @@ const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerTy
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.lastMessageLoad"
             ),
             "error"
@@ -440,7 +440,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.communicator.errormessage.createMessage.missing.subject"
           ),
           "error"
@@ -450,7 +450,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.communicator.errormessage.createMessage.missing.content"
           ),
           "error"
@@ -460,7 +460,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.communicator.errormessage.createMessage.missing.recipients"
           ),
           "error"
@@ -588,7 +588,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
 
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.communicator.infomessage.newMessage.success"
           ),
           "success"
@@ -600,7 +600,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       }
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.communicator.errormessage.sendFailed"
           ),
           "error"
@@ -735,7 +735,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.badLocation"
             ),
             "error"
@@ -804,7 +804,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.changeStatusFailed"
             ),
             "error"
@@ -896,7 +896,7 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
         //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.badLocation"
             ),
             "error"
@@ -928,7 +928,7 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
             }
             dispatch(
               displayNotification(
-                getState().i18n.text.get(
+                getState().i18nOLD.text.get(
                   "plugin.communicator.errormessage.deleteFailed"
                 ),
                 "error"
@@ -970,7 +970,7 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.badLocation"
             ),
             "error"
@@ -1007,7 +1007,7 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.deleteFailed"
             ),
             "error"
@@ -1050,7 +1050,7 @@ const loadMessageThread: LoadMessageThreadTriggerType =
         //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.badLocation"
             ),
             "error"
@@ -1089,7 +1089,7 @@ const loadMessageThread: LoadMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.threadLoadFailed"
             ),
             "error"
@@ -1179,7 +1179,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
           }
           dispatch(
             displayNotification(
-              getState().i18n.text.get(
+              getState().i18nOLD.text.get(
                 "plugin.communicator.errormessage.receivedFailed"
               ),
               "error"
@@ -1214,7 +1214,7 @@ const loadSignature: LoadSignatureTriggerType = function loadSignature() {
       }
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.communicator.errormessage.signatureLoadFailed"
           ),
           "error"
@@ -1284,7 +1284,7 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
       }
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.communicator.errormessage.signatureUpdateFailed"
           ),
           "error"
@@ -1369,7 +1369,7 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.labelsLoadFailed"
             ),
             "error"
@@ -1392,7 +1392,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
       if (!name) {
         return dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.createUpdateLabels.missing.title"
             ),
             "error"
@@ -1435,7 +1435,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.label.createFailed"
             ),
             "error"
@@ -1459,7 +1459,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         return dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.createUpdateLabels.missing.title"
             ),
             "error"
@@ -1509,7 +1509,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.label.updateFailed"
             ),
             "error"
@@ -1561,7 +1561,7 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.label.deleteFailed"
             ),
             "error"
@@ -1594,7 +1594,7 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
         //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.badLocation"
             ),
             "error"
@@ -1626,7 +1626,7 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
             }
             dispatch(
               displayNotification(
-                getState().i18n.text.get(
+                getState().i18nOLD.text.get(
                   "plugin.communicator.errormessage.msgRestoreFailed"
                 ),
                 "error"
@@ -1667,7 +1667,7 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
       if (!item) {
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.communicator.errormessage.badLocation"
             ),
             "error"
@@ -1706,7 +1706,7 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get("currentThreadRestoreFailed"),
+            getState().i18nOLD.text.get("currentThreadRestoreFailed"),
             "error"
           )
         );

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "reducers/base/i18n";
+import { i18nType } from "reducers/base/i18nOLD";
 import { FieldStateStatus } from "~/@types/shared";
 
 /**
@@ -8,7 +8,7 @@ import { FieldStateStatus } from "~/@types/shared";
 interface SynchronizerProps {
   synced: boolean;
   syncError: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   onFieldSavedStateChange?: (savedState: FieldStateStatus) => void;
 }
 
@@ -73,7 +73,7 @@ export default class Synchronizer extends React.PureComponent<
     let message: string;
     let modifier: string;
     if (this.props.syncError) {
-      message = this.props.i18n.text.get(
+      message = this.props.i18nOLD.text.get(
         "plugin.workspace.materials.answerSavingFailed",
         this.props.syncError
       );
@@ -82,7 +82,7 @@ export default class Synchronizer extends React.PureComponent<
         ? this.props.onFieldSavedStateChange("ERROR")
         : null;
     } else if (!this.props.synced) {
-      message = this.props.i18n.text.get(
+      message = this.props.i18nOLD.text.get(
         "plugin.workspace.materials.answerSavingLabel"
       );
       modifier = "saving";
@@ -90,7 +90,7 @@ export default class Synchronizer extends React.PureComponent<
         ? this.props.onFieldSavedStateChange("SAVING")
         : null;
     } else if (this.state.displaySyncedMessage) {
-      message = this.props.i18n.text.get(
+      message = this.props.i18nOLD.text.get(
         "plugin.workspace.materials.answerSavedLabel"
       );
       modifier = "saved";

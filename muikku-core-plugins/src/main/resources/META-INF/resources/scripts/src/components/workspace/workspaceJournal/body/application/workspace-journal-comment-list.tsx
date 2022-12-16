@@ -4,7 +4,7 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
@@ -29,7 +29,7 @@ import WorkspaceJournalCommentListItem from "./workspace-journal-comment-list-it
  * WorkspaceJournalCommentListProps
  */
 interface WorkspaceJournalCommentListProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   journalsState: JournalsState;
   currentWorkspace: WorkspaceType;
@@ -144,7 +144,7 @@ export const WorkspaceJournalCommentList: React.FC<
           onClick={handleShowCommentsClick}
         >
           <span className="application-list__title-main">
-            {props.i18n.text.get(
+            {props.i18nOLD.text.get(
               "plugin.workspace.journal.entry.comments.title"
             )}{" "}
             ({props.currentJournal.commentCount})
@@ -160,7 +160,7 @@ export const WorkspaceJournalCommentList: React.FC<
             currentJournal.comments.length === 0 ? (
             <div className="empty">
               <span>
-                {props.i18n.text.get("plugin.workspace.journal.noComments")}
+                {props.i18nOLD.text.get("plugin.workspace.journal.noComments")}
               </span>
             </div>
           ) : (
@@ -183,7 +183,7 @@ export const WorkspaceJournalCommentList: React.FC<
                 onClick={handleCreateNewCommentClick}
                 className="link link--application-list"
               >
-                {props.i18n.text.get(
+                {props.i18nOLD.text.get(
                   "plugin.workspace.journal.newCommentButton.label"
                 )}
               </Link>
@@ -222,7 +222,7 @@ export const WorkspaceJournalCommentList: React.FC<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     journalsState: state.journals,
     currentWorkspace: state.workspaces && state.workspaces.currentWorkspace,

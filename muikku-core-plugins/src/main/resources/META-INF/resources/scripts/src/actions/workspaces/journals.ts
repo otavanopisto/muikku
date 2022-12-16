@@ -283,7 +283,7 @@ const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromSe
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.journal.comments.notification.load.error"
             ),
             "error"
@@ -340,7 +340,7 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.journal.notification.create.error"
             ),
             "error"
@@ -404,7 +404,7 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.journal.notification.update.error"
             ),
             "error"
@@ -459,7 +459,7 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.journal.notification.delete.error"
             ),
             "error"
@@ -555,7 +555,7 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.journal.comments.notification.load.error"
             ),
             "error"
@@ -670,7 +670,7 @@ const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.journal.comments.notification.create.error"
             ),
             "error"
@@ -765,7 +765,7 @@ const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.journal.comments.notification.update.error"
             ),
             "error"
@@ -855,7 +855,7 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.journal.comments.notification.delete.error"
             ),
             "error"

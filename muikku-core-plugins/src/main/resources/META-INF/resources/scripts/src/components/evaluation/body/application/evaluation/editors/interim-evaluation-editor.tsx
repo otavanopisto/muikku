@@ -14,7 +14,7 @@ import {
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
   updateCurrentStudentCompositeRepliesData,
@@ -46,7 +46,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface InterimEvaluationEditorProps
   extends WithTranslation<["common", "evaluation"]> {
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
@@ -240,7 +240,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
       });
     } catch (error) {
       notificationActions.displayNotification(
-        this.props.i18nn.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.evaluation.notifications.saveAssigmentGrade.error",
           error.message
         ),
@@ -359,7 +359,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
               }
             >
               <label htmlFor="assignmentEvaluationGrade">
-                {this.props.i18nn.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.evaluation.evaluationModal.interminEvaluationAudioAssessments"
                 )}
               </label>
@@ -413,7 +413,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
         {this.props.isRecording && (
           <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
             <div className="recording-warning">
-              {this.props.i18nn.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
               )}
             </div>
@@ -430,7 +430,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,

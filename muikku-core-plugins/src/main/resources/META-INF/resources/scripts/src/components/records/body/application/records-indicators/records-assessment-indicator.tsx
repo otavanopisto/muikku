@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { Assessment } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -11,7 +11,7 @@ import Dropdown from "~/components/general/dropdown";
  * AssessmentProps
  */
 interface RecordsAssessmentIndicatorProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   assessment?: Assessment;
   isCombinationWorkspace: boolean;
 }
@@ -24,7 +24,7 @@ interface RecordsAssessmentIndicatorProps {
 const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
   props
 ) => {
-  const { i18n, assessment, isCombinationWorkspace } = props;
+  const { i18nOLD, assessment, isCombinationWorkspace } = props;
 
   if (!assessment) {
     return null;
@@ -38,9 +38,9 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         openByHover
         content={
           <span>
-            {i18n.text.get(
+            {i18nOLD.text.get(
               "plugin.records.workspace.evaluated",
-              i18n.time.format(assessment.date)
+              i18nOLD.time.format(assessment.date)
             ) + getShortenGradeExtension(assessment.grade)}
           </span>
         }
@@ -55,7 +55,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
       </Dropdown>
     );
   } else if (assessment.state === "incomplete") {
-    const status = i18n.text.get(
+    const status = i18nOLD.text.get(
       assessment.state === "incomplete"
         ? "plugin.records.workspace.incomplete"
         : "plugin.records.workspace.failed"
@@ -66,9 +66,9 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         openByHover
         content={
           <span>
-            {i18n.text.get(
+            {i18nOLD.text.get(
               "plugin.records.workspace.evaluated",
-              i18n.time.format(assessment.date)
+              i18nOLD.time.format(assessment.date)
             ) +
               " - " +
               status}
@@ -94,11 +94,11 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           content={
             <span>
               {assessment.grade
-                ? i18n.text.get(
+                ? i18nOLD.text.get(
                     "plugin.records.workspace.evaluated",
-                    i18n.time.format(assessment.date)
+                    i18nOLD.time.format(assessment.date)
                   ) + getShortenGradeExtension(assessment.grade)
-                : i18n.text.get("plugin.records.workspace.notEvaluated")}
+                : i18nOLD.text.get("plugin.records.workspace.notEvaluated")}
             </span>
           }
         >
@@ -123,7 +123,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

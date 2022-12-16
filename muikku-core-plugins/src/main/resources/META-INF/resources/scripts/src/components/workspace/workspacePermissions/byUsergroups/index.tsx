@@ -7,7 +7,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/form.scss";
 import ContentPanel from "~/components/general/content-panel";
 import { WorkspaceType } from "~/reducers/workspaces";
@@ -17,7 +17,7 @@ import { bindActionCreators } from "redux";
  * PermissionsByUsergroupsProps
  */
 interface PermissionsByUsergroupsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspace: WorkspaceType;
 }
 
@@ -54,7 +54,7 @@ class PermissionsByUsergroups extends React.Component<
     return (
       <ContentPanel
         modifier="permissions-by-usergroup"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.workspace.permissions.viewTitle"
         )}
         ref="content-panel"
@@ -62,13 +62,13 @@ class PermissionsByUsergroups extends React.Component<
         <div className="">
           <div>
             <div>
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.permissions.usergroupsColumn.label"
               )}
             </div>
             {PERMISSIONS_TO_EXTRACT.map((pte) => (
               <div key={pte}>
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.workspace.permissions.label." + pte
                 )}
               </div>
@@ -107,7 +107,7 @@ class PermissionsByUsergroups extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
   };
 }

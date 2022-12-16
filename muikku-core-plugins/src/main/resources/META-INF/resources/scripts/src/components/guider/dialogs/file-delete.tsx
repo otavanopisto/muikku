@@ -2,7 +2,7 @@ import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
 
 import { AnyActionType } from "~/actions";
@@ -22,7 +22,7 @@ interface FileDeleteDialogProps {
   children: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => any;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   file: UserFileType;
   removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType;
 }
@@ -72,7 +72,7 @@ class FileDeleteDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.deleteFile.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.guider.flags.deleteAttachmentDialog.yes"
           )}
         </Button>
@@ -80,7 +80,7 @@ class FileDeleteDialog extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.guider.flags.deleteAttachmentDialog.no"
           )}
         </Button>
@@ -93,7 +93,7 @@ class FileDeleteDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        {this.props.i18n.text.get(
+        {this.props.i18nOLD.text.get(
           "plugin.guider.flags.deleteAttachmentDialog.description"
         )}
       </div>
@@ -103,7 +103,7 @@ class FileDeleteDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="guider-delete-file"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.guider.flags.deleteAttachmentDialog.title"
         )}
         content={content}
@@ -121,7 +121,7 @@ class FileDeleteDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

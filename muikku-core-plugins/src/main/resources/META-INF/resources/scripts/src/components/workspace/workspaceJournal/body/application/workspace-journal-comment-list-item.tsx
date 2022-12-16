@@ -18,7 +18,7 @@ import {
 } from "~/components/general/application-list";
 import { bindActionCreators } from "redux";
 import { JournalComment } from "~/@types/journal";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
@@ -30,7 +30,7 @@ import {
  * WorkspaceJournalCommentListProps
  */
 interface WorkspaceJournalCommentListItemProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   journalComment: JournalComment;
   workspaceEntityId: number;
   status: StatusType;
@@ -147,7 +147,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 className="link link--application-list"
                 onClick={handleEditCommentClick}
               >
-                {props.i18n.text.get(
+                {props.i18nOLD.text.get(
                   "plugin.workspace.journal.editCommentButton.label"
                 )}
               </Link>
@@ -157,7 +157,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 workspaceEntityId={props.workspaceEntityId}
               >
                 <Link as="span" className="link link--application-list">
-                  {props.i18n.text.get(
+                  {props.i18nOLD.text.get(
                     "plugin.workspace.journal.deleteCommentButton.label"
                   )}
                 </Link>
@@ -176,7 +176,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
@@ -37,7 +37,7 @@ import { UserIndexType } from "~/reducers/user-index";
  * AnnouncementsProps
  */
 interface AnnouncementsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   announcements: AnnouncementsType;
   userIndex: UserIndexType;
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType;
@@ -112,7 +112,7 @@ class Announcements extends React.Component<
                           htmlFor={`announcementSelect-` + announcement.id}
                           className="visually-hidden"
                         >
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.wcag.announcementSelect.label"
                           )}
                         </label>
@@ -123,10 +123,10 @@ class Announcements extends React.Component<
                     <ApplicationListItemHeader>
                       <ApplicationListHeaderPrimary>
                         <ApplicationListItemDate
-                          startDate={this.props.i18n.time.format(
+                          startDate={this.props.i18nOLD.time.format(
                             announcement.startDate
                           )}
-                          endDate={this.props.i18n.time.format(
+                          endDate={this.props.i18nOLD.time.format(
                             announcement.endDate
                           )}
                         />
@@ -174,7 +174,7 @@ class Announcements extends React.Component<
                           tabIndex={0}
                           className="link link--application-list"
                         >
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.announcer.link.edit"
                           )}
                         </Link>
@@ -185,7 +185,7 @@ class Announcements extends React.Component<
                             tabIndex={0}
                             className="link link--application-list"
                           >
-                            {this.props.i18n.text.get(
+                            {this.props.i18nOLD.text.get(
                               "plugin.announcer.link.delete"
                             )}
                           </Link>
@@ -210,7 +210,7 @@ class Announcements extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     announcements: state.announcements,
     userIndex: state.userIndex,
   };

@@ -43,7 +43,7 @@ const updateStatistics: UpdateStatisticsTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.records.statistics.errormessage.statisticsUpdateFailed"
             ),
             "error"

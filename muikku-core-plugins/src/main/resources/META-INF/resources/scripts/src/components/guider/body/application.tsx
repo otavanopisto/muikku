@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
-import { i18nType } from "reducers/base/i18n";
+import { i18nType } from "reducers/base/i18nOLD";
 import Students from "./application/students";
 import Toolbar from "./application/toolbar";
 import { StateType } from "~/reducers";
@@ -11,7 +11,7 @@ import { StateType } from "~/reducers";
  */
 interface GuiderApplicationProps {
   aside: JSX.Element;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -38,12 +38,12 @@ class GuiderApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.guider.guider");
+    const title = this.props.i18nOLD.text.get("plugin.guider.guider");
     const toolbar = <Toolbar />;
     const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectUsers" className="visually-hidden">
-          {this.props.i18n.text.get("plugin.coursepicker.select.label")}
+          {this.props.i18nOLD.text.get("plugin.coursepicker.select.label")}
         </label>
         <select
           id="selectUsers"
@@ -51,7 +51,7 @@ class GuiderApplication extends React.Component<
           disabled
         >
           <option>
-            {this.props.i18n.text.get("plugin.guider.students.all")}
+            {this.props.i18nOLD.text.get("plugin.guider.students.all")}
           </option>
         </select>
       </div>
@@ -75,7 +75,7 @@ class GuiderApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

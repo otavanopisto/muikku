@@ -172,7 +172,7 @@ function validateAnnouncement(
   if (!announcement.caption) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
+        getState().i18nOLD.text.get(
           "plugin.announcer.errormessage.createAnnouncement.missing.caption"
         ),
         "error"
@@ -182,7 +182,7 @@ function validateAnnouncement(
   } else if (!announcement.content) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
+        getState().i18nOLD.text.get(
           "plugin.announcer.errormessage.createAnnouncement.missing.content"
         ),
         "error"
@@ -192,7 +192,7 @@ function validateAnnouncement(
   } else if (!announcement.endDate) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
+        getState().i18nOLD.text.get(
           "plugin.announcer.errormessage.createAnnouncement.missing.endDate"
         ),
         "error"
@@ -202,7 +202,7 @@ function validateAnnouncement(
   } else if (!announcement.startDate) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
+        getState().i18nOLD.text.get(
           "plugin.announcer.errormessage.createAnnouncement.missing.startDate"
         ),
         "error"
@@ -276,7 +276,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
         } catch (err) {
           dispatch(
             notificationActions.displayNotification(
-              getState().i18n.text.get(
+              getState().i18nOLD.text.get(
                 "plugin.announcer.errormessage.announcementNotAvailable"
               ),
               "error"
@@ -304,7 +304,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.announcer.errormessage.loadAnnouncement"
           ),
           "error"
@@ -409,7 +409,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.announcer.errormessage.updateAnnouncement"
             ),
             "error"
@@ -478,7 +478,7 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
             }
             dispatch(
               notificationActions.displayNotification(
-                getState().i18n.text.get(
+                getState().i18nOLD.text.get(
                   "plugin.announcer.errormessage.deleteAnnouncement"
                 ),
                 "error"
@@ -537,7 +537,7 @@ const createAnnouncement: CreateAnnouncementTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.announcer.errormessage.createAnnouncement"
             ),
             "error"
@@ -606,7 +606,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.announcer.errormessage.loadAnnouncements"
             ),
             "error"

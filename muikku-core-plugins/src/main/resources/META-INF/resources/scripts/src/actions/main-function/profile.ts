@@ -604,7 +604,7 @@ const uploadProfileImage: UploadProfileImageTriggerType =
         dispatch(updateStatusHasImage(true));
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.profile.changeImage.dialog.notif.successful"
             ),
             "success"
@@ -618,7 +618,7 @@ const uploadProfileImage: UploadProfileImageTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.profile.changeImage.dialog.notif.error"
             ),
             "error"
@@ -657,7 +657,7 @@ const deleteProfileImage: DeleteProfileImageTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.profile.errormessage.profileImage.remove"
             ),
             "error"
@@ -701,7 +701,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
           "callback"
         )()) as StoredWorklistItem;
 
-        let displayName = state.i18n.time.format(
+        let displayName = state.i18nOLD.time.format(
           worklistItem.entryDate,
           "MMMM YYYY"
         );
@@ -783,7 +783,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
         data.fail && data.fail();
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.profile.errormessage.worklist"),
+            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
             "error"
           )
         );
@@ -853,7 +853,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
         data.fail && data.fail();
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.profile.errormessage.worklist"),
+            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
             "error"
           )
         );
@@ -951,7 +951,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
         data.fail && data.fail();
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.profile.errormessage.worklist"),
+            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
             "error"
           )
         );
@@ -989,7 +989,7 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.profile.errormessage.worklist"),
+            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
             "error"
           )
         );
@@ -1037,7 +1037,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.profile.errormessage.worklist"),
+            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
             "error"
           )
         );
@@ -1090,7 +1090,7 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.profile.errormessage.worklist"),
+            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
             "error"
           )
         );
@@ -1153,7 +1153,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.profile.errormessage.worklist"),
+            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
             "error"
           )
         );
@@ -1189,7 +1189,9 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get("plugin.profile.errormessage.purchases"),
+            getState().i18nOLD.text.get(
+              "plugin.profile.errormessage.purchases"
+            ),
             "error"
           )
         );

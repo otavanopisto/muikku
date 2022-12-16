@@ -8,14 +8,14 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { WorkspaceJournalType } from "~/reducers/workspaces";
 
 /**
  * JournalProps
  */
 interface JournalProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   journal: WorkspaceJournalType;
   open: boolean;
   onJournalClick: (
@@ -29,7 +29,7 @@ interface JournalProps {
  * @returns JSX.Element
  */
 const Journal: React.FC<JournalProps> = (props) => {
-  const { i18n, journal, onJournalClick, open } = props;
+  const { i18nOLD, journal, onJournalClick, open } = props;
 
   return (
     <ApplicationListItem
@@ -44,7 +44,7 @@ const Journal: React.FC<JournalProps> = (props) => {
           </span>
         </div>
         <div className="application-list__item-header-aside">
-          <span>{i18n.time.format(journal.created, "L LT")}</span>
+          <span>{i18nOLD.time.format(journal.created, "L LT")}</span>
         </div>
       </ApplicationListItemHeader>
       <ApplicationListItemBody className="application-list__item-body">
@@ -67,7 +67,7 @@ const Journal: React.FC<JournalProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 
