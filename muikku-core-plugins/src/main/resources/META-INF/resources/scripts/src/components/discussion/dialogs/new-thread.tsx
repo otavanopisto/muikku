@@ -16,11 +16,12 @@ import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 
 import "~/sass/elements/form.scss";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DicussionNewThreadProps
  */
-interface DicussionNewThreadProps {
+interface DicussionNewThreadProps extends WithTranslation<["common"]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   i18nOLD: i18nType;
@@ -260,6 +261,7 @@ class DicussionNewThread extends SessionStateComponent<
    * render
    */
   render() {
+    // TODO: use i18next
     const editorTitle =
       this.props.i18nOLD.text.get("plugin.discussion.createmessage.topic") +
       " - " +
@@ -273,9 +275,12 @@ class DicussionNewThread extends SessionStateComponent<
       <div key="1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.title"
-            )}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get(
+                "plugin.discussion.createmessage.title"
+              )
+            }
           </label>
           <input
             id="messageTitle"
@@ -287,9 +292,12 @@ class DicussionNewThread extends SessionStateComponent<
         </div>
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageArea" className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.area"
-            )}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get(
+                "plugin.discussion.createmessage.area"
+              )
+            }
           </label>
           <select
             id="messageArea"
@@ -316,9 +324,12 @@ class DicussionNewThread extends SessionStateComponent<
               onChange={this.togglePinned}
             />
             <label htmlFor="messagePinned" className="env-dialog__input-label">
-              {this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.pinned"
-              )}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get(
+                  "plugin.discussion.createmessage.pinned"
+                )
+              }
             </label>
           </div>
           <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
@@ -330,9 +341,12 @@ class DicussionNewThread extends SessionStateComponent<
               onChange={this.toggleLocked}
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
-              {this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.locked"
-              )}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get(
+                  "plugin.discussion.createmessage.locked"
+                )
+              }
             </label>
           </div>
           <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
@@ -344,9 +358,12 @@ class DicussionNewThread extends SessionStateComponent<
               onChange={this.toggleSubscribeThread}
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
-              {this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.subscribe"
-              )}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get(
+                  "plugin.discussion.createmessage.subscribe"
+                )
+              }
             </label>
           </div>
         </div>
@@ -356,9 +373,12 @@ class DicussionNewThread extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.content"
-            )}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get(
+                "plugin.discussion.createmessage.content"
+              )
+            }
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -381,16 +401,14 @@ class DicussionNewThread extends SessionStateComponent<
           onClick={this.createThread.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
+          {this.props.t("common:actions.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.createmessage.cancel"
-          )}
+          {this.props.t("common:actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -398,9 +416,7 @@ class DicussionNewThread extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.t("common:actions.remove_draft")}
           </Button>
         ) : null}
       </div>
@@ -408,6 +424,7 @@ class DicussionNewThread extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-message"
+        // TODO: use i18next
         title={this.props.i18nOLD.text.get(
           "plugin.discussion.createmessage.topic"
         )}
@@ -441,4 +458,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ createDiscussionThread }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DicussionNewThread);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DicussionNewThread)
+);

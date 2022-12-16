@@ -15,12 +15,14 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 
 import "~/sass/elements/form.scss";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * ModifyThreadReplyProps
  */
-interface ModifyThreadReplyProps {
+interface ModifyThreadReplyProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   reply?: DiscussionThreadReplyType;
   modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType;
@@ -114,7 +116,7 @@ class ModifyThreadReply extends SessionStateComponent<
    * modifyReply
    * @param closeDialog closeDialog
    */
-  modifyReply(closeDialog: () => any) {
+  modifyReply(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
@@ -146,6 +148,7 @@ class ModifyThreadReply extends SessionStateComponent<
    * render
    */
   render() {
+    // TODO: use i18next
     const editorTitle =
       this.props.i18nOLD.text.get("plugin.discussion.reply.edit.topic") +
       " - " +
@@ -155,13 +158,16 @@ class ModifyThreadReply extends SessionStateComponent<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => void) => [
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.content"
-            )}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get(
+                "plugin.discussion.createmessage.content"
+              )
+            }
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -179,23 +185,21 @@ class ModifyThreadReply extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
           onClick={this.modifyReply.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
+          {this.props.t("common:actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.createmessage.cancel"
-          )}
+          {this.props.t("common:actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -203,9 +207,7 @@ class ModifyThreadReply extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.t("common:actions.remove_draft")}
           </Button>
         ) : null}
       </div>
@@ -214,6 +216,7 @@ class ModifyThreadReply extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="modify-reply-thread"
+        // TODO: use i18next
         title={this.props.i18nOLD.text.get(
           "plugin.discussion.reply.edit.topic"
         )}
@@ -245,4 +248,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyReplyFromCurrentThread }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModifyThreadReply);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ModifyThreadReply)
+);

@@ -17,15 +17,18 @@ import {
   deleteDiscussionThreadReplyFromCurrent,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DiscussionDeleteThreadComponentProps
  */
-interface DiscussionDeleteThreadComponentProps {
+interface DiscussionDeleteThreadComponentProps
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   reply?: DiscussionThreadReplyType;
   deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType;
   deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
 }
 
@@ -61,7 +64,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
    * deleteComponent
    * @param closeDialog closeDialog
    */
-  deleteComponent(closeDialog: () => any) {
+  deleteComponent(closeDialog: () => void) {
     this.setState({ locked: true });
     if (!this.props.reply) {
       this.props.deleteCurrentDiscussionThread({
@@ -106,37 +109,37 @@ class DiscussionDeleteThreadComponent extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
-        {this.props.reply
-          ? this.props.i18nOLD.text.get("plugin.discussion.removeReply.text")
-          : this.props.i18nOLD.text.get(
-              "plugin.discussion.confirmThreadRemovalDialog.text"
-            )}
+        {
+          // TODO: use i18next
+          this.props.reply
+            ? this.props.i18nOLD.text.get("plugin.discussion.removeReply.text")
+            : this.props.i18nOLD.text.get(
+                "plugin.discussion.confirmThreadRemovalDialog.text"
+              )
+        }
       </div>
     );
 
     /**
-     * @param closeDialog
+     * footer
+     * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.deleteComponent.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.confirmThreadRemovalDialog.confirmButton"
-          )}
+          {this.props.t("common:actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.confirmThreadRemovalDialog.cancelButton"
-          )}
+          {this.props.t("common:actions.cancel")}
         </Button>
       </div>
     );
@@ -144,6 +147,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
     return (
       <Dialog
         modifier="delete-area"
+        // TODO: use i18next
         title={
           this.props.reply
             ? this.props.i18nOLD.text.get("plugin.discussion.removeReply")
@@ -179,7 +183,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionDeleteThreadComponent);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionDeleteThreadComponent)
+);

@@ -38,11 +38,12 @@ import {
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
 import { WorkspacesType } from "~/reducers/workspaces";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DiscussionThreadsProps
  */
-interface DiscussionSubscribedThreadsProps {
+interface DiscussionSubscribedThreadsProps extends WithTranslation<["common"]> {
   discussion: DiscussionType;
   i18nOLD: i18nType;
   status: StatusType;
@@ -242,9 +243,12 @@ class DiscussionSubscribedThreads extends React.Component<
         return (
           <div className="empty">
             <span>
-              {this.props.i18nOLD.text.get(
-                "plugin.discussion.browseareas.subscribtions.empty.title"
-              )}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get(
+                  "plugin.discussion.browseareas.subscribtions.empty.title"
+                )
+              }
             </span>
           </div>
         );
@@ -279,6 +283,7 @@ class DiscussionSubscribedThreads extends React.Component<
               firstName={user.firstName}
               hasImage={user.hasImage}
               userCategory={userCategory}
+              // TODO: use i18next
               avatarAriaLabel={this.props.i18nOLD.text.get(
                 "plugin.wcag.userAvatar.label"
               )}
@@ -310,6 +315,7 @@ class DiscussionSubscribedThreads extends React.Component<
               <Dropdown
                 openByHover
                 modifier="discussion-tooltip"
+                // TODO: use i18next
                 content={this.props.i18nOLD.text.get(
                   "plugin.discussion.unsubscribe.thread"
                 )}
@@ -350,9 +356,12 @@ class DiscussionSubscribedThreads extends React.Component<
               <div className="application-list__item-footer-content-aside">
                 <div className="application-list__item-counter-container">
                   <span className="application-list__item-counter-title">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.discussion.titleText.replyCount"
-                    )}{" "}
+                    {
+                      // TODO: use i18next
+                      this.props.i18nOLD.text.get(
+                        "plugin.discussion.titleText.replyCount"
+                      )
+                    }{" "}
                   </span>
                   <span className="application-list__item-counter">
                     {subscribredThread.numReplies}
@@ -360,9 +369,12 @@ class DiscussionSubscribedThreads extends React.Component<
                 </div>
                 <div className="application-list__item-date">
                   <span>
-                    {this.props.i18nOLD.text.get(
-                      "plugin.discussion.titleText.lastMessage"
-                    )}{" "}
+                    {
+                      // TODO: use i18next
+                      this.props.i18nOLD.text.get(
+                        "plugin.discussion.titleText.lastMessage"
+                      )
+                    }{" "}
                     {this.props.i18nOLD.time.format(subscribredThread.updated)}
                   </span>
                 </div>
@@ -399,6 +411,7 @@ class DiscussionSubscribedThreads extends React.Component<
             firstName={user.firstName}
             hasImage={user.hasImage}
             userCategory={userCategory}
+            // TODO: use i18next
             avatarAriaLabel={this.props.i18nOLD.text.get(
               "plugin.wcag.userAvatar.label"
             )}
@@ -430,6 +443,7 @@ class DiscussionSubscribedThreads extends React.Component<
             <Dropdown
               openByHover
               modifier="discussion-tooltip"
+              // TODO: use i18next
               content={this.props.i18nOLD.text.get(
                 "plugin.discussion.unsubscribe.thread"
               )}
@@ -477,9 +491,12 @@ class DiscussionSubscribedThreads extends React.Component<
             <div className="application-list__item-footer-content-aside">
               <div className="application-list__item-counter-container">
                 <span className="application-list__item-counter-title">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.discussion.titleText.replyCount"
-                  )}{" "}
+                  {
+                    // TODO: use i18next
+                    this.props.i18nOLD.text.get(
+                      "plugin.discussion.titleText.replyCount"
+                    )
+                  }{" "}
                 </span>
                 <span className="application-list__item-counter">
                   {subscribredThread.numReplies}
@@ -487,9 +504,12 @@ class DiscussionSubscribedThreads extends React.Component<
               </div>
               <div className="application-list__item-date">
                 <span>
-                  {this.props.i18nOLD.text.get(
-                    "plugin.discussion.titleText.lastMessage"
-                  )}{" "}
+                  {
+                    // TODO: use i18next
+                    this.props.i18nOLD.text.get(
+                      "plugin.discussion.titleText.lastMessage"
+                    )
+                  }{" "}
                   {this.props.i18nOLD.time.format(subscribredThread.updated)}
                 </span>
               </div>
@@ -502,9 +522,12 @@ class DiscussionSubscribedThreads extends React.Component<
     return (
       <BodyScrollKeeper hidden={!!this.props.discussion.current}>
         <DiscussionThreadsListHeader>
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.browseareas.subscribtions.environment.title"
-          )}
+          {
+            // TODO: use i18next
+            this.props.i18nOLD.text.get(
+              "plugin.discussion.browseareas.subscribtions.environment.title"
+            )
+          }
         </DiscussionThreadsListHeader>
         <DiscussionThreads>
           {enviromentalLevelThreadsItems.length > 0 ? (
@@ -512,17 +535,23 @@ class DiscussionSubscribedThreads extends React.Component<
           ) : (
             <div className="empty">
               <span>
-                {this.props.i18nOLD.text.get(
-                  "plugin.discussion.browseareas.subscribtions.empty.title"
-                )}
+                {
+                  // TODO: use i18next
+                  this.props.i18nOLD.text.get(
+                    "plugin.discussion.browseareas.subscribtions.empty.title"
+                  )
+                }
               </span>
             </div>
           )}
         </DiscussionThreads>
         <DiscussionThreadsListHeader>
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.browseareas.subscribtions.workspace.title"
-          )}
+          {
+            // TODO: use i18next
+            this.props.i18nOLD.text.get(
+              "plugin.discussion.browseareas.subscribtions.workspace.title"
+            )
+          }
         </DiscussionThreadsListHeader>
         <DiscussionThreads>
           {workspaceLevelThreadsItems.length > 0 ? (
@@ -530,9 +559,12 @@ class DiscussionSubscribedThreads extends React.Component<
           ) : (
             <div className="empty">
               <span>
-                {this.props.i18nOLD.text.get(
-                  "plugin.discussion.browseareas.subscribtions.empty.title"
-                )}
+                {
+                  // TODO: use i18next
+                  this.props.i18nOLD.text.get(
+                    "plugin.discussion.browseareas.subscribtions.empty.title"
+                  )
+                }
               </span>
             </div>
           )}
@@ -569,7 +601,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionSubscribedThreads);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionSubscribedThreads)
+);

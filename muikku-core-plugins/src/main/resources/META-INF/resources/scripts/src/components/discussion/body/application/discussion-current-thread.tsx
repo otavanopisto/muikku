@@ -38,11 +38,12 @@ import {
   unsubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CurrentThreadProps
  */
-interface DiscussionCurrentThreadProps {
+interface DiscussionCurrentThreadProps extends WithTranslation<["common"]> {
   discussion: DiscussionType;
   i18nOLD: i18nType;
   userId: number;
@@ -223,6 +224,7 @@ class DiscussionCurrentThread extends React.Component<
           firstName={userCreator.firstName}
           hasImage={userCreator.hasImage}
           userCategory={userCategory}
+          // TODO: use i18next
           avatarAriaLabel={this.props.i18nOLD.text.get(
             "plugin.wcag.userAvatar.label"
           )}
@@ -267,6 +269,7 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
+                  // TODO: use i18next
                   content={this.props.i18nOLD.text.get(
                     "plugin.discussion.unsubscribe.thread"
                   )}
@@ -284,6 +287,7 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
+                  // TODO: use i18next
                   content={this.props.i18nOLD.text.get(
                     "plugin.discussion.subscribe.thread"
                   )}
@@ -311,9 +315,12 @@ class DiscussionCurrentThread extends React.Component<
             aside={
               <span style={{ display: "flex", alignItems: "center" }}>
                 <span>
-                  {this.props.i18nOLD.time.format(
-                    this.props.discussion.current.created
-                  )}
+                  {
+                    // TODO: use i18next
+                    this.props.i18nOLD.time.format(
+                      this.props.discussion.current.created
+                    )
+                  }
                 </span>
               </span>
             }
@@ -339,12 +346,15 @@ class DiscussionCurrentThread extends React.Component<
                 {this.props.discussion.current.created !==
                 this.props.discussion.current.lastModified ? (
                   <span className="application-list__item-edited">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.discussion.content.isEdited",
-                      this.props.i18nOLD.time.format(
-                        this.props.discussion.current.lastModified
+                    {
+                      // TODO: use i18next
+                      this.props.i18nOLD.text.get(
+                        "plugin.discussion.content.isEdited",
+                        this.props.i18nOLD.time.format(
+                          this.props.discussion.current.lastModified
+                        )
                       )
-                    )}
+                    }
                   </span>
                 ) : null}
               </DiscussionThreadBody>
@@ -355,9 +365,12 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("answer")}
                     >
-                      {this.props.i18nOLD.text.get(
-                        "plugin.discussion.reply.message"
-                      )}
+                      {
+                        // TODO: use i18next
+                        this.props.i18nOLD.text.get(
+                          "plugin.discussion.reply.message"
+                        )
+                      }
                     </Link>
                   ) : null}
                   {!threadLocked || !student ? (
@@ -365,9 +378,12 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("quote")}
                     >
-                      {this.props.i18nOLD.text.get(
-                        "plugin.discussion.reply.quote"
-                      )}
+                      {
+                        // TODO: use i18next
+                        this.props.i18nOLD.text.get(
+                          "plugin.discussion.reply.quote"
+                        )
+                      }
                     </Link>
                   ) : null}
                   {canEditThread ? (
@@ -375,17 +391,23 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("modify")}
                     >
-                      {this.props.i18nOLD.text.get(
-                        "plugin.discussion.reply.edit"
-                      )}
+                      {
+                        // TODO: use i18next
+                        this.props.i18nOLD.text.get(
+                          "plugin.discussion.reply.edit"
+                        )
+                      }
                     </Link>
                   ) : null}
                   {canRemoveThread || studentCanRemoveThread ? (
                     <DeleteThreadComponent>
                       <Link className="link link--application-list">
-                        {this.props.i18nOLD.text.get(
-                          "plugin.discussion.reply.delete"
-                        )}
+                        {
+                          // TODO: use i18next
+                          this.props.i18nOLD.text.get(
+                            "plugin.discussion.reply.delete"
+                          )
+                        }
                       </Link>
                     </DeleteThreadComponent>
                   ) : null}
@@ -522,7 +544,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionCurrentThread);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionCurrentThread)
+);

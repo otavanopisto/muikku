@@ -13,17 +13,18 @@ import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * TODO: maybe make this more generic,
  * since there is need for this kind of a reply outside discussion,
  * for example in the communicator and the guider
- * */
+ */
 
 /**
  * ReplyThreadDrawerProps
  */
-interface ReplyThreadDrawerProps {
+interface ReplyThreadDrawerProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   reply?: DiscussionThreadReplyType;
   quote?: string;
@@ -168,6 +169,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    // TODO: use i18next
     const editorTitle =
       this.props.i18nOLD.text.get("plugin.discussion.answertomessage.topic") +
       " - " +
@@ -177,9 +179,12 @@ class ReplyThreadDrawer extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.content"
-            )}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get(
+                "plugin.discussion.createmessage.content"
+              )
+            }
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -199,16 +204,14 @@ class ReplyThreadDrawer extends SessionStateComponent<
           onClick={this.createReply.bind(this)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
+          {this.props.t("common:actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnCancelClick}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.createmessage.cancel"
-          )}
+          {this.props.t("common:actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -216,9 +219,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.t("common:actions.remove_draft")}
           </Button>
         ) : null}
       </div>
@@ -229,9 +230,12 @@ class ReplyThreadDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18nOLD.text.get(
-                "plugin.discussion.answertomessage.topic"
-              )}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get(
+                  "plugin.discussion.answertomessage.topic"
+                )
+              }
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>
@@ -263,4 +267,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ replyToCurrentDiscussionThread }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReplyThreadDrawer);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ReplyThreadDrawer)
+);

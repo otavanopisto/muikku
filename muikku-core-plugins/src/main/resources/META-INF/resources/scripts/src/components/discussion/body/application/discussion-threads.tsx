@@ -35,11 +35,12 @@ import {
   SubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DiscussionThreadsProps
  */
-interface DiscussionThreadsProps {
+interface DiscussionThreadsProps extends WithTranslation<["common"]> {
   discussion: DiscussionType;
   i18nOLD: i18nType;
   status: StatusType;
@@ -88,9 +89,11 @@ class DDiscussionThreads extends React.Component<
    * @returns label with correct locale string
    */
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
+    // TODO: use i18next
     let label = this.props.i18nOLD.text.get("plugin.wcag.pager.goToPage.label");
 
     if (selected) {
+      // TODO: use i18next
       label = this.props.i18nOLD.text.get("plugin.wcag.pager.current.label");
     }
 
@@ -158,7 +161,10 @@ class DDiscussionThreads extends React.Component<
       return (
         <div className="empty">
           <span>
-            {this.props.i18nOLD.text.get("plugin.communicator.empty.topic")}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get("plugin.communicator.empty.topic")
+            }
           </span>
         </div>
       );
@@ -194,6 +200,7 @@ class DDiscussionThreads extends React.Component<
               firstName={user.firstName}
               hasImage={user.hasImage}
               userCategory={userCategory}
+              // TODO: use i18next
               avatarAriaLabel={this.props.i18nOLD.text.get(
                 "plugin.wcag.userAvatar.label"
               )}
@@ -227,6 +234,7 @@ class DDiscussionThreads extends React.Component<
                   <Dropdown
                     openByHover
                     modifier="discussion-tooltip"
+                    // TODO: use i18next
                     content={this.props.i18nOLD.text.get(
                       "plugin.discussion.unsubscribe.thread"
                     )}
@@ -244,6 +252,7 @@ class DDiscussionThreads extends React.Component<
                   <Dropdown
                     openByHover
                     modifier="discussion-tooltip"
+                    // TODO: use i18next
                     content={this.props.i18nOLD.text.get(
                       "plugin.discussion.subscribe.thread"
                     )}
@@ -278,15 +287,22 @@ class DDiscussionThreads extends React.Component<
                       user,
                       this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                     )}
-                  , {this.props.i18nOLD.time.format(thread.created)}
+                  ,{" "}
+                  {
+                    // TODO: use i18next
+                    this.props.i18nOLD.time.format(thread.created)
+                  }
                 </span>
               </div>
               <div className="application-list__item-footer-content-aside">
                 <div className="application-list__item-counter-container">
                   <span className="application-list__item-counter-title">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.discussion.titleText.replyCount"
-                    )}{" "}
+                    {
+                      // TODO: use i18next
+                      this.props.i18nOLD.text.get(
+                        "plugin.discussion.titleText.replyCount"
+                      )
+                    }{" "}
                   </span>
                   <span className="application-list__item-counter">
                     {thread.numReplies}
@@ -294,10 +310,16 @@ class DDiscussionThreads extends React.Component<
                 </div>
                 <div className="application-list__item-date">
                   <span>
-                    {this.props.i18nOLD.text.get(
-                      "plugin.discussion.titleText.lastMessage"
-                    )}{" "}
-                    {this.props.i18nOLD.time.format(thread.updated)}
+                    {
+                      // TODO: use i18next
+                      this.props.i18nOLD.text.get(
+                        "plugin.discussion.titleText.lastMessage"
+                      )
+                    }{" "}
+                    {
+                      // TODO: use i18next
+                      this.props.i18nOLD.time.format(thread.updated)
+                    }
                   </span>
                 </div>
               </div>
@@ -354,4 +376,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DDiscussionThreads);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DDiscussionThreads)
+);

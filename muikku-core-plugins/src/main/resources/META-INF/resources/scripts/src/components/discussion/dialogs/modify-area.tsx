@@ -15,13 +15,15 @@ import {
   UpdateDiscussionAreaTriggerType,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DiscussionModifyAreaProps
  */
-interface DiscussionModifyAreaProps {
+interface DiscussionModifyAreaProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   discussion: DiscussionType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   updateDiscussionArea: UpdateDiscussionAreaTriggerType;
 }
@@ -144,9 +146,9 @@ class DiscussionModifyArea extends SessionStateComponent<
 
   /**
    * modifyArea
-   * @param closeDialog
+   * @param closeDialog closeDialog
    */
-  modifyArea(closeDialog: () => any) {
+  modifyArea(closeDialog: () => void) {
     this.setState({ locked: true });
     this.props.updateDiscussionArea({
       id: this.props.discussion.areaId,
@@ -183,16 +185,20 @@ class DiscussionModifyArea extends SessionStateComponent<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => void) => [
       <div className="env-dialog__row" key="1">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaName" className="env-dialog__label">
-            {this.props.i18nOLD.text.get("plugin.discussion.editArea.name")}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get("plugin.discussion.editArea.name")
+            }
           </label>
           <input
             id="forumAreaName"
             type="text"
             className="env-dialog__input env-dialog__input--new-discussion-area-name"
+            // TODO: use i18next
             placeholder={this.props.i18nOLD.text.get(
               "plugin.discussion.editArea.name"
             )}
@@ -205,9 +211,12 @@ class DiscussionModifyArea extends SessionStateComponent<
       <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaDescription" className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.editArea.description"
-            )}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get(
+                "plugin.discussion.editArea.description"
+              )
+            }
           </label>
           <textarea
             id="forumAreaDescription"
@@ -223,21 +232,21 @@ class DiscussionModifyArea extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
           onClick={this.modifyArea.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get("plugin.discussion.editArea.send")}
+          {this.props.t("common:actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get("plugin.discussion.editArea.cancel")}
+          {this.props.t("common:actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -245,9 +254,7 @@ class DiscussionModifyArea extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.editArea.clearDraft"
-            )}
+            {this.props.t("common:actions.remove_draft")}
           </Button>
         ) : null}
       </div>
@@ -256,6 +263,7 @@ class DiscussionModifyArea extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="modify-area"
+        // TODO: use i18next
         title={this.props.i18nOLD.text.get("plugin.discussion.editArea.topic")}
         content={content}
         footer={footer}
@@ -286,7 +294,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateDiscussionArea }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionModifyArea);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionModifyArea)
+);

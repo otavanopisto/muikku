@@ -23,7 +23,6 @@ import {
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
-import { IconButton } from "../../../general/button";
 import {
   SubscribeDiscussionArea,
   subscribeDiscussionArea,
@@ -34,11 +33,12 @@ import {
   ShowOnlySubscribedThreads,
   showOnlySubscribedThreads,
 } from "~/actions/discussion/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DiscussionToolbarProps
  */
-interface DiscussionToolbarProps {
+interface DiscussionToolbarProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   discussion: DiscussionType;
   status: StatusType;
@@ -227,7 +227,10 @@ class CommunicatorToolbar extends React.Component<
 
           <div className="form-element">
             <label htmlFor="discussionAreaSelect" className="visually-hidden">
-              {this.props.i18nOLD.text.get("plugin.wcag.areaSelect.label")}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get("plugin.wcag.areaSelect.label")
+              }
             </label>
             <select
               id="discussionAreaSelect"
@@ -236,14 +239,20 @@ class CommunicatorToolbar extends React.Component<
               value={this.selectValue()}
             >
               <option value="">
-                {this.props.i18nOLD.text.get(
-                  "plugin.discussion.browseareas.all"
-                )}
+                {
+                  // TODO: use i18next
+                  this.props.i18nOLD.text.get(
+                    "plugin.discussion.browseareas.all"
+                  )
+                }
               </option>
               <option value="subs">
-                {this.props.i18nOLD.text.get(
-                  "plugin.discussion.browseareas.subscribtions"
-                )}
+                {
+                  // TODO: use i18next
+                  this.props.i18nOLD.text.get(
+                    "plugin.discussion.browseareas.subscribtions"
+                  )
+                }
               </option>
               {this.props.discussion.areas.map((area) => {
                 const subscribed =
@@ -252,6 +261,7 @@ class CommunicatorToolbar extends React.Component<
                   ) !== -1;
 
                 return (
+                  // TODO: use i18next
                   <option key={area.id} value={area.id}>
                     {area.name}{" "}
                     {subscribed &&
@@ -296,7 +306,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommunicatorToolbar);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(CommunicatorToolbar)
+);

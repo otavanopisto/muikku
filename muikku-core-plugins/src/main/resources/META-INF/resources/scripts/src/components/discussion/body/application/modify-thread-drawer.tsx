@@ -15,11 +15,12 @@ import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 
 import "~/sass/elements/form.scss";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * ModifyThreadDrawerProps
  */
-interface ModifyThreadDrawerProps {
+interface ModifyThreadDrawerProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   discussion: DiscussionType;
   thread: DiscussionThreadType;
@@ -48,7 +49,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: ModifyThreadDrawerProps) {
     super(props, "discussion-modify-thread-dialog");
@@ -90,7 +91,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text
+   * @param text text
    */
   onCKEditorChange(text: string) {
     this.setStateAndStore({ text }, this.props.thread.id);
@@ -113,9 +114,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
 
   /**
    * modifyThread
-   * @param closeDialog
+   * @param closeDialog closeDialog
    */
-  modifyThread(closeDialog: () => any) {
+  modifyThread(closeDialog: () => void) {
     if (this.state.locked) {
       return;
     }
@@ -150,7 +151,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
 
   /**
    * onTitleChange
-   * @param e
+   * @param e e
    */
   onTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore({ title: e.target.value }, this.props.thread.id);
@@ -178,7 +179,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
 
   /**
    * componentWillReceiveProps
-   * @param nextProps
+   * @param nextProps nextProps
    */
   componentWillReceiveProps(nextProps: ModifyThreadDrawerProps) {
     if (nextProps.thread.id !== this.props.thread.id) {
@@ -208,6 +209,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    // TODO: use i18next
     const editorTitle =
       this.props.i18nOLD.text.get("plugin.discussion.editmessage.topic") +
       " - " +
@@ -218,13 +220,17 @@ class ModifyThreadDrawer extends SessionStateComponent<
         <div key="1" className="env-dialog__row env-dialog__row--titles">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">
-              {this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.title"
-              )}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get(
+                  "plugin.discussion.createmessage.title"
+                )
+              }
             </label>
             <input
               id="messageTitle"
               className="env-dialog__input env-dialog__input--new-discussion-thread-title"
+              // TODO: use i18next
               placeholder={this.props.i18nOLD.text.get(
                 "plugin.discussion.createmessage.title"
               )}
@@ -249,9 +255,12 @@ class ModifyThreadDrawer extends SessionStateComponent<
                 htmlFor="messagePinned"
                 className="env-dialog__input-label"
               >
-                {this.props.i18nOLD.text.get(
-                  "plugin.discussion.createmessage.pinned"
-                )}
+                {
+                  // TODO: use i18next
+                  this.props.i18nOLD.text.get(
+                    "plugin.discussion.createmessage.pinned"
+                  )
+                }
               </label>
             </div>
             <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
@@ -266,9 +275,12 @@ class ModifyThreadDrawer extends SessionStateComponent<
                 htmlFor="messageLocked"
                 className="env-dialog__input-label"
               >
-                {this.props.i18nOLD.text.get(
-                  "plugin.discussion.createmessage.locked"
-                )}
+                {
+                  // TODO: use i18next
+                  this.props.i18nOLD.text.get(
+                    "plugin.discussion.createmessage.locked"
+                  )
+                }
               </label>
             </div>
           </div>
@@ -277,9 +289,12 @@ class ModifyThreadDrawer extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--ckeditor">
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
-              {this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.content"
-              )}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get(
+                  "plugin.discussion.createmessage.content"
+                )
+              }
             </label>
             <CKEditor
               editorTitle={editorTitle}
@@ -302,16 +317,14 @@ class ModifyThreadDrawer extends SessionStateComponent<
           onClick={this.modifyThread.bind(this)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
+          {this.props.t("common:actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnCancelClick}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.createmessage.cancel"
-          )}
+          {this.props.t("common:actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -319,9 +332,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.t("common:actions.remove_draft")}
           </Button>
         ) : null}
       </div>
@@ -332,9 +343,12 @@ class ModifyThreadDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18nOLD.text.get(
-                "plugin.discussion.editmessage.topic"
-              )}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get(
+                  "plugin.discussion.editmessage.topic"
+                )
+              }
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>
@@ -346,7 +360,8 @@ class ModifyThreadDrawer extends SessionStateComponent<
 }
 
 /**
- * @param state
+ * mapStateToProps
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -357,10 +372,13 @@ function mapStateToProps(state: StateType) {
 }
 
 /**
- * @param dispatch
+ * mapDispatchToProps
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyDiscussionThread }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModifyThreadDrawer);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ModifyThreadDrawer)
+);
