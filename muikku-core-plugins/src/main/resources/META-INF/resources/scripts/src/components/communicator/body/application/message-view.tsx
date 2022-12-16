@@ -1,11 +1,9 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-
 import {
   MessageThreadLabelListType,
   MessagesType,
 } from "~/reducers/main-function/messages";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import TouchPager from "~/components/general/touch-pager";
 import { StateType } from "~/reducers";
 import Message from "./message-view/message";
@@ -15,12 +13,12 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/message.scss";
+import { AnyActionType } from "~/actions";
 
 /**
  * MessageViewProps
  */
 interface MessageViewProps {
-  i18nOLD: i18nType;
   messages: MessagesType;
 }
 
@@ -33,10 +31,6 @@ interface MessageViewState {}
  * MessageView
  */
 class MessageView extends React.Component<MessageViewProps, MessageViewState> {
-  private initialXPos: number;
-  private initialYPos: number;
-  private closeInterval: NodeJS.Timer;
-
   /**
    * constructor
    * @param props props
@@ -108,7 +102,6 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
 function mapStateToProps(state: StateType) {
   return {
     messages: state.messages,
-    i18nOLD: state.i18nOLD,
   };
 }
 
@@ -116,7 +109,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

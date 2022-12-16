@@ -58,11 +58,12 @@ import {
   toggleAllMessageItems,
 } from "~/actions/main-function/messages/index";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * CommunicatorToolbarProps
  */
-interface CommunicatorToolbarProps {
+interface CommunicatorToolbarProps extends WithTranslation<["common"]> {
   messages: MessagesType;
   i18nOLD: i18nType;
 
@@ -87,6 +88,7 @@ interface CommunicatorToolbarProps {
 interface CommunicatorToolbarState {
   labelFilter: string;
   isCurrentRead: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   searchquery: any;
 }
 
@@ -286,6 +288,9 @@ class CommunicatorToolbar extends React.Component<
                 style={{ color: currentLocation.color }}
               />
               <span className="application-panel__mobile-current-folder-title">
+                {
+                  // TODO: simplify this and use i18next
+                }
                 {"  " + currentLocation.text(this.props.i18nOLD)}
               </span>
               {currentLocation.type === "label" ? (
@@ -321,6 +326,7 @@ class CommunicatorToolbar extends React.Component<
                     value={this.state.labelFilter}
                     onChange={this.updateLabelFilter}
                     type="text"
+                    // TODO: use i18next
                     placeholder={this.props.i18nOLD.text.get(
                       "plugin.communicator.label.create.textfield.placeholder"
                     )}
@@ -332,6 +338,9 @@ class CommunicatorToolbar extends React.Component<
                   className="link link--full link--new"
                   onClick={this.onCreateNewLabel}
                 >
+                  {
+                    // TODO: use i18next
+                  }
                   {this.props.i18nOLD.text.get(
                     "plugin.communicator.label.create"
                   )}
@@ -342,6 +351,7 @@ class CommunicatorToolbar extends React.Component<
                     (item) =>
                       item.type === "label" &&
                       filterMatch(
+                        // TODO: simplify this and use i18next
                         item.text(this.props.i18nOLD),
                         this.state.labelFilter
                       )
@@ -450,6 +460,9 @@ class CommunicatorToolbar extends React.Component<
             style={{ color: currentLocation.color }}
           />
           <span className="application-panel__mobile-current-folder-title">
+            {
+              // TODO: simplify and use i18next
+            }
             {"  " + currentLocation.text(this.props.i18nOLD)}
           </span>
           {currentLocation.type === "label" ? (
@@ -493,6 +506,7 @@ class CommunicatorToolbar extends React.Component<
                 value={this.state.labelFilter}
                 onChange={this.updateLabelFilter}
                 type="text"
+                // TODO: use i18next
                 placeholder={this.props.i18nOLD.text.get(
                   "plugin.communicator.label.create.textfield.placeholder"
                 )}
@@ -504,6 +518,9 @@ class CommunicatorToolbar extends React.Component<
               className="link link--full"
               onClick={this.onCreateNewLabel}
             >
+              {
+                // TODO: use i18next
+              }
               {this.props.i18nOLD.text.get("plugin.communicator.label.create")}
             </Link>,
           ].concat(
@@ -512,6 +529,7 @@ class CommunicatorToolbar extends React.Component<
                 (item) =>
                   item.type === "label" &&
                   filterMatch(
+                    // TODO: simplify and use i18next
                     item.text(this.props.i18nOLD),
                     this.state.labelFilter
                   )
@@ -548,6 +566,7 @@ class CommunicatorToolbar extends React.Component<
                     ></span>
                     <span className="link__text">
                       {filterHighlight(
+                        // TODO: simplify and use i18next
                         label.text(this.props.i18nOLD),
                         this.state.labelFilter
                       )}
@@ -587,6 +606,7 @@ class CommunicatorToolbar extends React.Component<
             id="searchMessages"
             onFocus={this.onInputFocus}
             onBlur={this.onInputBlur}
+            // TODO: use i18next
             placeholder={this.props.i18nOLD.text.get(
               "plugin.communicator.search.placeholder"
             )}
@@ -634,7 +654,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommunicatorToolbar);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(CommunicatorToolbar)
+);

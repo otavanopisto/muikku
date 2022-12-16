@@ -38,11 +38,13 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * CommunicatorMessagesProps
  */
-interface CommunicatorMessagesProps {
+interface CommunicatorMessagesProps extends WithTranslation<["common"]> {
   threads: MessageThreadListType;
   hasMore: boolean;
   state: MessagesStateType;
@@ -97,11 +99,14 @@ class CommunicatorMessages extends BodyScrollLoader<
    * @param thread thread
    * @param userId userId
    */
-  getThreadUserNames(thread: MessageThreadType, userId: number): any {
+  getThreadUserNames(thread: MessageThreadType, userId: number) {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
         return (
           <span>
+            {
+              // TODO: use i18next
+            }
             {this.props.i18nOLD.text.get("plugin.communicator.sender.self")}
           </span>
         );
@@ -109,6 +114,9 @@ class CommunicatorMessages extends BodyScrollLoader<
       if (thread.sender.archived === true) {
         return (
           <span className="message__user-archived">
+            {
+              // TODO: use i18next
+            }
             {this.props.i18nOLD.text.get("plugin.communicator.sender.archived")}
           </span>
         );
@@ -132,6 +140,9 @@ class CommunicatorMessages extends BodyScrollLoader<
       if (recipient.userEntityId === userId) {
         return (
           <span key={recipient.recipientId}>
+            {
+              // TODO: use i18next
+            }
             {this.props.i18nOLD.text.get("plugin.communicator.sender.self")}
           </span>
         );
@@ -139,6 +150,9 @@ class CommunicatorMessages extends BodyScrollLoader<
       if (recipient.archived === true) {
         return (
           <span key={recipient.recipientId} className="message__user-archived">
+            {
+              // TODO: use i18next
+            }
             {this.props.i18nOLD.text.get("plugin.communicator.sender.archived")}
           </span>
         );
@@ -149,13 +163,13 @@ class CommunicatorMessages extends BodyScrollLoader<
             key={recipient.recipientId}
             className="message__user-studies-ended"
           >
-            {getName(recipient as any, !this.props.status.isStudent)}
+            {getName(recipient, !this.props.status.isStudent)}
           </span>
         );
       }
       return (
         <span key={recipient.recipientId}>
-          {getName(recipient as any, !this.props.status.isStudent)}
+          {getName(recipient, !this.props.status.isStudent)}
         </span>
       );
     });
@@ -217,6 +231,9 @@ class CommunicatorMessages extends BodyScrollLoader<
       return (
         <div className="empty">
           <span>
+            {
+              // TODO: use i18next
+            }
             {this.props.i18nOLD.text.get("plugin.communicator.empty.topic")}
           </span>
         </div>
@@ -230,14 +247,17 @@ class CommunicatorMessages extends BodyScrollLoader<
             // Lets set the correct messageFolder string based on which folrder the message belongs to
             let messageFolder;
             if (message.folder === "INBOX") {
+              // TODO: use i18next
               messageFolder = this.props.i18nOLD.text.get(
                 "plugin.communicator.category.title.inbox"
               );
             } else if (message.folder === "SENT") {
+              // TODO: use i18next
               messageFolder = this.props.i18nOLD.text.get(
                 "plugin.communicator.category.title.sent"
               );
             } else {
+              // TODO: use i18next
               messageFolder = this.props.i18nOLD.text.get(
                 "plugin.communicator.category.title.trash"
               );
@@ -276,10 +296,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                           className="application-list__header-recipient"
                           key={recipient.userEntityId}
                         >
-                          {getName(
-                            recipient as any,
-                            !this.props.status.isStudent
-                          )}
+                          {getName(recipient, !this.props.status.isStudent)}
                         </span>
                       ))}
                       {message.userGroupRecipients.map((userGroupRecepient) => (
@@ -379,7 +396,8 @@ class CommunicatorMessages extends BodyScrollLoader<
               isSelected,
               key: thread.communicatorMessageId,
               wcagLabel: thread.unreadMessagesInThread
-                ? this.props.i18nOLD.text.get(
+                ? // TODO: use i18next
+                  this.props.i18nOLD.text.get(
                     "plugin.wcag.messageUnread.aria.label"
                   )
                 : null,
@@ -388,6 +406,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                * contents
                * @param checkbox checkbox
                */
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               contents: (checkbox: React.ReactElement<any>) => (
                 <ApplicationListItemContentWrapper
                   aside={
@@ -396,6 +415,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                         htmlFor={`messageSelect-` + index}
                         className="visually-hidden"
                       >
+                        {
+                          // TODO: use i18next
+                        }
                         {this.props.i18nOLD.text.get(
                           "plugin.wcag.messageSelect.label"
                         )}
@@ -414,6 +436,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                     >
                       <span
                         className="message__recipients"
+                        // TODO: use i18next
                         aria-label={this.props.i18nOLD.text.get(
                           "plugin.wcag.messageSender.aria.label"
                         )}
@@ -427,6 +450,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                     {thread.messageCountInThread > 1 ? (
                       <div
                         className="application-list__item-counter"
+                        // TODO: use i18next
                         aria-label={this.props.i18nOLD.text.get(
                           "plugin.wcag.messageCount.aria.label"
                         )}
@@ -436,6 +460,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                     ) : null}
                     <div
                       className="application-list__header-item-date"
+                      // TODO: use i18next
                       aria-label={this.props.i18nOLD.text.get(
                         "plugin.wcag.messageSendDate.aria.label"
                       )}
@@ -448,6 +473,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                   <ApplicationListItemBody modifiers="communicator-message">
                     <span
                       className="application-list__header-item-body"
+                      // TODO: use i18next
                       aria-label={this.props.i18nOLD.text.get(
                         "plugin.wcag.messageBody.aria.label"
                       )}
@@ -462,6 +488,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                           <span
                             className="label"
                             key={label.id}
+                            // TODO: use i18next
                             aria-label={this.props.i18nOLD.text.get(
                               "plugin.wcag.messageLabel.aria.label"
                             )}
@@ -513,7 +540,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadMoreMessageThreads,
@@ -524,7 +551,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommunicatorMessages);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(CommunicatorMessages)
+);

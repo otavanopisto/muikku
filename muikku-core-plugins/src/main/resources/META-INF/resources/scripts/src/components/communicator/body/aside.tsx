@@ -12,13 +12,16 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * NavigationProps
  */
-interface NavigationProps {
+interface NavigationProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   messages: MessagesType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   openSignatureDialog: () => any;
 }
 
@@ -41,6 +44,7 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
+          // TODO: use i18next
           name={this.props.i18nOLD.text.get(
             "plugin.communicator.folders.title"
           )}
@@ -58,11 +62,15 @@ class NavigationAside extends React.Component<
               }
               isEditable={item.type === "label"}
             >
-              {item.text(this.props.i18nOLD)}
+              {
+                // TODO: simplify and use i18next
+                item.text(this.props.i18nOLD)
+              }
             </NavigationElement>
           ))}
         </NavigationTopic>
         <NavigationTopic
+          // TODO: use i18next
           name={this.props.i18nOLD.text.get(
             "plugin.communicator.settings.topic"
           )}
@@ -73,9 +81,12 @@ class NavigationAside extends React.Component<
             isActive={false}
             onClick={this.props.openSignatureDialog}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.communicator.settings.signature"
-            )}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get(
+                "plugin.communicator.settings.signature"
+              )
+            }
           </NavigationElement>
         </NavigationTopic>
       </Navigation>
@@ -98,8 +109,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);

@@ -21,6 +21,7 @@ import "~/sass/elements/form.scss";
 import Button from "~/components/general/button";
 import "~/sass/elements/glyph.scss";
 import "~/sass/elements/color-picker.scss";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 const KEYCODES = {
   ENTER: 13,
@@ -29,10 +30,13 @@ const KEYCODES = {
 /**
  * CommunicatorLabelUpdateDialogProps
  */
-interface CommunicatorLabelUpdateDialogProps {
+interface CommunicatorLabelUpdateDialogProps
+  extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   label: MessagesNavigationItemType;
   isOpen?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
   i18nOLD: i18nType;
   messages: MessagesType;
@@ -87,7 +91,10 @@ class CommunicatorLabelUpdateDialog extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: CommunicatorLabelUpdateDialogProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(
+    nextProps: CommunicatorLabelUpdateDialogProps
+  ) {
     if (nextProps.label.id !== this.props.label.id) {
       this.resetState(null, nextProps);
     }
@@ -112,7 +119,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
    * @param code code
    * @param closeDialog closeDialog
    */
-  handleKeydown(code: number, closeDialog: () => any) {
+  handleKeydown(code: number, closeDialog: () => void) {
     if (code === KEYCODES.ENTER) {
       this.update(closeDialog);
     }
@@ -161,7 +168,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
    * update
    * @param closeDialog closeDialog
    */
-  update(closeDialog: () => any) {
+  update(closeDialog: () => void) {
     if (this.state.locked) {
       return;
     }
@@ -222,38 +229,37 @@ class CommunicatorLabelUpdateDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["success", "standard-ok"]}
           disabled={this.state.locked}
           onClick={this.update.bind(this, closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.communicator.label.edit.button.send"
-          )}
+          {this.props.t("common:actions.save")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           disabled={this.state.locked}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.communicator.label.edit.button.cancel"
-          )}
+          {this.props.t("common:actions.cancel")}
         </Button>
         <Button
           buttonModifiers={["fatal", "communicator-remove-label"]}
           disabled={this.state.removed || this.state.locked}
           onClick={this.removeLabel}
         >
-          {this.state.removed
-            ? this.props.i18nOLD.text.get(
-                "plugin.communicator.label.edit.button.removed"
-              )
-            : this.props.i18nOLD.text.get(
-                "plugin.communicator.label.edit.button.remove"
-              )}
+          {
+            // TODO: use i18next
+            this.state.removed
+              ? this.props.i18nOLD.text.get(
+                  "plugin.communicator.label.edit.button.removed"
+                )
+              : this.props.i18nOLD.text.get(
+                  "plugin.communicator.label.edit.button.remove"
+                )
+          }
         </Button>
       </div>
     );
@@ -269,7 +275,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div
         className="dialog__content-row dialog__content-row--label"
         style={{ opacity: this.state.removed ? 0.5 : null }}
@@ -302,12 +308,16 @@ class CommunicatorLabelUpdateDialog extends React.Component<
         <div className="dialog__container dialog__container--label-form">
           <div className="form-element form-element--edit-label">
             <label htmlFor="communicatorLabelName">
-              {this.props.i18nOLD.text.get(
-                "plugin.communicator.label.editLabelDialog.name"
-              )}
+              {
+                // TODO: use i18next
+                this.props.i18nOLD.text.get(
+                  "plugin.communicator.label.editLabelDialog.name"
+                )
+              }
             </label>
             <input
               id="communicatorLabelName"
+              // TODO: use i18next
               placeholder={this.props.i18nOLD.text.get(
                 "plugin.communicator.label.editLabelDialog.name"
               )}
@@ -327,6 +337,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
         onKeyStroke={this.handleKeydown}
         onOpen={this.resetState}
         modifier="communicator-edit-label"
+        // TODO: use i18next
         title={this.props.i18nOLD.text.get(
           "plugin.communicator.label.edit.caption"
         )}
@@ -361,7 +372,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommunicatorLabelUpdateDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(CommunicatorLabelUpdateDialog)
+);

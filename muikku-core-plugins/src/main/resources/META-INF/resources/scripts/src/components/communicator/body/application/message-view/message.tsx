@@ -19,11 +19,12 @@ import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { AnyActionType } from "~/actions";
 import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * MessageProps
  */
-interface MessageProps {
+interface MessageProps extends WithTranslation<["common", "messages"]> {
   message: MessageType;
   status: StatusType;
   signature: MessageSignatureType;
@@ -69,10 +70,10 @@ class Message extends React.Component<MessageProps, MessageState> {
       );
     }
 
-    let name = `${getName(sender as any, !this.props.status.isStudent)}`;
+    let name = `${getName(sender, !this.props.status.isStudent)}`;
 
     if (sender.studyProgrammeName) {
-      name = `${getName(sender as any, !this.props.status.isStudent)} (${
+      name = `${getName(sender, !this.props.status.isStudent)} (${
         sender.studyProgrammeName
       })`;
     }
@@ -100,6 +101,9 @@ class Message extends React.Component<MessageProps, MessageState> {
       if (recipient.archived === true) {
         return (
           <span key={recipient.userEntityId} className="message__user-archived">
+            {
+              // TODO: use i18next
+            }
             {this.props.i18nOLD.text.get("plugin.communicator.sender.archived")}
           </span>
         );
@@ -110,13 +114,13 @@ class Message extends React.Component<MessageProps, MessageState> {
             key={recipient.userEntityId}
             className="message__user-studies-ended"
           >
-            {getName(recipient as any, !this.props.status.isStudent)}
+            {getName(recipient, !this.props.status.isStudent)}
           </span>
         );
       }
       return (
         <span key={recipient.userEntityId}>
-          {getName(recipient as any, !this.props.status.isStudent)}
+          {getName(recipient, !this.props.status.isStudent)}
         </span>
       );
     });
@@ -264,15 +268,15 @@ class Message extends React.Component<MessageProps, MessageState> {
 
     if (senderObject.value.id === this.props.status.userId) {
       replyTarget = [senderObject]
-        .concat(recipientsList as any)
+        .concat(recipientsList)
         .concat(
           this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
-            ? (userGroupList as any)
+            ? userGroupList
             : []
         )
         .concat(
           this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
-            ? (workspaceList as any)
+            ? workspaceList
             : []
         )
         .filter((t) => t.value.id !== this.props.status.userId);
@@ -283,19 +287,19 @@ class Message extends React.Component<MessageProps, MessageState> {
      * permissions
      */
     const replyAllTarget = [senderObject]
-      .concat(recipientsList as any)
+      .concat(recipientsList)
       .concat(
         this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
-          ? (userGroupList as any)
+          ? userGroupList
           : []
       )
       .concat(
         this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
-          ? (workspaceList as any)
+          ? workspaceList
           : []
       )
       .filter((t) => t.value.id !== senderObject.value.id)
-      .concat(senderObject as any)
+      .concat(senderObject)
       .filter((t) => t.value.id !== this.props.status.userId);
 
     return (
@@ -305,6 +309,7 @@ class Message extends React.Component<MessageProps, MessageState> {
             <div className="application-list__item-header-main application-list__item-header-main--communicator-message-participants">
               <span
                 className="application-list__item-header-main-content application-list__item-header-main-content--communicator-sender"
+                // TODO: use i18next
                 aria-label={this.props.i18nOLD.text.get(
                   "plugin.wcag.messageSender.aria.label"
                 )}
@@ -313,6 +318,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               </span>
               <span
                 className="application-list__item-header-main-content application-list__item-header-main-content--communicator-recipients"
+                // TODO: use i18next
                 aria-label={this.props.i18nOLD.text.get(
                   "plugin.wcag.messageRecipients.aria.label"
                 )}
@@ -322,6 +328,7 @@ class Message extends React.Component<MessageProps, MessageState> {
             </div>
             <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
               <span
+                // TODO: use i18next
                 aria-label={this.props.i18nOLD.text.get(
                   "plugin.wcag.messageSendDate.aria.label"
                 )}
@@ -337,6 +344,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                   <span
                     className="label"
                     key={label.id}
+                    // TODO: use i18next
                     aria-label={this.props.i18nOLD.text.get(
                       "plugin.wcag.messageLabel.aria.label"
                     )}
@@ -353,6 +361,7 @@ class Message extends React.Component<MessageProps, MessageState> {
         </div>
         <div
           className="application-list__item-body application-list__item-body--communicator-message-thread"
+          // TODO: use i18next
           aria-label={this.props.i18nOLD.text.get(
             "plugin.wcag.messageContent.aria.label"
           )}
@@ -382,7 +391,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 className="link link--application-list"
                 onClick={this.handleOpenNewMessage("person")}
               >
-                {this.props.i18nOLD.text.get("plugin.communicator.reply")}
+                {this.props.t("messages:actions.reply")}
               </Link>
             )}
             {this.props.message.sender.studiesEnded ||
@@ -392,7 +401,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 className="link link--application-list"
                 onClick={this.handleOpenNewMessage("all")}
               >
-                {this.props.i18nOLD.text.get("plugin.communicator.replyAll")}
+                {this.props.t("messages:actions.replyAll")}
               </Link>
             )}
           </footer>
@@ -411,6 +420,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 replyThreadId={this.props.message.communicatorMessageId}
                 messageId={this.props.message.id}
                 initialSelectedItems={replyTarget}
+                // TODO: use i18next
                 initialSubject={this.props.i18nOLD.text.get(
                   "plugin.communicator.createmessage.title.replySubject",
                   this.props.message.caption
@@ -426,6 +436,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 messageId={this.props.message.id}
                 initialSelectedItems={replyAllTarget}
                 replyToAll
+                // TODO: use i18next
                 initialSubject={this.props.i18nOLD.text.get(
                   "plugin.communicator.createmessage.title.replySubject",
                   this.props.message.caption
@@ -459,4 +470,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Message);
+export default withTranslation(["common", "messages"])(
+  connect(mapStateToProps, mapDispatchToProps)(Message)
+);

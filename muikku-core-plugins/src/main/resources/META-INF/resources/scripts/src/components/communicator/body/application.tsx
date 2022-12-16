@@ -13,11 +13,14 @@ import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import Button, { ButtonPill } from "~/components/general/button";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CommunicatorApplicationProps
  */
-interface CommunicatorApplicationProps {
+interface CommunicatorApplicationProps extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
   i18nOLD: i18nType;
 }
@@ -55,7 +58,7 @@ class CommunicatorApplication extends React.Component<
    * openDialogSignature
    * @param closeDropdown closeDropdown
    */
-  openDialogSignature(closeDropdown?: () => any) {
+  openDialogSignature(closeDropdown?: () => void) {
     this.setState({
       updateSignatureDialogOpened: true,
     });
@@ -75,6 +78,7 @@ class CommunicatorApplication extends React.Component<
    * render
    */
   render() {
+    // TODO: use i18next
     const title = this.props.i18nOLD.text.get("plugin.communicator.pageTitle");
     const icon = (
       <Dropdown
@@ -87,6 +91,9 @@ class CommunicatorApplication extends React.Component<
               onClick={this.openDialogSignature.bind(this, closeDropdown)}
             >
               <span>
+                {
+                  // TODO: use i18next
+                }
                 {this.props.i18nOLD.text.get(
                   "plugin.communicator.settings.signature"
                 )}
@@ -101,6 +108,9 @@ class CommunicatorApplication extends React.Component<
     const primaryOption = (
       <NewMessage>
         <Button buttonModifiers="primary-function">
+          {
+            // TODO: use i18next
+          }
           {this.props.i18nOLD.text.get("plugin.communicator.newMessage.label")}
         </Button>
       </NewMessage>
@@ -146,10 +156,14 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
+const componentWithTranslation = withTranslation(["common"], { withRef: true })(
+  CommunicatorApplication
+);
+
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
-})(CommunicatorApplication);
+})(componentWithTranslation);

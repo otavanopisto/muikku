@@ -13,6 +13,7 @@ import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 const KEYCODES = {
   ENTER: 13,
@@ -21,9 +22,12 @@ const KEYCODES = {
 /**
  * CommunicatorSignatureUpdateDialogProps
  */
-interface CommunicatorSignatureUpdateDialogProps {
+interface CommunicatorSignatureUpdateDialogProps
+  extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   isOpen: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose: () => any;
   signature: MessageSignatureType;
   updateSignature: UpdateSignatureTriggerType;
@@ -65,7 +69,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
    * @param code code
    * @param closeDialog closeDialog
    */
-  handleKeydown(code: number, closeDialog: () => any) {
+  handleKeydown(code: number, closeDialog: () => void) {
     if (code === KEYCODES.ENTER) {
       this.update(closeDialog);
     }
@@ -92,7 +96,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
    * update
    * @param closeDialog closeDialog
    */
-  update(closeDialog: () => any) {
+  update(closeDialog: () => void) {
     this.props.updateSignature(this.state.signature.trim() || null);
     closeDialog();
   }
@@ -102,22 +106,18 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
    */
   render() {
     /**
-     * @param closeDialog
+     * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
           onClick={this.update.bind(this, closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.communicator.settings.signature.create"
-          )}
+          {this.props.t("common:actions.save")}
         </Button>
         <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
-          {this.props.i18nOLD.text.get(
-            "plugin.communicator.confirmSignatureRemovalDialog.cancelButton"
-          )}
+          {this.props.t("common:actions.cancel")}
         </Button>
       </div>
     );
@@ -125,7 +125,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div className="env-dialog__row">
         <div className="env-dialog__form-element-container">
           <CKEditor onChange={this.onCKEditorChange} autofocus>
@@ -141,6 +141,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
         onKeyStroke={this.handleKeydown}
         onOpen={this.resetState}
         modifier="update-signature"
+        // TODO: use i18next
         title={this.props.i18nOLD.text.get(
           "plugin.communicator.settings.signature"
         )}
@@ -172,7 +173,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateSignature }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommunicatorSignatureUpdateDialog);
+export default withTranslation(["common"])(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CommunicatorSignatureUpdateDialog)
+);
