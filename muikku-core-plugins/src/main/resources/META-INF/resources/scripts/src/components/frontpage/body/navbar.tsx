@@ -6,11 +6,12 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * FrontpageNavbarProps
  */
-interface FrontpageNavbarProps {
+interface FrontpageNavbarProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
 }
 
@@ -20,7 +21,7 @@ interface FrontpageNavbarProps {
 interface FrontpageNavbarState {}
 
 /**
- *
+ * FrontpageNavbar
  */
 class FrontpageNavbar extends React.Component<
   FrontpageNavbarProps,
@@ -28,7 +29,7 @@ class FrontpageNavbar extends React.Component<
 > {
   /**
    * FrontpageNavbarProps
-   * @param props
+   * @param props props
    */
   constructor(props: FrontpageNavbarProps) {
     super(props);
@@ -168,7 +169,8 @@ class FrontpageNavbar extends React.Component<
 }
 
 /**
- * @param state
+ * mapStateToProps
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -177,10 +179,12 @@ function mapStateToProps(state: StateType) {
 }
 
 /**
- *
+ * mapDispatchToProps
  */
 function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FrontpageNavbar);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(FrontpageNavbar)
+);

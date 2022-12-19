@@ -1,10 +1,11 @@
 import * as React from "react";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * FrontpageFooterProps
  */
-interface FrontpageFooterProps {
+interface FrontpageFooterProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
 }
 
@@ -16,7 +17,7 @@ interface FrontpageFooterState {}
 /**
  * FrontpageFooter
  */
-export default class FrontpageFooter extends React.Component<
+class FrontpageFooter extends React.Component<
   FrontpageFooterProps,
   FrontpageFooterState
 > {
@@ -159,3 +160,5 @@ export default class FrontpageFooter extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(FrontpageFooter);

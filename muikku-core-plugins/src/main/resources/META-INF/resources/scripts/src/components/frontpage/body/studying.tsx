@@ -1,12 +1,13 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
 interface FrontpageStudyingProps {
  *
  */
-interface FrontpageStudyingProps {
+interface FrontpageStudyingProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
 }
 
@@ -18,7 +19,7 @@ interface FrontpageStudyingState {}
 /**
  * FrontpageStudying
  */
-export default class FrontpageStudying extends React.Component<
+class FrontpageStudying extends React.Component<
   FrontpageStudyingProps,
   FrontpageStudyingState
 > {
@@ -163,3 +164,5 @@ export default class FrontpageStudying extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(FrontpageStudying);

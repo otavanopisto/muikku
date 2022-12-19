@@ -1,10 +1,11 @@
 import * as React from "react";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * FrontpageInstagramProps
  */
-interface FrontpageInstagramProps {
+interface FrontpageInstagramProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
 }
 
@@ -16,7 +17,7 @@ interface FrontpageInstagramState {}
 /**
  * FrontpageInstagram
  */
-export default class FrontpageInstagram extends React.Component<
+class FrontpageInstagram extends React.Component<
   FrontpageInstagramProps,
   FrontpageInstagramState
 > {
@@ -98,3 +99,5 @@ export default class FrontpageInstagram extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(FrontpageInstagram);

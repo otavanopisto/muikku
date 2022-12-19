@@ -1,11 +1,12 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18nOLD";
 import Button, { ButtonSocial } from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FrontpageOrganizationProps
  */
-interface FrontpageOrganizationProps {
+interface FrontpageOrganizationProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
 }
 
@@ -17,7 +18,7 @@ interface FrontpageOrganizationState {}
 /**
  * FrontpageOrganization
  */
-export default class FrontpageOrganization extends React.Component<
+class FrontpageOrganization extends React.Component<
   FrontpageOrganizationProps,
   FrontpageOrganizationState
 > {
@@ -95,3 +96,5 @@ export default class FrontpageOrganization extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(FrontpageOrganization);

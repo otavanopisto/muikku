@@ -1,13 +1,13 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18nOLD";
-
 import Button from "~/components/general/button";
 import Bubble from "~/components/general/bubble";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FrontpageHeroProps
  */
-interface FrontpageHeroProps {
+interface FrontpageHeroProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
 }
 
@@ -19,7 +19,7 @@ interface FrontpageHeroState {}
 /**
  * FrontpageHero
  */
-export default class FrontpageHero extends React.Component<
+class FrontpageHero extends React.Component<
   FrontpageHeroProps,
   FrontpageHeroState
 > {
@@ -93,3 +93,5 @@ export default class FrontpageHero extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(FrontpageHero);
