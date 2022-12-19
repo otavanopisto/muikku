@@ -12,6 +12,7 @@ import MatriculationExaminationWizard from "../body/matriculationExaminationWiza
  */
 interface MatriculationExaminationWizardDialogProps {
   i18nOLD: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   examId: number;
   compulsoryEducationEligible: boolean;
@@ -41,7 +42,7 @@ class MatriculationExaminationWizardDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <MatriculationExaminationWizard
           examId={this.props.examId}

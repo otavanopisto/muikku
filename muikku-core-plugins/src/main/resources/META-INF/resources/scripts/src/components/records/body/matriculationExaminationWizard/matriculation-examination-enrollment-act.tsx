@@ -33,8 +33,8 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
 
   /**
    * Handles examination information changes and passes it to parent component
-   * @param key
-   * @param value
+   * @param key key of the changed value
+   * @param value value
    */
   onExaminationInformationChange = <T extends keyof ExaminationInformation>(
     key: T,

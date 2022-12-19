@@ -28,11 +28,12 @@ import { bindActionCreators } from "redux";
 import Notes from "~/components/general/notes/notes";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { Instructions } from "~/components/general/instructions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SummaryProps
  */
-interface SummaryProps {
+interface SummaryProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   records: RecordsType;
   contacts: Contacts;
@@ -463,4 +464,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Summary);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Summary)
+);

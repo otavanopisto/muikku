@@ -18,11 +18,12 @@ import { AnyActionType } from "~/actions";
 import RecordsGroup from "./records-group/records-group";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * RecordsProps
  */
-interface RecordsProps {
+interface RecordsProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   records: RecordsType;
   status: StatusType;
@@ -195,4 +196,6 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Records);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Records)
+);

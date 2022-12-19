@@ -21,11 +21,13 @@ import MatriculationEligibilityRow from "./matriculation-eligibility-row/matricu
 import { updateYO } from "~/actions/main-function/records/yo";
 import { updateYOTriggerType } from "../../../../actions/main-function/records/yo";
 import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * YOProps
  */
-interface YOProps {
+interface YOProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   records: RecordsType;
   hops: HOPSType;
@@ -255,8 +257,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateYO }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(YO);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(YO)
+);

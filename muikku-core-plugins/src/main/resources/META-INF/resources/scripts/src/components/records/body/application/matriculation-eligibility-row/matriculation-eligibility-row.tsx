@@ -5,11 +5,13 @@ import { Dispatch, bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { SubjectEligibilityType } from "~/reducers/main-function/records/yo";
 import "~/sass/elements/application-sub-panel.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * MatriculationEligibilityRowProps
  */
-interface MatriculationEligibilityRowProps {
+interface MatriculationEligibilityRowProps extends WithTranslation<["common"]> {
   subject: SubjectEligibilityType;
   i18nOLD: i18nType;
 }
@@ -98,11 +100,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MatriculationEligibilityRow);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(MatriculationEligibilityRow)
+);

@@ -51,8 +51,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
    */
   componentDidUpdate = (
     prevProps: MatriculationExaminationEnrollmentInfoProps

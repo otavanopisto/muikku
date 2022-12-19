@@ -35,6 +35,7 @@ import {
   MatriculationStudent,
   MatriculationStudentExamination,
 } from "~/@types/shared";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 moment.locale("fi");
 
@@ -122,12 +123,14 @@ export const EXAMINATION_SUCCESS_GRADES_MAP = [
 /**
  * MatriculationExaminationWizardProps
  */
-interface MatriculationExaminationWizardProps {
+interface MatriculationExaminationWizardProps
+  extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
   i18nOLD: i18nType;
   status: StatusType;
   examId: number;
   compulsoryEducationEligible: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
   updateEnrollemnts: (examId: number) => void;
   hops: HOPSType;
@@ -140,6 +143,7 @@ interface MatriculationExaminationWizardProps {
 export interface MatriculationExaminationWizardState {
   initialized: boolean;
   savingDraft: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   examId: any;
   errorMsg?: string;
   saveState?: SaveState;
@@ -157,7 +161,7 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: MatriculationExaminationWizardProps) {
     super(props);
@@ -498,7 +502,7 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * handles possible error messages setting those to state
-   * @param msg
+   * @param msg msg
    */
   handleErrorMsg = (msg: string) => {
     this.setState({
@@ -509,7 +513,7 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * onUsingNewSystemChange
-   * @param usingNewSystem
+   * @param usingNewSystem usingNewSystem
    */
   handleUsingNewSystemChange = (usingNewSystem: boolean) => {
     this.setState({
@@ -533,9 +537,9 @@ class MatriculationExaminationWizard extends React.Component<
   /**
    * handles when wizard step changes and here check when last step before complete happens,
    * kick offs form submit
-   * @param steps
-   * @returns
+   * @param steps steps
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleStepChange = (steps: object[]) => (step: any) => {
     if (step === steps.length - 1) {
       this.submit();
@@ -545,7 +549,7 @@ class MatriculationExaminationWizard extends React.Component<
   /**
    * Handles examination information change and start draft saving timer, clears existing timer
    * if changes happens before existing timer happens to end
-   * @param examination
+   * @param examination examination
    */
   handleExaminationInformationChange = (
     examination: ExaminationInformation
@@ -708,14 +712,12 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch dispatch
  * @returns object
  */
 function mapDispatchToProps() {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MatriculationExaminationWizard);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(MatriculationExaminationWizard)
+);

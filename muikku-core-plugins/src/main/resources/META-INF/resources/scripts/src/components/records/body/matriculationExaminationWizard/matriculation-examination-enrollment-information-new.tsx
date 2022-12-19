@@ -159,8 +159,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
   /**
    * Updates props to state
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
    */
   componentDidUpdate = (
     prevProps: MatriculationExaminationEnrollmentInformationNewProps
@@ -382,7 +381,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
   /**
    * getFinnishAttendance
-   * @returns
+   * @returns Array of finnish attendances
    */
   getFinnishAttendance = () => {
     const array: string[] = [];

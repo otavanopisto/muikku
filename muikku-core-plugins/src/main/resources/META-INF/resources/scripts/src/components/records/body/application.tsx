@@ -24,11 +24,12 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * StudiesApplicationProps
  */
-interface StudiesApplicationProps {
+interface StudiesApplicationProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   location: TranscriptOfRecordLocationType;
   hops: HOPSType;
@@ -269,4 +270,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudiesApplication);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(StudiesApplication)
+);
