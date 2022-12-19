@@ -4,11 +4,12 @@ import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18nOLD";
 import { Panel } from "~/components/general/panel";
 import "~/sass/elements/rich-text.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * StudiesEndedProps
  */
-interface StudiesEndedProps {
+interface StudiesEndedProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
 }
 
@@ -65,4 +66,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudiesEnded);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(StudiesEnded)
+);

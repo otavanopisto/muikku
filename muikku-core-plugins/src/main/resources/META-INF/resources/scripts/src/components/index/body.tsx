@@ -13,11 +13,12 @@ import { StatusType } from "~/reducers/base/status";
 import StudiesEnded from "./body/studies-ended";
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
 import "~/sass/elements/wcag.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * IndexBodyProps
  */
-interface IndexBodyProps {
+interface IndexBodyProps extends WithTranslation<["common"]> {
   status: StatusType;
   i18nOLD: i18nType;
 }
@@ -85,4 +86,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(IndexBody);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(IndexBody)
+);

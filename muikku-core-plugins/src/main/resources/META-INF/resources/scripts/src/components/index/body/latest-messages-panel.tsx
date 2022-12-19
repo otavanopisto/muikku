@@ -7,11 +7,12 @@ import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 
 import "~/sass/elements/panel.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * LastMessagesPanelProps
  */
-interface LastMessagesPanelProps {
+interface LastMessagesPanelProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   lastThreads: MessageThreadListType;
 }
@@ -99,4 +100,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LastMessagesPanel);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(LastMessagesPanel)
+);
