@@ -34,11 +34,12 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GuiderStudentsProps
  */
-interface GuiderStudentsProps {
+interface GuiderStudentsProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   guiderStudentsState: GuiderStudentsStateType;
   guiderStudentsHasMore: boolean;
@@ -235,4 +236,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GuiderStudents);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderStudents)
+);

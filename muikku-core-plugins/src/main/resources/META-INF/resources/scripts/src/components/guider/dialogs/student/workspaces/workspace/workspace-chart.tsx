@@ -7,6 +7,7 @@ import GraphFilter from "~/components/general/graph/filters/graph-filter";
 import "~/sass/elements/chart.scss";
 import "~/sass/elements/filter.scss";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let AmCharts: any = null;
 
 /**
@@ -59,7 +60,8 @@ class CurrentStudentStatistics extends React.Component<
   CurrentStudentWorkspaceStatisticsState
 > {
   /**
-   * @param props
+   * constructor
+   * @param props props
    */
   constructor(props: CurrentStudentWorkspaceStatisticsProps) {
     super(props);
@@ -118,6 +120,7 @@ class CurrentStudentStatistics extends React.Component<
    * zoomSaveHandler
    * @param e e
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   zoomSaveHandler(e: any) {
     if (!ignoreZoomed) {
       zoomStartDate = e.startDate;
@@ -130,6 +133,7 @@ class CurrentStudentStatistics extends React.Component<
    * zoomApplyHandler
    * @param e e
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   zoomApplyHandler(e: any) {
     if (zoomStartDate !== null && zoomEndDate !== null) {
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
@@ -174,6 +178,8 @@ class CurrentStudentStatistics extends React.Component<
     const sortedKeys = Array.from(chartDataMap.keys()).sort((a, b) =>
       a > b ? 1 : -1
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = [];
     sortedKeys.forEach((key) => {
       const value = chartDataMap.get(key);

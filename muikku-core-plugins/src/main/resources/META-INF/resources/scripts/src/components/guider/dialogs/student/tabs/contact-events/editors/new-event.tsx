@@ -25,11 +25,12 @@ import {
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
 } from "~/actions/main-function/guider";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NewContactEventProps
  */
-interface NewContactEventProps {
+interface NewContactEventProps extends WithTranslation<["common"]> {
   children?: JSX.Element;
   i18nOLD: i18nType;
   createContactLogEvent: CreateContactLogEventTriggerType;
@@ -358,4 +359,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewContactEvent);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NewContactEvent)
+);

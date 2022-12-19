@@ -1,4 +1,3 @@
-import { UserType } from "~/reducers/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
 import {
@@ -19,13 +18,14 @@ import {
   ApplicationListItemHeader,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
 
 /**
  * StudentProps
  */
-interface StudentProps {
+interface StudentProps extends WithTranslation<"common"> {
   student: GuiderStudentType;
   checkbox: React.ReactElement<HTMLInputElement>;
   i18nOLD: i18nType;
@@ -45,7 +45,7 @@ class Student extends React.Component<StudentProps, StudentState> {
   /**
    * getSudentStudyTimeState
    *
-   * @param student
+   * @param student student
    * @returns StudentStudytimeState "ENDED" | "ENDING" | "ONGOING"
    */
   getSudentStudyTimeState = (
@@ -143,4 +143,4 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-export default connect(mapStateToProps)(Student);
+export default withTranslation(["common"])(connect(mapStateToProps)(Student));

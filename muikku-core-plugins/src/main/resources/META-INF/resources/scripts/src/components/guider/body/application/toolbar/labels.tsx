@@ -33,11 +33,12 @@ import { StateType } from "~/reducers";
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GuiderToolbarLabelsProps
  */
-interface GuiderToolbarLabelsProps {
+interface GuiderToolbarLabelsProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   guider: GuiderType;
   createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType;
@@ -278,7 +279,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GuiderToolbarLabels);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderToolbarLabels)
+);

@@ -32,6 +32,7 @@ import { getName } from "~/util/modifiers";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
 import { COMPULSORY_HOPS_VISIBLITY } from "../../general/hops-compulsory-education-wizard/index";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 export type tabs =
   | "STUDIES"
@@ -42,7 +43,7 @@ export type tabs =
 /**
  * StudentDialogProps
  */
-interface StudentDialogProps {
+interface StudentDialogProps extends WithTranslation<["common"]> {
   isOpen?: boolean;
   student: GuiderStudentUserProfileType;
   guider: GuiderType;
@@ -332,4 +333,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudentDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(StudentDialog)
+);

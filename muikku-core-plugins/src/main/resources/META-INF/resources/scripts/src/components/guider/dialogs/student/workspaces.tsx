@@ -7,11 +7,12 @@ import { WorkspaceType } from "~/reducers/workspaces";
 
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/empty.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * CurrentStudentWorkspacesProps
  */
-interface CurrentStudentWorkspacesProps {
+interface CurrentStudentWorkspacesProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   workspaces: WorkspaceType[];
   locale: string;
@@ -71,7 +72,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CurrentStudentWorkspaces);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(CurrentStudentWorkspaces)
+);

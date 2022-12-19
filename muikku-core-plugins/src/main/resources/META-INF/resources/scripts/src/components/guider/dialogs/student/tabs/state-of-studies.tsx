@@ -41,11 +41,12 @@ import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * StateOfStudiesProps
  */
-interface StateOfStudiesProps {
+interface StateOfStudiesProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   guider: GuiderType;
   status: StatusType;
@@ -510,4 +511,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StateOfStudies);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(StateOfStudies)
+);
