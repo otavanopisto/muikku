@@ -18,11 +18,12 @@ import {
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * CourseProps
  */
-interface CourseProps {
+interface CourseProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
@@ -173,7 +174,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -190,4 +191,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Workspace);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Workspace)
+);

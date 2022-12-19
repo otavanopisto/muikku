@@ -17,6 +17,7 @@ import {
   WorkspaceType,
   WorkspaceListType,
 } from "~/reducers/workspaces";
+import { AnyActionType } from "~/actions";
 
 /**
  * OrganizationWorkspacesProps
@@ -113,7 +114,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { loadMoreOrganizationWorkspacesFromServer },
     dispatch

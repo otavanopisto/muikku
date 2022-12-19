@@ -32,13 +32,17 @@ import {
   loadWorkspacesFromServer,
   LoadWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 type OrganizationTabs = "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES";
 
 /**
  * OrganizationManagementApplicationProps
  */
-interface OrganizationManagementApplicationProps {
+interface OrganizationManagementApplicationProps
+  extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
   loadUsers: LoadUsersTriggerType;
   loadUserGroups: LoadUsersTriggerType;
@@ -317,13 +321,15 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<any>) =>
+const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
   bindActionCreators(
     { loadUsers, loadWorkspaces: loadWorkspacesFromServer, loadUserGroups },
     dispatch
   );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrganizationManagementApplication);
+export default withTranslation(["common"])(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(OrganizationManagementApplication)
+);

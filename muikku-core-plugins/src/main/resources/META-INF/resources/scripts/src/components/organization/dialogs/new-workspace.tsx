@@ -49,6 +49,8 @@ import {
 } from "~/reducers/workspaces";
 import "~/sass/elements/course.scss";
 import { TagItem } from "~/components/general/tag-input";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * ValidationType
@@ -62,7 +64,8 @@ interface ValidationType {
 /**
  * OrganizationNewWorkspaceProps
  */
-interface OrganizationNewWorkspaceProps {
+interface OrganizationNewWorkspaceProps extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   i18nOLD: i18nType;
   data?: CreateWorkspaceType;
@@ -85,7 +88,9 @@ interface OrganizationNewWorkspaceState {
   templateSearch: string;
   workspaceName: string;
   workspaceAccess: WorkspaceAccessType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   beginDate: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   endDate: any;
   workspaceNameExtension: string;
   locked: boolean;
@@ -296,6 +301,7 @@ class OrganizationNewWorkspace extends React.Component<
    * @param dateKey dateKey
    * @param newDate newDate
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleDateChange(dateKey: string, newDate: any) {
     this.setState({ [dateKey]: newDate } as Pick<
       OrganizationNewWorkspaceState,
@@ -334,7 +340,7 @@ class OrganizationNewWorkspace extends React.Component<
    * cancelDialog
    * @param closeDialog closeDialog
    */
-  cancelDialog(closeDialog: () => any) {
+  cancelDialog(closeDialog: () => void) {
     closeDialog();
   }
 
@@ -367,6 +373,7 @@ class OrganizationNewWorkspace extends React.Component<
    * getLocaledDate
    * @param date date
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getLocaledDate(date: any) {
     return this.props.i18nOLD.time.getLocalizedMoment(date).format("L");
   }
@@ -375,7 +382,7 @@ class OrganizationNewWorkspace extends React.Component<
    * saveWorkspace
    * @param closeDialog closeDialog
    */
-  saveWorkspace(closeDialog: () => any) {
+  saveWorkspace(closeDialog: () => void) {
     this.setState({
       locked: true,
       executing: true,
@@ -910,7 +917,7 @@ class OrganizationNewWorkspace extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) =>
+    const content = (closeDialog: () => void) =>
       this.wizardSteps(this.state.currentStep);
 
     const executeContent = (
@@ -957,7 +964,7 @@ class OrganizationNewWorkspace extends React.Component<
      * footer
      * @param closePortal closePortal
      */
-    const footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => void) => (
       <FormWizardActions
         locked={this.state.locked}
         currentStep={this.state.currentStep}
@@ -1016,7 +1023,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStaff: loadSelectorStaff,
@@ -1030,7 +1037,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrganizationNewWorkspace);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(OrganizationNewWorkspace)
+);

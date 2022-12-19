@@ -17,11 +17,14 @@ import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { UserType } from "~/reducers/user-index";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * OrganizationUserProps
  */
-interface OrganizationUserProps {
+interface OrganizationUserProps extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   i18nOLD: i18nType;
   status: StatusType;
@@ -91,7 +94,7 @@ class OrganizationUser extends React.Component<
    * cancelDialog
    * @param closeDialog closeDialog
    */
-  cancelDialog(closeDialog: () => any) {
+  cancelDialog(closeDialog: () => void) {
     this.setState({
       firstNameValid: 2,
       lastNameValid: 2,
@@ -104,7 +107,7 @@ class OrganizationUser extends React.Component<
    * saveUser
    * @param closeDialog closeDialog
    */
-  saveUser(closeDialog: () => any) {
+  saveUser(closeDialog: () => void) {
     let valid = true;
     if (
       this.state.user.firstName == "" ||
@@ -172,7 +175,7 @@ class OrganizationUser extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <DialogRow modifiers="new-user">
           <SelectFormElement
@@ -242,7 +245,7 @@ class OrganizationUser extends React.Component<
      * footer
      * @param closePortal closePortal
      */
-    const footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => void) => (
       <FormActionsElement
         locked={this.state.locked}
         executeLabel={this.props.i18nOLD.text.get(
@@ -287,8 +290,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateStaffmember }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizationUser);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(OrganizationUser)
+);
