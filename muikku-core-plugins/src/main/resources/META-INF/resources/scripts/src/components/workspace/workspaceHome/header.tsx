@@ -17,11 +17,12 @@ import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 import { AnyActionType } from "~/actions";
 import { suitabilityMap } from "~/@shared/suitability";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceHomeHeaderProps
  */
-interface WorkspaceHomeHeaderProps {
+interface WorkspaceHomeHeaderProps extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
   i18nOLD: i18nType;
@@ -353,7 +354,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateWorkspace }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceHomeHeader);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceHomeHeader)
+);

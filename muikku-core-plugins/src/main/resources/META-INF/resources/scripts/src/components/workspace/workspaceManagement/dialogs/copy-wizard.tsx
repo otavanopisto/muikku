@@ -6,12 +6,14 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import CopyWizard from "~/components/workspace/workspaceManagement/body/copyWizard";
 import { StateType } from "~/reducers";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * CopyWizardDialogProps
  */
-interface CopyWizardDialogProps {
+interface CopyWizardDialogProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
 }
 
@@ -38,7 +40,7 @@ class CopyWizardDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <CopyWizard onDone={closeDialog} />
       </div>
@@ -75,4 +77,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CopyWizardDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(CopyWizardDialog)
+);

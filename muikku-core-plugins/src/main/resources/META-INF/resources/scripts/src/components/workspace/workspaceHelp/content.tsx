@@ -30,11 +30,12 @@ import {
   setWholeWorkspaceHelp,
   updateWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ContentProps
  */
-interface ContentProps {
+interface ContentProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   materials: MaterialContentNodeListType;
@@ -635,6 +636,10 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
+const componentWithTranslation = withTranslation(["common"], { withRef: true })(
+  ContentComponent
+);
+
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
-})(ContentComponent);
+})(componentWithTranslation);

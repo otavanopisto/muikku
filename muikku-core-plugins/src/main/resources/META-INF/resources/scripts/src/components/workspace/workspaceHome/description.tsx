@@ -16,11 +16,12 @@ import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DescriptionPanelProps
  */
-interface DescriptionPanelProps {
+interface DescriptionPanelProps extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
   i18nOLD: i18nType;
   isInFrontPage?: boolean;
@@ -109,4 +110,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel)
+);

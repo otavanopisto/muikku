@@ -35,11 +35,12 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * HelpMaterialsProps
  */
-interface HelpMaterialsProps {
+interface HelpMaterialsProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
@@ -803,6 +804,10 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
+const componentWithTranslation = withTranslation(["common"], { withRef: true })(
+  Help
+);
+
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
-})(Help);
+})(componentWithTranslation);

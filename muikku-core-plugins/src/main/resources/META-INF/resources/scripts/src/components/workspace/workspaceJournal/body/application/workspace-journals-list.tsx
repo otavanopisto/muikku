@@ -19,11 +19,12 @@ import {
   loadMoreCurrentWorkspaceJournalsFromServer,
 } from "~/actions/workspaces/journals";
 import { JournalsState } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalsProps
  */
-interface WorkspaceJournalsListProps {
+interface WorkspaceJournalsListProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   workspaceJournalsState: WorkspacesStateType;
   workspaceJournalsHasMore: boolean;
@@ -164,7 +165,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalsList);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalsList)
+);

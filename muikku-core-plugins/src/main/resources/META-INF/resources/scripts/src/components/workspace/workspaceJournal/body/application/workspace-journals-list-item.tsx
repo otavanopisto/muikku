@@ -26,11 +26,12 @@ import { AnyActionType } from "~/actions";
 import WorkspaceJournalCommentList from "./workspace-journal-comment-list";
 import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * JournalProps
  */
-interface WorkspaceJournalsListItemProps {
+interface WorkspaceJournalsListItemProps extends WithTranslation {
   i18nOLD: i18nType;
   status: StatusType;
   journal: WorkspaceJournalWithComments;
@@ -253,7 +254,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setCurrentJournal }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalsListItem);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalsListItem)
+);

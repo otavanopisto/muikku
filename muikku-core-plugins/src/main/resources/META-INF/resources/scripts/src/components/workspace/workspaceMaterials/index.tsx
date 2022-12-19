@@ -17,6 +17,7 @@ import EnrollmentDialog from "../enrollment-dialog";
  */
 interface WorkspaceMaterialsBodyProps {
   workspaceUrl: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (newId: number) => any;
   enrollmentDialogOpen: boolean;
   signupDialogOpen: boolean;
@@ -45,6 +46,7 @@ export default class WorkspaceMaterialsBody extends React.Component<
    * onOpenNavigation
    */
   onOpenNavigation() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.refs.content as any).getWrappedInstance().refresh();
   }
 

@@ -27,11 +27,12 @@ import {
   LoadCurrentWorkspaceJournalsFromServerTriggerType,
   loadCurrentWorkspaceJournalsFromServer,
 } from "~/actions/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps {
+interface NavigationAsideProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   workspace: WorkspaceType;
   journalsState: JournalsState;
@@ -237,4 +238,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);

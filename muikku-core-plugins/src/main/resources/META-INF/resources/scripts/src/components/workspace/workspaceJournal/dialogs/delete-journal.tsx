@@ -14,11 +14,12 @@ import {
   DeleteWorkspaceJournalInCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces/journals";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DeleteJournalProps
  */
-interface DeleteJournalProps {
+interface DeleteJournalProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   journal: WorkspaceJournalWithComments;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -156,4 +157,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteJournal);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DeleteJournal)
+);

@@ -6,11 +6,12 @@ import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import "~/sass/elements/panel.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SignUpPanelProps
  */
-interface SignUpPanelProps {
+interface SignUpPanelProps extends WithTranslation<["common"]> {
   status: StatusType;
   workspace: WorkspaceType;
   i18nOLD: i18nType;
@@ -76,4 +77,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpPanel);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(SignUpPanel)
+);

@@ -5,11 +5,12 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18nOLD";
 
 import "~/sass/elements/producers.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ProducersProps
  */
-interface ProducersProps {
+interface ProducersProps extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
   i18nOLD: i18nType;
 }
@@ -75,4 +76,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Producers);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Producers)
+);

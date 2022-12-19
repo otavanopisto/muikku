@@ -9,7 +9,6 @@ import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import equals = require("deep-equal");
-import { WorkspaceJournalType } from "~/reducers/workspaces";
 import {
   CreateWorkspaceJournalForCurrentWorkspaceTriggerType,
   createWorkspaceJournalForCurrentWorkspace,
@@ -17,11 +16,13 @@ import {
   updateWorkspaceJournalInCurrentWorkspace,
 } from "~/actions/workspaces/journals";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NewEditJournalProps
  */
-interface NewEditJournalProps {
+interface NewEditJournalProps extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   i18nOLD: i18nType;
   journal?: WorkspaceJournalWithComments;
@@ -171,7 +172,7 @@ class NewEditJournal extends SessionStateComponent<
    * createOrModifyJournal
    * @param closeDialog closeDialog
    */
-  createOrModifyJournal(closeDialog: () => any) {
+  createOrModifyJournal(closeDialog: () => void) {
     this.setState({ locked: true });
     if (!this.props.journal) {
       this.props.createWorkspaceJournalForCurrentWorkspace({
@@ -249,7 +250,7 @@ class NewEditJournal extends SessionStateComponent<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => void) => [
       <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">
           <label htmlFor="journalTitle" className="env-dialog__label">
@@ -286,7 +287,7 @@ class NewEditJournal extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           className="button button--dialog-execute"
@@ -368,4 +369,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewEditJournal);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NewEditJournal)
+);

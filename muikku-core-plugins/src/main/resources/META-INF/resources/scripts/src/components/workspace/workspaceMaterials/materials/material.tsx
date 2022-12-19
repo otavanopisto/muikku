@@ -28,11 +28,12 @@ import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceMaterialProps
  */
-interface WorkspaceMaterialProps {
+interface WorkspaceMaterialProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
@@ -222,4 +223,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial)
+);

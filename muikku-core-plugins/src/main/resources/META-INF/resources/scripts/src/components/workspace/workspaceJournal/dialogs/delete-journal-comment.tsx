@@ -14,11 +14,12 @@ import {
   DeleteWorkspaceJournalCommentTriggerType,
   deleteWorkspaceJournalComment,
 } from "~/actions/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DeleteJournalProps
  */
-interface DeleteJournalCommentProps {
+interface DeleteJournalCommentProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   workspaceEntityId: number;
   journalComment: JournalComment;
@@ -147,7 +148,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteWorkspaceJournalComment }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteJournalComment);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DeleteJournalComment)
+);

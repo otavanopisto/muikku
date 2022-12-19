@@ -12,11 +12,13 @@ import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { JournalComment } from "~/@types/journal";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SupplementationEditorProps
  */
-interface WorkspaceJournalCommentEditorProps {
+interface WorkspaceJournalCommentEditorProps
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   locale: LocaleState;
@@ -249,7 +251,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalCommentEditor);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalCommentEditor)
+);

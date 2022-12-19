@@ -14,11 +14,12 @@ import "~/sass/elements/item-list.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceTeachersProps
  */
-interface WorkspaceTeachersProps {
+interface WorkspaceTeachersProps extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
   i18nOLD: i18nType;
   status: StatusType;
@@ -244,7 +245,9 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceTeachers);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceTeachers)
+);
 
 /**
  * getWorkspaceMessage
