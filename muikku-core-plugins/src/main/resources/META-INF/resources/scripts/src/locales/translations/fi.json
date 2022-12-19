@@ -34,59 +34,34 @@
       "show": "Näytä",
       "show_comments": "Näytä kommentit",
       "update": "Päivitä"
-    }
-  },
-
-  "labels": {
-    "create": "Luo",
-    "edit": "Muokkaa",
-    "remove": "Poista"
-  },
-
-  "evaluation": {
-    "actions": {
-      "askSupplementation": "Pyydä täydennystä",
-      "archiveStudent": "Arkistoi opiskelija",
-      "confirmCancel": "Ymmärrän ja haluan poistua",
-      "confirmRemove_evaluationRequest": "Kyllä, poista arviointipyyntö",
-      "confirmRemove_interimEvaluationRequest": "Kyllä, poista välipalautepyyntö",
-      "evaluateStudent": "Arvioi opiskelija",
-      "grade": "Anna kurssiarvio",
-      "hideAll": "Piilota kaikki",
-      "improveGrade": "Anna korotus",
-      "markNonImportant": "Merkitse vähemmän tärkeäksi",
-      "markImportant": "Merkitse tärkeäksi",
-      "openAll": "Avaa kaikki",
-      "pickModule": "Valitse arvioitava moduuli",
-      "remove": "Poista arviointi",
-      "remove_evaluationRequest": "Poista arviointipyyntö",
-      "remove_interimEvaluationRequest": "Poista välipalautepyyntö",
-      "remove_student": "Kyllä, arkistoi opiskelija"
-    }
-  },
-
-  "hops": {},
-
-  "messages": {
-    "actions": {
-      "hide_comments": "Piilota vastaukset",
-      "remove": "Poista",
-      "remove_comment": "Poista vastaus",
-      "remove_label": "Poista tunniste",
-      "addSignature": "Lisää allekirjoitus",
-      "reply": "Vastaa",
-      "replyAll": "Vastaa kaikille",
-      "show_comments": "Näytä vastaukset"
     },
 
     "labels": {
-      "edit": "Muokkaa viestiä",
-      "lock": "Lukitse viesti",
-      "pin": "Kiinnitä viesti",
-      "remove": "Poista viesti",
-      "reply": "Vastaa viestiin",
-      "subscribeArea": "Tilaa keskustelualue",
-      "subscribeThread": "Tilaa viestiketju"
+      "create": "Luo",
+      "edit": "Muokkaa",
+      "remove": "Poista"
+    },
+
+    "notifications": {
+      "addError": "Lisäys epäonnistui",
+      "availableError": "Resurssia ei ole saatavilla tai sitä ei ole olemassa.",
+      "captionError": "Otsikko on pakollinen tieto",
+      "completionError": "Viimeistely epäonnistui",
+      "contentError": "Sisältö on pakollinen tieto",
+      "createError": "Luominen epäonnistui. Yritä uudelleen.",
+      "createSuccess": "Luominen onnistui",
+      "beginDateError": "Alkamispäivämäärä on pakollinen tieto",
+      "deleteError": "Poisto epäonnistui. Yritä uudelleen.",
+      "updateError": "Muokkaus epäonnistui. Yritä uudelleen.",
+      "emptyError": "Tieto ei voi olla tyhjä",
+      "endDateError": "Loppumispäivämäärä on pakollinen tieto",
+      "loadError": "Lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_locales": "Virhe lokalisointia ladattaessa",
+      "noResults": "Ei tuloksia",
+      "saveError": "Tallennus epäonnistui. Yritä uudelleen",
+      "sendError": "Lähetys epäonnistui. Kokeile lähettää uudelleen",
+      "sendSuccess": "Lähetys onnistui",
+      "targetError": "Kohde on pakollinen tieto"
     }
   },
 
@@ -97,6 +72,102 @@
       "done": "Merkitse tehdyksi",
       "requestApproval": "Lähetä hyväksyttäväksi",
       "cancelApprovalRequest": "Peruuta hyväksyntäpyyntö"
+    },
+    "notifications": {
+      "createError": "Tehtävän luonti epäonnistui, ole hyvä ja yritä uudelleen. {0}",
+      "createSuccess": "Tehtävä luotiin onnistuneesti.",
+      "loadError": "Tehtävien lataus epäonnistui, ole hyvä ja lataa sivu uudelleen. {0}",
+      "archiveError": "Tehtävän arkistointi epäonnistui, ole hyvä ja yritä uudelleen. {0}",
+      "archiveSuccess": "Tehtävän arkistointi onnistui.",
+      "unarchiveError": "Tehtävän palautus epäonnistui, ole hyvä ja yritä uudelleen. {0}",
+      "unarchiveSuccess": "Tehtävän palautus onnistui.",
+      "updateError": "Tehtävän muokkaus epäonnistui, ole hyvä ja yritä uudelleen. {0}",
+      "updateError_taskState": " Tehtävän tilan päivitys epäonnistui, ole hyvä ja yritä uudelleen. {0}",
+      "updateSuccess": "Tehtävän muokkaus onnistui.",
+      "updateSuccess_taskState": "Tehtävän tila päivitettiin onnistuneesti."
+    }
+  },
+
+  "records": {
+    "notifications": {
+      "loadError": "Suoritusten lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_workspaces": "Kurssien lataus epäonnistui. Yritä ladata sivu uudelleen",
+      "loadError_userAndWorkspace": "Käyttäjän ja työtilan lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_workspaceJournal": "Työtilan päiväkirjamerkintöjen lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_workspaceAssignments": "Työtilan tehtävien lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_workspaceExercises": "Työtilan harjoitustehtävien lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_workspaceCompositeReplies": "Työtilan tehtävien lataus epäonnistui. Yritä ladata sivu uudelleen"
+    }
+  },
+
+  "contactLog": {
+    "labels": {
+      "edit": "Muokkaa yhteydenottoa",
+      "create": "Luo uusi yhteydenotto",
+      "remove": "Poista yhteydenotto"
+    },
+    "notifications": {
+      "createError": "Yhteydenoton luonti epäonnistui",
+      "createError_contactLogComment": "Kommentin luonti epäonnistui",
+      "createSuccess": "Yhteydenoton luonti onnistui",
+      "createSuccess_contactLogComment": " Kommentin luonti onnistui",
+      "removeError": "Yhteydenoton poisto epäonnistui",
+      "removeError_contactLogComment": "Kommentin poisto epäonnistui",
+      "removeSuccess": "Yhteydenoton poisto onnistui",
+      "removeSuccess_contactLogComment": "Kommentin poisto onnistui",
+      "updateError": "Yhteydenoton muokkaus epäonnistui",
+      "updateError_contactLogComment": "Kommentin muokkaus epäonnistui",
+      "updateSuccess": "Yhteydenoton muokkaus onnistui",
+      "updateSuccess_contactLogComment": "Kommentin muokkaus onnistui"
+    }
+  },
+
+  "users": {
+    "actions": {
+      "create_userGroup": "Luo uusi käyttäjäryhmä",
+      "edit_userGroup": "Muokkaa käyttäjäryhmää"
+    },
+    "notifications": {
+      "completionError_studentOrder": "Opiskelijan tilauksen viimeistely epäonistui",
+      "createError": "Opiskelijan luonti epäonnistui: {0}",
+      "createError_staff": "Henkilöstön edustajan luonti epäonnistui",
+      "createError_userGroup": "Käyttäjäryhmän luonti epäonnistui",
+      "createSuccess": "Opiskelijan luonti onnistui",
+      "createSuccess_staff": "Henkilöstön edustajan luonti onnistui",
+      "createSuccess_userGroup": "Käyttäjäryhmän luonti onnistui",
+      "noResults": "Ei käyttäjiä",
+      "noResults_student": "Ei opiskelijoita",
+      "loadError": "Virhe käyttäjien lataamisessa. Yritä ladata sivu uudelleen.",
+      "loadError_one": "Virhe opiskelijan lataamisessa. Yritä ladata sivu uudelleen.",
+      "loadError_students": "Virhe opiskelijoiden lataamisessa. Yritä ladata sivu uudelleen.",
+      "loadError_userGroups": "Opiskelijaryhmien lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "removeError_studentOrder": "Opiskelijan tilauksen poisto epäonistui",
+      "saveError_profilePicture": "Profiilikuvan lataus epäonnistui",
+      "updateError": "Opiskelijan muokkaus epäonnistui",
+      "updateError_staff": "Henkilöstön edustajan muokkaus epäonnistui",
+      "updateError_userGroup": "Käyttäjäryhmän muokkaus epäonnistui",
+      "updateSuccess": "Opiskelijan muokkaus onnistui",
+      "updateSuccess_staff": "Henkilöstön edustajan muokkaus onnistui",
+      "updateSuccess_userGroup": "Käyttäjäryhmän muokkaus onnistui "
+    }
+  },
+
+  "flags": {
+    "actions": {
+      "remove": "Poista lippu",
+      "share": "Jaa lippu"
+    },
+    "labels": {
+      "edit": "Muokkaa lippua",
+      "create": "Luo uusi lippu"
+    },
+    "notifications": {
+      "addError": "Virhe lipun lisäämisessä.Yritä uudelleen.",
+      "captionError": "Lipun nimi on pakollinen tieto",
+      "removeError": "Virhe lipun poistamisessa. Yritä uudelleen.",
+      "createError": "Virhe lipun luomisessa. Yritä uudelleen.",
+      "updateError": "Virhe lipun muokkaamisessa. Yritä uudelleen",
+      "loadError": "Lippujen lataus epäonnistui. Yritä ladata sivu uudelleen."
     }
   },
 
@@ -129,13 +200,164 @@
       "show_supplementationRequest": "Näytä täydennyspyyntö",
       "signIn": "Ilmoittaudu",
       "update_assignment": "Palauta tehtävä uudelleen"
+    },
+    "notifications": {
+      "loadError": "Kurssien lataus epäonnistui. Yritä ladata sivu uudelleen."
     }
   },
 
-  "userGroups": {
+  "files": {
+    "notifications": {
+      "createErrror": "Tiedosto tallennettu palvelimelle onnistuneesti",
+      "removeError": "Tiedoston poisto ei onnistunut"
+    }
+  },
+
+  "evaluation": {
     "actions": {
-      "edit": "Muokkaa käyttäjäryhmää",
-      "create": "Luo uusi käyttäjäryhmä"
+      "askSupplementation": "Pyydä täydennystä",
+      "archiveStudent": "Arkistoi opiskelija",
+      "confirmCancel": "Ymmärrän ja haluan poistua",
+      "confirmRemove_evaluationRequest": "Kyllä, poista arviointipyyntö",
+      "confirmRemove_interimEvaluationRequest": "Kyllä, poista välipalautepyyntö",
+      "evaluateStudent": "Arvioi opiskelija",
+      "grade": "Anna kurssiarvio",
+      "hideAll": "Piilota kaikki",
+      "improveGrade": "Anna korotus",
+      "markNonImportant": "Merkitse vähemmän tärkeäksi",
+      "markImportant": "Merkitse tärkeäksi",
+      "openAll": "Avaa kaikki",
+      "pickModule": "Valitse arvioitava moduuli",
+      "remove": "Poista arviointi",
+      "remove_evaluationRequest": "Poista arviointipyyntö",
+      "remove_interimEvaluationRequest": "Poista välipalautepyyntö",
+      "remove_student": "Kyllä, arkistoi opiskelija"
+    },
+
+    "notifications": {
+      "createError_journalComment": "Virhe luotaessa päiväkirjakommenttia: {0}",
+      "removeError": "Virhe poistettaessa arviointitapahtumaa: {0}",
+      "removeError_journalComment": "Virhe poistettaessa päiväkirjakommenttia: {0}",
+      "removeError_supplementationRequest": "Virhe poistaessa arviointipyyntöä: {0}",
+      "removeError_student": "Virhe arkistoidessa opiskelijaa: {0}",
+      "loadError_gradeSystems": "Virhe ladattaessa arviointiasteikoita. Päivitä sivu uudelleen ja yritä uudestaan.",
+      "loadError_evaluationRequests": "Virhe ladattaessa arviointipyyntöjä. Päiviä sivu uudelleen ja yritä uudestaan.",
+      "loadError_workspaces": "Virhe ladattaessa työtilatietoja. Päivitä sivu uudelleen ja yritä uudestaan.",
+      "loadError_importanceRatings": "Virhe ladattaessa arviointipyyntöjen tärkeysjärjestystietoja. Päivitä sivu uudelleen ja yritä uudestaan.",
+      "loadError_sortCategories": "Virhe ladattaessa suodatuksen lajittelutietoja. Päivitä sivu uudelleen ja yritä uudestaan.",
+      "loadError_evaluationEvents": "Virhe ladattaessa arviointitapahtumatietoja. Päivitä sivu uudelleen ja yritä uudestaan.",
+      "loadError_journalEvents": "Virhe ladattaessa opiskelijan päiväkirjatapahtumia: {0}",
+      "loadError_journalEventComments": "Virhe ladattaessa päiväkirjakommentteja: {0}",
+      "loadError_pricing": "Virhe ladattaessa kurssin maksutietoja: {0}",
+      "loadError_assignmentData": "Virhe ladattaessa tehtävien arvointitietoja: {0}",
+      "saveError": "Virhe arvioinnin tallennuksessa: {0}",
+      "saveError_assignmentEvaluation": "Virhe tallennettaessa tehtävän arviointia: {0}",
+      "saveError_assignmentSupplementationRequest": "Virhe tallennettaessa tehtävän täydennyspyyntöä: {0}",
+      "saveError_supplementationRequest": "Virhe tallennettaessa täydennyspyyntöä: {0}",
+      "updateError": "Virhe arvioinnin päivittämisessä: {0}",
+      "updateError_journalComment": "Virhe päivitettäessä päiväkirjakommenttia: {0}",
+      "updateError_pricing": "Virhe päivitettäessa kurssin maksutietoja: {0}",
+      "updateError_sorting": "Virhe päivitettäessä lajittelutietoja: {0}",
+      "hiddenError_exercise": "Tämä harjoitustehtävä on piilotettu ja korvattu uudella tehtävällä mutta opiskelija ehti jo vastaamaan siihen.",
+      "hiddenError_assignment": "Tämä arvioitava tehtävä on piilotettu ja korvattu uudella tehtävällä mutta opiskelija ehti jo vastaamaan siihen.",
+      "hiddenEror_interimEvaluation": "Tämä välipalautepyyntösivu on piilotettu ja korvattu uudella, mutta opiskelija on ehtinyt tekemään pyynnön siihen."
+    }
+  },
+
+  "hops": {},
+
+  "announcement": {
+    "notifications": {
+      "availableError": "Kyseistä tiedotetta ei ole saatavilla tai sitä ei ole olemassa.",
+      "captionError": "Tiedotteen otsikko on pakollinen tieto",
+      "contentError": "Tiedotteen sisältö on pakollinen tieto",
+      "beginDateError": "Tiedotteen alkamispäivämäärä on pakollinen tieto",
+      "endDate": "Tiedotteen loppumispäivämäärä on pakollinen tieto",
+      "createError": "Tiedotteen luominen epäonnistui. Yritä uudelleen.",
+      "deleteError": "Tiedotteen poisto epäonnistui. Yritä uudelleen.",
+      "updateError": "Tiedotteen päivittäminen epäonnistui",
+      "loadError": "Tiedotteen lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_announcements": "Tiedotteiden lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "targetError": "Tiedotteen kohderyhmä on pakollinen tieto"
+    }
+  },
+
+  "calendar": {
+    "notifications": {
+      "createError": "Tapahtuman luominen epäonnistui",
+      "deleteError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
+      "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
+      "loadError": "Tapahtumien lataus epäonnistui",
+      "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui"
+    }
+  },
+
+  "messaging": {
+    "actions": {
+      "hide_comments": "Piilota vastaukset",
+      "remove": "Poista",
+      "remove_comment": "Poista vastaus",
+      "remove_label": "Poista tunniste",
+      "addSignature": "Lisää allekirjoitus",
+      "reply": "Vastaa",
+      "replyAll": "Vastaa kaikille",
+      "show_comments": "Näytä vastaukset"
+    },
+
+    "labels": {
+      "edit": "Muokkaa viestiä",
+      "lock": "Lukitse viesti",
+      "pin": "Kiinnitä viesti",
+      "remove": "Poista viesti",
+      "reply": "Vastaa viestiin",
+      "subscribeArea": "Tilaa keskustelualue",
+      "subscribeThread": "Tilaa viestiketju"
+    },
+
+    "notifications": {
+      "addError_label": "Tunnisteen asettaminen ei onnistunut",
+      "alreadyExistsError_label": "Antamallasi nimellä oleva tunniste löytyy jo",
+      "captionError": "Viestillä täytyy olla otsikko",
+      "contentError": "Viestillä täytyy olla sisältö",
+      "createError_label": "Tunnisteen luominen epäonnistui",
+      "createError_chatRoom": "Chat-huoneen luonti epäonnistui, ole hyvä ja yritä uudelleen.",
+      "createError_discussionArea": "Virhe uuden keskustelualueen luomisessa",
+      "deleteError": "Viestin poisto epäonnistui. Ole hyvä ja yritä uudelleen.",
+      "deleteError_chatRoom": "Chat-huoneen <b>{0}</b> poisto epäonnistui, ole hyvä ja yritä uudelleen",
+      "deleteError_discussionArea": "Virhe keskustelualueen poistamisessa",
+      "deleteError_label": "Tunnisteen poisto epäonnistui.",
+      "deleteError_reply": "Virhe vastauksen poistossa.",
+      "deleteSuccess": "Viestin poisto onnistui",
+      "deleteSuccess_chatRoom": "Chat-huoneen <b>{0}</b> poisto onnistui",
+      "doesNotExistError_label": "Tunnistetta ei ole olemassa",
+      "emptyError_label": "Tunnisteen nimi ei voi olla tyhjä",
+      "locationError": "Väärä osoite",
+      "loadError_discussionAreas": "Keskustelualueiden lataus epäonnistui",
+      "loadError_labels": "Tunnisteiden lataus epäonnistui",
+      "loadError_latestMessage": "Viimeisimmän viestin lataus epäonnistui",
+      "loadError_messageThread": "Viestiketjun lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_one": "Viestin lataus epäonnistui, Yritä ladata sivu uudelleen",
+      "loadError_other": "Viestien lataus epäonnistui, Yritä ladata sivu uudelleen",
+      "loadError_receivedMessage": "Saapuneen viestin lataus epäonnistui",
+      "loadError_replies": "Viestien vastauksien lataus epäonnistui",
+      "loadError_signature": "Allekirjoituksen lataus epäonnistui",
+      "loadError_unreadMessageCount": "Lukemattomien viestien määrän lataus epäonnistui",
+      "nameError_label": "Tunnisteella täytyy olla nimi",
+      "newMessage": "{0} - Uusi viesti",
+      "noRecipientsError": "Viestillä ei ole vastaanottajia",
+      "noWorkspacesError": "Viestillä ei ole määriteltyjä kohdetyöntiloja",
+      "restoreError": "Viestin palautus epäonnistui",
+      "restoreError_messageThread": "Viestiketjun palautus epäonnistui",
+      "sendError": "Viestin lähetys epäonnistui. Kokeile lähettää uudelleen",
+      "sendSuccess": "Viestin lähetys onnistui",
+      "statusChangeError": "Viestin tilan muutos epäonnistui. Yritä uudelleen.",
+      "updateError_chatStatus": "Chatin tilan vaihto epäonnistui.",
+      "updateError_chatUserName": "Chatin käyttäjänimen vaihto epäonnistui.",
+      "updateError_label": "Tunnisteen päivitys epäonnistui",
+      "updateError_signature": "Allekirjoituksen päivitys epäonnistui",
+      "updateError_discussionArea": "Virhe keskustelualueen muokkauksessa",
+      "updateSuccess_chatStatus": "Chatin tila vaihdettu onnistuneesti.",
+      "updateSuccess_chatUserName": "Chatin käyttäjänimi vaihdettu onnistuneesti."
     }
   },
 
@@ -152,25 +374,13 @@
       "create": "Hyväksy tilaus",
       "confirmSave": "Kyllä, viimeistele tilaus",
       "confirmRemove": "Kyllä, poista tilaus"
-    }
-  },
-
-  "flags": {
-    "actions": {
-      "remove": "Poista lippu",
-      "share": "Jaa lippu"
     },
-    "labels": {
-      "edit": "Muokkaa lippua",
-      "create": "Luo uusi lippu"
-    }
-  },
 
-  "contactLogs": {
-    "labels": {
-      "edit": "Muokkaa yhteydenottoa",
-      "create": "Luo uusi yhteydenotto",
-      "remove": "Poista yhteydenotto"
+    "notifications": {
+      "cancelSuccess": "Keskeytit tilauksen maksutapahtuman. Ole hyvä ja ota yhteyttä ohjaajaasi.",
+      "createError": "Tilauksen maksutapahtumassa tapahtui virhe. Ole hyvä ja ota yhteyttä ohjaajaasi",
+      "createSuccess": "Tilauksen maksutapahtuma onnistui.",
+      "loadError": "Tilauksen lataus epäonnistui"
     }
   }
 }
