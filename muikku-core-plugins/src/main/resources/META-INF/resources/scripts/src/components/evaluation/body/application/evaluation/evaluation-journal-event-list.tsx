@@ -32,7 +32,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
 ) => {
   const { evaluation, i18nOLD } = props;
 
-  const { t } = useTranslation(["evaluation"]);
+  const { t } = useTranslation(["evaluation", "common"]);
 
   const [listOfDiaryIds, setListOfDiaryIds] = React.useState<number[]>([]);
   const [journalFilters, setJournalFilters] =

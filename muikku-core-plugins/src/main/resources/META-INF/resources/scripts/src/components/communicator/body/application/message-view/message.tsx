@@ -24,7 +24,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * MessageProps
  */
-interface MessageProps extends WithTranslation<["common", "messages"]> {
+interface MessageProps extends WithTranslation<["common"]> {
   message: MessageType;
   status: StatusType;
   signature: MessageSignatureType;
@@ -391,7 +391,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 className="link link--application-list"
                 onClick={this.handleOpenNewMessage("person")}
               >
-                {this.props.t("messages:actions.reply")}
+                {this.props.t("common:messaging.actions.reply")}
               </Link>
             )}
             {this.props.message.sender.studiesEnded ||
@@ -401,7 +401,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 className="link link--application-list"
                 onClick={this.handleOpenNewMessage("all")}
               >
-                {this.props.t("messages:actions.replyAll")}
+                {this.props.t("common:messaging.actions.replyAll")}
               </Link>
             )}
           </footer>
@@ -470,6 +470,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default withTranslation(["common", "messages"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(Message)
 );
