@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -22,7 +22,7 @@ import {
  * GuidanceRelationProps
  */
 interface GuidanceRelationProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   currentStudent: GuiderStudentUserProfileType;
   contactLogsPerPage: number;
   loadStudentContactLogs: LoadContactLogsTriggerType;
@@ -39,7 +39,7 @@ export const ContactLogsContext = React.createContext(10);
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18n, currentStudent, contactLogsPerPage } = props;
+  const { i18nOLD, currentStudent, contactLogsPerPage } = props;
 
   if (!currentStudent) {
     return null;
@@ -71,7 +71,9 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader
-        title={i18n.text.get("plugin.guider.user.tabs.title.guidanceRelations")}
+        title={i18nOLD.text.get(
+          "plugin.guider.user.tabs.title.guidanceRelations"
+        )}
       >
         <NewContactEvent logsPerPage={contactLogsPerPage}>
           <ButtonPill
@@ -86,7 +88,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
         {basic && basic.email ? (
           <ApplicationSubPanel modifier="guidance-relation-contact-info">
             <ApplicationSubPanelItem
-              title={i18n.text.get(
+              title={i18nOLD.text.get(
                 "plugin.guider.user.details.contactInfo.student.label"
               )}
             >
@@ -97,16 +99,16 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
 
 
           <ApplicationSubPanelItem
-            title={i18n.text.get(
+            title={i18nOLD.text.get(
               "plugin.guider.user.details.contactInfo.guardian.label"
             )}
           >
             <ApplicationSubPanelItem.Content>
               <div>
-                {i18n.text.get("plugin.guider.user.details.label.phoneNumber")}
+                {i18nOLD.text.get("plugin.guider.user.details.label.phoneNumber")}
               </div>
               <div>
-                {i18n.text.get("plugin.guider.user.details.label.email")}
+                {i18nOLD.text.get("plugin.guider.user.details.label.email")}
               </div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
@@ -114,7 +116,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
         ) : null}*/}
         <ApplicationSubPanel modifier="guidance-relation-contact-events">
           <ApplicationSubPanel.Header>
-            {i18n.text.get("plugin.guider.user.contactLog.title")}
+            {i18nOLD.text.get("plugin.guider.user.contactLog.title")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
             <ContactLogsContext.Provider value={contactLogsPerPage}>
@@ -143,7 +145,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                 </>
               ) : (
                 <div className="empty">
-                  {i18n.text.get("plugin.guider.user.contactLog.empty")}
+                  {i18nOLD.text.get("plugin.guider.user.contactLog.empty")}
                 </div>
               )}
             </ContactLogsContext.Provider>
@@ -161,7 +163,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     currentStudent: state.guider.currentStudent,
   };
 }

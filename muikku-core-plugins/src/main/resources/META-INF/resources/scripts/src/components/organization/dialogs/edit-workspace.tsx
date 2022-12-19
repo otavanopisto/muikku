@@ -31,7 +31,7 @@ import {
   loadCurrentOrganizationWorkspaceStaff,
   loadCurrentOrganizationWorkspaceStudents,
 } from "~/actions/workspaces/organization";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import AutofillSelector, {
@@ -71,7 +71,7 @@ type UserCategoryType = "students" | "staff";
  */
 interface OrganizationEditWorkspaceProps {
   children?: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   users: UsersSelectType;
   workspace: WorkspaceType;
   currentWorkspace: WorkspaceType;
@@ -396,12 +396,12 @@ class OrganizationEditWorkspace extends React.Component<
         this.setState({
           workspaceAccess: workspace.access,
           beginDate: workspace.details.beginDate
-            ? this.props.i18n.time
+            ? this.props.i18nOLD.time
                 .getLocalizedMoment(workspace.details.beginDate)
                 .toDate()
             : null,
           endDate: workspace.details.endDate
-            ? this.props.i18n.time
+            ? this.props.i18nOLD.time
                 .getLocalizedMoment(workspace.details.endDate)
                 .toDate()
             : null,
@@ -682,11 +682,11 @@ class OrganizationEditWorkspace extends React.Component<
           <form>
             <DialogRow>
               <DialogRowHeader
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step1.title",
                   page + "/" + this.totalSteps
                 )}
-                description={this.props.i18n.text.get(
+                description={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step1.description"
                 )}
               />
@@ -699,7 +699,7 @@ class OrganizationEditWorkspace extends React.Component<
                 updateField={this.setWorkspaceName}
                 valid={this.state.validation.nameValid}
                 name="workspace-name"
-                label={this.props.i18n.text.get(
+                label={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.name.label"
                 )}
                 value={this.state.workspaceName}
@@ -709,7 +709,7 @@ class OrganizationEditWorkspace extends React.Component<
                 modifiers="dialog-workspace-name-extension"
                 updateField={this.setWorkspaceNameExtension}
                 name="workspace-name-extension"
-                label={this.props.i18n.text.get(
+                label={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.addWorkspace.nameExtension.label"
                 )}
                 value={this.state.workspaceNameExtension}
@@ -721,12 +721,12 @@ class OrganizationEditWorkspace extends React.Component<
                 maxDate={this.state.endDate}
                 updateField={this.handleDateChange.bind(this, "beginDate")}
                 locale={outputCorrectDatePickerLocale(
-                  this.props.i18n.time.getLocale()
+                  this.props.i18nOLD.time.getLocale()
                 )}
                 selected={this.state.beginDate}
                 modifiers="organization-workspace-date"
                 labels={{
-                  label: this.props.i18n.text.get(
+                  label: this.props.i18nOLD.text.get(
                     "plugin.organization.workspaces.editWorkspace.beginDate.label"
                   ),
                 }}
@@ -737,12 +737,12 @@ class OrganizationEditWorkspace extends React.Component<
                 minDate={this.state.beginDate}
                 updateField={this.handleDateChange.bind(this, "endDate")}
                 locale={outputCorrectDatePickerLocale(
-                  this.props.i18n.time.getLocale()
+                  this.props.i18nOLD.time.getLocale()
                 )}
                 selected={this.state.endDate}
                 modifiers="organization-workspace-date"
                 labels={{
-                  label: this.props.i18n.text.get(
+                  label: this.props.i18nOLD.text.get(
                     "plugin.organization.workspaces.editWorkspace.endDate.label"
                   ),
                 }}
@@ -752,7 +752,7 @@ class OrganizationEditWorkspace extends React.Component<
             <DialogRow>
               <fieldset className="form__fieldset">
                 <legend className="form__legend">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.workspace.management.settings.access"
                   )}
                 </legend>
@@ -769,7 +769,7 @@ class OrganizationEditWorkspace extends React.Component<
                       )}
                     />
                     <label htmlFor="accessMembers">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.workspace.management.settings.access.membersOnly"
                       )}
                     </label>
@@ -783,7 +783,7 @@ class OrganizationEditWorkspace extends React.Component<
                       onChange={this.setWorkspaceAccess.bind(this, "LOGGED_IN")}
                     />
                     <label htmlFor="accessLoggedin">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.workspace.management.settings.access.loggedIn"
                       )}
                     </label>
@@ -797,7 +797,7 @@ class OrganizationEditWorkspace extends React.Component<
                       onChange={this.setWorkspaceAccess.bind(this, "ANYONE")}
                     />
                     <label htmlFor="accessAnyone">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.workspace.management.settings.access.anyone"
                       )}
                     </label>
@@ -827,11 +827,11 @@ class OrganizationEditWorkspace extends React.Component<
           <form>
             <DialogRow>
               <DialogRowHeader
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step2.title",
                   page + "/" + this.totalSteps
                 )}
-                description={this.props.i18n.text.get(
+                description={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step2.description"
                 )}
               />
@@ -841,7 +841,7 @@ class OrganizationEditWorkspace extends React.Component<
                 identifier="addWorkspaceStudents"
                 modifier="add-students"
                 loader={this.doStudentSearch}
-                placeholder={this.props.i18n.text.get(
+                placeholder={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.search.students.placeholder"
                 )}
                 selectedItems={this.state.addStudents}
@@ -865,11 +865,11 @@ class OrganizationEditWorkspace extends React.Component<
           <form>
             <DialogRow>
               <DialogRowHeader
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step3.title",
                   page + "/" + this.totalSteps
                 )}
-                description={this.props.i18n.text.get(
+                description={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step3.description"
                 )}
               />
@@ -877,7 +877,7 @@ class OrganizationEditWorkspace extends React.Component<
             <DialogRow>
               <DialogRemoveUsers
                 users={workspaceStudents}
-                placeholder={this.props.i18n.text.get(
+                placeholder={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.search.workspaceStudents.placeholder"
                 )}
                 removeUsers={this.state.removeStudents}
@@ -887,13 +887,13 @@ class OrganizationEditWorkspace extends React.Component<
                     : 0
                 }
                 identifier={"workspace" + this.props.workspace.id + "Students"}
-                allTabTitle={this.props.i18n.text.get(
+                allTabTitle={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title"
                 )}
-                removeTabTitle={this.props.i18n.text.get(
+                removeTabTitle={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.users.tab.removeWorkspaceStudents.title"
                 )}
-                onEmptyTitle={this.props.i18n.text.get(
+                onEmptyTitle={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.users.empty"
                 )}
                 searchValue={
@@ -919,11 +919,11 @@ class OrganizationEditWorkspace extends React.Component<
           <form>
             <DialogRow>
               <DialogRowHeader
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step4.title",
                   page + "/" + this.totalSteps
                 )}
-                description={this.props.i18n.text.get(
+                description={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step4.description"
                 )}
               />
@@ -933,7 +933,7 @@ class OrganizationEditWorkspace extends React.Component<
                 identifier="addWorkspaceTeachers"
                 modifier="add-teachers"
                 loader={this.doStaffSearch}
-                placeholder={this.props.i18n.text.get(
+                placeholder={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.search.teachers.placeholder"
                 )}
                 selectedItems={this.state.addStaff}
@@ -957,11 +957,11 @@ class OrganizationEditWorkspace extends React.Component<
           <form>
             <DialogRow>
               <DialogRowHeader
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step5.title",
                   page + "/" + this.totalSteps
                 )}
-                description={this.props.i18n.text.get(
+                description={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step5.description"
                 )}
               />
@@ -969,7 +969,7 @@ class OrganizationEditWorkspace extends React.Component<
             <DialogRow>
               <DialogRemoveUsers
                 users={workspaceStaff}
-                placeholder={this.props.i18n.text.get(
+                placeholder={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.search.workspaceTeachers.placeholder"
                 )}
                 removeUsers={this.state.removeStaff}
@@ -979,13 +979,13 @@ class OrganizationEditWorkspace extends React.Component<
                     : 0
                 }
                 identifier={"workspace" + this.props.workspace.id + "Staff"}
-                allTabTitle={this.props.i18n.text.get(
+                allTabTitle={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.users.tab.workspaceTeachers.title"
                 )}
-                removeTabTitle={this.props.i18n.text.get(
+                removeTabTitle={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.users.tab.removeWorkspaceTeachers.title"
                 )}
-                onEmptyTitle={this.props.i18n.text.get(
+                onEmptyTitle={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.users.empty"
                 )}
                 searchValue={
@@ -1006,11 +1006,11 @@ class OrganizationEditWorkspace extends React.Component<
           <DialogRow modifiers="edit-workspace-summary">
             <DialogRow>
               <DialogRowHeader
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step6.title",
                   page + "/" + this.totalSteps
                 )}
-                description={this.props.i18n.text.get(
+                description={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.step6.description"
                 )}
               />
@@ -1018,7 +1018,7 @@ class OrganizationEditWorkspace extends React.Component<
             <DialogRow>
               <DialogRowHeader
                 modifiers="new-workspace"
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.summary.label.workspaceName"
                 )}
               />
@@ -1034,22 +1034,22 @@ class OrganizationEditWorkspace extends React.Component<
             <DialogRow>
               <DialogRowHeader
                 modifiers="new-workspace"
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.summary.label.dates"
                 )}
               />
               <DialogRowContent modifiers="summary-dates">
                 <span>
                   {this.state.beginDate
-                    ? this.props.i18n.time.format(this.state.beginDate)
-                    : this.props.i18n.text.get(
+                    ? this.props.i18nOLD.time.format(this.state.beginDate)
+                    : this.props.i18nOLD.text.get(
                         "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
                       )}
                 </span>
                 <span>
                   {this.state.endDate
-                    ? this.props.i18n.time.format(this.state.endDate)
-                    : this.props.i18n.text.get(
+                    ? this.props.i18nOLD.time.format(this.state.endDate)
+                    : this.props.i18nOLD.text.get(
                         "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
                       )}
                 </span>
@@ -1058,7 +1058,7 @@ class OrganizationEditWorkspace extends React.Component<
             <DialogRow>
               <DialogRowHeader
                 modifiers="new-workspace"
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.summary.label.addStudents"
                 )}
               />
@@ -1081,7 +1081,7 @@ class OrganizationEditWorkspace extends React.Component<
                   })
                 ) : (
                   <div>
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.organization.workspaces.editWorkspace.summary.empty.students"
                     )}
                   </div>
@@ -1091,7 +1091,7 @@ class OrganizationEditWorkspace extends React.Component<
             <DialogRow>
               <DialogRowHeader
                 modifiers="new-workspace"
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.summary.label.addTeachers"
                 )}
               />
@@ -1114,7 +1114,7 @@ class OrganizationEditWorkspace extends React.Component<
                   })
                 ) : (
                   <div>
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.organization.workspaces.editWorkspace.summary.empty.teachers"
                     )}
                   </div>
@@ -1124,7 +1124,7 @@ class OrganizationEditWorkspace extends React.Component<
             <DialogRow>
               <DialogRowHeader
                 modifiers="new-workspace"
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.summary.label.removeStudents"
                 )}
               />
@@ -1147,7 +1147,7 @@ class OrganizationEditWorkspace extends React.Component<
                   })
                 ) : (
                   <div>
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.organization.workspaces.editWorkspace.summary.empty.students"
                     )}
                   </div>
@@ -1157,7 +1157,7 @@ class OrganizationEditWorkspace extends React.Component<
             <DialogRow>
               <DialogRowHeader
                 modifiers="new-workspace"
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.editWorkspace.summary.label.removeTeachers"
                 )}
               />
@@ -1180,7 +1180,7 @@ class OrganizationEditWorkspace extends React.Component<
                   })
                 ) : (
                   <div>
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.organization.workspaces.editWorkspace.summary.empty.teachers"
                     )}
                   </div>
@@ -1212,7 +1212,7 @@ class OrganizationEditWorkspace extends React.Component<
             this.state.workspaceUpdated === true ? "state-DONE" : ""
           }`}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.updateWorkspace"
           )}
         </div>
@@ -1221,7 +1221,7 @@ class OrganizationEditWorkspace extends React.Component<
             this.state.detailsAdded === true ? "state-DONE" : ""
           }`}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.addDetails"
           )}
         </div>
@@ -1230,7 +1230,7 @@ class OrganizationEditWorkspace extends React.Component<
             this.state.studentsAdded === true ? "state-DONE" : ""
           }`}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.addStudents"
           )}
         </div>
@@ -1239,7 +1239,7 @@ class OrganizationEditWorkspace extends React.Component<
             this.state.staffAdded === true ? "state-DONE" : ""
           }`}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.addTeachers"
           )}
         </div>
@@ -1248,7 +1248,7 @@ class OrganizationEditWorkspace extends React.Component<
             this.state.studentsRemoved === true ? "state-DONE" : ""
           }`}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.removeStudents"
           )}
         </div>
@@ -1257,7 +1257,7 @@ class OrganizationEditWorkspace extends React.Component<
             this.state.staffRemoved === true ? "state-DONE" : ""
           }`}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.removeTeachers"
           )}
         </div>
@@ -1273,16 +1273,16 @@ class OrganizationEditWorkspace extends React.Component<
         locked={this.state.locked}
         currentStep={this.state.currentStep}
         totalSteps={this.totalSteps}
-        executeLabel={this.props.i18n.text.get(
+        executeLabel={this.props.i18nOLD.text.get(
           "plugin.organization.workspaces.editWorkspace.execute.label"
         )}
-        nextLabel={this.props.i18n.text.get(
+        nextLabel={this.props.i18nOLD.text.get(
           "plugin.organization.workspaces.editWorkspace.next.label"
         )}
-        lastLabel={this.props.i18n.text.get(
+        lastLabel={this.props.i18nOLD.text.get(
           "plugin.organization.workspaces.editWorkspace.last.label"
         )}
-        cancelLabel={this.props.i18n.text.get(
+        cancelLabel={this.props.i18nOLD.text.get(
           "plugin.organization.workspaces.editWorkspace.cancel.label"
         )}
         executeClick={this.saveWorkspace.bind(this, closePortal)}
@@ -1300,7 +1300,7 @@ class OrganizationEditWorkspace extends React.Component<
         executeContent={executeContent}
         footer={footer}
         modifier="edit-workspace"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.organization.workspaces.editWorkspace.title",
           this.props.workspace.name
         )}
@@ -1318,7 +1318,7 @@ class OrganizationEditWorkspace extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     users: state.userSelect,
     currentWorkspace: state.organizationWorkspaces.currentWorkspace,
   };

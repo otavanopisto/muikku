@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   HTMLtoReactComponent,
   HTMLToReactComponentRule,
@@ -27,7 +27,7 @@ interface ImageProps {
     sourceUrl: string;
     original?: string;
   };
-  i18n: i18nType;
+  i18nOLD: i18nType;
   processingRules: HTMLToReactComponentRule[];
 
   invisible?: boolean;
@@ -159,7 +159,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
             <span className="image__details icon-copyright" key="details">
               <span className="image__details-container">
                 <span className="image__details-label">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.workspace.materials.detailsSourceLabel"
                   )}{" "}
                 </span>

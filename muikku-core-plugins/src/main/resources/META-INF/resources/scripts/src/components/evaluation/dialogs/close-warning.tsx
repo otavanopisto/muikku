@@ -6,17 +6,20 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
-import { i18nType } from "../../../reducers/base/i18n";
+import { i18nType } from "../../../reducers/base/i18nOLD";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DeleteDialogProps
  */
-interface WarningeDialogProps {
-  i18n: i18nType;
+interface WarningeDialogProps
+  extends WithTranslation<["common", "evaluation"]> {
+  i18nOLD: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
   onContinueClick: () => void;
-  onClose?: () => any;
+  onClose?: () => void;
 }
 
 /**
@@ -45,7 +48,7 @@ class WarningDialog extends React.Component<
    * handleDeleteEventClick
    * @param closeDialog closeDialog
    */
-  handleContinueClick(closeDialog: () => any) {
+  handleContinueClick(closeDialog: () => void) {
     this.props.onContinueClick();
     closeDialog();
   }
@@ -59,23 +62,19 @@ class WarningDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.handleContinueClick.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.proceedButton"
-          )}
+          {this.props.t("evaluation:actions.confirmCancel")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.cancelButton"
-          )}
+          {this.props.t("common:actions.cancel")}
         </Button>
       </div>
     );
@@ -83,9 +82,9 @@ class WarningDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
-        {this.props.i18n.text.get(
+        {this.props.i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.description"
         )}
       </div>
@@ -95,7 +94,7 @@ class WarningDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.title"
         )}
         content={content}
@@ -115,7 +114,7 @@ class WarningDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 
@@ -127,4 +126,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WarningDialog);
+export default withTranslation(["common", "evaluation"])(
+  connect(mapStateToProps, mapDispatchToProps)(WarningDialog)
+);

@@ -532,7 +532,7 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.coursepicker.pageTitle")
+            .i18nOLD.text.get("plugin.coursepicker.pageTitle")
         )
       );
       const currentLocationData = queryString.parse(
@@ -624,7 +624,7 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.site.title")
+          this.props.store.getState().i18nOLD.text.get("plugin.site.title")
         )
       );
       this.loadChatSettings();
@@ -644,7 +644,7 @@ export default class MainFunction extends React.Component<
           identifier: "UNPUBLISHED",
           name: this.props.store
             .getState()
-            .i18n.text.get(
+            .i18nOLD.text.get(
               "plugin.organization.filters.workspaceState.unpublished.label"
             ),
         },
@@ -652,7 +652,7 @@ export default class MainFunction extends React.Component<
           identifier: "PUBLISHED",
           name: this.props.store
             .getState()
-            .i18n.text.get(
+            .i18nOLD.text.get(
               "plugin.organization.filters.workspaceState.published.label"
             ),
         },
@@ -661,7 +661,7 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.organization.pageTitle")
+            .i18nOLD.text.get("plugin.organization.pageTitle")
         )
       );
       this.props.websocket && this.props.websocket.restoreEventListeners();
@@ -772,7 +772,7 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.communicator.pageTitle")
+            .i18nOLD.text.get("plugin.communicator.pageTitle")
         )
       );
       this.props.store.dispatch(loadSignature() as Action);
@@ -817,7 +817,7 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.forum.pageTitle")
+          this.props.store.getState().i18nOLD.text.get("plugin.forum.pageTitle")
         )
       );
 
@@ -849,7 +849,7 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.announcements.pageTitle")
+            .i18nOLD.text.get("plugin.announcements.pageTitle")
         )
       );
       this.props.store.dispatch(
@@ -892,7 +892,7 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.announcer.pageTitle")
+            .i18nOLD.text.get("plugin.announcer.pageTitle")
         )
       );
 
@@ -926,7 +926,7 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.guider.guider")
+          this.props.store.getState().i18nOLD.text.get("plugin.guider.guider")
         )
       );
       this.props.store.dispatch(updateLabelFilters() as Action);
@@ -959,7 +959,7 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.profile.profile")
+          this.props.store.getState().i18nOLD.text.get("plugin.profile.profile")
         )
       );
 
@@ -1001,7 +1001,9 @@ export default class MainFunction extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.records.pageTitle")
+          this.props.store
+            .getState()
+            .i18nOLD.text.get("plugin.records.pageTitle")
         )
       );
       this.props.store.dispatch(
@@ -1033,7 +1035,7 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.evaluation.evaluation")
+            .i18nOLD.text.get("plugin.evaluation.evaluation")
         )
       );
       this.props.store.dispatch(

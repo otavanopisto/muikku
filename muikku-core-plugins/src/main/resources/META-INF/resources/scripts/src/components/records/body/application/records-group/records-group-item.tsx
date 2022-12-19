@@ -10,7 +10,7 @@ import {
 import Button from "~/components/general/button";
 import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { Assessment, WorkspaceType } from "~/reducers/workspaces";
 import ActivityIndicator from "../records-indicators/activity-indicator";
 import AssessmentRequestIndicator from "../records-indicators/assessment-request-indicator";
@@ -20,7 +20,7 @@ import RecordsAssessmentIndicator from "../records-indicators/records-assessment
  * RecordsGroupItemProps
  */
 interface RecordsGroupItemProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspace: WorkspaceType;
   isCombinationWorkspace: boolean;
 }
@@ -105,7 +105,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
    * @returns JSX.Element
    */
   const renderAssessmentsInformations = () => {
-    const { i18n, workspace } = props;
+    const { i18nOLD, workspace } = props;
 
     if (!workspace.activity) {
       return null;
@@ -156,22 +156,22 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 ></div>
                 <div className="workspace-assessment__date">
                   <span className="workspace-assessment__date-label">
-                    {i18n.text.get(
+                    {i18nOLD.text.get(
                       "plugin.records.workspace.assessment.date.label"
                     )}
                     :
                   </span>
                   <span className="workspace-assessment__date-data">
-                    {i18n.time.format(a.date)}
+                    {i18nOLD.time.format(a.date)}
                   </span>
                 </div>
                 <div className="workspace-assessment__literal">
                   <div className="workspace-assessment__literal-label">
                     {assessmentIsPending
-                      ? i18n.text.get(
+                      ? i18nOLD.text.get(
                           "plugin.records.workspace.assessment.interimEvaluationrequest.label"
                         )
-                      : i18n.text.get(
+                      : i18nOLD.text.get(
                           "plugin.records.workspace.assessment.interimEvaluation"
                         )}
                     :
@@ -209,27 +209,27 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {i18n.text.get(
+                      {i18nOLD.text.get(
                         "plugin.records.workspace.assessment.date.label"
                       )}
                       :
                     </span>
 
                     <span className="workspace-assessment__date-data">
-                      {i18n.time.format(a.date)}
+                      {i18nOLD.time.format(a.date)}
                     </span>
                   </div>
 
                   <div className="workspace-assessment__grade">
                     <span className="workspace-assessment__grade-label">
-                      {i18n.text.get(
+                      {i18nOLD.text.get(
                         "plugin.records.workspace.assessment.grade.label"
                       )}
                       :
                     </span>
                     <span className="workspace-assessment__grade-data">
                       {assessmentIsIncomplete
-                        ? i18n.text.get(
+                        ? i18nOLD.text.get(
                             "plugin.records.workspace.assessment.grade.incomplete.data"
                           )
                         : a.grade}
@@ -238,7 +238,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
-                      {i18n.text.get(
+                      {i18nOLD.text.get(
                         "plugin.records.workspace.assessment.literal.label"
                       )}
                       :
@@ -261,18 +261,18 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                   ></div>
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {i18n.text.get(
+                      {i18nOLD.text.get(
                         "plugin.records.workspace.assessment.date.label"
                       )}
                       :
                     </span>
                     <span className="workspace-assessment__date-data">
-                      {i18n.time.format(a.date)}
+                      {i18nOLD.time.format(a.date)}
                     </span>
                   </div>
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
-                      {i18n.text.get(
+                      {i18nOLD.text.get(
                         "plugin.records.workspace.assessment.request.label"
                       )}
                       :
@@ -321,7 +321,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               workspace={workspace}
             >
               <Button buttonModifiers={["info", "assignments-and-exercieses"]}>
-                {props.i18n.text.get(
+                {props.i18nOLD.text.get(
                   "plugin.records.assignmentsAndExercisesButton.label"
                 )}
               </Button>
@@ -401,7 +401,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

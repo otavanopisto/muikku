@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "~/components/general/dropdown";
 
 /**
@@ -9,7 +9,7 @@ interface WordDefinitionProps {
   dataset: {
     muikkuWordDefinition: string;
   };
-  i18n: i18nType;
+  i18nOLD: i18nType;
   invisible?: boolean;
 }
 

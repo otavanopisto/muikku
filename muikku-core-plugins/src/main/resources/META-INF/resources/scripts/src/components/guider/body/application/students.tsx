@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import StudentDialog from "../../dialogs/student";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -39,7 +39,7 @@ import { AnyActionType } from "~/actions";
  * GuiderStudentsProps
  */
 interface GuiderStudentsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   guiderStudentsState: GuiderStudentsStateType;
   guiderStudentsHasMore: boolean;
   loadMoreStudents: LoadMoreStudentsTriggerType;
@@ -130,14 +130,16 @@ class GuiderStudents extends BodyScrollLoader<
     } else if (this.props.guiderStudentsState === "ERROR") {
       return (
         <div className="empty">
-          {this.props.i18n.text.get("plugin.guider.errorMessage.users")}
+          {this.props.i18nOLD.text.get("plugin.guider.errorMessage.users")}
         </div>
       );
     } else if (this.props.guider.students.length === 0) {
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.guider.errorMessage.nostudents")}
+            {this.props.i18nOLD.text.get(
+              "plugin.guider.errorMessage.nostudents"
+            )}
           </span>
         </div>
       );
@@ -210,7 +212,7 @@ class GuiderStudents extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     guiderStudentsState: state.guider.studentsState,
     guiderStudentsHasMore: state.guider.hasMore,
     guiderStudentsCurrent: state.guider.currentStudent,

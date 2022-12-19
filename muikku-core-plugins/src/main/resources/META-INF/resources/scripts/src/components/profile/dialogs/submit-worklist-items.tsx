@@ -1,7 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import { bindActionCreators } from "redux";
@@ -19,7 +19,7 @@ import {
  * SubmitWorklistItemsDialogProps
  */
 interface SubmitWorklistItemsDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   summary: WorklistItemsSummary;
   children: React.ReactElement<any>;
   updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType;
@@ -71,7 +71,7 @@ class SubmitWorklistItemsDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         <span>
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.profile.worklist.submitForApproval.dialog.description"
           )}
         </span>
@@ -88,7 +88,7 @@ class SubmitWorklistItemsDialog extends React.Component<
           buttonModifiers={["success", "standard-ok"]}
           onClick={this.submit.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.profile.worklist.submitForApproval.dialog.button.submitLabel"
           )}
         </Button>
@@ -96,7 +96,7 @@ class SubmitWorklistItemsDialog extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.profile.worklist.submitForApproval.dialog.button.cancelLabel"
           )}
         </Button>
@@ -104,7 +104,7 @@ class SubmitWorklistItemsDialog extends React.Component<
     );
     return (
       <Dialog
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.profile.worklist.submitForApproval.dialog.title"
         )}
         content={content}
@@ -123,7 +123,7 @@ class SubmitWorklistItemsDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

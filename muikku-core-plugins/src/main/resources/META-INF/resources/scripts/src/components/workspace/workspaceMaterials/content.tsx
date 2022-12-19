@@ -12,7 +12,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   MaterialContentNodeListType,
   WorkspaceType,
@@ -49,7 +49,7 @@ import SessionStateComponent from "~/components/general/session-state-component"
  * ContentProps
  */
 interface ContentProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   materials: MaterialContentNodeListType;
   materialReplies: MaterialCompositeRepliesListType;
@@ -500,12 +500,12 @@ class ContentComponent extends SessionStateComponent<
   ) => {
     switch (viewRestrict) {
       case MaterialViewRestriction.LOGGED_IN:
-        return this.props.i18n.text.get(
+        return this.props.i18nOLD.text.get(
           "plugin.workspace.materialViewRestricted"
         );
 
       case MaterialViewRestriction.WORKSPACE_MEMBERS:
-        return this.props.i18n.text.get(
+        return this.props.i18nOLD.text.get(
           "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
         );
 
@@ -545,7 +545,7 @@ class ContentComponent extends SessionStateComponent<
 
     return (
       <Toc
-        tocHeaderTitle={this.props.i18n.text.get(
+        tocHeaderTitle={this.props.i18nOLD.text.get(
           "plugin.workspace.materials.tocTitle"
         )}
         tocHeaderExtraContent={
@@ -570,7 +570,7 @@ class ContentComponent extends SessionStateComponent<
                   <div className="dropdown__container-item">
                     <div className="filter-category">
                       <div className="filter-category__label">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.workspace.materials.tocFilter"
                         )}
                       </div>
@@ -591,7 +591,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="theory-page-filter"
                         className="filter-item__label"
                       >
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.workspace.materials.tocFilter.theory"
                         )}
                       </label>
@@ -612,7 +612,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="exercise-page-filter"
                         className="filter-item__label"
                       >
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.workspace.materials.tocFilter.exercise"
                         )}
                       </label>
@@ -633,7 +633,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="assignment-page-filter"
                         className="filter-item__label"
                       >
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.workspace.materials.tocFilter.assignment"
                         )}
                       </label>
@@ -654,7 +654,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="journal-page-filter"
                         className="filter-item__label"
                       >
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.workspace.materials.tocFilter.journal"
                         )}
                       </label>
@@ -675,7 +675,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="interim-evaluation-page-filter"
                         className="filter-item__label"
                       >
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.workspace.materials.tocFilter.interim"
                         )}
                       </label>
@@ -808,42 +808,42 @@ class ContentComponent extends SessionStateComponent<
                         case "ANSWERED":
                           icon = "check";
                           className = "toc__item--answered";
-                          iconTitle = this.props.i18n.text.get(
+                          iconTitle = this.props.i18nOLD.text.get(
                             "plugin.workspace.materials.exerciseDoneTooltip"
                           );
                           break;
                         case "SUBMITTED":
                           icon = "check";
                           className = "toc__item--submitted";
-                          iconTitle = this.props.i18n.text.get(
+                          iconTitle = this.props.i18nOLD.text.get(
                             "plugin.workspace.materials.assignmentDoneTooltip"
                           );
                           break;
                         case "WITHDRAWN":
                           icon = "check";
                           className = "toc__item--withdrawn";
-                          iconTitle = this.props.i18n.text.get(
+                          iconTitle = this.props.i18nOLD.text.get(
                             "plugin.workspace.materials.assignmentWithdrawnTooltip"
                           );
                           break;
                         case "INCOMPLETE":
                           icon = "thumb-down";
                           className = "toc__item--incomplete";
-                          iconTitle = this.props.i18n.text.get(
+                          iconTitle = this.props.i18nOLD.text.get(
                             "plugin.workspace.materials.assignmentIncompleteTooltip"
                           );
                           break;
                         case "FAILED":
                           icon = "thumb-down";
                           className = "toc__item--failed";
-                          iconTitle = this.props.i18n.text.get(
+                          iconTitle = this.props.i18nOLD.text.get(
                             "plugin.workspace.materials.assignmentFailedTooltip"
                           );
                           break;
                         case "PASSED":
                           icon = "thumb-up";
                           className = "toc__item--passed";
-                          iconTitle = this.props.i18n.text.get(
+                          iconTitle = this.props.i18nOLD.text.get(
                             "plugin.workspace.materials.assignmentPassedTooltip"
                           );
                           break;
@@ -975,7 +975,7 @@ class ContentComponent extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     materials: state.workspaces.currentMaterials,
     materialReplies: state.workspaces.currentMaterialsReplies,

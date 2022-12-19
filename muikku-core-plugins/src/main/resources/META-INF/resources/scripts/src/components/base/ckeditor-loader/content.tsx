@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Base from "./base";
 
 /**
@@ -9,7 +9,7 @@ import Base from "./base";
  */
 interface CkeditorLoaderContentProps {
   html: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -17,7 +17,7 @@ interface CkeditorLoaderContentProps {
  * @param props props
  */
 function CkeditorLoaderContent(props: CkeditorLoaderContentProps) {
-  return <Base html={props.html} i18n={props.i18n} usedAs="default" />;
+  return <Base html={props.html} i18nOLD={props.i18nOLD} usedAs="default" />;
 }
 
 /**
@@ -27,7 +27,7 @@ function CkeditorLoaderContent(props: CkeditorLoaderContentProps) {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

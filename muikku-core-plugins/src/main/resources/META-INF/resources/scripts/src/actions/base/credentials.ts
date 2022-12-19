@@ -62,7 +62,7 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
       }
       return dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed",
             err.message
           ),
@@ -94,7 +94,7 @@ const updateCredentials: UpdateCredentialsTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.forgotpassword.changeCredentials.messages.success.credentialsReset"
             ),
             "success"

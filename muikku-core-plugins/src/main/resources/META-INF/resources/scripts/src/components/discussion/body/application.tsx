@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import NewThread from "../dialogs/new-thread";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import HoverButton from "~/components/general/hover-button";
@@ -13,6 +13,7 @@ import Button from "~/components/general/button";
 import "~/sass/elements/link.scss";
 import { AnyActionType } from "../../../actions/index";
 import DiscussionSubscribedThreads from "./application/discussion-subscribed-threads";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DiscussionApplicationState
@@ -22,8 +23,8 @@ interface DiscussionApplicationState {}
 /**
  * DiscussionApplicationProps
  */
-interface DiscussionApplicationProps {
-  i18n: i18nType;
+interface DiscussionApplicationProps extends WithTranslation<["common"]> {
+  i18nOLD: i18nType;
   discussion: DiscussionType;
 }
 
@@ -45,14 +46,20 @@ class DiscussionApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.forum.pageTitle");
+    // TODO: use i18next
+    const title = this.props.i18nOLD.text.get("plugin.forum.pageTitle");
     const toolbar = <Toolbar />;
     const primaryOption =
       !this.props.discussion.current &&
       this.props.discussion.areas.length > 0 ? (
         <NewThread>
           <Button buttonModifiers="primary-function">
-            {this.props.i18n.text.get("plugin.discussion.createmessage.topic")}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get(
+                "plugin.discussion.createmessage.topic"
+              )
+            }
           </Button>
         </NewThread>
       ) : null;
@@ -90,7 +97,7 @@ class DiscussionApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
   };
 }
@@ -103,7 +110,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionApplication);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionApplication)
+);

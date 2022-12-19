@@ -9,7 +9,7 @@ import Link from "~/components/general/link";
 import * as moment from "moment";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import NoteInformationDialog from "./dialogs/note-information-dialog";
 import { isOverdue } from "~/helper-functions/dates";
 
@@ -17,7 +17,7 @@ import { isOverdue } from "~/helper-functions/dates";
  * NotesListItemProps
  */
 export interface NotesListItemProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   archived: boolean;
   notesItem: NotesItemRead;
   containerModifier?: string[];
@@ -205,7 +205,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">
-              {props.i18n.text.get("plugin.records.tasks.dates.active")}
+              {props.i18nOLD.text.get("plugin.records.tasks.dates.active")}
             </span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")} - {moment(dueDate).format("l")}
@@ -216,7 +216,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">
-              {props.i18n.text.get("plugin.records.tasks.dates.active")}
+              {props.i18nOLD.text.get("plugin.records.tasks.dates.active")}
             </span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")}
@@ -228,7 +228,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">
-              {props.i18n.text.get("plugin.records.tasks.dates.active")}
+              {props.i18nOLD.text.get("plugin.records.tasks.dates.active")}
             </span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
             <span className="notes__item-dates-date">
@@ -253,7 +253,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             key="note-overdue"
             className="notes__item-status notes__item-status--overdue"
           >
-            {props.i18n.text.get("plugin.records.tasks.status.overdue")}
+            {props.i18nOLD.text.get("plugin.records.tasks.status.overdue")}
           </div>
         );
       }
@@ -265,7 +265,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               key="note-ongoing"
               className="notes__item-status notes__item-status--ongoing"
             >
-              {props.i18n.text.get("plugin.records.tasks.status.ongoing")}
+              {props.i18nOLD.text.get("plugin.records.tasks.status.ongoing")}
             </div>
           );
           break;
@@ -275,7 +275,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               key="note-pending"
               className="notes__item-status notes__item-status--pending"
             >
-              {props.i18n.text.get("plugin.records.tasks.status.pending")}
+              {props.i18nOLD.text.get("plugin.records.tasks.status.pending")}
             </div>
           );
           break;
@@ -286,7 +286,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               className="notes__item-status notes__item-status--done"
             >
               <span className="notes__item-status-indicator icon-check"></span>
-              {props.i18n.text.get("plugin.records.tasks.status.done")}
+              {props.i18nOLD.text.get("plugin.records.tasks.status.done")}
             </div>
           );
           break;
@@ -317,7 +317,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.APPROVAL_PENDING
                 )}
               >
-                {props.i18n.text.get(
+                {props.i18nOLD.text.get(
                   "plugin.records.tasks.action.requestApproval"
                 )}
               </Link>
@@ -332,7 +332,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                     NotesItemStatus.APPROVED
                   )}
                 >
-                  {props.i18n.text.get(
+                  {props.i18nOLD.text.get(
                     "plugin.records.tasks.action.markAsDone"
                   )}
                 </Link>
@@ -349,7 +349,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.ONGOING
                 )}
               >
-                {props.i18n.text.get(
+                {props.i18nOLD.text.get(
                   "plugin.records.tasks.action.cancelApprovalRequest"
                 )}
               </Link>
@@ -366,7 +366,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.ONGOING
                 )}
               >
-                {props.i18n.text.get(
+                {props.i18nOLD.text.get(
                   "plugin.records.tasks.action.markAsIncomplete"
                 )}
               </Link>
@@ -387,7 +387,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                     NotesItemStatus.APPROVED
                   )}
                 >
-                  {props.i18n.text.get(
+                  {props.i18nOLD.text.get(
                     "plugin.records.tasks.action.markAsApproved"
                   )}
                 </Link>
@@ -399,7 +399,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                     NotesItemStatus.ONGOING
                   )}
                 >
-                  {props.i18n.text.get(
+                  {props.i18nOLD.text.get(
                     "plugin.records.tasks.action.markAsIncomplete"
                   )}
                 </Link>
@@ -416,7 +416,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.APPROVAL_PENDING
                 )}
               >
-                {props.i18n.text.get(
+                {props.i18nOLD.text.get(
                   "plugin.records.tasks.action.markAsIncomplete"
                 )}
               </Link>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 
@@ -16,7 +16,7 @@ interface PagerProps {
   current: number;
   pages: number;
   modifier?: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   identifier?: string;
 }
 
@@ -72,7 +72,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
         className={`pager ${
           this.props.modifier ? "pager--" + this.props.modifier : ""
         }`}
-        aria-label={this.props.i18n.text.get("plugin.wcag.pager.label")}
+        aria-label={this.props.i18nOLD.text.get("plugin.wcag.pager.label")}
       >
         <div className="pager__body">
           {isPagerLessVisible
@@ -82,7 +82,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   tabIndex={0}
                   className="pager__item pager__item--less icon-arrow-left"
                   onClick={this.props.onClick.bind(null, pagerLessNumber)}
-                  aria-label={this.props.i18n.text.get(
+                  aria-label={this.props.i18nOLD.text.get(
                     "plugin.wcag.pager.prev10.label"
                   )}
                 />,
@@ -91,7 +91,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   tabIndex={0}
                   className="pager__item pager__item--first"
                   onClick={this.props.onClick.bind(null, 1)}
-                  aria-label={this.props.i18n.text.get(
+                  aria-label={this.props.i18nOLD.text.get(
                     "plugin.wcag.pager.goToPage.label"
                   )}
                 >
@@ -119,8 +119,12 @@ class Pager extends React.Component<PagerProps, PagerState> {
               onClick={this.props.onClick.bind(null, page)}
               arial-label={
                 page === this.props.current
-                  ? this.props.i18n.text.get("plugin.wcag.pager.current.label")
-                  : this.props.i18n.text.get("plugin.wcag.pager.goToPage.label")
+                  ? this.props.i18nOLD.text.get(
+                      "plugin.wcag.pager.current.label"
+                    )
+                  : this.props.i18nOLD.text.get(
+                      "plugin.wcag.pager.goToPage.label"
+                    )
               }
             >
               {page}
@@ -140,7 +144,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   tabIndex={0}
                   className="pager__item pager__item--last"
                   onClick={this.props.onClick.bind(null, this.props.pages)}
-                  aria-label={this.props.i18n.text.get(
+                  aria-label={this.props.i18nOLD.text.get(
                     "plugin.wcag.pager.goToPage.label"
                   )}
                 >
@@ -151,7 +155,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   tabIndex={0}
                   className="pager__item pager__item--more icon-arrow-right"
                   onClick={this.props.onClick.bind(null, pagerMoreNumber)}
-                  aria-label={this.props.i18n.text.get(
+                  aria-label={this.props.i18nOLD.text.get(
                     "plugin.wcag.pager.next10.label"
                   )}
                 />,
@@ -170,7 +174,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

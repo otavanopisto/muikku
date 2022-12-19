@@ -2,7 +2,7 @@ import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 import "~/sass/elements/producers.scss";
 
@@ -11,7 +11,7 @@ import "~/sass/elements/producers.scss";
  */
 interface ProducersProps {
   workspace: WorkspaceType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -38,7 +38,8 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
     return (
       <div className="producers">
         <span className="producers__title">
-          {this.props.i18n.text.get("plugin.workspace.index.producersLabel")}:
+          {this.props.i18nOLD.text.get("plugin.workspace.index.producersLabel")}
+          :
         </span>
         {this.props.workspace.producers.map((producer, index) => {
           let textForTheName = producer.name;
@@ -62,7 +63,7 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
   };
 }

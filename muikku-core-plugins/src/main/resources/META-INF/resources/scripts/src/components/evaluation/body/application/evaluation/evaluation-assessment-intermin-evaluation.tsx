@@ -22,7 +22,7 @@ import AnimateHeight from "react-animate-height";
 import mApi from "~/lib/mApi";
 import SlideDrawer from "./slide-drawer";
 import { StateType } from "~/reducers/index";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   UpdateOpenedAssignmentEvaluationId,
   updateOpenedAssignmentEvaluation,
@@ -39,7 +39,7 @@ interface EvaluationAssessmentInterminEvaluationRequestProps {
   workspace: WorkspaceType;
   assigment: MaterialAssignmentType;
   open: boolean;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   evaluations: EvaluationState;
   selectedAssessment: AssessmentRequest;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
@@ -354,7 +354,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-data">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.evaluation.evaluationModal.assignmentNotDoneLabel"
                 )}
               </span>
@@ -363,7 +363,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
             hasSubmitted && (
               <div className="evaluation-modal__item-meta-item">
                 <span className="evaluation-modal__item-meta-item-label">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.evaluation.evaluationModal.assignmentDoneLabel"
                   )}
                 </span>
@@ -377,7 +377,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           {evaluationDate && (
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"
                 )}
               </span>
@@ -459,7 +459,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
 
             {showAsHidden && (
               <div className="evaluation-modal__item-hidden">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   `plugin.evaluation.evaluationModal.interimEvaluationHiddenButAnswered`
                 )}
               </div>
@@ -473,7 +473,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
               (compositeReply.state === "SUBMITTED" ||
                 compositeReply.state === "PASSED") ? (
                 <ButtonPill
-                  aria-label={this.props.i18n.text.get(
+                  aria-label={this.props.i18nOLD.text.get(
                     "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
                   )}
                   onClick={this.handleOpenSlideDrawer(
@@ -509,7 +509,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
               showAudioAssessmentWarningOnClose={
                 this.state.showCloseEditorWarning
               }
-              editorLabel={this.props.i18n.text.get(
+              editorLabel={this.props.i18nOLD.text.get(
                 "plugin.evaluation.assignmentEvaluationDialog.interimLiteralAssessment"
               )}
               materialEvaluation={this.state.materialNode.evaluation}
@@ -561,7 +561,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     evaluations: state.evaluations,
   };
 }

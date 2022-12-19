@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { UserGroupType, UserType } from "~/reducers/user-index";
 import { Reducer } from "redux";
 
@@ -183,7 +183,7 @@ export interface MessagesNavigationItemUpdateType {
   /**
    *
    */
-  text?(i18n: i18nType): string;
+  text?(i18nOLD: i18nType): string;
 }
 
 /**
@@ -198,7 +198,7 @@ export interface MessagesNavigationItemType {
   /**
    *
    */
-  text(i18n: i18nType): string;
+  text(i18nOLD: i18nType): string;
 }
 
 /**
@@ -222,10 +222,10 @@ const defaultNavigation: MessagesNavigationItemListType = [
     icon: "folder",
     /**
      * text
-     * @param i18n i18n
+     * @param i18nOLD i18nOLD
      */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.inbox");
+    text(i18nOLD: i18nType): string {
+      return i18nOLD.text.get("plugin.communicator.category.title.inbox");
     },
   },
   {
@@ -235,10 +235,10 @@ const defaultNavigation: MessagesNavigationItemListType = [
     icon: "folder",
     /**
      * text
-     * @param i18n i18n
+     * @param i18nOLD i18nOLD
      */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.unread");
+    text(i18nOLD: i18nType): string {
+      return i18nOLD.text.get("plugin.communicator.category.title.unread");
     },
   },
   {
@@ -248,10 +248,10 @@ const defaultNavigation: MessagesNavigationItemListType = [
     icon: "folder",
     /**
      * text
-     * @param i18n i18n
+     * @param i18nOLD i18nOLD
      */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.sent");
+    text(i18nOLD: i18nType): string {
+      return i18nOLD.text.get("plugin.communicator.category.title.sent");
     },
   },
   {
@@ -261,10 +261,10 @@ const defaultNavigation: MessagesNavigationItemListType = [
     icon: "trash-alt",
     /**
      * text
-     * @param i18n i18n
+     * @param i18nOLD i18nOLD
      */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.trash");
+    text(i18nOLD: i18nType): string {
+      return i18nOLD.text.get("plugin.communicator.category.title.trash");
     },
   },
 ];

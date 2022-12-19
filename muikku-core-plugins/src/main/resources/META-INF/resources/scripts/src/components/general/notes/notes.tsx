@@ -10,7 +10,7 @@ import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import NotesItemList from "./notes-item-list";
 import { ButtonPill } from "~/components/general/button";
 import NotesItemNew from "./notes-item-new";
@@ -45,7 +45,7 @@ interface NotesProps {
   /**
    * For localization
    */
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -61,7 +61,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     userId,
     studentId,
     usePlace,
-    i18n,
+    i18nOLD,
   } = props;
 
   const [activeTab, setActiveTab] = React.useState("active");
@@ -74,7 +74,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     returnArchivedNotesItem,
     updateNotesItemStatus,
     pinNotesItem,
-  } = useNotesItem(studentId, i18n, displayNotification);
+  } = useNotesItem(studentId, i18nOLD, displayNotification);
 
   const [activeNoteFilters, setActiveNoteFilters] =
     React.useState<NotesItemFilters>({
@@ -125,7 +125,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     {
       id: "active",
       type: "notes",
-      name: props.i18n.text.get("plugin.records.tasks.tab.activeTasks"),
+      name: props.i18nOLD.text.get("plugin.records.tasks.tab.activeTasks"),
       /**
        * component
        */
@@ -145,14 +145,14 @@ const Notes: React.FC<NotesProps> = (props) => {
             </div>
 
             <NotesItemListFilters
-              i18n={i18n}
+              i18nOLD={i18nOLD}
               usePlace={usePlace}
               filters={activeNoteFilters}
               onFilttersChange={handleActiveFiltersChange}
             />
           </NotesToolbar>
           <NotesItemList
-            i18n={i18n}
+            i18nOLD={i18nOLD}
             filters={activeNoteFilters}
             isLoadingList={notesItems.isLoadingList}
             notesItems={notesItems.notesItemList}
@@ -172,7 +172,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     notesTabs.push({
       id: "archived",
       type: "notes",
-      name: props.i18n.text.get("plugin.records.tasks.tab.archivedTasks"),
+      name: props.i18nOLD.text.get("plugin.records.tasks.tab.archivedTasks"),
       /**
        * component
        */
@@ -192,14 +192,14 @@ const Notes: React.FC<NotesProps> = (props) => {
               </NotesItemNew>
             </div>
             <NotesItemListFilters
-              i18n={props.i18n}
+              i18nOLD={props.i18nOLD}
               usePlace={usePlace}
               filters={activeNoteFilters}
               onFilttersChange={handleNonActiveFiltersChange}
             />
           </NotesToolbar>
           <NotesItemList
-            i18n={props.i18n}
+            i18nOLD={props.i18nOLD}
             filters={nonActiveNoteFilters}
             isLoadingList={notesItems.isLoadingList}
             notesItems={notesItems.notesArchivedItemList}
@@ -228,7 +228,7 @@ const Notes: React.FC<NotesProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

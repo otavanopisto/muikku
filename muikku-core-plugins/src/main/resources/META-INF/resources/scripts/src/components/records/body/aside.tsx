@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import {
@@ -18,7 +18,7 @@ import { StatusType } from "~/reducers/base/status";
  * NavigationProps
  */
 interface NavigationProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   location: TranscriptOfRecordLocationType;
   hops: HOPSType;
   status: StatusType;
@@ -73,19 +73,19 @@ class Navigation extends React.Component<
   render() {
     const sections = [
       {
-        name: this.props.i18n.text.get("plugin.records.category.summary"),
+        name: this.props.i18nOLD.text.get("plugin.records.category.summary"),
         hash: "summary",
       },
       {
-        name: this.props.i18n.text.get("plugin.records.category.records"),
+        name: this.props.i18nOLD.text.get("plugin.records.category.records"),
         hash: "records",
       },
       {
-        name: this.props.i18n.text.get("plugin.records.category.hops"),
+        name: this.props.i18nOLD.text.get("plugin.records.category.hops"),
         hash: "hops",
       },
       {
-        name: this.props.i18n.text.get("plugin.records.category.yo"),
+        name: this.props.i18nOLD.text.get("plugin.records.category.yo"),
         hash: "yo",
       },
     ];
@@ -114,7 +114,7 @@ class Navigation extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     location: state.records.location,
     hops: state.hops,
     records: state.records,

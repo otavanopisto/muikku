@@ -1,11 +1,11 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * FrontpageInstagramProps
  */
 interface FrontpageInstagramProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -28,12 +28,12 @@ export default class FrontpageInstagram extends React.Component<
       <section
         id="instagram"
         className="screen-container__section"
-        aria-label={this.props.i18n.text.get(
+        aria-label={this.props.i18nOLD.text.get(
           "plugin.wcag.frontPageSectionInstagramLabel"
         )}
       >
         <h2 className="screen-container__header">
-          {this.props.i18n.text.get("plugin.sectionTitle.instagram")}
+          {this.props.i18nOLD.text.get("plugin.sectionTitle.instagram")}
         </h2>
         <div className="ordered-container ordered-container--frontpage-instagram">
           <div className="ordered-container__item ordered-container__item--frontpage-instagram">
@@ -51,7 +51,7 @@ export default class FrontpageInstagram extends React.Component<
                           Instagram muikkuofficial
                         </span>
                         <span className="visually-hidden">
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.wcag.externalLink.label"
                           )}
                         </span>
@@ -69,7 +69,7 @@ export default class FrontpageInstagram extends React.Component<
                         <span className="visually-hidden">Instagram </span>
                         muikkuofficial
                         <span className="visually-hidden">
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.wcag.externalLink.label"
                           )}
                         </span>
@@ -80,11 +80,11 @@ export default class FrontpageInstagram extends React.Component<
                       </a>
                     </div>
                     <div className="card__meta-body-description">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.studying.nettilukio.title"
                       )}{" "}
                       /{" "}
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.studying.nettiperuskoulu.title"
                       )}
                     </div>

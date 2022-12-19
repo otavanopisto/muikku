@@ -6,7 +6,7 @@ import "swiper/scss";
 import "swiper/scss/a11y";
 import "swiper/scss/pagination";
 import { A11y, Pagination } from "swiper";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import variables from "~/sass/_exports.scss";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
@@ -41,7 +41,7 @@ interface TabsProps {
   /** General class modifier */
   modifier?: string;
   /** Localization */
-  i18n: i18nType;
+  i18nOLD: i18nType;
   tabs: Array<Tab>;
   /** If all of the tabs components should be rendered */
   renderAllComponents?: boolean;
@@ -275,7 +275,7 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

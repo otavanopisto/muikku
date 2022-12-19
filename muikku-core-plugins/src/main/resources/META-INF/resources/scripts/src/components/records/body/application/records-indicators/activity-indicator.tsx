@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
@@ -11,7 +11,7 @@ import Dropdown from "~/components/general/dropdown";
  */
 interface ActivityIndicatorProps {
   workspace: WorkspaceType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -21,7 +21,7 @@ interface ActivityIndicatorProps {
  * @returns JSX.Element
  */
 const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
-  const { workspace, i18n } = props;
+  const { workspace, i18nOLD } = props;
 
   if (!workspace.activity) {
     return null;
@@ -39,7 +39,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
           openByHover
           content={
             <span>
-              {i18n.text.get(
+              {i18nOLD.text.get(
                 "plugin.records.workspace.activity.assignment.title",
                 workspace.activity.evaluablesDonePercent
               )}
@@ -63,7 +63,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
           openByHover
           content={
             <span>
-              {i18n.text.get(
+              {i18nOLD.text.get(
                 "plugin.records.workspace.activity.exercise.title",
                 workspace.activity.exercisesDonePercent
               )}
@@ -92,7 +92,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import ReadingPanel from "~/components/general/reading-panel";
 import Announcements from "./application/announcements";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 
 {
@@ -18,7 +18,7 @@ import "~/sass/elements/loaders.scss";
  */
 interface AnnouncementsApplicationProps {
   aside: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -30,7 +30,7 @@ class AnnouncementsApplication extends React.Component<AnnouncementsApplicationP
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.announcements.pageTitle");
+    const title = this.props.i18nOLD.text.get("plugin.announcements.pageTitle");
     return (
       <ReadingPanel
         modifier="announcement"
@@ -50,7 +50,7 @@ class AnnouncementsApplication extends React.Component<AnnouncementsApplicationP
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

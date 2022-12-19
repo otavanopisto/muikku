@@ -3,7 +3,7 @@ import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * UseFollowUpGoalsState
@@ -26,14 +26,14 @@ const initialState: UseCompositeReplyState = {
  *
  * @param userEntityId userEntityId
  * @param workspaceId workspaceId
- * @param i18n i18nType
+ * @param i18nOLD i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useCompositeReply = (
   userEntityId: number,
   workspaceId: number,
-  i18n: i18nType,
+  i18nOLD: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [compositeReplyData, setCompositeReplyData] =
@@ -87,7 +87,7 @@ export const useCompositeReply = (
       } catch (err) {
         if (!isCancelled) {
           displayNotification(
-            `${i18n.text.get(
+            `${i18nOLD.text.get(
               "plugin.records.errormessage.workspaceCompositeReplyLoadFailed"
             )}, ${err.message}`,
             "error"
@@ -105,7 +105,7 @@ export const useCompositeReply = (
     return () => {
       isCancelled = true;
     };
-  }, [userEntityId, workspaceId, displayNotification, i18n]);
+  }, [userEntityId, workspaceId, displayNotification, i18nOLD]);
 
   return {
     compositeReplyData,

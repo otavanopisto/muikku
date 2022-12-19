@@ -1,12 +1,12 @@
 import * as React from "react";
 import Carousel, { CarouselVideoItem } from "~/components/general/carousel";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * FrontpageVideosProps
  */
 interface FrontpageVideosProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -29,7 +29,7 @@ export default class FrontpageVideos extends React.Component<
       <section
         id="videos"
         className="screen-container__section"
-        aria-label={this.props.i18n.text.get(
+        aria-label={this.props.i18nOLD.text.get(
           "plugin.wcag.frontPageSectionVideosLabel"
         )}
       >

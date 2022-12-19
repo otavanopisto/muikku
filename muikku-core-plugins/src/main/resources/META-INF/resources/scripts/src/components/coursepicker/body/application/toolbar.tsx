@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as queryString from "query-string";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
@@ -13,12 +13,13 @@ import {
 } from "~/components/general/application-panel/application-panel";
 import { WorkspacesType } from "~/reducers/workspaces";
 import { SearchFormElement } from "~/components/general/form-element";
+import { AnyActionType } from "~/actions";
 
 /**
  * CoursepickerToolbarProps
  */
 interface CoursepickerToolbarProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspaces: WorkspacesType;
 }
 
@@ -60,7 +61,8 @@ class CoursepickerToolbar extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {
     if (
       !this.focused &&
       (nextProps.workspaces.activeFilters.query || "") !==
@@ -117,7 +119,8 @@ class CoursepickerToolbar extends React.Component<
               id="searchCourses"
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
-              placeholder={this.props.i18n.text.get(
+              // TODO: Translate this with new i18next
+              placeholder={this.props.i18nOLD.text.get(
                 "plugin.coursepicker.search.placeholder"
               )}
               value={this.state.searchquery}
@@ -135,7 +138,7 @@ class CoursepickerToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspaces: state.workspaces,
   };
 }
@@ -144,7 +147,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

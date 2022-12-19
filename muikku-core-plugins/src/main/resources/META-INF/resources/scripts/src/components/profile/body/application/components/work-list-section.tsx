@@ -9,7 +9,7 @@ import {
 } from "~/reducers/main-function/profile";
 import WorkListRow from "./work-list-row";
 import SubmitWorklistItemsDialog from "../../../dialogs/submit-worklist-items";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * sortBy
@@ -49,7 +49,7 @@ interface WorkListSectionProps {
   currentMonthDayLimit: number;
   currentMonthsFirstDay: string;
   onToggleSection: () => void;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -101,7 +101,7 @@ export function WorkListSection(props: WorkListSectionProps) {
   const sectionTotalRow = (
     <div className="application-sub-panel__item application-sub-panel__item--worklist-total">
       <div className="application-sub-panel__item-title application-sub-panel__item-title--worklist-total">
-        {props.i18n.text.get(
+        {props.i18nOLD.text.get(
           "plugin.profile.worklist.worklistEntriesTotalValueLabel"
         )}
       </div>
@@ -134,7 +134,7 @@ export function WorkListSection(props: WorkListSectionProps) {
   const submitLastMonthButton = (
     <SubmitWorklistItemsDialog summary={props.section.summary}>
       <Link className="link link--submit-worklist-approval">
-        {props.i18n.text.get(
+        {props.i18nOLD.text.get(
           "plugin.profile.worklist.submitWorklistForApproval"
         )}
       </Link>
@@ -180,7 +180,9 @@ export function WorkListSection(props: WorkListSectionProps) {
             className="link link--worklist-entries-sorting"
             onClick={onClickOnPropertyToSort.bind(null, "description")}
           >
-            {props.i18n.text.get("plugin.profile.worklist.description.label")}
+            {props.i18nOLD.text.get(
+              "plugin.profile.worklist.description.label"
+            )}
           </Link>
           <span
             className={`application-sub-panel__item-title-sort-indicator ${sortDescIcon}`}
@@ -193,7 +195,7 @@ export function WorkListSection(props: WorkListSectionProps) {
             className="link link--worklist-entries-sorting"
             onClick={onClickOnPropertyToSort.bind(null, "entryDate")}
           >
-            {props.i18n.text.get("plugin.profile.worklist.date.label")}
+            {props.i18nOLD.text.get("plugin.profile.worklist.date.label")}
           </Link>
           <span
             className={`application-sub-panel__item-title-sort-indicator ${sortEntryDateIcon}`}
@@ -202,12 +204,12 @@ export function WorkListSection(props: WorkListSectionProps) {
       </span>
       <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
-          {props.i18n.text.get("plugin.profile.worklist.price.label")}
+          {props.i18nOLD.text.get("plugin.profile.worklist.price.label")}
         </label>
       </span>
       <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
-          {props.i18n.text.get("plugin.profile.worklist.factor.label")}
+          {props.i18nOLD.text.get("plugin.profile.worklist.factor.label")}
         </label>
       </span>
       <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-actions"></span>

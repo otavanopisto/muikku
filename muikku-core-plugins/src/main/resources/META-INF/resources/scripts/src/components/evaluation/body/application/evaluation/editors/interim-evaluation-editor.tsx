@@ -14,7 +14,7 @@ import {
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
   updateCurrentStudentCompositeRepliesData,
@@ -39,12 +39,14 @@ import { AssignmentEvaluationSaveReturn } from "~/@types/evaluation";
 import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { LocaleState } from "~/reducers/base/locales";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AssignmentEditorProps
  */
-interface InterimEvaluationEditorProps {
-  i18n: i18nType;
+interface InterimEvaluationEditorProps
+  extends WithTranslation<["common", "evaluation"]> {
+  i18nOLD: i18nType;
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
@@ -238,7 +240,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
       });
     } catch (error) {
       notificationActions.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.evaluation.notifications.saveAssigmentGrade.error",
           error.message
         ),
@@ -357,7 +359,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
               }
             >
               <label htmlFor="assignmentEvaluationGrade">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.evaluation.evaluationModal.interminEvaluationAudioAssessments"
                 )}
               </label>
@@ -376,9 +378,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
+            {this.props.t("common:actions.save")}
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
@@ -386,9 +386,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked || this.props.isRecording}
               >
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-                )}
+                {this.props.t("common:actions.cancel")}
               </Button>
             </WarningDialog>
           ) : (
@@ -397,9 +395,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               buttonModifiers="dialog-cancel"
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-              )}
+              {this.props.t("common:actions.cancel")}
             </Button>
           )}
 
@@ -409,9 +405,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
+              {this.props.t("common:actions.remove_draft")}
             </Button>
           )}
         </div>
@@ -419,7 +413,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
         {this.props.isRecording && (
           <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
             <div className="recording-warning">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
               )}
             </div>
@@ -436,7 +430,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,
@@ -458,7 +452,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InterimEvaluationEditor);
+export default withTranslation(["common", "evaluation"])(
+  connect(mapStateToProps, mapDispatchToProps)(InterimEvaluationEditor)
+);

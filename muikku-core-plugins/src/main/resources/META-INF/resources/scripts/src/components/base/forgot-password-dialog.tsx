@@ -2,7 +2,7 @@ import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Button from "~/components/general/button";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import mApi, { MApiError } from "~/lib/mApi";
 
@@ -19,7 +19,7 @@ import promisify from "~/util/promisify";
  * ForgotPasswordDialogProps
  */
 interface ForgotPasswordDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   displayNotification: DisplayNotificationTriggerType;
   children: React.ReactElement<any>;
   modifier?: string;
@@ -78,7 +78,7 @@ class ForgotPasswordDialog extends React.Component<
 
     if (!this.state.email) {
       this.props.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.forgotpassword.forgotPasswordDialog.email.required"
         ),
         "error"
@@ -86,7 +86,7 @@ class ForgotPasswordDialog extends React.Component<
       return;
     } else if (!emailRegexValidator.test(this.state.email)) {
       this.props.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.forgotpassword.forgotPasswordDialog.email.invalid"
         ),
         "error"
@@ -100,7 +100,7 @@ class ForgotPasswordDialog extends React.Component<
         "callback"
       )();
       this.props.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.forgotPassword.forgotPasswordDialog.mailSent",
           this.state.email
         ),
@@ -115,7 +115,7 @@ class ForgotPasswordDialog extends React.Component<
         throw err;
       }
       this.props.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.forgotpassword.forgotPasswordDialog.noUserFound",
           this.state.email
         ),
@@ -134,7 +134,7 @@ class ForgotPasswordDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        {this.props.i18n.text.get(
+        {this.props.i18nOLD.text.get(
           "plugin.forgotpassword.forgotPasswordDialog.instructions"
         )}
         <br />
@@ -146,7 +146,7 @@ class ForgotPasswordDialog extends React.Component<
           <div className="form__row">
             <div className="form-element">
               <label htmlFor="forgotpasswordEmail">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.forgotpassword.forgotPasswordDialog.email"
                 )}
               </label>
@@ -174,7 +174,7 @@ class ForgotPasswordDialog extends React.Component<
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.forgotpassword.forgotPasswordDialog.cancelButtonLabel"
           )}
         </Button>
@@ -182,7 +182,7 @@ class ForgotPasswordDialog extends React.Component<
           buttonModifiers={["standard-ok", "success"]}
           onClick={this.resetPassword.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.forgotpassword.forgotPasswordDialog.sendButtonLabel"
           )}
         </Button>
@@ -190,7 +190,7 @@ class ForgotPasswordDialog extends React.Component<
     );
     return (
       <Dialog
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.forgotpassword.forgotPasswordDialog.title"
         )}
         content={content}
@@ -213,7 +213,7 @@ class ForgotPasswordDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

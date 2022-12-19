@@ -1,7 +1,7 @@
 import { WorkspaceType } from "~/reducers/workspaces";
 import { AnnouncementListType } from "~/reducers/announcements";
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { StatusType } from "~/reducers/base/status";
@@ -17,7 +17,7 @@ interface WorkspaceAnnouncementsProps {
   status: StatusType;
   workspace: WorkspaceType;
   announcements: AnnouncementListType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -46,7 +46,7 @@ class WorkspaceAnnouncements extends React.Component<
           <div className="panel__header">
             <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
             <h2 className="panel__header-title">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.index.announcementsTitle"
               )}
             </h2>
@@ -73,7 +73,7 @@ class WorkspaceAnnouncements extends React.Component<
                         {a.caption}
                       </span>
                       <span className="item-list__announcement-date">
-                        {this.props.i18n.time.format(a.startDate)}
+                        {this.props.i18nOLD.time.format(a.startDate)}
                       </span>
                     </span>
                   </Link>
@@ -82,7 +82,7 @@ class WorkspaceAnnouncements extends React.Component<
             </div>
           ) : (
             <div className="panel__body panel__body--empty">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.index.announcementsEmpty"
               )}
             </div>
@@ -100,7 +100,7 @@ class WorkspaceAnnouncements extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     announcements: state.announcements.announcements,
     status: state.status,

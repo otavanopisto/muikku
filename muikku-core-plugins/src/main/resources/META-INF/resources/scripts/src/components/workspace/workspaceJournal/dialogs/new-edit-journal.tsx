@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
-import { i18nType } from "reducers/base/i18n";
+import { i18nType } from "reducers/base/i18nOLD";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -23,7 +23,7 @@ import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
  */
 interface NewEditJournalProps {
   children: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   journal?: WorkspaceJournalWithComments;
   createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType;
   updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType;
@@ -232,14 +232,16 @@ class NewEditJournal extends SessionStateComponent<
    */
   render() {
     const editorTitle = this.props.journal
-      ? this.props.i18n.text.get("plugin.workspace.journal.editEntry.title") +
+      ? this.props.i18nOLD.text.get(
+          "plugin.workspace.journal.editEntry.title"
+        ) +
         " - " +
-        this.props.i18n.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.communicator.createmessage.title.content"
         )
-      : this.props.i18n.text.get("plugin.workspace.journal.newEntry.title") +
+      : this.props.i18nOLD.text.get("plugin.workspace.journal.newEntry.title") +
         " - " +
-        this.props.i18n.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.communicator.createmessage.title.content"
         );
 
@@ -251,7 +253,7 @@ class NewEditJournal extends SessionStateComponent<
       <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">
           <label htmlFor="journalTitle" className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.workspace.journal.entry.title.label"
             )}
           </label>
@@ -269,7 +271,7 @@ class NewEditJournal extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.workspace.journal.entry.content.label"
             )}
           </label>
@@ -291,7 +293,7 @@ class NewEditJournal extends SessionStateComponent<
           onClick={this.createOrModifyJournal.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.journal.save.button.label"
           )}
         </Button>
@@ -300,7 +302,7 @@ class NewEditJournal extends SessionStateComponent<
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.journal.cancel.button.label"
           )}
         </Button>
@@ -310,7 +312,7 @@ class NewEditJournal extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.announcer.createannouncement.button.clearDraft"
             )}
           </Button>
@@ -324,10 +326,10 @@ class NewEditJournal extends SessionStateComponent<
         onOpen={this.checkAgainstStoredState}
         title={
           this.props.journal
-            ? this.props.i18n.text.get(
+            ? this.props.i18nOLD.text.get(
                 "plugin.workspace.journal.editEntry.title"
               )
-            : this.props.i18n.text.get(
+            : this.props.i18nOLD.text.get(
                 "plugin.workspace.journal.newEntry.title"
               )
         }
@@ -347,7 +349,7 @@ class NewEditJournal extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

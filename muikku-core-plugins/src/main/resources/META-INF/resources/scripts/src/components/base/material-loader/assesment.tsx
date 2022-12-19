@@ -53,10 +53,10 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
   // Corresponding text is shown whether assessment is
   // given for interim evaluation
   const assessmentLabelText = isInterminEvaluation
-    ? props.i18n.text.get(
+    ? props.i18nOLD.text.get(
         "plugin.workspace.materialsLoader.evaluation.literalIntermin.label"
       )
-    : props.i18n.text.get(
+    : props.i18nOLD.text.get(
         "plugin.workspace.materialsLoader.evaluation.literal.label"
       );
 
@@ -73,7 +73,7 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
       {audioAssessments !== undefined && audioAssessments.length > 0 ? (
         <>
           <div className="material-page__assignment-assessment-verbal-label">
-            {props.i18n.text.get(
+            {props.i18nOLD.text.get(
               "plugin.workspace.materialsLoader.evaluation.verbal.label"
             )}
             :

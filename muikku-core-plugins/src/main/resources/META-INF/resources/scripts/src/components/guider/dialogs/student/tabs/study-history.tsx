@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions/index";
@@ -26,7 +26,7 @@ type studyHistoryAside = "history" | "library";
  * StudyHistory props
  */
 interface StudyHistoryProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   guider: GuiderType;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
 }
@@ -50,7 +50,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     return null;
   }
 
-  const { i18n, addFileToCurrentStudent } = props;
+  const { i18nOLD, addFileToCurrentStudent } = props;
   const {
     activityLogs,
     activityLogState,
@@ -90,14 +90,14 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         onClick={() => handleNavigationClick("history")}
         isActive={navigationActive === "history" ? true : false}
       >
-        {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.history")}
+        {i18nOLD.text.get("plugin.guider.user.tabs.studyHistory.aside.history")}
       </NavigationElement>
       <NavigationElement
         id={"studyLibrary"}
         onClick={() => handleNavigationClick("library")}
         isActive={navigationActive === "library" ? true : false}
       >
-        {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.library")}
+        {i18nOLD.text.get("plugin.guider.user.tabs.studyHistory.aside.library")}
       </NavigationElement>
     </Navigation>
   );
@@ -123,8 +123,8 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         onFileSuccess={(file: File, data: UserFileType) => {
           addFileToCurrentStudent(data);
         }}
-        hintText={i18n.text.get("plugin.guider.user.details.files.hint")}
-        fileTooLargeErrorText={i18n.text.get(
+        hintText={i18nOLD.text.get("plugin.guider.user.details.files.hint")}
+        fileTooLargeErrorText={i18nOLD.text.get(
           "plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge"
         )}
         files={files}
@@ -133,11 +133,14 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         fileUrlGenerator={(f) => `/rest/guider/files/${f.id}/content`}
         deleteDialogElement={FileDeleteDialog}
         modifier="guider"
-        emptyText={i18n.text.get("plugin.guider.user.details.files.empty")}
+        emptyText={i18nOLD.text.get("plugin.guider.user.details.files.empty")}
         uploadingTextProcesser={(percent: number) =>
-          i18n.text.get("plugin.guider.user.details.files.uploading", percent)
+          i18nOLD.text.get(
+            "plugin.guider.user.details.files.uploading",
+            percent
+          )
         }
-        notificationOfSuccessText={i18n.text.get(
+        notificationOfSuccessText={i18nOLD.text.get(
           "plugin.guider.fileUpload.successful"
         )}
         displayNotificationOnSuccess
@@ -149,7 +152,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     <React.Fragment key="history-component">
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          {i18n.text.get("plugin.guider.user.details.workspaces")}
+          {i18nOLD.text.get("plugin.guider.user.details.workspaces")}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {pastWorkspacesState === "READY" ? (
@@ -161,7 +164,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       </ApplicationSubPanel>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          {i18n.text.get("plugin.guider.user.details.statistics")}
+          {i18nOLD.text.get("plugin.guider.user.details.statistics")}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {activityLogState === "READY" ? (
@@ -180,7 +183,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const libraryComponent = (
     <ApplicationSubPanel key="library-component">
       <ApplicationSubPanel.Header>
-        {i18n.text.get("plugin.guider.user.details.files")}
+        {i18nOLD.text.get("plugin.guider.user.details.files")}
       </ApplicationSubPanel.Header>
       <ApplicationSubPanel.Body>{userFiles}</ApplicationSubPanel.Body>
     </ApplicationSubPanel>
@@ -226,7 +229,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     guider: state.guider,
   };
 }

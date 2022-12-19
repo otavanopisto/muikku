@@ -1,4 +1,4 @@
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -31,7 +31,7 @@ import { ContactLogEvent } from "~/reducers/main-function/guider";
  * ReplyThreadDrawerProps
  */
 interface EditContactLogEventProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   contactEvent: ContactLogEvent;
   studentUserEntityId: number;
@@ -66,7 +66,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
     this.state = this.getRecoverStoredState(
       {
         locked: false,
-        date: props.i18n.time
+        date: props.i18nOLD.time
           .getLocalizedMoment(this.props.contactEvent.entryDate)
           .toDate(),
         text: this.props.contactEvent.text,
@@ -112,7 +112,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
   clearUp = () => {
     this.setStateAndClear(
       {
-        date: this.props.i18n.time
+        date: this.props.i18nOLD.time
           .getLocalizedMoment(this.props.contactEvent.entryDate)
           .toDate(),
         text: this.props.contactEvent.text,
@@ -167,16 +167,16 @@ class EditContactLogEventEvent extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.answertomessage.topic") +
+      this.props.i18nOLD.text.get("plugin.discussion.answertomessage.topic") +
       " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
 
     const content = (
       <>
         <div className="env-dialog__row env-dialog__row--new-contact-event">
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
             <label htmlFor="contactEventdate" className="env-dialog__label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.guider.user.dialog.createContactEvent.date"
               )}
             </label>
@@ -185,7 +185,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
               id="contactEventdate"
               onChange={this.onDateChange}
               locale={outputCorrectDatePickerLocale(
-                this.props.i18n.time.getLocale()
+                this.props.i18nOLD.time.getLocale()
               )}
               dateFormat="P"
               selected={this.state.date}
@@ -193,7 +193,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
           </div>
           <div className="env-dialog__form-element-container">
             <label htmlFor="contactEventTypes" className="env-dialog__label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.guider.user.dialog.createContactEvent.type"
               )}
             </label>
@@ -205,7 +205,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
             >
               {contactTypesArray.map((contactType) => (
                 <option key={contactType} value={contactType}>
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.guider.contact.type." + contactType
                   )}
                 </option>
@@ -217,7 +217,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--ckeditor">
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.guider.user.dialog.createContactEvent.text"
               )}
             </label>
@@ -239,14 +239,16 @@ class EditContactLogEventEvent extends SessionStateComponent<
           onClick={this.editContactEvent}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnEditorClose}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.i18nOLD.text.get(
+            "plugin.discussion.createmessage.cancel"
+          )}
         </Button>
         {this.recovered ? (
           <Button
@@ -254,7 +256,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
@@ -267,7 +269,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.guider.user.dialog.editContactLog.title"
               )}
             </header>
@@ -287,7 +289,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

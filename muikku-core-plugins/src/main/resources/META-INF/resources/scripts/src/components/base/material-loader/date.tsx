@@ -21,13 +21,13 @@ export function MaterialLoaderDate(props: MaterialLoaderDateProps) {
   return (
     <div className="material-page__assignment-assessment-date">
       <span className="material-page__assignment-assessment-date-label">
-        {props.i18n.text.get(
+        {props.i18nOLD.text.get(
           "plugin.workspace.materialsLoader.evaluation.date.label"
         )}
         :
       </span>
       <span className="material-page__assignment-assessment-date-data">
-        {props.i18n.time.format(date)}
+        {props.i18nOLD.time.format(date)}
       </span>
     </div>
   );

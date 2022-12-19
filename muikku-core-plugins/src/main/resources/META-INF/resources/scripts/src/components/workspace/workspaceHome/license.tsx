@@ -2,7 +2,7 @@ import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Link from "~/components/general/link";
 
 import "~/sass/elements/license.scss";
@@ -12,7 +12,7 @@ import "~/sass/elements/license.scss";
  */
 interface LicenseProps {
   workspace: WorkspaceType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -82,7 +82,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
           ))}
         </span>
         <span className="license__title">
-          {this.props.i18n.text.get("plugin.workspace.index.licenseLabel")}:
+          {this.props.i18nOLD.text.get("plugin.workspace.index.licenseLabel")}:
         </span>
         {isLicenseLink ? (
           <Link
@@ -108,7 +108,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
   };
 }

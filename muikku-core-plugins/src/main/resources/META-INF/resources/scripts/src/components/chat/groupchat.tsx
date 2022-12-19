@@ -1,6 +1,6 @@
 import * as React from "react";
 import mApi from "~/lib/mApi";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/chat.scss";
 import "~/sass/elements/wcag.scss";
@@ -28,7 +28,7 @@ interface IGroupChatProps {
   requestExtraInfoAboutRoom: () => void;
   removeChatRoom: () => void;
   connection: Strophe.Connection;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   presence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
   active?: boolean;
 }
@@ -996,7 +996,9 @@ export class Groupchat extends React.Component<
                   className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}
                 >
                   <div className="chat__subpanel-title">
-                    {this.props.i18n.text.get("plugin.chat.room.settingsTitle")}
+                    {this.props.i18nOLD.text.get(
+                      "plugin.chat.room.settingsTitle"
+                    )}
                   </div>
                   <div
                     onClick={this.toggleChatRoomSettings}
@@ -1012,7 +1014,7 @@ export class Groupchat extends React.Component<
                         }`}
                         className="chat__label"
                       >
-                        {this.props.i18n.text.get("plugin.chat.room.name")}
+                        {this.props.i18nOLD.text.get("plugin.chat.room.name")}
                       </label>
                       <input
                         id={`chatRoomName-${
@@ -1037,7 +1039,7 @@ export class Groupchat extends React.Component<
                         }`}
                         className="chat__label"
                       >
-                        {this.props.i18n.text.get("plugin.chat.room.desc")}
+                        {this.props.i18nOLD.text.get("plugin.chat.room.desc")}
                       </label>
                       <textarea
                         id={`chatRoomDesc-${
@@ -1057,7 +1059,7 @@ export class Groupchat extends React.Component<
                       <input
                         className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`}
                         type="submit"
-                        value={this.props.i18n.text.get(
+                        value={this.props.i18nOLD.text.get(
                           "plugin.chat.button.save"
                         )}
                       ></input>
@@ -1066,7 +1068,7 @@ export class Groupchat extends React.Component<
                           className="chat__submit chat__submit--room-settings-delete"
                           onClick={this.toggleDeleteMUCDialog}
                         >
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.chat.button.deleteRoom"
                           )}
                         </button>
@@ -1092,7 +1094,7 @@ export class Groupchat extends React.Component<
                     key={message.stanzaId}
                     canToggleInfo={!this.state.isStudent}
                     message={message}
-                    i18n={this.props.i18n}
+                    i18nOLD={this.props.i18nOLD}
                     editMessage={this.editMessage}
                     deleteMessage={this.deleteMessage}
                   />
@@ -1107,7 +1109,7 @@ export class Groupchat extends React.Component<
                   <div className="chat__occupants-staff">
                     {staffOccupants.length > 0 ? (
                       <div className="chat__occupants-title">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.chat.occupants.staff"
                         )}
                       </div>
@@ -1116,7 +1118,7 @@ export class Groupchat extends React.Component<
                     )}
                     {staffOccupants.map((staffOccupant) => (
                       <div
-                        title={this.props.i18n.text.get(
+                        title={this.props.i18nOLD.text.get(
                           "plugin.chat.state." + staffOccupant.occupant.precense
                         )}
                         className="chat__occupants-item chat__occupants-item--has-access-to-pm"
@@ -1139,7 +1141,7 @@ export class Groupchat extends React.Component<
                   <div className="chat__occupants-student">
                     {studentOccupants.length > 0 ? (
                       <div className="chat__occupants-title">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.chat.occupants.students"
                         )}
                       </div>
@@ -1148,7 +1150,7 @@ export class Groupchat extends React.Component<
                     )}
                     {studentOccupants.map((studentOccupant) => (
                       <div
-                        title={this.props.i18n.text.get(
+                        title={this.props.i18nOLD.text.get(
                           "plugin.chat.state." +
                             studentOccupant.occupant.precense
                         )}
@@ -1195,7 +1197,7 @@ export class Groupchat extends React.Component<
                 }`}
                 className="visually-hidden"
               >
-                {this.props.i18n.text.get("plugin.wcag.sendMessage.label")}
+                {this.props.i18nOLD.text.get("plugin.wcag.sendMessage.label")}
               </label>
               <textarea
                 id={`sendGroupChatMessage-${
@@ -1203,7 +1205,9 @@ export class Groupchat extends React.Component<
                 }`}
                 className="chat__memofield chat__memofield--muc-message"
                 onKeyDown={this.onEnterPress}
-                placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
+                placeholder={this.props.i18nOLD.text.get(
+                  "plugin.chat.writemsg"
+                )}
                 onChange={this.setCurrentMessageToBeSent}
                 value={this.state.currentMessageToBeSent}
                 ref={(ref) =>

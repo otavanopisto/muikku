@@ -8,7 +8,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   WorkspaceType,
   MaterialContentNodeListType,
@@ -44,7 +44,7 @@ import {
  * WorkspaceMaterialsProps
  */
 interface WorkspaceMaterialsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
@@ -251,7 +251,7 @@ class WorkspaceMaterials extends React.Component<
         rootParentId: this.props.workspace.details.rootFolderId,
         parentMaterial: section,
         nextSibling,
-        title: this.props.i18n.text.get(
+        title: this.props.i18nOLD.text.get(
           "plugin.workspace.materialsManagement.newPageTitle"
         ),
         makeFolder: false,
@@ -295,7 +295,7 @@ class WorkspaceMaterials extends React.Component<
         workspace: this.props.workspace,
         rootParentId: this.props.workspace.details.rootFolderId,
         nextSibling,
-        title: this.props.i18n.text.get(
+        title: this.props.i18nOLD.text.get(
           "plugin.workspace.materialsManagement.newPageTitle"
         ),
         makeFolder: true,
@@ -451,12 +451,12 @@ class WorkspaceMaterials extends React.Component<
   ) => {
     switch (viewRestrict) {
       case MaterialViewRestriction.LOGGED_IN:
-        return this.props.i18n.text.get(
+        return this.props.i18nOLD.text.get(
           "plugin.workspace.materialViewRestricted"
         );
 
       case MaterialViewRestriction.WORKSPACE_MEMBERS:
-        return this.props.i18n.text.get(
+        return this.props.i18nOLD.text.get(
           "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
         );
 
@@ -485,7 +485,7 @@ class WorkspaceMaterials extends React.Component<
           <Dropdown
             openByHover
             modifier="material-management-tooltip"
-            content={this.props.i18n.text.get(
+            content={this.props.i18nOLD.text.get(
               "plugin.workspace.materialsManagement.createChapterTooltip"
             )}
           >
@@ -501,7 +501,7 @@ class WorkspaceMaterials extends React.Component<
     const emptyMessage =
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.materialsManagement.empty"
           )}
         </div>
@@ -522,7 +522,7 @@ class WorkspaceMaterials extends React.Component<
             <Dropdown
               openByHover
               modifier="material-management-tooltip"
-              content={this.props.i18n.text.get(
+              content={this.props.i18nOLD.text.get(
                 "plugin.workspace.materialsManagement.createChapterTooltip"
               )}
             >
@@ -564,7 +564,7 @@ class WorkspaceMaterials extends React.Component<
                       }}
                     />
                     <span className={`link__icon icon-${item.icon}`}></span>
-                    <span>{this.props.i18n.text.get(item.text)}</span>
+                    <span>{this.props.i18nOLD.text.get(item.text)}</span>
                   </label>
                 );
               }
@@ -577,7 +577,7 @@ class WorkspaceMaterials extends React.Component<
                   }}
                 >
                   <span className={`link__icon icon-${item.icon}`}></span>
-                  <span>{this.props.i18n.text.get(item.text)}</span>
+                  <span>{this.props.i18nOLD.text.get(item.text)}</span>
                 </Link>
               );
             })}
@@ -641,7 +641,7 @@ class WorkspaceMaterials extends React.Component<
                           <span
                             className={`link__icon icon-${item.icon}`}
                           ></span>
-                          <span>{this.props.i18n.text.get(item.text)}</span>
+                          <span>{this.props.i18nOLD.text.get(item.text)}</span>
                         </label>
                       );
                     }
@@ -654,7 +654,7 @@ class WorkspaceMaterials extends React.Component<
                         }}
                       >
                         <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{this.props.i18n.text.get(item.text)}</span>
+                        <span>{this.props.i18nOLD.text.get(item.text)}</span>
                       </Link>
                     );
                   })}
@@ -744,7 +744,7 @@ class WorkspaceMaterials extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="material-management-tooltip"
-                  content={this.props.i18n.text.get(
+                  content={this.props.i18nOLD.text.get(
                     "plugin.workspace.materialsManagement.editChapterTooltip"
                   )}
                 >
@@ -759,10 +759,10 @@ class WorkspaceMaterials extends React.Component<
                   modifier="material-management-tooltip"
                   content={
                     section.hidden
-                      ? this.props.i18n.text.get(
+                      ? this.props.i18nOLD.text.get(
                           "plugin.workspace.materialsManagement.showChapterTooltip"
                         )
-                      : this.props.i18n.text.get(
+                      : this.props.i18nOLD.text.get(
                           "plugin.workspace.materialsManagement.hideChapterTooltip"
                         )
                   }
@@ -799,10 +799,10 @@ class WorkspaceMaterials extends React.Component<
       this.props.workspace && this.props.workspace.activity ? (
         <ProgressData
           modifier="workspace-materials"
-          title={this.props.i18n.text.get(
+          title={this.props.i18nOLD.text.get(
             "plugin.workspace.index.courseProgressLabel"
           )}
-          i18n={this.props.i18n}
+          i18nOLD={this.props.i18nOLD}
           activity={this.props.workspace.activity}
         />
       ) : null;
@@ -813,7 +813,9 @@ class WorkspaceMaterials extends React.Component<
         onOpenNavigation={this.onOpenNavigation}
         modifier="materials"
         navigation={this.props.navigation}
-        title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")}
+        title={this.props.i18nOLD.text.get(
+          "plugin.workspace.materials.pageTitle"
+        )}
         ref="content-panel"
       >
         {results}
@@ -830,7 +832,7 @@ class WorkspaceMaterials extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     workspace: state.workspaces.currentWorkspace,
     materials: state.workspaces.currentMaterials,

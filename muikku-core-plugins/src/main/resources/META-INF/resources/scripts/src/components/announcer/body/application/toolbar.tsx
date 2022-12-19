@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
@@ -27,7 +27,7 @@ import {
  * AnnouncerToolbarProps
  */
 interface AnnouncerToolbarProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   announcements: AnnouncementsType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
@@ -163,7 +163,7 @@ class AnnouncerToolbar extends React.Component<
             <div className="application-panel__mobile-current-folder">
               <span className="application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.announcer.cat." + this.props.announcements.location
                 )}
               </span>
@@ -214,7 +214,7 @@ class AnnouncerToolbar extends React.Component<
             <div className="application-panel__mobile-current-folder">
               <span className="glyph application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.announcer.cat." + this.props.announcements.location
                 )}
               </span>
@@ -253,7 +253,7 @@ class AnnouncerToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     announcements: state.announcements,
   };
 }

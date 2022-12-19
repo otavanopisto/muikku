@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { AnnouncementType, AnnouncementsType } from "~/reducers/announcements";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
@@ -13,7 +13,7 @@ import "~/sass/elements/item-list.scss";
  * AnnouncementsAsideProps
  */
 interface AnnouncementsAsideProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   announcements: AnnouncementsType;
 }
 
@@ -60,7 +60,7 @@ class AnnouncementsAside extends React.Component<
                         {announcement.caption}
                       </span>
                       <span className="item-list__announcement-date">
-                        {this.props.i18n.time.format(announcement.startDate)}
+                        {this.props.i18nOLD.time.format(announcement.startDate)}
                       </span>
                       {announcement.workspaces &&
                       announcement.workspaces.length ? (
@@ -90,7 +90,9 @@ class AnnouncementsAside extends React.Component<
             )}
           </div>
         ) : (
-          <div>{this.props.i18n.text.get("plugin.announcer.empty.title")}</div>
+          <div>
+            {this.props.i18nOLD.text.get("plugin.announcer.empty.title")}
+          </div>
         )}
       </>
     );
@@ -104,7 +106,7 @@ class AnnouncementsAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     announcements: state.announcements,
   };
 }

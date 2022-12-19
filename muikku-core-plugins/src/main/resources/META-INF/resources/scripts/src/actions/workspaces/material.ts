@@ -434,7 +434,7 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
               if (file.size >= MAX_ATTACHMENT_SIZE) {
                 reject(
                   new Error(
-                    getState().i18n.text.get(
+                    getState().i18nOLD.text.get(
                       "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
                     )
                   )
@@ -532,7 +532,7 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.materialsManagement.attachment.notification.success"
             ),
             "success"
@@ -926,7 +926,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         if (!showRemoveAnswersDialogForPublish) {
           dispatch(
             displayNotification(
-              getState().i18n.text.get(
+              getState().i18nOLD.text.get(
                 "plugin.workspace.management.notification.failedToUpdateMaterialPage"
               ),
               "error"
@@ -968,7 +968,7 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToLoadWorkspaceMaterials"
             ),
             "error"
@@ -1017,7 +1017,7 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToLoadMaterialAnswers"
             ),
             "error"
@@ -1135,7 +1135,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
             // ERROR section has child nodes
             dispatch(
               displayNotification(
-                getState().i18n.text.get(
+                getState().i18nOLD.text.get(
                   "plugin.workspace.materialsManagement.sectionDeleteNotEmptyMessage"
                 ),
                 "error"
@@ -1145,7 +1145,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
             // ERROR generic delete failure
             dispatch(
               displayNotification(
-                getState().i18n.text.get(
+                getState().i18nOLD.text.get(
                   "plugin.workspace.materialsManagement.deleteFailed.notification"
                 ),
                 "error"
@@ -1190,7 +1190,7 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToLoadWorkspaceHelp"
             ),
             "error"

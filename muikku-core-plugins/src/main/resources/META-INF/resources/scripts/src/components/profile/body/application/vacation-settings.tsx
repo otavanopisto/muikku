@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -28,7 +28,7 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
  * VacationSettingsProps
  */
 interface VacationSettingsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -281,7 +281,7 @@ class VacationSettings extends React.Component<
       )
       .onAllSucceed(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.saved"),
+          this.props.i18nOLD.text.get("plugin.profile.properties.saved"),
           "success"
         );
 
@@ -291,7 +291,7 @@ class VacationSettings extends React.Component<
       })
       .onOneFails(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.failed"),
+          this.props.i18nOLD.text.get("plugin.profile.properties.failed"),
           "error"
         );
 
@@ -314,14 +314,16 @@ class VacationSettings extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get("plugin.profile.titles.vacationSettings")}
+            {this.props.i18nOLD.text.get(
+              "plugin.profile.titles.vacationSettings"
+            )}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileVacationStart">
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.profile.awayStartDate.label"
                     )}
                   </label>
@@ -334,7 +336,7 @@ class VacationSettings extends React.Component<
                     )}
                     maxDate={this.state.profileVacationEnd}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18n.time.getLocale()
+                      this.props.i18nOLD.time.getLocale()
                     )}
                     selected={this.state.profileVacationStart}
                     dateFormat="P"
@@ -344,7 +346,7 @@ class VacationSettings extends React.Component<
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileVacationStart">
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.profile.awayEndDate.label"
                     )}
                   </label>
@@ -357,7 +359,7 @@ class VacationSettings extends React.Component<
                     )}
                     minDate={this.state.profileVacationStart}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18n.time.getLocale()
+                      this.props.i18nOLD.time.getLocale()
                     )}
                     selected={this.state.profileVacationEnd}
                     dateFormat="P"
@@ -387,13 +389,13 @@ class VacationSettings extends React.Component<
                       onChange={this.onVacationAutoReplyChange}
                     />
                     <label htmlFor="profileVacationAutoReply">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.vacationAutoReply.label"
                       )}
                     </label>
                   </div>
                   <div className="form-element__description">
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.profile.vacationAutoReply.description"
                     )}
                   </div>
@@ -411,7 +413,7 @@ class VacationSettings extends React.Component<
                     } form-element`}
                   >
                     <label htmlFor="profileVacationAutoReplySubject">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.vacationAutoReplySubject.label"
                       )}
                     </label>
@@ -437,7 +439,7 @@ class VacationSettings extends React.Component<
                     } form-element`}
                   >
                     <label htmlFor="profileVacationAutoReplyMsg">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.profile.vacationAutoReplyMsg.label"
                       )}
                     </label>
@@ -459,7 +461,7 @@ class VacationSettings extends React.Component<
                   onClick={this.save}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18n.text.get("plugin.profile.save.button")}
+                  {this.props.i18nOLD.text.get("plugin.profile.save.button")}
                 </Button>
               </div>
             </div>
@@ -476,7 +478,7 @@ class VacationSettings extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     profile: state.profile,
     status: state.status,
   };

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { HTMLAttributeAnchorTarget } from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   HTMLtoReactComponent,
   HTMLToReactComponentRule,
@@ -16,7 +16,7 @@ interface LinkProps {
     //Someone thought it was smart to set up two versions of data
     url?: string;
   };
-  i18n: i18nType;
+  i18nOLD: i18nType;
   processingRules: HTMLToReactComponentRule[];
 }
 
@@ -48,7 +48,7 @@ export default class Link extends React.Component<
         return (
           <>
             <span className="visually-hidden">
-              {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+              {this.props.i18nOLD.text.get("plugin.wcag.externalLink.label")}
             </span>
             <span
               role="presentation"

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
 
 /**
@@ -7,7 +7,7 @@ interface FrontpageStudyingProps {
  *
  */
 interface FrontpageStudyingProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -30,12 +30,12 @@ export default class FrontpageStudying extends React.Component<
       <section
         id="studying"
         className="screen-container__section"
-        aria-label={this.props.i18n.text.get(
+        aria-label={this.props.i18nOLD.text.get(
           "plugin.wcag.frontPageSectionStudyingLabel"
         )}
       >
         <h2 className="screen-container__header">
-          {this.props.i18n.text.get("plugin.sectionTitle.studying")}
+          {this.props.i18nOLD.text.get("plugin.sectionTitle.studying")}
         </h2>
         <div className="ordered-container ordered-container--frontpage-studying">
           <div className="ordered-container__item ordered-container__item--upper-secondary-school">
@@ -48,10 +48,12 @@ export default class FrontpageStudying extends React.Component<
               />
               <div className="card__content">
                 <div className="card__title card__title--frontpage-upper-secondary-school">
-                  {this.props.i18n.text.get("plugin.studying.nettilukio.title")}
+                  {this.props.i18nOLD.text.get(
+                    "plugin.studying.nettilukio.title"
+                  )}
                 </div>
                 <div className="card__text">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.studying.nettilukio.description"
                   )}
                 </div>
@@ -65,7 +67,9 @@ export default class FrontpageStudying extends React.Component<
                     "frontpage-upper-secondary-school-readmore",
                   ]}
                 >
-                  {this.props.i18n.text.get("plugin.studying.nettilukio.link")}{" "}
+                  {this.props.i18nOLD.text.get(
+                    "plugin.studying.nettilukio.link"
+                  )}{" "}
                 </Button>
               </div>
             </div>
@@ -80,12 +84,12 @@ export default class FrontpageStudying extends React.Component<
               />
               <div className="card__content">
                 <div className="card__title card__title--frontpage-secondary-school">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.studying.nettiperuskoulu.title"
                   )}
                 </div>
                 <div className="card__text">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.studying.nettiperuskoulu.description"
                   )}
                 </div>
@@ -99,7 +103,7 @@ export default class FrontpageStudying extends React.Component<
                     "frontpage-secondary-school-readmore",
                   ]}
                 >
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.studying.nettiperuskoulu.link"
                   )}
                 </Button>
@@ -116,12 +120,12 @@ export default class FrontpageStudying extends React.Component<
               />
               <div className="card__content">
                 <div className="card__title card__title--frontpage-open-materials">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.studying.aineopiskelu.title"
                   )}
                 </div>
                 <div className="card__text">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.studying.aineopiskelu.description"
                   )}
                 </div>
@@ -135,7 +139,7 @@ export default class FrontpageStudying extends React.Component<
                     "frontpage-open-materials-readmore",
                   ]}
                 >
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.studying.nettilukio.aineopiskelu.link"
                   )}
                 </Button>
@@ -147,7 +151,7 @@ export default class FrontpageStudying extends React.Component<
                     "frontpage-open-materials-readmore",
                   ]}
                 >
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.studying.nettiperuskoulu.aineopiskelu.link"
                   )}
                 </Button>

@@ -9,7 +9,7 @@ import { ButtonPill } from "~/components/general/button";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import "~/sass/elements/glyph.scss";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import WorkListEditable from "./work-list-editable";
 import {
   DeleteProfileWorklistItemTriggerType,
@@ -32,7 +32,7 @@ const previousMonth = moment().subtract(1, "months");
  * WorkListRowProps
  */
 interface WorkListRowProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   item: StoredWorklistItem;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
   editProfileWorklistItem: EditProfileWorklistItemTriggerType;
@@ -198,35 +198,35 @@ class WorkListRow extends React.Component<
     let entryStateClass;
     switch (this.props.item.state) {
       case "ENTERED":
-        entryStateText = this.props.i18n.text.get(
+        entryStateText = this.props.i18nOLD.text.get(
           "plugin.profile.worklist.states.ENTERED"
         );
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
         break;
       case "PROPOSED":
-        entryStateText = this.props.i18n.text.get(
+        entryStateText = this.props.i18nOLD.text.get(
           "plugin.profile.worklist.states.PROPOSED"
         );
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-PROPOSED";
         break;
       case "APPROVED":
-        entryStateText = this.props.i18n.text.get(
+        entryStateText = this.props.i18nOLD.text.get(
           "plugin.profile.worklist.states.APPROVED"
         );
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-APPROVED";
         break;
       case "PAID":
-        entryStateText = this.props.i18n.text.get(
+        entryStateText = this.props.i18nOLD.text.get(
           "plugin.profile.worklist.states.PAID"
         );
         entryStateIcon = "icon-lock";
         entryStateClass = "state-PAID";
         break;
       default:
-        entryStateText = this.props.i18n.text.get(
+        entryStateText = this.props.i18nOLD.text.get(
           "plugin.profile.worklist.states.ENTERED"
         );
         entryStateIcon = "icon-check";
@@ -244,7 +244,7 @@ class WorkListRow extends React.Component<
           {this.props.item.description}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
-          {this.props.i18n.time.format(this.props.item.entryDate)}
+          {this.props.i18nOLD.time.format(this.props.item.entryDate)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
           {this.props.item.price}
@@ -289,7 +289,7 @@ class WorkListRow extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

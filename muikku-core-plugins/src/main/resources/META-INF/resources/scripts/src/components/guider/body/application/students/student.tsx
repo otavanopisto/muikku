@@ -5,7 +5,7 @@ import {
   GuiderStudentType,
   GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -28,7 +28,7 @@ type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
 interface StudentProps {
   student: GuiderStudentType;
   checkbox: React.ReactElement<HTMLInputElement>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   index: number;
   status: StatusType;
 }
@@ -79,7 +79,7 @@ class Student extends React.Component<StudentProps, StudentState> {
               htmlFor={`userSelect-` + this.props.index}
               className="visually-hidden"
             >
-              {this.props.i18n.text.get("plugin.wcag.userSelect.label")}
+              {this.props.i18nOLD.text.get("plugin.wcag.userSelect.label")}
             </label>
             {this.props.checkbox}
           </div>
@@ -105,7 +105,7 @@ class Student extends React.Component<StudentProps, StudentState> {
                   className={`label__icon icon-clock state-${studyTimeEndState}`}
                 ></span>
                 <span className="label__text">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.guider.user.state." + studyTimeEndState,
                     moment(this.props.student.studyTimeEnd).format("LL")
                   )}{" "}
@@ -138,7 +138,7 @@ class Student extends React.Component<StudentProps, StudentState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

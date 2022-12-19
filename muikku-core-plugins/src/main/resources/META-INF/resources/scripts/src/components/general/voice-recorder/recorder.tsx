@@ -8,7 +8,7 @@ import { AnyActionType } from "../../../actions/index";
 import { StateType } from "../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { StatusType } from "../../../reducers/base/status";
-import { i18nType } from "../../../reducers/base/i18n";
+import { i18nType } from "../../../reducers/base/i18nOLD";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
@@ -21,7 +21,7 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
  * RecorderProps
  */
 interface RecorderProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   /**
    * Handles changes is recording changes
@@ -122,7 +122,7 @@ function Recorder(props: RecorderProps) {
             trailColor="#f5f5f5"
             trailWidth={1}
             svgStyle={{ width: "100%", height: "4px" }}
-            text={props.i18n.text.get(
+            text={props.i18nOLD.text.get(
               "plugin.evaluation.evaluationModal.recordingAssessment.statusRecording",
               moment("2015-01-01")
                 .startOf("day")
@@ -145,7 +145,7 @@ function Recorder(props: RecorderProps) {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

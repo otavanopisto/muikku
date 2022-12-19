@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
@@ -23,7 +23,7 @@ import Button from "~/components/general/button";
  * CourseProps
  */
 interface CourseProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
   activeFilters: WorkspacesActiveFiltersType;
@@ -102,7 +102,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
               <div className="application-list__item-body-meta-content">
                 <div>
                   <label>
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.organization.workspaces.workspace.educationType.title"
                     )}
                   </label>
@@ -110,7 +110,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                 </div>
                 <div>
                   <label>
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.organization.workspaces.workspace.teachers.title"
                     )}
                   </label>
@@ -131,7 +131,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                 </div>
                 <div>
                   <label>
-                    {this.props.i18n.text.get(
+                    {this.props.i18nOLD.text.get(
                       "plugin.organization.workspaces.workspace.studentCount.title"
                     )}
                   </label>
@@ -139,7 +139,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                 </div>
               </div>
               <label>
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.workspace.description.title"
                 )}
               </label>
@@ -159,7 +159,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                 ]}
                 href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}
               >
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.organization.workspaces.workspace.goto"
                 )}
               </Button>
@@ -177,7 +177,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     activeFilters: state.organizationWorkspaces.activeFilters,
   };

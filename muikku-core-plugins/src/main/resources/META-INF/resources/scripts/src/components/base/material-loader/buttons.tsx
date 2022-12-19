@@ -39,7 +39,7 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
           buttonModifiers={props.stateConfiguration["button-class"]}
           onClick={props.onPushAnswer}
         >
-          {props.i18n.text.get(props.stateConfiguration["button-text"])}
+          {props.i18nOLD.text.get(props.stateConfiguration["button-text"])}
         </Button>
       ) : null}
       {props.stateConfiguration[
@@ -49,7 +49,7 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
           buttonModifiers="muikku-show-correct-answers-button"
           onClick={props.onToggleAnswersVisible}
         >
-          {props.i18n.text.get(
+          {props.i18nOLD.text.get(
             props.answersVisible
               ? "plugin.workspace.materialsLoader.hideAnswers"
               : "plugin.workspace.materialsLoader.showAnswers"

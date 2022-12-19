@@ -3,7 +3,7 @@ import Dropdown from "~/components/general/dropdown";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Link from "~/components/general/link";
 import { LocaleState, LocaleType } from "~/reducers/base/locales";
 import { StateType } from "~/reducers";
@@ -19,7 +19,7 @@ const LOCALES: LocaleType[] = ["fi", "en"];
  */
 interface LanguagePickerProps {
   locales: LocaleState;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   setLocale: SetLocaleTriggerType;
 }
 
@@ -64,7 +64,9 @@ class LanguagePicker extends React.Component<
             role="menuitem"
           >
             <span className={`link__locale link__locale--${locale}`}>
-              {this.props.i18n.text.get(`plugin.navigation.language.${locale}`)}
+              {this.props.i18nOLD.text.get(
+                `plugin.navigation.language.${locale}`
+              )}
             </span>
           </Link>
         ))}
@@ -74,7 +76,7 @@ class LanguagePicker extends React.Component<
           role="menuitem"
           tabIndex={0}
           aria-haspopup="true"
-          aria-label={this.props.i18n.text.get(
+          aria-label={this.props.i18nOLD.text.get(
             "plugin.wcag.localeMenu.aria.label"
           )}
         >
@@ -96,7 +98,7 @@ class LanguagePicker extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     locales: state.locales,
   };
 }

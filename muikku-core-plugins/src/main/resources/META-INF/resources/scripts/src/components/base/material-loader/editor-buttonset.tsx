@@ -108,7 +108,7 @@ function copyPage(props: EditorButtonSetProps) {
   localStorage.setItem("workspace-copied-id", props.workspace.id.toString(10));
 
   props.displayNotification(
-    props.i18n.text.get(
+    props.i18nOLD.text.get(
       "plugin.workspace.materialsManagement.materialCopiedToClipboardMessage",
       props.material.title
     ),
@@ -144,7 +144,7 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
       <Dropdown
         openByHover
         modifier="material-management-tooltip"
-        content={props.i18n.text.get(
+        content={props.i18nOLD.text.get(
           "plugin.workspace.materialsManagement.editPageTooltip"
         )}
       >
@@ -158,7 +158,7 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
         <Dropdown
           openByHover
           modifier="material-management-tooltip"
-          content={props.i18n.text.get(
+          content={props.i18nOLD.text.get(
             "plugin.workspace.materialsManagement.copyPageTooltip"
           )}
         >
@@ -175,10 +175,10 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
           modifier="material-management-tooltip"
           content={
             props.material.hidden
-              ? props.i18n.text.get(
+              ? props.i18nOLD.text.get(
                   "plugin.workspace.materialsManagement.showPageTooltip"
                 )
-              : props.i18n.text.get(
+              : props.i18nOLD.text.get(
                   "plugin.workspace.materialsManagement.hidePageTooltip"
                 )
           }

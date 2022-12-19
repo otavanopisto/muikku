@@ -13,7 +13,7 @@ import {
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { WorkspaceType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "~/@types/evaluation";
 import { AnyActionType } from "~/actions";
@@ -24,7 +24,7 @@ import { AnyActionType } from "~/actions";
 interface NavigationAsideProps {
   evaluations: EvaluationState;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   currentWorkspace: WorkspaceType;
 }
 
@@ -110,7 +110,7 @@ class NavigationAside extends React.Component<
           onClick={this.handleNavigationWorkspaceClick(undefined)}
           isActive={this.props.evaluations.selectedWorkspaceId === undefined}
         >
-          {this.props.i18n.text.get("plugin.evaluation.allRequests")}
+          {this.props.i18nOLD.text.get("plugin.evaluation.allRequests")}
         </NavigationElement>
         {renderNavigationWorkspaceElements.length > 0
           ? renderNavigationWorkspaceElements
@@ -121,7 +121,7 @@ class NavigationAside extends React.Component<
     return (
       <NavigationMenu>
         <NavigationTopic
-          name={this.props.i18n.text.get(
+          name={this.props.i18nOLD.text.get(
             "plugin.evaluation.filter.viewSelection"
           )}
         >
@@ -140,7 +140,7 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     evaluations: state.evaluations,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     currentWorkspace: state.workspaces.currentWorkspace,
   };
 }

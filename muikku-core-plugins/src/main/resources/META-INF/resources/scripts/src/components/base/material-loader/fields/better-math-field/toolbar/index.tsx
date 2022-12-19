@@ -21,7 +21,7 @@ export interface MathFieldCommandType {
 interface MathFieldToolbarProps {
   className?: string;
   isOpen: boolean;
-  i18n: {
+  i18nOLD: {
     symbols: string;
     relations: string;
     geometryAndVectors: string;
@@ -131,7 +131,7 @@ export default class MathFieldToolbar extends React.Component<
               key={c.label}
             >
               <div className={this.props.className + "-symbol-group-label"}>
-                {(this.props.i18n as any)[c.label]}:
+                {(this.props.i18nOLD as any)[c.label]}:
               </div>
               <div className={this.props.className + "-symbol-group-content"}>
                 {(c.characters as any)
@@ -179,7 +179,7 @@ export default class MathFieldToolbar extends React.Component<
               className={this.props.className + "-more-math-button"}
               onClick={this.props.onRequestToOpenMathMode}
             >
-              Σ {this.props.i18n.mathFormulas}
+              Σ {this.props.i18nOLD.mathFormulas}
             </button>
           )}
           {!this.props.isMathExpanded && (
@@ -187,13 +187,13 @@ export default class MathFieldToolbar extends React.Component<
               className={this.props.className + "-add-image-button"}
               onClick={this.props.onRequestImage}
             >
-              {this.props.i18n.image}
+              {this.props.i18nOLD.image}
             </button>
           )}
           {this.props.isMathExpanded && (
             <div className={this.props.className + "-symbol-group"}>
               <div className={this.props.className + "-symbol-group-label"}>
-                {this.props.i18n.operators}:
+                {this.props.i18nOLD.operators}:
               </div>
               <div className={this.props.className + "-symbol-group-content"}>
                 {this.props.isMathExpanded &&

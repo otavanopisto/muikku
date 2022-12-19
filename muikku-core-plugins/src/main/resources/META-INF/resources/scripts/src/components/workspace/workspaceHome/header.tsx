@@ -5,7 +5,7 @@ import {
   WorkspaceCurriculumFilterListType,
   WorkspaceType,
 } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import ProgressData from "../progressData";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
@@ -24,7 +24,7 @@ import { suitabilityMap } from "~/@shared/suitability";
 interface WorkspaceHomeHeaderProps {
   workspace: WorkspaceType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   updateWorkspace: UpdateWorkspaceTriggerType;
 }
@@ -121,7 +121,7 @@ class WorkspaceHomeHeader extends React.Component<
         <div className="meta__item">
           <span className="meta__item-label">Pakollisuus:</span>
           <span className="meta__item-description">
-            {this.props.i18n.text.get(localString)}
+            {this.props.i18nOLD.text.get(localString)}
           </span>
         </div>
       ) : null;
@@ -167,7 +167,7 @@ class WorkspaceHomeHeader extends React.Component<
       // Otherwise first sort by ascending names a -> ö and then by ascending course number order
       workspaceLengthOrLengths = !isCombinationWorkspace ? (
         <span className="meta__item-description">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.workspace.index.courseLength",
             subjects[0].courseLength,
             subjects[0].courseLengthSymbol.symbol
@@ -190,7 +190,7 @@ class WorkspaceHomeHeader extends React.Component<
                 s.courseNumber ? s.courseNumber : ""
               }`;
 
-              const codeWithLength = `${codeString} ${this.props.i18n.text.get(
+              const codeWithLength = `${codeString} ${this.props.i18nOLD.text.get(
                 "plugin.workspace.index.courseLength",
                 s.courseLength,
                 s.courseLengthSymbol.symbol
@@ -264,7 +264,7 @@ class WorkspaceHomeHeader extends React.Component<
         <div className="meta meta--workspace">
           <div className="meta__item">
             <span className="meta__item-label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.index.courseLengthLabel"
               )}
             </span>
@@ -272,7 +272,7 @@ class WorkspaceHomeHeader extends React.Component<
           </div>
           <div className="meta__item">
             <span className="meta__item-label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.index.courseSubjectLabel"
               )}
             </span>
@@ -281,7 +281,7 @@ class WorkspaceHomeHeader extends React.Component<
           {this.props.workspace.additionalInfo.workspaceType ? (
             <div className="meta__item">
               <span className="meta__item-label">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.workspace.index.courseTypeLabel"
                 )}
               </span>
@@ -294,17 +294,17 @@ class WorkspaceHomeHeader extends React.Component<
           this.props.workspace.additionalInfo.endDate ? (
             <div className="meta__item">
               <span className="meta__item-label">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.workspace.index.courseDatesLabel"
                 )}
               </span>
               <span className="meta__item-description">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.workspace.index.courseDates",
-                  this.props.i18n.time.format(
+                  this.props.i18nOLD.time.format(
                     this.props.workspace.additionalInfo.beginDate
                   ),
-                  this.props.i18n.time.format(
+                  this.props.i18nOLD.time.format(
                     this.props.workspace.additionalInfo.endDate
                   )
                 )}
@@ -318,10 +318,10 @@ class WorkspaceHomeHeader extends React.Component<
             <div className="meta__item meta__item--progress-data">
               <ProgressData
                 modifier="workspace-home"
-                title={this.props.i18n.text.get(
+                title={this.props.i18nOLD.text.get(
                   "plugin.workspace.index.courseProgressLabel"
                 )}
-                i18n={this.props.i18n}
+                i18nOLD={this.props.i18nOLD}
                 activity={this.props.workspace.activity}
               />
             </div>
@@ -338,7 +338,7 @@ class WorkspaceHomeHeader extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     availableCurriculums: state.workspaces.availableCurriculums,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,

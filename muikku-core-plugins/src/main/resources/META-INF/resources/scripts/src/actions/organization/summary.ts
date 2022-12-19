@@ -98,7 +98,10 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
           throw err;
         }
         dispatch(
-          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          actions.displayNotification(
+            getState().i18nOLD.text.get("todo"),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_SUMMARY_STATUS",

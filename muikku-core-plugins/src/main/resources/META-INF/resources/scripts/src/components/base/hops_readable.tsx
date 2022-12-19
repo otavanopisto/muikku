@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
@@ -15,7 +15,7 @@ import { AnyActionType } from "~/actions";
 interface HopsProps {
   data?: HOPSDataType;
   defaultData: HOPSDataType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -66,14 +66,14 @@ class Hops extends React.Component<HopsProps, HopsState> {
       <div className="application-sub-panel__body">
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.goals.upperSecondary"
             )}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.goalSecondarySchoolDegree
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.records.hops.goals." +
                       this.state.hops.goalSecondarySchoolDegree
                   )
@@ -83,14 +83,14 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.goals.matriculationExam"
             )}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.goalMatriculationExam
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.records.hops.goals." +
                       this.state.hops.goalMatriculationExam
                   )
@@ -100,7 +100,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.goals.vocationalYears1"
             )}
             <span className="application-sub-panel__item-inline-value">
@@ -108,14 +108,14 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 ? this.state.hops.vocationalYears
                 : "-"}
             </span>
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.goals.vocationalYears2"
             )}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.goalJustMatriculationExam
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.records.hops.goals." +
                       this.state.hops.goalJustMatriculationExam
                   )
@@ -125,7 +125,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.goals.justTransferCredits1"
             )}
             <span className="application-sub-panel__item-inline-value">
@@ -133,14 +133,14 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 ? this.state.hops.transferCreditYears
                 : "-"}
             </span>
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.goals.justTransferCredits2"
             )}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.justTransferCredits
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.records.hops.goals." +
                       this.state.hops.justTransferCredits
                   )
@@ -150,7 +150,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.goals.completionYears1"
             )}
             <span className="application-sub-panel__item-inline-value">
@@ -158,14 +158,14 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 ? this.state.hops.completionYears
                 : "-"}
             </span>
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.goals.completionYears2"
             )}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.languages.mandatory.title"
             )}
           </div>
@@ -174,10 +174,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.finnish
                 ? "-"
                 : this.state.hops.finnish === "AI"
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.records.hops.languages.finnish.native"
                   )
-                : this.props.i18n.text.get(
+                : this.props.i18nOLD.text.get(
                     "plugin.records.hops.languages.finnish.foreign"
                   )}
             </span>
@@ -185,44 +185,48 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.languages.mandatory.additionalInfo"
             )}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.records.hops.languages.optional.title"
             )}
           </div>
           <div className="application-sub-panel__item-data">
             <label className="application-sub-panel__item-label">
-              {this.props.i18n.text.get("plugin.records.hops.languages.german")}
+              {this.props.i18nOLD.text.get(
+                "plugin.records.hops.languages.german"
+              )}
             </label>
             <span className="application-sub-panel__single-entry">
               {!this.state.hops.german
                 ? "-"
                 : this.state.hops.german
-                ? this.props.i18n.text.get("plugin.records.hops.goals.yes")
-                : this.props.i18n.text.get("plugin.records.hops.goals.no")}
+                ? this.props.i18nOLD.text.get("plugin.records.hops.goals.yes")
+                : this.props.i18nOLD.text.get("plugin.records.hops.goals.no")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
             <label className="application-sub-panel__item-label">
-              {this.props.i18n.text.get("plugin.records.hops.languages.french")}
+              {this.props.i18nOLD.text.get(
+                "plugin.records.hops.languages.french"
+              )}
             </label>
             <span className="application-sub-panel__single-entry">
               {!this.state.hops.french
                 ? "-"
                 : this.state.hops.french
-                ? this.props.i18n.text.get("plugin.records.hops.goals.yes")
-                : this.props.i18n.text.get("plugin.records.hops.goals.no")}
+                ? this.props.i18nOLD.text.get("plugin.records.hops.goals.yes")
+                : this.props.i18nOLD.text.get("plugin.records.hops.goals.no")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
             <label className="application-sub-panel__item-label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.hops.languages.italian"
               )}
             </label>
@@ -230,13 +234,13 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.italian
                 ? "-"
                 : this.state.hops.italian
-                ? this.props.i18n.text.get("plugin.records.hops.goals.yes")
-                : this.props.i18n.text.get("plugin.records.hops.goals.no")}
+                ? this.props.i18nOLD.text.get("plugin.records.hops.goals.yes")
+                : this.props.i18nOLD.text.get("plugin.records.hops.goals.no")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
             <label className="application-sub-panel__item-label">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.hops.languages.spanish"
               )}
             </label>
@@ -244,19 +248,21 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.spanish
                 ? "-"
                 : this.state.hops.spanish
-                ? this.props.i18n.text.get("plugin.records.hops.goals.yes")
-                : this.props.i18n.text.get("plugin.records.hops.goals.no")}
+                ? this.props.i18nOLD.text.get("plugin.records.hops.goals.yes")
+                : this.props.i18nOLD.text.get("plugin.records.hops.goals.no")}
             </span>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get("plugin.records.hops.mathSyllabus.title")}
+            {this.props.i18nOLD.text.get(
+              "plugin.records.hops.mathSyllabus.title"
+            )}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.mathSyllabus
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.records.hops.mathSyllabus." +
                       this.state.hops.mathSyllabus
                   )
@@ -266,12 +272,12 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get("plugin.records.hops.science.title")}
+            {this.props.i18nOLD.text.get("plugin.records.hops.science.title")}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.science
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.records.hops.science." + this.state.hops.science
                   )
                 : "-"}
@@ -280,12 +286,12 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get("plugin.records.hops.religion.title")}
+            {this.props.i18nOLD.text.get("plugin.records.hops.religion.title")}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.religion
-                ? this.props.i18n.text.get(
+                ? this.props.i18nOLD.text.get(
                     "plugin.records.hops.religion." + this.state.hops.religion
                   )
                 : "-"}
@@ -295,7 +301,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         {this.state.hops.additionalInfo ? (
           <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.hops.additionalInfo.title"
               )}
             </div>
@@ -317,7 +323,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     defaultData: state.hops && state.hops.value,
   };
 }

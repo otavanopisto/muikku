@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import CKEditor from "~/components/general/ckeditor";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
@@ -28,7 +28,7 @@ interface MemoFieldProps {
     richedit: boolean;
   };
   usedAs: UsedAs;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   readOnly?: boolean;
   initialValue?: string;
   onChange?: (
@@ -188,7 +188,7 @@ export default class MemoField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18n !== nextProps.i18n ||
+      this.props.i18nOLD !== nextProps.i18nOLD ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -247,7 +247,7 @@ export default class MemoField extends React.Component<
       answerExampleComponent = (
         <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
           <span className="material-page__field-answer-examples-title material-page__field-answer-examples-title--memofield">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
             )}
           </span>
@@ -376,14 +376,16 @@ export default class MemoField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18n={this.props.i18n}
+          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         {field}
         <span className="material-page__counter-wrapper">
           <span className="material-page__word-count-container">
             <span className="material-page__word-count-title">
-              {this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}
+              {this.props.i18nOLD.text.get(
+                "plugin.workspace.memoField.wordCount"
+              )}
             </span>
             <span className="material-page__word-count">
               {this.state.words}
@@ -391,7 +393,7 @@ export default class MemoField extends React.Component<
           </span>
           <span className="material-page__character-count-container">
             <span className="material-page__character-count-title">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.workspace.memoField.characterCount"
               )}
             </span>

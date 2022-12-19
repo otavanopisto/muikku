@@ -44,7 +44,7 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
       props.stateConfiguration["success-text"] &&
-        props.i18n.text.get(props.stateConfiguration["success-text"])
+        props.i18nOLD.text.get(props.stateConfiguration["success-text"])
     );
   }
 }
@@ -71,7 +71,7 @@ function onModification(props: MaterialLoaderContentProps) {
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
       props.stateConfiguration["success-text"] &&
-        props.i18n.text.get(props.stateConfiguration["success-text"]),
+        props.i18nOLD.text.get(props.stateConfiguration["success-text"]),
       props.onAssignmentStateModified
     );
   }
@@ -96,7 +96,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
         typeof props.compositeReplies === "undefined" ? null : (
           <Base
             material={props.material}
-            i18n={props.i18n}
+            i18nOLD={props.i18nOLD}
             status={props.status}
             usedAs={props.usedAs}
             workspace={props.workspace}
@@ -125,7 +125,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
       {props.material.type === "binary" ? (
         <BinaryMaterialLoader
           material={props.material}
-          i18n={props.i18n}
+          i18nOLD={props.i18nOLD}
           invisible={props.invisible}
         />
       ) : null}

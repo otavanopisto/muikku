@@ -284,7 +284,7 @@ export default class MuikkuWebsocket {
               actions.openNotificationDialog(
                 this.store
                   .getState()
-                  .i18n.text.get("plugin.server.unreachable.403")
+                  .i18nOLD.text.get("plugin.server.unreachable.403")
               ) as Action
             );
             this.ticket = null;
@@ -304,7 +304,7 @@ export default class MuikkuWebsocket {
               actions.openNotificationDialog(
                 this.store
                   .getState()
-                  .i18n.text.get("plugin.server.unreachable.502")
+                  .i18nOLD.text.get("plugin.server.unreachable.502")
               ) as Action
             );
             this.ticket = null;
@@ -493,7 +493,7 @@ export default class MuikkuWebsocket {
             actions.openNotificationDialog(
               this.store
                 .getState()
-                .i18n.text.get("plugin.server.unreachable.reconnectFailed")
+                .i18nOLD.text.get("plugin.server.unreachable.reconnectFailed")
             ) as Action
           );
         } else {

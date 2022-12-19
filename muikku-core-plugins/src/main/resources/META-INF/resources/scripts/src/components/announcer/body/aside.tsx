@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   AnnouncementsType,
   AnnouncerNavigationItemType,
@@ -15,7 +15,7 @@ import { NavigationTopic } from "../../general/navigation";
  * NavigationAsideProps
  */
 interface NavigationAsideProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   announcements: AnnouncementsType;
 }
 
@@ -45,7 +45,7 @@ class NavigationAside extends React.Component<
             hash={navItem.location}
             icon={navItem.icon}
           >
-            {navItem.text(this.props.i18n)}
+            {navItem.text(this.props.i18nOLD)}
           </NavigationElement>
         )
       );
@@ -53,7 +53,7 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          name={this.props.i18n.text.get("plugin.announcer.folders.title")}
+          name={this.props.i18nOLD.text.get("plugin.announcer.folders.title")}
         >
           {navigationElementList}
         </NavigationTopic>
@@ -69,7 +69,7 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     announcements: state.announcements,
   };
 }

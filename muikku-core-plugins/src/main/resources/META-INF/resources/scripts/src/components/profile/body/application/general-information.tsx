@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { ProfileType } from "~/reducers/main-function/profile";
 import ProfilePicture from "./components/profile-picture";
@@ -11,7 +11,7 @@ import ProfileProperty from "./components/profile-property";
  * GeneralInformationProps
  */
 interface GeneralInformationProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
 }
@@ -59,7 +59,7 @@ class GeneralInformation extends React.Component<
     const studyTimeEndValues = [];
     if (this.props.status.profile.studyTimeEnd) {
       studyTimeEndValues.push(
-        this.props.i18n.time.format(this.props.status.profile.studyTimeEnd)
+        this.props.i18nOLD.time.format(this.props.status.profile.studyTimeEnd)
       );
       if (this.props.status.profile.studyTimeLeftStr) {
         studyTimeEndValues.push(this.props.status.profile.studyTimeLeftStr);
@@ -70,7 +70,7 @@ class GeneralInformation extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.profile.titles.generalInformation"
             )}
           </h2>
@@ -82,16 +82,16 @@ class GeneralInformation extends React.Component<
 
               <ProfileProperty
                 modifier="study-start-date"
-                i18n={this.props.i18n}
+                i18nOLD={this.props.i18nOLD}
                 condition={!!this.props.status.profile.studyStartDate}
                 label="plugin.profile.studyStartDateLabel"
-                value={this.props.i18n.time.format(
+                value={this.props.i18nOLD.time.format(
                   this.props.status.profile.studyStartDate
                 )}
               />
               <ProfileProperty
                 modifier="study-end-date"
-                i18n={this.props.i18n}
+                i18nOLD={this.props.i18nOLD}
                 condition={!!this.props.status.profile.studyTimeEnd}
                 label="plugin.profile.studyTimeEndLabel"
                 value={studyTimeEndValues}
@@ -110,7 +110,7 @@ class GeneralInformation extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     profile: state.profile,
     status: state.status,
   };

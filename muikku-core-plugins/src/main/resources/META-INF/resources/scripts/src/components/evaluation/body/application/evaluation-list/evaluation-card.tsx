@@ -17,16 +17,23 @@ import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { StateType } from "~/reducers/index";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { ButtonPill, IconButton } from "~/components/general/button";
 import "~/sass/elements/evaluation-card.scss";
 import "~/sass/elements/buttons.scss";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 
 /**
  * EvaluationCardProps
  */
-interface EvaluationCardProps extends AssessmentRequest {
-  i18n: i18nType;
+interface EvaluationCardProps
+  extends AssessmentRequest,
+    WithTranslation<["common", "evaluation"]> {
+  i18nOLD: i18nType;
   selectedWorkspaceId?: number;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   updateEvaluationImportance: (object: UpdateImportanceObject) => void;
@@ -49,11 +56,13 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     importantAssessments,
     unimportantAssessments,
     updateEvaluationImportance,
-    i18n,
+    i18nOLD,
     needsReloadRequests,
     loadEvaluationAssessmentRequestsFromServer,
     ...rest
   } = props;
+
+  const { t } = useTranslation(["common", "evaluation"]);
 
   /**
    * Handles importance click
@@ -247,12 +256,8 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         <ButtonPill
           aria-label={
             rest.interimEvaluationRequest
-              ? i18n.text.get(
-                  "plugin.evaluation.card.button.deleteInterimRequest.title"
-                )
-              : i18n.text.get(
-                  "plugin.evaluation.card.button.deleteRequest.title"
-                )
+              ? t("evaluation:actions.remove_interimEvaluationRequest")
+              : t("evaluation:actions.remove_evaluationRequest")
           }
           buttonModifiers="archive-request"
           icon="trash"
@@ -262,9 +267,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       selectedWorkspaceId === rest.workspaceEntityId ? (
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
-          aria-label={i18n.text.get(
-            "plugin.evaluation.card.button.archiveButtonLabel"
-          )}
+          aria-label={t("evaluation:actions.archiveStudent")}
           buttonModifiers="archive-student"
           icon="archive"
         />
@@ -283,7 +286,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         {renderFilterByWorkspaceLink}
         <div className="evaluation-card__content-row">
           <span className="evaluation-card__content-label">
-            {i18n.text.get("plugin.evaluation.card.joinedWorkspaceLabel")}
+            {i18nOLD.text.get("plugin.evaluation.card.joinedWorkspaceLabel")}
           </span>
           <span className="evaluation-card__content-data">
             {enrollmentDate}
@@ -298,10 +301,10 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         >
           <span className="evaluation-card__content-label">
             {rest.interimEvaluationRequest
-              ? i18n.text.get(
+              ? i18nOLD.text.get(
                   "plugin.evaluation.card.interimEvaluationRequestedLabel"
                 )
-              : i18n.text.get(
+              : i18nOLD.text.get(
                   "plugin.evaluation.card.evaluationRequestedLabel"
                 )}
           </span>
@@ -317,7 +320,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
           }`}
         >
           <span className="evaluation-card__content-label">
-            {i18n.text.get("plugin.evaluation.card.evaluatedLabel")}
+            {i18nOLD.text.get("plugin.evaluation.card.evaluatedLabel")}
           </span>
           <span className="evaluation-card__content-data">
             {evaluationDate}
@@ -325,7 +328,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         </div>
         <div className="evaluation-card__content-row">
           <span className="evaluation-card__content-label">
-            {i18n.text.get("plugin.evaluation.card.assignmentsDoneLabel")}
+            {i18nOLD.text.get("plugin.evaluation.card.assignmentsDoneLabel")}
           </span>
           {renderTasksDone}
         </div>
@@ -333,9 +336,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       <div className="evaluation-card__footer">
         <div className="evaluation-card__button-set">
           <IconButton
-            aria-label={i18n.text.get(
-              "plugin.evaluation.card.button.markImportantButtonLabel"
-            )}
+            aria-label={t("evaluation:actions.markImportant")}
             onClick={handleImportanceClick("important")}
             buttonModifiers={
               evaluationImportantClassesMod
@@ -345,9 +346,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
             icon="star-full"
           />
           <IconButton
-            aria-label={i18n.text.get(
-              "plugin.evaluation.card.button.markNonImportantButtonLabel"
-            )}
+            aria-label={t("evaluation:actions.markNonImportant")}
             onClick={handleImportanceClick("unimportant")}
             buttonModifiers={
               evaluationUnimportantClassesMod
@@ -363,9 +362,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
 
           <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
             <ButtonPill
-              aria-label={i18n.text.get(
-                "plugin.evaluation.card.button.evaluateButtonLabel"
-              )}
+              aria-label={t("evaluation:actions.evaluateStudent")}
               buttonModifiers="evaluate"
               icon="evaluate"
             />
@@ -382,7 +379,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 
@@ -397,4 +394,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EvaluationCard);
+export default withTranslation(["common", "evaluation"])(
+  connect(mapStateToProps, mapDispatchToProps)(EvaluationCard)
+);

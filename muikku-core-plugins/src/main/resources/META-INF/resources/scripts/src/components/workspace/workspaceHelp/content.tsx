@@ -7,7 +7,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   MaterialContentNodeListType,
   WorkspaceType,
@@ -35,7 +35,7 @@ import {
  * ContentProps
  */
 interface ContentProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   materials: MaterialContentNodeListType;
   activeNodeId: number;
@@ -371,12 +371,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   ) => {
     switch (viewRestrict) {
       case MaterialViewRestriction.LOGGED_IN:
-        return this.props.i18n.text.get(
+        return this.props.i18nOLD.text.get(
           "plugin.workspace.materialViewRestricted"
         );
 
       case MaterialViewRestriction.WORKSPACE_MEMBERS:
-        return this.props.i18n.text.get(
+        return this.props.i18nOLD.text.get(
           "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
         );
 
@@ -415,7 +415,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     return (
       <Toc
-        tocHeaderTitle={this.props.i18n.text.get(
+        tocHeaderTitle={this.props.i18nOLD.text.get(
           "plugin.workspace.materials.tocTitle"
         )}
       >
@@ -615,7 +615,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
     materials: state.workspaces.currentHelp,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,

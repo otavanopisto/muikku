@@ -6,13 +6,13 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * DeleteDialogProps
  */
 interface DeleteDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   children: React.ReactElement<any>;
   isOpen?: boolean;
   onDeleteAudio: () => void;
@@ -67,7 +67,7 @@ class DeleteDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.handleDeleteAudioFieldClick.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.removeButton"
           )}
         </Button>
@@ -75,7 +75,7 @@ class DeleteDialog extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.cancelButton"
           )}
         </Button>
@@ -89,7 +89,7 @@ class DeleteDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        {this.props.i18n.text.get(
+        {this.props.i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.description"
         )}
       </div>
@@ -99,7 +99,7 @@ class DeleteDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.title"
         )}
         content={content}
@@ -119,7 +119,7 @@ class DeleteDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
-import { i18nType } from "reducers/base/i18n";
+import { i18nType } from "reducers/base/i18nOLD";
 import Records from "./application/records";
 import Summary from "./application/summary";
 import Hops from "./application/hops";
@@ -29,7 +29,7 @@ import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-
  * StudiesApplicationProps
  */
 interface StudiesApplicationProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   location: TranscriptOfRecordLocationType;
   hops: HOPSType;
   status: StatusType;
@@ -173,12 +173,12 @@ class StudiesApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.records.pageTitle");
+    const title = this.props.i18nOLD.text.get("plugin.records.pageTitle");
 
     let panelTabs: Tab[] = [
       {
         id: "SUMMARY",
-        name: this.props.i18n.text.get("plugin.records.category.summary"),
+        name: this.props.i18nOLD.text.get("plugin.records.category.summary"),
         hash: "summary",
         type: "summary",
         /**
@@ -193,7 +193,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "RECORDS",
-        name: this.props.i18n.text.get("plugin.records.category.records"),
+        name: this.props.i18nOLD.text.get("plugin.records.category.records"),
         hash: "records",
         type: "records",
         component: (
@@ -204,7 +204,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "HOPS",
-        name: this.props.i18n.text.get("plugin.records.category.hops"),
+        name: this.props.i18nOLD.text.get("plugin.records.category.hops"),
         hash: "hops",
         type: "hops",
         component: (
@@ -215,7 +215,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "YO",
-        name: this.props.i18n.text.get("plugin.records.category.yo"),
+        name: this.props.i18nOLD.text.get("plugin.records.category.yo"),
         hash: "yo",
         type: "yo",
         component: (
@@ -253,7 +253,7 @@ class StudiesApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     location: state.records.location,
     hops: state.hops,
     records: state.records,

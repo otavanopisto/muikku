@@ -31,7 +31,10 @@ export function MaterialLoaderProducersLicense(
       {props.material.producers && props.material.producers.length ? (
         <div className="material-page__producers">
           <div className="material-page__producers-label">
-            {props.i18n.text.get("plugin.workspace.materials.producersLabel")}:
+            {props.i18nOLD.text.get(
+              "plugin.workspace.materials.producersLabel"
+            )}
+            :
           </div>
           <div className="material-page__producers-item">
             {props.material.producers.map((p) => p.name).join(", ")}
@@ -41,7 +44,7 @@ export function MaterialLoaderProducersLicense(
       {props.material.license ? (
         <div className="material-page__license">
           <div className="material-page__license-label">
-            {props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:
+            {props.i18nOLD.text.get("plugin.workspace.materials.licenseLabel")}:
           </div>
           {hasLink ? (
             <Link

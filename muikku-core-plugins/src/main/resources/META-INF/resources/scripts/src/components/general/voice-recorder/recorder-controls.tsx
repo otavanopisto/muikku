@@ -5,7 +5,7 @@ import { StateType } from "~/reducers/index";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * RecorderControlsProps
@@ -17,7 +17,7 @@ export interface RecorderControlsProps {
     cancelRecording: () => void;
     saveRecording: () => void;
   };
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -25,13 +25,13 @@ export interface RecorderControlsProps {
  * Component that renders recording controls, start/save buttons etc
  * @param param0.recorderState recorderState
  * @param param0.handlers handlers
- * @param param0.i18n i18n
+ * @param param0.i18nOLD i18nOLD
  * @returns JSX.Element
  */
 function RecorderControls({
   recorderState,
   handlers,
-  i18n,
+  i18nOLD,
 }: RecorderControlsProps) {
   const { initRecording } = recorderState;
   const { startRecording, saveRecording } = handlers;
@@ -47,7 +47,7 @@ function RecorderControls({
           disabled={disabled}
         >
           <span className="voice-recorder__start-record-label">
-            {i18n.text.get("plugin.workspace.audioField.startLink")}
+            {i18nOLD.text.get("plugin.workspace.audioField.startLink")}
           </span>
         </Link>
       ) : (
@@ -57,17 +57,17 @@ function RecorderControls({
           disabled={disabled}
         >
           <span className="voice-recorder__stop-record-label">
-            {i18n.text.get("plugin.workspace.audioField.stopLink")}
+            {i18nOLD.text.get("plugin.workspace.audioField.stopLink")}
           </span>
         </Link>
       )}
       {!initRecording ? (
         <span className="voice-recorder__description voice-recorder__description--start-recording">
-          {i18n.text.get("plugin.workspace.audioField.startRecordingHint")}
+          {i18nOLD.text.get("plugin.workspace.audioField.startRecordingHint")}
         </span>
       ) : (
         <span className="voice-recorder__description voice-recorder__description--stop-recording">
-          {i18n.text.get("plugin.workspace.audioField.stopRecordingHint")}
+          {i18nOLD.text.get("plugin.workspace.audioField.stopRecordingHint")}
         </span>
       )}
     </div>
@@ -80,7 +80,7 @@ function RecorderControls({
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

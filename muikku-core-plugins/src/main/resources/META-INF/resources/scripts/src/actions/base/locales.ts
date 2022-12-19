@@ -58,7 +58,7 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          state.i18n.text.get(
+          state.i18nOLD.text.get(
             "plugin.notification.locale.changing.error",
             err.message
           ),
@@ -92,7 +92,7 @@ const loadLocale: LoadLocaleTriggerType = function loadLocale() {
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          state.i18n.text.get(
+          state.i18nOLD.text.get(
             "plugin.notification.locale.loading.error",
             err.message
           ),

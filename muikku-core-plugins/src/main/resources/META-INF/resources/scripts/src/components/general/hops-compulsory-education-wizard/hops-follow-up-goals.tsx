@@ -20,7 +20,7 @@ import { Textarea } from "./text-area";
 import { TextField } from "./text-field";
 import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 
@@ -28,7 +28,7 @@ import AnimateHeight from "react-animate-height";
  * FollowUpGoalsProps
  */
 interface HopsFollowUpGoalsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   disabled: boolean;
   studentId: string;
   studyTimeEnd: string | null;
@@ -43,7 +43,7 @@ interface HopsFollowUpGoalsProps {
  * @returns JSX.Element
  */
 const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
-  const { disabled, studentId, websocketState, displayNotification, i18n } =
+  const { disabled, studentId, websocketState, displayNotification, i18nOLD } =
     props;
 
   const { followUpData, ...followUpHandlers } = useFollowUpGoal(
@@ -81,7 +81,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             id="graduationGoalMonth"
             onChange={(date) => handleGoalsChange("graduationGoal", date)}
             selected={followUpData.followUp.graduationGoal}
-            locale={outputCorrectDatePickerLocale(i18n.time.getLocale())}
+            locale={outputCorrectDatePickerLocale(i18nOLD.time.getLocale())}
             dateFormat="MM/yyyy"
             showMonthYearPicker
             showFullMonthYearPicker
@@ -266,7 +266,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     websocketState: state.websocket,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

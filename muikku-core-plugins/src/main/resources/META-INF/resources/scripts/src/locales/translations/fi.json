@@ -36,6 +36,75 @@
       "update": "Päivitä"
     },
 
+    "messaging": {
+      "actions": {
+        "hide_comments": "Piilota vastaukset",
+        "remove": "Poista",
+        "remove_comment": "Poista vastaus",
+        "remove_label": "Poista tunniste",
+        "addSignature": "Lisää allekirjoitus",
+        "reply": "Vastaa",
+        "replyAll": "Vastaa kaikille",
+        "show_comments": "Näytä vastaukset"
+      },
+
+      "labels": {
+        "edit": "Muokkaa viestiä",
+        "lock": "Lukitse viesti",
+        "pin": "Kiinnitä viesti",
+        "remove": "Poista viesti",
+        "reply": "Vastaa viestiin",
+        "subscribeArea": "Tilaa keskustelualue",
+        "subscribeThread": "Tilaa viestiketju"
+      },
+
+      "notifications": {
+        "addError_label": "Tunnisteen asettaminen ei onnistunut",
+        "alreadyExistsError_label": "Antamallasi nimellä oleva tunniste löytyy jo",
+        "captionError": "Viestillä täytyy olla otsikko",
+        "contentError": "Viestillä täytyy olla sisältö",
+        "createError_label": "Tunnisteen luominen epäonnistui",
+        "createError_chatRoom": "Chat-huoneen luonti epäonnistui, ole hyvä ja yritä uudelleen.",
+        "createError_discussionArea": "Virhe uuden keskustelualueen luomisessa",
+        "deleteError": "Viestin poisto epäonnistui. Ole hyvä ja yritä uudelleen.",
+        "deleteError_chatRoom": "Chat-huoneen <b>{0}</b> poisto epäonnistui, ole hyvä ja yritä uudelleen",
+        "deleteError_discussionArea": "Virhe keskustelualueen poistamisessa",
+        "deleteError_label": "Tunnisteen poisto epäonnistui.",
+        "deleteError_reply": "Virhe vastauksen poistossa.",
+        "deleteSuccess": "Viestin poisto onnistui",
+        "deleteSuccess_chatRoom": "Chat-huoneen <b>{0}</b> poisto onnistui",
+        "doesNotExistError_label": "Tunnistetta ei ole olemassa",
+        "emptyError_label": "Tunnisteen nimi ei voi olla tyhjä",
+        "locationError": "Väärä osoite",
+        "loadError_discussionAreas": "Keskustelualueiden lataus epäonnistui",
+        "loadError_labels": "Tunnisteiden lataus epäonnistui",
+        "loadError_latestMessage": "Viimeisimmän viestin lataus epäonnistui",
+        "loadError_messageThread": "Viestiketjun lataus epäonnistui. Yritä ladata sivu uudelleen.",
+        "loadError_one": "Viestin lataus epäonnistui, Yritä ladata sivu uudelleen",
+        "loadError_other": "Viestien lataus epäonnistui, Yritä ladata sivu uudelleen",
+        "loadError_receivedMessage": "Saapuneen viestin lataus epäonnistui",
+        "loadError_replies": "Viestien vastauksien lataus epäonnistui",
+        "loadError_signature": "Allekirjoituksen lataus epäonnistui",
+        "loadError_unreadMessageCount": "Lukemattomien viestien määrän lataus epäonnistui",
+        "nameError_label": "Tunnisteella täytyy olla nimi",
+        "newMessage": "{0} - Uusi viesti",
+        "noRecipientsError": "Viestillä ei ole vastaanottajia",
+        "noWorkspacesError": "Viestillä ei ole määriteltyjä kohdetyöntiloja",
+        "restoreError": "Viestin palautus epäonnistui",
+        "restoreError_messageThread": "Viestiketjun palautus epäonnistui",
+        "sendError": "Viestin lähetys epäonnistui. Kokeile lähettää uudelleen",
+        "sendSuccess": "Viestin lähetys onnistui",
+        "statusChangeError": "Viestin tilan muutos epäonnistui. Yritä uudelleen.",
+        "updateError_chatStatus": "Chatin tilan vaihto epäonnistui.",
+        "updateError_chatUserName": "Chatin käyttäjänimen vaihto epäonnistui.",
+        "updateError_label": "Tunnisteen päivitys epäonnistui",
+        "updateError_signature": "Allekirjoituksen päivitys epäonnistui",
+        "updateError_discussionArea": "Virhe keskustelualueen muokkauksessa",
+        "updateSuccess_chatStatus": "Chatin tila vaihdettu onnistuneesti.",
+        "updateSuccess_chatUserName": "Chatin käyttäjänimi vaihdettu onnistuneesti."
+      }
+    },
+
     "labels": {
       "create": "Luo",
       "edit": "Muokkaa",
@@ -289,75 +358,6 @@
       "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
       "loadError": "Tapahtumien lataus epäonnistui",
       "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui"
-    }
-  },
-
-  "messaging": {
-    "actions": {
-      "hide_comments": "Piilota vastaukset",
-      "remove": "Poista",
-      "remove_comment": "Poista vastaus",
-      "remove_label": "Poista tunniste",
-      "addSignature": "Lisää allekirjoitus",
-      "reply": "Vastaa",
-      "replyAll": "Vastaa kaikille",
-      "show_comments": "Näytä vastaukset"
-    },
-
-    "labels": {
-      "edit": "Muokkaa viestiä",
-      "lock": "Lukitse viesti",
-      "pin": "Kiinnitä viesti",
-      "remove": "Poista viesti",
-      "reply": "Vastaa viestiin",
-      "subscribeArea": "Tilaa keskustelualue",
-      "subscribeThread": "Tilaa viestiketju"
-    },
-
-    "notifications": {
-      "addError_label": "Tunnisteen asettaminen ei onnistunut",
-      "alreadyExistsError_label": "Antamallasi nimellä oleva tunniste löytyy jo",
-      "captionError": "Viestillä täytyy olla otsikko",
-      "contentError": "Viestillä täytyy olla sisältö",
-      "createError_label": "Tunnisteen luominen epäonnistui",
-      "createError_chatRoom": "Chat-huoneen luonti epäonnistui, ole hyvä ja yritä uudelleen.",
-      "createError_discussionArea": "Virhe uuden keskustelualueen luomisessa",
-      "deleteError": "Viestin poisto epäonnistui. Ole hyvä ja yritä uudelleen.",
-      "deleteError_chatRoom": "Chat-huoneen <b>{0}</b> poisto epäonnistui, ole hyvä ja yritä uudelleen",
-      "deleteError_discussionArea": "Virhe keskustelualueen poistamisessa",
-      "deleteError_label": "Tunnisteen poisto epäonnistui.",
-      "deleteError_reply": "Virhe vastauksen poistossa.",
-      "deleteSuccess": "Viestin poisto onnistui",
-      "deleteSuccess_chatRoom": "Chat-huoneen <b>{0}</b> poisto onnistui",
-      "doesNotExistError_label": "Tunnistetta ei ole olemassa",
-      "emptyError_label": "Tunnisteen nimi ei voi olla tyhjä",
-      "locationError": "Väärä osoite",
-      "loadError_discussionAreas": "Keskustelualueiden lataus epäonnistui",
-      "loadError_labels": "Tunnisteiden lataus epäonnistui",
-      "loadError_latestMessage": "Viimeisimmän viestin lataus epäonnistui",
-      "loadError_messageThread": "Viestiketjun lataus epäonnistui. Yritä ladata sivu uudelleen.",
-      "loadError_one": "Viestin lataus epäonnistui, Yritä ladata sivu uudelleen",
-      "loadError_other": "Viestien lataus epäonnistui, Yritä ladata sivu uudelleen",
-      "loadError_receivedMessage": "Saapuneen viestin lataus epäonnistui",
-      "loadError_replies": "Viestien vastauksien lataus epäonnistui",
-      "loadError_signature": "Allekirjoituksen lataus epäonnistui",
-      "loadError_unreadMessageCount": "Lukemattomien viestien määrän lataus epäonnistui",
-      "nameError_label": "Tunnisteella täytyy olla nimi",
-      "newMessage": "{0} - Uusi viesti",
-      "noRecipientsError": "Viestillä ei ole vastaanottajia",
-      "noWorkspacesError": "Viestillä ei ole määriteltyjä kohdetyöntiloja",
-      "restoreError": "Viestin palautus epäonnistui",
-      "restoreError_messageThread": "Viestiketjun palautus epäonnistui",
-      "sendError": "Viestin lähetys epäonnistui. Kokeile lähettää uudelleen",
-      "sendSuccess": "Viestin lähetys onnistui",
-      "statusChangeError": "Viestin tilan muutos epäonnistui. Yritä uudelleen.",
-      "updateError_chatStatus": "Chatin tilan vaihto epäonnistui.",
-      "updateError_chatUserName": "Chatin käyttäjänimen vaihto epäonnistui.",
-      "updateError_label": "Tunnisteen päivitys epäonnistui",
-      "updateError_signature": "Allekirjoituksen päivitys epäonnistui",
-      "updateError_discussionArea": "Virhe keskustelualueen muokkauksessa",
-      "updateSuccess_chatStatus": "Chatin tila vaihdettu onnistuneesti.",
-      "updateSuccess_chatUserName": "Chatin käyttäjänimi vaihdettu onnistuneesti."
     }
   },
 

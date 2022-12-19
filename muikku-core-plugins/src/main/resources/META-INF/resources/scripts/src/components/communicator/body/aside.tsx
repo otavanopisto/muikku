@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import LabelUpdateDialog from "../dialogs/label-update";
 import { MessagesType } from "~/reducers/main-function/messages";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 
 import "~/sass/elements/buttons.scss";
@@ -12,13 +12,16 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * NavigationProps
  */
-interface NavigationProps {
-  i18n: i18nType;
+interface NavigationProps extends WithTranslation<["common"]> {
+  i18nOLD: i18nType;
   messages: MessagesType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   openSignatureDialog: () => any;
 }
 
@@ -41,7 +44,10 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          name={this.props.i18n.text.get("plugin.communicator.folders.title")}
+          // TODO: use i18next
+          name={this.props.i18nOLD.text.get(
+            "plugin.communicator.folders.title"
+          )}
         >
           {this.props.messages.navigation.map((item) => (
             <NavigationElement
@@ -56,12 +62,18 @@ class NavigationAside extends React.Component<
               }
               isEditable={item.type === "label"}
             >
-              {item.text(this.props.i18n)}
+              {
+                // TODO: simplify and use i18next
+                item.text(this.props.i18nOLD)
+              }
             </NavigationElement>
           ))}
         </NavigationTopic>
         <NavigationTopic
-          name={this.props.i18n.text.get("plugin.communicator.settings.topic")}
+          // TODO: use i18next
+          name={this.props.i18nOLD.text.get(
+            "plugin.communicator.settings.topic"
+          )}
           classModifier="communicator-settings"
         >
           <NavigationElement
@@ -69,7 +81,12 @@ class NavigationAside extends React.Component<
             isActive={false}
             onClick={this.props.openSignatureDialog}
           >
-            {this.props.i18n.text.get("plugin.communicator.settings.signature")}
+            {
+              // TODO: use i18next
+              this.props.i18nOLD.text.get(
+                "plugin.communicator.settings.signature"
+              )
+            }
           </NavigationElement>
         </NavigationTopic>
       </Navigation>
@@ -83,7 +100,7 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     messages: state.messages,
   };
 }
@@ -92,8 +109,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);

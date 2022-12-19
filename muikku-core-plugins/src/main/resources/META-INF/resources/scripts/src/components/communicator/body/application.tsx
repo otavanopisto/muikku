@@ -9,17 +9,20 @@ import CommunicatorMessages from "./application/messages";
 import MessageView from "./application/message-view";
 import NewMessage from "../dialogs/new-message";
 import SignatureUpdateDialog from "../dialogs/signature-update";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import Button, { ButtonPill } from "~/components/general/button";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CommunicatorApplicationProps
  */
-interface CommunicatorApplicationProps {
+interface CommunicatorApplicationProps extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -55,7 +58,7 @@ class CommunicatorApplication extends React.Component<
    * openDialogSignature
    * @param closeDropdown closeDropdown
    */
-  openDialogSignature(closeDropdown?: () => any) {
+  openDialogSignature(closeDropdown?: () => void) {
     this.setState({
       updateSignatureDialogOpened: true,
     });
@@ -75,7 +78,8 @@ class CommunicatorApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.communicator.pageTitle");
+    // TODO: use i18next
+    const title = this.props.i18nOLD.text.get("plugin.communicator.pageTitle");
     const icon = (
       <Dropdown
         modifier="main-functions-settings"
@@ -87,7 +91,10 @@ class CommunicatorApplication extends React.Component<
               onClick={this.openDialogSignature.bind(this, closeDropdown)}
             >
               <span>
-                {this.props.i18n.text.get(
+                {
+                  // TODO: use i18next
+                }
+                {this.props.i18nOLD.text.get(
                   "plugin.communicator.settings.signature"
                 )}
               </span>
@@ -101,7 +108,10 @@ class CommunicatorApplication extends React.Component<
     const primaryOption = (
       <NewMessage>
         <Button buttonModifiers="primary-function">
-          {this.props.i18n.text.get("plugin.communicator.newMessage.label")}
+          {
+            // TODO: use i18next
+          }
+          {this.props.i18nOLD.text.get("plugin.communicator.newMessage.label")}
         </Button>
       </NewMessage>
     );
@@ -138,7 +148,7 @@ class CommunicatorApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 
@@ -146,10 +156,14 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
+const componentWithTranslation = withTranslation(["common"], { withRef: true })(
+  CommunicatorApplication
+);
+
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
-})(CommunicatorApplication);
+})(componentWithTranslation);

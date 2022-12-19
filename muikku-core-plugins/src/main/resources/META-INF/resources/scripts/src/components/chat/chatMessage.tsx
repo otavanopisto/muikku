@@ -3,7 +3,7 @@ import "~/sass/elements/chat.scss";
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { IBareMessageType } from "./chat";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import DeleteMessageDialog from "./deleteMessageDialog";
@@ -27,7 +27,7 @@ const USER_INFO_CACHE: {
 interface IChatMessageProps {
   canToggleInfo: boolean;
   message: IBareMessageType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   canModerate?: boolean;
   editMessage?: (stanzaId: string, textContent: string) => void;
   deleteMessage?: (stanzaId: string) => void;
@@ -291,7 +291,7 @@ export class ChatMessage extends React.Component<
             )}
           </span>
           <span className="chat__message-meta-timestamp">
-            {this.props.i18n.time.formatDaily(this.props.message.timestamp)}
+            {this.props.i18nOLD.time.formatDaily(this.props.message.timestamp)}
           </span>
           {(this.props.canModerate || this.props.message.isSelf) &&
           !this.props.message.deleted &&
@@ -319,7 +319,7 @@ export class ChatMessage extends React.Component<
                         }}
                       >
                         <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{this.props.i18n.text.get(item.text)}</span>
+                        <span>{this.props.i18nOLD.text.get(item.text)}</span>
                       </Link>
                     )
                 )}
@@ -345,12 +345,12 @@ export class ChatMessage extends React.Component<
                 className="chat__message-footer-action"
                 onClick={this.toggleMessageEditMode}
               >
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.chat.messages.editMessage.cancelLink"
                 )}
               </span>
               <span>
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.chat.messages.editMessage.orText"
                 )}
               </span>
@@ -358,7 +358,7 @@ export class ChatMessage extends React.Component<
                 className="chat__message-footer-action"
                 onClick={this.onMessageEdited}
               >
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.chat.messages.editMessage.saveLink"
                 )}
               </span>
@@ -369,7 +369,7 @@ export class ChatMessage extends React.Component<
             <div className="chat__message-content">
               {this.props.message.deleted ? (
                 <i>
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.chat.messages.messageIsDeleted"
                   )}
                 </i>
@@ -378,8 +378,8 @@ export class ChatMessage extends React.Component<
               )}
               {this.props.message.edited && (
                 <div className="chat__message-edited-info">
-                  {this.props.i18n.text.get("plugin.chat.messages.edited")}{" "}
-                  {this.props.i18n.time.formatDaily(
+                  {this.props.i18nOLD.text.get("plugin.chat.messages.edited")}{" "}
+                  {this.props.i18nOLD.time.formatDaily(
                     this.props.message.edited.timestamp
                   )}
                 </div>

@@ -1,13 +1,13 @@
 import * as React from "react";
 import "~/sass/elements/credentials.scss";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * CredentialsHeroProps
  */
 interface CredentialsHeroProps {
   modifier?: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**

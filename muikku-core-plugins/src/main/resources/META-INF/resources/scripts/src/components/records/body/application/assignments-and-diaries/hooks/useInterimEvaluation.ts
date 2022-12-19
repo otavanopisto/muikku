@@ -7,7 +7,7 @@ import {
   MaterialContentNodeType,
 } from "~/reducers/workspaces";
 import { AssignmentsTabType } from "../assignments-and-diaries";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * UseFollowUpGoalsState
@@ -30,14 +30,14 @@ const initialState: UseInterimEvaluationState = {
  *
  * @param workspaceId workspaceId
  * @param tabOpen tabOpen
- * @param i18n i18nType
+ * @param i18nOLD i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useInterimEvaluationAssigments = (
   workspaceId: number,
   tabOpen: AssignmentsTabType,
-  i18n: i18nType,
+  i18nOLD: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [
@@ -113,7 +113,7 @@ export const useInterimEvaluationAssigments = (
       } catch (err) {
         if (!isCancelled) {
           displayNotification(
-            `${i18n.text.get(
+            `${i18nOLD.text.get(
               "plugin.records.errormessage.workspaceAssignmentsExcerciseLoadFailed"
             )}, ${err.message}`,
             "error"
@@ -148,7 +148,7 @@ export const useInterimEvaluationAssigments = (
     displayNotification,
     tabOpen,
     interimEvaluationeAssignmentsData.interimEvaluationAssignments.length,
-    i18n,
+    i18nOLD,
   ]);
 
   return {

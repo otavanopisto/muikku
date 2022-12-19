@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import UserPanel from "~/components/general/user-panel";
 import { bindActionCreators } from "redux";
 import { UsersType } from "~/reducers/main-function/users";
@@ -15,7 +15,7 @@ import {
  * OrganizationUsersProps
  */
 interface OrganizationUsersProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   users: UsersType;
   loadStaff: LoadUsersTriggerType;
   loadStudents: LoadUsersTriggerType;
@@ -74,7 +74,7 @@ class OrganizationUsers extends React.Component<
     return (
       <div>
         <UserPanel
-          i18n={this.props.i18n}
+          i18nOLD={this.props.i18nOLD}
           identifier={"staff"}
           onEmpty="plugin.organization.users.staff.empty"
           searchString={this.props.users.staff.searchString}
@@ -83,7 +83,7 @@ class OrganizationUsers extends React.Component<
           pageChange={this.staffPanelPageChange}
         />
         <UserPanel
-          i18n={this.props.i18n}
+          i18nOLD={this.props.i18nOLD}
           identifier={"students"}
           onEmpty="plugin.organization.users.students.empty"
           searchString={this.props.users.students.searchString}
@@ -102,7 +102,7 @@ class OrganizationUsers extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     users: state.organizationUsers,
   };
 }

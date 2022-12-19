@@ -5,7 +5,7 @@ import {
 } from "~/reducers/user-index";
 import { StateType } from "reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 import { StatusType } from "~/reducers/base/status";
@@ -22,7 +22,7 @@ import "~/sass/elements/buttons.scss";
  * CheckContactInfoDialogProps
  */
 interface CheckContactInfoDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -143,19 +143,19 @@ class CheckContactInfoDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         <div>
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.frontPage.checkContactInfo.dialog.description"
           )}
         </div>
         <dl>
           <dt>
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.frontPage.checkContactInfo.dialog.street"
             )}
           </dt>
           <dd>{this.state.address.street ? this.state.address.street : "-"}</dd>
           <dt>
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.frontPage.checkContactInfo.dialog.postalCode"
             )}
           </dt>
@@ -165,13 +165,13 @@ class CheckContactInfoDialog extends React.Component<
               : "-"}
           </dd>
           <dt>
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.frontPage.checkContactInfo.dialog.city"
             )}
           </dt>
           <dd>{this.state.address.city ? this.state.address.city : "-"}</dd>
           <dt>
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.frontPage.checkContactInfo.dialog.country"
             )}
           </dt>
@@ -179,7 +179,7 @@ class CheckContactInfoDialog extends React.Component<
             {this.state.address.country ? this.state.address.country : "-"}
           </dd>
           <dt>
-            {this.props.i18n.text.get(
+            {this.props.i18nOLD.text.get(
               "plugin.frontPage.checkContactInfo.dialog.municipality"
             )}
           </dt>
@@ -200,7 +200,7 @@ class CheckContactInfoDialog extends React.Component<
           className="button button--success button--standard-ok"
           onClick={this.confirmContactInfo}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.frontPage.checkContactInfo.dialog.button.confirmLabel"
           )}
         </Link>
@@ -208,7 +208,7 @@ class CheckContactInfoDialog extends React.Component<
           className="button button--error button--standard-ok"
           href="/profile"
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.frontPage.checkContactInfo.dialog.button.okLabel"
           )}
         </Link>
@@ -216,7 +216,7 @@ class CheckContactInfoDialog extends React.Component<
     );
     return (
       <Dialog
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.frontPage.checkContactInfo.dialog.title"
         )}
         content={content}
@@ -234,7 +234,7 @@ class CheckContactInfoDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

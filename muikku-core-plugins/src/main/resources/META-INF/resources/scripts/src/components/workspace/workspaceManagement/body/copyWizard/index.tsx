@@ -1,6 +1,6 @@
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import Step1 from "./form";
 import Step2 from "./summary";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -21,7 +21,7 @@ import * as moment from "moment";
  */
 interface CopyWizardProps {
   workspace: WorkspaceType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
   copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType;
   onDone: () => any;
 }
@@ -177,7 +177,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     const props = {
       getStore: this.getStore,
       updateStore: this.updateStore,
-      i18n: this.props.i18n,
+      i18nOLD: this.props.i18nOLD,
       workspace: this.props.workspace,
       onDone: this.props.onDone,
       resultingWorkspace: this.state.resultingWorkspace,
@@ -185,7 +185,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     };
     const steps = [
       {
-        name: this.props.i18n.text.get(
+        name: this.props.i18nOLD.text.get(
           "plugin.workspace.management.wizard.step1"
         ),
         component: <Step1 {...props} />,
@@ -195,19 +195,19 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     //The reason step 6 is twice is so that the user can review before
     //the action is completed, I guess this stepzilla thing is kind of funny
     steps.push({
-      name: this.props.i18n.text.get(
+      name: this.props.i18nOLD.text.get(
         "plugin.workspace.management.wizard.step6"
       ),
       component: <Step2 {...props} />,
     });
     steps.push({
-      name: this.props.i18n.text.get(
+      name: this.props.i18nOLD.text.get(
         "plugin.workspace.management.wizard.finalStep"
       ),
       component: <Step2 {...props} />,
     });
 
-    // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18n/Example.js
+    // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18nOLD/Example.js
     return (
       <div className="wizard">
         <div className="wizard__container">
@@ -218,15 +218,15 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
             showSteps={false}
             preventEnterSubmission={true}
             prevBtnOnLastStep={true}
-            nextTextOnFinalActionStep={this.props.i18n.text.get(
+            nextTextOnFinalActionStep={this.props.i18nOLD.text.get(
               "plugin.workspace.management.copyWorkspace"
             )}
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"
-            nextButtonText={this.props.i18n.text.get(
+            nextButtonText={this.props.i18nOLD.text.get(
               "plugin.workspace.management.wizard.button.next"
             )}
-            backButtonText={this.props.i18n.text.get(
+            backButtonText={this.props.i18nOLD.text.get(
               "plugin.workspace.management.wizard.button.prev"
             )}
             onStepChange={this.checkLastStep.bind(this, steps)}
@@ -243,7 +243,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces && state.workspaces.currentWorkspace,
   };
 }

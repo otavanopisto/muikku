@@ -8,7 +8,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import ApplicationList from "~/components/general/application-list";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "../../../../../reducers/base/status";
@@ -28,7 +28,7 @@ import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
  * AssignmentsAndDiariesProps
  */
 interface AssignmentsAndDiariesProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
   workspaceId: number;
@@ -48,7 +48,7 @@ export type AssignmentsTabType =
  */
 const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const {
-    i18n,
+    i18nOLD,
     status,
     workspace,
     workspaceId,
@@ -67,35 +67,35 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const { evaluatedAssignmentsData } = useEvaluatedAssignments(
     workspaceId,
     activeTab,
-    i18n,
+    i18nOLD,
     displayNotification
   );
 
   const { excerciseAssignmentsData } = useExcerciseAssignments(
     workspaceId,
     activeTab,
-    i18n,
+    i18nOLD,
     displayNotification
   );
 
   const { interimEvaluationeAssignmentsData } = useInterimEvaluationAssigments(
     workspaceId,
     activeTab,
-    i18n,
+    i18nOLD,
     displayNotification
   );
 
   const { compositeReplyData } = useCompositeReply(
     userEntityId,
     workspaceId,
-    i18n,
+    i18nOLD,
     displayNotification
   );
 
   const { journalsData } = useJournals(
     userEntityId,
     workspaceId,
-    i18n,
+    i18nOLD,
     displayNotification
   );
 
@@ -291,7 +291,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             <Material
               key={m.id}
               material={m}
-              i18n={i18n}
+              i18nOLD={i18nOLD}
               workspace={workspace}
               compositeReply={compositeReply}
               status={status}
@@ -302,7 +302,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         })
       ) : (
         <div className="empty">
-          <span>{props.i18n.text.get("plugin.records.noassignments")}</span>
+          <span>{props.i18nOLD.text.get("plugin.records.noassignments")}</span>
         </div>
       )}
     </ApplicationList>
@@ -337,7 +337,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             <Material
               key={m.id}
               material={m}
-              i18n={i18n}
+              i18nOLD={i18nOLD}
               workspace={workspace}
               compositeReply={compositeReply}
               status={status}
@@ -348,7 +348,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         })
       ) : (
         <div className="empty">
-          <span>{props.i18n.text.get("plugin.records.noexercises")}</span>
+          <span>{props.i18nOLD.text.get("plugin.records.noexercises")}</span>
         </div>
       )}
     </ApplicationList>
@@ -384,7 +384,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               <Material
                 key={m.id}
                 material={m}
-                i18n={i18n}
+                i18nOLD={i18nOLD}
                 workspace={workspace}
                 compositeReply={compositeReply}
                 status={status}
@@ -396,7 +396,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         )
       ) : (
         <div className="empty">
-          <span>{props.i18n.text.get("plugin.records.noexercises")}</span>
+          <span>{props.i18nOLD.text.get("plugin.records.noexercises")}</span>
         </div>
       )}
     </ApplicationList>
@@ -409,7 +409,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const renderJournalsList = (
     <ApplicationSubPanel modifier="studies-journal-entries">
       <ApplicationSubPanel.Header modifier="studies-journal-entries">
-        <span>{props.i18n.text.get("plugin.records.journal.title")}</span>
+        <span>{props.i18nOLD.text.get("plugin.records.journal.title")}</span>
         <span>
           <Link
             className="link link--studies-close-open"
@@ -418,7 +418,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             }
             onClick={handleOpenAllJournalsClick}
           >
-            {props.i18n.text.get("plugin.records.openClose.openAll")}
+            {props.i18nOLD.text.get("plugin.records.openClose.openAll")}
           </Link>
           <Link
             className="link link--studies-close-open"
@@ -427,7 +427,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             }
             onClick={handleCloseAllJournalsClick}
           >
-            {props.i18n.text.get("plugin.records.openClose.closeAll")}
+            {props.i18nOLD.text.get("plugin.records.openClose.closeAll")}
           </Link>
         </span>
       </ApplicationSubPanel.Header>
@@ -448,7 +448,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         ) : (
           <div className="empty">
             <span>
-              {props.i18n.text.get("plugin.records.nojournalentries")}
+              {props.i18nOLD.text.get("plugin.records.nojournalentries")}
             </span>
           </div>
         )}
@@ -459,13 +459,13 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const panelTabs: Tab[] = [
     {
       id: "EVALUATED",
-      name: props.i18n.text.get("plugin.records.assignments.title"),
+      name: props.i18nOLD.text.get("plugin.records.assignments.title"),
       type: "assignments",
       component: (
         <ApplicationSubPanel modifier="studies-assignments">
           <ApplicationSubPanel.Header modifier="studies-assignments">
             <span>
-              {props.i18n.text.get("plugin.records.assignments.title")}
+              {props.i18nOLD.text.get("plugin.records.assignments.title")}
             </span>
             <span>
               <Link
@@ -476,7 +476,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleOpenAllAssignmentsByTypeClick("EVALUATED")}
               >
-                {props.i18n.text.get("plugin.records.openClose.openAll")}
+                {props.i18nOLD.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
                 className="link link--studies-close-open"
@@ -486,7 +486,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleCloseAllAssignmentsByTypeClick("EVALUATED")}
               >
-                {props.i18n.text.get("plugin.records.openClose.closeAll")}
+                {props.i18nOLD.text.get("plugin.records.openClose.closeAll")}
               </Link>
             </span>
           </ApplicationSubPanel.Header>
@@ -503,12 +503,14 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     },
     {
       id: "EXCERCISE",
-      name: props.i18n.text.get("plugin.records.exercises.title"),
+      name: props.i18nOLD.text.get("plugin.records.exercises.title"),
       type: "excercises",
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            <span>{props.i18n.text.get("plugin.records.exercises.title")}</span>
+            <span>
+              {props.i18nOLD.text.get("plugin.records.exercises.title")}
+            </span>
             <span>
               <Link
                 className="link link--studies-close-open"
@@ -518,7 +520,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleOpenAllAssignmentsByTypeClick("EXERCISE")}
               >
-                {props.i18n.text.get("plugin.records.openClose.openAll")}
+                {props.i18nOLD.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
                 className="link link--studies-close-open"
@@ -528,7 +530,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleCloseAllAssignmentsByTypeClick("EXERCISE")}
               >
-                {props.i18n.text.get("plugin.records.openClose.closeAll")}
+                {props.i18nOLD.text.get("plugin.records.openClose.closeAll")}
               </Link>
             </span>
           </ApplicationSubPanel.Header>
@@ -551,7 +553,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            {/* <span>{props.i18n.text.get("plugin.records.exercises.title")}</span> */}
+            {/* <span>{props.i18nOLD.text.get("plugin.records.exercises.title")}</span> */}
             <span>Välipalautteet:</span>
             <span>
               <Link
@@ -565,7 +567,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                   "INTERIM_EVALUATION"
                 )}
               >
-                {props.i18n.text.get("plugin.records.openClose.openAll")}
+                {props.i18nOLD.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
                 className="link link--studies-close-open"
@@ -578,7 +580,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                   "INTERIM_EVALUATION"
                 )}
               >
-                {props.i18n.text.get("plugin.records.openClose.closeAll")}
+                {props.i18nOLD.text.get("plugin.records.openClose.closeAll")}
               </Link>
             </span>
           </ApplicationSubPanel.Header>
@@ -616,7 +618,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     userEntityId: state.status.userId,
   };
 }

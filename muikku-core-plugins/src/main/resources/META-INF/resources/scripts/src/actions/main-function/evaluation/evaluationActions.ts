@@ -621,7 +621,7 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.gradesystem.error",
               err.message
             ),
@@ -695,7 +695,7 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.evaluationRequest.error",
               err.message
             ),
@@ -756,7 +756,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.workspaces.error",
               err.message
             ),
@@ -816,7 +816,7 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.important.error",
               err.message
             ),
@@ -876,7 +876,7 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.unimportant.error",
               err.message
             ),
@@ -941,7 +941,7 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.sort.error",
               err.message
             ),
@@ -1001,7 +1001,7 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.events.error",
               err.message
             ),
@@ -1074,7 +1074,7 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.diaryEvents.error",
               err.message
             ),
@@ -1182,7 +1182,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
       } catch (err) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.assignmentdata.error",
               err.message
             ),
@@ -1241,7 +1241,7 @@ const updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.saveSort.error",
               err.message
             ),
@@ -1322,7 +1322,7 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
         } catch (err) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.evaluation.notifications.createEvaluation.error",
                 err.message
               ),
@@ -1364,7 +1364,7 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
         } catch (err) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.evaluation.notifications.updateEvaluation.error",
                 err.message
               ),
@@ -1428,7 +1428,7 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
         } catch (error) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.evaluation.notifications.updateSupplementation.error",
                 error.message
               ),
@@ -1461,7 +1461,7 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
         } catch (error) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.evaluation.notifications.updateSupplementation.error",
                 error.message
               ),
@@ -1548,7 +1548,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
         } catch (error) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.evaluation.notifications.removeEvent.error",
                 error.message
               ),
@@ -1599,7 +1599,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
         } catch (error) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.evaluation.notifications.removeEvent.error",
                 error.message
               ),
@@ -1689,7 +1689,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
         }
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.assignmentdata.error",
               err.message
             ),
@@ -1757,7 +1757,7 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
       } catch (err) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.assignmentdata.error",
               err.message
             ),
@@ -1838,7 +1838,7 @@ const updateBillingToServer: UpdateEvaluationEvent =
       } catch (error) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.updatepricing.error",
               error.message
             ),
@@ -1952,7 +1952,7 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
 
       dispatch(
         notificationActions.displayNotification(
-          state.i18n.text.get(
+          state.i18nOLD.text.get(
             "plugin.evaluation.notifications.saveImportance.error",
             err.message
           ),
@@ -2008,7 +2008,7 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
       } catch (error) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.deleteRequest.error",
               error.message
             ),
@@ -2049,7 +2049,7 @@ const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
       } catch (error) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.evaluation.notifications.deleteRequest.error",
               error.message
             ),
@@ -2102,7 +2102,7 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
     } catch (error) {
       dispatch(
         notificationActions.displayNotification(
-          state.i18n.text.get(
+          state.i18nOLD.text.get(
             "plugin.evaluation.notifications.archiveStudent.error",
             error.message
           ),
@@ -2222,7 +2222,7 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
           }
           dispatch(
             displayNotification(
-              getState().i18n.text.get(
+              getState().i18nOLD.text.get(
                 "plugin.evaluation.notifications.loadJournalComments.error",
                 err.message
               ),
@@ -2305,7 +2305,7 @@ const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType 
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.evaluation.notifications.createJournalComments.error",
               err.message
             ),
@@ -2384,7 +2384,7 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.evaluation.notifications.updateJournalComments.error",
               err.message
             ),
@@ -2479,7 +2479,7 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.evaluation.notifications.deleteJournalComments.error",
               err.message
             ),

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import { StatusType } from "~/reducers/base/status";
@@ -31,7 +31,7 @@ import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
  * JournalProps
  */
 interface WorkspaceJournalsListItemProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   journal: WorkspaceJournalWithComments;
   workspace: WorkspaceType;
@@ -158,7 +158,7 @@ class WorkspaceJournalsListItem extends React.Component<
               )}
               {isDraft && (
                 <span>
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.workspace.journal.status.draft"
                   )}
                 </span>
@@ -166,7 +166,7 @@ class WorkspaceJournalsListItem extends React.Component<
             </div>
             <div className="application-list__item-header-aside">
               <span>
-                {this.props.i18n.time.format(
+                {this.props.i18nOLD.time.format(
                   this.props.journal.created,
                   "L LT"
                 )}
@@ -199,14 +199,14 @@ class WorkspaceJournalsListItem extends React.Component<
                         className="link link--application-list"
                         onClick={this.handleJournalEditClick}
                       >
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.workspace.journal.editEntryButton.label"
                         )}
                       </Link>
 
                       <DeleteJournal journal={this.props.journal}>
                         <Link as="span" className="link link--application-list">
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.workspace.journal.deleteEntryButton.label"
                           )}
                         </Link>
@@ -218,7 +218,7 @@ class WorkspaceJournalsListItem extends React.Component<
             )}
             {!this.props.asCurrent && (
               <div className="application-list__item-footer-content-aside">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.workspace.journal.comments.title"
                 )}{" "}
                 ({this.props.journal.commentCount})
@@ -239,7 +239,7 @@ class WorkspaceJournalsListItem extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };

@@ -1,13 +1,13 @@
 import * as React from "react";
 import "~/sass/elements/credentials.scss";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * CredentialsContainerProps
  */
 interface CredentialsContainerProps {
   modifier?: string;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -39,7 +39,7 @@ export default class CredentialsContainer extends React.Component<
     return (
       <div className="credentials__container">
         <div className="credentials__header">
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.forgotpassword.changeCredentials.title"
           )}
         </div>

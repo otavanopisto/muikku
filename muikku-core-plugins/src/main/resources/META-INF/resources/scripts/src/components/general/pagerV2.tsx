@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import "~/sass/elements/pager.scss";
@@ -15,7 +15,7 @@ interface PagerV2Props
   /**
    * Translations
    */
-  i18n: i18nType;
+  i18nOLD: i18nType;
 
   /**
    * Default `plugin.wcag.pager.goToPage.label`
@@ -57,7 +57,7 @@ const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
   const handleAriaLabelBuilder = (index: number, selected: boolean): string => {
     let label = props.ariaLabelGoToPage
       ? props.ariaLabelGoToPage
-      : props.i18n.text.get("plugin.wcag.pager.goToPage.label");
+      : props.i18nOLD.text.get("plugin.wcag.pager.goToPage.label");
 
     /**
      * If item is selected, then its current item
@@ -65,7 +65,7 @@ const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
     if (selected) {
       label = props.ariaLabelCurrent
         ? props.ariaLabelCurrent
-        : props.i18n.text.get("plugin.wcag.pager.current.label");
+        : props.i18nOLD.text.get("plugin.wcag.pager.current.label");
     }
 
     return label;
@@ -83,7 +83,7 @@ const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -1,12 +1,12 @@
 import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * MaterialLoaderTitleProps
  */
 interface MaterialLoaderTitleProps extends MaterialLoaderProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /* function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
@@ -70,7 +70,7 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
       {hidden &&
       (materialPageType === "exercise" || materialPageType === "assignment") ? (
         <div className="material-page__title-meta">
-          {props.i18n.text.get(
+          {props.i18nOLD.text.get(
             "plugin.workspace.materials." +
               materialPageType +
               "HiddenButAnswered"

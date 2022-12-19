@@ -3,7 +3,7 @@ import Dialog from "~/components/general/dialog";
 import { StateType } from "reducers";
 import { connect } from "react-redux";
 import Button from "~/components/general/button";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * EnrollmentDialogProps
@@ -11,7 +11,7 @@ import { i18nType } from "~/reducers/base/i18n";
 interface EnrollmentDialogProps {
   isOpen?: boolean;
   onClose?: () => any;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -36,7 +36,7 @@ class EnrollmentDialog extends React.Component<
     const footer = () => (
       <div className="dialog__button-set">
         <Button href="/" buttonModifiers={["info", "standard-ok"]}>
-          {this.props.i18n.text.get("plugin.workspace.logInGuidingLink")}
+          {this.props.i18nOLD.text.get("plugin.workspace.logInGuidingLink")}
         </Button>
       </div>
     );
@@ -53,7 +53,9 @@ class EnrollmentDialog extends React.Component<
           className="logo--enrollment-logo"
         />
         <div className="dialog__content-column">
-          {this.props.i18n.text.get("plugin.workspace.logInGuidingInformation")}
+          {this.props.i18nOLD.text.get(
+            "plugin.workspace.logInGuidingInformation"
+          )}
         </div>
       </div>
     );
@@ -63,7 +65,9 @@ class EnrollmentDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="enrollment"
-        title={this.props.i18n.text.get("plugin.workspace.logInGuidingTitle")}
+        title={this.props.i18nOLD.text.get(
+          "plugin.workspace.logInGuidingTitle"
+        )}
         content={content}
         footer={footer}
       />
@@ -77,7 +81,7 @@ class EnrollmentDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

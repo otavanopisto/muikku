@@ -1,7 +1,7 @@
 import Workspace from "./workspaces/workspace";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { WorkspaceType } from "~/reducers/workspaces";
 
@@ -12,7 +12,7 @@ import "~/sass/elements/empty.scss";
  * CurrentStudentWorkspacesProps
  */
 interface CurrentStudentWorkspacesProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspaces: WorkspaceType[];
   locale: string;
 }
@@ -47,7 +47,7 @@ class CurrentStudentWorkspaces extends React.Component<
       </div>
     ) : (
       <div className="empty">
-        <span>{this.props.i18n.text.get("plugin.guider.noWorkspaces")}</span>
+        <span>{this.props.i18nOLD.text.get("plugin.guider.noWorkspaces")}</span>
       </div>
     );
   }
@@ -59,7 +59,7 @@ class CurrentStudentWorkspaces extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     locale: state.locales.current,
   };
 }

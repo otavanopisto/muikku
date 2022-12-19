@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/glyph.scss";
@@ -33,7 +33,7 @@ import { Instructions } from "~/components/general/instructions";
  * SummaryProps
  */
 interface SummaryProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   records: RecordsType;
   contacts: Contacts;
   summary: SummaryType;
@@ -72,20 +72,22 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       const studentBasicInfo = (
         <div className="application-sub-panel">
           <div className="application-sub-panel__header">
-            {this.props.i18n.text.get("plugin.records.summary.studyInfo")}
+            {this.props.i18nOLD.text.get("plugin.records.summary.studyInfo")}
           </div>
           <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title">
-                {this.props.i18n.text.get("plugin.records.studyStartDateLabel")}
+                {this.props.i18nOLD.text.get(
+                  "plugin.records.studyStartDateLabel"
+                )}
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
                 <span className="application-sub-panel__single-entry">
                   {this.props.summary.data.studentsDetails.studyStartDate
-                    ? this.props.i18n.time.format(
+                    ? this.props.i18nOLD.time.format(
                         this.props.summary.data.studentsDetails.studyStartDate
                       )
-                    : this.props.i18n.text.get(
+                    : this.props.i18nOLD.text.get(
                         "plugin.records.summary.studyTime.empty"
                       )}
                 </span>
@@ -93,7 +95,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             </div>
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   this.props.summary.data.studentsDetails.studyEndDate
                     ? "plugin.records.studyEndDateLabel"
                     : "plugin.records.studyTimeEndLabel"
@@ -103,11 +105,11 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 <span className="application-sub-panel__single-entry">
                   {this.props.summary.data.studentsDetails.studyEndDate ||
                   this.props.summary.data.studentsDetails.studyTimeEnd
-                    ? this.props.i18n.time.format(
+                    ? this.props.i18nOLD.time.format(
                         this.props.summary.data.studentsDetails.studyEndDate ||
                           this.props.summary.data.studentsDetails.studyTimeEnd
                       )
-                    : this.props.i18n.text.get(
+                    : this.props.i18nOLD.text.get(
                         "plugin.records.summary.studyTime.empty"
                       )}
                 </span>
@@ -116,7 +118,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
             <div className="application-sub-panel__item application-sub-panel__item--counselors">
               <div className="application-sub-panel__item-title">
-                {this.props.i18n.text.get(
+                {this.props.i18nOLD.text.get(
                   "plugin.records.studyStudentCouncelorsLabel"
                 )}
               </div>
@@ -169,18 +171,18 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                               </div>
                               {displayVacationPeriod ? (
                                 <div className="item-list__user-vacation-period">
-                                  {this.props.i18n.text.get(
+                                  {this.props.i18nOLD.text.get(
                                     "plugin.workspace.index.teachersVacationPeriod.label"
                                   )}
                                   &nbsp;
-                                  {this.props.i18n.time.format(
+                                  {this.props.i18nOLD.time.format(
                                     counselor.properties[
                                       "profile-vacation-start"
                                     ]
                                   )}
                                   {counselor.properties["profile-vacation-end"]
                                     ? "–" +
-                                      this.props.i18n.time.format(
+                                      this.props.i18nOLD.time.format(
                                         counselor.properties[
                                           "profile-vacation-end"
                                         ]
@@ -203,10 +205,10 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                 >
                                   <ButtonPill
                                     icon="envelope"
-                                    aria-label={this.props.i18n.text.get(
+                                    aria-label={this.props.i18nOLD.text.get(
                                       "plugin.records.contactStudentCouncelor.message.label"
                                     )}
-                                    title={this.props.i18n.text.get(
+                                    title={this.props.i18nOLD.text.get(
                                       "plugin.records.contactStudentCouncelor.message.label"
                                     )}
                                     buttonModifiers={[
@@ -218,7 +220,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                 {counselor.properties["profile-phone"] &&
                                 counselor.properties["profile-whatsapp"] ? (
                                   <WhatsappButtonLink
-                                    i18n={this.props.i18n}
+                                    i18nOLD={this.props.i18nOLD}
                                     mobileNumber={
                                       counselor.properties["profile-phone"]
                                     }
@@ -228,10 +230,10 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                   "profile-appointmentCalendar"
                                 ] ? (
                                   <ButtonPill
-                                    aria-label={this.props.i18n.text.get(
+                                    aria-label={this.props.i18nOLD.text.get(
                                       "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
                                     )}
-                                    title={this.props.i18n.text.get(
+                                    title={this.props.i18nOLD.text.get(
                                       "plugin.records.contactStudentCouncelor.appointmentCalendar.label"
                                     )}
                                     icon="clock"
@@ -253,7 +255,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   ) : (
                     <div className="empty empty--sub-panel-data">
                       <span className="application-sub-panel__single-entry">
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.records.summary.counselors.empty"
                         )}
                       </span>
@@ -270,12 +272,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         this.props.hops.value.goalMatriculationExam === "yes" ? (
           <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
             <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.summary.card.workspaces.title"
               )}
             </div>
             <div className="application-sub-panel__card-body">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.summary.card.workspaces.done.pre"
               )}
             </div>
@@ -283,7 +285,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               {this.props.summary.data.eligibilityStatus}
             </div>
             <div className="application-sub-panel__card-body">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.summary.card.workspaces.done.post.matriculationEligibility"
               )}
             </div>
@@ -291,12 +293,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         ) : (
           <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
             <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.summary.card.workspaces.title"
               )}
             </div>
             <div className="application-sub-panel__card-body">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.summary.card.workspaces.done.pre"
               )}
             </div>
@@ -304,7 +306,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               {this.props.summary.data.coursesDone}
             </div>
             <div className="application-sub-panel__card-body">
-              {this.props.i18n.text.get(
+              {this.props.i18nOLD.text.get(
                 "plugin.records.summary.card.workspaces.done.post.workspace"
               )}
             </div>
@@ -314,7 +316,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       return (
         <section>
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get("plugin.records.summary.title")}
+            {this.props.i18nOLD.text.get("plugin.records.summary.title")}
           </h2>
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
@@ -323,7 +325,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 !this.props.hops.eligibility.upperSecondarySchoolCurriculum && (
                   <div className="application-sub-panel">
                     <div className="application-sub-panel__header">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.records.suggestedCourses.sectionTitle"
                       )}
                     </div>
@@ -337,7 +339,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.records.tasks.sectionTitle"
                   )}
                   <Instructions
@@ -350,7 +352,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     content={
                       <div
                         dangerouslySetInnerHTML={{
-                          __html: this.props.i18n.text.get(
+                          __html: this.props.i18nOLD.text.get(
                             "plugin.records.tasks.instructions"
                           ),
                         }}
@@ -367,7 +369,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.records.summary.studyEvents"
                   )}
                 </div>
@@ -375,12 +377,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   {studyStatus}
                   <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-activity">
                     <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-activity">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.records.summary.card.activity.title"
                       )}
                     </div>
                     <div className="application-sub-panel__card-body">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.records.summary.card.activity.stat.pre"
                       )}
                     </div>
@@ -388,19 +390,19 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       {this.props.summary.data.activity}
                     </div>
                     <div className="application-sub-panel__card-body">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.records.summary.card.activity.stat.post"
                       )}
                     </div>
                   </div>
                   <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-returned">
                     <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-returned">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.records.summary.card.tasks.title"
                       )}
                     </div>
                     <div className="application-sub-panel__card-body">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.records.summary.card.tasks.stat.pre"
                       )}
                     </div>
@@ -408,7 +410,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       {this.props.summary.data.returnedExercises}
                     </div>
                     <div className="application-sub-panel__card-body">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.records.summary.card.tasks.stat.post"
                       )}
                     </div>
@@ -418,7 +420,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
-                  {this.props.i18n.text.get(
+                  {this.props.i18nOLD.text.get(
                     "plugin.guider.user.details.statistics"
                   )}
                 </div>
@@ -444,7 +446,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     records: state.records,
     contacts: state.contacts,
     summary: state.summary,

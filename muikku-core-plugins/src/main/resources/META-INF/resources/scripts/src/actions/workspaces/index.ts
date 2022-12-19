@@ -276,7 +276,7 @@ const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.errormessage.workspaceLoadFailed"
             ),
             "error"
@@ -319,7 +319,7 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.errormessage.workspaceLoadFailed"
             ),
             "error"
@@ -365,7 +365,7 @@ const loadLastWorkspaceFromServer: LoadLastWorkspaceFromServerTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.errormessage.lastWorkspaceLoadFailed"
             ),
             "error"
@@ -697,7 +697,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.workspace.errormessage.workspaceLoadFailed"
             ),
             "error"
@@ -735,7 +735,7 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.workspace.errormessage.requestAssessmentFail"
             ),
             "error"
@@ -787,7 +787,7 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
         } catch (err) {
           dispatch(
             actions.displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.workspace.errormessage.workspaceActivityLoadFailed"
               ),
               "error"
@@ -839,7 +839,7 @@ const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentR
         } catch (err) {
           dispatch(
             actions.displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.workspace.errormessage.workspaceAssessmentRequestFailed"
               ),
               "error"
@@ -935,7 +935,7 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
 
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.workspace.evaluation.requestEvaluation.notificationText"
             ),
             "success"
@@ -948,7 +948,7 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.workspace.errormessage.requestAssessmentFail"
             ),
             "error"
@@ -990,7 +990,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         if (!assessmentRequest) {
           dispatch(
             actions.displayNotification(
-              state.i18n.text.get(
+              state.i18nOLD.text.get(
                 "plugin.workspace.errormessage.cancelAssessmentFail"
               ),
               "error"
@@ -1036,7 +1036,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
 
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.workspace.evaluation.cancelEvaluation.notificationText"
             ),
             "success"
@@ -1049,7 +1049,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
+            state.i18nOLD.text.get(
               "plugin.workspace.errormessage.cancelAssessmentFail"
             ),
             "error"
@@ -1262,7 +1262,7 @@ const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFil
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.coursepicker.errormessage.educationFilters"
             ),
             "error"
@@ -1308,7 +1308,7 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.coursepicker.errormessage.curriculumFilters"
             ),
             "error"
@@ -1345,7 +1345,7 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get("plugin.workspaceSignUp.notif.error"),
+            getState().i18nOLD.text.get("plugin.workspaceSignUp.notif.error"),
             "error"
           )
         );
@@ -1573,7 +1573,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       }
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
+          getState().i18nOLD.text.get(
             "plugin.workspace.management.notification.failedToUpdateWorkspace"
           ),
           "error"
@@ -1624,7 +1624,7 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToLoadTeachers"
             ),
             "error"
@@ -1698,7 +1698,7 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToLoadStudents"
             ),
             "error"
@@ -1783,7 +1783,7 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
         data.fail && data.fail();
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToUpdateStudents"
             ),
             "error"
@@ -1872,7 +1872,7 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToUpdateMaterialAnswersState"
             ),
             "error"
@@ -2011,7 +2011,7 @@ const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToLoadChatSettigns"
             ),
             "error"
@@ -2057,7 +2057,7 @@ const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorks
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToLoadDetails"
             ),
             "error"
@@ -2108,7 +2108,7 @@ const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurren
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToUpdateDetails"
             ),
             "error"
@@ -2207,7 +2207,7 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToUpdateProducers"
             ),
             "error"
@@ -2244,7 +2244,7 @@ const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToLoadWorkspaceTypes "
             ),
             "error"
@@ -2300,7 +2300,7 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToDeleteImage"
             ),
             "error"
@@ -2405,7 +2405,7 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToCloneWorkspace"
             ),
             "error"
@@ -2488,7 +2488,7 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
 
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToUpdateImage"
             ),
             "error"
@@ -2536,7 +2536,7 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
+            getState().i18nOLD.text.get(
               "plugin.workspace.management.notification.failedToLoadWorkspacePermissions"
             ),
             "error"

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
@@ -16,7 +16,7 @@ import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
  * AnnouncementProps
  */
 interface AnnouncementProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   announcement: AnnouncementType;
   userIndex: UserIndexType;
 }
@@ -48,7 +48,7 @@ class Announcement extends React.Component<
     if (!this.props.announcement) {
       return (
         <div>
-          {this.props.i18n.text.get("plugin.announcer.announcement.empty")}
+          {this.props.i18nOLD.text.get("plugin.announcer.announcement.empty")}
         </div>
       );
     }
@@ -87,7 +87,7 @@ class Announcement extends React.Component<
           </div>
         ) : null}
         <div className="article__date">
-          {this.props.i18n.time.format(this.props.announcement.startDate)}
+          {this.props.i18nOLD.time.format(this.props.announcement.startDate)}
         </div>
         <section className="article__body rich-text">
           <CkeditorLoaderContent html={this.props.announcement.content} />
@@ -104,7 +104,7 @@ class Announcement extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     announcement: state.announcements.current,
     userIndex: state.userIndex,
   };

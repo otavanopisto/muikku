@@ -1,7 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import Button from "~/components/general/button";
@@ -15,7 +15,7 @@ import { bindActionCreators } from "redux";
  * DeleteMessageDialogProps
  */
 interface DeleteMessageDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 
   displayNotification: DisplayNotificationTriggerType;
   isOpen: boolean;
@@ -63,7 +63,7 @@ class DeleteMessageDialog extends React.Component<
         closeDialog();
       }
       this.props.displayNotification(
-        this.props.i18n.text.get(
+        this.props.i18nOLD.text.get(
           "plugin.chat.notification.messageDeleteSuccess"
         ),
         "success"
@@ -71,7 +71,9 @@ class DeleteMessageDialog extends React.Component<
       this.props.onDelete();
     } catch {
       this.props.displayNotification(
-        this.props.i18n.text.get("plugin.chat.notification.messageDeleteFail"),
+        this.props.i18nOLD.text.get(
+          "plugin.chat.notification.messageDeleteFail"
+        ),
         "error"
       );
     }
@@ -89,7 +91,7 @@ class DeleteMessageDialog extends React.Component<
       <div>
         <span
           dangerouslySetInnerHTML={{
-            __html: this.props.i18n.text.get(
+            __html: this.props.i18nOLD.text.get(
               "plugin.chat.messages.deleteMessageDesc"
             ),
           }}
@@ -105,13 +107,13 @@ class DeleteMessageDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.delete.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get("plugin.chat.button.deleteRMessage")}
+          {this.props.i18nOLD.text.get("plugin.chat.button.deleteRMessage")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get("plugin.chat.button.cancel")}
+          {this.props.i18nOLD.text.get("plugin.chat.button.cancel")}
         </Button>
       </div>
     );
@@ -119,7 +121,7 @@ class DeleteMessageDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.chat.messages.deleteMessageTitle"
         )}
         content={content}
@@ -136,7 +138,7 @@ class DeleteMessageDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

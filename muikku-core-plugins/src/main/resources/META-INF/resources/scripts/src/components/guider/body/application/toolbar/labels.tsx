@@ -9,7 +9,7 @@ import {
   flatten,
 } from "~/util/modifiers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   createGuiderFilterLabel,
   CreateGuiderFilterLabelTriggerType,
@@ -38,7 +38,7 @@ import { AnyActionType } from "~/actions";
  * GuiderToolbarLabelsProps
  */
 interface GuiderToolbarLabelsProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   guider: GuiderType;
   createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType;
   addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType;
@@ -101,7 +101,7 @@ class GuiderToolbarLabels extends React.Component<
                 value={this.state.labelFilter}
                 onChange={this.updateLabelFilter}
                 type="text"
-                placeholder={this.props.i18n.text.get(
+                placeholder={this.props.i18nOLD.text.get(
                   "plugin.guider.flags.create.textfield.placeholder"
                 )}
               />
@@ -114,7 +114,7 @@ class GuiderToolbarLabels extends React.Component<
                 this.state.labelFilter
               )}
             >
-              {this.props.i18n.text.get("plugin.guider.flags.create")}
+              {this.props.i18nOLD.text.get("plugin.guider.flags.create")}
             </Link>,
           ].concat(
             this.props.guider.availableFilters.labels
@@ -188,7 +188,7 @@ class GuiderToolbarLabels extends React.Component<
               value={this.state.labelFilter}
               onChange={this.updateLabelFilter}
               type="text"
-              placeholder={this.props.i18n.text.get(
+              placeholder={this.props.i18nOLD.text.get(
                 "plugin.guider.flags.create.textfield.placeholder"
               )}
             />
@@ -202,7 +202,7 @@ class GuiderToolbarLabels extends React.Component<
               this.state.labelFilter
             )}
           >
-            {this.props.i18n.text.get("plugin.guider.flags.create")}
+            {this.props.i18nOLD.text.get("plugin.guider.flags.create")}
           </Link>,
         ].concat(
           this.props.guider.availableFilters.labels
@@ -256,7 +256,7 @@ class GuiderToolbarLabels extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     guider: state.guider,
   };
 }

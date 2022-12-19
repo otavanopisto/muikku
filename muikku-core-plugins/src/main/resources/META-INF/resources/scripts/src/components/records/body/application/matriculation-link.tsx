@@ -1,10 +1,10 @@
 //import * as React from "react";
 //import $ from '~/lib/jquery';
 //import mApi from "~/lib/mApi";
-//import {i18nType} from '~/reducers/base/i18n';
+//import {i18nType} from '~/reducers/base/i18nOLD';
 //
 //interface MatriculationLinkProps {
-//  i18n: i18nType;
+//  i18nOLD: i18nType;
 //}
 //
 //interface MatriculationLinkState {
@@ -43,7 +43,7 @@
 //        return null;
 //    }
 //    return <div className="application-sub-panel application-sub-panel--matriculation-enrollment">
-//      <a className="link link--matriculation-enrollment" href="/matriculation-enrollment">{this.props.i18n.text.get("plugin.records.matriculationLink")}</a>
+//      <a className="link link--matriculation-enrollment" href="/matriculation-enrollment">{this.props.i18nOLD.text.get("plugin.records.matriculationLink")}</a>
 //    </div>
 //  }
 //
@@ -51,13 +51,13 @@
 
 import * as React from "react";
 import mApi from "~/lib/mApi";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * MatriculationLinkProps
  */
 interface MatriculationLinkProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -145,7 +145,7 @@ export class MatriculationLink extends React.Component<
               className="link link--matriculation-enrollment"
               href={"/matriculation-enrollment/" + exam.id}
             >
-              {this.props.i18n.text.get("plugin.records.matriculationLink")}
+              {this.props.i18nOLD.text.get("plugin.records.matriculationLink")}
             </a>
           ))}
       </div>

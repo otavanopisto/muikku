@@ -1,7 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import {
@@ -16,7 +16,7 @@ import { StoredWorklistItem } from "~/reducers/main-function/profile";
  * DeleteWorklistItemDialogProps
  */
 interface DeleteWorklistItemDialogProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
   isOpen: boolean;
   onClose: () => any;
@@ -66,7 +66,7 @@ class DeleteWorklistItemDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         <span>
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.profile.worklist.delete.dialog.description"
           )}
         </span>
@@ -83,7 +83,7 @@ class DeleteWorklistItemDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.delete.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.profile.worklist.delete.dialog.button.deleteLabel"
           )}
         </Button>
@@ -91,7 +91,7 @@ class DeleteWorklistItemDialog extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.profile.worklist.delete.dialog.button.cancelLabel"
           )}
         </Button>
@@ -101,7 +101,7 @@ class DeleteWorklistItemDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
-        title={this.props.i18n.text.get(
+        title={this.props.i18nOLD.text.get(
           "plugin.profile.worklist.delete.dialog.title"
         )}
         content={content}
@@ -118,7 +118,7 @@ class DeleteWorklistItemDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

@@ -7,7 +7,7 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
 import Workspace from "./workspaces/workspace";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/ref-wrapper.scss";
 import { LoadMoreWorkspacesFromServerTriggerType } from "~/actions/workspaces";
 import { loadMoreOrganizationWorkspacesFromServer } from "~/actions/workspaces/organization";
@@ -22,7 +22,7 @@ import {
  * OrganizationWorkspacesProps
  */
 interface OrganizationWorkspacesProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
@@ -53,7 +53,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
     return (
       <div className="empty">
         <span>
-          {props.i18n.text.get(
+          {props.i18nOLD.text.get(
             "plugin.organization.workspaces.error.loadError"
           )}
         </span>
@@ -63,7 +63,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
     return (
       <div className="empty">
         <span>
-          {props.i18n.text.get(
+          {props.i18nOLD.text.get(
             "plugin.organization.workspaces.searchResult.empty"
           )}
         </span>
@@ -102,7 +102,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspacesState: state.organizationWorkspaces.state,
     workspacesHasMore: state.organizationWorkspaces.hasMore,
     workspaces: state.organizationWorkspaces.availableWorkspaces,

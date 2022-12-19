@@ -7,7 +7,7 @@ import {
 import AnimateHeight from "react-animate-height";
 import { isOverdue } from "~/helper-functions/dates";
 import * as moment from "moment";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import NotesItemEdit from "~/components/general/notes/notes-item-edit";
 import Link from "~/components/general/link";
 import "~/sass/elements/note.scss";
@@ -20,7 +20,7 @@ interface NoteProps {
   onStatusUpdate: (id: number, status: NotesItemStatus) => void;
   onUpdate: (id: number, update: NotesItemUpdate) => void;
   note: NotesItemRead;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -29,7 +29,8 @@ interface NoteProps {
  * @returns JSX.Element
  */
 export const Note: React.FC<NoteProps> = (props) => {
-  const { modifier, note, i18n, isCreator, onStatusUpdate, onUpdate } = props;
+  const { modifier, note, i18nOLD, isCreator, onStatusUpdate, onUpdate } =
+    props;
   const overdue = isOverdue(note.dueDate);
   const [showDescription, setShowDescription] = React.useState(false);
 
@@ -73,7 +74,7 @@ export const Note: React.FC<NoteProps> = (props) => {
         >
           {overdue ? (
             <span className="note__overdue-tag">
-              {i18n.text.get("plugin.records.tasks.status.overdue")}
+              {i18nOLD.text.get("plugin.records.tasks.status.overdue")}
             </span>
           ) : null}
           {note.dueDate ? (
@@ -88,7 +89,7 @@ export const Note: React.FC<NoteProps> = (props) => {
         ></div>
         <div className="note__footer">
           <Link className="link link--index" onClick={handleStatusChange}>
-            {i18n.text.get(updateButtonLocale)}
+            {i18nOLD.text.get(updateButtonLocale)}
           </Link>
           {isCreator && (
             <NotesItemEdit
@@ -96,7 +97,7 @@ export const Note: React.FC<NoteProps> = (props) => {
               onNotesItemSaveUpdateClick={onUpdate}
             >
               <Link className="link link--index">
-                {i18n.text.get("plugin.records.tasks.editnote.topic")}
+                {i18nOLD.text.get("plugin.records.tasks.editnote.topic")}
               </Link>
             </NotesItemEdit>
           )}

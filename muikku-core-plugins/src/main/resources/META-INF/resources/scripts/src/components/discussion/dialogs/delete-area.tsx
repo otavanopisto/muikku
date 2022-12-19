@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
@@ -15,13 +15,15 @@ import {
 } from "~/actions/discussion";
 import { DiscussionType } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DiscussionDeleteAreaProps
  */
-interface DiscussionDeleteAreaProps {
-  i18n: i18nType;
+interface DiscussionDeleteAreaProps extends WithTranslation<["common"]> {
+  i18nOLD: i18nType;
   discussion: DiscussionType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   deleteDiscussionArea: DeleteDiscussionAreaTriggerType;
 }
@@ -55,7 +57,7 @@ class DiscussionDeleteArea extends React.Component<
    * deleteArea
    * @param closeDialog closeDialog
    */
-  deleteArea(closeDialog: () => any) {
+  deleteArea(closeDialog: () => void) {
     this.setState({ locked: true });
     this.props.deleteDiscussionArea({
       id: this.props.discussion.areaId,
@@ -90,28 +92,33 @@ class DiscussionDeleteArea extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
-      <div>{this.props.i18n.text.get("plugin.discussion.deletearea.info")}</div>
+    const content = (closeDialog: () => void) => (
+      <div>
+        {
+          // TODO: use i18next
+          this.props.i18nOLD.text.get("plugin.discussion.deletearea.info")
+        }
+      </div>
     );
 
     /**
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.deleteArea.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.deletearea.send")}
+          {this.props.t("common:actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get("plugin.discussion.deletearea.cancel")}
+          {this.props.t("common:actions.cancel")}
         </Button>
       </div>
     );
@@ -119,7 +126,9 @@ class DiscussionDeleteArea extends React.Component<
     return (
       <Dialog
         modifier="delete-area"
-        title={this.props.i18n.text.get("plugin.discussion.deletearea.topic")}
+        title={this.props.i18nOLD.text.get(
+          "plugin.discussion.deletearea.topic"
+        )}
         content={content}
         footer={footer}
       >
@@ -135,7 +144,7 @@ class DiscussionDeleteArea extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
   };
 }
@@ -148,7 +157,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteDiscussionArea }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionDeleteArea);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionDeleteArea)
+);

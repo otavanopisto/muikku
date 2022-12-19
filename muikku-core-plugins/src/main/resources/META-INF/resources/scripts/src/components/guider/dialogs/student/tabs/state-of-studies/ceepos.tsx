@@ -1,7 +1,7 @@
 import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -30,7 +30,7 @@ import Button from "~/components/general/button";
  * CeeposProps
  */
 interface CeeposProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
   guider: GuiderType;
   locale: string;
@@ -168,7 +168,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     const orderDeleteDialogContent = (closeDialog: () => void) => (
       <div>
         <span>
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.guider.orderDeleteDialog.description"
           )}
         </span>
@@ -185,13 +185,15 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           buttonModifiers={["standard-ok", "fatal"]}
           onClick={this.acceptOrderDelete}
         >
-          {this.props.i18n.text.get("plugin.guider.orderDeleteDialog.okButton")}
+          {this.props.i18nOLD.text.get(
+            "plugin.guider.orderDeleteDialog.okButton"
+          )}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={this.declineOrderDelete}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.guider.orderDeleteDialog.cancelButton"
           )}
         </Button>
@@ -205,7 +207,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     const orderCompleteDialogContent = (closeDialog: () => void) => (
       <div>
         <span>
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.guider.orderCompleteDialog.description"
           )}
         </span>
@@ -222,7 +224,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           buttonModifiers={["standard-ok", "execute"]}
           onClick={this.acceptOrderManualComplete}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.guider.orderCompleteDialog.okButton"
           )}
         </Button>
@@ -230,7 +232,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={this.declineOrderManualComplete}
         >
-          {this.props.i18n.text.get(
+          {this.props.i18nOLD.text.get(
             "plugin.guider.orderCompleteDialog.cancelButton"
           )}
         </Button>
@@ -317,29 +319,29 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       {p.product.Description}
                     </span>
                     <span className="application-list__header-primary-description">
-                      {this.props.i18n.text.get(
+                      {this.props.i18nOLD.text.get(
                         "plugin.guider.purchases.description." + p.state
                       )}
                     </span>
                     <span className="application-list__header-primary-meta">
                       <span>
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.guider.purchases.orderId"
                         )}
                         : {p.id}
                       </span>
                       <span>
-                        {this.props.i18n.text.get(
+                        {this.props.i18nOLD.text.get(
                           "plugin.guider.purchases.date.created"
                         )}
-                        : {this.props.i18n.time.format(p.created)}
+                        : {this.props.i18nOLD.time.format(p.created)}
                       </span>
                       {p.paid ? (
                         <span>
-                          {this.props.i18n.text.get(
+                          {this.props.i18nOLD.text.get(
                             "plugin.guider.purchases.date.paid"
                           )}
-                          : {this.props.i18n.time.format(p.paid)}
+                          : {this.props.i18nOLD.time.format(p.paid)}
                         </span>
                       ) : null}
                     </span>
@@ -356,7 +358,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                             icon="trash"
                             buttonModifiers={["delete-student-order", "fatal"]}
                           >
-                            {this.props.i18n.text.get(
+                            {this.props.i18nOLD.text.get(
                               "plugin.guider.purchase.deleteOrderLink"
                             )}
                           </Button>
@@ -378,7 +380,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                               "execute",
                             ]}
                           >
-                            {this.props.i18n.text.get(
+                            {this.props.i18nOLD.text.get(
                               "plugin.guider.purchase.completeOrderLink"
                             )}
                           </Button>
@@ -393,7 +395,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           </ApplicationList>
         ) : (
           <div className="empty">
-            <span>{this.props.i18n.text.get("plugin.guider.noPurchases")}</span>
+            <span>
+              {this.props.i18nOLD.text.get("plugin.guider.noPurchases")}
+            </span>
           </div>
         )}
 
@@ -401,7 +405,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         <Dialog
           modifier="dialog-delete-order"
           isOpen={!!this.state.isDeleteDialogOpen}
-          title={this.props.i18n.text.get(
+          title={this.props.i18nOLD.text.get(
             "plugin.guider.orderDeleteDialog.title"
           )}
           onClose={this.declineOrderDelete}
@@ -413,7 +417,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         <Dialog
           modifier="dialog-complete-order"
           isOpen={!!this.state.isCompleteDialogOpen}
-          title={this.props.i18n.text.get(
+          title={this.props.i18nOLD.text.get(
             "plugin.guider.orderCompleteDialog.title"
           )}
           onClose={this.declineOrderManualComplete}
@@ -431,7 +435,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     guider: state.guider,
     locale: state.locales.current,
     status: state.status,

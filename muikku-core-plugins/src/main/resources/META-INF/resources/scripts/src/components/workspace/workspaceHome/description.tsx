@@ -5,7 +5,7 @@ import {
   WorkspaceType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
@@ -16,14 +16,13 @@ import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
-import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DescriptionPanelProps
  */
-interface DescriptionPanelProps extends WithTranslation {
+interface DescriptionPanelProps {
   workspace: WorkspaceType;
-  i18nn: i18nType;
+  i18nOLD: i18nType;
   isInFrontPage?: boolean;
   workspaceEditMode: WorkspaceEditModeStateType;
 }
@@ -49,7 +48,9 @@ class DescriptionPanel extends React.Component<
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
           <h2 className="panel__header-title">
-            {this.props.t("introduction")}
+            {this.props.i18nOLD.text.get(
+              "plugin.workspace.index.descriptionTitle"
+            )}
           </h2>
         </div>
         <div className="panel__body">
@@ -95,7 +96,7 @@ class DescriptionPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nn: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
   };
@@ -108,6 +109,4 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel);

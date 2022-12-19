@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as queryString from "query-string";
 import GuiderToolbarLabels from "./toolbar/labels";
 import "~/sass/elements/link.scss";
@@ -36,7 +36,7 @@ import { bindActionCreators } from "redux";
  * GuiderToolbarProps
  */
 interface GuiderToolbarProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   guider: GuiderType;
   status: StatusType;
   toggleAllStudents: ToggleAllStudentsTriggerType;
@@ -258,7 +258,7 @@ class GuiderToolbar extends React.Component<
               id="searchUsers"
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
-              placeholder={this.props.i18n.text.get(
+              placeholder={this.props.i18nOLD.text.get(
                 "plugin.guider.search.placeholder"
               )}
               value={this.state.searchquery}
@@ -276,7 +276,7 @@ class GuiderToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     guider: state.guider,
     status: state.status,
   };

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { Dispatch, bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { SubjectEligibilityType } from "~/reducers/main-function/records/yo";
@@ -11,7 +11,7 @@ import "~/sass/elements/application-sub-panel.scss";
  */
 interface MatriculationEligibilityRowProps {
   subject: SubjectEligibilityType;
-  i18n: i18nType;
+  i18nOLD: i18nType;
 }
 
 /**
@@ -41,7 +41,7 @@ class MatriculationEligibilityRow extends React.Component<
    * @param code code
    */
   getMatriculationSubjectNameByCode = (code: string): string =>
-    this.props.i18n.text.get(
+    this.props.i18nOLD.text.get(
       `plugin.records.hops.matriculationSubject.${code}`
     );
 
@@ -59,10 +59,10 @@ class MatriculationEligibilityRow extends React.Component<
           }`}
         >
           {this.props.subject.eligibility === "ELIGIBLE"
-            ? this.props.i18n.text.get(
+            ? this.props.i18nOLD.text.get(
                 "plugin.records.hops.matriculationEligibleText.true.short"
               )
-            : this.props.i18n.text.get(
+            : this.props.i18nOLD.text.get(
                 "plugin.records.hops.matriculationEligibleText.false.short"
               )}
         </div>
@@ -72,7 +72,7 @@ class MatriculationEligibilityRow extends React.Component<
         <div
           className="application-sub-panel__summary-item-description"
           dangerouslySetInnerHTML={{
-            __html: this.props.i18n.text.get(
+            __html: this.props.i18nOLD.text.get(
               "plugin.records.hops.matriculationEligibleTooltip",
               this.props.subject.acceptedCount,
               this.props.subject.requiredCount
@@ -90,7 +90,7 @@ class MatriculationEligibilityRow extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
   };
 }
 

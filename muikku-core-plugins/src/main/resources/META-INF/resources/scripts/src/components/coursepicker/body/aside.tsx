@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as queryString from "query-string";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/buttons.scss";
@@ -16,12 +16,14 @@ import {
   WorkspaceCurriculumFilterType,
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps {
-  i18n: i18nType;
+interface NavigationAsideProps extends WithTranslation<["common"]> {
+  i18nOLD: i18nType;
   workspaces: WorkspacesType;
   status: StatusType;
 }
@@ -51,7 +53,10 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          name={this.props.i18n.text.get("plugin.coursepicker.filters.title")}
+          // TODO: Translate this using i18next
+          name={this.props.i18nOLD.text.get(
+            "plugin.coursepicker.filters.title"
+          )}
         >
           {this.props.workspaces.availableFilters.educationTypes.map(
             (educationType: WorkspaceEducationFilterType) => {
@@ -91,7 +96,8 @@ class NavigationAside extends React.Component<
           )}
         </NavigationTopic>
         <NavigationTopic
-          name={this.props.i18n.text.get(
+          // TODO: Translate this using i18next
+          name={this.props.i18nOLD.text.get(
             "plugin.coursepicker.filters.curriculum"
           )}
         >
@@ -132,7 +138,8 @@ class NavigationAside extends React.Component<
         </NavigationTopic>
         {this.props.workspaces.availableFilters.organizations.length > 1 ? (
           <NavigationTopic
-            name={this.props.i18n.text.get(
+            // TODO: Translate this using i18next
+            name={this.props.i18nOLD.text.get(
               "plugin.coursepicker.filters.organization"
             )}
           >
@@ -185,7 +192,7 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     workspaces: state.workspaces,
     status: state.status,
   };
@@ -195,8 +202,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);

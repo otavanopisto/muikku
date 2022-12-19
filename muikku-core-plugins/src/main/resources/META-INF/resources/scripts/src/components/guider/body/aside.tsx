@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
 import {
@@ -20,7 +20,7 @@ import Navigation, {
  * NavigationProps
  */
 interface NavigationProps {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   guider: GuiderType;
 }
 
@@ -48,7 +48,7 @@ class NavigationAside extends React.Component<
       <Navigation>
         {this.props.guider.availableFilters.labels.length > 0 && (
           <NavigationTopic
-            name={this.props.i18n.text.get("plugin.guider.filters.flags")}
+            name={this.props.i18nOLD.text.get("plugin.guider.filters.flags")}
           >
             {this.props.guider.availableFilters.labels.map(
               (label: GuiderUserLabelType) => {
@@ -95,7 +95,9 @@ class NavigationAside extends React.Component<
 
         {this.props.guider.availableFilters.workspaces.length > 0 && (
           <NavigationTopic
-            name={this.props.i18n.text.get("plugin.guider.filters.workspaces")}
+            name={this.props.i18nOLD.text.get(
+              "plugin.guider.filters.workspaces"
+            )}
           >
             {this.props.guider.availableFilters.workspaces.map(
               (workspace: GuiderWorkspaceType) => {
@@ -141,7 +143,9 @@ class NavigationAside extends React.Component<
 
         {this.props.guider.availableFilters.userGroups.length > 0 && (
           <NavigationTopic
-            name={this.props.i18n.text.get("plugin.guider.filters.userGroups")}
+            name={this.props.i18nOLD.text.get(
+              "plugin.guider.filters.userGroups"
+            )}
           >
             {this.props.guider.availableFilters.userGroups.map(
               (userGroup: UserGroupType) => {
@@ -192,7 +196,7 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     guider: state.guider,
   };
 }
