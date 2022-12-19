@@ -23,11 +23,12 @@ import { SimpleActionExecutor } from "~/actions/executor";
 import * as moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * VacationSettingsProps
  */
-interface VacationSettingsProps {
+interface VacationSettingsProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
@@ -163,8 +164,10 @@ class VacationSettings extends React.Component<
     stateLocation: "profileVacationStart" | "profileVacationEnd",
     newDate: Date
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nState: any = {};
     nState[stateLocation] = newDate;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.setState as any)(nState);
   }
 
@@ -495,4 +498,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VacationSettings);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(VacationSettings)
+);

@@ -18,12 +18,14 @@ import {
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
 } from "~/actions/main-function/profile";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * UpdateAddressDialogProps
  */
-interface UpdateAddressDialogProps {
+interface UpdateAddressDialogProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   profile: ProfileType;
 
@@ -74,7 +76,8 @@ class UpdateAddressDialog extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: UpdateAddressDialogProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: UpdateAddressDialogProps) {
     if (
       nextProps.profile.addresses &&
       JSON.stringify(nextProps.profile.addresses) !==
@@ -109,7 +112,7 @@ class UpdateAddressDialog extends React.Component<
    * update
    * @param closeDialog closeDialog
    */
-  update(closeDialog: () => any) {
+  update(closeDialog: () => void) {
     this.props.updateProfileAddress({
       street: this.state.street,
       postalCode: this.state.postalCode,
@@ -135,6 +138,7 @@ class UpdateAddressDialog extends React.Component<
    * @param e e
    */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
@@ -148,7 +152,7 @@ class UpdateAddressDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <p>
           {this.props.i18nOLD.text.get(
@@ -239,7 +243,7 @@ class UpdateAddressDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["success", "standard-ok"]}
@@ -291,14 +295,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<void>) {
   return bindActionCreators(
     { displayNotification, updateProfileAddress },
     dispatch
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UpdateAddressDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(UpdateAddressDialog)
+);

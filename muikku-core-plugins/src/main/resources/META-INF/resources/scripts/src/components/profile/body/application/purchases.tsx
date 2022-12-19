@@ -21,11 +21,13 @@ import {
   getErrorMessageContent,
   getErrorMessageTitle,
 } from "~/helper-functions/ceepos-error";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * IPurchasesProps
  */
-interface IPurchasesProps {
+interface IPurchasesProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   profile: ProfileType;
 }
@@ -308,8 +310,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Purchases);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Purchases)
+);

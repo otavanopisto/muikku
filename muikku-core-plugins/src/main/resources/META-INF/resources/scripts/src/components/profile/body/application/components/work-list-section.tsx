@@ -24,6 +24,7 @@ function sortBy(
 ): StoredWorklistItem[] {
   const actualProperty = property || "entryDate";
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return [...data].sort((a: any, b: any) => {
     if (actualProperty === "entryDate") {
       // this gives a numeric difference
@@ -79,7 +80,8 @@ export function WorkListSection(props: WorkListSectionProps) {
   // show section entries if it is opened and has data a.k.a entries in it
   const entries =
     props.isExpanded && hasData
-      ? sortBy(props.section.items, sortByProperty, sortByDirection as any).map(
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        sortBy(props.section.items, sortByProperty, sortByDirection as any).map(
           (item) => (
             <WorkListRow
               key={item.id}

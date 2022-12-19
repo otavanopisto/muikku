@@ -11,19 +11,22 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-
 import mApi from "~/lib/mApi";
 import { ProfileType } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
   LoadProfileUsernameTriggerType,
 } from "~/actions/main-function/profile";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * UpdateUsernamePasswordDialogProps
  */
-interface UpdateUsernamePasswordDialogProps {
+interface UpdateUsernamePasswordDialogProps
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   profile: ProfileType;
   displayNotification: DisplayNotificationTriggerType;
@@ -70,7 +73,10 @@ class UpdateUsernamePasswordDialog extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: UpdateUsernamePasswordDialogProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(
+    nextProps: UpdateUsernamePasswordDialogProps
+  ) {
     if (
       nextProps.profile.username !== null &&
       nextProps.profile.username !== this.state.username
@@ -84,7 +90,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
    * update
    * @param closeDialog closeDialog
    */
-  update(closeDialog: () => any) {
+  update(closeDialog: () => void) {
     const newPassword1 = this.state.newPassword;
     const newPassword2 = this.state.newPasswordConfirm;
 
@@ -120,6 +126,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
 
     mApi()
       .userplugin.credentials.update(values)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .callback((err: any, result: any) => {
         this.setState({
           locked: false,
@@ -178,6 +185,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
    * @param e e
    */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
@@ -191,7 +199,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <p>
           {this.props.i18nOLD.text.get(
@@ -266,7 +274,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["success", "standard-ok"]}
@@ -318,14 +326,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { displayNotification, loadProfileUsername },
     dispatch
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UpdateUsernamePasswordDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(UpdateUsernamePasswordDialog)
+);

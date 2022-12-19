@@ -1,4 +1,5 @@
 import * as React from "react";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18nOLD";
@@ -10,7 +11,7 @@ import ProfileProperty from "./components/profile-property";
 /**
  * GeneralInformationProps
  */
-interface GeneralInformationProps {
+interface GeneralInformationProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
@@ -20,7 +21,9 @@ interface GeneralInformationProps {
  * GeneralInformationState
  */
 interface GeneralInformationState {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   profileVacationStart: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   profileVacationEnd: any;
   phoneNumber: string;
   chatVisibility: string;
@@ -123,4 +126,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GeneralInformation);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(GeneralInformation)
+);

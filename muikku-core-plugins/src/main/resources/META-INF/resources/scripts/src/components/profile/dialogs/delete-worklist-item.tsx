@@ -11,14 +11,17 @@ import {
 import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import { StoredWorklistItem } from "~/reducers/main-function/profile";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * DeleteWorklistItemDialogProps
  */
-interface DeleteWorklistItemDialogProps {
+interface DeleteWorklistItemDialogProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
   isOpen: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose: () => any;
   item: StoredWorklistItem;
 }
@@ -49,7 +52,7 @@ class DeleteWorklistItemDialog extends React.Component<
    * delete
    * @param closeDialog closeDialog
    */
-  delete(closeDialog: () => any) {
+  delete(closeDialog: () => void) {
     this.props.deleteProfileWorklistItem({
       item: this.props.item,
       success: closeDialog,
@@ -61,9 +64,10 @@ class DeleteWorklistItemDialog extends React.Component<
    */
   render() {
     /**
-     * @param closeDialog
+     * content
+     * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <span>
           {this.props.i18nOLD.text.get(
@@ -77,7 +81,7 @@ class DeleteWorklistItemDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}
@@ -126,11 +130,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteProfileWorklistItem }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteWorklistItemDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DeleteWorklistItemDialog)
+);
