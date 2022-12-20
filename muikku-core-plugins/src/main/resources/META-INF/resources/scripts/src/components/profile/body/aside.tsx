@@ -8,11 +8,12 @@ import NavigationMenu, {
   NavigationElement,
 } from "~/components/general/navigation";
 import { StatusType } from "~/reducers/base/status";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NavigationProps
  */
-interface NavigationProps {
+interface NavigationProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   location: string;
   status: StatusType;
@@ -58,7 +59,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 
   /**
-   *
+   * render
    */
   render() {
     const sections = [
@@ -129,4 +130,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Navigation)
+);

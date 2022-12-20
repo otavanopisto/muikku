@@ -5,11 +5,12 @@ import { i18nType } from "reducers/base/i18nOLD";
 import Students from "./application/students";
 import Toolbar from "./application/toolbar";
 import { StateType } from "~/reducers";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GuiderApplicationProps
  */
-interface GuiderApplicationProps {
+interface GuiderApplicationProps extends WithTranslation<["common"]> {
   aside: JSX.Element;
   i18nOLD: i18nType;
 }
@@ -86,4 +87,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GuiderApplication);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderApplication)
+);

@@ -14,11 +14,12 @@ import {
   updateWorkspaceJournalInCurrentWorkspace,
 } from "~/actions/workspaces/journals";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NewEditJournalProps
  */
-interface WorkspaceJournalEditorProps {
+interface WorkspaceJournalEditorProps extends WithTranslation<["common"]> {
   type?: "new" | "edit";
   i18nOLD: i18nType;
   journal?: WorkspaceJournalWithComments;
@@ -330,7 +331,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalEditor);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalEditor)
+);

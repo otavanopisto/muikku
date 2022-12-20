@@ -30,6 +30,8 @@ import {
   UsersSelectType,
 } from "~/reducers/main-function/users";
 import { TagItem } from "~/components/general/tag-input";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * ValidationType
@@ -41,7 +43,8 @@ interface ValidationType {
 /**
  * OrganizationNewUserGroupProps
  */
-interface OrganizationNewUserGroupProps {
+interface OrganizationNewUserGroupProps extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   i18nOLD: i18nType;
   users: UsersSelectType;
@@ -228,7 +231,7 @@ class OrganizationNewUserGroup extends React.Component<
    * cancelDialog
    * @param closeDialog closeDialog
    */
-  cancelDialog(closeDialog: () => any) {
+  cancelDialog(closeDialog: () => void) {
     closeDialog();
   }
 
@@ -259,7 +262,7 @@ class OrganizationNewUserGroup extends React.Component<
    * saveUsergroup
    * @param closeDialog closeDialog
    */
-  saveUsergroup(closeDialog: () => any) {
+  saveUsergroup(closeDialog: () => void) {
     this.setState({
       locked: true,
       executing: true,
@@ -573,7 +576,7 @@ class OrganizationNewUserGroup extends React.Component<
      * content
      * @param closePortal closePortal
      */
-    const content = (closePortal: () => any) =>
+    const content = (closePortal: () => void) =>
       this.wizardSteps(this.state.currentStep);
 
     const executeContent = (
@@ -637,7 +640,7 @@ class OrganizationNewUserGroup extends React.Component<
      * footer
      * @param closePortal closePortal
      */
-    const footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => void) => (
       <FormWizardActions
         locked={this.state.locked}
         currentStep={this.state.currentStep}
@@ -694,7 +697,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStudents: loadSelectorStudents,
@@ -706,7 +709,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrganizationNewUserGroup);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(OrganizationNewUserGroup)
+);

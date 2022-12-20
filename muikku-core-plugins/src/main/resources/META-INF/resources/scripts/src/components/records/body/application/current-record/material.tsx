@@ -20,11 +20,12 @@ import {
 } from "~/components/general/application-list";
 import AnimateHeight from "react-animate-height";
 import Dropdown from "~/components/general/dropdown";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * MaterialProps
  */
-interface MaterialProps {
+interface MaterialProps extends WithTranslation<["common"]> {
   material: MaterialContentNodeType;
   workspace: WorkspaceType;
   i18nOLD: i18nType;
@@ -47,10 +48,7 @@ interface MaterialState {
 /**
  * Material
  */
-export default class Material extends React.Component<
-  MaterialProps,
-  MaterialState
-> {
+class Material extends React.Component<MaterialProps, MaterialState> {
   /**
    * constructor
    * @param props props
@@ -263,3 +261,5 @@ export default class Material extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(Material);

@@ -39,6 +39,8 @@ import {
 } from "~/reducers/main-function/users";
 import { UserGroupType, UserType } from "~/reducers/user-index";
 import { TagItem } from "~/components/general/tag-input";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * ValidationType
@@ -52,7 +54,8 @@ type UserCategoriesType = "students" | "staff";
 /**
  * OrganizationEditUsergroupProps
  */
-interface OrganizationEditUsergroupProps {
+interface OrganizationEditUsergroupProps extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   usergroup: UserGroupType;
   i18nOLD: i18nType;
@@ -278,6 +281,7 @@ class OrganizationEditUsergroup extends React.Component<
         this.props.loadAllCurrentUserGroupStudents,
         q,
         "students"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ) as any,
       400
     );
@@ -298,6 +302,7 @@ class OrganizationEditUsergroup extends React.Component<
         this.props.loadAllCurrentUserGroupStaff,
         q,
         "staff"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ) as any,
       400
     );
@@ -423,7 +428,7 @@ class OrganizationEditUsergroup extends React.Component<
    * cancelDialog
    * @param closeDialog closeDialog
    */
-  cancelDialog(closeDialog: () => any) {
+  cancelDialog(closeDialog: () => void) {
     closeDialog();
   }
 
@@ -460,7 +465,7 @@ class OrganizationEditUsergroup extends React.Component<
    * saveUsergroup
    * @param closeDialog closeDialog
    */
-  saveUsergroup(closeDialog: () => any) {
+  saveUsergroup(closeDialog: () => void) {
     this.setState({
       locked: true,
       executing: true,
@@ -990,7 +995,7 @@ class OrganizationEditUsergroup extends React.Component<
      * executeContent
      * @param closePortal closePortal
      */
-    const content = (closePortal: () => any) =>
+    const content = (closePortal: () => void) =>
       this.wizardSteps(this.state.currentStep);
 
     const executeContent = (
@@ -1055,7 +1060,7 @@ class OrganizationEditUsergroup extends React.Component<
      * footer
      * @param closePortal closePortal
      */
-    const footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => void) => (
       <FormWizardActions
         locked={this.state.locked}
         currentStep={this.state.currentStep}
@@ -1114,7 +1119,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStudents: loadSelectorStudents,
@@ -1129,7 +1134,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrganizationEditUsergroup);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(OrganizationEditUsergroup)
+);

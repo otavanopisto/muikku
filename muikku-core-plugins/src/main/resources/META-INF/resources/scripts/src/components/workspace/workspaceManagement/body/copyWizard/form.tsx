@@ -6,14 +6,16 @@ import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
 import "~/sass/elements/form.scss";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * StepProps
  */
-interface StepProps {
+interface StepProps extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
   i18nOLD: i18nType;
   getStore: () => CopyWizardStoreType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateStore: (u: CopyWizardStoreUpdateType) => any;
 }
 
@@ -25,7 +27,7 @@ interface StepState {}
 /**
  * Step
  */
-export default class Step extends React.Component<StepProps, StepState> {
+class Step extends React.Component<StepProps, StepState> {
   /**
    * constructor
    * @param props props
@@ -329,3 +331,5 @@ export default class Step extends React.Component<StepProps, StepState> {
     );
   }
 }
+
+export default withTranslation(["common"])(Step);

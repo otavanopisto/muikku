@@ -31,11 +31,13 @@ import {
   ToggleAllStudentsTriggerType,
 } from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GuiderToolbarProps
  */
-interface GuiderToolbarProps {
+interface GuiderToolbarProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   guider: GuiderType;
   status: StatusType;
@@ -79,12 +81,10 @@ class GuiderToolbar extends React.Component<
    * componentDidUpdate
    * @param prevProps prevProps
    * @param prevState prevState
-   * @param snapshot snapshot
    */
   componentDidUpdate(
     prevProps: Readonly<GuiderToolbarProps>,
-    prevState: Readonly<GuiderToolbarState>,
-    snapshot?: any
+    prevState: Readonly<GuiderToolbarState>
   ) {
     if (
       !this.state.focused &&
@@ -286,7 +286,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       removeFromGuiderSelectedStudents,
@@ -296,4 +296,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GuiderToolbar);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderToolbar)
+);

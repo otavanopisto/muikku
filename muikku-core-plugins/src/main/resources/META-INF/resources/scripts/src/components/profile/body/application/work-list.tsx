@@ -17,6 +17,8 @@ import WorkListEditable from "./components/work-list-editable";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import { WorkListSection } from "./components/work-list-section";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 // we use these
 const today = moment();
@@ -28,7 +30,7 @@ const currentMonthDayLimit = 10;
 /**
  * IWorkListProps
  */
-interface IWorkListProps {
+interface IWorkListProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
@@ -285,11 +287,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { insertProfileWorklistItem, loadProfileWorklistSection },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkList);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkList)
+);

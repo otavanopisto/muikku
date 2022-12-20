@@ -12,11 +12,13 @@ import "~/sass/elements/form.scss";
 import ContentPanel from "~/components/general/content-panel";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { bindActionCreators } from "redux";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * PermissionsByUsergroupsProps
  */
-interface PermissionsByUsergroupsProps {
+interface PermissionsByUsergroupsProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   workspace: WorkspaceType;
 }
@@ -116,11 +118,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PermissionsByUsergroups);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(PermissionsByUsergroups)
+);

@@ -20,6 +20,7 @@ export default function ProfileProperty(props: {
     | Array<
         | string
         | {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             key: any;
             value: string;
           }

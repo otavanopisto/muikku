@@ -15,11 +15,13 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * SecurityProps
  */
-interface SecurityProps {
+interface SecurityProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
@@ -44,7 +46,7 @@ interface SecurityState {
 class Security extends React.Component<SecurityProps, SecurityState> {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: SecurityProps) {
     super(props);
@@ -63,9 +65,10 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
   /**
    * componentWillReceiveProps
-   * @param nextProps
+   * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: SecurityProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: SecurityProps) {
     if (
       nextProps.profile.username !== null &&
       nextProps.profile.username !== this.state.username
@@ -115,6 +118,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
     mApi()
       .userplugin.credentials.update(values)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .callback((err: any, result: any) => {
         this.setState({
           locked: false,
@@ -162,10 +166,11 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
   /**
    * updateField
-   * @param field
-   * @param e
+   * @param field field
+   * @param e e
    */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
@@ -277,7 +282,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -289,13 +294,15 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { displayNotification, loadProfileUsername },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Security);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Security)
+);

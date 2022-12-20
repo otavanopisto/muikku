@@ -1,11 +1,12 @@
 import * as React from "react";
+import { withTranslation, WithTranslation } from "react-i18next";
 import Carousel, { CarouselVideoItem } from "~/components/general/carousel";
 import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * FrontpageVideosProps
  */
-interface FrontpageVideosProps {
+interface FrontpageVideosProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
 }
 
@@ -17,7 +18,7 @@ interface FrontpageVideosState {}
 /**
  * FrontpageVideos
  */
-export default class FrontpageVideos extends React.Component<
+class FrontpageVideos extends React.Component<
   FrontpageVideosProps,
   FrontpageVideosState
 > {
@@ -73,3 +74,5 @@ export default class FrontpageVideos extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(FrontpageVideos);

@@ -91,6 +91,7 @@ class StudiesToolbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18nOLD: state.i18nOLD,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     records: (state as any).records,
   };
 }

@@ -56,6 +56,7 @@ import { UserStaffType } from "~/reducers/user-index";
 import * as moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ValidationType
@@ -69,7 +70,8 @@ type UserCategoryType = "students" | "staff";
 /**
  * OrganizationEditWorkspaceProps
  */
-interface OrganizationEditWorkspaceProps {
+interface OrganizationEditWorkspaceProps extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   i18nOLD: i18nType;
   users: UsersSelectType;
@@ -466,7 +468,7 @@ class OrganizationEditWorkspace extends React.Component<
    * cancelDialog
    * @param closeDialog closeDialog
    */
-  cancelDialog(closeDialog: () => any) {
+  cancelDialog(closeDialog: () => void) {
     closeDialog();
   }
 
@@ -547,7 +549,7 @@ class OrganizationEditWorkspace extends React.Component<
    * saveWorkspace
    * @param closeDialog closeDialog
    */
-  saveWorkspace(closeDialog: () => any) {
+  saveWorkspace(closeDialog: () => void) {
     this.setState({
       locked: true,
       executing: true,
@@ -1202,7 +1204,7 @@ class OrganizationEditWorkspace extends React.Component<
      * content
      * @param closePortal closePortal
      */
-    const content = (closePortal: () => any) =>
+    const content = (closePortal: () => void) =>
       this.wizardSteps(this.state.currentStep);
 
     const executeContent = (
@@ -1268,7 +1270,7 @@ class OrganizationEditWorkspace extends React.Component<
      * footer
      * @param closePortal closePortal
      */
-    const footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => void) => (
       <FormWizardActions
         locked={this.state.locked}
         currentStep={this.state.currentStep}
@@ -1344,7 +1346,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrganizationEditWorkspace);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(OrganizationEditWorkspace)
+);

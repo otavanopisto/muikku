@@ -10,11 +10,13 @@ import {
   loadStudents,
   loadStaff,
 } from "~/actions/main-function/users";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * OrganizationUsersProps
  */
-interface OrganizationUsersProps {
+interface OrganizationUsersProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   users: UsersType;
   loadStaff: LoadUsersTriggerType;
@@ -111,8 +113,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ loadStudents, loadStaff }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizationUsers);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(OrganizationUsers)
+);

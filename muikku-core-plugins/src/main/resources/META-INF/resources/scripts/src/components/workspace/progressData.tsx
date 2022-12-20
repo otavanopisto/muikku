@@ -1,7 +1,4 @@
-import {
-  WorkspaceActivityType,
-  WorkspaceStudentActivityType,
-} from "~/reducers/workspaces";
+import { WorkspaceActivityType } from "~/reducers/workspaces";
 import { i18nType } from "reducers/base/i18nOLD";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
@@ -10,17 +7,23 @@ const ProgressBarCircle = require("react-progress-bar.js").Circle;
 
 import "~/sass/elements/workspace-activity.scss";
 import "~/sass/elements/wcag.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
+
+/**
+ * ProgressDataProps
+ */
+interface ProgressDataProps extends WithTranslation<["common"]> {
+  activity: WorkspaceActivityType;
+  i18nOLD: i18nType;
+  title?: string;
+  modifier?: string;
+}
 
 /**
  * ProgressData
  */
-export default class ProgressData extends React.Component<
-  {
-    activity: WorkspaceActivityType;
-    i18nOLD: i18nType;
-    title?: string;
-    modifier?: string;
-  },
+class ProgressData extends React.Component<
+  ProgressDataProps,
   Record<string, unknown>
 > {
   /**
@@ -227,3 +230,5 @@ export default class ProgressData extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(ProgressData);

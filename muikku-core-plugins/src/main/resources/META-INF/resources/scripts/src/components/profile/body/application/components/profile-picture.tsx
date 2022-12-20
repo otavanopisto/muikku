@@ -10,11 +10,12 @@ import Button from "~/components/general/button";
 import DeleteImageDialog from "../../../dialogs/delete-image";
 import "~/sass/elements/change-image.scss";
 import "~/sass/elements/wcag.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ProfilePictureProps
  */
-interface ProfilePictureProps {
+interface ProfilePictureProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   profile: ProfileType;
@@ -221,4 +222,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilePicture);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ProfilePicture)
+);

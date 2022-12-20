@@ -15,14 +15,17 @@ import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import * as moment from "moment";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * CopyWizardProps
  */
-interface CopyWizardProps {
+interface CopyWizardProps extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
   i18nOLD: i18nType;
   copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
 }
 
@@ -164,6 +167,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
    * @param steps steps
    * @param step step
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   checkLastStep(steps: Array<any>, step: number) {
     if (step === steps.length - 1) {
       this.copyWorkspace();
@@ -252,8 +256,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ copyCurrentWorkspace }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CopyWizard);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(CopyWizard)
+);

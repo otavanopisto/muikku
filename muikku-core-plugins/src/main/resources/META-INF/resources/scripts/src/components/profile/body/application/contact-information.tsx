@@ -21,11 +21,12 @@ import {
 } from "~/actions/base/notifications";
 import { SimpleActionExecutor } from "~/actions/executor";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ContactInformationProps
  */
-interface ContactInformationProps {
+interface ContactInformationProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
@@ -84,8 +85,8 @@ class ContactInformation extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: ContactInformationProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: ContactInformationProps) {
     if (
       nextProps.profile.properties["profile-phone"] &&
       this.props.profile.properties["profile-phone"] !==
@@ -600,4 +601,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactInformation);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ContactInformation)
+);

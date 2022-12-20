@@ -15,11 +15,12 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import CompulsoryEducationHopsWizard from "../../../general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * HopsProps
  */
-interface HopsProps {
+interface HopsProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   records: RecordsType;
   status: StatusType;
@@ -154,4 +155,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setHopsTo }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Hops);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Hops)
+);

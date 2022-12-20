@@ -4,15 +4,18 @@ import { i18nType } from "~/reducers/base/i18nOLD";
 import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import { CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
 import Button from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * StepProps
  */
-interface StepProps {
+interface StepProps extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
   i18nOLD: i18nType;
   getStore: () => CopyWizardStoreType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateStore: (u: CopyWizardStoreUpdateType) => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
   resultingWorkspace?: WorkspaceType;
   step?: CopyCurrentWorkspaceStepType;
@@ -26,7 +29,7 @@ interface StepState {}
 /**
  * Step
  */
-export default class Step extends React.Component<StepProps, StepState> {
+class Step extends React.Component<StepProps, StepState> {
   /**
    * constructor
    * @param props props
@@ -153,3 +156,5 @@ export default class Step extends React.Component<StepProps, StepState> {
     );
   }
 }
+
+export default withTranslation(["common"])(Step);

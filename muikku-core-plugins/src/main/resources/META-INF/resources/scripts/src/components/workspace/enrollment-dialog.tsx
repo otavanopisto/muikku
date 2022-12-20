@@ -4,12 +4,14 @@ import { StateType } from "reducers";
 import { connect } from "react-redux";
 import Button from "~/components/general/button";
 import { i18nType } from "~/reducers/base/i18nOLD";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * EnrollmentDialogProps
  */
-interface EnrollmentDialogProps {
+interface EnrollmentDialogProps extends WithTranslation<["common"]> {
   isOpen?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
   i18nOLD: i18nType;
 }
@@ -44,7 +46,7 @@ class EnrollmentDialog extends React.Component<
      * content
      * @param closeDialog  closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div className="dialog__content-row dialog__content-row--label">
         <img
           src="/gfx/icons/64x64/certificate.png"
@@ -92,4 +94,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnrollmentDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EnrollmentDialog)
+);

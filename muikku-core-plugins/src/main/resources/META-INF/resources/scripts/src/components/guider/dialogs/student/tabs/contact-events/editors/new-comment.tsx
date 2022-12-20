@@ -12,11 +12,12 @@ import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import * as moment from "moment";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ReplyThreadDrawerProps
  */
-interface NewContactLogEventCommentProps {
+interface NewContactLogEventCommentProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   contactEventtId: number;
   studentUserEntityId: number;
@@ -212,7 +213,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ createContactLogEventComment }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NewContactLogEventComment);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NewContactLogEventComment)
+);

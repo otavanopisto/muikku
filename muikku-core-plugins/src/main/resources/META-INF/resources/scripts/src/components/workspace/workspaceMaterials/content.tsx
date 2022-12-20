@@ -44,11 +44,12 @@ import {
 import Dropdown from "~/components/general/dropdown";
 import { IconButton } from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ContentProps
  */
-interface ContentProps {
+interface ContentProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   materials: MaterialContentNodeListType;
@@ -996,6 +997,10 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
+const componentWithTranslation = withTranslation(["common"], { withRef: true })(
+  ContentComponent
+);
+
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
-})(ContentComponent);
+})(componentWithTranslation);

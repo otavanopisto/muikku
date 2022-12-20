@@ -4,11 +4,12 @@ import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import Hops from "~/components/base/hops_readable";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * Study plan props
  */
-interface StudyPlanProps {
+interface StudyPlanProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   guider: GuiderType;
 }
@@ -50,4 +51,4 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-export default connect(mapStateToProps)(StudyPlan);
+export default withTranslation(["common"])(connect(mapStateToProps)(StudyPlan));

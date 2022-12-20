@@ -22,11 +22,13 @@ import {
   uploadProfileImage,
   UploadProfileImageTriggerType,
 } from "~/actions/main-function/profile";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * UploadImageDialogProps
  */
-interface UploadImageDialogProps {
+interface UploadImageDialogProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   displayNotification: DisplayNotificationTriggerType;
   uploadProfileImage: UploadProfileImageTriggerType;
@@ -36,6 +38,7 @@ interface UploadImageDialogProps {
   src?: string;
 
   isOpen: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose: () => any;
 }
 
@@ -80,7 +83,7 @@ class UploadImageDialog extends React.Component<
    * upload
    * @param closeDialog closeDialog
    */
-  upload(closeDialog: () => any) {
+  upload(closeDialog: () => void) {
     this.setState({ locked: true });
     this.props.uploadProfileImage({
       croppedB64: this.retriever.getAsDataURL(),
@@ -147,7 +150,7 @@ class UploadImageDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <ImageEditor
           className="image-editor image-editor--profile"
@@ -177,7 +180,7 @@ class UploadImageDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["execute", "standard-ok"]}
@@ -228,11 +231,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { displayNotification, uploadProfileImage },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UploadImageDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(UploadImageDialog)
+);

@@ -13,11 +13,12 @@ import NavigationMenu, {
 } from "~/components/general/navigation";
 import { HOPSType } from "~/reducers/main-function/hops";
 import { StatusType } from "~/reducers/base/status";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NavigationProps
  */
-interface NavigationProps {
+interface NavigationProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   location: TranscriptOfRecordLocationType;
   hops: HOPSType;
@@ -129,4 +130,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Navigation)
+);

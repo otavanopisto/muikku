@@ -6,11 +6,12 @@ import { i18nType } from "~/reducers/base/i18nOLD";
 import Link from "~/components/general/link";
 
 import "~/sass/elements/license.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * LicenseProps
  */
-interface LicenseProps {
+interface LicenseProps extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
   i18nOLD: i18nType;
 }
@@ -120,4 +121,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(License);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(License)
+);

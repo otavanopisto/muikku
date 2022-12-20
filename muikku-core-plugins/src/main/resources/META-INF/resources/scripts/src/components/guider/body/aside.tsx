@@ -15,11 +15,12 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NavigationProps
  */
-interface NavigationProps {
+interface NavigationProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   guider: GuiderType;
 }
@@ -208,4 +209,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);

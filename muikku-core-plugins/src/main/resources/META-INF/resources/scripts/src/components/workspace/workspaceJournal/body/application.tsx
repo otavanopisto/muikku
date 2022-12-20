@@ -22,11 +22,12 @@ import {
 } from "~/actions/workspaces/journals";
 import WorkspaceJournalView from "./application/workspace-journal-view";
 import { JournalsState } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalApplicationProps
  */
-interface WorkspaceJournalApplicationProps {
+interface WorkspaceJournalApplicationProps extends WithTranslation<["common"]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside?: React.ReactElement<any>;
   i18nOLD: i18nType;
@@ -171,7 +172,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalApplication);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalApplication)
+);

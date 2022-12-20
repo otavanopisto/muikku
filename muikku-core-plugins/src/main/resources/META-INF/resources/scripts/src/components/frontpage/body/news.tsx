@@ -1,11 +1,12 @@
 import * as React from "react";
 import FrontpageFeed from "./feed";
 import { i18nType } from "~/reducers/base/i18nOLD";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FrontpageNewsProps
  */
-interface FrontpageNewsProps {
+interface FrontpageNewsProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
 }
 
@@ -17,7 +18,7 @@ interface FrontpageNewsState {}
 /**
  * FrontpageNews
  */
-export default class FrontpageNews extends React.Component<
+class FrontpageNews extends React.Component<
   FrontpageNewsProps,
   FrontpageNewsState
 > {
@@ -53,3 +54,5 @@ export default class FrontpageNews extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(FrontpageNews);

@@ -29,6 +29,7 @@ import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "../../../actions/base/notifications";
 
 import { getName } from "~/util/modifiers";
+import { withTranslation, WithTranslation } from "react-i18next";
 const KEYCODES = {
   ENTER: 13,
 };
@@ -53,7 +54,7 @@ interface SharedFlagUser {
 /**
  * GuiderLabelUpdateDialogProps
  */
-interface GuiderLabelUpdateDialogProps {
+interface GuiderLabelUpdateDialogProps extends WithTranslation<["common"]> {
   // eslint-disable-next-line
   children: React.ReactElement<any>;
   label: GuiderUserLabelType;
@@ -91,7 +92,7 @@ class GuiderLabelUpdateDialog extends React.Component<
 
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: GuiderLabelUpdateDialogProps) {
     super(props);
@@ -118,9 +119,10 @@ class GuiderLabelUpdateDialog extends React.Component<
 
   /**
    * ComponentWillReceiveProps lifecycle, when selected flaks changes, resets states
-   * @param nextProps
+   * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: GuiderLabelUpdateDialogProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: GuiderLabelUpdateDialogProps) {
     if (nextProps.label.id !== this.props.label.id) {
       this.resetState(null, nextProps);
     }
@@ -128,8 +130,8 @@ class GuiderLabelUpdateDialog extends React.Component<
 
   /**
    * Resets state when flaks changes
-   * @param e
-   * @param props
+   * @param e e
+   * @param props props
    */
   resetState = async (e: HTMLElement, props = this.props) => {
     this.setState({
@@ -302,9 +304,9 @@ class GuiderLabelUpdateDialog extends React.Component<
 
   /**
    * Updates selected flaks information or deletes it
-   * @param closeDialog
+   * @param closeDialog closeDialog
    */
-  update = async (closeDialog: () => any) => {
+  update = async (closeDialog: () => void) => {
     // If this is a delete operation, it matters if we have selected the label we are deleting
 
     const locationData = queryString.parse(
@@ -424,7 +426,7 @@ class GuiderLabelUpdateDialog extends React.Component<
 
   /**
    * Handles color changes
-   * @param color
+   * @param color color
    */
   onColorChange(color: ColorState) {
     if (this.state.removed) {
@@ -435,7 +437,7 @@ class GuiderLabelUpdateDialog extends React.Component<
 
   /**
    * Handles flaks name change
-   * @param e
+   * @param e e
    */
   onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ name: e.target.value });
@@ -443,7 +445,7 @@ class GuiderLabelUpdateDialog extends React.Component<
 
   /**
    * Handles description change
-   * @param e
+   * @param e e
    */
   onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({ description: e.target.value });
@@ -465,10 +467,10 @@ class GuiderLabelUpdateDialog extends React.Component<
 
   /**
    * Handles key stroke down
-   * @param code
-   * @param closeDialog
+   * @param code code
+   * @param closeDialog closeDialog
    */
-  onHandleKeyStrokedown(code: number, closeDialog: () => any) {
+  onHandleKeyStrokedown(code: number, closeDialog: () => void) {
     if (code === KEYCODES.ENTER) {
       this.update(closeDialog);
     }
@@ -476,7 +478,7 @@ class GuiderLabelUpdateDialog extends React.Component<
 
   /**
    * Handles members list change
-   * @param members
+   * @param members members
    */
   onSharedMembersChange = (members: ContactRecipientType[]) => {
     this.setState({ selectedItems: members });
@@ -509,10 +511,10 @@ class GuiderLabelUpdateDialog extends React.Component<
 
     /**
      * content
-     * @param closeDialog
-     * @returns
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div
         className="dialog__content-row dialog__content-row--label"
         style={{ opacity: this.state.removed ? 0.5 : null }}
@@ -601,10 +603,10 @@ class GuiderLabelUpdateDialog extends React.Component<
 
     /**
      * footer
-     * @param closeDialog
+     * @param closeDialog closeDialog
      * @returns JSX.Element
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <>
         <div className="dialog__button-set">
           <Button
@@ -695,8 +697,7 @@ class GuiderLabelUpdateDialog extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -708,8 +709,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
@@ -718,7 +718,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GuiderLabelUpdateDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderLabelUpdateDialog)
+);

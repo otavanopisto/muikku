@@ -20,6 +20,8 @@ import {
 import { bindActionCreators } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
 import moment from "~/lib/moment";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 // get today date in order to be able to calculate the 10 days
 // and next month rule that allows for modification since
@@ -31,7 +33,7 @@ const previousMonth = moment().subtract(1, "months");
 /**
  * WorkListRowProps
  */
-interface WorkListRowProps {
+interface WorkListRowProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   item: StoredWorklistItem;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
@@ -297,11 +299,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteProfileWorklistItem, editProfileWorklistItem },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkListRow);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkListRow)
+);

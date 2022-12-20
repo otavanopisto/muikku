@@ -18,7 +18,6 @@ import {
   ShortWorkspaceUserWithActiveStatusType,
 } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
-import { Tabs } from "~/components/general/tabs";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
@@ -36,11 +35,13 @@ import {
   LoadUsersOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { MobileOnlyTabs } from "~/components/general/tabs";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceUsersProps
  */
-interface WorkspaceUsersProps {
+interface WorkspaceUsersProps extends WithTranslation<["common"]> {
   status: StatusType;
   workspace: WorkspaceType;
   i18nOLD: i18nType;
@@ -108,6 +109,7 @@ class WorkspaceUsers extends React.Component<
    * UNSAFE_componentWillReceiveProps. Should be refactored at somepoint
    * @param nextProps nextProps
    */
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: WorkspaceUsersProps) {
     if (nextProps.workspace && nextProps.workspace.staffMembers) {
       this.allStaffPages = Math.ceil(
@@ -576,7 +578,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStaffMembers: loadStaffMembersOfWorkspace,
@@ -586,4 +588,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceUsers);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceUsers)
+);

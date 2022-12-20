@@ -20,6 +20,7 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { ContactLogEvent } from "~/reducers/main-function/guider";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * TODO: maybe make this more generic,
@@ -30,7 +31,7 @@ import { ContactLogEvent } from "~/reducers/main-function/guider";
 /**
  * ReplyThreadDrawerProps
  */
-interface EditContactLogEventProps {
+interface EditContactLogEventProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   contactEvent: ContactLogEvent;
@@ -303,7 +304,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ editContactLogEvent }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EditContactLogEventEvent);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EditContactLogEventEvent)
+);

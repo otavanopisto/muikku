@@ -421,45 +421,42 @@ interface SubjectSelectProps
 
 /**
  * SubjectSelect
- * @param param0.i i
- * @param param0.selectedValues selectedValues
- * @param param0.modifier modifier
- * @returns
+ * @param props props
+ * @returns JSX.Element
  */
-const SubjectSelect: React.FC<SubjectSelectProps> = ({
-  i,
-  selectedValues,
-  modifier,
-  ...selectProps
-}) => (
-  <>
-    {i == 0 ? (
-      <label
-        id={`matriculationSubjectSelectLabel${modifier}`}
-        className="matriculation__label"
-      >
-        Aine
-      </label>
-    ) : null}
-    <select
-      aria-labelledby={`matriculationSubjectSelectLabel${modifier}`}
-      {...selectProps}
-      disabled={selectProps.disabled}
-      className="matriculation__select"
-    >
-      {Object.keys(SUBJECT_MAP).map((subjectCode, index) => {
-        const subjectName = SUBJECT_MAP[subjectCode];
-        const disabled = selectedValues.indexOf(subjectCode) != -1;
+const SubjectSelect: React.FC<SubjectSelectProps> = (props) => {
+  const { i, selectedValues, modifier, ...selectProps } = props;
 
-        return (
-          <option key={index} value={subjectCode} disabled={disabled}>
-            {subjectName}
-          </option>
-        );
-      })}
-    </select>
-  </>
-);
+  return (
+    <>
+      {i == 0 ? (
+        <label
+          id={`matriculationSubjectSelectLabel${modifier}`}
+          className="matriculation__label"
+        >
+          Aine
+        </label>
+      ) : null}
+      <select
+        aria-labelledby={`matriculationSubjectSelectLabel${modifier}`}
+        {...selectProps}
+        disabled={selectProps.disabled}
+        className="matriculation__select"
+      >
+        {Object.keys(SUBJECT_MAP).map((subjectCode, index) => {
+          const subjectName = SUBJECT_MAP[subjectCode];
+          const disabled = selectedValues.indexOf(subjectCode) != -1;
+
+          return (
+            <option key={index} value={subjectCode} disabled={disabled}>
+              {subjectName}
+            </option>
+          );
+        })}
+      </select>
+    </>
+  );
+};
 
 /**
  * TermSelectProps
@@ -473,36 +470,34 @@ interface TermSelectProps
 
 /**
  * TermSelect
- * @param root0.i i
- * @param root0.options options
- * @param root0.modifier modifier
+ * @param props props
+ * @returns JSX.Element
  */
-const TermSelect: React.FC<TermSelectProps> = ({
-  i,
-  options,
-  modifier,
-  ...selectProps
-}) => (
-  <>
-    {i == 0 ? (
-      <label
-        id={`matriculationTermSelectLabel${modifier}`}
-        className="matriculation__label"
+const TermSelect: React.FC<TermSelectProps> = (props) => {
+  const { i, options, modifier, ...selectProps } = props;
+
+  return (
+    <>
+      {i == 0 ? (
+        <label
+          id={`matriculationTermSelectLabel${modifier}`}
+          className="matriculation__label"
+        >
+          Ajankohta
+        </label>
+      ) : null}
+      <select
+        aria-labelledby={`matriculationTermSelectLabel${modifier}`}
+        {...selectProps}
+        disabled={selectProps.disabled}
+        className="matriculation__select"
       >
-        Ajankohta
-      </label>
-    ) : null}
-    <select
-      aria-labelledby={`matriculationTermSelectLabel${modifier}`}
-      {...selectProps}
-      disabled={selectProps.disabled}
-      className="matriculation__select"
-    >
-      <option value="">Valitse...</option>
-      <>{options}</>
-    </select>
-  </>
-);
+        <option value="">Valitse...</option>
+        <>{options}</>
+      </select>
+    </>
+  );
+};
 
 /**
  * MandatorySelectProps
@@ -516,35 +511,34 @@ interface MandatorySelectProps
 
 /**
  * MandatorySelect
- * @param root0.i i
- * @param root0.modifier modifier
+ * @param props props
  */
-const MandatorySelect: React.FC<MandatorySelectProps> = ({
-  i,
-  modifier,
-  ...selectProps
-}) => (
-  <>
-    {i == 0 ? (
-      <label
-        id={`matriculationMandatorySelectLabel${modifier}`}
-        className="matriculation__label"
+const MandatorySelect: React.FC<MandatorySelectProps> = (props) => {
+  const { i, modifier, ...selectProps } = props;
+
+  return (
+    <>
+      {i == 0 ? (
+        <label
+          id={`matriculationMandatorySelectLabel${modifier}`}
+          className="matriculation__label"
+        >
+          Pakollisuus
+        </label>
+      ) : null}
+      <select
+        aria-labelledby={`matriculationMandatorySelectLabel${modifier}`}
+        {...selectProps}
+        disabled={selectProps.disabled}
+        className="matriculation__select"
       >
-        Pakollisuus
-      </label>
-    ) : null}
-    <select
-      aria-labelledby={`matriculationMandatorySelectLabel${modifier}`}
-      {...selectProps}
-      disabled={selectProps.disabled}
-      className="matriculation__select"
-    >
-      <option value="">Valitse...</option>
-      <option value="true">Pakollinen</option>
-      <option value="false">Ylimääräinen</option>
-    </select>
-  </>
-);
+        <option value="">Valitse...</option>
+        <option value="true">Pakollinen</option>
+        <option value="false">Ylimääräinen</option>
+      </select>
+    </>
+  );
+};
 
 /**
  * RepeatSelectProps
@@ -557,35 +551,35 @@ interface RepeatSelectProps
 
 /**
  * RepeatSelect
- * @param root0.i i
- * @param root0.modifier modifier
+ * @param props props
+ * @returns JSX.Element
  */
-const RepeatSelect: React.FC<RepeatSelectProps> = ({
-  i,
-  modifier,
-  ...selectProps
-}) => (
-  <>
-    {i == 0 ? (
-      <label
-        id={`matriculationRepeatSelectLabel${modifier}`}
-        className="matriculation__label"
+const RepeatSelect: React.FC<RepeatSelectProps> = (props) => {
+  const { i, modifier, ...selectProps } = props;
+
+  return (
+    <>
+      {i == 0 ? (
+        <label
+          id={`matriculationRepeatSelectLabel${modifier}`}
+          className="matriculation__label"
+        >
+          Uusiminen
+        </label>
+      ) : null}
+      <select
+        aria-labelledby={`matriculationRepeatSelectLabel${modifier}`}
+        {...selectProps}
+        disabled={selectProps.disabled}
+        className="matriculation__select"
       >
-        Uusiminen
-      </label>
-    ) : null}
-    <select
-      aria-labelledby={`matriculationRepeatSelectLabel${modifier}`}
-      {...selectProps}
-      disabled={selectProps.disabled}
-      className="matriculation__select"
-    >
-      <option value="">Valitse...</option>
-      <option value="false">Ensimmäinen suorituskerta</option>
-      <option value="true">Uusinta</option>
-    </select>
-  </>
-);
+        <option value="">Valitse...</option>
+        <option value="false">Ensimmäinen suorituskerta</option>
+        <option value="true">Uusinta</option>
+      </select>
+    </>
+  );
+};
 
 /**
  * GradeSelectProps
@@ -598,42 +592,42 @@ interface GradeSelectProps
 
 /**
  * GradeSelect
- * @param root0.i i
- * @param root0.modifier modifier
+ * @param props props
+ * @returns JSX.Element
  */
-const GradeSelect: React.FC<GradeSelectProps> = ({
-  i,
-  modifier,
-  ...selectProps
-}) => (
-  <>
-    {i == 0 ? (
-      <label
-        id={`matriculationGradeSelectLabel${modifier}`}
-        className="matriculation__label"
-      >
-        Arvosana
-      </label>
-    ) : null}
-    <select
-      aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
-      {...selectProps}
-      disabled={selectProps.disabled}
-      className="matriculation__select"
-    >
-      <option value="">Valitse...</option>
-      {Object.keys(EXAMINATION_GRADES_MAP).map((subjectCode, index) => {
-        const subjectName = EXAMINATION_GRADES_MAP[subjectCode];
+const GradeSelect: React.FC<GradeSelectProps> = (props) => {
+  const { i, modifier, ...selectProps } = props;
 
-        return (
-          <option key={index} value={subjectCode}>
-            {subjectName}
-          </option>
-        );
-      })}
-    </select>
-  </>
-);
+  return (
+    <>
+      {i == 0 ? (
+        <label
+          id={`matriculationGradeSelectLabel${modifier}`}
+          className="matriculation__label"
+        >
+          Arvosana
+        </label>
+      ) : null}
+      <select
+        aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
+        {...selectProps}
+        disabled={selectProps.disabled}
+        className="matriculation__select"
+      >
+        <option value="">Valitse...</option>
+        {Object.keys(EXAMINATION_GRADES_MAP).map((subjectCode, index) => {
+          const subjectName = EXAMINATION_GRADES_MAP[subjectCode];
+
+          return (
+            <option key={index} value={subjectCode}>
+              {subjectName}
+            </option>
+          );
+        })}
+      </select>
+    </>
+  );
+};
 
 /**
  * FundingSelectProps
@@ -648,65 +642,68 @@ interface FundingSelectProps
 
 /**
  * FundingSelect
- * @param root0.i i
- * @param root0.modifier modifier
- * @param root0.isFailedBefore isFailedBefore
- * @param root0.isSucceedBefore isSucceedBefore
+ * @param props props
+ * @returns JSX.Element
  */
-const FundingSelect: React.FC<FundingSelectProps> = ({
-  i,
-  modifier,
-  isFailedBefore,
-  isSucceedBefore,
-  ...selectProps
-}) => (
-  <>
-    {i == 0 ? (
-      <label
-        id={`matriculationGradeSelectLabel${modifier}`}
-        className="matriculation__label"
+const FundingSelect: React.FC<FundingSelectProps> = (props) => {
+  const { i, modifier, isFailedBefore, isSucceedBefore, ...selectProps } =
+    props;
+
+  return (
+    <>
+      {i == 0 ? (
+        <label
+          id={`matriculationGradeSelectLabel${modifier}`}
+          className="matriculation__label"
+        >
+          Rahoitus
+        </label>
+      ) : null}
+      <select
+        aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
+        {...selectProps}
+        disabled={selectProps.disabled}
+        className="matriculation__select"
       >
-        Rahoitus
-      </label>
-    ) : null}
-    <select
-      aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
-      {...selectProps}
-      disabled={selectProps.disabled}
-      className="matriculation__select"
-    >
-      {isSucceedBefore ? (
-        <>
-          <option value="">Valitse...</option>
-          <option value={ExaminationFunding.SELF_FUNDED}>Itserahoitettu</option>
-        </>
-      ) : null}
+        {isSucceedBefore ? (
+          <>
+            <option value="">Valitse...</option>
+            <option value={ExaminationFunding.SELF_FUNDED}>
+              Itserahoitettu
+            </option>
+          </>
+        ) : null}
 
-      {isFailedBefore ? (
-        <>
-          <option value="">Valitse...</option>
-          <option value={ExaminationFunding.SELF_FUNDED}>Itserahoitettu</option>
-          <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
-            Maksuton ylioppilaskoe (uusinta)
-          </option>
-        </>
-      ) : null}
+        {isFailedBefore ? (
+          <>
+            <option value="">Valitse...</option>
+            <option value={ExaminationFunding.SELF_FUNDED}>
+              Itserahoitettu
+            </option>
+            <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
+              Maksuton ylioppilaskoe (uusinta)
+            </option>
+          </>
+        ) : null}
 
-      {!isFailedBefore && !isSucceedBefore ? (
-        <>
-          <option value="">Valitse...</option>
-          <option value={ExaminationFunding.SELF_FUNDED}>Itserahoitettu</option>
-          <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE}>
-            Maksuton ylioppilaskoe
-          </option>
-          <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
-            Maksuton ylioppilaskoe (uusinta)
-          </option>
-        </>
-      ) : null}
-    </select>
-  </>
-);
+        {!isFailedBefore && !isSucceedBefore ? (
+          <>
+            <option value="">Valitse...</option>
+            <option value={ExaminationFunding.SELF_FUNDED}>
+              Itserahoitettu
+            </option>
+            <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE}>
+              Maksuton ylioppilaskoe
+            </option>
+            <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
+              Maksuton ylioppilaskoe (uusinta)
+            </option>
+          </>
+        ) : null}
+      </select>
+    </>
+  );
+};
 
 /**
  * FailedReasonSelectProps
@@ -718,41 +715,44 @@ interface FailedReasonSelectProps
 }
 
 /**
- * @param root0.i i
- * @param root0.modifier modifier
+ * FailedReasonSelect
+ * @param props props
+ * @returns JSX.Element
  */
-export const FailedReasonSelect: React.FC<FailedReasonSelectProps> = ({
-  i,
-  modifier,
-  ...selectProps
-}) => (
-  <>
-    {i == 0 ? (
-      <label
-        id={`matriculationGradeSelectLabel${modifier}`}
-        className="matriculation__label"
+export const FailedReasonSelect: React.FC<FailedReasonSelectProps> = (
+  props
+) => {
+  const { i, modifier, ...selectProps } = props;
+
+  return (
+    <>
+      {i == 0 ? (
+        <label
+          id={`matriculationGradeSelectLabel${modifier}`}
+          className="matriculation__label"
+        >
+          Hylkäyksen syy
+        </label>
+      ) : null}
+      <select
+        aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
+        {...selectProps}
+        disabled={selectProps.disabled}
+        className="matriculation__select"
       >
-        Hylkäyksen syy
-      </label>
-    ) : null}
-    <select
-      aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
-      {...selectProps}
-      disabled={selectProps.disabled}
-      className="matriculation__select"
-    >
-      <option>
-        Kokelaan koe on hylätty, koska kokelas on jättänyt saapumatta
-        koetilaisuuteen
-      </option>
-      <option>
-        Kokelaan koe on hylätty, koska kokelas ei ole jättänyt koesuoritusta
-        arvosteltavaksi
-      </option>
-      <option>
-        Kokelaan koe on hylätty vilpin tai koetilaisuuden järjestyksen
-        häiritsemisen vuoksi
-      </option>
-    </select>
-  </>
-);
+        <option>
+          Kokelaan koe on hylätty, koska kokelas on jättänyt saapumatta
+          koetilaisuuteen
+        </option>
+        <option>
+          Kokelaan koe on hylätty, koska kokelas ei ole jättänyt koesuoritusta
+          arvosteltavaksi
+        </option>
+        <option>
+          Kokelaan koe on hylätty vilpin tai koetilaisuuden järjestyksen
+          häiritsemisen vuoksi
+        </option>
+      </select>
+    </>
+  );
+};

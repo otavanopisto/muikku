@@ -14,13 +14,16 @@ import {
   UpdateProfileWorklistItemsStateTriggerType,
   updateProfileWorklistItemsState,
 } from "~/actions/main-function/profile";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * SubmitWorklistItemsDialogProps
  */
-interface SubmitWorklistItemsDialogProps {
+interface SubmitWorklistItemsDialogProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   summary: WorklistItemsSummary;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType;
 }
@@ -51,7 +54,7 @@ class SubmitWorklistItemsDialog extends React.Component<
    * submit
    * @param closeDialog closeDialog
    */
-  submit(closeDialog: () => any) {
+  submit(closeDialog: () => void) {
     this.props.updateProfileWorklistItemsState({
       beginDate: this.props.summary.beginDate,
       endDate: this.props.summary.endDate,
@@ -68,7 +71,7 @@ class SubmitWorklistItemsDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <span>
           {this.props.i18nOLD.text.get(
@@ -82,7 +85,7 @@ class SubmitWorklistItemsDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["success", "standard-ok"]}
@@ -131,11 +134,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateProfileWorklistItemsState }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SubmitWorklistItemsDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(SubmitWorklistItemsDialog)
+);

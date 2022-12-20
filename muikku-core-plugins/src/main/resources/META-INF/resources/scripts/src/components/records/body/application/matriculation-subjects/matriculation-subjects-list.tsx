@@ -6,12 +6,13 @@ import mApi from "~/lib/mApi";
 import MatriculationSubjectType from "./matriculation-subject-type";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * Interface representing MatriculationSubjectsList component properties
  *
  */
-interface MatriculationSubjectsListProps {
+interface MatriculationSubjectsListProps extends WithTranslation {
   initialMatriculationSubjects?: string[];
   onMatriculationSubjectsChange: (matriculationSubjects: string[]) => void;
   i18nOLD: i18nType;
@@ -249,7 +250,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MatriculationSubjectsList);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(MatriculationSubjectsList)
+);

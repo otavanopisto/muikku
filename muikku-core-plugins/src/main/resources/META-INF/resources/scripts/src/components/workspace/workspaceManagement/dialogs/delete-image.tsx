@@ -15,16 +15,20 @@ import {
   UpdateCurrentWorkspaceImagesB64TriggerType,
 } from "~/actions/workspaces";
 import "~/sass/elements/rangeslider.scss";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DeleteImageDialogProps
  */
-interface DeleteImageDialogProps {
+interface DeleteImageDialogProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   displayNotification: DisplayNotificationTriggerType;
   updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDelete: () => any;
   isOpen: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose: () => any;
 }
 
@@ -53,7 +57,7 @@ class DeleteImageDialog extends React.Component<
    * deleteImage
    * @param closeDialog closeDialog
    */
-  deleteImage(closeDialog: () => any) {
+  deleteImage(closeDialog: () => void) {
     closeDialog();
     this.props.updateCurrentWorkspaceImagesB64({
       delete: true,
@@ -80,7 +84,7 @@ class DeleteImageDialog extends React.Component<
      *  content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         {this.props.i18nOLD.text.get(
           "plugin.workspace.management.deleteImage.dialog.description"
@@ -91,7 +95,7 @@ class DeleteImageDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["execute", "standard-ok"]}
@@ -140,11 +144,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { displayNotification, updateCurrentWorkspaceImagesB64 },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteImageDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DeleteImageDialog)
+);

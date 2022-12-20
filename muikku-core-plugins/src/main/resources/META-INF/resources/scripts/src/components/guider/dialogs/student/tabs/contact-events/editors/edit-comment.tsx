@@ -15,11 +15,12 @@ import Button from "~/components/general/button";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { ContactLogEventComment } from "~/reducers/main-function/guider";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * EditContactLogEventCommentStateProps
  */
-interface EditContactLogEventCommentProps {
+interface EditContactLogEventCommentProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   comment: ContactLogEventComment;
@@ -237,7 +238,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ editContactLogEventComment }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EditContactLogEventComment);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EditContactLogEventComment)
+);

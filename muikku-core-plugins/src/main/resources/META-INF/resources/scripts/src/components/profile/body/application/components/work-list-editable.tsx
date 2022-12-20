@@ -14,6 +14,7 @@ import "~/sass/elements/datepicker/datepicker.scss";
 import { i18nType } from "~/reducers/base/i18nOLD";
 import * as moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 // these are used to limit the date pickers, first the start of the current month
 // the previous month and the day of the current month
@@ -28,7 +29,7 @@ const dayOfCurrentMonth: number = moment(new Date()).date();
 /**
  * WorkListEditableProps
  */
-interface WorkListEditableProps {
+interface WorkListEditableProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   locales: LocaleState;
   onSubmit: (data: {
@@ -187,6 +188,7 @@ class WorkListEditable extends React.Component<
   public updateOne(which: string, e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       [which]: e.target.value,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
   }
 
@@ -386,4 +388,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkListEditable);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkListEditable)
+);

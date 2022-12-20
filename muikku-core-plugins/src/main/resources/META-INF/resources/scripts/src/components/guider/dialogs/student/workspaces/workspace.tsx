@@ -22,11 +22,12 @@ import {
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * StudentWorkspaceProps
  */
-interface StudentWorkspaceProps {
+interface StudentWorkspaceProps extends WithTranslation<["common"]> {
   /**Localization */
   i18nOLD: i18nType;
   workspace: WorkspaceType;
@@ -440,7 +441,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudentWorkspace);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(StudentWorkspace)
+);
 
 // Other component used only by Workspace component
 
@@ -477,15 +480,18 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
    * "Any" type should not be used and should be fixed. As now there currently is no better solution.
    * Tho more generic precise props still help use component more typescript precise
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (((workspace[mainAttribute] as any)[conditionalAttribute] as number) > 0) {
     if (props.conditionalAttributeLocale) {
       output = props.i18nOLD.text.get(
         props.conditionalAttributeLocale,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (props.workspace[props.mainAttribute] as any)[
           props.conditionalAttribute
         ]
       );
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       output = (props.workspace as any)[props.mainAttribute][
         props.conditionalAttribute
       ];
@@ -498,6 +504,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
         output += props.i18nOLD.text.get(
           props.givenDateAttributeLocale,
           props.i18nOLD.time.format(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
             ]
@@ -505,6 +512,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
         );
       } else {
         output += props.i18nOLD.time.format(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (props.workspace as any)[props.mainAttribute][
             props.givenDateAttribute
           ]

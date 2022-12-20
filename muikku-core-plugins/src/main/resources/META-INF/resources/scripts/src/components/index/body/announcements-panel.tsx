@@ -13,11 +13,12 @@ import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { Panel } from "~/components/general/panel";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AnnouncementsPanelProps
  */
-interface AnnouncementsPanelProps {
+interface AnnouncementsPanelProps extends WithTranslation<"common"> {
   i18nOLD: i18nType;
   status: StatusType;
   announcements: AnnouncementListType;
@@ -56,8 +57,7 @@ class AnnouncementsPanel extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
    */
   componentDidUpdate(prevProps: AnnouncementsPanelProps) {
     if (
@@ -101,7 +101,7 @@ class AnnouncementsPanel extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const { announcements, currentPage, itemsPerPage } = this.state;
@@ -237,8 +237,7 @@ class AnnouncementsPanel extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -250,11 +249,11 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
  */
 function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementsPanel);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncementsPanel)
+);

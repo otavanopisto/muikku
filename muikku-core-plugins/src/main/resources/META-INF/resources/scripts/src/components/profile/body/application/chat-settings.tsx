@@ -18,11 +18,13 @@ import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-sub-panel.scss";
 import { SimpleActionExecutor } from "~/actions/executor";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * ChatSettingsProps
  */
-interface ChatSettingsProps {
+interface ChatSettingsProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
@@ -49,7 +51,7 @@ class ChatSettings extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: ChatSettingsProps) {
     super(props);
@@ -70,9 +72,10 @@ class ChatSettings extends React.Component<
 
   /**
    * componentWillReceiveProps
-   * @param nextProps
+   * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ChatSettingsProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: ChatSettingsProps) {
     if (
       nextProps.profile.chatSettings &&
       nextProps.profile.chatSettings.visibility &&
@@ -148,7 +151,7 @@ class ChatSettings extends React.Component<
 
   /**
    * onChatVisibilityChange
-   * @param e
+   * @param e e
    */
   onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setState({
@@ -158,7 +161,7 @@ class ChatSettings extends React.Component<
 
   /**
    * onChatNicknameChange
-   * @param e
+   * @param e e
    */
   onChatNicknameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
@@ -260,7 +263,7 @@ class ChatSettings extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -272,13 +275,15 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { saveProfileProperty, displayNotification, updateProfileChatSettings },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChatSettings);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ChatSettings)
+);

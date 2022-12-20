@@ -14,13 +14,16 @@ import {
 import { UserFileType } from "~/reducers/user-index";
 
 import "~/sass/elements/form.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FileDeleteDialogProps
  */
-interface FileDeleteDialogProps {
+interface FileDeleteDialogProps extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
   i18nOLD: i18nType;
   file: UserFileType;
@@ -53,7 +56,7 @@ class FileDeleteDialog extends React.Component<
    * deleteFile
    * @param closeDialog closeDialog
    */
-  deleteFile(closeDialog: () => any) {
+  deleteFile(closeDialog: () => void) {
     this.props.removeFileFromCurrentStudent(this.props.file);
     closeDialog();
   }
@@ -66,7 +69,7 @@ class FileDeleteDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}
@@ -91,7 +94,7 @@ class FileDeleteDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         {this.props.i18nOLD.text.get(
           "plugin.guider.flags.deleteAttachmentDialog.description"
@@ -133,4 +136,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ removeFileFromCurrentStudent }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FileDeleteDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(FileDeleteDialog)
+);

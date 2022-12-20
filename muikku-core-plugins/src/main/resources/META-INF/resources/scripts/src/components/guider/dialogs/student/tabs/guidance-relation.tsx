@@ -6,7 +6,6 @@ import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
-  ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import { GuiderStudentUserProfileType } from "~/reducers/main-function/guider";
 import ContactEvent from "./contact-events/contact-event";

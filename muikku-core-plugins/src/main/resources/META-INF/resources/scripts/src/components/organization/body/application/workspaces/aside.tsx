@@ -14,11 +14,12 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps {
+interface NavigationAsideProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   workspaces: WorkspacesType;
 }
@@ -209,4 +210,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspacesAside);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspacesAside)
+);

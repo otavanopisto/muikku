@@ -49,13 +49,14 @@ import { SearchFormElement } from "~/components/general/form-element";
 import * as moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
 /**
  * ManagementPanelProps
  */
-interface ManagementPanelProps {
+interface ManagementPanelProps extends WithTranslation<["common"]> {
   status: StatusType;
   workspace: WorkspaceType;
   i18nOLD: i18nType;
@@ -1351,4 +1352,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManagementPanel);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ManagementPanel)
+);

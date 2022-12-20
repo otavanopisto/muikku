@@ -9,11 +9,12 @@ import { StateType } from "~/reducers";
 
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceAnnouncementsProps
  */
-interface WorkspaceAnnouncementsProps {
+interface WorkspaceAnnouncementsProps extends WithTranslation<["common"]> {
   status: StatusType;
   workspace: WorkspaceType;
   announcements: AnnouncementListType;
@@ -114,7 +115,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceAnnouncements);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceAnnouncements)
+);

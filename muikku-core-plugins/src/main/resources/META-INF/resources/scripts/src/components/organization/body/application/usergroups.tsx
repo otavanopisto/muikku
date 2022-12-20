@@ -14,6 +14,7 @@ import {
 } from "~/actions/main-function/users";
 import { UserGroupType } from "~/reducers/user-index";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
+import { AnyActionType } from "~/actions";
 
 /**
  * OrganizationUserGroupsProps
@@ -110,7 +111,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ loadMoreUserGroups }, dispatch);
 }
 

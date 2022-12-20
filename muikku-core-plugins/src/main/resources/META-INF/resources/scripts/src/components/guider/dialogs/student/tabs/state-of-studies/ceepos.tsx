@@ -25,11 +25,12 @@ import {
 } from "~/reducers/main-function/profile";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * CeeposProps
  */
-interface CeeposProps {
+interface CeeposProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   guider: GuiderType;
@@ -456,4 +457,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Ceepos);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Ceepos)
+);
