@@ -3,6 +3,8 @@ package fi.otavanopisto.muikku.plugins.workspace.model;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +18,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 
 @Entity
 @Inheritance (strategy = InheritanceType.JOINED)
@@ -89,6 +93,14 @@ public class WorkspaceNode {
   public void setTitle(String title) {
     this.title = title;
   }
+  
+  public WorkspaceLanguage getLanguage() {
+    return language;
+  }
+  
+  public void setLanguage(WorkspaceLanguage language) {
+    this.language = language;
+  }
 
 
   @Id
@@ -115,5 +127,10 @@ public class WorkspaceNode {
   @NotNull
   @Column (nullable = false)
   private Boolean hidden;
+  
+  @NotNull
+  @Column(nullable = false)
+  @Enumerated (EnumType.STRING)
+  private WorkspaceLanguage language;
 
 }

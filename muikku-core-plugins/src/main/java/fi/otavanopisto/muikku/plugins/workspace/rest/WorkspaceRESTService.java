@@ -77,6 +77,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -2449,12 +2450,13 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial createRestModel(WorkspaceMaterial workspaceMaterial) {
-    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
-    Long nextSiblingId = workspaceNode != null ? workspaceNode.getId() : null;
+    WorkspaceNode workspaceNodeNextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
+    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getId());
+    Long nextSiblingId = workspaceNodeNextSibling != null ? workspaceNodeNextSibling.getId() : null;
 
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
-        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
+        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(), workspaceNode.getLanguage());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -2760,6 +2762,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // Actual update
+    workspaceMaterial.setTitleLanguage(WorkspaceLanguage.fi);
 
     Long materialId = workspaceMaterial.getMaterialId();
     WorkspaceNode parentNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getParentId());
@@ -2767,7 +2770,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     String title = workspaceMaterial.getTitle();
     Boolean hidden = workspaceMaterial.getHidden();
     workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden,
-        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), title);
+        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), title, workspaceMaterial.getTitleLanguage());
     workspaceMaterial.setPath(workspaceNode.getPath());
     return Response.ok(workspaceMaterial).build();
   }
