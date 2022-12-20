@@ -59,6 +59,8 @@
       },
 
       "notifications": {
+        "403": "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
+        "502": "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen. Mikäli ongelma ei katoa tarkista verkkoyhteytesi ja tarvittaessa ota yhteyttä helpdeskiin helpdesk@muikkuverkko.fi.",
         "addError_label": "Tunnisteen asettaminen ei onnistunut",
         "alreadyExistsError_label": "Antamallasi nimellä oleva tunniste löytyy jo",
         "captionError": "Viestillä täytyy olla otsikko",
@@ -90,6 +92,7 @@
         "newMessage": "{0} - Uusi viesti",
         "noRecipientsError": "Viestillä ei ole vastaanottajia",
         "noWorkspacesError": "Viestillä ei ole määriteltyjä kohdetyöntiloja",
+        "reconnectError": "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen. Mikäli ongelma ei katoa tarkista verkkoyhteytesi ja tarvittaessa ota yhteyttä helpdeskiin helpdesk@muikkuverkko.fi.",
         "restoreError": "Viestin palautus epäonnistui",
         "restoreError_messageThread": "Viestiketjun palautus epäonnistui",
         "sendError": "Viestin lähetys epäonnistui. Kokeile lähettää uudelleen",
@@ -197,6 +200,8 @@
       "edit_userGroup": "Muokkaa käyttäjäryhmää"
     },
     "notifications": {
+      "cancelError": "Peruutus epäonnistui",
+      "cancelSuccess": "Peruutus onnistui",
       "completionError_studentOrder": "Opiskelijan tilauksen viimeistely epäonistui",
       "createError": "Opiskelijan luonti epäonnistui: {0}",
       "createError_staff": "Henkilöstön edustajan luonti epäonnistui",
@@ -212,6 +217,7 @@
       "loadError_userGroups": "Opiskelijaryhmien lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "removeError_studentOrder": "Opiskelijan tilauksen poisto epäonistui",
       "saveError_profilePicture": "Profiilikuvan lataus epäonnistui",
+      "sendError": "Lähetys epäonnistui. Kokeile lähettää uudelleen",
       "updateError": "Opiskelijan muokkaus epäonnistui",
       "updateError_staff": "Henkilöstön edustajan muokkaus epäonnistui",
       "updateError_userGroup": "Käyttäjäryhmän muokkaus epäonnistui",
@@ -240,7 +246,7 @@
     }
   },
 
-  "workspaces": {
+  "workspace": {
     "actions": {
       "appointment": "Varaa aika",
       "cancel_assignment": "Peruuta tehtävän palautus",
@@ -271,7 +277,59 @@
       "update_assignment": "Palauta tehtävä uudelleen"
     },
     "notifications": {
-      "loadError": "Kurssien lataus epäonnistui. Yritä ladata sivu uudelleen."
+      "cancelError_evaluationRequests": "Arviointipyynnön peruutus epäonnistui",
+      "cancelError_interimEvaluationRequests": "Välipalautepyynnön peruuttaminen epäonnistui",
+      "cancelSuccess_interimEvaluationRequests": "Välipalautepyyntö peruutettu onnistuneesti ",
+      "copyError": "Kurssin kopiointi epäonnistui",
+      "createError_journal": "Päiväkirjamerkinnän luonti epäonnistui",
+      "createError_journalComment": "Päiväkirjakommentin luonti epäonnistui",
+      "loadError_answers": "Tehtävien vastauksien lataus epäonnistui",
+      "loadError_activity": "Kurssin tietojan lataus epäonnistui.",
+      "loadError_chatSettings": "Chatin asetuksien lataus epäonnistui",
+      "loadError_compositeReplies": "Vastausten lataus epäonnistui",
+      "loadError_coverImage": "Kansikuvan lataus epäonnistui",
+      "loadError_details": "Kurssin lisätieotojen lataus epäonistui",
+      "loadError_evaluationRequests": "Kurssin arviointipyyntötietojen lataus epäonnistui",
+      "loadError_instructions": "Ohjeiden lataus epäonnistui",
+      "loadError_journal": "Päiväkirjakommentien lataus epäonnistui",
+      "loadError_latest": "Viimeisimmän kurssin lataus epäonnistui",
+      "loadError_materials": "Materiaalien lataus epäonnistui",
+      "loadError_nameDetails": "Tarkennetietojen lataus epäonnistui",
+      "loadError_one": "Kurssin lataus epäonnistui",
+      "loadError_other": "Kurssien lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_permissions": "Ilmoittautumisoikeuksien lataus epäonnistui",
+      "loadError_students": " Opiskelijoiden lataus epäonnistui",
+      "loadError_teachers": "Opettajien lataus epäonnistui",
+      "loadError_types": "Kurssityyppien lataus epäonnistui",
+      "loadError_userGroupPermissions": "Käyttäjäryhmän oikeuksien lataus epäonnistui",
+      "removeError_coverImage": "Kurssin kansikuvan poisto epäonnistui",
+      "removeError_journal": "Päiväkirjamerkinnän poisto epäonnistui",
+      "removeError_journalComment": "Päiväkirjakommentin poisto epäonnistui",
+      "removeSuccess_coverImage": "Kansikuvan poisto onnistui",
+      "saveError_data": "Tietojen tallennus epäonnistui",
+      "saveSuccess_basicData": "Perustietojen tallennus onnistui",
+      "saveSuccess_coverImage": "Kansikuvan tallennus onnistui",
+      "saveSuccess_data": "Tietojen tallennus onnistui",
+      "saveSuccess_details": "Tarkennetietojen tallennus onnistui",
+      "saveSuccess_permissions": "Ilmoittautumisoikeuksien päivitys onnistui",
+      "saveSuccess_producers": "Tuottajien tallennus onnistui",
+      "sendError_evaluationRequests": "Arviointipyynnön lähetys epäonnistui",
+      "sendError_interimEvaluationRequests": "Välipalautepyynnön lähettäminen epäonnistui",
+      "sendSuccess_evaluationRequests": "Arviointipyyntö lähetettiin onnistuneesti",
+      "sendSuccess_interimEvaluationRequests": "Välipalautepyyntö lähetetty onnistuneesti",
+      "updateError_answers": "Tehtävän tilan päivitys epäonnistui",
+      "updateError_compositeReplies": "Vastauksen päivitys epäonnistui",
+      "updateError_coverImage": "Kurssin kansikuvan päivitys epäonnistui",
+      "updateError_details": "Kurssin lisätietojen päivitys epäonnistui",
+      "updateError_journal": " Päiväkirjamerkinnän päivitys epäonnistui",
+      "updateError_journalComment": "Päiväkirjakommentin muokkaus epäonnistui",
+      "updateError_nameDetails": "Tarkennetietojen tallennus epäonnistui",
+      "updateError_materials": "Materiaalisivun päivitys epäonnistui",
+      "updateError_permissions": "Työtilan ilmoittautumisoikeuksien päivitys epäonnistui",
+      "updateError_producers": "Kurssin tuottajien päivitys epäonnistui",
+      "updateError_settings": "Työtilan asetusten päivitys epäonnistui",
+      "updateError_student": "Opiskelijan päivitys epäonnistui",
+      "updateError_userGroupPermissions": "Käyttäjäryhmän oikeuksin päivitys epäonnistui"
     }
   },
 
