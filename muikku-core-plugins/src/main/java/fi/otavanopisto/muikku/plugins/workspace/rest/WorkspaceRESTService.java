@@ -2768,7 +2768,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // Actual update
-    workspaceMaterial.setTitleLanguage(WorkspaceLanguage.fi);
 
     Long materialId = workspaceMaterial.getMaterialId();
     WorkspaceNode parentNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getParentId());
