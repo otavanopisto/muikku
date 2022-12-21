@@ -727,7 +727,6 @@ class WorkspaceMaterials extends React.Component<
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
-          lang={section.titleLanguage || this.props.workspace.language}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
@@ -777,7 +776,10 @@ class WorkspaceMaterials extends React.Component<
                 </Dropdown>
               </div>
             ) : null}
-            <div className="content-panel__chapter-title-text">
+            <div
+              className="content-panel__chapter-title-text"
+              lang={section.titleLanguage || this.props.workspace.language}
+            >
               {section.title}
             </div>
           </h2>

@@ -535,7 +535,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                             : "p-" + subnode.workspaceMaterialId
                         }
                         language={
-                          subnode.titleLanguage || this.props.workspace.language
+                          subnode.titleLanguage ||
+                          node.titleLanguage ||
+                          this.props.workspace.language
                         }
                       >
                         {subnode.title}
