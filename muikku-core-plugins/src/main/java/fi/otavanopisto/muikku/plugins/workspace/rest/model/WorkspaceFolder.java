@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 
 public class WorkspaceFolder {
@@ -7,7 +8,7 @@ public class WorkspaceFolder {
   public WorkspaceFolder() {
   }
 
-  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, Boolean hidden, String title, String path, MaterialViewRestrict viewRestrict) {
+  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, Boolean hidden, String title, String path, MaterialViewRestrict viewRestrict, WorkspaceLanguage titleLanguage) {
     super();
     this.id = id;
     this.parentId = parentId;
@@ -16,6 +17,7 @@ public class WorkspaceFolder {
     this.title = title;
     this.path = path;
     this.viewRestrict = viewRestrict;
+    this.titleLanguage = titleLanguage;
   }
   
   public Long getId() {
@@ -74,6 +76,14 @@ public class WorkspaceFolder {
     this.viewRestrict = viewRestrict;
   }
 
+  public WorkspaceLanguage getTitleLanguage() {
+    return titleLanguage;
+  }
+
+  public void setTitleLanguage(WorkspaceLanguage titleLanguage) {
+    this.titleLanguage = titleLanguage;
+  }
+
   private Long id;
   private Long parentId;
   private Long nextSiblingId;
@@ -81,5 +91,6 @@ public class WorkspaceFolder {
   private String title;
   private String path;
   private MaterialViewRestrict viewRestrict;
+  private WorkspaceLanguage titleLanguage;
 
 }

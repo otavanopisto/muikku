@@ -495,7 +495,7 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceFolder updateWorkspaceFolder(WorkspaceFolder workspaceFolder, String title, WorkspaceNode parentNode,
-      WorkspaceNode nextSibling, Boolean hidden, MaterialViewRestrict viewRestrict) {
+      WorkspaceNode nextSibling, Boolean hidden, MaterialViewRestrict viewRestrict, WorkspaceLanguage language) {
     if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
       throw new IllegalArgumentException("Next sibling parent is not parent");
     }
@@ -544,7 +544,10 @@ public class WorkspaceMaterialController {
 
     String urlName = generateUniqueUrlName(workspaceFolder.getParent(), workspaceFolder, title);
     workspaceFolder = workspaceFolderDAO.updateFolderName(workspaceFolder, urlName, title);
-
+    
+    if (!language.equals(workspaceFolder.getLanguage())) {
+      workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateLanguage(workspaceFolder, language);
+    }
     // View restrict
 
     workspaceFolder = workspaceFolderDAO.updateViewRestrict(workspaceFolder, viewRestrict);
@@ -945,7 +948,7 @@ public class WorkspaceMaterialController {
           contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null,
               child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(),
               child.hidden, null, child.node.getPath(), null, Collections.emptyList(),
-              MaterialViewRestrict.NONE, false, WorkspaceLanguage.fi);
+              MaterialViewRestrict.NONE, false, child.node.getLanguage());
         }
         else {
           contentNode = createContentNode(child.node, child.level, folderViewRestrict, includeHidden, child.nextSibling);

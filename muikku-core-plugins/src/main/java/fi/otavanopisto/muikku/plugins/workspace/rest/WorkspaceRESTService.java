@@ -2516,7 +2516,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceFolder.getHidden(),
         workspaceFolder.getTitle(),
         workspaceFolder.getPath(),
-        workspaceFolder.getViewRestrict());
+        workspaceFolder.getViewRestrict(),
+        workspaceFolder.getLanguage());
   }
 
   @DELETE
@@ -2685,8 +2686,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     Boolean hidden = restFolder.getHidden();
     String title = restFolder.getTitle();
     MaterialViewRestrict viewRestrict = restFolder.getViewRestrict();
+    WorkspaceLanguage titleLanguage = workspaceFolder.getLanguage();
+    
+    if (restFolder.getTitleLanguage() != null && !workspaceFolder.getLanguage().equals(restFolder.getTitleLanguage())) {
+      titleLanguage = restFolder.getTitleLanguage();
+    }
 
-    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden, viewRestrict);
+    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden, viewRestrict, titleLanguage);
     return Response.ok(createRestModel(workspaceFolder)).build();
   }
 
