@@ -399,7 +399,7 @@ public class WorkspaceMaterialController {
       }
       newNode = createWorkspaceFolder(parent, folder.getTitle(),
           generateUniqueUrlName(parent, workspaceNode.getUrlName()), index, workspaceNode.getHidden(),
-          folder.getFolderType(), folder.getViewRestrict());
+          folder.getFolderType(), folder.getViewRestrict(), workspaceNode.getLanguage());
     }
     else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
@@ -707,29 +707,29 @@ public class WorkspaceMaterialController {
 
   /* Folder */
 
-  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName) {
+  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName, WorkspaceLanguage language) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
     return createWorkspaceFolder(parent, title, urlName, index, Boolean.FALSE, WorkspaceFolderType.DEFAULT,
-        MaterialViewRestrict.NONE);
+        MaterialViewRestrict.NONE, language);
   }
 
-  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName, Integer index) {
+  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName, Integer index, WorkspaceLanguage language) {
     return createWorkspaceFolder(parent, title, urlName, index, Boolean.FALSE, WorkspaceFolderType.DEFAULT,
-        MaterialViewRestrict.NONE);
+        MaterialViewRestrict.NONE, language);
   }
 
   public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName, Integer index,
-      Boolean hidden, WorkspaceFolderType folderType, MaterialViewRestrict viewRestrict) {
+      Boolean hidden, WorkspaceFolderType folderType, MaterialViewRestrict viewRestrict, WorkspaceLanguage language) {
     WorkspaceFolder workspaceFolder = workspaceFolderDAO.create(parent, title, urlName, index, hidden, folderType,
-        viewRestrict);
+        viewRestrict, language);
     workspaceFolderCreateEvent.fire(new WorkspaceFolderCreateEvent(workspaceFolder));
     return workspaceFolder;
   }
 
-  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title) {
+  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, WorkspaceLanguage language) {
     String urlName = generateUniqueUrlName(parent, title);
-    return createWorkspaceFolder(parent, title, urlName);
+    return createWorkspaceFolder(parent, title, urlName, language);
   }
 
   public WorkspaceMaterial ensureWorkspaceFrontPageExists(WorkspaceEntity workspace) {
@@ -1078,12 +1078,12 @@ public class WorkspaceMaterialController {
 
   public WorkspaceFolder createWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
     return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Ohjeet", "ohjeet", 0,
-        false, WorkspaceFolderType.HELP_PAGE, MaterialViewRestrict.NONE);
+        false, WorkspaceFolderType.HELP_PAGE, MaterialViewRestrict.NONE, WorkspaceLanguage.fi);
   }
 
   public WorkspaceFolder createWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
     return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "etusivu", 0,
-        false, WorkspaceFolderType.FRONT_PAGE, MaterialViewRestrict.NONE);
+        false, WorkspaceFolderType.FRONT_PAGE, MaterialViewRestrict.NONE, WorkspaceLanguage.fi);
   }
 
   public boolean isUsedInPublishedWorkspaces(Material material) {
