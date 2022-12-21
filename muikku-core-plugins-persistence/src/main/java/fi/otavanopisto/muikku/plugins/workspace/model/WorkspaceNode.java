@@ -128,8 +128,7 @@ public class WorkspaceNode {
   @Column (nullable = false)
   private Boolean hidden;
   
-  @NotNull
-  @Column(nullable = false)
+  @Column
   @Enumerated (EnumType.STRING)
   private WorkspaceLanguage language;
 

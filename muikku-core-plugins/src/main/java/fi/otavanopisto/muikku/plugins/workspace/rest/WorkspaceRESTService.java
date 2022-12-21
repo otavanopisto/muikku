@@ -2688,7 +2688,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     MaterialViewRestrict viewRestrict = restFolder.getViewRestrict();
     WorkspaceLanguage titleLanguage = workspaceFolder.getLanguage();
     
-    if (restFolder.getTitleLanguage() != null && !workspaceFolder.getLanguage().equals(restFolder.getTitleLanguage())) {
+    if (!workspaceFolder.getLanguage().equals(restFolder.getTitleLanguage())) {
       titleLanguage = restFolder.getTitleLanguage();
     }
 
@@ -2726,7 +2726,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode parentFolder = restFolder.getParentId() == null ? rootFolder : workspaceMaterialController.findWorkspaceNodeById(restFolder.getParentId());
     String title = restFolder.getTitle() == null ? "Untitled" : restFolder.getTitle();
 
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title, WorkspaceLanguage.fi);
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title, null);
     if (nextSibling != null) {
       workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
     }
