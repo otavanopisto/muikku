@@ -463,7 +463,7 @@ public class WorkspaceMaterialController {
       }
     }
     WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), title, urlName, index,
-        hidden, assignmentType, correctAnswers, WorkspaceLanguage.fi);
+        hidden, assignmentType, correctAnswers, null);
     workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
     return workspaceMaterial;
   }

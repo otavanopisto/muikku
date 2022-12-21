@@ -2686,11 +2686,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     Boolean hidden = restFolder.getHidden();
     String title = restFolder.getTitle();
     MaterialViewRestrict viewRestrict = restFolder.getViewRestrict();
-    WorkspaceLanguage titleLanguage = workspaceFolder.getLanguage();
     
-    if (!workspaceFolder.getLanguage().equals(restFolder.getTitleLanguage())) {
-      titleLanguage = restFolder.getTitleLanguage();
-    }
+    WorkspaceLanguage titleLanguage = restFolder.getTitleLanguage();
+    
 
     workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden, viewRestrict, titleLanguage);
     return Response.ok(createRestModel(workspaceFolder)).build();
