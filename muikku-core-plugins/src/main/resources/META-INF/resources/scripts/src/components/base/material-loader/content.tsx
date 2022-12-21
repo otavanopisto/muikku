@@ -94,7 +94,11 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
       <div
         className={className}
         onClick={stopPropagation}
-        lang={props.material.titleLanguage || props.workspace.language}
+        lang={
+          props.material.titleLanguage ||
+          props.folder.titleLanguage ||
+          props.workspace.language
+        }
       >
         {props.loadCompositeReplies &&
         typeof props.compositeReplies === "undefined" ? null : (

@@ -658,8 +658,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             typeof data.update.html !== "undefined" &&
             data.material.html !== data.update.html
           ) {
-            console.log("päivitetään html sisältö");
-
             await promisify(
               mApi().materials.html.content.update(data.material.materialId, {
                 content: data.update.html,
@@ -719,12 +717,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               urlPath = "folders";
             }
 
-            console.log(
-              "päivitetään muutuneet sisällöt polkuun",
-              urlPath,
-              result
-            );
-
             newPath = (
               (await promisify(
                 mApi().workspace.workspaces[urlPath].update(
@@ -760,11 +752,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           });
 
           if (changed) {
-            console.log(
-              "päivitetään muutuneet materiaalitiedot",
-              materialResult
-            );
-
             await promisify(
               mApi().materials.material.update(
                 data.material.materialId,
