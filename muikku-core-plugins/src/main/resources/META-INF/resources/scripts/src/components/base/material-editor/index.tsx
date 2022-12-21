@@ -12,6 +12,7 @@ import {
   MaterialContentNodeType,
   MaterialViewRestriction,
   AssignmentType,
+  Language,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -268,6 +269,7 @@ class MaterialEditor extends React.Component<
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
+    this.updateTitleLanguage = this.updateTitleLanguage.bind(this);
     this.close = this.close.bind(this);
     this.publish = this.publish.bind(this);
     this.revert = this.revert.bind(this);
@@ -420,6 +422,21 @@ class MaterialEditor extends React.Component<
       material: this.props.editorState.currentDraftNodeValue,
       update: {
         title: e.target.value,
+      },
+      isDraft: true,
+    });
+  }
+
+  /**
+   * updateTitleLanguage
+   * @param e e
+   */
+  updateTitleLanguage(e: React.ChangeEvent<HTMLSelectElement>) {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        titleLanguage: e.currentTarget.value as Language,
       },
       isDraft: true,
     });
@@ -793,6 +810,7 @@ class MaterialEditor extends React.Component<
       "title",
       "type",
       "viewRestrict",
+      "titleLanguage",
     ];
 
     let canPublish = false;
@@ -1058,6 +1076,22 @@ class MaterialEditor extends React.Component<
                 </div>
               </div>
             ) : null}
+
+            <div className="form__row">
+              <div className="form-element">
+                <select
+                  className="form-element__input form-element__input--material-editor-title"
+                  onChange={this.updateTitleLanguage}
+                  value={
+                    this.props.editorState.currentDraftNodeValue.titleLanguage
+                  }
+                >
+                  <option value="fi">fi</option>
+                  <option value="en">en</option>
+                </select>
+              </div>
+            </div>
+
             {!this.props.editorState.section &&
             this.props.editorState.canEditContent &&
             this.props.editorState.opened ? (

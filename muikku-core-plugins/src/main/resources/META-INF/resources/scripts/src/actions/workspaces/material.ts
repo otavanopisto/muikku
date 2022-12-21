@@ -658,6 +658,8 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             typeof data.update.html !== "undefined" &&
             data.material.html !== data.update.html
           ) {
+            console.log("päivitetään html sisältö");
+
             await promisify(
               mApi().materials.html.content.update(data.material.materialId, {
                 content: data.update.html,
@@ -677,21 +679,27 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             "correctAnswers",
             "path",
             "title",
+            "titleLanguage",
           ];
+
           if (data.material.type === "folder") {
             fields = [
               "hidden",
               "nextSiblingId",
               "parentId",
               "title",
+              "titleLanguage",
               "path",
               "viewRestrict",
             ];
           }
+
           const result: any = {
             id: data.material.workspaceMaterialId,
           };
+
           let changed = false;
+
           fields.forEach((field) => {
             if (
               typeof (data.update as any)[field] !== "undefined" &&
@@ -704,11 +712,19 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                 ? (data.update as any)[field]
                 : (data.material as any)[field];
           });
+
           if (changed) {
             let urlPath = "materials";
             if (data.material.type === "folder") {
               urlPath = "folders";
             }
+
+            console.log(
+              "päivitetään muutuneet sisällöt polkuun",
+              urlPath,
+              result
+            );
+
             newPath = (
               (await promisify(
                 mApi().workspace.workspaces[urlPath].update(
@@ -722,11 +738,14 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           }
 
           const materialFields = ["id", "license", "viewRestrict"];
+
           if (data.material.type === "folder") {
             fields = [];
           }
+
           const materialResult: any = {};
           changed = false;
+
           materialFields.forEach((field) => {
             if (
               typeof (data.update as any)[field] !== "undefined" &&
@@ -739,7 +758,13 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                 ? (data.update as any)[field]
                 : (data.material as any)[field];
           });
+
           if (changed) {
+            console.log(
+              "päivitetään muutuneet materiaalitiedot",
+              materialResult
+            );
+
             await promisify(
               mApi().materials.material.update(
                 data.material.materialId,

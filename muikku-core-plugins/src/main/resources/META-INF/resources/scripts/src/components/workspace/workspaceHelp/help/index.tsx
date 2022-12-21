@@ -688,6 +688,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
+          lang={this.props.workspace.language}
         >
           <div
             id={"s-" + section.workspaceMaterialId}

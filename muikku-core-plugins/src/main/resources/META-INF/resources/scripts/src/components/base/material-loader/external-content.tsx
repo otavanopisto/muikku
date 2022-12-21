@@ -33,7 +33,10 @@ export function MaterialLoaderExternalContent(
     props.material.assignment.assignmentType === "INTERIM_EVALUATION"
   ) {
     return (
-      <div className={className}>
+      <div
+        className={className}
+        lang={props.material.titleLanguage || props.workspace.language}
+      >
         <InterimEvaluationEditor {...props} />
       </div>
     );
@@ -41,7 +44,10 @@ export function MaterialLoaderExternalContent(
 
   if (props.material.assignmentType === "INTERIM_EVALUATION") {
     return (
-      <div className={className}>
+      <div
+        className={className}
+        lang={props.material.titleLanguage || props.workspace.language}
+      >
         <InterimEvaluationEditor {...props} />
       </div>
     );

@@ -518,6 +518,7 @@ class WorkspaceMaterials extends React.Component<
           <div
             key={"sectionfunctions-" + section.workspaceMaterialId}
             className="material-admin-panel material-admin-panel--master-functions"
+            lang={this.props.workspace.language}
           >
             <Dropdown
               openByHover
@@ -726,6 +727,7 @@ class WorkspaceMaterials extends React.Component<
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
+          lang={section.titleLanguage || this.props.workspace.language}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
