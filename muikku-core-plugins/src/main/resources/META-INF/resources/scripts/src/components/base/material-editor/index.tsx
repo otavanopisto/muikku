@@ -1081,25 +1081,40 @@ class MaterialEditor extends React.Component<
               </div>
             ) : null}
 
-            <div className="form__row">
-              <div className="form-element">
-                <select
-                  className="form-element__input form-element__input--material-editor-title"
-                  onChange={this.updateTitleLanguage}
-                  value={
-                    this.props.editorState.currentDraftNodeValue
-                      .titleLanguage || ""
-                  }
-                >
-                  <option value="">Periytä</option>
-                  {languageOptions.map((language) => (
-                    <option key={language} value={language}>
-                      {language.toUpperCase()}
-                    </option>
-                  ))}
-                </select>
+            {this.props.editorState.section && (
+              <div className="material-editor__sub-section">
+                <h3 className="material-editor__sub-title">
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.materialsManagement.editorView.subTitle.localeCode"
+                  )}
+                </h3>
+                <div className="material-editor__select-locale-container">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <select
+                        className="form-element__input form-element__input--material-editor-title"
+                        onChange={this.updateTitleLanguage}
+                        value={
+                          this.props.editorState.currentDraftNodeValue
+                            .titleLanguage || ""
+                        }
+                      >
+                        <option value="">
+                          {this.props.i18n.text.get(
+                            "plugin.workspace.materialsManagement.editorView.localeCode.inherited"
+                          )}
+                        </option>
+                        {languageOptions.map((language) => (
+                          <option key={language} value={language}>
+                            {language.toUpperCase()}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
 
             {!this.props.editorState.section &&
             this.props.editorState.canEditContent &&
@@ -1188,6 +1203,39 @@ class MaterialEditor extends React.Component<
                 </div>
               </div>
             ) : null}
+
+            <div className="material-editor__sub-section">
+              <h3 className="material-editor__sub-title">
+                {this.props.i18n.text.get(
+                  "plugin.workspace.materialsManagement.editorView.subTitle.localeCode"
+                )}
+              </h3>
+              <div className="material-editor__select-locale-container">
+                <div className="form__row">
+                  <div className="form-element">
+                    <select
+                      className="form-element__input form-element__input--material-editor-title"
+                      onChange={this.updateTitleLanguage}
+                      value={
+                        this.props.editorState.currentDraftNodeValue
+                          .titleLanguage || ""
+                      }
+                    >
+                      <option value="">
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.materialsManagement.editorView.localeCode.inherited"
+                        )}
+                      </option>
+                      {languageOptions.map((language) => (
+                        <option key={language} value={language}>
+                          {language.toUpperCase()}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         ),
       });
