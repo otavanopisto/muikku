@@ -13,6 +13,7 @@ import {
   MaterialViewRestriction,
   AssignmentType,
   Language,
+  languageOptions,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -436,7 +437,10 @@ class MaterialEditor extends React.Component<
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
-        titleLanguage: e.currentTarget.value as Language,
+        titleLanguage:
+          e.currentTarget.value !== ""
+            ? (e.currentTarget.value as Language)
+            : null,
       },
       isDraft: true,
     });
@@ -1083,11 +1087,16 @@ class MaterialEditor extends React.Component<
                   className="form-element__input form-element__input--material-editor-title"
                   onChange={this.updateTitleLanguage}
                   value={
-                    this.props.editorState.currentDraftNodeValue.titleLanguage
+                    this.props.editorState.currentDraftNodeValue
+                      .titleLanguage || ""
                   }
                 >
-                  <option value="fi">fi</option>
-                  <option value="en">en</option>
+                  <option value="">Periytä</option>
+                  {languageOptions.map((language) => (
+                    <option key={language} value={language}>
+                      {language.toUpperCase()}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

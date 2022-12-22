@@ -96,7 +96,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
         onClick={stopPropagation}
         lang={
           props.material.titleLanguage ||
-          props.folder.titleLanguage ||
+          (props.folder && props.folder.titleLanguage) ||
           props.workspace.language
         }
       >

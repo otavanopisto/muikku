@@ -53,10 +53,7 @@ class DescriptionPanel extends React.Component<
             )}
           </h2>
         </div>
-        <div
-          className="panel__body"
-          lang={this.props.workspace && this.props.workspace.language}
-        >
+        <div className="panel__body">
           {this.props.workspace && (
             <MaterialLoader
               editable={this.props.workspaceEditMode.active}
