@@ -545,9 +545,8 @@ public class WorkspaceMaterialController {
     String urlName = generateUniqueUrlName(workspaceFolder.getParent(), workspaceFolder, title);
     workspaceFolder = workspaceFolderDAO.updateFolderName(workspaceFolder, urlName, title);
     
-    if (!language.equals(workspaceFolder.getLanguage())) {
-      workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateLanguage(workspaceFolder, language);
-    }
+    workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateLanguage(workspaceFolder, language);
+    
     // View restrict
 
     workspaceFolder = workspaceFolderDAO.updateViewRestrict(workspaceFolder, viewRestrict);
