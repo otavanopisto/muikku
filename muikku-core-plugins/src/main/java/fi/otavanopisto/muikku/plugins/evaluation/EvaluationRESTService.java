@@ -1235,7 +1235,9 @@ public class EvaluationRESTService extends PluginRESTService {
       
       List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listActiveWorkspaceEntitiesByUserIdentifier(loggedUser);
       List<Long> workspaceEntityIds = workspaceEntities.stream().map(workspaceEntity -> workspaceEntity.getId()).distinct().collect(Collectors.toList());
-      List<InterimEvaluationRequest> interimEvaluationRequests = evaluationController.listInterimEvaluationRequests(workspaceEntityIds, Boolean.FALSE);
+      List<InterimEvaluationRequest> interimEvaluationRequests = workspaceEntityIds.isEmpty()
+          ? Collections.emptyList()
+          : evaluationController.listInterimEvaluationRequests(workspaceEntityIds, Boolean.FALSE);
       for (InterimEvaluationRequest interimEvaluationRequest : interimEvaluationRequests) {
         restAssessmentRequests.add(toRestAssessmentRequest(interimEvaluationRequest));
       }
@@ -1451,7 +1453,7 @@ public class EvaluationRESTService extends PluginRESTService {
       List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
           workspaceEntity,
           WorkspaceMaterialAssignmentType.EVALUATED);
-      assignmentsTotal = new Long(evaluatedAssignments.size());
+      assignmentsTotal = Long.valueOf(evaluatedAssignments.size()); 
       // Assignments done by user
       if (assignmentsTotal > 0) {
         UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(compositeAssessmentRequest.getUserIdentifier());            
@@ -1537,7 +1539,7 @@ public class EvaluationRESTService extends PluginRESTService {
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
         workspaceEntity,
         WorkspaceMaterialAssignmentType.EVALUATED);
-    assignmentsTotal = new Long(evaluatedAssignments.size());
+    assignmentsTotal = Long.valueOf(evaluatedAssignments.size());
     // Assignments done by user
     if (assignmentsTotal > 0) {
       List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();

@@ -54,6 +54,9 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
   }
 
   public List<InterimEvaluationRequest> listByWorkspacesAndArchived(Collection<Long> workspaceEntityIds, Boolean archived) {
+    if (workspaceEntityIds.isEmpty()) {
+      return Collections.emptyList();
+    }
     EntityManager entityManager = getEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<InterimEvaluationRequest> criteria = criteriaBuilder.createQuery(InterimEvaluationRequest.class);
