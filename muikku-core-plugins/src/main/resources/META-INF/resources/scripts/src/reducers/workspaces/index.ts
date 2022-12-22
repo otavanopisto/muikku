@@ -367,12 +367,12 @@ export interface TemplateWorkspaceType {
  * Language options for workspace
  * used as lang attribute jsx
  */
-export const workspaceLanguageOptions = ["fi", "en"] as const;
+export const languageOptions = ["fi", "en"] as const;
 
 /**
  * Language
  */
-export type Language = typeof workspaceLanguageOptions[number];
+export type Language = typeof languageOptions[number];
 
 /**
  * WorkspaceType
@@ -650,7 +650,7 @@ export type AssignmentType =
  */
 export interface MaterialContentNodeType {
   title: string;
-  titleLanguage: Language;
+  titleLanguage?: Language | null;
   license: string;
   viewRestrict: MaterialViewRestriction;
   html: string;
