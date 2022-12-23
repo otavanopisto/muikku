@@ -1081,7 +1081,8 @@ class MaterialEditor extends React.Component<
               </div>
             ) : null}
 
-            {this.props.editorState.section && (
+            {(this.props.editorState.section ||
+              this.props.locationPage === "Home") && (
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
                   {this.props.i18n.text.get(
