@@ -1,0 +1,106 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions";
+import { StateType } from "~/reducers";
+import { useReadSpeakerReader } from "../../hooks/useReadSpeakerReader";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+
+/**
+ * ReadSpeakerReaderProps
+ */
+interface ReadSpeakerReaderProps {
+  /**
+   * Read parameter type (readid or readclass)
+   */
+  readParameterType: "readid" | "readclass";
+  /**
+   * Read parameters
+   */
+  readParameters: string[];
+  /**
+   * Handles display notification from redux side
+   */
+  displayNotification: DisplayNotificationTriggerType;
+}
+
+/**
+ * Creates ReadSpeaker reader button
+ * initialized webReader script if not already initialized.
+ * Component is used where webReader is needed.
+ *
+ * @param props props
+ * @returns JSX.Element
+ */
+const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
+  const { readParameterType } = props;
+
+  const { rspkr, rspkrLoaded } = useReadSpeakerReader(
+    props.displayNotification
+  );
+
+  React.useEffect(() => {
+    const rspkrValue = rspkrLoaded ? rspkr.current : undefined;
+
+    rspkrValue &&
+      rspkrValue.q(function () {
+        rspkrValue.ui.addClickEvents();
+      });
+
+    return () => {
+      if (rspkrValue && rspkrValue.ui && rspkrValue.ui.getActivePlayer()) {
+        rspkrValue.ui.getActivePlayer().close();
+      }
+    };
+  }, [rspkr, rspkrLoaded]);
+
+  const readParameters =
+    props.readParameters.length > 0
+      ? props.readParameters.join()
+      : props.readParameters[0];
+
+  if (!rspkr.current) return null;
+
+  return (
+    <div id="readspeaker_button1" className="rs_skip rsbtn rs_preserve">
+      <a
+        rel="nofollow"
+        className="rsbtn_play"
+        accessKey="L"
+        title="Escucha esta p&aacute;gina utilizando ReadSpeaker webReader"
+        href={`https://app-eu.readspeaker.com/cgi-bin/rsent?customerid=3&amp;lang=fi_fi&amp;voice=Elina&amp;${readParameterType}=${readParameters}&amp;url=${encodeURIComponent(
+          document.location.href
+        )}`}
+      >
+        <span className="rsbtn_left rsimg rspart">
+          <span className="rsbtn_text">
+            <span>ReadSpeaker</span>
+          </span>
+        </span>
+        <span className="rsbtn_right rsimg rsplay rspart"></span>
+      </a>
+    </div>
+  );
+};
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {};
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ displayNotification }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReadSpeakerReader);
