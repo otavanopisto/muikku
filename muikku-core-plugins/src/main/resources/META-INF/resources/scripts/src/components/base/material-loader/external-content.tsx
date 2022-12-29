@@ -33,7 +33,7 @@ export function MaterialLoaderExternalContent(
     props.material.assignment.assignmentType === "INTERIM_EVALUATION"
   ) {
     return (
-      <div className={className}>
+      <div className={`${className} rs_skip_always`}>
         <InterimEvaluationEditor {...props} />
       </div>
     );
@@ -41,7 +41,7 @@ export function MaterialLoaderExternalContent(
 
   if (props.material.assignmentType === "INTERIM_EVALUATION") {
     return (
-      <div className={className}>
+      <div className={`${className} rs_skip_always`}>
         <InterimEvaluationEditor {...props} />
       </div>
     );

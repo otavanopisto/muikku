@@ -16,6 +16,7 @@ interface ContentPanelProps {
   modifier: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   title?: React.ReactElement<any> | string;
+  readspeakerComponent?: JSX.Element;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -212,6 +213,7 @@ export default class ContentPanel extends React.Component<
         <div className="content-panel__container">
           <div className="content-panel__header">
             <h1 className="content-panel__header-title">{this.props.title}</h1>
+            {this.props.readspeakerComponent && this.props.readspeakerComponent}
           </div>
           {this.props.aside ? (
             <div className="content-panel__aside">{this.props.aside}</div>

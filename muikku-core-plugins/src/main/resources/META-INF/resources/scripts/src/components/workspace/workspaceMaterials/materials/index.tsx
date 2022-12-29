@@ -39,6 +39,7 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
+import ReadSpeakerReader from "~/components/general/readspeaker";
 
 /**
  * WorkspaceMaterialsProps
@@ -477,6 +478,8 @@ class WorkspaceMaterials extends React.Component<
       return null;
     }
 
+    const readSpeakerParameters: string[] = [];
+
     const isEditable = this.props.workspaceEditMode.active;
 
     const createSectionElementWhenEmpty =
@@ -511,6 +514,8 @@ class WorkspaceMaterials extends React.Component<
     const results: JSX.Element[] = [];
 
     this.props.materials.forEach((section, index) => {
+      readSpeakerParameters.push(`sectionId${section.workspaceMaterialId}`);
+
       // If first section, then above it is "add new section" icon button
       // And it is only showed when editing is active
       if (index === 0 && isEditable) {
@@ -726,6 +731,7 @@ class WorkspaceMaterials extends React.Component<
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
+          id={`sectionId${section.workspaceMaterialId}`}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
@@ -814,6 +820,12 @@ class WorkspaceMaterials extends React.Component<
         modifier="materials"
         navigation={this.props.navigation}
         title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")}
+        readspeakerComponent={
+          <ReadSpeakerReader
+            readParameterType="readid"
+            readParameters={readSpeakerParameters}
+          />
+        }
         ref="content-panel"
       >
         {results}

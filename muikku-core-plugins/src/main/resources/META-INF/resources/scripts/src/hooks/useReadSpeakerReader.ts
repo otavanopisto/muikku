@@ -31,7 +31,6 @@ export const useReadSpeakerReader = (
      */
     const handleLoad = (e: Event) => {
       if (e.type === "load") {
-        displayNotification("ReadSpeaker reader loaded", "success");
         rspkr.current = (window as any).ReadSpeaker;
 
         if (rspkr.current) {
@@ -52,18 +51,9 @@ export const useReadSpeakerReader = (
     const handleError = (e: Event) => {
       if (e.type === "error") {
         displayNotification(
-          "ReadSpeaker reader failed to load, trying again within 3 sec...",
+          "ReadSpeaker reader failed to load, try refreshing the page",
           "error"
         );
-
-        // Remove script
-        document.head.removeChild(oScript);
-        setRspkrLoaded(false);
-
-        // Wait 3 seconds and try again
-        setTimeout(() => {
-          handleCreateScript();
-        }, 3000);
       }
     };
 
@@ -96,8 +86,6 @@ export const useReadSpeakerReader = (
       oScript.onerror = handleError;
 
       rspkr.current = (window as any).ReadSpeaker;
-
-      console.log("rspkr.current", rspkr.current);
 
       if (rspkr.current) {
         rspkr.current.p(rspkr.current.init());

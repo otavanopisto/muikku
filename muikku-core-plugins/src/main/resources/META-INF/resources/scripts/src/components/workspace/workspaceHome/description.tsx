@@ -16,6 +16,7 @@ import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
+import ReadSpeakerReader from "~/components/general/readspeaker";
 
 /**
  * DescriptionPanelProps
@@ -52,7 +53,12 @@ class DescriptionPanel extends React.Component<
               "plugin.workspace.index.descriptionTitle"
             )}
           </h2>
+          <ReadSpeakerReader
+            readParameterType="readclass"
+            readParameters={["panel__body"]}
+          />
         </div>
+
         <div className="panel__body">
           {this.props.workspace && (
             <MaterialLoader

@@ -398,6 +398,10 @@ export default class CKEditor extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    return <textarea className="cke" ref="ckeditor" name={this.name} />;
+    return (
+      <div className="rs_skip_always" style={{ display: "contents" }}>
+        <textarea className="cke" ref="ckeditor" name={this.name} />
+      </div>
+    );
   }
 }

@@ -26,6 +26,10 @@ interface ReadSpeakerReaderProps {
    * Handles display notification from redux side
    */
   displayNotification: DisplayNotificationTriggerType;
+  /**
+   * Edit mode
+   */
+  editMode: boolean;
 }
 
 /**
@@ -37,7 +41,7 @@ interface ReadSpeakerReaderProps {
  * @returns JSX.Element
  */
 const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
-  const { readParameterType } = props;
+  const { readParameterType, editMode } = props;
 
   const { rspkr, rspkrLoaded } = useReadSpeakerReader(
     props.displayNotification
@@ -46,24 +50,38 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
   React.useEffect(() => {
     const rspkrValue = rspkrLoaded ? rspkr.current : undefined;
 
-    rspkrValue &&
+    // Add click events to ReadSpeaker button
+    // when webReader is initialized and edit mode is not active
+    if (!editMode && rspkrValue && rspkrValue.ui) {
       rspkrValue.q(function () {
         rspkrValue.ui.addClickEvents();
       });
+    }
 
+    // Close player when edit mode is activated
+    if (
+      editMode &&
+      rspkrValue &&
+      rspkrValue.ui &&
+      rspkrValue.ui.getActivePlayer()
+    ) {
+      rspkrValue.ui.destroyActivePlayer();
+    }
+
+    // Close player when component is unmounted
     return () => {
       if (rspkrValue && rspkrValue.ui && rspkrValue.ui.getActivePlayer()) {
         rspkrValue.ui.getActivePlayer().close();
       }
     };
-  }, [rspkr, rspkrLoaded]);
+  }, [rspkr, rspkrLoaded, editMode]);
 
   const readParameters =
     props.readParameters.length > 0
       ? props.readParameters.join()
       : props.readParameters[0];
 
-  if (!rspkr.current) return null;
+  if (!rspkr.current || editMode) return null;
 
   return (
     <div id="readspeaker_button1" className="rs_skip rsbtn rs_preserve">
@@ -92,7 +110,9 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {};
+  return {
+    editMode: state.workspaces.editMode.active,
+  };
 }
 
 /**
