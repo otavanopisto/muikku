@@ -566,7 +566,7 @@
   }
 
   &.state-OPEN {
-    box-shadow: 0 25px 25px;
+    box-shadow: 0 25px 20px $color-evaluation-drawer-shadow;
     opacity: 100%;
     transform: translateX(0);
   }

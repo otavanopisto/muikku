@@ -821,13 +821,14 @@ class WorkspaceMaterials extends React.Component<
     return (
       <ContentPanel
         aside={
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <>
             {progressData}{" "}
             <IconButton
               icon="cogs"
+              buttonModifiers={["workspace-notebook"]}
               onClick={this.handleOpenMaterialExtraToolsDrawerClick}
             />
-          </div>
+          </>
         }
         onOpenNavigation={this.onOpenNavigation}
         modifier="materials"

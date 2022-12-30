@@ -53,30 +53,9 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
     }
   }, [loadNotebookEntries, notes]);
 
-  /**
-   * Handles adding new note
-   */
-  const handleAddNewNoteClick = () => {
-    toggleNotebookEditor({ open: true });
-  };
-
   return (
-    <div>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <h1>Muistiinpanot</h1>
-        {!notebook.noteEditorOpen && (
-          <IconButton icon="plus" onClick={handleAddNewNoteClick} />
-        )}
-      </div>
-
-      <div
-        style={{
-          position: "sticky",
-          top: "-10px",
-          backgroundColor: "white",
-          zIndex: "50",
-        }}
-      >
+    <div className="notebook">
+      <div className="notebook__editor">
         <NoteEditor />
       </div>
 

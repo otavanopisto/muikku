@@ -3,16 +3,10 @@ import type { Identifier, XYCoord } from "dnd-core";
 import type { FC } from "react";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
+import { IconButton } from "../button";
 
 export const ItemTypes = {
   CARD: "card",
-};
-
-const style = {
-  marginBottom: ".5rem",
-  backgroundColor: "white",
-  display: "flex",
-  alignItems: "center",
 };
 
 /**
@@ -144,13 +138,14 @@ export const DraggableElement: FC<DraggableElementProps> = ({
   return (
     <div
       ref={previewRef}
-      style={{ ...style, opacity }}
+      style={{ opacity }}
+      className="draggable-element"
       data-handler-id={handlerId}
     >
-      <div ref={dragRef} className="draggable-element">
-        <div
-          style={{ width: "100%", textAlign: "center" }}
-          className="icon-move"
+      <div ref={dragRef} className="draggable-element__handle">
+        <IconButton
+          icon="move"
+          buttonModifiers={["notebook-action", "notebook-drag-handle"]}
         />
       </div>
       {children}

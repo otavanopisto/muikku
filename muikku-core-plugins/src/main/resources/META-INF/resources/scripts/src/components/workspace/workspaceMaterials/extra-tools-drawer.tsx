@@ -10,7 +10,7 @@ import { WorkspaceMaterialExtraTools } from "~/reducers/workspaces";
 import {
   MaterialShowOrHideExtraToolsTriggerType,
   materialShowOrHideExtraTools,
-} from "../../../actions/workspaces/material";
+} from "~/actions/workspaces/material";
 import {
   DndProvider,
   MouseTransition,
@@ -19,6 +19,8 @@ import {
 } from "react-dnd-multi-backend";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+
+import "~/sass/elements/workspace-extra-tools.scss";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -102,18 +104,14 @@ const MaterialExtraToolDrawer: React.FC<MaterialExtraToolDrawerProps> = (
       id: "journals",
       type: "material-editor",
       name: "Päiväkirja",
-      component: (
-        <div>
-          <h1>Päiväkirjamerkinnät</h1>
-        </div>
-      ),
+      component: <></>,
     },
   ];
 
-  let drawerClasses = "evaluation-modal__evaluate-drawer";
+  let drawerClasses = "workspace-extra-tools-drawer";
 
   if (materialExtraTools.opened) {
-    drawerClasses = "evaluation-modal__evaluate-drawer state-OPEN";
+    drawerClasses = "workspace-extra-tools-drawer state-OPEN";
   }
 
   return (
@@ -122,23 +120,20 @@ const MaterialExtraToolDrawer: React.FC<MaterialExtraToolDrawerProps> = (
         className={`${drawerClasses} ${
           modifiers
             ? modifiers
-                .map((m) => `evaluation-modal__evaluate-drawer--${m}`)
+                .map((m) => `workspace-extra-tools-drawer--${m}`)
                 .join(" ")
             : ""
         }`}
       >
-        <header className="evaluation-modal__evaluate-drawer-header">
-          <div className="evaluation-modal__evaluate-drawer-header-title">
-            Lisäpaneelin työkalut
-          </div>
+        <div className="workspace-extra-tools-drawer__close">
           <IconButton
             onClick={handleCloseDrawerClick}
             disabled={disableClose}
             buttonModifiers={closeIconModifiers}
             icon="arrow-right"
           />
-        </header>
-        <div className="evaluation-modal__evaluate-drawer-content evaluation-modal__evaluate-drawer-content--workspace">
+        </div>
+        <div className="workspace-extra-tools-drawer__content">
           {materialExtraTools.opened ? (
             <Tabs
               renderAllComponents={true}

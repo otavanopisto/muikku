@@ -728,6 +728,14 @@
   }
 }
 
+.button-icon--workspace-notebook {
+  height: 25px; // This button is used as a trigger top open extra tools panel. Height is the same as workspace activity container.
+}
+
+.button-icon--workspace-extra-tools-close {
+  height: 2.25rem; // This button is used as a trigger to close extra tools panel. Height is the same as tab height.
+}
+
 .button__icon--left {
   margin-left: 0;
   margin-right: 5px;
@@ -748,6 +756,22 @@
   &:hover {
     color: $color-info;
   }
+}
+
+.button-icon--notebook-action {
+  color: $color-notes-action-button;
+  font-size: 0.9375rem;
+  height: 1.25rem;
+  margin: 0 5px;
+  width: 1.25rem;
+
+  &:hover {
+    color: $color-info;
+  }
+}
+
+.button-icon--notebook-drag-handle {
+  height: 100%;
 }
 
 .button-icon--journal-central {

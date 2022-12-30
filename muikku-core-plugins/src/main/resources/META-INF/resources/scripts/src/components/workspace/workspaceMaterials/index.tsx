@@ -71,7 +71,9 @@ export default class WorkspaceMaterialsBody extends React.Component<
           onClose={this.props.onCloseSignupDialog}
         />
         <MaterialEditor locationPage="Materials" />
-        <MaterialExtraToolDrawer />
+        <MaterialExtraToolDrawer
+          closeIconModifiers={["workspace-extra-tools-close"]}
+        />
         <Materials
           onOpenNavigation={this.onOpenNavigation}
           navigation={navigationComponent}

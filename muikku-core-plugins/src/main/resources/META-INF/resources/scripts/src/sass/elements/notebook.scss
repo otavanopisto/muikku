@@ -3,6 +3,89 @@
 @import "../base/mixins";
 @import "../base/breakpoints";
 
+.notebook {
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+}
+
+.notebook__items {
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.notebook__items-actions {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.notebook__items-actions-primary {
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+}
+
+.notebook__items-actions-secondary {
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-end;
+}
+
+.notebook__item {
+  border: 1px solid $color-default-separator-border;
+  border-radius: 3px;
+  box-shadow: 0 0 15px rgba(0 0 0 / 2%);
+  padding: 10px;
+  width: 100%;
+}
+
+.notebook__item-header {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+}
+
+.notebook__item-title {
+  cursor: pointer;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+
+.notebook__item-actions {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.notebook__item-body {
+  p {
+    margin: 10px 0;
+  }
+
+  p:first-child {
+    margin-top: 0;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  &.rich-text {
+    font-size: 0.875rem;
+  }
+}
+
 .note-item--drag-container {
   align-items: center;
   display: flex;
@@ -27,8 +110,18 @@
 }
 
 .draggable-element {
-  display: inline-block;
-  overflow: hidden;
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 0 10px;
+}
+
+.draggable-element__handle {
+  align-items: center;
+  background: $color-default-lighter-generic-background;
+  border-radius: 10px 0 0 10px;
+  display: flex;
+  height: 40px;
+  justify-content: center;
   transition: width 0.3s;
-  width: 80px;
 }

@@ -166,24 +166,50 @@ export const NoteList: React.FC<NoteListProps> = (props) => {
     ]
   );
 
+  /**
+   * Handles adding new note
+   */
+  const handleAddNewNoteClick = () => {
+    toggleNotebookEditor({ open: true });
+  };
+
   return (
-    <div style={{ marginTop: "20px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div>
-          <IconButton icon="stack" onClick={handleEditEntriesOrderClick} />
+    <div className="notebook__items">
+      <div className="notebook__items-actions">
+        <div className="notebook__items-actions-primary">
+          <IconButton
+            icon="plus"
+            buttonModifiers={["notebook-action"]}
+            onClick={handleAddNewNoteClick}
+          />
+          <IconButton
+            icon="move"
+            buttonModifiers={["notebook-action"]}
+            onClick={handleEditEntriesOrderClick}
+          />
         </div>
-        <div>
-          <IconButton icon="plus" onClick={handleOpenAllClick} />
-          <IconButton icon="cross" onClick={handleCloseAllClick} />
+        <div className="notebook__items-actions-secondary">
+          <IconButton
+            icon="arrow-down"
+            buttonModifiers={["notebook-action"]}
+            onClick={handleOpenAllClick}
+          />
+          <IconButton
+            icon="arrow-up"
+            buttonModifiers={["notebook-action"]}
+            onClick={handleCloseAllClick}
+          />
         </div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div className="notebook__items-list">
         {notebook.state === "LOADING" ? (
           <div className="empty-loader" />
         ) : notes ? (
           notes.map((note, index) => renderNote(note, index))
         ) : (
-          <div> Ei muistiinpanoja </div>
+          <div className="empty">
+            <span>Ei muistiinpanoja</span>
+          </div>
         )}
       </div>
     </div>
@@ -218,9 +244,11 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(NoteList);
 
-/////////////////////
-/////////////////////
-/////////////////////
+/////////  //  ////  ///     /////     ///////     ////////     /////
+/////////  //  ////  ///  //  ////  //  /////  ///  ///////    //////
+/////////      ////  ///     /////     /////  /////  //////   ///////
+/////////  //  ////  ///  ////////  ///////  //  ///  ///////////////
+/////////  //  ////  ///  ////////  //////  /////////  ////  ////////
 
 /**
  * NoteListItemProps
@@ -279,41 +307,30 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
   };
 
   return (
-    <div
-      key={props.note.id}
-      style={{
-        margin: "10px 0px",
-        backgroundColor: "aliceblue",
-        padding: "5px",
-        width: "100%",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <h3 onClick={handleOpenClick}>{props.note.title}</h3>
-
-        <div style={{ display: "flex" }}>
+    <div className="notebook__item" key={props.note.id}>
+      <div className="notebook__item-header">
+        <div className="notebook__item-actions">
           <IconButton
             icon="pencil"
             onClick={handleEditClick}
             disabled={props.isEdited}
+            buttonModifiers={["notebook-action"]}
           />
 
           <IconButton
             icon="trash"
             onClick={handleDeleteClick}
             disabled={props.isEdited}
+            buttonModifiers={["notebook-action"]}
           />
         </div>
       </div>
+      <div className="notebook__item-title" onClick={handleOpenClick}>
+        {props.note.title}
+      </div>
 
-      <AnimateHeight height={showContent ? "auto" : 30}>
-        <article className="application-list__item-content-body application-list__item-content-body--journal-comment rich-text">
+      <AnimateHeight height={showContent ? "auto" : 28}>
+        <article className="notebook__item-body rich-text">
           <CkeditorContentLoader html={props.note.workspaceNote} />
         </article>
       </AnimateHeight>
