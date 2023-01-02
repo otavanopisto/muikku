@@ -43,7 +43,7 @@ interface NoteBookProps {
  * @param props props
  */
 const NoteBook: React.FC<NoteBookProps> = (props) => {
-  const { notebook, loadNotebookEntries, toggleNotebookEditor } = props;
+  const { notebook, loadNotebookEntries } = props;
 
   const { notes } = notebook;
 
@@ -55,7 +55,11 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
 
   return (
     <div className="notebook">
-      <div className="notebook__editor">
+      <div
+        className={`notebook__editor ${
+          notebook.noteEditorOpen ? "state-OPEN" : ""
+        }`}
+      >
         <NoteEditor />
       </div>
 

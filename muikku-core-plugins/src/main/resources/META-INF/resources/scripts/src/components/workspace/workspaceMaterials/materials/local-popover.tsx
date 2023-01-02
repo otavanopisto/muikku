@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { ButtonPill } from "~/components/general/button";
+import { IconButton } from "~/components/general/button";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
@@ -86,16 +86,16 @@ const LocalPopover: React.FC<LocalPopoverProps> = (props) => {
         <div
           style={{
             position: "fixed",
-            top: popoverPos.top - 5,
+            top: popoverPos.top - 40,
             left: popoverPos.right,
-            backgroundColor: "white",
-            padding: "5px",
             zIndex: "100",
-            marginLeft: "5px",
-            boxShadow: "5px 5px 5px grey",
           }}
         >
-          <ButtonPill icon="book" onClick={handleCreateNoteFromSelection} />
+          <IconButton
+            buttonModifiers={["workspace-add-note-from-context"]}
+            icon="note"
+            onClick={handleCreateNoteFromSelection}
+          />
         </div>
       )}
       {props.children}

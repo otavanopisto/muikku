@@ -824,7 +824,7 @@ class WorkspaceMaterials extends React.Component<
           <>
             {progressData}{" "}
             <IconButton
-              icon="cogs"
+              icon="note"
               buttonModifiers={["workspace-notebook"]}
               onClick={this.handleOpenMaterialExtraToolsDrawerClick}
             />

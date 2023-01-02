@@ -9,6 +9,19 @@
   width: 100%;
 }
 
+.notebook__editor {
+  .cke {
+    // This needs to be here so we can override the ckeditor's visuals/size partly
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
+  }
+}
+
 .notebook__items {
   display: flex;
   flex-basis: auto;

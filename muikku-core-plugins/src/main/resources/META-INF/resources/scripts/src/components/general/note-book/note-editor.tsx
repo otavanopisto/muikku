@@ -236,26 +236,28 @@ class NoteEditor extends SessionStateComponent<
 
     return (
       <AnimateHeight duration={500} height={editorOpen ? "auto" : 0}>
-        <div style={{ padding: "10px 0" }}>
-          <div>
-            <div className="env-dialog__form-element-container">
-              <label htmlFor="note-entry-title" className="env-dialog__label">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.journal.entry.title.label"
-                )}
-              </label>
+        <div className="">
+          <div className="form">
+            <div className="form__row">
+              <div className="form-element">
+                <label htmlFor="note-entry-title" className="">
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.journal.entry.title.label"
+                  )}
+                </label>
 
-              <input
-                className="env-dialog__input env-dialog__input--new-edit-journal-title"
-                id="note-entry-title"
-                value={this.state.noteTitle}
-                onChange={this.handleNoteTitleChange}
-              />
+                <input
+                  className="form-element__input form-element__input--note-title"
+                  id="note-entry-title"
+                  value={this.state.noteTitle}
+                  onChange={this.handleNoteTitleChange}
+                />
+              </div>
             </div>
 
-            <div className="env-dialog__row env-dialog__row--ckeditor">
-              <div className="env-dialog__form-element-container">
-                <label className="env-dialog__label">
+            <div className="form__row">
+              <div className="form-element">
+                <label>
                   {this.props.i18n.text.get(
                     "plugin.workspace.journal.entry.content.label"
                   )}
@@ -269,31 +271,31 @@ class NoteEditor extends SessionStateComponent<
                 </CKEditor>
               </div>
             </div>
-          </div>
-          <div className="env-dialog__actions">
-            <Button
-              className="button button--dialog-execute"
-              disabled={this.state.locked}
-              onClick={this.handleSaveClick}
-            >
-              Tallenna
-            </Button>
-            <Button
-              buttonModifiers="dialog-cancel"
-              disabled={this.state.locked}
-              onClick={this.handleCancelClick}
-            >
-              Peruuta
-            </Button>
-            {this.recovered && (
+            <div className="form__buttons form__buttons--notebook">
               <Button
-                buttonModifiers="dialog-clear"
+                className="button button--dialog-execute"
                 disabled={this.state.locked}
-                onClick={this.handleDeleteDraftClick}
+                onClick={this.handleSaveClick}
               >
-                Poista luonnos
+                Tallenna
               </Button>
-            )}
+              <Button
+                buttonModifiers="dialog-cancel"
+                disabled={this.state.locked}
+                onClick={this.handleCancelClick}
+              >
+                Peruuta
+              </Button>
+              {this.recovered && (
+                <Button
+                  buttonModifiers="dialog-clear"
+                  disabled={this.state.locked}
+                  onClick={this.handleDeleteDraftClick}
+                >
+                  Poista luonnos
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </AnimateHeight>
