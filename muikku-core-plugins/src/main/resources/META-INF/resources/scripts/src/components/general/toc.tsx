@@ -100,8 +100,10 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
 
     /**
      * Handles toggle open and close clicks
+     * @param e e
      */
-    const handleToggleHeightClick = () => {
+    const handleToggleHeightClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
       toggleHeight();
     };
 
@@ -110,6 +112,7 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
      * @param e e
      */
     const handleLinkClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
       if (height === 0) {
         toggleHeight("open");
       }

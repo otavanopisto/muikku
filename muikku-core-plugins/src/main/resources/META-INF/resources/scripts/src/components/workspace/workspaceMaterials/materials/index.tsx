@@ -24,7 +24,7 @@ import ContentPanel, {
 import ProgressData from "../../progressData";
 
 import WorkspaceMaterial from "./material";
-import { ButtonPill, IconButton } from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
@@ -820,16 +820,7 @@ class WorkspaceMaterials extends React.Component<
 
     return (
       <ContentPanel
-        aside={
-          <>
-            {progressData}{" "}
-            <IconButton
-              icon="note"
-              buttonModifiers={["workspace-notebook"]}
-              onClick={this.handleOpenMaterialExtraToolsDrawerClick}
-            />
-          </>
-        }
+        aside={progressData}
         onOpenNavigation={this.onOpenNavigation}
         modifier="materials"
         navigation={this.props.navigation}

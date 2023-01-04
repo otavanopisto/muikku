@@ -12,6 +12,8 @@ import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
 import EnrollmentDialog from "../enrollment-dialog";
 import MaterialExtraToolDrawer from "./extra-tools-drawer";
+import Tabs, { Tab } from "~/components/general/tabs";
+import NoteBook from "~/components/general/note-book/note-book";
 
 /**
  * WorkspaceMaterialsBodyProps
@@ -27,11 +29,20 @@ interface WorkspaceMaterialsBodyProps {
 }
 
 /**
+ * WorkspaceMaterialBodyState
+ */
+interface WorkspaceMaterialBodyState {
+  activeTab: ToolTab;
+}
+
+type ToolTab = "notebook" | "table-of-contents" | "journals";
+
+/**
  * WorkspaceMaterialsBody
  */
 export default class WorkspaceMaterialsBody extends React.Component<
   WorkspaceMaterialsBodyProps,
-  Record<string, unknown>
+  WorkspaceMaterialBodyState
 > {
   /**
    * constructor
@@ -39,6 +50,10 @@ export default class WorkspaceMaterialsBody extends React.Component<
    */
   constructor(props: WorkspaceMaterialsBodyProps) {
     super(props);
+
+    this.state = {
+      activeTab: "table-of-contents",
+    };
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
@@ -52,10 +67,42 @@ export default class WorkspaceMaterialsBody extends React.Component<
   }
 
   /**
+   * handleActiveTabChange
+   * @param tab change to
+   */
+  handleActiveTabChange = (tab: ToolTab) => {
+    this.setState({ activeTab: tab });
+  };
+
+  /**
    * render
    */
   render() {
-    const navigationComponent = <TableOfContentsComponent ref="content" />;
+    const materialEditorTabs: Tab[] = [
+      {
+        id: "table-of-contents",
+        type: "material-editor",
+        name: "Sisällysluettelo",
+        component: <TableOfContentsComponent ref="content" />,
+      },
+      {
+        id: "notebook",
+        type: "material-editor",
+        name: "Muistiinpanot",
+        component: <NoteBook />,
+      },
+    ];
+
+    const navigationComponent = (
+      <Tabs
+        renderAllComponents={true}
+        modifier="material-editor"
+        activeTab={this.state.activeTab}
+        onTabChange={this.handleActiveTabChange}
+        tabs={materialEditorTabs}
+      ></Tabs>
+    );
+
     return (
       <div>
         <WorkspaceNavbar

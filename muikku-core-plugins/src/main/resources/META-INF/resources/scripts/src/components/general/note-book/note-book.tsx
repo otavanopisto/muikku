@@ -1,6 +1,5 @@
 import * as React from "react";
 import NoteEditor from "./note-editor";
-import { IconButton } from "../button";
 import { NoteBookState } from "~/reducers/notebook/notebook";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
@@ -22,6 +21,31 @@ import { WorkspaceType } from "~/reducers/workspaces/index";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/notebook.scss";
 import NoteList from "./note-list";
+import {
+  DndProvider,
+  MouseTransition,
+  MultiBackendOptions,
+  TouchTransition,
+} from "react-dnd-multi-backend";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
+
+export const HTML5toTouch: MultiBackendOptions = {
+  backends: [
+    {
+      id: "html5",
+      backend: HTML5Backend,
+      transition: MouseTransition,
+    },
+    {
+      id: "touch",
+      backend: TouchBackend,
+      options: { enableMouseEvents: true },
+      preview: true,
+      transition: TouchTransition,
+    },
+  ],
+};
 
 /**
  * NoteBookProps
@@ -63,7 +87,9 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         <NoteEditor />
       </div>
 
-      <NoteList />
+      <DndProvider options={HTML5toTouch}>
+        <NoteList />
+      </DndProvider>
     </div>
   );
 };

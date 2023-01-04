@@ -143,6 +143,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
           a11y={a11yConfig}
           pagination={paginationConfig}
           className="tabs__tab-data-container tabs__tab-data-container--mobile"
+          touchMoveStopPropagation={true}
         >
           {tabs.map((t: Tab) => (
             <SwiperSlide key={t.id}>
@@ -202,6 +203,9 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   );
 };
 
+/**
+ * MobileOnlyTabsProps
+ */
 interface MobileOnlyTabsProps {
   onTabChange: (id: string, hash?: string) => void;
   activeTab: string;
