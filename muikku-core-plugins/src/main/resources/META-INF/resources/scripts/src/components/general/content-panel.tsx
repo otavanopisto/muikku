@@ -114,7 +114,6 @@ export default class ContentPanel extends React.Component<
    * @param e e
    */
   onTouchStart(e: TouchEvent) {
-    e.stopPropagation();
     this.setState({ dragging: true });
     this.touchCordX = e.changedTouches[0].pageX;
     this.touchCordY = e.changedTouches[0].pageY;
@@ -127,7 +126,6 @@ export default class ContentPanel extends React.Component<
    * @param e e
    */
   onTouchMove(e: TouchEvent) {
-    e.stopPropagation();
     let diffX = e.changedTouches[0].pageX - this.touchCordX;
     const diffY = e.changedTouches[0].pageY - this.touchCordY;
     const absoluteDifferenceX = Math.abs(diffX - this.state.drag);
@@ -156,7 +154,6 @@ export default class ContentPanel extends React.Component<
    * @param e e
    */
   onTouchEnd(e: TouchEvent) {
-    e.stopPropagation();
     const width = (
       document.querySelector(
         ".content-panel__navigation-content"

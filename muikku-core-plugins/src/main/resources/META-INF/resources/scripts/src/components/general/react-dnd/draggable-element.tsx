@@ -142,7 +142,10 @@ export const DraggableElement: FC<DraggableElementProps> = ({
       className="draggable-element"
       data-handler-id={handlerId}
     >
-      <div ref={dragRef} className="draggable-element__handle">
+      <div
+        ref={dragRef}
+        className="draggable-element__handle swiper-no-swiping"
+      >
         <IconButton
           icon="move"
           buttonModifiers={["notebook-action", "notebook-drag-handle"]}
