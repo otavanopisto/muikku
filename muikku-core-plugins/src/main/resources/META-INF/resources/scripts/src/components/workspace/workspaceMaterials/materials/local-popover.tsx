@@ -93,7 +93,7 @@ const LocalPopover: React.FC<LocalPopoverProps> = (props) => {
         >
           <IconButton
             buttonModifiers={["workspace-add-note-from-context"]}
-            icon="note"
+            icon="note-add"
             onClick={handleCreateNoteFromSelection}
           />
         </div>
