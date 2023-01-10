@@ -133,22 +133,26 @@ class HopsStudiesPlanning extends React.Component<
             </div>
           )}
         </fieldset>
-        <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">
-            Opiskelusuunnitelma
-          </legend>
-          <div className="hops-container__info">
-            <div className="hops__form-element-container">
-              Suunnittele opintosi seuraavalle 6 kuukauden jaksolle. Merkkaa
-              kuukausittain suoritettavat kurssit (esim. ot1, bi1)
+
+        {hasAccessToStudyTool && (
+          <fieldset className="hops-container__fieldset">
+            <legend className="hops-container__subheader">
+              Opiskelusuunnitelma
+            </legend>
+            <div className="hops-container__info">
+              <div className="hops__form-element-container">
+                Aikatauluta opintojasi seuraavalle 6 kuukauden jaksolle (2
+                kurssia/kuukausi). Merkitse kuukausittain suoritettavat kurssit
+                (esim. ot1, bi1)
+              </div>
+              <HopsPeriodPlan
+                disabled={this.props.disabled}
+                studyPeriodPlan={this.props.studyPeriodPlan}
+                onStudyPeriodPlanChange={this.props.onStudyPeriodPlanChange}
+              />
             </div>
-            <HopsPeriodPlan
-              disabled={this.props.disabled}
-              studyPeriodPlan={this.props.studyPeriodPlan}
-              onStudyPeriodPlanChange={this.props.onStudyPeriodPlanChange}
-            />
-          </div>
-        </fieldset>
+          </fieldset>
+        )}
       </div>
     );
   }
