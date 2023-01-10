@@ -2,22 +2,22 @@ import * as React from "react";
 import HopsPlanningTool from "../hops-planning-tool";
 import FollowUpGoals from "../hops-follow-up-goals";
 import { HopsBaseProps, HopsUser } from "..";
-import { FollowUp, HopsPlanningStudies } from "~/@types/shared";
+import { FollowUp, HopsStudyPeriodPlan } from "~/@types/shared";
+import HopsPeriodPlan from "../hops-period-plan";
 
 /**
  * StudiesPlanningProps
  */
 interface HopsStudiesPlanningProps extends HopsBaseProps {
   user: HopsUser;
-  finnishAsSecondLanguage: boolean;
-  ethics: boolean;
   followUp: FollowUp;
-  studies: HopsPlanningStudies;
   studentId: string;
   studentsUserEntityId: number;
   studyTimeEnd: string | null;
   superVisorModifies: boolean;
-  onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
+  studyPeriodPlan?: HopsStudyPeriodPlan;
+  onStudyPeriodPlanChange: (studyPeriodPlan: HopsStudyPeriodPlan) => void;
+
   /**
    * This is utility method to jump specific step. Doesn validate so use it carefully.
    * Weird things is that StepZilla library doesn't support types. So this is need to "activate"
@@ -78,20 +78,6 @@ class HopsStudiesPlanning extends React.Component<
   }
 
   /**
-   * Handles goals selects change
-   *
-   * @param name keyof HopsPlanningStudies
-   */
-  handleGoalsSelectsChange =
-    (name: keyof HopsPlanningStudies) =>
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      this.props.onStudiesPlanningChange({
-        ...this.props.studies,
-        [name]: e.currentTarget.value,
-      });
-    };
-
-  /**
    * Component render method
    *
    * @returns JSX.Element
@@ -146,6 +132,22 @@ class HopsStudiesPlanning extends React.Component<
               />
             </div>
           )}
+        </fieldset>
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">
+            Opiskelusuunnitelma
+          </legend>
+          <div className="hops-container__info">
+            <div className="hops__form-element-container">
+              Suunnittele opintosi seuraavalle 6 kuukauden jaksolle. Merkkaa
+              kuukausittain suoritettavat kurssit (esim. ot1, bi1)
+            </div>
+            <HopsPeriodPlan
+              disabled={this.props.disabled}
+              studyPeriodPlan={this.props.studyPeriodPlan}
+              onStudyPeriodPlanChange={this.props.onStudyPeriodPlanChange}
+            />
+          </div>
         </fieldset>
       </div>
     );
