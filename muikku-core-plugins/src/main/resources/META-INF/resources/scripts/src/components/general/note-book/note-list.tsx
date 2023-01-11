@@ -1,22 +1,14 @@
 import * as React from "react";
 import { NoteBookState, WorkspaceNote } from "~/reducers/notebook/notebook";
-import { DraggableElement } from "../react-dnd/draggable-element";
 import { IconButton } from "../button";
 import AnimateHeight from "react-animate-height";
-import {
-  UpdateNotebookEntriesOrder,
-  DeleteNotebookEntry,
-  ToggleNotebookEditor,
-  updateNotebookEntriesOrder,
-  toggleNotebookEditor,
-  deleteNotebookEntry,
-} from "../../../actions/notebook/notebook";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import CkeditorContentLoader from "../../base/ckeditor-loader/content";
+import Button from "../button";
 
 /**
  * NoteBookProps
@@ -24,9 +16,6 @@ import CkeditorContentLoader from "../../base/ckeditor-loader/content";
 interface NoteListProps {
   i18n: i18nType;
   notebook: NoteBookState;
-  updateNotebookEntriesOrder: UpdateNotebookEntriesOrder;
-  toggleNotebookEditor: ToggleNotebookEditor;
-  deleteNotebookEntry: DeleteNotebookEntry;
 }
 
 /**
@@ -35,183 +24,11 @@ interface NoteListProps {
  * @param props props
  */
 export const NoteList: React.FC<NoteListProps> = (props) => {
-  const {
-    toggleNotebookEditor,
-    deleteNotebookEntry,
-    updateNotebookEntriesOrder,
-    notebook,
-  } = props;
-
-  const { notes, noteInTheEditor } = notebook;
-
-  const [openedItems, setOpenedItems] = React.useState<number[]>([]);
-  const [editOrder, setEditOrder] = React.useState<boolean>(false);
-
-  /**
-   * Handles opening all notes
-   */
-  const handleOpenAllClick = () => {
-    setOpenedItems(notes.map((note) => note.id));
-  };
-
-  /**
-   * Handles closing all notes
-   */
-  const handleCloseAllClick = () => {
-    setOpenedItems([]);
-  };
-
-  /**
-   * Handles note item reorder
-   */
-  const handleEditEntriesOrderClick = () => {
-    setEditOrder(!editOrder);
-  };
-
-  /**
-   * Handles draggable element drag
-   *
-   * @param dragIndex dragIndex
-   * @param hoverIndex hoverIndex
-   */
-  const handleElementDrag = React.useCallback(
-    (dragIndex: number, hoverIndex: number) => {
-      updateNotebookEntriesOrder(dragIndex, hoverIndex, true);
-    },
-    [updateNotebookEntriesOrder]
-  );
-
-  /**
-   * handleDropElement
-   */
-  const handleElementDrop = React.useCallback(
-    (dragIndex: number, hoverIndex: number) => {
-      updateNotebookEntriesOrder(dragIndex, hoverIndex, true);
-    },
-    [updateNotebookEntriesOrder]
-  );
-
-  /**
-   * Renders note item.
-   * If ordering is active note is wrapped with DraggableElement
-   *
-   * @param note note
-   * @param index index
-   * @returns note item
-   */
-  const renderNote = React.useCallback(
-    (note: WorkspaceNote, index: number) => {
-      /**
-       * Handles opening/closing note specific note
-       *
-       * @param noteId noteId
-       */
-      const handleOpenNoteClick = (noteId: number) => {
-        if (openedItems.includes(noteId)) {
-          setOpenedItems((prevItems) =>
-            prevItems.filter((id) => id !== noteId)
-          );
-        } else {
-          setOpenedItems([...openedItems, noteId]);
-        }
-      };
-
-      /**
-       * Handles note item edit click
-       *
-       * @param note note
-       */
-      const handleEditNoteClick = (note: WorkspaceNote) => {
-        toggleNotebookEditor({ open: true, note });
-      };
-
-      /**
-       * Handles note item delete click
-       *
-       * @param noteId noteId
-       */
-      const handleDeleteNoteClick = (noteId: number) => {
-        deleteNotebookEntry({ workspaceNoteId: noteId });
-      };
-
-      return (
-        <DraggableElement
-          key={note.id}
-          id={note.id}
-          index={index}
-          active={editOrder}
-          onElementDrag={handleElementDrag}
-          onElementDrop={handleElementDrop}
-        >
-          <NoteListItem
-            key={note.id}
-            note={note}
-            open={openedItems.includes(note.id)}
-            onOpenClick={handleOpenNoteClick}
-            isEdited={noteInTheEditor && noteInTheEditor.id === note.id}
-            onEditClick={handleEditNoteClick}
-            onDeleteClick={handleDeleteNoteClick}
-          />
-        </DraggableElement>
-      );
-    },
-    [
-      deleteNotebookEntry,
-      editOrder,
-      handleElementDrag,
-      handleElementDrop,
-      noteInTheEditor,
-      openedItems,
-      toggleNotebookEditor,
-    ]
-  );
-
-  /**
-   * Handles adding new note
-   */
-  const handleAddNewNoteClick = () => {
-    toggleNotebookEditor({ open: true });
-  };
+  const { children } = props;
 
   return (
     <div className="notebook__items">
-      <div className="notebook__items-actions">
-        <div className="notebook__items-actions-primary">
-          <IconButton
-            icon="plus"
-            buttonModifiers={["notebook-action"]}
-            onClick={handleAddNewNoteClick}
-          />
-          <IconButton
-            icon="move"
-            buttonModifiers={["notebook-action"]}
-            onClick={handleEditEntriesOrderClick}
-          />
-        </div>
-        <div className="notebook__items-actions-secondary">
-          <IconButton
-            icon="arrow-down"
-            buttonModifiers={["notebook-action"]}
-            onClick={handleOpenAllClick}
-          />
-          <IconButton
-            icon="arrow-up"
-            buttonModifiers={["notebook-action"]}
-            onClick={handleCloseAllClick}
-          />
-        </div>
-      </div>
-      <div className="notebook__items-list">
-        {notebook.state === "LOADING" ? (
-          <div className="empty-loader" />
-        ) : notes ? (
-          notes.map((note, index) => renderNote(note, index))
-        ) : (
-          <div className="empty">
-            <span>Ei muistiinpanoja</span>
-          </div>
-        )}
-      </div>
+      <div className="notebook__items-list">{children}</div>
     </div>
   );
 };
@@ -232,14 +49,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators(
-    {
-      updateNotebookEntriesOrder,
-      toggleNotebookEditor,
-      deleteNotebookEntry,
-    },
-    dispatch
-  );
+  return bindActionCreators({}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NoteList);
@@ -272,6 +82,7 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
   const { open, onOpenClick, note } = props;
 
   const [showContent, setShowContent] = React.useState<boolean>(false);
+  const [deleteIsActive, setDeleteIsActive] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     setShowContent(open);
@@ -319,7 +130,7 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
 
           <IconButton
             icon="trash"
-            onClick={handleDeleteClick}
+            onClick={() => setDeleteIsActive(!deleteIsActive)}
             disabled={props.isEdited}
             buttonModifiers={["notebook-item-action"]}
           />
@@ -332,6 +143,41 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
       <AnimateHeight height={showContent ? "auto" : 28}>
         <article className="notebook__item-body rich-text">
           <CkeditorContentLoader html={props.note.workspaceNote} />
+        </article>
+      </AnimateHeight>
+
+      <AnimateHeight height={deleteIsActive ? "auto" : 0}>
+        <article
+          className="notebook__item-body rich-text"
+          style={{
+            backgroundColor: "red",
+            color: "white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexFlow: "column",
+            padding: "10px",
+          }}
+        >
+          Haluatko varmasti poistaa muistiinpanon?
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
+            <Button style={{ width: "100px" }} onClick={handleDeleteClick}>
+              Poista
+            </Button>
+            <Button
+              style={{ width: "100px" }}
+              onClick={() => setDeleteIsActive(false)}
+            >
+              Peruuta
+            </Button>
+          </div>
         </article>
       </AnimateHeight>
     </div>
