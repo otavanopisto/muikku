@@ -65,10 +65,7 @@
 
 .notebook__items {
   display: flex;
-  flex-basis: auto;
   flex-flow: column nowrap;
-  flex-grow: 1;
-  flex-shrink: 1;
   padding: 0 10px 10px;
   position: relative;
 }
