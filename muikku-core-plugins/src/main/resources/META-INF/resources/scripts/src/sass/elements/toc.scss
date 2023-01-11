@@ -8,18 +8,22 @@
 
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;
-  bottom: 0;
   height: 100%;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 2.625rem;
+  }
 }
 
 // Workspace materials ToC is loaded inside tab and we need to remove the top border
 .toc--workspace-materials {
   border-top-color: transparent;
+  height: 100%;
 }
 
 .toc-header {
@@ -46,15 +50,11 @@
 }
 
 .toc-item-container {
-  bottom: 0;
-  left: 0;
+  height: calc(100vh - 77px);
   overflow-y: auto;
   overscroll-behavior: contain;
-  position: absolute;
-  right: 0;
   scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
   scrollbar-width: thin;
-  top: 2.625rem; // Same as .toc-header height
   width: 100%;
 
   &::-webkit-scrollbar {
@@ -68,6 +68,14 @@
   &::-webkit-scrollbar-thumb {
     background: $color-scrollbar-handle;
     border-radius: 3px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 2.625rem; // Same as .toc-header height
   }
 }
 

@@ -8,14 +8,18 @@
   border-bottom: solid 1px $color-application-panel-box-border;
   border-left: solid 1px $color-application-panel-box-border;
   border-right: solid 1px $color-application-panel-box-border;
-  bottom: 0;
   display: flex;
   flex-flow: column wrap;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
+  height: 100%;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 }
 
 .notebook__actions {
@@ -26,14 +30,18 @@
 }
 
 .notebook__body {
-  bottom: 0;
-  left: 0;
+  height: calc(100vh - 77px);
   overflow-y: auto;
-  position: absolute;
-  right: 0;
   scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
   scrollbar-width: thin;
-  top: 2.625rem;
+
+  @include breakpoint($breakpoint-pad) {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 2.625rem;
+  }
 }
 
 .notebook__editor {

@@ -27,6 +27,7 @@
 
 .tabs--material-editor,
 .tabs--workspace-materials {
+  height: 100%;
   margin: 0;
   padding: 1px 0 0;
 }
@@ -312,10 +313,11 @@
 
 .tabs__mobile-tab {
   align-items: center;
+  background: $color-default;
   display: flex;
   font-size: 1.5rem;
   justify-content: space-between;
-  padding: 0 10px 10px;
+  padding: 0 10px;
 }
 
 .tabs__pagination-container--bullets {
