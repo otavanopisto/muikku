@@ -26,11 +26,7 @@ interface NoteListProps {
 export const NoteList: React.FC<NoteListProps> = (props) => {
   const { children } = props;
 
-  return (
-    <div className="notebook__items">
-      <div className="notebook__items-list">{children}</div>
-    </div>
-  );
+  return <div className="notebook__items">{children}</div>;
 };
 
 /**

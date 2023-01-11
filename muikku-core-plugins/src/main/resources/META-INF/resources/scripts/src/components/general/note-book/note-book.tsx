@@ -215,54 +215,52 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
 
   return (
     <div className="notebook">
-      <div className="notebook__items-actions">
-        <div className="notebook__items-actions-primary">
-          <IconButton
-            icon="plus"
-            buttonModifiers={["notebook-action"]}
-            onClick={handleAddNewNoteClick}
-          />
-          <IconButton
-            icon="move"
-            buttonModifiers={["notebook-action"]}
-            onClick={handleEditEntriesOrderClick}
-          />
-        </div>
-        <div className="notebook__items-actions-secondary">
-          <IconButton
-            icon="arrow-down"
-            buttonModifiers={["notebook-action"]}
-            onClick={handleOpenAllClick}
-          />
-          <IconButton
-            icon="arrow-up"
-            buttonModifiers={["notebook-action"]}
-            onClick={handleCloseAllClick}
-          />
-        </div>
+      <div className="notebook__actions">
+        <IconButton
+          icon="plus"
+          buttonModifiers={["notebook-action"]}
+          onClick={handleAddNewNoteClick}
+        />
+        <IconButton
+          icon="move"
+          buttonModifiers={["notebook-action"]}
+          onClick={handleEditEntriesOrderClick}
+        />
+        <IconButton
+          icon="arrow-down"
+          buttonModifiers={["notebook-action"]}
+          onClick={handleOpenAllClick}
+        />
+        <IconButton
+          icon="arrow-up"
+          buttonModifiers={["notebook-action"]}
+          onClick={handleCloseAllClick}
+        />
       </div>
 
-      <div
-        className={`notebook__editor ${
-          notebook.noteEditorOpen ? "state-OPEN" : ""
-        }`}
-      >
-        <NoteEditor />
-      </div>
+      <div className="notebook__body">
+        <div
+          className={`notebook__editor ${
+            notebook.noteEditorOpen ? "state-OPEN" : ""
+          }`}
+        >
+          <NoteEditor />
+        </div>
 
-      <DndProvider options={HTML5toTouch}>
-        <NoteList>
-          {notebook.state === "LOADING" ? (
-            <div className="empty-loader" />
-          ) : notes ? (
-            notes.map((note, index) => renderNote(note, index))
-          ) : (
-            <div className="empty">
-              <span>Ei muistiinpanoja</span>
-            </div>
-          )}
-        </NoteList>
-      </DndProvider>
+        <DndProvider options={HTML5toTouch}>
+          <NoteList>
+            {notebook.state === "LOADING" ? (
+              <div className="empty-loader" />
+            ) : notes ? (
+              notes.map((note, index) => renderNote(note, index))
+            ) : (
+              <div className="empty">
+                <span>Ei muistiinpanoja</span>
+              </div>
+            )}
+          </NoteList>
+        </DndProvider>
+      </div>
     </div>
   );
 };
