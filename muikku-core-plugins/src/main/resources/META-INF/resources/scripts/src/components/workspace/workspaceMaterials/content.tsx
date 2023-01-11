@@ -546,9 +546,9 @@ class ContentComponent extends SessionStateComponent<
     return (
       <Toc
         modifier="workspace-materials"
-        tocHeaderTitle={this.props.i18n.text.get(
-          "plugin.workspace.materials.tocTitle"
-        )}
+        // tocHeaderTitle={this.props.i18n.text.get(
+        //   "plugin.workspace.materials.tocTitle"
+        // )}
         tocHeaderExtraContent={
           <div>
             <Dropdown openByHover content={<p>Avaa kaikki</p>}>

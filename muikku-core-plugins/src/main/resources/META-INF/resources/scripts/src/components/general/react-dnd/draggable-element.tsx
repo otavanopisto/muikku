@@ -148,7 +148,7 @@ export const DraggableElement: FC<DraggableElementProps> = ({
       >
         <IconButton
           icon="move"
-          buttonModifiers={["notebook-action", "notebook-drag-handle"]}
+          buttonModifiers={["notebook-item-action", "notebook-drag-handle"]}
         />
       </div>
       {children}

@@ -314,14 +314,14 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
             icon="pencil"
             onClick={handleEditClick}
             disabled={props.isEdited}
-            buttonModifiers={["notebook-action"]}
+            buttonModifiers={["notebook-item-action"]}
           />
 
           <IconButton
             icon="trash"
             onClick={handleDeleteClick}
             disabled={props.isEdited}
-            buttonModifiers={["notebook-action"]}
+            buttonModifiers={["notebook-item-action"]}
           />
         </div>
       </div>
