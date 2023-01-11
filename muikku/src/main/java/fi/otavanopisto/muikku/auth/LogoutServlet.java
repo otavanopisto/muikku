@@ -18,6 +18,7 @@ import fi.otavanopisto.muikku.auth.AuthenticationResult.Status;
 import fi.otavanopisto.muikku.events.LogoutEvent;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.security.AuthSource;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
 
@@ -44,6 +45,9 @@ public class LogoutServlet extends HttpServlet {
   }
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    Long loggedUserEntityId = localSessionController.isLoggedIn() ? localSessionController.getLoggedUserEntity().getId() : null;
+    SchoolDataIdentifier loggedUserIdentifier = localSessionController.isLoggedIn() ? localSessionController.getLoggedUser() : null;
+    
     String authSource = localSessionController.getAuthSource();
     AuthSource authSourceByStrategy = authSourceController.findAuthSourceByStrategy(authSource);
     AuthenticationProvider authenticationProvider = authSourceController.findAuthenticationProvider(authSourceByStrategy);
@@ -65,7 +69,7 @@ public class LogoutServlet extends HttpServlet {
         }
       }
 
-      logoutEvent.fire(new LogoutEvent());
+      logoutEvent.fire(new LogoutEvent(loggedUserEntityId, loggedUserIdentifier));
 
       response.sendRedirect(redirectTo);
     } else {

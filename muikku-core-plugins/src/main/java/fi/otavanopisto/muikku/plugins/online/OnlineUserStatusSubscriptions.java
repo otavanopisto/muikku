@@ -65,6 +65,10 @@ public class OnlineUserStatusSubscriptions {
     }
   }
 
+  private void unsubscribe(long userEntityId) {
+    subscriptions.remove(userEntityId);
+  }
+
   /**
    * Observes LoginEvents from system and subscribes the logged in user on login.
    * 
@@ -80,7 +84,10 @@ public class OnlineUserStatusSubscriptions {
    * @param logoutEvent
    */
   protected void observeLogout(@Observes LogoutEvent logoutEvent) {
-    // TODO Cleanup on logout
+    Long userEntityId = logoutEvent.getUserEntityId();
+    if (userEntityId != null) {
+      unsubscribe(userEntityId);
+    }
   }
 
   /**
