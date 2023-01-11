@@ -380,6 +380,9 @@ export default class MuikkuWebsocket {
 
     // Start pinging to ensure connection stays alive
     this.startPinging();
+    
+    // TODO Ask server to give the initial "friends list"
+    this.sendMessage("online:list", {});
   }
 
   /**
@@ -555,6 +558,12 @@ export default class MuikkuWebsocket {
   onWebSocketMessage(event: any) {
     const message = JSON.parse(event.data);
     const eventType = message.eventType;
+    
+    // TODO Below event type is for the status changes - implement trigger->listener for this?
+    if (eventType == "online:status") {
+	    console.log(message);
+	}
+    
     if (eventType == "ping:pong") {
       this.gotPong = true;
     } else {

@@ -1,7 +1,9 @@
 package fi.otavanopisto.muikku.plugins.online;
 
-import java.util.Date;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Schedule;
@@ -27,43 +29,95 @@ public class OnlineUsersController {
     map = new ConcurrentHashMap<>();
   }
   
-  public boolean isUserOnline(UserEntity userEntity) {
-    Long time = map.get(userEntity.getId());
-    return time != null ? inThreshold(time) : false;
+  /**
+   * Returns online status for user
+   * 
+   * @param userEntity
+   * @return
+   */
+  public OnlineStatus getUserOnlineStatus(UserEntity userEntity) {
+    return getUserOnlineStatus(userEntity.getId());
   }
   
+  /**
+   * Returns online status for user
+   * 
+   * @param userEntityId
+   * @return
+   */
+  public OnlineStatus getUserOnlineStatus(Long userEntityId) {
+    Long time = map.get(userEntityId);
+    return time != null && inThreshold(time) ? OnlineStatus.ONLINE : OnlineStatus.OFFLINE;
+  }
+  
+  /**
+   * Checkin to refresh when user has been last active
+   * 
+   * @param userEntity
+   */
   public void checkin(UserEntity userEntity) {
-    map.put(userEntity.getId(), System.currentTimeMillis());
-    
-    onlineStatusChangeEvent.fire(new OnlineStatusChange(userEntity.getId(), OnlineStatus.ONLINE));
+    checkin(userEntity.getId());
   }
-  
-  public void checkout(UserEntity userEntity) {
-    map.remove(userEntity.getId());
 
-    onlineStatusChangeEvent.fire(new OnlineStatusChange(userEntity.getId(), OnlineStatus.OFFLINE));
+  /**
+   * Checkin to refresh when user has been last active
+   * 
+   * @param userEntityId
+   */
+  public void checkin(Long userEntityId) {
+    Long previousValue = map.put(userEntityId, System.currentTimeMillis());
+    
+    // If previous value was not in threshold the status has changed
+    if (previousValue == null || !inThreshold(previousValue)) {
+      onlineStatusChangeEvent.fire(new OnlineStatusChange(userEntityId, OnlineStatus.ONLINE));
+    }
   }
   
+  /**
+   * Checkout / logout
+   * 
+   * @param userEntity
+   */
+  public void checkout(UserEntity userEntity) {
+    checkout(userEntity.getId());
+  }
+  
+  /**
+   * Checkout / logout
+   * 
+   * @param userEntityId
+   */
+  public void checkout(Long userEntityId) {
+    map.remove(userEntityId);
+
+    onlineStatusChangeEvent.fire(new OnlineStatusChange(userEntityId, OnlineStatus.OFFLINE));
+  }
+  
+  /**
+   * Returns true if the given time (in milliseconds) is within threshold
+   * 
+   * @param time
+   * @return
+   */
   private boolean inThreshold(Long time) {
     return (System.currentTimeMillis() - time) < THRESHOLD_MS;
   }
 
-  
+  /**
+   * Cleanup scheduler to cleanup status' that have expired
+   */
   @Schedule(second = "*/10", minute = "*", hour = "*", persistent = false)
   private void cleanup() {
-    System.out.println("Schedule " + map.size() + " @ " + new Date().toString());
-    map.forEach((k, v) -> {
-      System.out.println(String.format("%d : %d : %d : %b", k, v, (System.currentTimeMillis() - v), inThreshold(v)));
-    });
+    List<Entry<Long, Long>> outOfThreshold = map.entrySet().stream()
+      .filter(entry -> !inThreshold(entry.getValue()))
+      .collect(Collectors.toList());
 
-    map.entrySet().removeIf((entry) -> !inThreshold(entry.getValue()));
-    
-//    map.forEach((k, v) -> {
-//      if (!inThreshold(v)) {
-//        // Note: use remove (k, v) to ensure that if the value changes in between it doesn't get removed
-//        map.remove(k, v);
-//      }
-//    });
+    for (Entry<Long, Long> entry : outOfThreshold) {
+      // Remove only if the value is still untouched
+      if (map.remove(entry.getKey(), entry.getValue())) {
+        onlineStatusChangeEvent.fire(new OnlineStatusChange(entry.getKey(), OnlineStatus.OFFLINE));
+      }
+    }
   }
   
   private ConcurrentHashMap<Long, Long> map;
