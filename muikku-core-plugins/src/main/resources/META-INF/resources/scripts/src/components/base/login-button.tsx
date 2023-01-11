@@ -5,7 +5,6 @@
 import Link from "~/components/general/link";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import $ from "~/lib/jquery";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 
@@ -32,15 +31,8 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
    */
   constructor(props: LoginButtonProps) {
     super(props);
-    this.login = this.login.bind(this);
   }
-  /**
-   * login
-   */
-  login() {
-    //TODO please let's find a better way to do this rather than the emulated way
-    window.location.replace($("#login").attr("href"));
-  }
+
   /**
    * render
    */
@@ -51,7 +43,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
         className={`button button--login ${
           this.props.modifier ? "button--" + this.props.modifier : ""
         }`}
-        onClick={this.login}
+        href="/login"
       >
         <span>{this.props.i18n.text.get("plugin.login.buttonLabel")}</span>
       </Link>
