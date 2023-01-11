@@ -81,13 +81,13 @@ export default class WorkspaceMaterialsBody extends React.Component<
     const materialEditorTabs: Tab[] = [
       {
         id: "table-of-contents",
-        type: "material-editor",
+        type: "workspace-table-of-contents",
         name: "Sisällysluettelo",
         component: <TableOfContentsComponent ref="content" />,
       },
       {
         id: "notebook",
-        type: "material-editor",
+        type: "workspace-notebook",
         name: "Muistiinpanot",
         component: <NoteBook />,
       },
@@ -96,7 +96,7 @@ export default class WorkspaceMaterialsBody extends React.Component<
     const navigationComponent = (
       <Tabs
         renderAllComponents={true}
-        modifier="material-editor"
+        modifier="workspace-materials"
         activeTab={this.state.activeTab}
         onTabChange={this.handleActiveTabChange}
         tabs={materialEditorTabs}

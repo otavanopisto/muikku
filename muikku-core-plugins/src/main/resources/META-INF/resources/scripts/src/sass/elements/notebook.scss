@@ -4,8 +4,17 @@
 @import "../base/breakpoints";
 
 .notebook {
+  background: $color-default;
+  border-bottom: solid 1px $color-application-panel-box-border;
+  border-left: solid 1px $color-application-panel-box-border;
+  border-right: solid 1px $color-application-panel-box-border;
+  bottom: 0;
   display: flex;
   flex-flow: row wrap;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
   width: 100%;
 }
 
@@ -28,13 +37,14 @@
   flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
+  position: relative;
 }
 
 .notebook__items-actions {
   align-items: center;
   display: flex;
+  height: 2.625rem;
   justify-content: space-between;
-  margin: 10px 0;
 }
 
 .notebook__items-actions-primary {
@@ -53,6 +63,18 @@
   justify-content: flex-end;
 }
 
+.notebook__items-list {
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  padding: 9px;
+  position: absolute;
+  right: 0;
+  scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
+  scrollbar-width: thin;
+  top: 2.625rem;
+}
+
 .notebook__item {
   border: 1px solid $color-default-separator-border;
   border-radius: 3px;
@@ -69,6 +91,8 @@
 }
 
 .notebook__item-title {
+  @include text;
+
   cursor: pointer;
   font-weight: 600;
   margin: 0 0 10px;
@@ -92,10 +116,6 @@
 
   p:last-child {
     margin-bottom: 0;
-  }
-
-  &.rich-text {
-    font-size: 0.875rem;
   }
 }
 
@@ -127,6 +147,10 @@
   display: flex;
   flex-flow: row nowrap;
   margin: 0 0 10px;
+
+  &:last-child {
+    margin: 0;
+  }
 }
 
 .draggable-element__handle {

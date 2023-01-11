@@ -758,18 +758,6 @@
   }
 }
 
-.button-icon--notebook-action {
-  color: $color-notes-action-button;
-  font-size: 0.9375rem;
-  height: 1.25rem;
-  margin: 0 5px;
-  width: 1.25rem;
-
-  &:hover {
-    color: $color-info;
-  }
-}
-
 .button-icon--workspace-add-note-from-context {
   background: $color-default;
   border: 1px solid $color-notes-action-button;
@@ -2245,8 +2233,8 @@
   }
 }
 
-.button-icon--toc-filter,
-.button-icon--toc-open-close-sections {
+.button-icon--toc-action,
+.button-icon--notebook-action {
   color: $color-default-contrast;
   font-size: 1rem;
   height: 1.5rem;

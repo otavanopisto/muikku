@@ -16,6 +16,7 @@ import "~/sass/elements/toc.scss";
 interface TocProps {
   tocHeaderTitle?: string;
   tocHeaderExtraContent?: React.ReactNode;
+  modifier?: string;
 }
 
 /**
@@ -24,15 +25,14 @@ interface TocProps {
  * @returns JSX.Element
  */
 export const Toc: React.FC<TocProps> = (props) => (
-  <div className="toc">
+  <div className={`toc ${props.modifier ? "toc--" + props.modifier : ""}`}>
     <div className="toc-header">
       {props.tocHeaderTitle && (
         <h2 className="toc__title">{props.tocHeaderTitle}</h2>
       )}
       {props.tocHeaderExtraContent && props.tocHeaderExtraContent}
     </div>
-
-    {props.children}
+    <div className="toc-item-container">{props.children}</div>
   </div>
 );
 

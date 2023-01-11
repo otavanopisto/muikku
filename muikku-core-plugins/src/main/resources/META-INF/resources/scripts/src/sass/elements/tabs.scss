@@ -25,7 +25,8 @@
   width: 100%;
 }
 
-.tabs--material-editor {
+.tabs--material-editor,
+.tabs--workspace-materials {
   margin: 0;
   padding: 1px 0 0;
 }
@@ -46,6 +47,7 @@
   border-bottom: 1px solid $color-tab-border;
   display: none;
   flex-flow: row nowrap;
+  height: 2.25rem;
   padding: 0;
 
   @include breakpoint($breakpoint-pad) {
@@ -79,6 +81,10 @@
   }
 }
 
+.tabs__tab-labels--workspace-materials {
+  border-bottom: 1px solid $color-application-panel-box-border;
+}
+
 .tabs__tab {
   background: $color-tab-blur-background;
   border-left: 1px solid $color-tab-blur-background;
@@ -110,6 +116,16 @@
   }
 }
 
+.tabs__tab--workspace-materials {
+  margin: 0;
+
+  &.active {
+    border-left: 1px solid $color-application-panel-box-border;
+    border-right: 1px solid $color-application-panel-box-border;
+    border-top: 1px solid $color-application-panel-box-border;
+  }
+}
+
 .tabs__tab--chat {
   border-bottom: none;
   border-left: none;
@@ -138,6 +154,15 @@
   &.active {
     display: block;
   }
+}
+
+.tabs__tab-data--workspace-table-of-contents,
+.tabs__tab-data--workspace-notebook {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: calc(2.25rem + 1px); // Same value as .tabs__tab-labels height + one pixel for the border
 }
 
 .tabs__tab-data--guider-student {
