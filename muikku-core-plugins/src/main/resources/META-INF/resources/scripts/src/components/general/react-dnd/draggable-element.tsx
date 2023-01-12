@@ -151,7 +151,12 @@ export const DraggableElement: FC<DraggableElementProps> = ({
           buttonModifiers={["notebook-item-action", "notebook-drag-handle"]}
         />
       </div>
-      <div ref={previewRef} style={{ opacity }} data-handler-id={handlerId}>
+      <div
+        className="draggable-element__body"
+        ref={previewRef}
+        style={{ opacity }}
+        data-handler-id={handlerId}
+      >
         {children}
       </div>
     </div>
