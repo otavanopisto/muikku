@@ -117,11 +117,14 @@
 }
 
 .notebook__item-title {
-  @include text;
-
   cursor: pointer;
+  font-size: 0.8125rem;
   font-weight: 600;
   margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 0.9375rem;
+  }
 }
 
 .notebook__item-actions {
@@ -133,6 +136,15 @@
 }
 
 .notebook__item-body {
+  &.rich-text {
+    font-size: 0.8125rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 0.9375rem;
+      line-height: 1.5rem;
+    }
+  }
+
   p {
     margin: 10px 0;
   }
