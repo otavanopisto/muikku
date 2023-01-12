@@ -9,6 +9,7 @@ import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import CkeditorContentLoader from "../../base/ckeditor-loader/content";
 import Button from "../button";
+import { useIsOverflow } from "./hooks/useIsOverflowing";
 
 /**
  * NoteBookProps
@@ -26,7 +27,68 @@ interface NoteListProps {
 export const NoteList: React.FC<NoteListProps> = (props) => {
   const { children } = props;
 
-  return <div className="notebook__items">{children}</div>;
+  const listRef = React.useRef<HTMLDivElement>(null);
+  const overflowDTopRef = React.useRef<HTMLDivElement>(null);
+  const overflowDBottomRef = React.useRef<HTMLDivElement>(null);
+  const isOverflowing = useIsOverflow<HTMLDivElement>(listRef);
+
+  const [isOverflowingTop, setIsOverflowingTop] = React.useState(false);
+  const [isOverflowingBottom, setIsOverflowingBottom] = React.useState(false);
+
+  React.useLayoutEffect(() => {
+    if (overflowDTopRef.current) {
+      overflowDTopRef.current.style.display = isOverflowing ? "block" : "none";
+    }
+    if (overflowDBottomRef.current) {
+      overflowDTopRef.current.style.display = isOverflowing ? "block" : "none";
+    }
+  }, [isOverflowing]);
+
+  React.useLayoutEffect(() => {
+    if (overflowDTopRef.current) {
+      setIsOverflowingTop(overflowDTopRef.current.offsetTop > 0);
+    }
+  }, [isOverflowingTop]);
+
+  React.useLayoutEffect(() => {
+    if (overflowDBottomRef.current) {
+      setIsOverflowingBottom(
+        overflowDBottomRef.current.offsetTop <
+          listRef.current?.scrollHeight - listRef.current?.clientHeight
+      );
+    }
+  }, [isOverflowingBottom]);
+
+  return (
+    <div className="notebook__items" ref={listRef}>
+      <div
+        ref={overflowDTopRef}
+        style={{
+          width: "100%",
+          textAlign: "center",
+          backgroundColor: "black",
+          color: "white",
+          position: "sticky",
+          top: 0,
+        }}
+      >
+        OVERFLOW DETECTOR TOP
+      </div>
+      {children}
+      <div
+        ref={overflowDBottomRef}
+        style={{
+          width: "100%",
+          textAlign: "center",
+          border: "1px solid black",
+          position: "sticky",
+          bottom: 0,
+        }}
+      >
+        OVERFLOW DETECTOR BOTTOM
+      </div>
+    </div>
+  );
 };
 
 /**

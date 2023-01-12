@@ -2,7 +2,6 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Base from "~/components/base/material-loader/base";
 import BinaryMaterialLoader from "~/components/base/material-loader/binary";
-import LocalPopover from "~/components/workspace/workspaceMaterials/materials/local-popover";
 
 /**
  * MaterialLoaderContentProps
@@ -92,39 +91,37 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
 
   return (
     <>
-      <LocalPopover>
-        <div className={className} onClick={stopPropagation}>
-          {props.loadCompositeReplies &&
-          typeof props.compositeReplies === "undefined" ? null : (
-            <Base
-              material={props.material}
-              i18n={props.i18n}
-              status={props.status}
-              usedAs={props.usedAs}
-              workspace={props.workspace}
-              websocketState={props.websocket}
-              onConfirmedAndSyncedModification={onConfirmedAndSyncedModification.bind(
-                this,
-                props
-              )}
-              onModification={onModification.bind(this, props)}
-              readOnly={
-                props.readOnly ||
-                (props.answerable &&
-                  props.stateConfiguration &&
-                  props.stateConfiguration["fields-read-only"])
-              }
-              compositeReplies={props.compositeReplies}
-              displayCorrectAnswers={props.answersVisible}
-              checkAnswers={props.answersChecked}
-              onAnswerChange={props.onAnswerChange}
-              onAnswerCheckableChange={props.onAnswerCheckableChange}
-              invisible={props.invisible}
-              answerable={props.answerable}
-            />
-          )}
-        </div>
-      </LocalPopover>
+      <div className={className} onClick={stopPropagation}>
+        {props.loadCompositeReplies &&
+        typeof props.compositeReplies === "undefined" ? null : (
+          <Base
+            material={props.material}
+            i18n={props.i18n}
+            status={props.status}
+            usedAs={props.usedAs}
+            workspace={props.workspace}
+            websocketState={props.websocket}
+            onConfirmedAndSyncedModification={onConfirmedAndSyncedModification.bind(
+              this,
+              props
+            )}
+            onModification={onModification.bind(this, props)}
+            readOnly={
+              props.readOnly ||
+              (props.answerable &&
+                props.stateConfiguration &&
+                props.stateConfiguration["fields-read-only"])
+            }
+            compositeReplies={props.compositeReplies}
+            displayCorrectAnswers={props.answersVisible}
+            checkAnswers={props.answersChecked}
+            onAnswerChange={props.onAnswerChange}
+            onAnswerCheckableChange={props.onAnswerCheckableChange}
+            invisible={props.invisible}
+            answerable={props.answerable}
+          />
+        )}
+      </div>
 
       {props.material.type === "binary" ? (
         <BinaryMaterialLoader
