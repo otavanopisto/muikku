@@ -13,7 +13,7 @@
   height: 100%;
   width: 100%;
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     bottom: 0;
     left: 0;
     position: absolute;
@@ -37,6 +37,7 @@
 
   @include breakpoint($breakpoint-pad) {
     bottom: 0;
+    height: auto;
     left: 0;
     position: absolute;
     right: 0;

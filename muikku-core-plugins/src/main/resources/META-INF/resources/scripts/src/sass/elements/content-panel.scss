@@ -273,6 +273,10 @@
   width: 2rem;
   z-index: 10;
 
+  @include breakpoint($breakpoint-pad) {
+    top: 72px;
+  }
+
   @include breakpoint($breakpoint-desktop) {
     display: none;
   }
