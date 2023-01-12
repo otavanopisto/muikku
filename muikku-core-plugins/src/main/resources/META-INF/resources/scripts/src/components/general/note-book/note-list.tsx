@@ -112,12 +112,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(NoteList);
 
-/////////  //  ////  ///     /////     ///////     ////////     /////
-/////////  //  ////  ///  //  ////  //  /////  ///  ///////    //////
-/////////      ////  ///     /////     /////  /////  //////   ///////
-/////////  //  ////  ///  ////////  ///////  //  ///  ///////////////
-/////////  //  ////  ///  ////////  //////  /////////  ////  ////////
-
 /**
  * NoteListItemProps
  */
@@ -176,7 +170,10 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
   };
 
   return (
-    <div className="notebook__item" key={props.note.id}>
+    <div
+      className={`notebook__item ${deleteIsActive ? "state-DELETING" : ""}`}
+      key={props.note.id}
+    >
       <div className="notebook__item-header">
         <div className="notebook__item-actions">
           <IconButton
@@ -194,48 +191,30 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
           />
         </div>
       </div>
-      <div className="notebook__item-title" onClick={handleOpenClick}>
-        {props.note.title}
-      </div>
-
-      <AnimateHeight height={showContent ? "auto" : 28}>
-        <article className="notebook__item-body rich-text">
-          <CkeditorContentLoader html={props.note.workspaceNote} />
-        </article>
-      </AnimateHeight>
-
       <AnimateHeight height={deleteIsActive ? "auto" : 0}>
-        <article
-          className="notebook__item-body rich-text"
-          style={{
-            backgroundColor: "red",
-            color: "white",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexFlow: "column",
-            padding: "10px",
-          }}
-        >
-          Haluatko varmasti poistaa muistiinpanon?
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "100%",
-            }}
-          >
-            <Button style={{ width: "100px" }} onClick={handleDeleteClick}>
+        <div className="notebook__item-delete">
+          <div className="notebook__item-description">
+            Haluatko varmasti poistaa muistiinpanon?
+          </div>
+          <div className="notebook__item-buttonset">
+            <Button buttonModifiers={["fatal"]} onClick={handleDeleteClick}>
               Poista
             </Button>
             <Button
-              style={{ width: "100px" }}
+              buttonModifiers={["cancel"]}
               onClick={() => setDeleteIsActive(false)}
             >
               Peruuta
             </Button>
           </div>
+        </div>
+      </AnimateHeight>
+      <div className="notebook__item-title" onClick={handleOpenClick}>
+        {props.note.title}
+      </div>
+      <AnimateHeight height={showContent ? "auto" : 28}>
+        <article className="notebook__item-body rich-text">
+          <CkeditorContentLoader html={props.note.workspaceNote} />
         </article>
       </AnimateHeight>
     </div>

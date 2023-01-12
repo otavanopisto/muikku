@@ -77,6 +77,36 @@
   box-shadow: 0 0 15px rgba(0 0 0 / 2%);
   padding: 10px;
   width: 100%;
+
+  &.state-DELETING {
+    border: 2px solid $color-fatal;
+    padding: 9px;
+  }
+}
+
+.notebook__item-delete {
+  align-items: center;
+  background: lighten($color-fatal, 40%);
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 5px 0 10px;
+  padding: 10px;
+}
+
+.notebook__item-description {
+  font-weight: 400;
+  margin: 5px 0;
+}
+
+.notebook__item-buttonset {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 5px 0;
+
+  .button {
+    margin: 0 5px;
+  }
 }
 
 .notebook__item-header {
@@ -98,6 +128,7 @@
   align-items: center;
   display: flex;
   justify-content: flex-end;
+  margin: 0 0 5px;
   width: 100%;
 }
 
@@ -141,7 +172,10 @@
 .draggable-element {
   align-items: center;
   display: flex;
+  flex-basis: auto;
   flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin: 0 0 10px;
 
   &:last-child {
@@ -157,4 +191,10 @@
   height: 40px;
   justify-content: center;
   transition: width 0.3s;
+}
+
+.draggable-element__body {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
