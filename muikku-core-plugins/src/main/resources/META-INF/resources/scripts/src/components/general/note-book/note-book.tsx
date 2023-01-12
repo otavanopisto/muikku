@@ -89,29 +89,41 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
 
   /**
    * Handles adding new note
+   * @param e event
    */
-  const handleAddNewNoteClick = () => {
+  const handleAddNewNoteClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
     toggleNotebookEditor({ open: true });
   };
 
   /**
    * Handles opening all notes
+   * @param e event
    */
-  const handleOpenAllClick = () => {
+  const handleOpenAllClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
     setOpenedItems(notes.map((note) => note.id));
   };
 
   /**
    * Handles closing all notes
+   * @param e event
    */
-  const handleCloseAllClick = () => {
+  const handleCloseAllClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
     setOpenedItems([]);
   };
 
   /**
    * Handles note item reorder
+   * @param e event
    */
-  const handleEditEntriesOrderClick = () => {
+  const handleEditEntriesOrderClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
     setEditOrder(!editOrder);
   };
 
@@ -220,21 +232,25 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
           icon="plus"
           buttonModifiers={["notebook-action"]}
           onClick={handleAddNewNoteClick}
+          disablePropagation={true}
         />
         <IconButton
           icon="move"
           buttonModifiers={["notebook-action"]}
           onClick={handleEditEntriesOrderClick}
+          disablePropagation={true}
         />
         <IconButton
           icon="arrow-down"
           buttonModifiers={["notebook-action"]}
           onClick={handleOpenAllClick}
+          disablePropagation={true}
         />
         <IconButton
           icon="arrow-up"
           buttonModifiers={["notebook-action"]}
           onClick={handleCloseAllClick}
+          disablePropagation={true}
         />
       </div>
 

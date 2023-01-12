@@ -57,6 +57,9 @@ export const DraggableElement: FC<DraggableElementProps> = ({
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.4 : 1,
     }),
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    canDrag: () => active,
   });
 
   const [{ handlerId }, drop] = useDrop<
@@ -132,16 +135,13 @@ export const DraggableElement: FC<DraggableElementProps> = ({
     }, */
   });
 
-  drag(preview(previewRef));
+  drag(dragRef);
   drop(dragRef);
 
+  preview(previewRef);
+
   return (
-    <div
-      ref={previewRef}
-      style={{ opacity }}
-      className="draggable-element"
-      data-handler-id={handlerId}
-    >
+    <div className="draggable-element">
       <div
         ref={dragRef}
         className="draggable-element__handle swiper-no-swiping"
@@ -151,7 +151,9 @@ export const DraggableElement: FC<DraggableElementProps> = ({
           buttonModifiers={["notebook-item-action", "notebook-drag-handle"]}
         />
       </div>
-      {children}
+      <div ref={previewRef} style={{ opacity }} data-handler-id={handlerId}>
+        {children}
+      </div>
     </div>
   );
 };
