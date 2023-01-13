@@ -44,7 +44,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
 
   const [sortByCreationDate, setSortByCreationDate] = React.useState<
     "asc" | "desc"
-  >("desc");
+  >("asc");
 
   React.useEffect(() => {
     if (
