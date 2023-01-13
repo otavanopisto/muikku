@@ -298,6 +298,10 @@
   }
 }
 
+.env-dialog__input:disabled {
+  background-color: $color-disabled-background;
+}
+
 .env-dialog__input-label {
   flex-basis: auto;
   flex-grow: 0;
