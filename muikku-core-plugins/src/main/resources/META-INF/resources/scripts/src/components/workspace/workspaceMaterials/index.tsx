@@ -14,6 +14,31 @@ import EnrollmentDialog from "../enrollment-dialog";
 import MaterialExtraToolDrawer from "./extra-tools-drawer";
 import Tabs, { Tab } from "~/components/general/tabs";
 import NoteBook from "~/components/general/note-book/note-book";
+import {
+  DndProvider,
+  MouseTransition,
+  MultiBackendOptions,
+  TouchTransition,
+} from "react-dnd-multi-backend";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
+
+export const HTML5toTouch: MultiBackendOptions = {
+  backends: [
+    {
+      id: "html5",
+      backend: HTML5Backend,
+      transition: MouseTransition,
+    },
+    {
+      id: "touch",
+      backend: TouchBackend,
+      options: { enableMouseEvents: true },
+      preview: true,
+      transition: TouchTransition,
+    },
+  ],
+};
 
 /**
  * WorkspaceMaterialsBodyProps
@@ -89,7 +114,11 @@ export default class WorkspaceMaterialsBody extends React.Component<
         id: "notebook",
         type: "workspace-notebook",
         name: "Muistiinpanot",
-        component: <NoteBook />,
+        component: (
+          <DndProvider options={HTML5toTouch}>
+            <NoteBook />
+          </DndProvider>
+        ),
       },
     ];
 

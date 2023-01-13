@@ -22,7 +22,6 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/notebook.scss";
 import NoteList, { NoteListItem } from "./note-list";
 import {
-  DndProvider,
   MouseTransition,
   MultiBackendOptions,
   TouchTransition,
@@ -31,6 +30,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { DraggableElement } from "../react-dnd/draggable-element";
 import { IconButton } from "../button";
+import { useScroll } from "./hooks/useScroll";
+import { useDragDropManager } from "react-dnd";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -78,6 +79,8 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
   } = props;
   const { notes, noteInTheEditor } = notebook;
 
+  const notebookBodyRef = React.useRef<HTMLDivElement>(null);
+
   const [openedItems, setOpenedItems] = React.useState<number[]>([]);
   const [editOrder, setEditOrder] = React.useState<boolean>(false);
 
@@ -86,6 +89,19 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
       loadNotebookEntries();
     }
   }, [loadNotebookEntries, notes]);
+
+  const { updatePosition } = useScroll(notebookBodyRef);
+
+  const dragDropManager = useDragDropManager();
+  const monitor = dragDropManager.getMonitor();
+
+  React.useEffect(() => {
+    const unsubscribe = monitor.subscribeToOffsetChange(() => {
+      const offset = monitor.getSourceClientOffset()?.y as number;
+      updatePosition({ position: offset, isScrollAllowed: true });
+    });
+    return unsubscribe;
+  }, [monitor, updatePosition]);
 
   /**
    * Handles adding new note
@@ -254,7 +270,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         />
       </div>
 
-      <div className="notebook__body">
+      <div className="notebook__body" ref={notebookBodyRef}>
         <div
           className={`notebook__editor ${
             notebook.noteEditorOpen ? "state-OPEN" : ""
@@ -263,19 +279,17 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
           <NoteEditor />
         </div>
 
-        <DndProvider options={HTML5toTouch}>
-          <NoteList>
-            {notebook.state === "LOADING" ? (
-              <div className="empty-loader" />
-            ) : notes ? (
-              notes.map((note, index) => renderNote(note, index))
-            ) : (
-              <div className="empty">
-                <span>Ei muistiinpanoja</span>
-              </div>
-            )}
-          </NoteList>
-        </DndProvider>
+        <NoteList>
+          {notebook.state === "LOADING" ? (
+            <div className="empty-loader" />
+          ) : notes ? (
+            notes.map((note, index) => renderNote(note, index))
+          ) : (
+            <div className="empty">
+              <span>Ei muistiinpanoja</span>
+            </div>
+          )}
+        </NoteList>
       </div>
     </div>
   );
