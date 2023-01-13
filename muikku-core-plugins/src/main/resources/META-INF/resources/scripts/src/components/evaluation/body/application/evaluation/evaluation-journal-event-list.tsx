@@ -9,8 +9,12 @@ import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import EvaluationJournalEvent from "./evaluation-journal-event";
 import Link from "~/components/general/link";
-import Button from "~/components/general/button";
-import { EvaluationJournalFilters } from "~/@types/evaluation";
+import Button, { ButtonPill } from "~/components/general/button";
+import {
+  EvaluationJournalFilters,
+  EvaluationStudyDiaryEvent,
+} from "~/@types/evaluation";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * EvaluationEventContentCardProps
@@ -37,6 +41,10 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
       showMandatory: false,
       showOthers: false,
     });
+
+  const [sortByCreationDate, setSortByCreationDate] = React.useState<
+    "asc" | "desc"
+  >("desc");
 
   React.useEffect(() => {
     if (
@@ -108,6 +116,32 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
   };
 
   /**
+   * Sorts journals by date asc or desc
+   * @param a a
+   * @param b b
+   */
+  const sortByDate = (
+    a: EvaluationStudyDiaryEvent,
+    b: EvaluationStudyDiaryEvent
+  ) => {
+    const dateA = new Date(a.created);
+    const dateB = new Date(b.created);
+
+    if (sortByCreationDate === "asc") {
+      return dateA.getTime() - dateB.getTime();
+    } else {
+      return dateB.getTime() - dateA.getTime();
+    }
+  };
+
+  /**
+   * Handles sort function click
+   */
+  const handleSortFunctionClick = () => {
+    setSortByCreationDate(sortByCreationDate === "asc" ? "desc" : "asc");
+  };
+
+  /**
    * filterJournals
    * @returns filtered journals
    */
@@ -135,18 +169,20 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
   const evaluationDiaryEvents =
     evaluation.evaluationDiaryEntries.data &&
     evaluation.evaluationDiaryEntries.data.length > 0 ? (
-      filterJournals().map((item) => {
-        const isOpen = listOfDiaryIds.includes(item.id);
+      filterJournals()
+        .sort(sortByDate)
+        .map((item) => {
+          const isOpen = listOfDiaryIds.includes(item.id);
 
-        return (
-          <EvaluationJournalEvent
-            key={item.id}
-            open={isOpen}
-            {...item}
-            onClickOpen={handleOpenDiaryEntryClick}
-          />
-        );
-      })
+          return (
+            <EvaluationJournalEvent
+              key={item.id}
+              open={isOpen}
+              {...item}
+              onClickOpen={handleOpenDiaryEntryClick}
+            />
+          );
+        })
     ) : (
       <div className="empty">
         <span>
@@ -179,26 +215,52 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
         </>
       </div>
       <div className="evaluation-modal__content-actions">
-        <Button
-          onClick={handleChangeJournalFilterClick("showMandatory")}
-          buttonModifiers={
-            journalFilters.showMandatory
-              ? ["journal-filter", "journal-filter-active"]
-              : ["journal-filter"]
-          }
-        >
-          Pakolliset
-        </Button>
-        <Button
-          onClick={handleChangeJournalFilterClick("showOthers")}
-          buttonModifiers={
-            journalFilters.showOthers
-              ? ["journal-filter", "journal-filter-active"]
-              : ["journal-filter"]
-          }
-        >
-          Muut
-        </Button>
+        <div className="evaluation-modal__content-actions-filters">
+          <Button
+            onClick={handleChangeJournalFilterClick("showMandatory")}
+            buttonModifiers={
+              journalFilters.showMandatory
+                ? ["journal-filter", "journal-filter-active"]
+                : ["journal-filter"]
+            }
+          >
+            Pakolliset
+          </Button>
+          <Button
+            onClick={handleChangeJournalFilterClick("showOthers")}
+            buttonModifiers={
+              journalFilters.showOthers
+                ? ["journal-filter", "journal-filter-active"]
+                : ["journal-filter"]
+            }
+          >
+            Muut
+          </Button>
+        </div>
+        <div className="evaluation-modal__content-actions-sorters">
+          <Dropdown
+            openByHover={true}
+            closeOnOutsideClick={true}
+            alignSelfVertically="top"
+            content={
+              sortByCreationDate === "asc" ? (
+                <p>Järjestetty luontipäivämäärän mukaan nousevasti</p>
+              ) : (
+                <p>Järjestetty luontipäivämäärän mukaan laskevasti</p>
+              )
+            }
+          >
+            <ButtonPill
+              onClick={handleSortFunctionClick}
+              icon={
+                sortByCreationDate === "asc"
+                  ? "sort-amount-asc"
+                  : "sort-amount-desc"
+              }
+              buttonModifiers={["evaluation-journal-sorter"]}
+            />
+          </Dropdown>
+        </div>
       </div>
       <div className="evaluation-modal__content-body">
         {evaluation.evaluationDiaryEntries.state === "READY" ? (
