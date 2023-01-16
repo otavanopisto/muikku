@@ -45,6 +45,7 @@
 
 .label--draft {
   background-color: lighten($color-clear, 40%);
+  width: fit-content;
 }
 
 .label__icon {

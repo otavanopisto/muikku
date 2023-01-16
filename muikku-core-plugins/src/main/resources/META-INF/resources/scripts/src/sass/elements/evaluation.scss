@@ -419,6 +419,15 @@
   padding: 0;
 }
 
+.title-container {
+  display: flex;
+  flex-flow: row wrap;
+
+  .title-text {
+    margin-right: 5px;
+  }
+}
+
 .evaluation-modal__item-hidden {
   font-size: 0.75rem;
   font-style: italic;
