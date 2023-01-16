@@ -60,6 +60,11 @@
     min-width: 100%;
   }
 
+  .cke_wysiwyg_div {
+    max-height: 400px;
+    min-height: 150px;
+  }
+
   &.state-OPEN {
     padding: 0 10px 10px;
   }

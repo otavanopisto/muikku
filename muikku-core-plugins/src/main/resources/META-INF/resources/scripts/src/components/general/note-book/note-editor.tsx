@@ -58,6 +58,42 @@ interface NoteEditorState {
   locked: boolean;
 }
 
+/* eslint-disable camelcase */
+const ckEditorConfig = {
+  autoGrow_onStartup: true,
+  toolbar: [
+    {
+      name: "basicstyles",
+      items: ["Bold", "Italic", "Underline", "RemoveFormat"],
+    },
+    { name: "clipboard", items: ["Cut", "Copy", "Paste", "Undo", "Redo"] },
+    { name: "links", items: ["Link"] },
+    {
+      name: "insert", items: ["SpecialChar"],
+    },
+    { name: "colors", items: ["TextColor", "BGColor"] },
+    { name: "styles", items: ["Format"] },
+    {
+      name: "paragraph",
+      items: [
+        "NumberedList",
+        "BulletedList",
+        "Outdent",
+        "Indent",
+        "Blockquote",
+        "JustifyLeft",
+        "JustifyCenter",
+        "JustifyRight",
+      ],
+    },
+    { name: "tools", items: ["Maximize"] },
+  ],
+  removePlugins: "image,exportpdf",
+  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  resize_enabled: true,
+};
+/* eslint-enable camelcase */
+
 /**
  * Creates NoteEditor component
  */
@@ -83,7 +119,7 @@ class NoteEditor extends SessionStateComponent<
 
     this.state = {
       ...this.getRecoverStoredState({
-        noteTitle: props.note?.title || "Uusi muistiinpano",
+        noteTitle: props.note?.title || "",
         noteContent: props.note?.workspaceNote || props?.cutContent || "",
       }),
       locked: false,
@@ -98,7 +134,7 @@ class NoteEditor extends SessionStateComponent<
     this.setState(
       this.getRecoverStoredState(
         {
-          noteTitle: this.props.note?.title || "Uusi muistiinpano",
+          noteTitle: this.props.note?.title || "",
           noteContent:
             this.props.note?.workspaceNote || this.props?.cutContent || "",
         },
@@ -128,7 +164,7 @@ class NoteEditor extends SessionStateComponent<
       this.setState(
         this.getRecoverStoredState(
           {
-            noteTitle: this.props.note?.title || "Uusi muistiinpano",
+            noteTitle: this.props.note?.title || "",
             noteContent:
               this.props.note?.workspaceNote || this.props?.cutContent || "",
             draftId,
@@ -164,7 +200,7 @@ class NoteEditor extends SessionStateComponent<
   handleDeleteDraftClick = () => {
     this.setStateAndClear(
       {
-        noteTitle: this.props.note?.title || "Uusi muistiinpano",
+        noteTitle: this.props.note?.title || "",
         noteContent:
           this.props.note?.workspaceNote || this.props?.cutContent || "",
       },
@@ -188,7 +224,7 @@ class NoteEditor extends SessionStateComponent<
         success: () => {
           this.setStateAndClear(
             {
-              noteTitle: "Uusi muistiinpano",
+              noteTitle: "",
               noteContent: "",
             },
             this.state.draftId
@@ -209,7 +245,7 @@ class NoteEditor extends SessionStateComponent<
         success: () => {
           this.setStateAndClear(
             {
-              noteTitle: "Uusi muistiinpano",
+              noteTitle: "",
               noteContent: "",
             },
             this.state.draftId
@@ -266,6 +302,7 @@ class NoteEditor extends SessionStateComponent<
                 <CKEditor
                   onChange={this.handleCkeditorChange}
                   ancestorHeight={250}
+                  configuration={ckEditorConfig}
                 >
                   {this.state.noteContent}
                 </CKEditor>
