@@ -45,14 +45,16 @@ public class WorkspaceJournalController {
     return workspaceJournalEntryDAO.findById(workspaceJournalEntryId);
   }
   
-
-  
   public WorkspaceJournalEntry findJournalEntryByMaterialFieldReplyIdentifier(String materialFieldReplyIdentifier) {
     return workspaceJournalEntryDAO.findByMaterialFieldReplyIdentifier(materialFieldReplyIdentifier);
   }
 
   public WorkspaceJournalEntry updateJournalEntry(WorkspaceJournalEntry workspaceJournalEntry, String title, String html) {
-    return workspaceJournalEntryDAO.updateContent(workspaceJournalEntry, title, html);
+    return workspaceJournalEntryDAO.update(workspaceJournalEntry, title, html);
+  }
+
+  public WorkspaceJournalEntry updateJournalEntryTitle(WorkspaceJournalEntry workspaceJournalEntry, String title) {
+    return workspaceJournalEntryDAO.updateTitle(workspaceJournalEntry, title);
   }
   
   public void archiveJournalEntry(WorkspaceJournalEntry workspaceJournalEntry){
