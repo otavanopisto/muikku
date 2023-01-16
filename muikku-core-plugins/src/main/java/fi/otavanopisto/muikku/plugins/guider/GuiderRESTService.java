@@ -831,8 +831,8 @@ public class GuiderRESTService extends PluginRESTService {
   public Response updateStudentContactLog(@PathParam("ID") Long userEntityId, @PathParam("CONTACTLOGENTRYID") Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-
-    if (payload.getCreatorId() != sessionController.getLoggedUserEntity().getId()) {
+    
+    if (!sessionController.getLoggedUserEntity().getId().equals(payload.getCreatorId())) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -965,7 +965,7 @@ public class GuiderRESTService extends PluginRESTService {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
 
-    if (payload.getCreatorId() != sessionController.getLoggedUserEntity().getId()) {
+    if (!sessionController.getLoggedUserEntity().getId().equals(payload.getCreatorId())) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
