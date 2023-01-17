@@ -448,7 +448,7 @@ const translations: any = {
  */
 function convertStylePropertyToCamelCase(str: string) {
   // first we split the dashes
-  const splitted = str.split("-");
+  const splitted = str.startsWith("-") ? [] : str.split("-");
 
   // if it's just one then we return that just one
   if (splitted.length === 1) {
