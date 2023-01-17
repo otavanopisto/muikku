@@ -60,7 +60,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     React.useState<AssignmentsTabType>("EVALUATED");
 
   const [journalsOpen, setJournalsOpen] = React.useState<number[]>([]);
-  const [excerciseOpen, setExcerciseOpen] = React.useState<number[]>([]);
+  const [exerciseOpen, setExcerciseOpen] = React.useState<number[]>([]);
   const [evaluatedOpen, setEvaluatedOpen] = React.useState<number[]>([]);
   const [interimOpen, setInterimOpen] = React.useState<number[]>([]);
 
@@ -180,7 +180,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       switch (type) {
         case "EXERCISE": {
-          const updatedList = [...excerciseOpen];
+          const updatedList = [...exerciseOpen];
 
           const index = updatedList.indexOf(id);
 
@@ -331,7 +331,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             return null;
           }
 
-          const open = excerciseOpen.includes(m.id);
+          const open = exerciseOpen.includes(m.id);
 
           return (
             <Material
@@ -502,9 +502,9 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
       ),
     },
     {
-      id: "EXCERCISE",
+      id: "EXERCISE",
       name: props.i18n.text.get("plugin.records.exercises.title"),
-      type: "excercises",
+      type: "exercises",
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
