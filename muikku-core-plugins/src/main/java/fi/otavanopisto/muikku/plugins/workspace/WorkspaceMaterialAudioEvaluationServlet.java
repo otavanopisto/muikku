@@ -20,7 +20,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationFileStorageUtils;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequestAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
@@ -75,33 +75,20 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
     }
 
     String clipId = request.getParameter("clipId");
-    WorkspaceMaterialEvaluationAudioClip evaluationAudioClip = evaluationController.findEvaluationAudioClip(clipId);
-    if (evaluationAudioClip == null) {
+
+    AudioClip audioClip = getClip(clipId);
+    if (audioClip == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
     
-    WorkspaceMaterialEvaluation materialEvaluation = evaluationAudioClip.getEvaluation();
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(materialEvaluation.getWorkspaceMaterialId());
-    if (workspaceMaterial == null) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-      return;
-    }
-
-    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    if (workspaceRootFolder == null) {
+    if (audioClip.getWorkspaceEntity() == null) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
     
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
-    if (workspaceEntity == null) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-      return;
-    }
-    
-    if (!materialEvaluation.getStudentEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
+    if (!sessionController.getLoggedUserEntity().getId().equals(audioClip.getStudentEntityId())) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, audioClip.getWorkspaceEntity())) {
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;
       }
@@ -109,13 +96,13 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
     
     byte[] content = null;
     if (content == null) {
-      Long userEntityId = materialEvaluation.getStudentEntityId();
+      Long userEntityId = audioClip.getStudentEntityId();
       try {
-        if (evaluationFileStorageUtils.isFileInFileSystem(userEntityId, evaluationAudioClip.getClipId())) {
-          content = evaluationFileStorageUtils.getFileContent(userEntityId, evaluationAudioClip.getClipId());
+        if (evaluationFileStorageUtils.isFileInFileSystem(userEntityId, audioClip.getClipId())) {
+          content = evaluationFileStorageUtils.getFileContent(userEntityId, audioClip.getClipId());
         }
         else {
-          logger.warning(String.format("Audio %s of user %d not found from file storage", evaluationAudioClip.getClipId(), userEntityId));
+          logger.warning(String.format("Audio %s of user %d not found from file storage", audioClip.getClipId(), userEntityId));
         }
       }
       catch (FileNotFoundException fnfe) {
@@ -133,7 +120,7 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
     }
 
     int size = content.length;
-    String eTag = DigestUtils.md5Hex(evaluationAudioClip.getClipId() + ':' + evaluationAudioClip.getId() + ':' + size);
+    String eTag = DigestUtils.md5Hex(audioClip.getClipId() + ':' + audioClip.getId() + ':' + size);
     
     response.setHeader("ETag", eTag);
     String ifNoneMatch = request.getHeader("If-None-Match");
@@ -172,8 +159,8 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
       }
 
       response.setHeader("Accept-Ranges", "bytes");
-      response.setContentType(evaluationAudioClip.getContentType());
-      response.setHeader("Content-Disposition", "attachment; filename=" + evaluationAudioClip.getFileName());
+      response.setContentType(audioClip.getContentType());
+      response.setHeader("Content-Disposition", "attachment; filename=" + audioClip.getFileName());
 
       try {
         if (ranges.isEmpty()) {
@@ -201,7 +188,7 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
             for (Range r : ranges) {
               response.getOutputStream().println();
               response.getOutputStream().println("--MULTIPART_BYTERANGES");
-              response.getOutputStream().println(String.format("Content-Type: %s", evaluationAudioClip.getContentType()));
+              response.getOutputStream().println(String.format("Content-Type: %s", audioClip.getContentType()));
               response.getOutputStream().println(String.format("Content-Range: bytes %d-%d/%d", r.start, r.end, r.total));
               response.getOutputStream().write(content, r.start, r.length);
             }
@@ -219,6 +206,33 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
     }
   }
 
+  private AudioClip getClip(String clipId) {
+    WorkspaceMaterialEvaluationAudioClip evaluationAudioClip = evaluationController.findEvaluationAudioClip(clipId);
+    if (evaluationAudioClip != null) {
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(evaluationAudioClip.getEvaluation().getWorkspaceMaterialId());
+      Long studentId = evaluationAudioClip.getEvaluation().getStudentEntityId();
+      WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
+      String contentType = evaluationAudioClip.getContentType();
+      String fileName = evaluationAudioClip.getFileName();
+      return new AudioClip(studentId, workspaceEntity, evaluationAudioClip.getId(), clipId, fileName, contentType);
+    } else {
+      SupplementationRequestAudioClip supplementationAudioClip = evaluationController.findSupplementationAudioClip(clipId);
+      if (supplementationAudioClip != null) {
+        WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(supplementationAudioClip.getSupplementationRequest().getWorkspaceMaterialId());
+        Long studentId = supplementationAudioClip.getSupplementationRequest().getStudentEntityId();
+        WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
+        String contentType = supplementationAudioClip.getContentType();
+        String fileName = supplementationAudioClip.getFileName();
+        return new AudioClip(studentId, workspaceEntity, supplementationAudioClip.getId(), clipId, fileName, contentType);
+      }
+    }
+    
+    // Not found
+    return null;
+  }
+  
   protected class Range {
     public Range(int start, int end, int total) {
       this.start = start;
@@ -232,4 +246,45 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
     int total;
   }
 
+  private class AudioClip {
+    public AudioClip(Long studentEntityId, WorkspaceEntity workspaceEntity, Long id, String clipId, String fileName, String contentType) {
+      this.id = id;
+      this.fileName = fileName;
+      this.contentType = contentType;
+      this.clipId = clipId;
+      this.studentEntityId = studentEntityId;
+      this.workspaceEntity = workspaceEntity;
+    }
+    
+    public String getContentType() {
+      return contentType;
+    }
+
+    public String getClipId() {
+      return clipId;
+    }
+
+    public Long getStudentEntityId() {
+      return studentEntityId;
+    }
+
+    public WorkspaceEntity getWorkspaceEntity() {
+      return workspaceEntity;
+    }
+
+    public String getFileName() {
+      return fileName;
+    }
+
+    public Long getId() {
+      return id;
+    }
+
+    private final Long id;
+    private final String fileName;
+    private final String contentType;
+    private final String clipId;
+    private final Long studentEntityId;
+    private final WorkspaceEntity workspaceEntity;
+  }
 }

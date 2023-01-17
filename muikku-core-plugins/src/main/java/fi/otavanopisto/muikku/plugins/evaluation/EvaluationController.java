@@ -36,9 +36,11 @@ import fi.otavanopisto.muikku.plugins.evaluation.dao.InterimEvaluationRequestDAO
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequestAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
@@ -112,6 +114,9 @@ public class EvaluationController {
   
   @Inject
   private SupplementationRequestDAO supplementationRequestDAO;
+  
+  @Inject
+  private SupplementationRequestAudioClipDAO supplementationRequestAudioClipDAO;
   
   @Inject
   private GradingController gradingController;
@@ -468,7 +473,23 @@ public class EvaluationController {
   }
   
   public void deleteSupplementationRequest(SupplementationRequest supplementationRequest) {
-    supplementationRequestDAO.archive(supplementationRequest);
+    if (supplementationRequest != null) {
+      List<SupplementationRequestAudioClip> supplementationAudioClips = listSupplementationAudioClips(supplementationRequest);
+      for (SupplementationRequestAudioClip supplementationAudioClip : supplementationAudioClips) {
+        if (file.isFileInFileSystem(supplementationRequest.getStudentEntityId(), supplementationAudioClip.getClipId())) {
+          try {
+            file.removeFileFromFileSystem(supplementationRequest.getStudentEntityId(), supplementationAudioClip.getClipId());
+          } catch (IOException e) {
+            logger.log(Level.SEVERE, String.format("Could not remove clip %s", supplementationAudioClip.getClipId()), e);
+          }
+        }
+        
+        // Remove db entry
+        supplementationRequestAudioClipDAO.delete(supplementationAudioClip);
+      }
+      
+      supplementationRequestDAO.archive(supplementationRequest);
+    }
   }
 
   public void deleteWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation evaluation) {
@@ -592,10 +613,16 @@ public class EvaluationController {
     }
     else if (supplementationRequest != null && (workspaceMaterialEvaluation == null || workspaceMaterialEvaluation.getEvaluated().before(supplementationRequest.getRequestDate()))) {
       // No evaluation or supplementation request is newer
+      
+      List<SupplementationRequestAudioClip> supplementationAudioClips = supplementationRequestAudioClipDAO.listBySupplementationRequest(supplementationRequest);
+      
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
       evaluation.setType(RestAssignmentEvaluationType.INCOMPLETE);
       evaluation.setDate(supplementationRequest.getRequestDate());
       evaluation.setText(supplementationRequest.getRequestText());
+      supplementationAudioClips.forEach(audioClip -> {
+        evaluation.addAudioAssessmentAudioClip(new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()));
+      });
       return evaluation;
     }
     else {
@@ -789,6 +816,70 @@ public class EvaluationController {
             
             // Create db entry
             workspaceMaterialEvaluationAudioClipDAO.create(evaluation, clip.getContentType(), clip.getId(), clip.getName());
+            TempFileUtils.deleteTempFile(clip.getId());
+          }
+          catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve clip data", e);
+          }
+        }
+      }
+    }
+    
+    // Removed clips
+    
+    for (String existingClipId : existingClipIds) {
+      WorkspaceMaterialEvaluationAudioClip workspaceMaterialEvaluationAudioClip = workspaceMaterialEvaluationAudioClipDAO.findByClipId(existingClipId);
+      if (workspaceMaterialEvaluationAudioClip != null) {
+        try {
+          // Remove file
+          Long userEntityId = workspaceMaterialEvaluationAudioClip.getEvaluation().getStudentEntityId();
+          if (file.isFileInFileSystem(userEntityId, existingClipId)) {
+            file.removeFileFromFileSystem(userEntityId, existingClipId);
+          }
+          
+          // Remove db entry
+          workspaceMaterialEvaluationAudioClipDAO.delete(workspaceMaterialEvaluationAudioClip);
+        }
+        catch (Exception e) {
+          throw new RuntimeException("Failed to remove audio data", e);
+        }
+      }
+    }
+  }
+  
+  public SupplementationRequestAudioClip findSupplementationAudioClip(String clipId) {
+    return supplementationRequestAudioClipDAO.findByClipId(clipId);
+  }
+  
+  public List<SupplementationRequestAudioClip> listSupplementationAudioClips(SupplementationRequest supplementationRequest) {
+    return supplementationRequestAudioClipDAO.listBySupplementationRequest(supplementationRequest);
+  }
+  
+  public void synchronizeWorkspaceSupplementationAudioAssessments(SupplementationRequest supplementationRequest, List<RestAssignmentEvaluationAudioClip> audioAssessments) {
+    List<SupplementationRequestAudioClip> existingClips = supplementationRequestAudioClipDAO.listBySupplementationRequest(supplementationRequest);
+
+    List<String> existingClipIds = existingClips.stream().map(SupplementationRequestAudioClip::getClipId).collect(Collectors.toList());
+
+    if (audioAssessments != null) {
+      for (RestAssignmentEvaluationAudioClip clip : audioAssessments) {
+        if (existingClipIds.contains(clip.getId())) {
+          // Already existing clip
+          existingClipIds.remove(clip.getId());
+        }
+        else {
+          // New clip
+          try {
+            byte[] audioData = TempFileUtils.getTempFileData(clip.getId());
+            if (audioData == null) {
+              throw new WorkspaceFieldIOException("Temp audio does not exist");
+            }
+            
+            // Create file
+            Long userEntityId = supplementationRequest.getStudentEntityId();
+            file.storeFileToFileSystem(userEntityId, clip.getId(), audioData);
+            
+            // Create db entry
+            supplementationRequestAudioClipDAO.create(supplementationRequest, clip.getContentType(), clip.getId(), clip.getName());
             TempFileUtils.deleteTempFile(clip.getId());
           }
           catch (Exception e) {

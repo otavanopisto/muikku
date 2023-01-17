@@ -461,6 +461,7 @@ class AssignmentEditor extends SessionStateComponent<
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,
+          audioAssessments: this.state.audioAssessments,
         },
         materialId: this.props.materialAssignment.materialId,
         defaultGrade,
@@ -614,24 +615,16 @@ class AssignmentEditor extends SessionStateComponent<
 
         <div className="form__row">
           <div className="form-element">
-            <AnimateHeight
-              height={
-                this.state.assignmentEvaluationType !== "INCOMPLETE"
-                  ? "auto"
-                  : 0
-              }
-            >
-              <label htmlFor="assignmentEvaluationGrade">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.audioAssessments"
-                )}
-              </label>
-              <Recorder
-                onIsRecordingChange={this.props.onIsRecordingChange}
-                onChange={this.handleAudioAssessmentChange}
-                values={this.state.audioAssessments}
-              />
-            </AnimateHeight>
+            <label htmlFor="assignmentEvaluationGrade">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.audioAssessments"
+              )}
+            </label>
+            <Recorder
+              onIsRecordingChange={this.props.onIsRecordingChange}
+              onChange={this.handleAudioAssessmentChange}
+              values={this.state.audioAssessments}
+            />
           </div>
         </div>
         <div className="form__row">

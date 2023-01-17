@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequestAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
@@ -652,11 +653,13 @@ public class EvaluationRESTService extends PluginRESTService {
       payload.getRequestDate(),
       payload.getRequestText());
     
+    evaluationController.synchronizeWorkspaceSupplementationAudioAssessments(supplementationRequest, payload.getAudioAssessments());
+
     // Notifications (evaluationController.createSupplementationRequest has already done most of them, though)
 
     activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.EVALUATION_GOTINCOMPLETED, workspaceEntity.getId(), null);
 
-    return Response.ok(supplementationRequest).build();
+    return Response.ok(createRestModel(supplementationRequest)).build();
   }
   
   @PUT
@@ -692,7 +695,9 @@ public class EvaluationRESTService extends PluginRESTService {
       payload.getRequestDate(),
       payload.getRequestText());
 
-    return Response.ok(supplementationRequest).build();
+    evaluationController.synchronizeWorkspaceSupplementationAudioAssessments(supplementationRequest, payload.getAudioAssessments());
+
+    return Response.ok(createRestModel(supplementationRequest)).build();
   }
 
   @POST
@@ -744,6 +749,8 @@ public class EvaluationRESTService extends PluginRESTService {
           payload.getRequestText());
     }
     
+    evaluationController.synchronizeWorkspaceSupplementationAudioAssessments(supplementationRequest, payload.getAudioAssessments());
+
     // Delete possible workspace material assessment
     
     WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
@@ -751,19 +758,7 @@ public class EvaluationRESTService extends PluginRESTService {
       evaluationController.deleteWorkspaceMaterialEvaluation(workspaceMaterialEvaluation);
     }
     
-    // SupplementationRequest to RestSupplementationRequest
-    
-    RestSupplementationRequest restSupplementationRequest = new RestSupplementationRequest(
-        supplementationRequest.getId(),
-        supplementationRequest.getUserEntityId(),
-        supplementationRequest.getStudentEntityId(),
-        supplementationRequest.getWorkspaceEntityId(),
-        supplementationRequest.getWorkspaceSubjectIdentifier(),
-        supplementationRequest.getWorkspaceMaterialId(),
-        supplementationRequest.getRequestDate(),
-        supplementationRequest.getRequestText());
-
-    return Response.ok(restSupplementationRequest).build();
+    return Response.ok(createRestModel(supplementationRequest)).build();
   }
   
   /**
@@ -1369,6 +1364,28 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.noContent().build();
     }
     return Response.status(Status.BAD_REQUEST).build();
+  }
+  
+  private RestSupplementationRequest createRestModel(SupplementationRequest supplementationRequest) {
+    // SupplementationRequest to RestSupplementationRequest
+
+    List<SupplementationRequestAudioClip> supplementationRequestAudioClips = evaluationController.listSupplementationAudioClips(supplementationRequest);
+    List<RestAssignmentEvaluationAudioClip> audioAssessments = supplementationRequestAudioClips.stream()
+        .map(audioClip -> new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
+        .collect(Collectors.toList());
+
+    RestSupplementationRequest restSupplementationRequest = new RestSupplementationRequest(
+        supplementationRequest.getId(),
+        supplementationRequest.getUserEntityId(),
+        supplementationRequest.getStudentEntityId(),
+        supplementationRequest.getWorkspaceEntityId(),
+        supplementationRequest.getWorkspaceSubjectIdentifier(),
+        supplementationRequest.getWorkspaceMaterialId(),
+        supplementationRequest.getRequestDate(),
+        supplementationRequest.getRequestText(),
+        audioAssessments);
+
+    return restSupplementationRequest;
   }
   
   private List<RestWorkspaceMaterialEvaluation> createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation... entries) {

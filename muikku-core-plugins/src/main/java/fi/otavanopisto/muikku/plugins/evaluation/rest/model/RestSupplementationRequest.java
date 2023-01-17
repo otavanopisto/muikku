@@ -1,13 +1,14 @@
 package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class RestSupplementationRequest {
   
   public RestSupplementationRequest() {
   }
 
-  public RestSupplementationRequest(Long id, Long userEntityId, Long studentEntityId, Long workspaceEntityId, String workspaceSubjectIdentifier, Long workspaceMaterialId, Date requestDate, String requestText) {
+  public RestSupplementationRequest(Long id, Long userEntityId, Long studentEntityId, Long workspaceEntityId, String workspaceSubjectIdentifier, Long workspaceMaterialId, Date requestDate, String requestText, List<RestAssignmentEvaluationAudioClip> audioAssessments) {
     this.id = id;
     this.userEntityId = userEntityId;
     this.studentEntityId = studentEntityId;
@@ -16,6 +17,7 @@ public class RestSupplementationRequest {
     this.workspaceMaterialId = workspaceMaterialId;
     this.requestDate = requestDate;
     this.requestText = requestText;
+    this.audioAssessments = audioAssessments;
   }
   
   public Long getId() {
@@ -82,6 +84,14 @@ public class RestSupplementationRequest {
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
   }
 
+  public List<RestAssignmentEvaluationAudioClip> getAudioAssessments() {
+    return audioAssessments;
+  }
+
+  public void setAudioAssessments(List<RestAssignmentEvaluationAudioClip> audioAssessments) {
+    this.audioAssessments = audioAssessments;
+  }
+
   private Long id;
   private Long userEntityId;
   private Long studentEntityId;
@@ -90,5 +100,6 @@ public class RestSupplementationRequest {
   private Long workspaceMaterialId;
   private Date requestDate;
   private String requestText;
+  private List<RestAssignmentEvaluationAudioClip> audioAssessments;
 
 }

@@ -274,6 +274,15 @@ export type EvaluationImportantStatus =
 export type EvaluationStateType = "LOADING" | "READY" | "ERROR";
 
 /**
+ * AudioAssessment
+ */
+export interface AudioAssessment {
+  id: string;
+  name: string;
+  contentType: string;
+}
+
+/**
  * WorkspaceEvaluationSaveRequest
  */
 export interface WorkspaceEvaluationSaveRequest {
@@ -332,15 +341,6 @@ export interface BilledPrice {
 }
 
 /**
- * AudioAssessment
- */
-export interface AudioAssessment {
-  id: string;
-  name: string;
-  contentType: string;
-}
-
-/**
  * AssignmentEvaluationGradeRequest
  */
 export interface AssignmentEvaluationGradeRequest {
@@ -371,6 +371,7 @@ export interface AssignmentEvaluationSupplementationRequest {
   workspaceMaterialId: string;
   requestDate: number;
   requestText: string;
+  audioAssessments: AudioAssessment[];
 }
 
 /**
