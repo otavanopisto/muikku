@@ -209,23 +209,31 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
   private AudioClip getClip(String clipId) {
     WorkspaceMaterialEvaluationAudioClip evaluationAudioClip = evaluationController.findEvaluationAudioClip(clipId);
     if (evaluationAudioClip != null) {
+      Long studentEntityId = evaluationAudioClip.getEvaluation().getStudentEntityId();
       WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(evaluationAudioClip.getEvaluation().getWorkspaceMaterialId());
-      Long studentId = evaluationAudioClip.getEvaluation().getStudentEntityId();
-      WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
-      String contentType = evaluationAudioClip.getContentType();
-      String fileName = evaluationAudioClip.getFileName();
-      return new AudioClip(studentId, workspaceEntity, evaluationAudioClip.getId(), clipId, fileName, contentType);
+      WorkspaceRootFolder workspaceRootFolder = workspaceMaterial != null ? workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial) : null;
+      WorkspaceEntity workspaceEntity = workspaceRootFolder != null ? workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId()) : null;
+      return new AudioClip(
+          studentEntityId, 
+          workspaceEntity, 
+          evaluationAudioClip.getId(), 
+          evaluationAudioClip.getClipId(), 
+          evaluationAudioClip.getFileName(), 
+          evaluationAudioClip.getContentType());
     } else {
       SupplementationRequestAudioClip supplementationAudioClip = evaluationController.findSupplementationAudioClip(clipId);
       if (supplementationAudioClip != null) {
+        Long studentEntityId = supplementationAudioClip.getSupplementationRequest().getStudentEntityId();
         WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(supplementationAudioClip.getSupplementationRequest().getWorkspaceMaterialId());
-        Long studentId = supplementationAudioClip.getSupplementationRequest().getStudentEntityId();
-        WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
-        String contentType = supplementationAudioClip.getContentType();
-        String fileName = supplementationAudioClip.getFileName();
-        return new AudioClip(studentId, workspaceEntity, supplementationAudioClip.getId(), clipId, fileName, contentType);
+        WorkspaceRootFolder workspaceRootFolder = workspaceMaterial != null ? workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial) : null;
+        WorkspaceEntity workspaceEntity = workspaceRootFolder != null ? workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId()) : null;
+        return new AudioClip(
+            studentEntityId, 
+            workspaceEntity, 
+            supplementationAudioClip.getId(), 
+            supplementationAudioClip.getClipId(), 
+            supplementationAudioClip.getFileName(), 
+            supplementationAudioClip.getContentType());
       }
     }
     

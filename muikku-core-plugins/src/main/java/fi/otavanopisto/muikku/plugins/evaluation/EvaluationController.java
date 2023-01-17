@@ -892,17 +892,17 @@ public class EvaluationController {
     // Removed clips
     
     for (String existingClipId : existingClipIds) {
-      WorkspaceMaterialEvaluationAudioClip workspaceMaterialEvaluationAudioClip = workspaceMaterialEvaluationAudioClipDAO.findByClipId(existingClipId);
+      SupplementationRequestAudioClip workspaceMaterialEvaluationAudioClip = supplementationRequestAudioClipDAO.findByClipId(existingClipId);
       if (workspaceMaterialEvaluationAudioClip != null) {
         try {
           // Remove file
-          Long userEntityId = workspaceMaterialEvaluationAudioClip.getEvaluation().getStudentEntityId();
+          Long userEntityId = workspaceMaterialEvaluationAudioClip.getSupplementationRequest().getStudentEntityId();
           if (file.isFileInFileSystem(userEntityId, existingClipId)) {
             file.removeFileFromFileSystem(userEntityId, existingClipId);
           }
           
           // Remove db entry
-          workspaceMaterialEvaluationAudioClipDAO.delete(workspaceMaterialEvaluationAudioClip);
+          supplementationRequestAudioClipDAO.delete(workspaceMaterialEvaluationAudioClip);
         }
         catch (Exception e) {
           throw new RuntimeException("Failed to remove audio data", e);
