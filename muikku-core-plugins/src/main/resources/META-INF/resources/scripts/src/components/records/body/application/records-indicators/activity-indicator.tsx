@@ -16,7 +16,7 @@ interface ActivityIndicatorProps {
 
 /**
  * Creates activity indicator component if
- * activity property exist and there are excercise
+ * activity property exist and there are exercise
  * @param props component prosp
  * @returns JSX.Element
  */

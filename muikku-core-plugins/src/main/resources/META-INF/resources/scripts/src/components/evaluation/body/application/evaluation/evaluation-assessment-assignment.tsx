@@ -29,7 +29,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
-import ExcerciseEditor from "./editors/excercise-editor";
+import ExerciseEditor from "./editors/exercise-editor";
 
 /**
  * EvaluationCardProps
@@ -330,7 +330,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           this.props.assigment.assignmentType === "EXERCISE" &&
           compositeReply.evaluationInfo.type === "PASSED")
       ) {
-        // Evaluated if graded or if assignment type is excercise and info type returns PASSED
+        // Evaluated if graded or if assignment type is exercise and info type returns PASSED
         return "state-EVALUATED";
       } else if (
         compositeReply.state === "SUBMITTED" &&
@@ -540,7 +540,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     const materialPageType =
       this.props.assigment.assignmentType === "EVALUATED"
         ? "assignment"
-        : "excercise";
+        : "exercise";
 
     return (
       <div className={`evaluation-modal__item `}>
@@ -599,7 +599,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           modifiers={
             this.props.assigment.assignmentType === "EVALUATED"
               ? ["assignment"]
-              : ["excercise"]
+              : ["exercise"]
           }
           show={
             this.state.openDrawer &&
@@ -631,7 +631,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 onClose={this.handleCloseSlideDrawer}
               />
             ) : (
-              <ExcerciseEditor
+              <ExerciseEditor
                 selectedAssessment={this.props.selectedAssessment}
                 onAudioAssessmentChange={this.handleAudioAssessmentChange}
                 showAudioAssessmentWarningOnClose={

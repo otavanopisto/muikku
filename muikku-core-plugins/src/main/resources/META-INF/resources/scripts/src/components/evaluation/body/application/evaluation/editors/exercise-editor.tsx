@@ -75,7 +75,7 @@ interface AssignmentEditorState {
 /**
  * AssignmentEditor
  */
-class ExcerciseEditor extends SessionStateComponent<
+class ExerciseEditor extends SessionStateComponent<
   AssignmentEditorProps,
   AssignmentEditorState
 > {
@@ -84,7 +84,7 @@ class ExcerciseEditor extends SessionStateComponent<
    * @param props props
    */
   constructor(props: AssignmentEditorProps) {
-    super(props, `excercise-editor`);
+    super(props, `exercise-editor`);
 
     const { compositeReplies, selectedAssessment, materialAssignment } = props;
 
@@ -546,4 +546,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExcerciseEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(ExerciseEditor);
