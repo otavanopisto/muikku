@@ -473,23 +473,9 @@ public class EvaluationController {
   }
   
   public void deleteSupplementationRequest(SupplementationRequest supplementationRequest) {
-    if (supplementationRequest != null) {
-      List<SupplementationRequestAudioClip> supplementationAudioClips = listSupplementationAudioClips(supplementationRequest);
-      for (SupplementationRequestAudioClip supplementationAudioClip : supplementationAudioClips) {
-        if (file.isFileInFileSystem(supplementationRequest.getStudentEntityId(), supplementationAudioClip.getClipId())) {
-          try {
-            file.removeFileFromFileSystem(supplementationRequest.getStudentEntityId(), supplementationAudioClip.getClipId());
-          } catch (IOException e) {
-            logger.log(Level.SEVERE, String.format("Could not remove clip %s", supplementationAudioClip.getClipId()), e);
-          }
-        }
-        
-        // Remove db entry
-        supplementationRequestAudioClipDAO.delete(supplementationAudioClip);
-      }
-      
-      supplementationRequestDAO.archive(supplementationRequest);
-    }
+    // Note that as this archives the supplementation request it doesn't do 
+    // anything to the audio clips unlike the material evaluation deletion.
+    supplementationRequestDAO.archive(supplementationRequest);
   }
 
   public void deleteWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation evaluation) {
