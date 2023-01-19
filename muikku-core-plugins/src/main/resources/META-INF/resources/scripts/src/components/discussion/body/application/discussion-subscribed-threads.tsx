@@ -719,13 +719,14 @@ class DiscussionSubscribedThreads extends React.Component<
                   <div className="dropdown__container-item">
                     <div className="filter-item filter-item--workspace-page">
                       <input
+                        id="discussionAreas"
                         type="checkbox"
                         value="AREAS"
                         onChange={this.handleToggleFilterChange}
                         checked={this.state.filters.includes("AREAS")}
                       />
                       <label
-                        htmlFor="theory-page-filter"
+                        htmlFor="discussionAreas"
                         className="filter-item__label"
                       >
                         Keskustelualueet
@@ -735,13 +736,14 @@ class DiscussionSubscribedThreads extends React.Component<
                   <div className="dropdown__container-item">
                     <div className="filter-item filter-item--workspace-page">
                       <input
+                        id="discussionThreads"
                         type="checkbox"
                         value="THREADS"
                         onChange={this.handleToggleFilterChange}
                         checked={this.state.filters.includes("THREADS")}
                       />
                       <label
-                        htmlFor="theory-page-filter"
+                        htmlFor="discussionThreads"
                         className="filter-item__label"
                       >
                         Viestiketjut
