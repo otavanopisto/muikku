@@ -23,7 +23,6 @@ import {
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
-import { IconButton } from "../../../general/button";
 import {
   SubscribeDiscussionArea,
   subscribeDiscussionArea,
@@ -238,11 +237,7 @@ class CommunicatorToolbar extends React.Component<
               <option value="">
                 {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
               </option>
-              <option value="subs">
-                {this.props.i18n.text.get(
-                  "plugin.discussion.browseareas.subscribtions"
-                )}
-              </option>
+              <option value="subs">Tilatut keskustelut</option>
               {this.props.discussion.areas.map((area) => {
                 const subscribed =
                   this.props.discussion.subscribedAreas.findIndex(
