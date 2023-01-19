@@ -428,6 +428,9 @@ class DiscussionSubscribedThreads extends React.Component<
   renderAreaItem = (area: DiscussionSubscribedArea) => {
     const subscribedArea = area.area;
 
+    const areaCategory =
+      subscribedArea.id > 10 ? (subscribedArea.id % 10) + 1 : subscribedArea.id;
+
     return (
       <DiscussionArea
         key={subscribedArea.id}
@@ -435,7 +438,9 @@ class DiscussionSubscribedThreads extends React.Component<
       >
         <ApplicationListItemHeader modifiers="discussion">
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div className="discussion-category discussion-category--category-2">
+            <div
+              className={`discussion-category discussion-category--category-${areaCategory}`}
+            >
               <span>{subscribedArea.name}</span>
             </div>
           </div>
