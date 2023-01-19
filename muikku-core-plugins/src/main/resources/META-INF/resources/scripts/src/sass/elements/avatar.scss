@@ -44,6 +44,12 @@
   }
 }
 
+.avatar-container--discussion-area {
+  background: $color-default-generic-background;
+  color: $color-info;
+  font-size: 1.5rem;
+}
+
 .avatar-container--small {
   @include breakpoint($breakpoint-pad) {
     height: $avatar-desktop-small-size;

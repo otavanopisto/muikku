@@ -316,7 +316,9 @@ class DiscussionSubscribedThreads extends React.Component<
     }
 
     // Get possible current workspace id
-    const currentWorkspaceId = this.props.workspaces.currentWorkspace.id;
+    const currentWorkspaceId = this.props.workspaces.currentWorkspace
+      ? this.props.workspaces.currentWorkspace.id
+      : undefined;
 
     let currentWorkspaceAreas: DiscussionSubscribedArea[] | undefined =
       undefined;
@@ -383,7 +385,9 @@ class DiscussionSubscribedThreads extends React.Component<
     }
 
     // Get possible current workspace id
-    const currentWorkspaceId = this.props.workspaces.currentWorkspace.id;
+    const currentWorkspaceId = this.props.workspaces.currentWorkspace
+      ? this.props.workspaces.currentWorkspace.id
+      : undefined;
 
     let currentWorkspaceThreads: DiscussionSubscribedThread[] | undefined =
       undefined;
@@ -431,7 +435,7 @@ class DiscussionSubscribedThreads extends React.Component<
       >
         <ApplicationListItemHeader modifiers="discussion">
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div>
+            <div className="discussion-category discussion-category--category-2">
               <span>{subscribedArea.name}</span>
             </div>
           </div>
@@ -450,12 +454,10 @@ class DiscussionSubscribedThreads extends React.Component<
 
         {subscribedArea.description !== "" && (
           <ApplicationListItemBody>
-            <OverflowDetector
-              as="div"
-              classNameWhenOverflown="application-list__item-text-body--discussion-message-overflow"
-              className="application-list__item-text-body--discussion-message rich-text"
+            <div
+              className="application-list__item-text-body--discussion-area-description"
               dangerouslySetInnerHTML={{
-                __html: `<p>${subscribedArea.description}</p>`,
+                __html: subscribedArea.description,
               }}
             />
           </ApplicationListItemBody>
@@ -474,7 +476,7 @@ class DiscussionSubscribedThreads extends React.Component<
           <div className="application-list__item-footer-content-aside">
             <div className="application-list__item-counter-container">
               <span className="application-list__item-counter-title">
-                Threadien määrä
+                Threadien määrä:
               </span>
               <span className="application-list__item-counter">
                 {subscribedArea.numThreads}
@@ -573,7 +575,7 @@ class DiscussionSubscribedThreads extends React.Component<
           </DiscussionThreadBody>
         ) : null}
         <DiscussionThreadFooter>
-          <div className="application-list__item-footer-content-main">
+          <div className="application-list__item-footer-content-main application-list__item-footer-content-main--discussion-subscriptions">
             <span className="application-list__item-footer-meta">
               {user &&
                 getName(
@@ -584,10 +586,12 @@ class DiscussionSubscribedThreads extends React.Component<
             </span>
 
             {sThreads.workspaceName && (
-              <span className="label">
-                <span className="label__icon label__icon--workspace icon-books"></span>
-                <span className="label__text label__text--workspace"></span>
-                {sThreads.workspaceName}
+              <span className="application-list__item-footer-meta application-list__item-footer-meta--discussion-subscriptions">
+                <span className="label">
+                  <span className="label__icon label__icon--workspace icon-books"></span>
+                  <span className="label__text label__text--workspace"></span>
+                  {sThreads.workspaceName}
+                </span>
               </span>
             )}
           </div>
@@ -596,7 +600,7 @@ class DiscussionSubscribedThreads extends React.Component<
               <span className="application-list__item-counter-title">
                 {this.props.i18n.text.get(
                   "plugin.discussion.titleText.replyCount"
-                )}{" "}
+                )}
               </span>
               <span className="application-list__item-counter">
                 {subscribredThread.numReplies}
@@ -606,7 +610,7 @@ class DiscussionSubscribedThreads extends React.Component<
               <span>
                 {this.props.i18n.text.get(
                   "plugin.discussion.titleText.lastMessage"
-                )}{" "}
+                )}
                 {this.props.i18n.time.format(subscribredThread.updated)}
               </span>
             </div>

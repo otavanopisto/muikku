@@ -28,6 +28,11 @@ export class DiscussionArea extends React.Component<
         onClick={this.props.onClick}
       >
         <ApplicationListItemContentWrapper
+          aside={
+            <div className="avatar-container avatar-container--discussion-area">
+              <span className="icon-bubbles"></span>
+            </div>
+          }
           asideModifiers="discussion"
           mainModifiers="discussion"
         >
