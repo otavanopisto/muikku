@@ -476,7 +476,7 @@ class DiscussionSubscribedThreads extends React.Component<
           <div className="application-list__item-footer-content-aside">
             <div className="application-list__item-counter-container">
               <span className="application-list__item-counter-title">
-                Threadien määrä:
+                Threadien määrä:{" "}
               </span>
               <span className="application-list__item-counter">
                 {subscribedArea.numThreads}
@@ -600,7 +600,7 @@ class DiscussionSubscribedThreads extends React.Component<
               <span className="application-list__item-counter-title">
                 {this.props.i18n.text.get(
                   "plugin.discussion.titleText.replyCount"
-                )}
+                )}{" "}
               </span>
               <span className="application-list__item-counter">
                 {subscribredThread.numReplies}
@@ -610,7 +610,7 @@ class DiscussionSubscribedThreads extends React.Component<
               <span>
                 {this.props.i18n.text.get(
                   "plugin.discussion.titleText.lastMessage"
-                )}
+                )}{" "}
                 {this.props.i18n.time.format(subscribredThread.updated)}
               </span>
             </div>
