@@ -51,38 +51,50 @@ import {
 } from "~/components/general/application-list";
 
 /**
- * DiscussionThreadsProps
+ * DiscussionSubscribedThreadsProps
  */
-interface DiscussionSubscribedThreadsProps {
-  discussion: DiscussionType;
+interface DiscussionSubscriptionsProps {
   i18n: i18nType;
+  discussion: DiscussionType;
   status: StatusType;
   workspaces: WorkspacesType;
+  /**
+   * Redux action method to subscribe discussion thread
+   */
   subscribeDiscussionThread: SubscribeDiscussionThread;
+  /**
+   * Redux action method to unsubscribe discussion thread
+   */
   unsubscribeDiscussionThread: UnsubscribeDiscustionThread;
+  /**
+   * Redux action method to subscribe discussion area
+   */
   subscribeDiscussionArea: SubscribeDiscussionArea;
+  /**
+   * Redux action method to unsubscribe discussion area
+   */
   unsubscribeDiscussionArea: UnsubscribeDiscustionArea;
 }
 
 /**
- * DiscussionThreadsState
+ * DiscussionSubscribedThreadsState
  */
-interface DiscussionSubscribedThreadsState {
+interface DiscussionSubscriptionsState {
   filters: string[];
 }
 
 /**
- * DDiscussionThreads
+ * DiscussionSubscribedThreads
  */
-class DiscussionSubscribedThreads extends React.Component<
-  DiscussionSubscribedThreadsProps,
-  DiscussionSubscribedThreadsState
+class DiscussionSubscriptions extends React.Component<
+  DiscussionSubscriptionsProps,
+  DiscussionSubscriptionsState
 > {
   /**
    * Constructor method
    * @param props props
    */
-  constructor(props: DiscussionSubscribedThreadsProps) {
+  constructor(props: DiscussionSubscriptionsProps) {
     super(props);
 
     this.getToArea = this.getToArea.bind(this);
@@ -94,7 +106,8 @@ class DiscussionSubscribedThreads extends React.Component<
   }
 
   /**
-   * handleSubscribeOrUnsubscribeClick
+   * Handles subscribe or unsubscribe thread click
+   *
    * @param thread thread
    * @param isSubscribed isSubscribed
    */
@@ -116,7 +129,8 @@ class DiscussionSubscribedThreads extends React.Component<
     };
 
   /**
-   * handleSubscribeOrUnsubscribeAreaClick
+   * Handles subscribe or unsubscribe area click
+   *
    * @param area area
    * @param isSubscribed isSubscribed
    */
@@ -136,17 +150,15 @@ class DiscussionSubscribedThreads extends React.Component<
     };
 
   /**
-   * handleToggleFilterChange
+   * Handle toggle filter changes
+   *
    * @param e e
    */
   handleToggleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const filter = e.target.value;
-    const filters = this.state.filters;
+    const filters = [...this.state.filters];
 
-    // Get possible existing index of clicked value
-    const indexOfActiveFilter = filters.findIndex((f) => f === filter);
-
-    if (indexOfActiveFilter !== -1) {
+    if (filters.includes(filter)) {
       filters.splice(filters.indexOf(filter), 1);
     } else {
       filters.push(filter);
@@ -158,7 +170,9 @@ class DiscussionSubscribedThreads extends React.Component<
   };
 
   /**
-   * getToArea
+   * Creates area url and opens it to new tab with focus on that tab
+   * or if url is same as current url, just changes hash value
+   *
    * @param subscribedArea subscribedArea
    */
   getToArea(subscribedArea: DiscussionSubscribedArea) {
@@ -195,7 +209,9 @@ class DiscussionSubscribedThreads extends React.Component<
   }
 
   /**
-   * getToThread
+   * Creates thread url and opens it to new tab with focus on that tab
+   * or if url is same as current url, just changes hash value
+   *
    * @param subscribedThread subscribedThread
    */
   getToThread(subscribedThread: DiscussionSubscribedThread) {
@@ -247,7 +263,8 @@ class DiscussionSubscribedThreads extends React.Component<
   }
 
   /**
-   * open
+   * Handles url opening to new tab with focus on that tab
+   *
    * @param url url
    */
   open = (url: string) => {
@@ -258,8 +275,9 @@ class DiscussionSubscribedThreads extends React.Component<
   };
 
   /**
-   * filterAreas
-   * @returns Filtered subscribed area list
+   * Filters areas by workspace level and enviromental level
+   *
+   * @returns Filtered subscribed area lists
    */
   filterAreas = () => ({
     enviromentalLevelAreas: this.props.discussion.subscribedAreas.filter(
@@ -271,8 +289,9 @@ class DiscussionSubscribedThreads extends React.Component<
   });
 
   /**
-   * filterThreads
-   * @returns Filtered subscribed threads list
+   * Filters threads by workspace level and enviromental level
+   *
+   * @returns Filtered subscribed threads lists
    */
   filterThreads = () => ({
     enviromentalLevelThreads: this.props.discussion.subscribedThreads.filter(
@@ -285,7 +304,8 @@ class DiscussionSubscribedThreads extends React.Component<
   });
 
   /**
-   * sortWorkspaceLevelAreas
+   * Sort workspace level areas
+   *
    * @param areas areas
    */
   sortWorkspaceLevelAreas = (areas: DiscussionSubscribedArea[]) => {
@@ -304,15 +324,15 @@ class DiscussionSubscribedThreads extends React.Component<
     } = {};
 
     // initialize helper object with empty array for every workspace id list
-    for (let i = 0; i < updatedAreas.length; i++) {
-      const element = updatedAreas[i];
-      helperWorkspaceAreaObject[element.workspaceId] = [];
-    }
-
     // Push every item to corresponding list
     for (let i = 0; i < updatedAreas.length; i++) {
       const element = updatedAreas[i];
-      helperWorkspaceAreaObject[element.workspaceId].push(element);
+
+      if (!helperWorkspaceAreaObject[element.workspaceId]) {
+        helperWorkspaceAreaObject[element.workspaceId] = [element];
+      } else {
+        helperWorkspaceAreaObject[element.workspaceId].push(element);
+      }
     }
 
     // Get possible current workspace id
@@ -328,10 +348,12 @@ class DiscussionSubscribedThreads extends React.Component<
       currentWorkspaceAreas = helperWorkspaceAreaObject[currentWorkspaceId];
       delete helperWorkspaceAreaObject[currentWorkspaceId];
 
-      // Sort current workspace areas by areaId
-      currentWorkspaceAreas = currentWorkspaceAreas.sort(
-        (a, b) => a.areaId - b.areaId
-      );
+      if (currentWorkspaceAreas) {
+        // Sort current workspace areas by areaId
+        currentWorkspaceAreas = currentWorkspaceAreas.sort(
+          (a, b) => a.areaId - b.areaId
+        );
+      }
     }
 
     // Go through that object and sort every item list by areaId and push
@@ -352,7 +374,8 @@ class DiscussionSubscribedThreads extends React.Component<
   };
 
   /**
-   * sortWorkspaceLevelThreads
+   * Sort workspace level threads
+   *
    * @param threads threads
    */
   sortWorkspaceLevelThreads = (threads: DiscussionSubscribedThread[]) => {
@@ -373,15 +396,15 @@ class DiscussionSubscribedThreads extends React.Component<
     } = {};
 
     // initialize helper object with empty array for every workspace id list
-    for (let i = 0; i < updatedThreads.length; i++) {
-      const element = updatedThreads[i];
-      helperWorkspaceThreadObject[element.workspaceId] = [];
-    }
-
     // Push every item to corresponding list
     for (let i = 0; i < updatedThreads.length; i++) {
       const element = updatedThreads[i];
-      helperWorkspaceThreadObject[element.workspaceId].push(element);
+
+      if (!helperWorkspaceThreadObject[element.workspaceId]) {
+        helperWorkspaceThreadObject[element.workspaceId] = [element];
+      } else {
+        helperWorkspaceThreadObject[element.workspaceId].push(element);
+      }
     }
 
     // Get possible current workspace id
@@ -397,10 +420,12 @@ class DiscussionSubscribedThreads extends React.Component<
       currentWorkspaceThreads = helperWorkspaceThreadObject[currentWorkspaceId];
       delete helperWorkspaceThreadObject[currentWorkspaceId];
 
-      // Sort current workspace threads by areaId
-      currentWorkspaceThreads = currentWorkspaceThreads.sort(
-        (a, b) => a.thread.forumAreaId - b.thread.forumAreaId
-      );
+      if (currentWorkspaceThreads) {
+        // Sort current workspace threads by areaId
+        currentWorkspaceThreads = currentWorkspaceThreads.sort(
+          (a, b) => a.thread.forumAreaId - b.thread.forumAreaId
+        );
+      }
     }
 
     // Go through that object and sort every item list by areaId and push
@@ -421,7 +446,8 @@ class DiscussionSubscribedThreads extends React.Component<
   };
 
   /**
-   * renderAreaItem
+   * Renders area item
+   *
    * @param area area
    * @returns JSX.Element
    */
@@ -494,7 +520,8 @@ class DiscussionSubscribedThreads extends React.Component<
   };
 
   /**
-   * renderThreadItem
+   * Renders thread item
+   *
    * @param sThreads sThreads
    * @returns JSX.Element
    */
@@ -509,12 +536,11 @@ class DiscussionSubscribedThreads extends React.Component<
         ? (subscribredThread.forumAreaId % 10) + 1
         : subscribredThread.forumAreaId;
 
-    let avatar;
-    if (!user) {
-      //This is what it shows when the user is not ready
-      avatar = <div className="avatar avatar--category-1"></div>;
-    } else {
-      //This is what it shows when the user is ready
+    //This is what it shows when the user is not defined
+    let avatar = <div className="avatar avatar--category-1"></div>;
+
+    if (user) {
+      //This is what it shows when the user is defined
       avatar = (
         <Avatar
           key={subscribredThread.id}
@@ -630,11 +656,14 @@ class DiscussionSubscribedThreads extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    if (this.props.discussion.state === "LOADING") {
+    const { discussion } = this.props;
+
+    const amountOfItems =
+      discussion.subscribedThreads.length + discussion.subscribedAreas.length;
+
+    if (discussion.state === "LOADING") {
       return null;
-    } else if (this.props.discussion.state === "ERROR") {
-      //TODO: put a translation here t! this happens when messages fail to load, a notification shows with the error
-      //message but here we got to put something
+    } else if (discussion.state === "ERROR") {
       return (
         <div className="empty">
           <span>{"ERROR"}</span>
@@ -642,9 +671,9 @@ class DiscussionSubscribedThreads extends React.Component<
       );
     } else {
       if (
-        this.props.discussion.subscribedThreadOnly &&
-        this.props.discussion.subscribedThreads.length === 0 &&
-        !this.props.discussion.current
+        discussion.subscribedThreadOnly &&
+        amountOfItems === 0 &&
+        !discussion.current
       ) {
         return (
           <div className="empty">
@@ -703,7 +732,7 @@ class DiscussionSubscribedThreads extends React.Component<
     }
 
     return (
-      <BodyScrollKeeper hidden={!!this.props.discussion.current}>
+      <BodyScrollKeeper hidden={!!discussion.current}>
         <DiscussionThreadsListHeader
           aside={
             <Dropdown
@@ -807,4 +836,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DiscussionSubscribedThreads);
+)(DiscussionSubscriptions);
