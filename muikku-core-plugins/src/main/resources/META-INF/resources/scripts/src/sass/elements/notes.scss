@@ -124,7 +124,7 @@
     }
   }
 
-  // This removes the item's cnntent's fading effect
+  // This removes the item's content's fading effect
   .notes__item-body::before {
     display: none;
   }
@@ -190,7 +190,6 @@
 }
 
 .notes__item-body {
-  font-weight: 300;
   height: calc(5 * 1.375rem);
   line-height: 1.375rem;
   margin: 5px 0;

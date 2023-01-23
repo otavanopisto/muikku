@@ -73,11 +73,6 @@
   font-weight: 400;
 }
 
-@mixin workspace-subpanel-title {
-  font-size: 1.225rem;
-  font-weight: 300;
-}
-
 @mixin form-element-toolbar {
   display: flex;
   flex-basis: auto;
