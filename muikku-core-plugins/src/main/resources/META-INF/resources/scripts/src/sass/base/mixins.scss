@@ -44,7 +44,6 @@
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-richtext-font-size;
-    font-weight: 300;
   }
 }
 

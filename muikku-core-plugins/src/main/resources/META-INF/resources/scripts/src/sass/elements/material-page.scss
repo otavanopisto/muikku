@@ -63,7 +63,7 @@
   display: flex;
   flex-flow: column nowrap;
   font-size: 1.25rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.75rem;
   margin: 15px 0;
   padding: 0 10px;
@@ -406,12 +406,11 @@
   display: flex;
   flex-flow: row nowrap;
   font-size: 0.875rem;
-  font-weight: 300;
   justify-content: center;
   margin: 10px 0;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1rem;
+    font-size: 0.9375rem;
     margin: 10px 0 20px;
   }
 }
@@ -1102,7 +1101,6 @@
     flex-flow: row nowrap;
     flex-grow: 0;
     flex-shrink: 0;
-    font-weight: 300;
     margin: 0 10px;
     padding: 6px 10px;
     text-decoration: none;
@@ -1242,15 +1240,16 @@
 
 .material-page__sorterfield-item-label {
   flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
   line-height: 1; // This prevents text misalignment in mobile views
   max-width: calc(100% - 25px);
+  overflow-wrap: initial;
   padding: 6px 6px 6px 0;
 
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
-    max-width: calc(100% - 28px);
+    max-width: calc(100% - 27px); // Width of the drang handle
     padding: 4px 6px 4px 0;
   }
 }
