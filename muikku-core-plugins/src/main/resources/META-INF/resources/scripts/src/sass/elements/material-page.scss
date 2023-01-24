@@ -2047,7 +2047,7 @@ mark[data-muikku-word-definition] {
 }
 
 // THINKING BOX & JOURNAL BOX
-// Thinking box is deprecated style is deprecated but CANNOT be removed from the css.
+// Thinking box style is deprecated but CANNOT be removed from the css.
 // Thinking box was primarily used to provide journal specific information
 // so new style has been added called JOURNAL BOX. Existing THINKINGBOXes
 // inherits JOURNAL BOX styling
@@ -2329,7 +2329,7 @@ mark[data-muikku-word-definition] {
   border-radius: 0;
   color: $color-default-contrast;
   display: inline-block;
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 35px;
   padding: 15px 20px;
 }
@@ -2338,7 +2338,7 @@ mark[data-muikku-word-definition] {
 .material-citation-basic {
   color: $color-default-contrast;
   display: inline-block;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-style: italic;
   line-height: 40px;
   padding: 10px 35px;
@@ -2386,7 +2386,7 @@ mark[data-muikku-word-definition] {
     color: $color-material-citation-quote;
     content: open-quote;
     font-family: "Arial", sans-serif;
-    font-size: 60px;
+    font-size: 3.75rem;
     left: 16px;
     position: absolute;
     top: 26px;
