@@ -469,8 +469,6 @@ public class EvaluationController {
   }
   
   public void deleteSupplementationRequest(SupplementationRequest supplementationRequest) {
-    // Note that as this archives the supplementation request it doesn't do 
-    // anything to the audio clips unlike the material evaluation deletion.
     supplementationRequestDAO.archive(supplementationRequest);
   }
 
@@ -586,34 +584,14 @@ public class EvaluationController {
   }
 
   public RestAssignmentEvaluation getEvaluationInfo(UserEntity userEntity, WorkspaceMaterial workspaceMaterial) {
-//    WorkspaceMaterialEvaluation supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(workspaceMaterial, userEntity); 
     WorkspaceMaterialEvaluation workspaceMaterialEvaluation = findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-//    if (supplementationRequest == null && workspaceMaterialEvaluation == null) {
-//      // No evaluation, no supplementation request 
-//      return null;
-//    }
-//    else if (supplementationRequest != null && (workspaceMaterialEvaluation == null || workspaceMaterialEvaluation.getEvaluated().before(supplementationRequest.getEvaluated()))) {
-//      // No evaluation or supplementation request is newer
-//      
-//      List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(supplementationRequest);
-//      
-//      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
-//      evaluation.setType(RestAssignmentEvaluationType.INCOMPLETE);
-//      evaluation.setDate(supplementationRequest.getEvaluated());
-//      evaluation.setText(supplementationRequest.getVerbalAssessment());
-//      evaluationAudioClips.forEach(audioClip -> {
-//        evaluation.addAudioAssessmentAudioClip(new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()));
-//      });
-//      return evaluation;
-//    }
-//    else {
-      // No supplementation request or evaluation is newer
 
     if (workspaceMaterialEvaluation != null) {
       List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(workspaceMaterialEvaluation);
       
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
       evaluation.setType(RestAssignmentEvaluationType.PASSED);
+      evaluation.setEvaluationType(WorkspaceMaterialEvaluationType.ASSESSMENT);
       evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
       evaluation.setText(workspaceMaterialEvaluation.getVerbalAssessment());
       GradingScale gradingScale = gradingController.findGradingScale(
@@ -648,6 +626,7 @@ public class EvaluationController {
       
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
       evaluation.setType(RestAssignmentEvaluationType.INCOMPLETE);
+      evaluation.setEvaluationType(WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST);
       evaluation.setDate(supplementationRequest.getEvaluated());
       evaluation.setText(supplementationRequest.getVerbalAssessment());
       evaluationAudioClips.forEach(audioClip -> {
@@ -738,19 +717,6 @@ public class EvaluationController {
     Long workspaceEntityId = supplementationRequest.getWorkspaceEntityId();
     String requestText = supplementationRequest.getRequestText();
 
-//    // If the supplementation request is for an assignment, mark student's reply as INCOMPLETE
-//    
-//    if (studentEntityId != null && workspaceMaterialId != null) {
-//      UserEntity student = userEntityController.findUserEntityById(studentEntityId);
-//      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-//      if (student != null && workspaceMaterial != null) {
-//        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-//        if (reply != null) {
-//          workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
-//        }
-//      }
-//    }
-//    else 
     if (studentEntityId != null && workspaceEntityId != null) {
       // Send notification of an incomplete workspace
       
