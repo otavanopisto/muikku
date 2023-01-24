@@ -276,7 +276,12 @@
     font-family: $text-font-family;
     font-size: $text-mobile-font-size;
     line-height: 1.125rem;
-    padding: 10px;
+    padding: 6px 10px;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 0.875rem;
+      line-height: 1.3125rem;
+    }
   }
 
   .image__details {
