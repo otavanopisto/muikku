@@ -63,11 +63,20 @@ public class WorkspaceCompositeReply {
     this.submitted = submitted;
   }
 
+  public RestAssignmentEvaluation getSupplementationRequestInfo() {
+    return supplementationRequestInfo;
+  }
+
+  public void setSupplementationRequestInfo(RestAssignmentEvaluation supplementationRequestInfo) {
+    this.supplementationRequestInfo = supplementationRequestInfo;
+  }
+
   private Long workspaceMaterialId;
   private Long workspaceMaterialReplyId;
   private WorkspaceMaterialReplyState state;
   private List<WorkspaceMaterialFieldAnswer> answers;
   private RestAssignmentEvaluation evaluationInfo;
+  private RestAssignmentEvaluation supplementationRequestInfo;
   private Date submitted;
 
 }

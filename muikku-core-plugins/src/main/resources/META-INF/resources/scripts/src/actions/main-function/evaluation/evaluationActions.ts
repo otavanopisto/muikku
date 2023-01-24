@@ -3,7 +3,6 @@ import {
   EvaluationStateType,
   EvaluationGradeSystem,
   AssignmentEvaluationGradeRequest,
-  AssignmentEvaluationSupplementationRequest,
   WorkspaceEvaluationSaveReturn,
   EvaluationBasePriceById,
   EvaluationJournalCommentsByJournal,
@@ -425,6 +424,7 @@ export interface SaveEvaluationAssignmentGradeEvaluation {
 /**
  * SaveEvaluationAssignmentSupplementation
  */
+ /*
 export interface SaveEvaluationAssignmentSupplementation {
   (data: {
     workspaceEntityId: number;
@@ -436,7 +436,7 @@ export interface SaveEvaluationAssignmentSupplementation {
     onFail?: () => void;
   }): AnyActionType;
 }
-
+*/
 /**
  * DeleteAssessmentRequest
  */

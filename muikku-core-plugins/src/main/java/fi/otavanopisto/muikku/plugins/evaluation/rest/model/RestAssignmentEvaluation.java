@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationType;
+
 public class RestAssignmentEvaluation {
 
   public RestAssignmentEvaluationType getType() {
@@ -50,7 +52,16 @@ public class RestAssignmentEvaluation {
     this.audioAssessments = audioAssessments;
   }
 
+  public WorkspaceMaterialEvaluationType getEvaluationType() {
+    return evaluationType;
+  }
+
+  public void setEvaluationType(WorkspaceMaterialEvaluationType evaluationType) {
+    this.evaluationType = evaluationType;
+  }
+
   private RestAssignmentEvaluationType type;
+  private WorkspaceMaterialEvaluationType evaluationType;
   private String text;
   private Date date;
   private String grade;

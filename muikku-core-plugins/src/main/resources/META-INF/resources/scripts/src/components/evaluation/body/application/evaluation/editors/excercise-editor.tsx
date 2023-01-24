@@ -10,9 +10,9 @@ import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { StatusType } from "~/reducers/base/status";
 import {
   AudioAssessment,
-  AssignmentEvaluationSupplementationRequest,
   AssignmentEvaluationGradeRequest,
   AssignmentEvaluationSaveReturn,
+  AssignmentEvaluationType,
   AssessmentRequest,
 } from "~/@types/evaluation";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -241,7 +241,7 @@ class ExcerciseEditor extends SessionStateComponent<
   };
 
   /**
-   * saveAssignmentEvaluationSupplementationToServer
+   * saveAssignmentEvaluationSupplementationToServer - not needed anymore?
    * @param data data
    * @param data.workspaceEntityId workspaceEntityId
    * @param data.userEntityId userEntityId
@@ -253,7 +253,7 @@ class ExcerciseEditor extends SessionStateComponent<
     workspaceEntityId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-    dataToSave: AssignmentEvaluationSupplementationRequest;
+    dataToSave: AssignmentEvaluationGradeRequest;
     materialId: number;
   }) => {
     const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
@@ -329,15 +329,18 @@ class ExcerciseEditor extends SessionStateComponent<
   ) => {
     const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
 
+    const evaluationType: AssignmentEvaluationType = this.state.needsSupplementation ? AssignmentEvaluationType.SUPPLEMENTATIONREQUEST : AssignmentEvaluationType.ASSESSMENT;
+
     /**
      * Backend endpoint is different for normal grade evalution and supplementation
      */
-    if (!this.state.needsSupplementation) {
+//    if (!this.state.needsSupplementation) {
       this.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId: workspaceEntityId,
         userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
+          evaluationType: evaluationType,
           assessorIdentifier: this.props.status.userSchoolDataIdentifier,
           gradingScaleIdentifier: null,
           gradeIdentifier: null,
@@ -347,12 +350,14 @@ class ExcerciseEditor extends SessionStateComponent<
         },
         materialId: this.props.materialAssignment.materialId,
       });
+/*
     } else {
       this.saveAssignmentEvaluationSupplementationToServer({
         workspaceEntityId: workspaceEntityId,
         userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
+          evaluationType: AssignmentEvaluationType.SUPPLEMENTATIONREQUEST,
           userEntityId: this.props.status.userId,
           studentEntityId: userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
@@ -363,6 +368,7 @@ class ExcerciseEditor extends SessionStateComponent<
         materialId: this.props.materialAssignment.materialId,
       });
     }
+    */
   };
 
   /**

@@ -1,17 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
+  <sql>alter table WorkspaceMaterialEvaluation add column evaluationType varchar(255) not null;</sql>
+  <sql>alter table WorkspaceMaterialEvaluation add column archived bit not null;</sql>
+
   <sql>
-    create table SupplementationRequestAudioClip (
-      id bigint not null auto_increment,
-      clipId varchar(255) not null,
-      contentType varchar(255),
-      fileName varchar(255),
-      supplementationRequest_id bigint,
-      primary key (id)
-    );
+  CLEANUP PREVIOUS EXPERIMENT
+  drop table SupplementationRequestAudioClip;
+  CLEANUP PREVIOUS EXPERIMENT
   </sql>
 
-  <sql>alter table SupplementationRequestAudioClip add constraint FKpy6aptas5xq107p0n6ygpqdws foreign key (supplementationRequest_id) references SupplementationRequest (id);</sql>  
 
+  <sql>
+  TODO
+  insert into WorkspaceMaterialEvaluation (studentEntityId, workspaceMaterialId, assessorEntityId, verbalAssessment, evaluated, evaluationType, archived)
+    select studentEntityId, workspaceMaterialId, userEntityId, requestText, requestDate, 'SUPPLEMENTATIONREQUEST', archived
+    from SupplementationRequest
+    where workspaceMaterialId is not null;
+  TODO 
+  </sql>
+  
+  <sql>
+  TODO
+  delete from SupplementationRequest where workspaceMaterialId is not null;
+  TODO
+  </sql>
+  
+  <sql>
+  TODO
+  alter table SupplementationRequest drop column workspaceMaterialId;
+  TODO
+  </sql>
+  
+  <sql>
+  TODO
+  alter table SupplementationRequest drop index sr_student_material;
+  TODO
+  </sql>
 </update>

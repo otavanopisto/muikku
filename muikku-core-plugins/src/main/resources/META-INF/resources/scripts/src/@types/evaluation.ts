@@ -340,10 +340,16 @@ export interface BilledPrice {
   price: number;
 }
 
+export enum AssignmentEvaluationType {
+  ASSESSMENT = "ASSESSMENT",
+  SUPPLEMENTATIONREQUEST = "SUPPLEMENTATIONREQUEST",
+}
+
 /**
  * AssignmentEvaluationGradeRequest
  */
 export interface AssignmentEvaluationGradeRequest {
+  evaluationType: AssignmentEvaluationType;
   assessorIdentifier: string;
   gradingScaleIdentifier: string;
   gradeIdentifier: string;
@@ -365,6 +371,7 @@ export interface AssignmentInterminEvaluationRequest {
 /**
  * AssignmentEvaluationSupplementationRequest
  */
+ /*
 export interface AssignmentEvaluationSupplementationRequest {
   userEntityId: number;
   studentEntityId: number;
@@ -373,7 +380,7 @@ export interface AssignmentEvaluationSupplementationRequest {
   requestText: string;
   audioAssessments: AudioAssessment[];
 }
-
+*/
 /**
  * EvaluationData
  */

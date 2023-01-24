@@ -25,6 +25,7 @@ import {
   AssessmentRequest,
   AudioAssessment,
   EvaluationGradeSystem,
+  AssignmentEvaluationType,
 } from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
 import { LocaleState } from "~/reducers/base/locales";
@@ -34,7 +35,6 @@ import notificationActions from "~/actions/base/notifications";
 import {
   AssignmentEvaluationGradeRequest,
   AssignmentEvaluationSaveReturn,
-  AssignmentEvaluationSupplementationRequest,
 } from "~/@types/evaluation";
 import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
@@ -343,7 +343,7 @@ class AssignmentEditor extends SessionStateComponent<
     workspaceEntityId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-    dataToSave: AssignmentEvaluationSupplementationRequest;
+    dataToSave: AssignmentEvaluationGradeRequest; //AssignmentEvaluationSupplementationRequest;
     materialId: number;
     defaultGrade: string;
   }) => {
@@ -356,7 +356,8 @@ class AssignmentEditor extends SessionStateComponent<
 
     try {
       await promisify(
-        mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(
+//        mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(
+        mApi().evaluation.workspace.user.workspacematerial.assessment.create(
           workspaceEntityId,
           userEntityId,
           workspaceMaterialId,
@@ -440,6 +441,7 @@ class AssignmentEditor extends SessionStateComponent<
         userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
+          evaluationType: AssignmentEvaluationType.ASSESSMENT,
           assessorIdentifier: this.props.status.userSchoolDataIdentifier,
           gradingScaleIdentifier,
           gradeIdentifier: this.state.grade,
@@ -456,12 +458,22 @@ class AssignmentEditor extends SessionStateComponent<
         userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
+          evaluationType: AssignmentEvaluationType.SUPPLEMENTATIONREQUEST,
+          assessorIdentifier: this.props.status.userSchoolDataIdentifier,
+          gradingScaleIdentifier: null,
+          gradeIdentifier: null,
+          verbalAssessment: this.state.literalEvaluation,
+          assessmentDate: new Date().getTime(),
+          audioAssessments: this.state.audioAssessments,
+          
+          /*
           userEntityId: this.props.status.userId,
           studentEntityId: userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,
           audioAssessments: this.state.audioAssessments,
+          */
         },
         materialId: this.props.materialAssignment.materialId,
         defaultGrade,

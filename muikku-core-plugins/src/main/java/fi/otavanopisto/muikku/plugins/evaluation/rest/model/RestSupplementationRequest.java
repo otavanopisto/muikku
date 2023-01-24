@@ -1,23 +1,20 @@
 package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
 import java.util.Date;
-import java.util.List;
 
 public class RestSupplementationRequest {
   
   public RestSupplementationRequest() {
   }
 
-  public RestSupplementationRequest(Long id, Long userEntityId, Long studentEntityId, Long workspaceEntityId, String workspaceSubjectIdentifier, Long workspaceMaterialId, Date requestDate, String requestText, List<RestAssignmentEvaluationAudioClip> audioAssessments) {
+  public RestSupplementationRequest(Long id, Long userEntityId, Long studentEntityId, Long workspaceEntityId, String workspaceSubjectIdentifier, Date requestDate, String requestText) {
     this.id = id;
     this.userEntityId = userEntityId;
     this.studentEntityId = studentEntityId;
     this.workspaceEntityId = workspaceEntityId;
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-    this.workspaceMaterialId = workspaceMaterialId;
     this.requestDate = requestDate;
     this.requestText = requestText;
-    this.audioAssessments = audioAssessments;
   }
   
   public Long getId() {
@@ -52,14 +49,6 @@ public class RestSupplementationRequest {
     this.workspaceEntityId = workspaceEntityId;
   }
 
-  public Long getWorkspaceMaterialId() {
-    return workspaceMaterialId;
-  }
-
-  public void setWorkspaceMaterialId(Long workspaceMaterialId) {
-    this.workspaceMaterialId = workspaceMaterialId;
-  }
-
   public Date getRequestDate() {
     return requestDate;
   }
@@ -84,22 +73,12 @@ public class RestSupplementationRequest {
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
   }
 
-  public List<RestAssignmentEvaluationAudioClip> getAudioAssessments() {
-    return audioAssessments;
-  }
-
-  public void setAudioAssessments(List<RestAssignmentEvaluationAudioClip> audioAssessments) {
-    this.audioAssessments = audioAssessments;
-  }
-
   private Long id;
   private Long userEntityId;
   private Long studentEntityId;
   private Long workspaceEntityId;
   private String workspaceSubjectIdentifier;
-  private Long workspaceMaterialId;
   private Date requestDate;
   private String requestText;
-  private List<RestAssignmentEvaluationAudioClip> audioAssessments;
 
 }
