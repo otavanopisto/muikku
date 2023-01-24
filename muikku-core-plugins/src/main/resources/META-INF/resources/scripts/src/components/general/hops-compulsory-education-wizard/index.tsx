@@ -821,7 +821,7 @@ const initializeHops = (): HopsCompulsory => ({
     wayToLearn: {
       byReadingMaterials: undefined,
       byTakingNotes: undefined,
-      byDoingExcercises: undefined,
+      byDoingExercises: undefined,
       byMemorizing: undefined,
       byWatchingVideos: undefined,
       byListeningTeaching: undefined,

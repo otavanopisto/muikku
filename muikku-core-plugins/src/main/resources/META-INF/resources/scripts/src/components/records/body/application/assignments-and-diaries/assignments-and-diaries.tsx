@@ -16,7 +16,7 @@ import Material from "../current-record/material";
 import Journal from "../current-record/journal";
 import Tabs, { Tab } from "~/components/general/tabs";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
-import { useExcerciseAssignments } from "./hooks/useExcercises";
+import { useExerciseAssignments } from "./hooks/useExercises";
 import { useCompositeReply } from "./hooks/useCompositeReply";
 import Link from "~/components/general/link";
 
@@ -60,7 +60,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     React.useState<AssignmentsTabType>("EVALUATED");
 
   const [journalsOpen, setJournalsOpen] = React.useState<number[]>([]);
-  const [exerciseOpen, setExcerciseOpen] = React.useState<number[]>([]);
+  const [exerciseOpen, setExerciseOpen] = React.useState<number[]>([]);
   const [evaluatedOpen, setEvaluatedOpen] = React.useState<number[]>([]);
   const [interimOpen, setInterimOpen] = React.useState<number[]>([]);
 
@@ -71,7 +71,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     displayNotification
   );
 
-  const { excerciseAssignmentsData } = useExcerciseAssignments(
+  const { exerciseAssignmentsData } = useExerciseAssignments(
     workspaceId,
     activeTab,
     i18n,
@@ -116,10 +116,10 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       switch (type) {
         case "EXERCISE": {
-          const list = excerciseAssignmentsData.excerciseAssignments.map(
+          const list = exerciseAssignmentsData.exerciseAssignments.map(
             (e) => e.id
           );
-          setExcerciseOpen(list);
+          setExerciseOpen(list);
           break;
         }
 
@@ -154,7 +154,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       switch (type) {
         case "EXERCISE":
-          setExcerciseOpen([]);
+          setExerciseOpen([]);
           break;
 
         case "EVALUATED":
@@ -190,7 +190,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             updatedList.push(id);
           }
 
-          setExcerciseOpen(updatedList);
+          setExerciseOpen(updatedList);
           break;
         }
 
@@ -312,10 +312,10 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    * Renders materials
    * @returns JSX.Element
    */
-  const renderExcerciseMaterialsList = (
+  const renderExerciseMaterialsList = (
     <ApplicationList>
-      {excerciseAssignmentsData.excerciseAssignments.length ? (
-        excerciseAssignmentsData.excerciseAssignments.map((m) => {
+      {exerciseAssignmentsData.exerciseAssignments.length ? (
+        exerciseAssignmentsData.exerciseAssignments.map((m) => {
           let showHiddenAssignment = false;
 
           const compositeReply = compositeReplyData.compositeReplies.find(
@@ -513,8 +513,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               <Link
                 className="link link--studies-close-open"
                 disabled={
-                  excerciseAssignmentsData.isLoading ||
-                  excerciseAssignmentsData.excerciseAssignments.length === 0
+                  exerciseAssignmentsData.isLoading ||
+                  exerciseAssignmentsData.exerciseAssignments.length === 0
                 }
                 onClick={handleOpenAllAssignmentsByTypeClick("EXERCISE")}
               >
@@ -523,8 +523,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               <Link
                 className="link link--studies-close-open"
                 disabled={
-                  excerciseAssignmentsData.isLoading ||
-                  excerciseAssignmentsData.excerciseAssignments.length === 0
+                  exerciseAssignmentsData.isLoading ||
+                  exerciseAssignmentsData.exerciseAssignments.length === 0
                 }
                 onClick={handleCloseAllAssignmentsByTypeClick("EXERCISE")}
               >
@@ -534,11 +534,11 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           </ApplicationSubPanel.Header>
 
           <ApplicationSubPanel.Body>
-            {excerciseAssignmentsData.isLoading ||
+            {exerciseAssignmentsData.isLoading ||
             compositeReplyData.isLoading ? (
               <div className="loader-empty" />
             ) : (
-              renderExcerciseMaterialsList
+              renderExerciseMaterialsList
             )}
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>

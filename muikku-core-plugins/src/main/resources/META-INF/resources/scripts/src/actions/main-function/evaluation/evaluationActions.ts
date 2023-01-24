@@ -1648,7 +1648,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
                 "callback"
               )() || [];
 
-            const assignmentsExcercise =
+            const assignmentsExercise =
               <MaterialAssignmentType[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EXERCISE",
@@ -1667,7 +1667,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
             const assignments = [
               ...assignmentsInterim,
               ...assignmentsEvaluated,
-              ...assignmentsExcercise,
+              ...assignmentsExercise,
             ];
 
             return assignments;

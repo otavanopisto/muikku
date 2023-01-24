@@ -49,7 +49,7 @@ export const useInterimEvaluationAssigments = (
     let isCancelled = false;
 
     /**
-     * loadExcercisenData
+     * loadExercisenData
      * Loads student activity data
      * @param workspaceId of student
      */
@@ -114,7 +114,7 @@ export const useInterimEvaluationAssigments = (
         if (!isCancelled) {
           displayNotification(
             `${i18n.text.get(
-              "plugin.records.errormessage.workspaceAssignmentsExcerciseLoadFailed"
+              "plugin.records.errormessage.workspaceAssignmentsExerciseLoadFailed"
             )}, ${err.message}`,
             "error"
           );

@@ -226,7 +226,7 @@ const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
   {
     type: "EXERCISE",
     classNameMod: "material-editor-dropdown-exercise",
-    text: "plugin.workspace.materialsManagement.pageType.excercise",
+    text: "plugin.workspace.materialsManagement.pageType.exercise",
   },
   {
     type: "EVALUATED",

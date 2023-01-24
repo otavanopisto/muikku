@@ -75,7 +75,7 @@ interface AssignmentEditorState {
 /**
  * AssignmentEditor
  */
-class ExcerciseEditor extends SessionStateComponent<
+class ExerciseEditor extends SessionStateComponent<
   AssignmentEditorProps,
   AssignmentEditorState
 > {
@@ -84,7 +84,7 @@ class ExcerciseEditor extends SessionStateComponent<
    * @param props props
    */
   constructor(props: AssignmentEditorProps) {
-    super(props, `excercise-editor`);
+    super(props, `exercise-editor`);
 
     const { compositeReplies, selectedAssessment, materialAssignment } = props;
 
@@ -241,7 +241,7 @@ class ExcerciseEditor extends SessionStateComponent<
   };
 
   /**
-   * saveAssignmentEvaluationSupplementationToServer - not needed anymore?
+   * saveAssignmentEvaluationSupplementationToServer - not needed?
    * @param data data
    * @param data.workspaceEntityId workspaceEntityId
    * @param data.userEntityId userEntityId
@@ -253,7 +253,7 @@ class ExcerciseEditor extends SessionStateComponent<
     workspaceEntityId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-    dataToSave: AssignmentEvaluationGradeRequest;
+    dataToSave: AssignmentEvaluationGradeRequest; // AssignmentEvaluationSupplementationRequest;
     materialId: number;
   }) => {
     const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
@@ -357,7 +357,6 @@ class ExcerciseEditor extends SessionStateComponent<
         userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
-          evaluationType: AssignmentEvaluationType.SUPPLEMENTATIONREQUEST,
           userEntityId: this.props.status.userId,
           studentEntityId: userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
@@ -368,7 +367,7 @@ class ExcerciseEditor extends SessionStateComponent<
         materialId: this.props.materialAssignment.materialId,
       });
     }
-    */
+*/
   };
 
   /**
@@ -552,4 +551,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExcerciseEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(ExerciseEditor);
