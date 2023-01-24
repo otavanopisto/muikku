@@ -530,7 +530,9 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // Workspace material evaluation
     
-    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST
+        ? evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(workspaceMaterial, userEntity)
+        : evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
 
     // Grade
     
