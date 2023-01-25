@@ -51,7 +51,7 @@ public interface SessionController {
    * @param identifier user identifier
    * @param isActive is the user active (e.g. not having ended studies)
    */
-  public void login(String dataSource, String identifier);
+  public void login(String authSource, String dataSource, String identifier);
   
   boolean hasPermission(String permission, ContextReference contextReference);
   
@@ -95,6 +95,8 @@ public interface SessionController {
   public void addOAuthAccessToken(String strategy, Date expiresAt, String accessToken, String refreshToken);
   
   public AccessToken getOAuthAccessToken(String strategy);
+  
+  public String getAuthSource();
   
   public String getLoggedUserIdentifier();
   

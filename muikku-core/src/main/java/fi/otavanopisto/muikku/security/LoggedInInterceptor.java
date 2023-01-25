@@ -11,16 +11,21 @@ import javax.interceptor.InvocationContext;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
-
 import fi.otavanopisto.security.Identity;
+import fi.otavanopisto.security.LoggedIn;
 
-@LoggedInWithQueryParams
+/**
+ * Interceptor for @LoggedIn annotation. Checks that the user calling the annotated method has logged in. 
+ * Uses Identity for checks on user login status.
+ * 
+ * This is meant for JSF/Rewrite combination as it will return a redirect url if user is not logged in.
+ */
+@LoggedIn
 @Interceptor
-public class LoggedInWithQueryParamsInterceptor implements Serializable {
+public class LoggedInInterceptor implements Serializable {
 
-  private static final long serialVersionUID = -6470687459437711638L;
-  
+  private static final long serialVersionUID = -2098163583725766390L;
+
   @Inject
   private HttpServletRequest httpServletRequest;
 
@@ -33,20 +38,15 @@ public class LoggedInWithQueryParamsInterceptor implements Serializable {
     if (identity != null) {
       if (identity.isLoggedIn()) {
         return ctx.proceed();
-      }
-      else { 
+      } else { 
         String redirectUrl = (String) httpServletRequest.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
         if (redirectUrl == null) {
           redirectUrl = httpServletRequest.getRequestURL().toString();
-          if (!StringUtils.isEmpty(httpServletRequest.getQueryString())) {
-            redirectUrl += "?" + httpServletRequest.getQueryString();
-          }
         }
+        
         return "rewrite-redirect:/login?redirectUrl=" + URLEncoder.encode(redirectUrl, "UTF-8");
       }
-    }
-    else {
-      throw new RuntimeException("LoggedInWithQueryParamsInterceptor - Identity bean not found");
-    }
+    } else
+      throw new RuntimeException("LoggedInInterceptor - Identity bean not found");
   }
 }
