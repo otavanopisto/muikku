@@ -324,6 +324,7 @@
 
 .application-list__header-item-body {
   display: inline-block;
+  line-height: 1.3275rem;
 }
 
 .application-list__item-content > span:not(:first-child) {
@@ -694,6 +695,7 @@
 
 .application-list__item-content-header {
   font-size: 1rem;
+  line-height: 1.3275rem;
   padding: 10px;
 }
 

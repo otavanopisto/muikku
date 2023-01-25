@@ -39,7 +39,7 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     box-shadow: 0 0 80px $color-dialog-default-shadow;
-    font-family: $text-font-family;
+    font-family: $system-font-family;
     font-size: $text-mobile-font-size;
     overflow: hidden;
     width: 100%;
@@ -295,7 +295,7 @@
     flex-basis: auto;
     flex-grow: 1;
     flex-shrink: 1;
-    font-family: $text-font-family;
+    font-family: $system-font-family;
     font-size: $text-mobile-font-size;
     height: 1.75rem;
     margin: 0;
@@ -570,7 +570,7 @@
       color: $color-default;
       cursor: pointer;
       display: flex;
-      font-family: $button-font-family;
+      font-family: $system-font-family;
       font-size: $button-mobile-font-size;
       justify-content: center;
       margin: 0;

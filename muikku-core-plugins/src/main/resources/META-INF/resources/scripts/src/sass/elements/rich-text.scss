@@ -2,7 +2,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap");
 
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
 
@@ -10,7 +10,7 @@
 .rich-text,
 .cke_editable {
   color: $color-text-default;
-  font-family: "Open Sans", "Arial", sans-serif;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
   line-height: 1.25rem;
@@ -52,7 +52,7 @@
   // We only allow h3 and h4 inside ckeditor
   h3,
   h4 {
-    font-weight: 400;
+    font-weight: 300;
     margin: 30px 0 10px;
 
     @include breakpoint($breakpoint-pad) {
@@ -82,7 +82,7 @@
   }
 
   i {
-    font-style: italc;
+    font-style: italic;
   }
 
   a {
@@ -207,8 +207,8 @@
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-richtext-font-size;
-    font-weight: 400;
-    line-height: 1.5rem;
+    font-weight: 300;
+    line-height: 1.625rem;
   }
 }
 

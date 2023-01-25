@@ -6,7 +6,7 @@
 .table {
   border-collapse: separate;
   border-spacing: 0;
-  font-family: "Open Sans", "Arial", sans-serif;
+  font-family: $system-font-family;
   table-layout: fixed;
   width: 100%;
 }

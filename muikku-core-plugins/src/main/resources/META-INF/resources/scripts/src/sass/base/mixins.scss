@@ -20,7 +20,7 @@
 
 @mixin text {
   color: $color-text-default;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
 
@@ -31,19 +31,20 @@
 
 @mixin assessment-text {
   color: $color-text-default;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
 }
 
 @mixin taskfield-text {
   color: $color-text-default;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-richtext-font-size;
+    font-weight: 300;
   }
 }
 

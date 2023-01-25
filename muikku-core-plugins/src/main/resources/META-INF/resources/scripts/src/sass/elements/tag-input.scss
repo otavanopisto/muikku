@@ -22,7 +22,7 @@
   align-items: center;
   color: $color-text-default;
   display: flex;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
   height: 1.45rem;
@@ -37,7 +37,7 @@
   border: solid 2px $color-form-element-border;
   border-radius: 2px;
   display: inline-block;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   height: $input-height-mobile;
   padding: 4px 8px;
