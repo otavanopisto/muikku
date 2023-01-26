@@ -417,12 +417,16 @@ export const messages: Reducer<MessagesType> = (
       return {
         ...state,
         ...action.payload,
-        selectedThreads: state.toggleSelectAllMessageItemsActive
-          ? action.payload.threads.map((thread) => thread)
-          : state.selectedThreads,
-        selectedThreadsIds: state.toggleSelectAllMessageItemsActive
-          ? action.payload.threads.map((thread) => thread.communicatorMessageId)
-          : state.selectedThreadsIds,
+        selectedThreads:
+          state.toggleSelectAllMessageItemsActive && action.payload.threads
+            ? action.payload.threads.map((thread) => thread)
+            : state.selectedThreads,
+        selectedThreadsIds:
+          state.toggleSelectAllMessageItemsActive && action.payload.threads
+            ? action.payload.threads.map(
+                (thread) => thread.communicatorMessageId
+              )
+            : state.selectedThreadsIds,
       };
 
     case "UPDATE_SELECTED_MESSAGE_THREADS":
