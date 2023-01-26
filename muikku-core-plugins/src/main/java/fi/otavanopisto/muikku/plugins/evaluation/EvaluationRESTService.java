@@ -84,7 +84,6 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
-import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -103,10 +102,6 @@ public class EvaluationRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -2380108419567067263L;
   
-  @Inject
-  @BaseUrl
-  private String baseUrl;
-
   @Inject
   private Logger logger;
 
