@@ -46,6 +46,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
@@ -762,6 +763,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public boolean amICounselor(String studentIdentifier) {
     return false;
+  }
+
+  @Override
+  public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
   }
 
 }

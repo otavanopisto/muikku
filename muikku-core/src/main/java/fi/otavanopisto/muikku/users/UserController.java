@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 
@@ -104,6 +105,10 @@ public class UserController {
   
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserPhoneNumbers(userIdentifier);
+  }
+  
+  public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
+    return userSchoolDataController.listStudentStudyPeriods(userIdentifier);
   }
   
   public String findUserSsn(User user) {

@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -45,6 +46,9 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSorterFie
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 
 public class WorkspaceMaterialFieldAnswerController {
+  
+  @Inject
+  private Logger logger;
 
   @Inject
   private WorkspaceMaterialFieldAnswerDAO workspaceMaterialFieldAnswerDAO;
@@ -108,7 +112,13 @@ public class WorkspaceMaterialFieldAnswerController {
   }
 
   public WorkspaceMaterialTextFieldAnswer findWorkspaceMaterialTextFieldAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
-    return workspaceMaterialTextFieldAnswerDAO.findByFieldAndReply(field, reply);
+    try {
+      return workspaceMaterialTextFieldAnswerDAO.findByFieldAndReply(field, reply);
+    }
+    catch (RuntimeException e) {
+      logger.severe(String.format("Text field answer fetch fail field %d reply %d: %s", field.getId(), reply.getId(), e.getMessage()));
+      throw e;
+    }
   }
 
   public WorkspaceMaterialTextFieldAnswer updateWorkspaceMaterialTextFieldAnswerValue(WorkspaceMaterialTextFieldAnswer workspaceMaterialTextFieldAnswer,

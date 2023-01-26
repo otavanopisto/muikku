@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html
   xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
   lang="#{sessionBackingBean.locale}"
 >
   <!-- Base takes no parameters -->
@@ -152,17 +149,6 @@
 
     <body>
       <div id="app"></div>
-
-      <h:form style="display: none" pt:aria-hidden="true">
-        <a jsf:action="#{logoutWidgetBackingBean.logout}" id="logout"></a>
-      </h:form>
-
-      <a
-        id="login"
-        style="display: none"
-        jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]"
-        aria-hidden="true"
-      ></a>
 
       <!-- Google Analytics -->
       <script>

@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -16,7 +19,9 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.search.IndexedUser;
+import fi.otavanopisto.muikku.search.IndexedUserStudyPeriod;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -126,6 +131,13 @@ public class UserIndexer {
             indexedUser.setEmail(userDefaultEmailAddress);
           }
         }
+        
+        List<UserStudyPeriod> studentStudyPeriods = userController.listStudentStudyPeriods(userIdentifier);
+        
+        Set<IndexedUserStudyPeriod> studyPeriods = CollectionUtils.isEmpty(studentStudyPeriods) ? new HashSet<>() :
+          studentStudyPeriods.stream().map(studyPeriod -> new IndexedUserStudyPeriod(studyPeriod.getBegin(), studyPeriod.getEnd(), studyPeriod.getType())).collect(Collectors.toSet());
+
+        indexedUser.setStudyPeriods(studyPeriods);
         
         indexer.index(IndexedUser.INDEX_NAME, IndexedUser.TYPE_NAME, indexedUser);
       } else {

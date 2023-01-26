@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.scribe.builder.api.Api;
 import org.scribe.model.OAuthRequest;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.auth.AuthenticationProvider;
 import fi.otavanopisto.muikku.auth.AuthenticationResult;
 import fi.otavanopisto.muikku.auth.OAuthAuthenticationStrategy;
+import fi.otavanopisto.muikku.auth.AuthenticationResult.Status;
 import fi.otavanopisto.muikku.model.security.AuthSource;
 import fi.otavanopisto.muikku.plugins.oauth.scribe.GoogleApi20;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -75,7 +77,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
   }
   
   @Override
-  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
+  protected AuthenticationResult processResponse(HttpServletRequest servletRequest, AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
     ObjectMapper objectMapper = new ObjectMapper();
 
     String verifier = getFirstRequestParameter(requestParameters, "code");
@@ -115,12 +117,18 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
     }
 
     if (userInfo != null)
-      return processLogin(authSource, requestParameters, userInfo.getId(), Arrays.asList(userInfo.getEmail()), userInfo.getGivenName(), userInfo.getFamilyName());
+      return processLogin(servletRequest, authSource, requestParameters, userInfo.getId(), Arrays.asList(userInfo.getEmail()), userInfo.getGivenName(), userInfo.getFamilyName());
     else {
       return new AuthenticationResult(AuthenticationResult.Status.GRANT);
     }
   }
   
+  @Override
+  public AuthenticationResult processLogout(AuthSource authSource) {
+    // Note: this doesn't log out of Google - sometimes the desired outcome, sometimes not
+    return new AuthenticationResult(Status.LOGOUT);
+  }
+
   @SuppressWarnings ("unused")
   @JsonIgnoreProperties (ignoreUnknown = true)
   private static class GoogleAccessToken {
