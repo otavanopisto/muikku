@@ -60,6 +60,15 @@ public class RestAssignmentEvaluation {
     this.evaluationType = evaluationType;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  private Long id;
   private RestAssignmentEvaluationType type;
   private WorkspaceMaterialEvaluationType evaluationType;
   private String text;
