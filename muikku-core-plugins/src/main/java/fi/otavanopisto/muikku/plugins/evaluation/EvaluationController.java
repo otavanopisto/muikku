@@ -428,9 +428,17 @@ public class EvaluationController {
         evaluationType);
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
 
-    // Null grade is translated to passed as it's likely to be an exercise or interim evaluation
-    
-    WorkspaceMaterialReplyState state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
+    WorkspaceMaterialReplyState state = null;
+    switch (evaluationType) {
+      case ASSESSMENT:
+        // Null grade is translated to passed as it's likely to be an exercise or interim evaluation
+        state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
+      break;
+      case SUPPLEMENTATIONREQUEST:
+        state = WorkspaceMaterialReplyState.INCOMPLETE;
+      break;
+    }
+
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
@@ -579,8 +587,18 @@ public class EvaluationController {
     UserEntity student = userEntityController.findUserEntityById(workspaceMaterialEvaluation.getStudentEntityId());
     
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-    // Null grade is translated to passed as it's likely to be an exercise evaluation
-    WorkspaceMaterialReplyState state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
+
+    WorkspaceMaterialReplyState state = null;
+    switch (evaluationType) {
+      case ASSESSMENT:
+        // Null grade is translated to passed as it's likely to be an exercise evaluation
+        state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
+      break;
+      case SUPPLEMENTATIONREQUEST:
+        state = WorkspaceMaterialReplyState.INCOMPLETE;
+      break;
+    }
+
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
