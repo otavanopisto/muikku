@@ -349,6 +349,7 @@ export enum AssignmentEvaluationType {
  * AssignmentEvaluationGradeRequest
  */
 export interface AssignmentEvaluationGradeRequest {
+  identifier?: string;
   evaluationType: AssignmentEvaluationType;
   assessorIdentifier: string;
   gradingScaleIdentifier: string;
@@ -368,19 +369,6 @@ export interface AssignmentInterminEvaluationRequest {
   audioAssessments: AudioAssessment[];
 }
 
-/**
- * AssignmentEvaluationSupplementationRequest
- */
- /*
-export interface AssignmentEvaluationSupplementationRequest {
-  userEntityId: number;
-  studentEntityId: number;
-  workspaceMaterialId: string;
-  requestDate: number;
-  requestText: string;
-  audioAssessments: AudioAssessment[];
-}
-*/
 /**
  * EvaluationData
  */

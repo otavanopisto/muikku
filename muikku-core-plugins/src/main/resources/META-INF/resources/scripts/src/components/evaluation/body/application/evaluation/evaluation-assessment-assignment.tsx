@@ -318,29 +318,33 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @returns Assignment function button class
    */
   assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) => {
-    if (
-      compositeReply &&
-      compositeReply.evaluationInfo &&
-      compositeReply.evaluationInfo.date
-    ) {
-      if (
-        (compositeReply.evaluationInfo &&
-          compositeReply.evaluationInfo.grade) ||
-        (compositeReply.evaluationInfo &&
-          this.props.assigment.assignmentType === "EXERCISE" &&
-          compositeReply.evaluationInfo.type === "PASSED")
-      ) {
-        // Evaluated if graded or if assignment type is exercise and info type returns PASSED
-        return "state-EVALUATED";
-      } else if (
-        compositeReply.state === "SUBMITTED" &&
-        compositeReply.evaluationInfo.type === "INCOMPLETE"
-      ) {
-        // Supplemented as in use to be incomplete but user has submitted it again
-        return "state-SUPPLEMENTED";
-      } else {
-        // Incomplete
-        return "state-INCOMPLETE";
+    if (compositeReply) {
+      const { evaluations } = compositeReply;
+
+      const latestInfoToUse = evaluations[0];
+
+      // If there is evaluations, then continue check what type of evaluation it is
+      if (evaluations.length > 0) {
+        if (
+          (latestInfoToUse && latestInfoToUse.grade) ||
+          (latestInfoToUse &&
+            latestInfoToUse.type === "PASSED" &&
+            this.props.assigment.assignmentType === "EXERCISE")
+        ) {
+          // Evaluated if graded or if assignment type is exercise and info type returns PASSED
+          return "state-EVALUATED";
+        } else if (
+          (compositeReply.state === "SUBMITTED" &&
+            latestInfoToUse &&
+            latestInfoToUse.type === "INCOMPLETE") ||
+          latestInfoToUse === null
+        ) {
+          // Supplemented as in use to be incomplete but user has submitted it again
+          return "state-SUPPLEMENTED";
+        } else {
+          // Incomplete
+          return "state-INCOMPLETE";
+        }
       }
     }
   };
@@ -352,14 +356,16 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   assigmentGradeClass = (compositeReply?: MaterialCompositeRepliesType) => {
     if (compositeReply) {
-      const { evaluationInfo } = compositeReply;
+      const { evaluations } = compositeReply;
 
-      if (evaluationInfo && evaluationInfo.type !== "INCOMPLETE") {
+      const latestInfoToUse = evaluations[0];
+
+      if (latestInfoToUse && latestInfoToUse.type !== "INCOMPLETE") {
         return "state-EVALUATED";
       } else if (
         compositeReply.state === "SUBMITTED" &&
-        evaluationInfo &&
-        evaluationInfo.type === "INCOMPLETE"
+        latestInfoToUse &&
+        latestInfoToUse.type === "INCOMPLETE"
       ) {
         return "state-SUPPLEMENTED";
       }
@@ -374,7 +380,9 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
     if (compositeReply) {
-      const { evaluationInfo } = compositeReply;
+      const { evaluations } = compositeReply;
+
+      const latestInfoToUse = evaluations[0];
 
       /**
        * Checking if assigments is submitted at all.
@@ -385,13 +393,13 @@ class EvaluationAssessmentAssignment extends React.Component<
       /**
        * Checking if its evaluated with grade
        */
-      const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
+      const evaluatedWithGrade = latestInfoToUse && latestInfoToUse.grade;
 
       /**
        * Needs supplementation
        */
       const needsSupplementation =
-        evaluationInfo && evaluationInfo.type === "INCOMPLETE";
+        latestInfoToUse && latestInfoToUse.type === "INCOMPLETE";
 
       /**
        * If evaluation is given as supplementation request and student
@@ -403,7 +411,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       /**
        * Evaluation date if evaluated
        */
-      const evaluationDate = evaluationInfo && evaluationInfo.date;
+      const evaluationDate = latestInfoToUse && latestInfoToUse.date;
 
       /**
        * Grade class mod
@@ -459,7 +467,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               <span
                 className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
               >
-                {evaluationInfo.grade}
+                {latestInfoToUse.grade}
               </span>
             </div>
           )}
@@ -615,10 +623,10 @@ class EvaluationAssessmentAssignment extends React.Component<
             this.props.assigment.assignmentType === "EVALUATED" ? (
               <AssignmentEditor
                 selectedAssessment={this.props.selectedAssessment}
-                onAudioAssessmentChange={this.handleAudioAssessmentChange}
+                /* onAudioAssessmentChange={this.handleAudioAssessmentChange}
                 showAudioAssessmentWarningOnClose={
                   this.state.showCloseEditorWarning
-                }
+                } */
                 editorLabel={this.props.i18n.text.get(
                   "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
                 )}

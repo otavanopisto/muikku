@@ -65,9 +65,13 @@ export class EvaluationMaterial extends React.Component<
     const isInterimEvaluation =
       this.props.material.assignment.assignmentType === "INTERIM_EVALUATION";
 
+    const { evaluations } = this.props.compositeReply;
+
+    const latestInfoToUse = evaluations[0];
+
     const hasEvaluation =
       this.props.compositeReply &&
-      this.props.compositeReply.evaluationInfo &&
+      latestInfoToUse &&
       (this.props.compositeReply.state === "INCOMPLETE" ||
         this.props.compositeReply.state === "PASSED" ||
         this.props.compositeReply.state === "FAILED" ||

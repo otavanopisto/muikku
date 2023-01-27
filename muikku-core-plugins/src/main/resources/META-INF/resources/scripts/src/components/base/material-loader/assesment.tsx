@@ -14,16 +14,16 @@ type MaterialLoaderAssesmentProps = MaterialLoaderProps;
  * @returns JSX.Element
  */
 export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
+  const { evaluations } = props.compositeReplies;
+
+  const latestEvaluationInfoToUse = evaluations[0];
+
   const literalAssesment =
     (props.material.evaluation && props.material.evaluation.verbalAssessment) ||
-    (props.compositeReplies &&
-      props.compositeReplies.evaluationInfo &&
-      props.compositeReplies.evaluationInfo.text);
+    (latestEvaluationInfoToUse && latestEvaluationInfoToUse.text);
 
   const audioAssessments =
-    (props.compositeReplies &&
-      props.compositeReplies.evaluationInfo &&
-      props.compositeReplies.evaluationInfo.audioAssessments) ||
+    (latestEvaluationInfoToUse && latestEvaluationInfoToUse.audioAssessments) ||
     (props.material.evaluation && props.material.evaluation.audioAssessments);
 
   if (literalAssesment === undefined && audioAssessments === undefined) {

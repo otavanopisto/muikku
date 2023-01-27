@@ -16,11 +16,9 @@ import {
   SaveState,
   FollowUp,
   StudentInfo,
-} from "~/@types/shared";
-import {
+  HopsStudyPeriodPlan,
   HopsCompulsory,
   Education,
-  HopsPlanningStudies,
 } from "~/@types/shared";
 import {
   HopsStudentStartingLevel,
@@ -275,7 +273,10 @@ class CompulsoryEducationHopsWizard extends React.Component<
                 ? studentBasicInfo.studyProgrammeEducationType
                 : "Ei asetettu",
             } as BasicInformation,
-            hopsCompulsory: hops !== undefined ? hops : initializeHops(),
+            hopsCompulsory: {
+              ...initializeHops(),
+              ...hops,
+            },
           };
 
           return loadedHops;
@@ -423,13 +424,13 @@ class CompulsoryEducationHopsWizard extends React.Component<
   /**
    * Handles studies planning changes
    *
-   * @param studiesPlanning studiesPlanning
+   * @param studyPeriodPlan studyPeriodPlan
    */
-  handleStudiesPlanningChange = (studiesPlanning: HopsPlanningStudies) => {
+  handleStudyPeriodPlanChange = (studyPeriodPlan: HopsStudyPeriodPlan) => {
     this.setState({
       hopsCompulsory: {
         ...this.state.hopsCompulsory,
-        studiesPlanning,
+        studyPeriodPlan,
       },
     });
   };
@@ -553,6 +554,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { i18n, status, displayNotification, children, ...baseProps } =
       this.props;
 
@@ -605,15 +607,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
             studentsUserEntityId={this.state.basicInfo.studentUserEntityId}
             studyTimeEnd={this.state.basicInfo.studyTimeEnd}
             followUp={this.state.hopsFollowUp}
-            studies={{
-              ...this.state.hopsCompulsory.studiesPlanning,
-            }}
             superVisorModifies={this.props.superVisorModifies}
-            ethics={this.state.hopsCompulsory.studiesPlanning.ethics}
-            finnishAsSecondLanguage={
-              this.state.hopsCompulsory.studiesPlanning.finnishAsSecondLanguage
-            }
-            onStudiesPlanningChange={this.handleStudiesPlanningChange}
+            studyPeriodPlan={this.state.hopsCompulsory.studyPeriodPlan}
+            onStudyPeriodPlanChange={this.handleStudyPeriodPlanChange}
           />
         ),
       },
@@ -673,16 +669,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
               studentsUserEntityId={this.state.basicInfo.studentUserEntityId}
               studyTimeEnd={this.state.basicInfo.studyTimeEnd}
               followUp={this.state.hopsFollowUp}
-              studies={{
-                ...this.state.hopsCompulsory.studiesPlanning,
-              }}
               superVisorModifies={this.props.superVisorModifies}
-              ethics={this.state.hopsCompulsory.studiesPlanning.ethics}
-              finnishAsSecondLanguage={
-                this.state.hopsCompulsory.studiesPlanning
-                  .finnishAsSecondLanguage
-              }
-              onStudiesPlanningChange={this.handleStudiesPlanningChange}
+              studyPeriodPlan={this.state.hopsCompulsory.studyPeriodPlan}
+              onStudyPeriodPlanChange={this.handleStudyPeriodPlanChange}
             />
           ),
         },
@@ -855,9 +844,12 @@ const initializeHops = (): HopsCompulsory => ({
       wishesForTeachersAndSupervisors: "",
     },
   },
-  studiesPlanning: {
-    usedHoursPerWeek: 0,
-    ethics: false,
-    finnishAsSecondLanguage: false,
+  studyPeriodPlan: {
+    month1: "",
+    month2: "",
+    month3: "",
+    month4: "",
+    month5: "",
+    month6: "",
   },
 });

@@ -9,18 +9,20 @@ import $ from "~/lib/jquery";
 import { saveRecording, startRecording } from "../handlers/recorder-controls";
 import { StatusType } from "~/reducers/base/status";
 import { RecordValue } from "~/@types/recorder";
-import { AudioAssessment } from "~/@types/evaluation";
+import { deleteAudio } from "../handlers/recordings-list";
 
 /**
  * initialState
  */
 const initialState: Recorder = {
+  uploading: false,
   seconds: 0,
   initRecording: false,
   mediaStream: null,
   mediaRecorder: null,
   audio: null,
   values: [],
+  blob: null,
 };
 
 /**
@@ -28,7 +30,7 @@ const initialState: Recorder = {
  */
 interface UseRecorderProps {
   status: StatusType;
-  values?: AudioAssessment[];
+  values?: RecordValue[];
 }
 
 /**
@@ -41,26 +43,17 @@ interface UseRecorderProps {
 export default function useRecorder(props: UseRecorderProps) {
   const [recorderState, setRecorderState] = useState<Recorder>(initialState);
 
+  const { values } = props;
+
   useEffect(() => {
-    if (
-      props.values &&
-      props.values !== null &&
-      recorderState.values.length !== props.values.length
-    ) {
+    if (JSON.stringify(values)) {
       setRecorderState((prevState) => ({
         ...prevState,
-        values: props.values.map(
-          (value) =>
-            ({
-              name: value.name,
-              contentType: value.contentType,
-              id: value.id,
-              url: `/rest/workspace/materialevaluationaudioassessment/${value.id}`,
-            } as RecordValue)
-        ),
+        values: values,
       }));
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(values)]);
 
   useEffect(() => {
     const MAX_RECORDER_TIME = 300;
@@ -145,9 +138,11 @@ export default function useRecorder(props: UseRecorderProps) {
               ...initialState,
               audio: window.URL.createObjectURL(blob),
               values: newValues,
+              uploading: true,
+              blob,
             };
           } else {
-            return initialState;
+            return { ...initialState, values: newValues };
           }
         });
 
@@ -209,6 +204,7 @@ export default function useRecorder(props: UseRecorderProps) {
 
         setRecorderState(() => ({
           ...initialState,
+          uploading: false,
           audio: window.URL.createObjectURL(valueToSave.blob),
           values: updatedAllValues,
         }));
@@ -235,6 +231,7 @@ export default function useRecorder(props: UseRecorderProps) {
         //we need to get the upload progress
         const xhr = new (window as any).XMLHttpRequest();
         //Upload progress
+
         xhr.upload.addEventListener(
           "progress",
           (evt: any) => {
@@ -255,6 +252,7 @@ export default function useRecorder(props: UseRecorderProps) {
                 ...prevState,
                 audio: window.URL.createObjectURL(valueToSave.blob),
                 values: updatedAllValues,
+                uploading: true,
               }));
             }
           },
@@ -277,5 +275,7 @@ export default function useRecorder(props: UseRecorderProps) {
     cancelRecording: () => setRecorderState(initialState),
     // eslint-disable-next-line
     saveRecording: () => saveRecording(recorderState.mediaRecorder),
+    // eslint-disable-next-line
+    deleteAudio: (audioKey: string) => deleteAudio(audioKey, setRecorderState),
   };
 }

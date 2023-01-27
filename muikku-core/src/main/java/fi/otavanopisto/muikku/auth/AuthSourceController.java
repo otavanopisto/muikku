@@ -31,7 +31,7 @@ public class AuthSourceController {
     return authSourceDAO.findById(id);
   }
  
-  private AuthSource findAuthSourceByStrategy(String strategy) {
+  public AuthSource findAuthSourceByStrategy(String strategy) {
     return authSourceDAO.findByStrategy(strategy);
   }
   

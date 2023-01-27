@@ -422,22 +422,6 @@ export interface SaveEvaluationAssignmentGradeEvaluation {
 }
 
 /**
- * SaveEvaluationAssignmentSupplementation
- */
- /*
-export interface SaveEvaluationAssignmentSupplementation {
-  (data: {
-    workspaceEntityId: number;
-    userEntityId: number;
-    workspaceMaterialId: number;
-    dataToSave: AssignmentEvaluationSupplementationRequest;
-    materialId: number;
-    onSuccess?: () => void;
-    onFail?: () => void;
-  }): AnyActionType;
-}
-*/
-/**
  * DeleteAssessmentRequest
  */
 export interface DeleteAssessmentRequest {
