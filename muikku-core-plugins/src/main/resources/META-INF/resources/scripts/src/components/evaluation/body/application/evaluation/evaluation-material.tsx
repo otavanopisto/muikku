@@ -16,7 +16,6 @@ import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
-import * as moment from "moment";
 
 /**
  * EvaluationMaterialProps
@@ -66,20 +65,9 @@ export class EvaluationMaterial extends React.Component<
     const isInterimEvaluation =
       this.props.material.assignment.assignmentType === "INTERIM_EVALUATION";
 
-    const { evaluationInfo, supplementationRequestInfo } =
-      this.props.compositeReply;
+    const { evaluations } = this.props.compositeReply;
 
-    let latestInfoToUse = evaluationInfo || supplementationRequestInfo;
-
-    if (evaluationInfo && supplementationRequestInfo) {
-      if (
-        moment(evaluationInfo.date).isAfter(supplementationRequestInfo.date)
-      ) {
-        latestInfoToUse = evaluationInfo;
-      } else {
-        latestInfoToUse = supplementationRequestInfo;
-      }
-    }
+    const latestInfoToUse = evaluations[0];
 
     const hasEvaluation =
       this.props.compositeReply &&

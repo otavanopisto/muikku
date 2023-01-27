@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
   Recorder,
   MediaRecorderEvent,
@@ -127,7 +127,6 @@ export default function useRecorder(props: UseRecorderProps) {
 
       // eslint-disable-next-line
       recorder.onstop = async () => {
-        console.log("%cStop", "color: red");
         const blob = new Blob(chunks, { type: contentType });
         chunks = [];
 
@@ -192,7 +191,6 @@ export default function useRecorder(props: UseRecorderProps) {
       data: formData,
       // eslint-disable-next-line
       success: (data: any) => {
-        console.log("%cSuccess", "color: #bada55");
         newValue.uploading = false;
         newValue.id = data.fileId;
         //if the server does not return a content type we'll use whatever the blob recorded, this shouldn't be the case the server should return somethings
@@ -203,9 +201,6 @@ export default function useRecorder(props: UseRecorderProps) {
         const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
 
         const updatedAllValues = initialValue.concat(newValueSavedToServer);
-
-        console.log("%cSuccess values ---->", "color: #bada55");
-        console.table(updatedAllValues);
 
         setRecorderState(() => ({
           ...initialState,
@@ -233,7 +228,6 @@ export default function useRecorder(props: UseRecorderProps) {
       },
       // eslint-disable-next-line
       xhr: () => {
-        console.log("%cXhr", "color: red");
         //we need to get the upload progress
         const xhr = new (window as any).XMLHttpRequest();
         //Upload progress
@@ -253,10 +247,6 @@ export default function useRecorder(props: UseRecorderProps) {
               const updatedAllValues = initialValue.concat(
                 newValueSavedToServer
               );
-
-              console.group("%cXHR updatedAllValues", "color: red");
-              console.log("updatedAllValues", updatedAllValues);
-              console.groupEnd();
 
               setRecorderState((prevState) => ({
                 ...prevState,

@@ -349,6 +349,7 @@ export enum AssignmentEvaluationType {
  * AssignmentEvaluationGradeRequest
  */
 export interface AssignmentEvaluationGradeRequest {
+  identifier?: string;
   evaluationType: AssignmentEvaluationType;
   assessorIdentifier: string;
   gradingScaleIdentifier: string;

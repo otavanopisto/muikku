@@ -2,7 +2,6 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import RecordingsList from "../../general/voice-recorder/recordings-list";
 import { RecordValue } from "../../../@types/recorder";
-import * as moment from "moment";
 
 /**
  * MaterialLoaderAssesmentProps
@@ -15,17 +14,9 @@ type MaterialLoaderAssesmentProps = MaterialLoaderProps;
  * @returns JSX.Element
  */
 export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
-  const { evaluationInfo, supplementationRequestInfo } = props.compositeReplies;
+  const { evaluations } = props.compositeReplies;
 
-  let latestEvaluationInfoToUse = evaluationInfo || supplementationRequestInfo;
-
-  if (evaluationInfo && supplementationRequestInfo) {
-    if (moment(evaluationInfo.date).isAfter(supplementationRequestInfo.date)) {
-      latestEvaluationInfoToUse = evaluationInfo;
-    } else {
-      latestEvaluationInfoToUse = supplementationRequestInfo;
-    }
-  }
+  const latestEvaluationInfoToUse = evaluations[0];
 
   const literalAssesment =
     (props.material.evaluation && props.material.evaluation.verbalAssessment) ||

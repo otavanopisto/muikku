@@ -69,8 +69,6 @@ function Recorder(props: RecorderProps) {
       (recording) => recording.uploading
     );
 
-    console.log("%cuploading --->", "color: #de3211", uploading);
-
     // After initial render and if onChange method has been passed, not uplaoding any values,
     // and recording values compared to previous values are not equal, then call onChange method
     if (
@@ -78,8 +76,6 @@ function Recorder(props: RecorderProps) {
       !uploading &&
       JSON.stringify(values) !== JSON.stringify(recorderState.values)
     ) {
-      console.log("%conChange happening --->", "color: #de3211");
-
       onChange(recorderState.values);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

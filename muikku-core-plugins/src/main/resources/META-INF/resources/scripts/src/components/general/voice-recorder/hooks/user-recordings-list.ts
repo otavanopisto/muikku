@@ -17,11 +17,6 @@ export default function useRecordingsList(records: RecordValue[] | null) {
 
     if (!update) return;
 
-    console.group("%cUSERECORDINGSLIST", "color: #0f0");
-    console.table(records);
-    console.table(recordings);
-    console.groupEnd();
-
     setRecordings(records);
   }, [records]);
 

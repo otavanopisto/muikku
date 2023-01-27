@@ -699,6 +699,8 @@ export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>;
   state: MaterialCompositeRepliesStateType;
 
+  evaluations: MaterialEvaluationInfo[];
+
   //Available sometimes
   evaluationInfo?: MaterialEvaluationInfo;
 
@@ -719,6 +721,7 @@ export interface MaterialCompositeRepliesType {
  * MaterialEvaluationInfo
  */
 export interface MaterialEvaluationInfo {
+  id: number;
   type: MaterialCompositeRepliesStateType;
   evaluationType: AssignmentEvaluationType;
   text: string;

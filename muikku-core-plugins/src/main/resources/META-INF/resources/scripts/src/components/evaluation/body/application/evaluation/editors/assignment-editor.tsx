@@ -37,7 +37,6 @@ import {
 } from "~/@types/evaluation";
 import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
-import * as moment from "moment";
 import { RecordValue } from "~/@types/recorder";
 
 /**
@@ -83,6 +82,10 @@ interface AssignmentEditorState {
   showAudioAssessmentWarningOnClose: boolean;
 }
 
+/**
+ * audioAssessmentsToRecords
+ * @param audioAssessments audioAssessments
+ */
 const audioAssessmentsToRecords = (
   audioAssessments: AudioAssessment[]
 ): RecordValue[] =>
@@ -138,19 +141,9 @@ class AssignmentEditor extends SessionStateComponent<
 
     const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
 
-    const { evaluationInfo, supplementationRequestInfo } = compositeReplies;
+    const { evaluations } = compositeReplies;
 
-    let latestInfoToUse = evaluationInfo || supplementationRequestInfo;
-
-    if (evaluationInfo && supplementationRequestInfo) {
-      if (
-        moment(evaluationInfo.date).isAfter(supplementationRequestInfo.date)
-      ) {
-        latestInfoToUse = evaluationInfo;
-      } else {
-        latestInfoToUse = supplementationRequestInfo;
-      }
-    }
+    const latestInfoToUse = evaluations[0];
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -226,19 +219,9 @@ class AssignmentEditor extends SessionStateComponent<
       grade = "";
     }
 
-    const { evaluationInfo, supplementationRequestInfo } = compositeReplies;
+    const { evaluations } = compositeReplies;
 
-    let latestInfoToUse = evaluationInfo || supplementationRequestInfo;
-
-    if (evaluationInfo && supplementationRequestInfo) {
-      if (
-        moment(evaluationInfo.date).isAfter(supplementationRequestInfo.date)
-      ) {
-        latestInfoToUse = evaluationInfo;
-      } else {
-        latestInfoToUse = supplementationRequestInfo;
-      }
-    }
+    const latestInfoToUse = evaluations[0];
 
     this.setState({
       ...this.getRecoverStoredState(
@@ -263,20 +246,6 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
-   * componentDidUpdate
-   * @param prevProps prevProps
-   * @param prevState prevState
-   */
-  /* componentDidUpdate = (
-    prevProps: AssignmentEditorProps,
-    prevState: AssignmentEditorState
-  ) => {
-    if (this.state.records.length !== prevState.records.length) {
-      this.props.onAudioAssessmentChange();
-    }
-  };
- */
-  /**
    * saveAssignmentEvaluationGradeToServer
    * @param data data
    * @param data.workspaceEntityId workspaceEntityId
@@ -285,6 +254,7 @@ class AssignmentEditor extends SessionStateComponent<
    * @param data.dataToSave data ToSave
    * @param data.materialId materialId
    * @param data.defaultGrade defaultGrade
+   * @param data.edit edit
    */
   saveAssignmentEvaluationGradeToServer = async (data: {
     workspaceEntityId: number;
@@ -293,6 +263,7 @@ class AssignmentEditor extends SessionStateComponent<
     dataToSave: AssignmentEvaluationGradeRequest;
     materialId: number;
     defaultGrade: string;
+    edit: boolean;
   }) => {
     this.setState({
       locked: true,
@@ -303,14 +274,24 @@ class AssignmentEditor extends SessionStateComponent<
 
     try {
       await promisify(
-        mApi().evaluation.workspace.user.workspacematerial.assessment.create(
-          workspaceEntityId,
-          userEntityId,
-          workspaceMaterialId,
-          {
-            ...dataToSave,
-          }
-        ),
+        data.edit
+          ? mApi().evaluation.workspace.user.workspacematerial.assessment.update(
+              workspaceEntityId,
+              userEntityId,
+              workspaceMaterialId,
+              this.props.compositeReplies.evaluations[0].id,
+              {
+                ...dataToSave,
+              }
+            )
+          : mApi().evaluation.workspace.user.workspacematerial.assessment.create(
+              workspaceEntityId,
+              userEntityId,
+              workspaceMaterialId,
+              {
+                ...dataToSave,
+              }
+            ),
         "callback"
       )().then(async (data: AssignmentEvaluationSaveReturn) => {
         await mApi().workspace.workspaces.compositeReplies.cacheClear();
@@ -366,7 +347,7 @@ class AssignmentEditor extends SessionStateComponent<
   handleSaveAssignment = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
-    /* const { evaluationGradeSystem } = this.props.evaluations; */
+    const { compositeReplies } = this.props;
     const { grade, activeGradeSystems } = this.state;
     const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
 
@@ -402,6 +383,10 @@ class AssignmentEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
+        identifier:
+          compositeReplies.evaluations.length > 0
+            ? compositeReplies.evaluations[0].id.toString()
+            : undefined,
         evaluationType,
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
         gradingScaleIdentifier,
@@ -412,6 +397,7 @@ class AssignmentEditor extends SessionStateComponent<
       },
       materialId: this.props.materialAssignment.materialId,
       defaultGrade,
+      edit: compositeReplies.evaluations.length > 0,
     });
   };
 
@@ -422,19 +408,9 @@ class AssignmentEditor extends SessionStateComponent<
     const { compositeReplies, materialEvaluation } = this.props;
     const { activeGradeSystems } = this.state;
 
-    const { evaluationInfo, supplementationRequestInfo } = compositeReplies;
+    const { evaluations } = compositeReplies;
 
-    let latestInfoToUse = evaluationInfo || supplementationRequestInfo;
-
-    if (evaluationInfo && supplementationRequestInfo) {
-      if (
-        moment(evaluationInfo.date).isAfter(supplementationRequestInfo.date)
-      ) {
-        latestInfoToUse = evaluationInfo;
-      } else {
-        latestInfoToUse = supplementationRequestInfo;
-      }
-    }
+    const latestInfoToUse = evaluations[0];
 
     if (latestInfoToUse && latestInfoToUse.date) {
       this.setStateAndClear(
@@ -483,18 +459,18 @@ class AssignmentEditor extends SessionStateComponent<
   ) => {
     const { activeGradeSystems } = this.state;
 
-    const { evaluationInfo, supplementationRequestInfo } =
-      this.props.compositeReplies;
+    const { evaluations } = this.props.compositeReplies;
 
     const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
 
-    let records = evaluationInfo && evaluationInfo.audioAssessments;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const records = evaluations[0];
 
-    if (e.target.value === "INCOMPLETE") {
+    /* if (e.target.value === "INCOMPLETE") {
       records =
         supplementationRequestInfo &&
         supplementationRequestInfo.audioAssessments;
-    }
+    } */
 
     this.setStateAndStore(
       {
@@ -568,10 +544,6 @@ class AssignmentEditor extends SessionStateComponent<
 
       renderGradingOptions.push(missingOption);
     }
-
-    console.group("%cASSIGMENT render", "color: #0f0");
-    console.table(this.state.records);
-    console.groupEnd();
 
     return (
       <div className="form" role="form">
