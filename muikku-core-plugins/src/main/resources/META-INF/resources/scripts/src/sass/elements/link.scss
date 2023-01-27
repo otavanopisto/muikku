@@ -423,7 +423,7 @@
 }
 
 .link--application-list,
-.link--evaluation-list,
+.link--evaluation,
 .link--contact-event-footer {
   color: $color-link-application-item-footer;
   cursor: pointer;
@@ -498,21 +498,21 @@
   }
 }
 
-.link--evaluation-event-edit,
-.link--evaluation-event-delete {
+.link--evaluation {
   font-size: 0.825rem;
-  padding: 5px;
   text-decoration: underline;
 }
 
-.link--evaluation-event-delete {
+.link--evaluation-delete {
   color: $color-fatal;
 }
 
-.link--evaluation-close-open,
-.link--studies-close-open {
-  padding: 0 5px;
+.link--studies-open-close {
   text-decoration: underline;
+
+  &:not(:first-child) {
+    margin-left: 20px;
+  }
 }
 
 .link--download-pdf {
