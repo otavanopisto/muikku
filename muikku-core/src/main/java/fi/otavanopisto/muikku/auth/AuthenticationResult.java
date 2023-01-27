@@ -52,6 +52,8 @@ public class AuthenticationResult {
     PROCESSING,
     GRANT,
     LOGIN,
+    LOGOUT,
+    LOGOUT_WITH_REDIRECT,
     NEW_ACCOUNT,
     CONFLICT, 
     INVALID_CREDENTIALS, 

@@ -3,6 +3,9 @@ package fi.otavanopisto.muikku.auth;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
@@ -39,14 +42,16 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
   
   protected abstract String getOAuthCallbackURL(AuthSource authSource);
 
-  protected abstract AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes);
+  protected abstract AuthenticationResult processResponse(HttpServletRequest request, AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes);
   
   public boolean requiresCredentials() {
     return false;
   }
   
   @Override
-  public AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters) {
+  @Transactional(TxType.REQUIRES_NEW)
+  public AuthenticationResult processLogin(HttpServletRequest request, AuthSource authSource) {
+    Map<String, String[]> requestParameters = request.getParameterMap();
     if (!"rsp".equals(getFirstRequestParameter(requestParameters, "_stg"))) {
       String[] scopes;
 
@@ -75,7 +80,7 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
       String[] requestedScopes = loginSessionBean.getRequestedScopes();
       loginSessionBean.setRequestedScopes(null);
       OAuthService service = getOAuthService(authSource, requestParameters, requestedScopes);
-      return processResponse(authSource, requestParameters, service, requestedScopes);
+      return processResponse(request, authSource, requestParameters, service, requestedScopes);
     }
   }
   

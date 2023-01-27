@@ -30,7 +30,6 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
-import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -44,10 +43,6 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 6680345677459264564L;
 
-  @Inject
-  @BaseUrl
-  private String baseUrl;
-  
   @Inject
   private SessionController sessionController;
   
