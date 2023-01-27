@@ -138,6 +138,11 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
     return persist(workspaceMaterialEvaluation);
   }
   
+  public WorkspaceMaterialEvaluation updateEvaluationType(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, WorkspaceMaterialEvaluationType evaluationType) {
+    workspaceMaterialEvaluation.setEvaluationType(evaluationType);
+    return persist(workspaceMaterialEvaluation);
+  }
+  
   public WorkspaceMaterialEvaluation updateGradingScaleIdentifier(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, String gradingScaleIdentifier) {
     workspaceMaterialEvaluation.setGradingScaleIdentifier(gradingScaleIdentifier);
     return persist(workspaceMaterialEvaluation);

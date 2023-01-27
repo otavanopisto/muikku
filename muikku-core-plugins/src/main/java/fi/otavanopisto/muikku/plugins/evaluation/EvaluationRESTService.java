@@ -528,11 +528,129 @@ public class EvaluationRESTService extends PluginRESTService {
       }
     }
     
-    // Workspace material evaluation
+    // Grade
     
-    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST
-        ? evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(workspaceMaterial, userEntity)
-        : evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+    SchoolDataIdentifier gradingScaleIdentifier = payload.getGradingScaleIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradingScaleIdentifier()) : null;
+    GradingScale gradingScale = gradingScaleIdentifier != null ? gradingController.findGradingScale(gradingScaleIdentifier) : null;
+    SchoolDataIdentifier gradeIdentifier = payload.getGradeIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradeIdentifier()) : null;
+    GradingScaleItem gradingScaleItem = (gradingScale != null && gradeIdentifier != null) ? gradingController.findGradingScaleItem(gradingScale, gradeIdentifier) : null;
+
+    // Assessor
+    
+    SchoolDataIdentifier assessorIdentifier = SchoolDataIdentifier.fromId(payload.getAssessorIdentifier());
+    User assessingUser = userController.findUserByIdentifier(assessorIdentifier);
+    UserEntity assessor = userEntityController.findUserEntityByUser(assessingUser);
+    
+    // Create material assessment
+    
+    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.createWorkspaceMaterialEvaluation(
+        userEntity,
+        workspaceMaterial,
+        gradingScale,
+        gradingScaleItem,
+        assessor,
+        payload.getAssessmentDate(),
+        payload.getVerbalAssessment(),
+        payload.getEvaluationType());
+    
+    evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
+
+//    // Remove possible workspace assignment supplementation request
+//    
+//    WorkspaceMaterialEvaluation supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(workspaceMaterial, userEntity);
+//    if (supplementationRequest != null) {
+//      evaluationController.deleteSupplementationRequest(supplementationRequest);
+//    }
+    
+    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST) {
+      // If the supplementation request is for an assignment, mark student's reply as INCOMPLETE
+
+      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+      if (reply != null) {
+        workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
+      }
+    }
+    
+    // Archive related interim evaluation requests
+    
+    if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
+      List<InterimEvaluationRequest> requests = evaluationController.listInterimEvaluationRequests(
+          userEntity,
+          workspaceMaterial,
+          Boolean.FALSE);
+      for (InterimEvaluationRequest request : requests) {
+        evaluationController.archiveInterimEvaluationRequest(request);
+      }
+    }
+
+    // WorkspaceMaterialEvaluation to RestAssessment
+    
+    List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(workspaceMaterialEvaluation);
+    List<RestAssignmentEvaluationAudioClip> audioAssessments = evaluationAudioClips.stream()
+        .map(audioClip -> new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
+        .collect(Collectors.toList());
+    
+    RestAssessmentWithAudio restAssessment = new RestAssessmentWithAudio(
+        workspaceMaterialEvaluation.getId().toString(),
+        assessorIdentifier.toId(),
+        gradingScaleIdentifier != null ? gradingScaleIdentifier.toId() : null,
+        gradeIdentifier != null ? gradeIdentifier.toId() : null,
+        workspaceMaterialEvaluation.getVerbalAssessment(),
+        workspaceMaterialEvaluation.getEvaluated(),
+        gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
+        workspaceMaterialEvaluation.getEvaluationType(),
+        audioAssessments);
+    return Response.ok(restAssessment).build();
+  }
+  
+  @PUT
+  @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/assessment/{ASSESSMENTID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateWorkspaceMaterialAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ASSESSMENTID") Long assessmentId, RestAssessmentWithAudio payload) {
+    if (payload == null || payload.getEvaluationType() == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Validate payload
+    
+    if (!StringUtils.equals(payload.getIdentifier(), assessmentId.toString())) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // User entity
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace material
+
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.ASSESSMENT && workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
+      // Grade is required for evaluated assignments, but not required for exercises
+      if (payload.getGradingScaleIdentifier() == null || payload.getGradeIdentifier() == null) {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
+    
+    // Find Workspace material evaluation for update
+    
+    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluation(assessmentId);
+    if (workspaceMaterialEvaluation == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
 
     // Grade
     
@@ -547,28 +665,16 @@ public class EvaluationRESTService extends PluginRESTService {
     User assessingUser = userController.findUserByIdentifier(assessorIdentifier);
     UserEntity assessor = userEntityController.findUserEntityByUser(assessingUser);
     
-    // Create/update material assessment
+    // Update material assessment
     
-    if (workspaceMaterialEvaluation == null) {
-      workspaceMaterialEvaluation = evaluationController.createWorkspaceMaterialEvaluation(
-          userEntity,
-          workspaceMaterial,
-          gradingScale,
-          gradingScaleItem,
-          assessor,
-          payload.getAssessmentDate(),
-          payload.getVerbalAssessment(),
-          payload.getEvaluationType());
-    }
-    else {
-      workspaceMaterialEvaluation = evaluationController.updateWorkspaceMaterialEvaluation(
-          workspaceMaterialEvaluation,
-          gradingScale,
-          gradingScaleItem,
-          assessor,
-          payload.getAssessmentDate(),
-          payload.getVerbalAssessment());
-    }
+    workspaceMaterialEvaluation = evaluationController.updateWorkspaceMaterialEvaluation(
+        workspaceMaterialEvaluation,
+        gradingScale,
+        gradingScaleItem,
+        assessor,
+        payload.getAssessmentDate(),
+        payload.getVerbalAssessment(),
+        payload.getEvaluationType());
     
     evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
 
