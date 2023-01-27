@@ -542,6 +542,10 @@ public class EvaluationController {
     return workspaceMaterialEvaluationDAO.listByWorkspaceMaterialId(workspaceMaterialId);
   }
   
+  public List<WorkspaceMaterialEvaluation> listWorkspaceMaterialEvaluationsByStudentAndMaterialAndArchived(UserEntity student, WorkspaceMaterial workspaceMaterial, boolean archived) {
+    return workspaceMaterialEvaluationDAO.listByWorkspaceMaterialIdAndStudentEntityIdAndArchived(workspaceMaterial.getId(), student.getId(), archived);
+  }
+  
   public SupplementationRequest updateSupplementationRequest(SupplementationRequest supplementationRequest, Long userEntityId, Date requestDate, String requestText) {
     SchoolDataIdentifier workspaceSubjectIdentifier = supplementationRequest.getWorkspaceSubjectIdentifier() != null ? SchoolDataIdentifier.fromId(supplementationRequest.getWorkspaceSubjectIdentifier()) : null;
     supplementationRequest = supplementationRequestDAO.updateSupplementationRequest(
@@ -581,6 +585,50 @@ public class EvaluationController {
     }
 
     return workspaceMaterialEvaluation;
+  }
+
+  public List<RestAssignmentEvaluation> listUnarchivedMaterialEvaluations(UserEntity student, WorkspaceMaterial workspaceMaterial) {
+    List<WorkspaceMaterialEvaluation> workspaceMaterialEvaluations = listWorkspaceMaterialEvaluationsByStudentAndMaterialAndArchived(student, workspaceMaterial, false);
+
+    List<RestAssignmentEvaluation> restEvaluations = new ArrayList<>();
+    for (WorkspaceMaterialEvaluation workspaceMaterialEvaluation : workspaceMaterialEvaluations) {
+      List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(workspaceMaterialEvaluation);
+      
+      WorkspaceMaterialEvaluationType evaluationType = workspaceMaterialEvaluation.getEvaluationType();
+      RestAssignmentEvaluationType type = evaluationType == WorkspaceMaterialEvaluationType.ASSESSMENT
+          ? RestAssignmentEvaluationType.PASSED : RestAssignmentEvaluationType.INCOMPLETE;
+      
+      
+      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
+      evaluation.setType(type);
+      evaluation.setEvaluationType(evaluationType);
+      evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
+      evaluation.setText(workspaceMaterialEvaluation.getVerbalAssessment());
+
+      // Only assessments have grading info
+      if (evaluationType == WorkspaceMaterialEvaluationType.ASSESSMENT) {
+        GradingScale gradingScale = gradingController.findGradingScale(
+            workspaceMaterialEvaluation.getGradingScaleSchoolDataSource(), workspaceMaterialEvaluation.getGradingScaleIdentifier());
+        if (gradingScale != null) {
+          GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
+              gradingScale, workspaceMaterialEvaluation.getGradeSchoolDataSource(), workspaceMaterialEvaluation.getGradeIdentifier());
+          if (gradingScaleItem != null) {
+            evaluation.setGrade(gradingScaleItem.getName());
+            if (Boolean.FALSE.equals(gradingScaleItem.isPassingGrade())) {
+              evaluation.setType(RestAssignmentEvaluationType.FAILED);
+            }
+          }
+        }
+      }
+      
+      evaluationAudioClips.forEach(audioClip -> {
+        evaluation.addAudioAssessmentAudioClip(new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()));
+      });
+      
+      restEvaluations.add(evaluation);
+    }
+    
+    return restEvaluations;
   }
 
   public RestAssignmentEvaluation getEvaluationInfo(UserEntity userEntity, WorkspaceMaterial workspaceMaterial) {
