@@ -69,7 +69,7 @@ class WorkspaceJournalsListItem extends React.Component<
   /**
    * handleJournalItemClick
    */
-  handleJournalItemClick = () => {
+  handleSetJournalItemClick = () => {
     !this.props.asCurrent &&
       this.props.setCurrentJournal({ currentJournal: this.props.journal });
   };
@@ -129,7 +129,7 @@ class WorkspaceJournalsListItem extends React.Component<
           modifiers={isMandatory && "mandatory"}
         >
           <ApplicationListItemHeader
-            onClick={this.handleJournalItemClick}
+            onClick={this.handleSetJournalItemClick}
             className="application-list__item-header--journal-entry"
             modifiers={
               this.props.asCurrent &&
@@ -223,7 +223,7 @@ class WorkspaceJournalsListItem extends React.Component<
                 <Link
                   as="span"
                   className="link link--application-list"
-                  onClick={this.handleJournalItemClick}
+                  onClick={this.handleSetJournalItemClick}
                 >
                   {this.props.i18n.text.get(
                     "plugin.workspace.journal.comments.title"

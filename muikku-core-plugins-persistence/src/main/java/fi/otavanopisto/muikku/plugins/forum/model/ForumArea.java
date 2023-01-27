@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 
 import fi.otavanopisto.muikku.model.util.ArchivableEntity;
 import fi.otavanopisto.muikku.model.util.OwnedEntity;

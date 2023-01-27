@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * UsedAs
  */
@@ -295,7 +296,7 @@ export enum LanguageGradeEnum {
 export interface HopsCompulsory {
   startingLevel: HopsStudentStartingLevel;
   motivationAndStudy: HopsMotivationAndStudy;
-  studiesPlanning: HopsPlanningStudies;
+  studyPeriodPlan: HopsStudyPeriodPlan;
 }
 
 /**
@@ -363,6 +364,18 @@ export interface HopsStudies {
   usedHoursPerWeek: number;
   ethics: boolean;
   finnishAsSecondLanguage: boolean;
+}
+
+/**
+ * HopsStudyPeriodPlan
+ */
+export interface HopsStudyPeriodPlan {
+  month1: string;
+  month2: string;
+  month3: string;
+  month4: string;
+  month5: string;
+  month6: string;
 }
 
 /**

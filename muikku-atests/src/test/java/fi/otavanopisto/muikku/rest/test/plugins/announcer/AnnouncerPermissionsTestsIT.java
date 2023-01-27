@@ -45,7 +45,7 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
       .body(publicAnnouncement)
       .post("/announcer/announcements");
     
-    publicAnnouncementId = new Long(response.body().jsonPath().getInt("id"));
+    publicAnnouncementId = response.body().jsonPath().getLong("id");
   }
   
   @Before
@@ -97,7 +97,7 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
       .body(publicAnnouncement)
       .post("/announcer/announcements");
     
-    workspace2AnnouncementId = new Long(response.body().jsonPath().getInt("id"));
+    workspace2AnnouncementId = response.body().jsonPath().getLong("id");
   }
   
   @Before

@@ -118,7 +118,17 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
+  justify-content: space-between;
   padding: 5px 0;
+}
+
+.evaluation-modal__content-actions-sorters {
+  margin-left: 20px;
+}
+
+.evaluation-modal__content-actions-sorters,
+.evaluation-modal__content-actions-filters {
+  display: flex;
 }
 
 .evaluation-modal__content-footer {
