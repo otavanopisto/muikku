@@ -7,7 +7,10 @@ import {
   WorkspaceStudentListType,
 } from "~/reducers/user-index";
 import { repairContentNodes } from "~/util/modifiers";
-import { AudioAssessment } from "../../@types/evaluation";
+import {
+  AssignmentEvaluationType,
+  AudioAssessment,
+} from "../../@types/evaluation";
 
 /**
  * OrganizationCourseTeacherType
@@ -699,6 +702,8 @@ export interface MaterialCompositeRepliesType {
   //Available sometimes
   evaluationInfo?: MaterialEvaluationInfo;
 
+  supplementationRequestInfo: MaterialEvaluationInfo;
+
   //Available when loaded specifically (eg. via records)
   created: string;
   lastModified: string;
@@ -715,6 +720,7 @@ export interface MaterialCompositeRepliesType {
  */
 export interface MaterialEvaluationInfo {
   type: MaterialCompositeRepliesStateType;
+  evaluationType: AssignmentEvaluationType;
   text: string;
   grade: string;
   date: string;

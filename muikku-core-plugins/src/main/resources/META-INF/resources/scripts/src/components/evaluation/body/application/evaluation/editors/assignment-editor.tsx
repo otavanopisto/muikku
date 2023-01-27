@@ -27,7 +27,6 @@ import {
   EvaluationGradeSystem,
   AssignmentEvaluationType,
 } from "~/@types/evaluation";
-import AnimateHeight from "react-animate-height";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import mApi from "~/lib/mApi";
@@ -38,6 +37,8 @@ import {
 } from "~/@types/evaluation";
 import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
+import * as moment from "moment";
+import { RecordValue } from "~/@types/recorder";
 
 /**
  * AssignmentEditorProps
@@ -54,8 +55,8 @@ interface AssignmentEditorProps {
   editorLabel?: string;
   modifiers?: string[];
   isRecording: boolean;
-  showAudioAssessmentWarningOnClose: boolean;
-  onAudioAssessmentChange: () => void;
+  /* showAudioAssessmentWarningOnClose: boolean;
+  onAudioAssessmentChange: () => void; */
   updateMaterialEvaluationData: (
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
   ) => void;
@@ -74,12 +75,23 @@ interface AssignmentEditorProps {
 interface AssignmentEditorState {
   literalEvaluation: string;
   assignmentEvaluationType: string;
-  audioAssessments: AudioAssessment[];
+  records: RecordValue[];
   grade: string;
   draftId: string;
   locked: boolean;
   activeGradeSystems: EvaluationGradeSystem[];
+  showAudioAssessmentWarningOnClose: boolean;
 }
+
+const audioAssessmentsToRecords = (
+  audioAssessments: AudioAssessment[]
+): RecordValue[] =>
+  audioAssessments.map((audioAssessment) => ({
+    id: audioAssessment.id,
+    name: audioAssessment.name,
+    contentType: audioAssessment.contentType,
+    url: `/rest/workspace/materialevaluationaudioassessment/${audioAssessment.id}`,
+  }));
 
 /**
  * AssignmentEditor
@@ -126,17 +138,26 @@ class AssignmentEditor extends SessionStateComponent<
 
     const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
 
+    const { evaluationInfo, supplementationRequestInfo } = compositeReplies;
+
+    let latestInfoToUse = evaluationInfo || supplementationRequestInfo;
+
+    if (evaluationInfo && supplementationRequestInfo) {
+      if (
+        moment(evaluationInfo.date).isAfter(supplementationRequestInfo.date)
+      ) {
+        latestInfoToUse = evaluationInfo;
+      } else {
+        latestInfoToUse = supplementationRequestInfo;
+      }
+    }
+
     this.state = {
       ...this.getRecoverStoredState(
         {
-          literalEvaluation:
-            compositeReplies && compositeReplies.evaluationInfo
-              ? compositeReplies.evaluationInfo.text
-              : "",
+          literalEvaluation: latestInfoToUse ? latestInfoToUse.text : "",
           assignmentEvaluationType:
-            compositeReplies &&
-            compositeReplies.evaluationInfo &&
-            compositeReplies.evaluationInfo.type === "INCOMPLETE"
+            latestInfoToUse && latestInfoToUse.type === "INCOMPLETE"
               ? "INCOMPLETE"
               : "GRADED",
           grade: grade,
@@ -144,14 +165,15 @@ class AssignmentEditor extends SessionStateComponent<
         },
         draftId
       ),
-      audioAssessments:
-        compositeReplies.evaluationInfo &&
-        compositeReplies.evaluationInfo.audioAssessments &&
-        compositeReplies.evaluationInfo.audioAssessments !== null
-          ? compositeReplies.evaluationInfo.audioAssessments
+      records:
+        latestInfoToUse &&
+        latestInfoToUse.audioAssessments &&
+        latestInfoToUse.audioAssessments !== null
+          ? audioAssessmentsToRecords(latestInfoToUse.audioAssessments)
           : [],
       locked: false,
       activeGradeSystems,
+      showAudioAssessmentWarningOnClose: false,
     };
   }
 
@@ -204,29 +226,39 @@ class AssignmentEditor extends SessionStateComponent<
       grade = "";
     }
 
+    const { evaluationInfo, supplementationRequestInfo } = compositeReplies;
+
+    let latestInfoToUse = evaluationInfo || supplementationRequestInfo;
+
+    if (evaluationInfo && supplementationRequestInfo) {
+      if (
+        moment(evaluationInfo.date).isAfter(supplementationRequestInfo.date)
+      ) {
+        latestInfoToUse = evaluationInfo;
+      } else {
+        latestInfoToUse = supplementationRequestInfo;
+      }
+    }
+
     this.setState({
       ...this.getRecoverStoredState(
         {
-          literalEvaluation:
-            compositeReplies && compositeReplies.evaluationInfo
-              ? compositeReplies.evaluationInfo.text
-              : "",
+          literalEvaluation: latestInfoToUse ? latestInfoToUse.text : "",
           assignmentEvaluationType:
-            compositeReplies &&
-            compositeReplies.evaluationInfo &&
-            compositeReplies.evaluationInfo.type === "INCOMPLETE"
+            latestInfoToUse && latestInfoToUse.type === "INCOMPLETE"
               ? "INCOMPLETE"
               : "GRADED",
           grade: grade,
         },
         this.state.draftId
       ),
-      audioAssessments:
-        compositeReplies.evaluationInfo &&
-        compositeReplies.evaluationInfo.audioAssessments &&
-        compositeReplies.evaluationInfo.audioAssessments !== null
-          ? compositeReplies.evaluationInfo.audioAssessments
+      records:
+        latestInfoToUse &&
+        latestInfoToUse.audioAssessments &&
+        latestInfoToUse.audioAssessments !== null
+          ? audioAssessmentsToRecords(latestInfoToUse.audioAssessments)
           : [],
+      showAudioAssessmentWarningOnClose: false,
     });
   };
 
@@ -235,17 +267,15 @@ class AssignmentEditor extends SessionStateComponent<
    * @param prevProps prevProps
    * @param prevState prevState
    */
-  componentDidUpdate = (
+  /* componentDidUpdate = (
     prevProps: AssignmentEditorProps,
     prevState: AssignmentEditorState
   ) => {
-    if (
-      this.state.audioAssessments.length !== prevState.audioAssessments.length
-    ) {
+    if (this.state.records.length !== prevState.records.length) {
       this.props.onAudioAssessmentChange();
     }
   };
-
+ */
   /**
    * saveAssignmentEvaluationGradeToServer
    * @param data data
@@ -330,93 +360,6 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
-   * saveAssignmentEvaluationSupplementationToServer
-   * @param data data
-   * @param data.workspaceEntityId workspaceEntityId
-   * @param data.userEntityId userEntityId
-   * @param data.workspaceMaterialId workspaceMaterialId
-   * @param data.dataToSave dataToSave
-   * @param data.materialId materialId
-   * @param data.defaultGrade defaultGrade
-   */
-  saveAssignmentEvaluationSupplementationToServer = async (data: {
-    workspaceEntityId: number;
-    userEntityId: number;
-    workspaceMaterialId: number;
-    dataToSave: AssignmentEvaluationGradeRequest; //AssignmentEvaluationSupplementationRequest;
-    materialId: number;
-    defaultGrade: string;
-  }) => {
-    const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
-      data;
-
-    this.setState({
-      locked: true,
-    });
-
-    try {
-      await promisify(
-//        mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(
-        mApi().evaluation.workspace.user.workspacematerial.assessment.create(
-          workspaceEntityId,
-          userEntityId,
-          workspaceMaterialId,
-          {
-            ...dataToSave,
-          }
-        ),
-        "callback"
-      )().then(async () => {
-        await mApi().workspace.workspaces.compositeReplies.cacheClear();
-
-        /**
-         * Compositereplies needs to be updated by loading new values from server, just for
-         * so data is surely right and updated correctly. So loading updated compositeReply and append it to compositereplies list
-         */
-
-        this.props.updateCurrentStudentCompositeRepliesData({
-          workspaceId: workspaceEntityId,
-          userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId,
-        });
-
-        if (this.props.onAssigmentSave) {
-          this.props.onAssigmentSave(this.props.materialAssignment.materialId);
-        }
-
-        // Clears localstorage on success
-        this.justClear(
-          ["literalEvaluation", "assignmentEvaluationType", "grade"],
-          this.state.draftId
-        );
-
-        this.setState(
-          {
-            locked: false,
-          },
-          () => {
-            if (this.props.onClose) {
-              this.props.onClose();
-            }
-          }
-        );
-      });
-    } catch (error) {
-      notificationActions.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
-          error.message
-        ),
-        "error"
-      );
-
-      this.setState({
-        locked: false,
-      });
-    }
-  };
-
-  /**
    * handleSaveAssignment
    * @param e e
    */
@@ -430,55 +373,46 @@ class AssignmentEditor extends SessionStateComponent<
     const usedGradeSystem = this.getUsedGradingScaleByGradeId(grade);
     const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
 
-    /**
-     * Backend endpoint is different for normal grade evalution and supplementation
-     */
-    if (this.state.assignmentEvaluationType === "GRADED") {
-      const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
+    let gradingScaleIdentifier =
+      this.state.assignmentEvaluationType === "GRADED"
+        ? `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`
+        : null;
 
-      await this.saveAssignmentEvaluationGradeToServer({
-        workspaceEntityId: workspaceEntityId,
-        userEntityId: userEntityId,
-        workspaceMaterialId: this.props.materialAssignment.id,
-        dataToSave: {
-          evaluationType: AssignmentEvaluationType.ASSESSMENT,
-          assessorIdentifier: this.props.status.userSchoolDataIdentifier,
-          gradingScaleIdentifier,
-          gradeIdentifier: this.state.grade,
-          verbalAssessment: this.state.literalEvaluation,
-          assessmentDate: new Date().getTime(),
-          audioAssessments: this.state.audioAssessments,
-        },
-        materialId: this.props.materialAssignment.materialId,
-        defaultGrade,
-      });
-    } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
-      this.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId: workspaceEntityId,
-        userEntityId: userEntityId,
-        workspaceMaterialId: this.props.materialAssignment.id,
-        dataToSave: {
-          evaluationType: AssignmentEvaluationType.SUPPLEMENTATIONREQUEST,
-          assessorIdentifier: this.props.status.userSchoolDataIdentifier,
-          gradingScaleIdentifier: null,
-          gradeIdentifier: null,
-          verbalAssessment: this.state.literalEvaluation,
-          assessmentDate: new Date().getTime(),
-          audioAssessments: this.state.audioAssessments,
-          
-          /*
-          userEntityId: this.props.status.userId,
-          studentEntityId: userEntityId,
-          workspaceMaterialId: this.props.materialAssignment.id.toString(),
-          requestDate: new Date().getTime(),
-          requestText: this.state.literalEvaluation,
-          audioAssessments: this.state.audioAssessments,
-          */
-        },
-        materialId: this.props.materialAssignment.materialId,
-        defaultGrade,
-      });
+    let evaluationType =
+      this.state.assignmentEvaluationType === "GRADED"
+        ? AssignmentEvaluationType.ASSESSMENT
+        : AssignmentEvaluationType.SUPPLEMENTATIONREQUEST;
+
+    if (this.state.assignmentEvaluationType === "INCOMPLETE") {
+      gradingScaleIdentifier = null;
+      evaluationType = AssignmentEvaluationType.SUPPLEMENTATIONREQUEST;
     }
+
+    const audioAssessments = this.state.records.map(
+      (audio) =>
+        ({
+          id: audio.id,
+          name: audio.name,
+          contentType: audio.contentType,
+        } as AudioAssessment)
+    );
+
+    await this.saveAssignmentEvaluationGradeToServer({
+      workspaceEntityId: workspaceEntityId,
+      userEntityId: userEntityId,
+      workspaceMaterialId: this.props.materialAssignment.id,
+      dataToSave: {
+        evaluationType,
+        assessorIdentifier: this.props.status.userSchoolDataIdentifier,
+        gradingScaleIdentifier,
+        gradeIdentifier: this.state.grade,
+        verbalAssessment: this.state.literalEvaluation,
+        assessmentDate: new Date().getTime(),
+        audioAssessments: audioAssessments,
+      },
+      materialId: this.props.materialAssignment.materialId,
+      defaultGrade,
+    });
   };
 
   /**
@@ -488,21 +422,30 @@ class AssignmentEditor extends SessionStateComponent<
     const { compositeReplies, materialEvaluation } = this.props;
     const { activeGradeSystems } = this.state;
 
-    if (
-      compositeReplies.evaluationInfo &&
-      compositeReplies.evaluationInfo.date
-    ) {
+    const { evaluationInfo, supplementationRequestInfo } = compositeReplies;
+
+    let latestInfoToUse = evaluationInfo || supplementationRequestInfo;
+
+    if (evaluationInfo && supplementationRequestInfo) {
+      if (
+        moment(evaluationInfo.date).isAfter(supplementationRequestInfo.date)
+      ) {
+        latestInfoToUse = evaluationInfo;
+      } else {
+        latestInfoToUse = supplementationRequestInfo;
+      }
+    }
+
+    if (latestInfoToUse && latestInfoToUse.date) {
       this.setStateAndClear(
         {
-          literalEvaluation: compositeReplies.evaluationInfo.text,
+          literalEvaluation: latestInfoToUse.text,
           grade:
-            compositeReplies.evaluationInfo.type === "INCOMPLETE"
+            latestInfoToUse.type === "INCOMPLETE"
               ? `${activeGradeSystems[0].dataSource}-${activeGradeSystems[0].grades[0].id}`
               : `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`,
           assignmentEvaluationType:
-            compositeReplies.evaluationInfo.type === "INCOMPLETE"
-              ? "INCOMPLETE"
-              : "GRADED",
+            latestInfoToUse.type === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
         },
         this.state.draftId
       );
@@ -540,7 +483,18 @@ class AssignmentEditor extends SessionStateComponent<
   ) => {
     const { activeGradeSystems } = this.state;
 
+    const { evaluationInfo, supplementationRequestInfo } =
+      this.props.compositeReplies;
+
     const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
+
+    let records = evaluationInfo && evaluationInfo.audioAssessments;
+
+    if (e.target.value === "INCOMPLETE") {
+      records =
+        supplementationRequestInfo &&
+        supplementationRequestInfo.audioAssessments;
+    }
 
     this.setStateAndStore(
       {
@@ -549,6 +503,10 @@ class AssignmentEditor extends SessionStateComponent<
       },
       this.state.draftId
     );
+
+    /* this.setState({
+      records: audioAssessmentsToRecords(records) || [],
+    }); */
   };
 
   /**
@@ -566,11 +524,12 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * handleAudioAssessmentChange
-   * @param audioAssessments audioAssessments
+   * @param records records
    */
-  handleAudioAssessmentChange = (audioAssessments: AudioAssessment[]) => {
+  handleAudioAssessmentChange = (records: RecordValue[]) => {
     this.setState({
-      audioAssessments: audioAssessments,
+      records: records,
+      showAudioAssessmentWarningOnClose: true,
     });
   };
 
@@ -610,6 +569,10 @@ class AssignmentEditor extends SessionStateComponent<
       renderGradingOptions.push(missingOption);
     }
 
+    console.group("%cASSIGMENT render", "color: #0f0");
+    console.table(this.state.records);
+    console.groupEnd();
+
     return (
       <div className="form" role="form">
         <div className="form__row">
@@ -632,10 +595,11 @@ class AssignmentEditor extends SessionStateComponent<
                 "plugin.evaluation.evaluationModal.audioAssessments"
               )}
             </label>
+
             <Recorder
               onIsRecordingChange={this.props.onIsRecordingChange}
               onChange={this.handleAudioAssessmentChange}
-              values={this.state.audioAssessments}
+              values={this.state.records}
             />
           </div>
         </div>
@@ -712,7 +676,7 @@ class AssignmentEditor extends SessionStateComponent<
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
             )}
           </Button>
-          {this.props.showAudioAssessmentWarningOnClose ? (
+          {this.state.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
                 buttonModifiers="dialog-cancel"

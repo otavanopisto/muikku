@@ -1,5 +1,4 @@
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   MaterialEvaluationType,
@@ -66,7 +65,6 @@ interface AssignmentEditorProps {
  */
 interface AssignmentEditorState {
   literalEvaluation: string;
-  needsSupplementation: boolean;
   audioAssessments: AudioAssessment[];
   draftId: string;
   locked: boolean;
@@ -99,10 +97,6 @@ class ExerciseEditor extends SessionStateComponent<
             compositeReplies && compositeReplies.evaluationInfo
               ? compositeReplies.evaluationInfo.text
               : "",
-          needsSupplementation:
-            compositeReplies &&
-            compositeReplies.evaluationInfo &&
-            compositeReplies.evaluationInfo.type === "INCOMPLETE",
 
           draftId,
         },
@@ -131,10 +125,6 @@ class ExerciseEditor extends SessionStateComponent<
             compositeReplies && compositeReplies.evaluationInfo
               ? compositeReplies.evaluationInfo.text
               : "",
-          needsSupplementation:
-            compositeReplies &&
-            compositeReplies.evaluationInfo &&
-            compositeReplies.evaluationInfo.type === "INCOMPLETE",
         },
         this.state.draftId
       ),
@@ -329,45 +319,25 @@ class ExerciseEditor extends SessionStateComponent<
   ) => {
     const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
 
-    const evaluationType: AssignmentEvaluationType = this.state.needsSupplementation ? AssignmentEvaluationType.SUPPLEMENTATIONREQUEST : AssignmentEvaluationType.ASSESSMENT;
-
     /**
      * Backend endpoint is different for normal grade evalution and supplementation
      */
-//    if (!this.state.needsSupplementation) {
-      this.saveAssignmentEvaluationGradeToServer({
-        workspaceEntityId: workspaceEntityId,
-        userEntityId: userEntityId,
-        workspaceMaterialId: this.props.materialAssignment.id,
-        dataToSave: {
-          evaluationType: evaluationType,
-          assessorIdentifier: this.props.status.userSchoolDataIdentifier,
-          gradingScaleIdentifier: null,
-          gradeIdentifier: null,
-          verbalAssessment: this.state.literalEvaluation,
-          assessmentDate: new Date().getTime(),
-          audioAssessments: this.state.audioAssessments,
-        },
-        materialId: this.props.materialAssignment.materialId,
-      });
-/*
-    } else {
-      this.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId: workspaceEntityId,
-        userEntityId: userEntityId,
-        workspaceMaterialId: this.props.materialAssignment.id,
-        dataToSave: {
-          userEntityId: this.props.status.userId,
-          studentEntityId: userEntityId,
-          workspaceMaterialId: this.props.materialAssignment.id.toString(),
-          requestDate: new Date().getTime(),
-          requestText: this.state.literalEvaluation,
-          audioAssessments: this.state.audioAssessments,
-        },
-        materialId: this.props.materialAssignment.materialId,
-      });
-    }
-*/
+
+    this.saveAssignmentEvaluationGradeToServer({
+      workspaceEntityId: workspaceEntityId,
+      userEntityId: userEntityId,
+      workspaceMaterialId: this.props.materialAssignment.id,
+      dataToSave: {
+        evaluationType: AssignmentEvaluationType.ASSESSMENT,
+        assessorIdentifier: this.props.status.userSchoolDataIdentifier,
+        gradingScaleIdentifier: null,
+        gradeIdentifier: null,
+        verbalAssessment: this.state.literalEvaluation,
+        assessmentDate: new Date().getTime(),
+        audioAssessments: this.state.audioAssessments,
+      },
+      materialId: this.props.materialAssignment.materialId,
+    });
   };
 
   /**
@@ -383,8 +353,6 @@ class ExerciseEditor extends SessionStateComponent<
       this.setStateAndClear(
         {
           literalEvaluation: compositeReplies.evaluationInfo.text,
-          needsSupplementation:
-            compositeReplies.evaluationInfo.type === "INCOMPLETE",
         },
         this.state.draftId
       );
@@ -392,7 +360,6 @@ class ExerciseEditor extends SessionStateComponent<
       this.setStateAndClear(
         {
           literalEvaluation: "",
-          needsSupplementation: false,
         },
         this.state.draftId
       );
@@ -407,21 +374,6 @@ class ExerciseEditor extends SessionStateComponent<
     this.setStateAndStore(
       {
         literalEvaluation: e,
-      },
-      this.state.draftId
-    );
-  };
-
-  /**
-   * handleAssignmentEvaluationChange
-   * @param e e
-   */
-  handleAssignmentEvaluationChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    this.setStateAndStore(
-      {
-        needsSupplementation: e.target.checked,
       },
       this.state.draftId
     );

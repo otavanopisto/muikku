@@ -11,17 +11,24 @@ export default function useRecordingsList(records: RecordValue[] | null) {
   const [recordings, setRecordings] = useState<RecordValue[]>([]);
 
   useEffect(() => {
-    const isUploading = JSON.stringify(records) !== JSON.stringify(recordings);
+    if (!records) return;
 
-    if (records.length !== recordings.length || isUploading) {
-      setRecordings([...records]);
-    }
+    const update = JSON.stringify(records) !== JSON.stringify(recordings);
+
+    if (!update) return;
+
+    console.group("%cUSERECORDINGSLIST", "color: #0f0");
+    console.table(records);
+    console.table(recordings);
+    console.groupEnd();
+
+    setRecordings(records);
   }, [records]);
 
   return {
     recordings,
 
-    // eslint-disable-next-line
-    deleteAudio: (audioKey: string) => deleteAudio(audioKey, setRecordings),
+    /* // eslint-disable-next-line
+    deleteAudio: (audioKey: string) => deleteAudio(audioKey, setRecordings), */
   };
 }

@@ -369,19 +369,6 @@ export interface AssignmentInterminEvaluationRequest {
 }
 
 /**
- * AssignmentEvaluationSupplementationRequest
- */
- /*
-export interface AssignmentEvaluationSupplementationRequest {
-  userEntityId: number;
-  studentEntityId: number;
-  workspaceMaterialId: string;
-  requestDate: number;
-  requestText: string;
-  audioAssessments: AudioAssessment[];
-}
-*/
-/**
  * EvaluationData
  */
 export interface EvaluationData {
