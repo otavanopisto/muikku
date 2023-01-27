@@ -601,6 +601,7 @@ public class EvaluationController {
       
       
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
+      evaluation.setId(workspaceMaterialEvaluation.getId());
       evaluation.setType(type);
       evaluation.setEvaluationType(evaluationType);
       evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
@@ -639,6 +640,7 @@ public class EvaluationController {
       List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(workspaceMaterialEvaluation);
       
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
+      evaluation.setId(workspaceMaterialEvaluation.getId());
       evaluation.setType(RestAssignmentEvaluationType.PASSED);
       evaluation.setEvaluationType(WorkspaceMaterialEvaluationType.ASSESSMENT);
       evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
@@ -674,6 +676,7 @@ public class EvaluationController {
       List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(supplementationRequest);
       
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
+      evaluation.setId(supplementationRequest.getId());
       evaluation.setType(RestAssignmentEvaluationType.INCOMPLETE);
       evaluation.setEvaluationType(WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST);
       evaluation.setDate(supplementationRequest.getEvaluated());
