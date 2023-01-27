@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -31,9 +32,12 @@ public class CommunicatorAttachmentUploadServlet extends HttpServlet {
 
   private static final long serialVersionUID = 5873268027916522922L;
 
+  /**
+   * Note: This is Instance as otherwise it's injected too early on container start and is always null.
+   */
   @Inject
   @BaseUrl
-  private String baseUrl;
+  private Instance<String> baseUrlInstance;
   
   @Inject
   private SessionController sessionController;
@@ -87,7 +91,8 @@ public class CommunicatorAttachmentUploadServlet extends HttpServlet {
       sendResponse(resp, "Could not save attachment", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
-    
+
+    String baseUrl = baseUrlInstance.get();
     String uploadedUrl = String.format("%s/rest/communicator/attachment/%s", baseUrl, communicatorMessageAttachment.getName());
     
     UploadMeta uploadMeta = new UploadMeta(file.getName(), 1, uploadedUrl);

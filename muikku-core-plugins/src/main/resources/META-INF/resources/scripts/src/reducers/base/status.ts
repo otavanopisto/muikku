@@ -4,7 +4,7 @@
 //2. in the main file gather those permissions... etc..., eg. index.ts make a call
 //3. dispatch the action to this same reducer and gather the action here
 //4. it works :D
-import $ from "~/lib/jquery";
+
 import { ActionType } from "~/actions";
 
 /**
@@ -159,7 +159,7 @@ export default function status(
       // remove the old session on logout
       window.sessionStorage.removeItem("strophe-bosh-session");
       // trigger the logout
-      $("#logout").click();
+      window.location.replace("/logout");
 
       return {
         ...state,

@@ -634,7 +634,7 @@ public class PyramusMock {
         List<Student> studentsList = new ArrayList<>();
         for (MockStudent mockStudent : pmock.students) {
           Student student = TestUtilities.studentFromMockStudent(mockStudent);
-                
+
           stubFor(get(urlEqualTo(String.format("/1/students/students/%d", student.getId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -673,6 +673,12 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(studentArray))
               .withStatus(200)));
 
+          stubFor(get(urlMatching(String.format("/1/students/students/%d/studyPeriods", student.getId())))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(mockStudent.getStudyPeriods()))
+                .withStatus(200)));
+          
           studentsList.add(student);
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
           payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
