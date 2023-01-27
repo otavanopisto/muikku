@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityState;
@@ -70,8 +71,10 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class EvaluationController {
@@ -85,6 +88,9 @@ public class EvaluationController {
   
   @Inject
   private Mailer mailer;
+  
+  @Inject
+  private UserController userController;
 
   @Inject
   private SessionController sessionController;
@@ -887,7 +893,18 @@ public class EvaluationController {
     // Gather message contents
     
     UserEntity sender = userEntityController.findUserEntityById(interimEvaluationRequest.getUserEntityId());
-    String senderName = userEntityController.getName(sender).getDisplayNameWithLine();
+    UserEntityName userEntityName = userEntityController.getName(sender, false);
+    if (userEntityName == null) {
+      User user = userController.findUserByIdentifier(sender.defaultSchoolDataIdentifier());
+      if (user != null) {
+        userEntityName = new UserEntityName(user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName());
+      }
+      else {
+        logger.severe(String.format("Interim evaluation request message not sent as student %s name not resolved", sender.defaultSchoolDataIdentifier().toString()));
+        return;
+      }
+    }
+    String senderName = userEntityName.getDisplayNameWithLine();
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(interimEvaluationRequest.getWorkspaceEntityId());
     String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getWorkspaceMaterialId());
@@ -935,7 +952,18 @@ public class EvaluationController {
     // Gather message contents
     
     UserEntity sender = userEntityController.findUserEntityById(interimEvaluationRequest.getUserEntityId());
-    String senderName = userEntityController.getName(sender).getDisplayNameWithLine();
+    UserEntityName userEntityName = userEntityController.getName(sender, false);
+    if (userEntityName == null) {
+      User user = userController.findUserByIdentifier(sender.defaultSchoolDataIdentifier());
+      if (user != null) {
+        userEntityName = new UserEntityName(user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName());
+      }
+      else {
+        logger.severe(String.format("Interim evaluation cancel message not sent as student %s name not resolved", sender.defaultSchoolDataIdentifier().toString()));
+        return;
+      }
+    }
+    String senderName = userEntityName.getDisplayNameWithLine();
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(interimEvaluationRequest.getWorkspaceEntityId());
     String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(interimEvaluationRequest.getWorkspaceMaterialId());

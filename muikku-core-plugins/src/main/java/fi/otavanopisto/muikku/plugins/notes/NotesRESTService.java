@@ -132,7 +132,7 @@ public class NotesRESTService extends PluginRESTService {
   private NoteRestModel toRestModel(Note note) {
     
     UserEntity userEntity = userEntityController.findUserEntityById(note.getCreator());
-    String creatorName = userEntityController.getName(userEntity).getDisplayNameWithLine();
+    String creatorName = userEntityController.getName(userEntity, true).getDisplayNameWithLine();
     
     NoteRestModel restModel = new NoteRestModel();
     restModel.setId(note.getId());
