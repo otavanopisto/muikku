@@ -29,6 +29,7 @@ import Select from "react-select";
 type JournalStudentFilterOption = OptionDefault<
   ShortWorkspaceUserWithActiveStatusType | string
 >;
+import WorkspaceJournalFeedback from "./application/workspace-journal-feedback";
 
 /**
  * WorkspaceJournalApplicationProps
@@ -172,6 +173,14 @@ class WorkspaceJournalApplication extends React.Component<
           primaryOption={primaryOption}
         >
           <WorkspaceJournalView />
+
+          {this.props.journalsState.journalFeedback && (
+            <WorkspaceJournalFeedback
+              i18n={this.props.i18n}
+              journalFeedback={this.props.journalsState.journalFeedback}
+            />
+          )}
+
           <WorkspaceJournalsList />
         </ApplicationPanel>
         {this.props.status.isStudent ? (

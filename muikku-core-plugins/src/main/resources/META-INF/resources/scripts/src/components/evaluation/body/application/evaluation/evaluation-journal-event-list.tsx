@@ -1,16 +1,24 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { Dispatch } from "redux";
+import { bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
-import { displayNotification } from "~/actions/base/notifications";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import EvaluationJournalEvent from "./evaluation-journal-event";
 import Link from "~/components/general/link";
+import JournalFeedbackEditor from "./editors/journal-feedback-editor";
+import SlideDrawer from "./slide-drawer";
+import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
+import {
+  DeleteEvaluationJournalFeedbackTriggerType,
+  deleteEvaluationJournalFeedback,
+} from "../../../../../actions/main-function/evaluation/evaluationActions";
+import DeleteJournalFeedback from "~/components/evaluation/dialogs/delete-journal-feedback";
 import Button, { ButtonPill } from "~/components/general/button";
 import {
+  AssessmentRequest,
   EvaluationJournalFilters,
   EvaluationStudyDiaryEvent,
 } from "~/@types/evaluation";
@@ -19,9 +27,11 @@ import Dropdown from "~/components/general/dropdown";
 /**
  * EvaluationEventContentCardProps
  */
-interface EvaluationDiaryEventProps {
+interface EvaluationDiaryEventListProps {
   i18n: i18nType;
+  selectedAssessment: AssessmentRequest;
   evaluation: EvaluationState;
+  deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType;
 }
 
 /**
@@ -30,7 +40,7 @@ interface EvaluationDiaryEventProps {
  * @param props props
  * @returns JSX.Element
  */
-const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
+const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
   props
 ) => {
   const { evaluation, i18n } = props;
@@ -42,6 +52,8 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
       showOthers: false,
     });
 
+  const [feedbackEditorOpen, setFeedbackEditorOpen] =
+    React.useState<boolean>(false);
   const [sortByCreationDate, setSortByCreationDate] = React.useState<
     "asc" | "desc"
   >("asc");
@@ -62,7 +74,16 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
   ]);
 
   /**
-   * handleChangeJournalFilterClick
+   * Handles journal feedback editor change click
+   * Opens or closes the editor
+   */
+  const handleJournalFeedbackEditorStateClick = () => {
+    setFeedbackEditorOpen(!feedbackEditorOpen);
+  };
+
+  /**
+   * Handles change journal filter click
+   *
    * @param filterKey key of filter
    */
   const handleChangeJournalFilterClick =
@@ -166,9 +187,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
     }
   };
 
+  // Check if journal entries reducer is ready
+  const journalEntriesIsReady =
+    props.evaluation.evaluationDiaryEntries.state === "READY";
+  const journalEntries = props.evaluation.evaluationDiaryEntries.data;
+
   const evaluationDiaryEvents =
-    evaluation.evaluationDiaryEntries.data &&
-    evaluation.evaluationDiaryEntries.data.length > 0 ? (
+    journalEntries && journalEntries.length > 0 ? (
       filterJournals()
         .sort(sortByDate)
         .map((item) => {
@@ -191,29 +216,95 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
       </div>
     );
 
+  // Check if journal feedback reducer is ready
+  const journalFeedbackIsReady =
+    props.evaluation.evaluationJournalFeedback.state === "READY";
+  const journalFeedback = props.evaluation.evaluationJournalFeedback.data;
+
   return (
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
-        <>
-          {i18n.text.get("plugin.evaluation.evaluationModal.journalTitle")}
-          {evaluation.evaluationDiaryEntries.state === "READY" ? (
-            <div className="evaluation-modal__content-actions">
-              <Link
-                className="link link--evaluation-close-open"
-                onClick={handleCloseAllDiaryEntriesClick}
-              >
-                {i18n.text.get("plugin.evaluation.evaluationModal.closeAll")}
-              </Link>
-              <Link
-                className="link link--evaluation-close-open"
-                onClick={handleOpenAllDiaryEntriesClick}
-              >
-                {i18n.text.get("plugin.evaluation.evaluationModal.openAll")}
-              </Link>
-            </div>
-          ) : null}
-        </>
+        {i18n.text.get("plugin.evaluation.evaluationModal.journalTitle")}
       </div>
+
+      {journalFeedbackIsReady ? (
+        journalFeedback ? (
+          <div className="evaluation-modal__content-body">
+            <div className="evaluation-modal__item">
+              <div className="evaluation-modal__item-journal-feedback">
+                <div className="evaluation-modal__item-journal-feedback-label">
+                  {i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalFeedBackTitle"
+                  )}
+                </div>
+                <div className="evaluation-modal__item-journal-feedback-data rich-text rich-text--evaluation-literal">
+                  <CkeditorContentLoader html={journalFeedback.feedback} />
+                </div>
+              </div>
+              <div className="evaluation-modal__item-meta">
+                <div className="evaluation-modal__item-meta-item">
+                  <span className="evaluation-modal__item-meta-item-label">
+                    {i18n.text.get(
+                      "plugin.evaluation.evaluationModal.journalFeedBackLabel"
+                    )}
+                    :
+                  </span>
+                  <span className="evaluation-modal__item-meta-item-data">
+                    {i18n.time.format(journalFeedback.created, "l")}
+                  </span>
+                </div>
+              </div>
+              <div className="evaluation-modal__item-actions">
+                <Link
+                  className="link link--evaluation"
+                  onClick={handleJournalFeedbackEditorStateClick}
+                  disabled={feedbackEditorOpen}
+                >
+                  {props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalFeedback.editButton"
+                  )}
+                </Link>
+
+                {!feedbackEditorOpen && (
+                  <DeleteJournalFeedback journalFeedback={journalFeedback}>
+                    <Link className="link link--evaluation link--evaluation-delete">
+                      {props.i18n.text.get(
+                        "plugin.evaluation.evaluationModal.journalFeedback.deleteButton"
+                      )}
+                    </Link>
+                  </DeleteJournalFeedback>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="evaluation-modal__content-body">
+            <div className="evaluation-modal__item">
+              <div className="evaluation-modal__item-body rich-text">
+                <p>
+                  {props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalFeedBackEmpty"
+                  )}
+                </p>
+              </div>
+              <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-feedback">
+                <Link
+                  className="link link--evaluation"
+                  onClick={handleJournalFeedbackEditorStateClick}
+                  disabled={feedbackEditorOpen}
+                >
+                  {props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalFeedBackLink"
+                  )}
+                </Link>
+              </div>
+            </div>
+          </div>
+        )
+      ) : (
+        <div className="empty-loader" />
+      )}
+
       <div className="evaluation-modal__content-actions">
         <div className="evaluation-modal__content-actions-filters">
           <Button
@@ -224,7 +315,9 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
                 : ["journal-filter"]
             }
           >
-            Pakolliset
+            {props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.filters.mandatory.label"
+            )}
           </Button>
           <Button
             onClick={handleChangeJournalFilterClick("showOthers")}
@@ -234,41 +327,76 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
                 : ["journal-filter"]
             }
           >
-            Muut
+            {props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.filters.other.label"
+            )}
           </Button>
         </div>
-        <div className="evaluation-modal__content-actions-sorters">
-          <Dropdown
-            openByHover={true}
-            closeOnOutsideClick={true}
-            alignSelfVertically="top"
-            content={
-              sortByCreationDate === "asc" ? (
-                <p>Järjestetty luontipäivämäärän mukaan nousevasti</p>
-              ) : (
-                <p>Järjestetty luontipäivämäärän mukaan laskevasti</p>
-              )
-            }
-          >
-            <ButtonPill
-              onClick={handleSortFunctionClick}
-              icon={
-                sortByCreationDate === "asc"
-                  ? "sort-amount-asc"
-                  : "sort-amount-desc"
-              }
-              buttonModifiers={["evaluation-journal-sorter"]}
-            />
-          </Dropdown>
-        </div>
+
+        {journalEntriesIsReady ? (
+          <div className="evaluation-modal__content-actions">
+            <Link
+              className="link link--evaluation link--evaluation-open-close"
+              onClick={handleCloseAllDiaryEntriesClick}
+            >
+              {i18n.text.get("plugin.evaluation.evaluationModal.closeAll")}
+            </Link>
+            <Link
+              className="link link--evaluation link--evaluation-open-close"
+              onClick={handleOpenAllDiaryEntriesClick}
+            >
+              {i18n.text.get("plugin.evaluation.evaluationModal.openAll")}
+            </Link>
+
+            <div className="evaluation-modal__content-actions-sorters">
+              <Dropdown
+                openByHover={true}
+                closeOnOutsideClick={true}
+                alignSelfVertically="top"
+                content={
+                  sortByCreationDate === "asc" ? (
+                    <p>Järjestetty luontipäivämäärän mukaan nousevasti</p>
+                  ) : (
+                    <p>Järjestetty luontipäivämäärän mukaan laskevasti</p>
+                  )
+                }
+              >
+                <ButtonPill
+                  onClick={handleSortFunctionClick}
+                  icon={
+                    sortByCreationDate === "asc"
+                      ? "sort-amount-asc"
+                      : "sort-amount-desc"
+                  }
+                  buttonModifiers={["evaluation-journal-sorter"]}
+                />
+              </Dropdown>
+            </div>
+          </div>
+        ) : null}
       </div>
       <div className="evaluation-modal__content-body">
-        {evaluation.evaluationDiaryEntries.state === "READY" ? (
+        {journalEntriesIsReady ? (
           evaluationDiaryEvents
         ) : (
           <div className="loader-empty" />
         )}
       </div>
+
+      <SlideDrawer
+        show={feedbackEditorOpen}
+        title={props.i18n.text.get(
+          "plugin.evaluation.evaluationModal.journalFeedBackTitle"
+        )}
+        onClose={handleJournalFeedbackEditorStateClick}
+      >
+        <JournalFeedbackEditor
+          journalFeedback={journalFeedback}
+          userEntityId={props.selectedAssessment.userEntityId}
+          workspaceEntityId={props.selectedAssessment.workspaceEntityId}
+          onClose={handleJournalFeedbackEditorStateClick}
+        />
+      </SlideDrawer>
     </div>
   );
 };
@@ -289,7 +417,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return { displayNotification };
+  return bindActionCreators({ deleteEvaluationJournalFeedback }, dispatch);
 }
 
 export default connect(
