@@ -50,29 +50,25 @@
   }
 
   // We only allow h3 and h4 inside ckeditor
-  h3,
-  h4 {
-    font-weight: 300;
-    margin: 30px 0 10px;
-
-    @include breakpoint($breakpoint-pad) {
-      margin: 35px 0 10px;
-    }
-  }
-
   h3 {
     font-size: 1.125rem;
+    font-weight: 400;
+    margin: 25px 0 10px;
 
     @include breakpoint($breakpoint-pad) {
       font-size: 1.25rem;
+      margin: 35px 0 10px;
     }
   }
 
   h4 {
     font-size: 1rem;
+    font-weight: 400;
+    margin: 20px 0 10px;
 
     @include breakpoint($breakpoint-pad) {
       font-size: 1.125rem;
+      margin: 25px 0 10px;
     }
   }
 
