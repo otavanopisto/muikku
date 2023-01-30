@@ -104,7 +104,7 @@ export default class Material extends React.Component<
   renderIndicator = () => {
     const { compositeReply } = this.props;
 
-    if (compositeReply && compositeReply.evaluationInfo) {
+    if (compositeReply && compositeReply.evaluations[0]) {
       switch (compositeReply.state) {
         case "PASSED":
         case "FAILED":
@@ -114,7 +114,7 @@ export default class Material extends React.Component<
               content={
                 <span>
                   {this.props.i18n.time.format(
-                    compositeReply.evaluationInfo.date
+                    compositeReply.evaluations[0].date
                   )}
                 </span>
               }
@@ -122,7 +122,7 @@ export default class Material extends React.Component<
               <span
                 className={`application-list__indicator-badge application-list__indicator-badge--task ${this.checkIndicatorClassModifier()}`}
               >
-                {shortenGrade(compositeReply.evaluationInfo.grade)}
+                {shortenGrade(compositeReply.evaluations[0].grade)}
               </span>
             </Dropdown>
           );
@@ -134,7 +134,7 @@ export default class Material extends React.Component<
               content={
                 <span>
                   {this.props.i18n.time.format(
-                    compositeReply.evaluationInfo.date
+                    compositeReply.evaluations[0].date
                   )}
                 </span>
               }

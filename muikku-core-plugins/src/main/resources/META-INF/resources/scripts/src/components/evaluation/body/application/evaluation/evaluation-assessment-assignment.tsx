@@ -360,15 +360,17 @@ class EvaluationAssessmentAssignment extends React.Component<
 
       const latestInfoToUse = evaluations[0];
 
-      if (latestInfoToUse && latestInfoToUse.type !== "INCOMPLETE") {
-        return "state-EVALUATED";
-      } else if (
-        compositeReply.state === "SUBMITTED" &&
-        latestInfoToUse &&
-        latestInfoToUse.type === "INCOMPLETE"
-      ) {
-        return "state-SUPPLEMENTED";
+      if (latestInfoToUse) {
+        if (latestInfoToUse.type !== "INCOMPLETE") {
+          return "state-EVALUATED";
+        } else if (
+          compositeReply.state === "SUBMITTED" &&
+          latestInfoToUse.type === "INCOMPLETE"
+        ) {
+          return "state-SUPPLEMENTED";
+        }
       }
+
       return "state-INCOMPLETE";
     }
   };

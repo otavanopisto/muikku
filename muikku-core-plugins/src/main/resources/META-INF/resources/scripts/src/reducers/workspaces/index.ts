@@ -701,9 +701,10 @@ export interface MaterialCompositeRepliesType {
 
   evaluations: MaterialEvaluationInfo[];
 
-  //Available sometimes
+  // Delete this
   evaluationInfo?: MaterialEvaluationInfo;
 
+  // Delete this
   supplementationRequestInfo: MaterialEvaluationInfo;
 
   //Available when loaded specifically (eg. via records)
@@ -1032,7 +1033,7 @@ export const workspaces: Reducer<WorkspacesType> = (
       );
       if (!wasUpdated) {
         newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([
-          <MaterialCompositeRepliesType>action.payload,
+          <MaterialCompositeRepliesType>{ ...action.payload, evaluations: [] },
         ]);
       }
       return { ...state, currentMaterialsReplies: newCurrentMaterialsReplies };

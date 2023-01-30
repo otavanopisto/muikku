@@ -11,8 +11,8 @@ export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
   const grade =
     (props.material.evaluation && props.material.evaluation.grade) ||
     (props.compositeReplies &&
-      props.compositeReplies.evaluationInfo &&
-      props.compositeReplies.evaluationInfo.grade);
+      props.compositeReplies.evaluations[0] &&
+      props.compositeReplies.evaluations[0].grade);
 
   const isIncomplete =
     props.compositeReplies && props.compositeReplies.state === "INCOMPLETE";

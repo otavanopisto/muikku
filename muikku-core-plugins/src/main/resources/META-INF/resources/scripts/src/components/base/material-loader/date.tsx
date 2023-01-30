@@ -11,8 +11,8 @@ export function MaterialLoaderDate(props: MaterialLoaderDateProps) {
   const date =
     (props.material.evaluation && props.material.evaluation.evaluated) ||
     (props.compositeReplies &&
-      props.compositeReplies.evaluationInfo &&
-      props.compositeReplies.evaluationInfo.date);
+      props.compositeReplies.evaluations[0] &&
+      props.compositeReplies.evaluations[0].date);
 
   if (!date) {
     return null;
