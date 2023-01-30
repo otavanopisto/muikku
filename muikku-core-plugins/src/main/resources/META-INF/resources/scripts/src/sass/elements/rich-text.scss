@@ -57,6 +57,7 @@
 
     @include breakpoint($breakpoint-pad) {
       font-size: 1.3125rem;
+      font-weight: 300;
       margin: 35px 0 10px;
     }
   }
