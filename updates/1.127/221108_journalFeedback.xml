@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>create table WorkspaceJournalFeedback (id bigint not null auto_increment, created datetime not null, creator bigint not null, feedback longtext, student bigint not null, workspaceEntityId bigint not null, primary key (id));</sql>
+
+  <sql>alter table WorkspaceJournalFeedback add constraint UKge90svplgds18f294v7cawk9l unique (student, workspaceEntityId);</sql>
+
+</update> 
