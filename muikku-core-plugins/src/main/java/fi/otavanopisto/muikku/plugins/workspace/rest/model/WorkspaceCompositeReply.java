@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +47,14 @@ public class WorkspaceCompositeReply {
     return answers;
   }
   
+  public RestAssignmentEvaluation getEvaluationInfo() {
+    return evaluationInfo;
+  }
+
+  public void setEvaluationInfo(RestAssignmentEvaluation evaluationInfo) {
+    this.evaluationInfo = evaluationInfo;
+  }
+
   public Date getSubmitted() {
     return submitted;
   }
@@ -57,31 +63,11 @@ public class WorkspaceCompositeReply {
     this.submitted = submitted;
   }
 
-  public void addEvaluation(RestAssignmentEvaluation evaluation) {
-    evaluations.add(evaluation);
-    sortEvaluations();
-  }
-  
-  public List<RestAssignmentEvaluation> getEvaluations() {
-    return evaluations;
-  }
-
-  public void setEvaluations(List<RestAssignmentEvaluation> evaluations) {
-    this.evaluations = evaluations;
-    sortEvaluations();
-  }
-
-  private void sortEvaluations() {
-    if (this.evaluations != null) {
-      this.evaluations.sort(Comparator.comparing(RestAssignmentEvaluation::getDate).reversed());
-    }
-  }
-
   private Long workspaceMaterialId;
   private Long workspaceMaterialReplyId;
   private WorkspaceMaterialReplyState state;
   private List<WorkspaceMaterialFieldAnswer> answers;
-  private List<RestAssignmentEvaluation> evaluations = new ArrayList<>();
+  private RestAssignmentEvaluation evaluationInfo;
   private Date submitted;
 
 }

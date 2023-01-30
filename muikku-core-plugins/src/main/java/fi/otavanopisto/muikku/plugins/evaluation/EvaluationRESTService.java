@@ -239,7 +239,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     List<fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation> result = new ArrayList<>();
     
-    fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+    fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestUnarchivedWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
     if (workspaceMaterialEvaluation != null) {
       result.add(workspaceMaterialEvaluation);
     }
@@ -469,7 +469,7 @@ public class EvaluationRESTService extends PluginRESTService {
         WorkspaceMaterialAssignmentType.INTERIM_EVALUATION,
         BooleanPredicate.IGNORE);
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      WorkspaceMaterialEvaluation evaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, studentEntity);
+      WorkspaceMaterialEvaluation evaluation = evaluationController.findLatestUnarchivedWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, studentEntity);
       if (evaluation != null) {
         UserEntity assessor = userEntityController.findUserEntityById(evaluation.getAssessorEntityId());
         RestEvaluationEvent event = new RestEvaluationEvent();
