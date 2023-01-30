@@ -698,14 +698,10 @@ export type MaterialCompositeRepliesStateType =
 export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>;
   state: MaterialCompositeRepliesStateType;
-
+  /**
+   * evaluations of the material assignments
+   */
   evaluations: MaterialEvaluationInfo[];
-
-  // Delete this
-  evaluationInfo?: MaterialEvaluationInfo;
-
-  // Delete this
-  supplementationRequestInfo: MaterialEvaluationInfo;
 
   //Available when loaded specifically (eg. via records)
   created: string;
