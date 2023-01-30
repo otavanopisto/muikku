@@ -14,6 +14,7 @@ import {
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
+import { EvaluationJournalFeedback } from "../../../@types/evaluation";
 
 /**
  * EvaluationStateAndData
@@ -39,6 +40,7 @@ export interface EvaluationState {
   evaluationFilters: EvaluationFilters;
   evaluationSelectedAssessmentId?: AssessmentRequest;
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
+  evaluationJournalFeedback?: EvaluationStateAndData<EvaluationJournalFeedback>;
   evaluationDiaryEntries?: EvaluationStateAndData<EvaluationStudyDiaryEvent[]>;
   evaluationJournalComments: {
     comments: EvaluationJournalCommentsByJournal;
@@ -85,6 +87,7 @@ export const initialState: EvaluationState = {
   openedAssignmentEvaluationId: undefined,
   evaluationBilledPrice: undefined,
   evaluationJournalComments: { comments: {}, commentsLoaded: [] },
+  evaluationJournalFeedback: { state: "LOADING", data: undefined },
   evaluationDiaryEntries: {
     state: "LOADING",
     data: undefined,
@@ -237,6 +240,42 @@ export const evaluations: Reducer<EvaluationState> = (
         evaluationAssessmentEvents: {
           state: action.payload,
           data: state.evaluationAssessmentEvents.data,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_FEEDBACK_LOAD":
+      return {
+        ...state,
+        evaluationJournalFeedback: {
+          state: state.evaluationJournalFeedback.state,
+          data: action.payload,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE":
+      return {
+        ...state,
+        evaluationJournalFeedback: {
+          state: action.payload,
+          data: state.evaluationJournalFeedback.data,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_FEEDBACK_CREATE_OR_UPDATE":
+      return {
+        ...state,
+        evaluationJournalFeedback: {
+          state: state.evaluationJournalFeedback.state,
+          data: action.payload,
+        },
+      };
+
+    case "EVALUATION_JOURNAL_FEEDBACK_DELETE":
+      return {
+        ...state,
+        evaluationJournalFeedback: {
+          state: state.evaluationJournalFeedback.state,
+          data: undefined,
         },
       };
 

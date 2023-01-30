@@ -2,6 +2,7 @@ import { Reducer } from "redux";
 import { JournalComment } from "~/@types/journal";
 import { ActionType } from "~/actions";
 import { MaterialCompositeRepliesStateType } from "./index";
+import { EvaluationJournalFeedback } from "../../@types/evaluation";
 
 export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
@@ -45,9 +46,15 @@ export interface WorkspaceJournalFilters {
 }
 
 /**
+ * WorkspaceJournalFeedback
+ */
+export interface WorkspaceJournalFeedback extends EvaluationJournalFeedback {}
+
+/**
  * WorkspaceJournalsType
  */
 export interface JournalsState {
+  journalFeedback?: WorkspaceJournalFeedback;
   journals: WorkspaceJournalWithComments[];
   currentJournal?: WorkspaceJournalWithComments;
   hasMore: boolean;
@@ -145,6 +152,13 @@ export const journals: Reducer<JournalsState> = (
     }
 
     case "JOURNALS_COMMENTS_DELETE": {
+      return {
+        ...state,
+        ...action.payload.updated,
+      };
+    }
+
+    case "JOURNALS_FEEDBACK_LOAD": {
       return {
         ...state,
         ...action.payload.updated,

@@ -4,7 +4,7 @@ import * as React from "react";
  * InputProps
  */
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label?: string;
   id: string;
   labelAria?: string;
 }
@@ -19,9 +19,12 @@ export const TextField: React.FC<InputProps> = (props) => {
 
   return (
     <>
-      <label htmlFor={id} className="hops__label" aria-label={labelAria}>
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id} className="hops__label" aria-label={labelAria}>
+          {label}
+        </label>
+      )}
+
       <input id={id} className="hops__input" {...rest} />
     </>
   );
