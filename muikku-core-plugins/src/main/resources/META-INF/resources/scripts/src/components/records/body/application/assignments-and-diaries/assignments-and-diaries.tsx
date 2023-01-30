@@ -18,10 +18,11 @@ import Tabs, { Tab } from "~/components/general/tabs";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { useExerciseAssignments } from "./hooks/useExercises";
 import { useCompositeReply } from "./hooks/useCompositeReply";
+import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 import Link from "~/components/general/link";
-
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/application-sub-panel.scss";
+import { bindActionCreators } from "redux";
 import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
 
 /**
@@ -412,7 +413,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         <span>{props.i18n.text.get("plugin.records.journal.title")}</span>
         <span>
           <Link
-            className="link link--studies-close-open"
+            className="link link--studies-open-close"
             disabled={
               journalsData.isLoading || journalsData.journals.length === 0
             }
@@ -421,7 +422,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             {props.i18n.text.get("plugin.records.openClose.openAll")}
           </Link>
           <Link
-            className="link link--studies-close-open"
+            className="link link--studies-open-close"
             disabled={
               journalsData.isLoading || journalsData.journals.length === 0
             }
@@ -432,6 +433,48 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         </span>
       </ApplicationSubPanel.Header>
       <ApplicationSubPanel.Body>
+        {journalsData.journalFeedback && (
+          <div className="journal journal--feedback">
+            <div className="journal__header journal__header--studies-view">
+              {props.i18n.text.get(
+                "plugin.workspace.journal.journalFeedBackTitle"
+              )}
+            </div>
+            <article className="journal__body rich-text">
+              <CkeditorContentLoader
+                html={journalsData.journalFeedback.feedback}
+              />
+            </article>
+            <div className="journal__meta">
+              <div className="journal__meta-item">
+                <div className="journal__meta-item-label">
+                  {props.i18n.text.get(
+                    "plugin.workspace.journal.journalFeedBackDate"
+                  )}
+                  :
+                </div>
+                <div className="journal__meta-item-data">
+                  {i18n.time.format(
+                    journalsData.journalFeedback.created,
+                    "L LT"
+                  )}
+                </div>
+              </div>
+              <div className="journal__meta-item">
+                <div className="journal__meta-item-label">
+                  {props.i18n.text.get(
+                    "plugin.workspace.journal.journalFeedBackAuthor"
+                  )}
+                  :
+                </div>
+                <div className="journal__meta-item-data">
+                  {journalsData.journalFeedback.creatorName}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {journalsData.journals.length ? (
           journalsData.journals.map((journal) => {
             const isOpen = journalsOpen.includes(journal.id);
@@ -469,7 +512,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             </span>
             <span>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   evaluatedAssignmentsData.isLoading ||
                   evaluatedAssignmentsData.evaluatedAssignments.length === 0
@@ -479,7 +522,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 {props.i18n.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   evaluatedAssignmentsData.isLoading ||
                   evaluatedAssignmentsData.evaluatedAssignments.length === 0
@@ -511,7 +554,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             <span>{props.i18n.text.get("plugin.records.exercises.title")}</span>
             <span>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   exerciseAssignmentsData.isLoading ||
                   exerciseAssignmentsData.exerciseAssignments.length === 0
@@ -521,7 +564,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 {props.i18n.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   exerciseAssignmentsData.isLoading ||
                   exerciseAssignmentsData.exerciseAssignments.length === 0
@@ -551,11 +594,10 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            {/* <span>{props.i18n.text.get("plugin.records.exercises.title")}</span> */}
-            <span>Välipalautteet:</span>
+            <span>Välipalautteet</span>
             <span>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   interimEvaluationeAssignmentsData.isLoading ||
                   interimEvaluationeAssignmentsData.interimEvaluationAssignments
@@ -568,7 +610,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 {props.i18n.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   interimEvaluationeAssignmentsData.isLoading ||
                   interimEvaluationeAssignmentsData.interimEvaluationAssignments
@@ -626,7 +668,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return { displayNotification };
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(

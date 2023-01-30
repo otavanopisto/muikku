@@ -157,10 +157,12 @@ class WorkspaceJournalsListItem extends React.Component<
                 </span>
               )}
               {isDraft && (
-                <span>
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.journal.status.draft"
-                  )}
+                <span className="label label--draft">
+                  <span className="label__text">
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.journal.status.draft"
+                    )}
+                  </span>
                 </span>
               )}
             </div>
@@ -218,7 +220,11 @@ class WorkspaceJournalsListItem extends React.Component<
             )}
             {!this.props.asCurrent && (
               <div className="application-list__item-footer-content-aside">
-                <Link onClick={this.handleSetJournalItemClick}>
+                <Link
+                  as="span"
+                  className="link link--application-list"
+                  onClick={this.handleSetJournalItemClick}
+                >
                   {this.props.i18n.text.get(
                     "plugin.workspace.journal.comments.title"
                   )}{" "}

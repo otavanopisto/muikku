@@ -129,12 +129,16 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     e.stopPropagation();
     unstable_batchedUpdates(() => {
       if (!open || !showContent) {
-        commentToEdit && setCommentToEdit(undefined);
-        setShowContent(true);
-        setCreateNewActive(true);
+        unstable_batchedUpdates(() => {
+          commentToEdit && setCommentToEdit(undefined);
+          setShowContent(true);
+          setCreateNewActive(true);
+        });
       } else {
-        commentToEdit && setCommentToEdit(undefined);
-        setCreateNewActive(true);
+        unstable_batchedUpdates(() => {
+          commentToEdit && setCommentToEdit(undefined);
+          setCreateNewActive(true);
+        });
       }
     });
   };
@@ -203,8 +207,11 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
         callback();
-        setCreateNewActive(false);
-        setEditorLocked(false);
+
+        unstable_batchedUpdates(() => {
+          setCreateNewActive(false);
+          setEditorLocked(false);
+        });
       },
     });
   };
@@ -230,8 +237,11 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
         callback();
-        setCommentToEdit(undefined);
-        setEditorLocked(false);
+
+        unstable_batchedUpdates(() => {
+          setCommentToEdit(undefined);
+          setEditorLocked(false);
+        });
       },
     });
   };
@@ -265,11 +275,20 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           }
           onClick={handleOpenContentClick}
         >
-          {title}
-          {isDraft &&
-            i18n.text.get(
-              "plugin.evaluation.evaluationModal.journalEntry.statusDraft"
+          <div className="title-container">
+            <div className="title-text">{title}</div>
+
+            {isDraft && (
+              <span className="label label--draft">
+                <span className="label__text">
+                  {i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalEntry.statusDraft"
+                  )}
+                </span>
+              </span>
             )}
+          </div>
+
           <div className="evaluation-modal__item-meta">
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
@@ -336,7 +355,10 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
             </>
 
             <div>
-              <Link className="link" onClick={handleCreateNewComment}>
+              <Link
+                className="link link--evaluation"
+                onClick={handleCreateNewComment}
+              >
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.journalComments.newCommentButton"
                 )}

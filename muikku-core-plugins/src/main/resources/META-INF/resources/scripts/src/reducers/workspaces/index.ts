@@ -200,6 +200,7 @@ export interface WorkspaceJournalType {
   content: string;
   title: string;
   created: string;
+  commentCount: number;
 }
 
 export type WorkspaceJournalListType = Array<WorkspaceJournalType>;
