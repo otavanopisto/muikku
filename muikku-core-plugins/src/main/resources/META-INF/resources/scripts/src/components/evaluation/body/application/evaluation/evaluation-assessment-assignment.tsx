@@ -57,7 +57,6 @@ interface EvaluationAssessmentAssignmentState {
   materialNode?: MaterialContentNodeType;
   isLoading: boolean;
   openAssignmentType?: "EVALUATED" | "EXERCISE";
-  showCloseEditorWarning: boolean;
   isRecording: boolean;
 }
 
@@ -82,7 +81,6 @@ class EvaluationAssessmentAssignment extends React.Component<
       openContent: false,
       isLoading: true,
       materialNode: undefined,
-      showCloseEditorWarning: false,
       isRecording: false,
     };
   }
@@ -249,7 +247,6 @@ class EvaluationAssessmentAssignment extends React.Component<
     this.setState({
       openDrawer: false,
       openAssignmentType: undefined,
-      showCloseEditorWarning: false,
     });
   };
 
@@ -290,15 +287,6 @@ class EvaluationAssessmentAssignment extends React.Component<
       }, 600);
     }
     this.myRef.scrollIntoView({ behavior: "smooth" });
-  };
-
-  /**
-   * handleAudioAssessmentChange
-   */
-  handleAudioAssessmentChange = () => {
-    this.setState({
-      showCloseEditorWarning: true,
-    });
   };
 
   /**
@@ -603,7 +591,6 @@ class EvaluationAssessmentAssignment extends React.Component<
           </div>
         </div>
         <SlideDrawer
-          showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
           closeIconModifiers={["evaluation"]}
           modifiers={
@@ -625,10 +612,6 @@ class EvaluationAssessmentAssignment extends React.Component<
             this.props.assigment.assignmentType === "EVALUATED" ? (
               <AssignmentEditor
                 selectedAssessment={this.props.selectedAssessment}
-                /* onAudioAssessmentChange={this.handleAudioAssessmentChange}
-                showAudioAssessmentWarningOnClose={
-                  this.state.showCloseEditorWarning
-                } */
                 editorLabel={this.props.i18n.text.get(
                   "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
                 )}
@@ -643,10 +626,6 @@ class EvaluationAssessmentAssignment extends React.Component<
             ) : (
               <ExerciseEditor
                 selectedAssessment={this.props.selectedAssessment}
-                onAudioAssessmentChange={this.handleAudioAssessmentChange}
-                showAudioAssessmentWarningOnClose={
-                  this.state.showCloseEditorWarning
-                }
                 editorLabel={this.props.i18n.text.get(
                   "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
                 )}

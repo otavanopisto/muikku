@@ -166,6 +166,7 @@ export default function useRecorder(props: UseRecorderProps) {
           .forEach((track: AudioTrack) => track.stop());
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recorderState.mediaRecorder]);
 
   /**
@@ -229,11 +230,13 @@ export default function useRecorder(props: UseRecorderProps) {
       // eslint-disable-next-line
       xhr: () => {
         //we need to get the upload progress
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const xhr = new (window as any).XMLHttpRequest();
         //Upload progress
 
         xhr.upload.addEventListener(
           "progress",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (evt: any) => {
             if (evt.lengthComputable) {
               //we calculate the percent

@@ -12,7 +12,6 @@ import { i18nType } from "../../../reducers/base/i18n";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
-import useRecordingsList from "./hooks/user-recordings-list";
 import { RecordValue } from "~/@types/recorder";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;

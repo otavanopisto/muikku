@@ -54,8 +54,6 @@ interface AssignmentEditorProps {
   editorLabel?: string;
   modifiers?: string[];
   isRecording: boolean;
-  /* showAudioAssessmentWarningOnClose: boolean;
-  onAudioAssessmentChange: () => void; */
   updateMaterialEvaluationData: (
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
   ) => void;
@@ -459,18 +457,7 @@ class AssignmentEditor extends SessionStateComponent<
   ) => {
     const { activeGradeSystems } = this.state;
 
-    const { evaluations } = this.props.compositeReplies;
-
     const defaultGrade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const records = evaluations[0];
-
-    /* if (e.target.value === "INCOMPLETE") {
-      records =
-        supplementationRequestInfo &&
-        supplementationRequestInfo.audioAssessments;
-    } */
 
     this.setStateAndStore(
       {
@@ -479,10 +466,6 @@ class AssignmentEditor extends SessionStateComponent<
       },
       this.state.draftId
     );
-
-    /* this.setState({
-      records: audioAssessmentsToRecords(records) || [],
-    }); */
   };
 
   /**

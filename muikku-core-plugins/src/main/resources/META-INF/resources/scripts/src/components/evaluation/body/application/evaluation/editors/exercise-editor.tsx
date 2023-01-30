@@ -46,13 +46,11 @@ interface AssignmentEditorProps {
   updateMaterialEvaluationData: (
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
   ) => void;
-  onAudioAssessmentChange: () => void;
   /**
    * Handles changes whether recording is happening or not
    */
   onIsRecordingChange?: (isRecording: boolean) => void;
   isRecording: boolean;
-  showAudioAssessmentWarningOnClose: boolean;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   displayNotification: DisplayNotificationTriggerType;
   editorLabel?: string;
@@ -68,6 +66,7 @@ interface AssignmentEditorState {
   audioAssessments: AudioAssessment[];
   draftId: string;
   locked: boolean;
+  showAudioAssessmentWarningOnClose: boolean;
 }
 
 /**
@@ -109,6 +108,7 @@ class ExerciseEditor extends SessionStateComponent<
           ? compositeReplies.evaluations[0].audioAssessments
           : [],
       locked: false,
+      showAudioAssessmentWarningOnClose: false,
     };
   }
 
@@ -134,23 +134,8 @@ class ExerciseEditor extends SessionStateComponent<
         compositeReplies.evaluations[0].audioAssessments !== null
           ? compositeReplies.evaluations[0].audioAssessments
           : [],
+      showAudioAssessmentWarningOnClose: false,
     });
-  };
-
-  /**
-   * componentDidUpdate
-   * @param prevProps prevProps
-   * @param prevState prevState
-   */
-  componentDidUpdate = (
-    prevProps: AssignmentEditorProps,
-    prevState: AssignmentEditorState
-  ) => {
-    if (
-      this.state.audioAssessments.length !== prevState.audioAssessments.length
-    ) {
-      this.props.onAudioAssessmentChange();
-    }
   };
 
   /**
@@ -386,6 +371,7 @@ class ExerciseEditor extends SessionStateComponent<
   handleAudioAssessmentChange = (audioAssessments: AudioAssessment[]) => {
     this.setState({
       audioAssessments: audioAssessments,
+      showAudioAssessmentWarningOnClose: true,
     });
   };
 
@@ -424,17 +410,17 @@ class ExerciseEditor extends SessionStateComponent<
           <Button
             buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
-            disabled={this.state.locked}
+            disabled={this.state.locked || this.props.isRecording}
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
             )}
           </Button>
-          {this.props.showAudioAssessmentWarningOnClose ? (
+          {this.state.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
                 buttonModifiers="dialog-cancel"
-                disabled={this.state.locked}
+                disabled={this.state.locked || this.props.isRecording}
               >
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -445,7 +431,7 @@ class ExerciseEditor extends SessionStateComponent<
             <Button
               onClick={this.props.onClose}
               buttonModifiers="dialog-cancel"
-              disabled={this.state.locked}
+              disabled={this.state.locked || this.props.isRecording}
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -457,7 +443,7 @@ class ExerciseEditor extends SessionStateComponent<
             <Button
               buttonModifiers="dialog-clear"
               onClick={this.handleDeleteEditorDraft}
-              disabled={this.state.locked}
+              disabled={this.state.locked || this.props.isRecording}
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
