@@ -594,11 +594,10 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            {/* <span>{props.i18n.text.get("plugin.records.exercises.title")}</span> */}
-            <span>Välipalautteet:</span>
+            <span>Välipalautteet</span>
             <span>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   interimEvaluationeAssignmentsData.isLoading ||
                   interimEvaluationeAssignmentsData.interimEvaluationAssignments
@@ -611,7 +610,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 {props.i18n.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
-                className="link link--studies-close-open"
+                className="link link--studies-open-close"
                 disabled={
                   interimEvaluationeAssignmentsData.isLoading ||
                   interimEvaluationeAssignmentsData.interimEvaluationAssignments
