@@ -93,8 +93,7 @@ class WorkspaceMaterial extends React.Component<
 
     const hasEvaluation =
       this.props.compositeReplies &&
-      this.props.compositeReplies.evaluations &&
-      this.props.compositeReplies.evaluations[0] &&
+      this.props.compositeReplies.evaluationInfo &&
       (this.props.compositeReplies.state === "INCOMPLETE" ||
         this.props.compositeReplies.state === "PASSED" ||
         this.props.compositeReplies.state === "FAILED" ||

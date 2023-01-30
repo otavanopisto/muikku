@@ -106,18 +106,18 @@ class InterimEvaluationEditor extends SessionStateComponent<
       ...this.getRecoverStoredState(
         {
           literalEvaluation:
-            compositeReplies && compositeReplies.evaluations[0]
-              ? compositeReplies.evaluations[0].text
+            compositeReplies && compositeReplies.evaluationInfo
+              ? compositeReplies.evaluationInfo.text
               : "",
           draftId,
         },
         draftId
       ),
       audioAssessments:
-        compositeReplies.evaluations[0] &&
-        compositeReplies.evaluations[0].audioAssessments &&
-        compositeReplies.evaluations[0].audioAssessments !== null
-          ? compositeReplies.evaluations[0].audioAssessments
+        compositeReplies.evaluationInfo &&
+        compositeReplies.evaluationInfo.audioAssessments &&
+        compositeReplies.evaluationInfo.audioAssessments !== null
+          ? compositeReplies.evaluationInfo.audioAssessments
           : [],
       locked: false,
     };
@@ -133,17 +133,17 @@ class InterimEvaluationEditor extends SessionStateComponent<
       ...this.getRecoverStoredState(
         {
           literalEvaluation:
-            compositeReplies && compositeReplies.evaluations[0]
-              ? compositeReplies.evaluations[0].text
+            compositeReplies && compositeReplies.evaluationInfo
+              ? compositeReplies.evaluationInfo.text
               : "",
         },
         this.state.draftId
       ),
       audioAssessments:
-        compositeReplies.evaluations[0] &&
-        compositeReplies.evaluations[0].audioAssessments &&
-        compositeReplies.evaluations[0].audioAssessments !== null
-          ? compositeReplies.evaluations[0].audioAssessments
+        compositeReplies.evaluationInfo &&
+        compositeReplies.evaluationInfo.audioAssessments &&
+        compositeReplies.evaluationInfo.audioAssessments !== null
+          ? compositeReplies.evaluationInfo.audioAssessments
           : [],
     });
   };
@@ -285,12 +285,12 @@ class InterimEvaluationEditor extends SessionStateComponent<
     const { compositeReplies } = this.props;
 
     if (
-      compositeReplies.evaluations[0] &&
-      compositeReplies.evaluations[0].date
+      compositeReplies.evaluationInfo &&
+      compositeReplies.evaluationInfo.date
     ) {
       this.setStateAndClear(
         {
-          literalEvaluation: compositeReplies.evaluations[0].text,
+          literalEvaluation: compositeReplies.evaluationInfo.text,
         },
         this.state.draftId
       );

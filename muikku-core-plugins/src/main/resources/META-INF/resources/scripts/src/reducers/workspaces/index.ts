@@ -700,9 +700,9 @@ export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>;
   state: MaterialCompositeRepliesStateType;
   /**
-   * evaluations of the material assignments
+   * evaluationInfo of the material assignments
    */
-  evaluations: MaterialEvaluationInfo[];
+  evaluationInfo?: MaterialEvaluationInfo;
 
   //Available when loaded specifically (eg. via records)
   created: string;
@@ -1030,7 +1030,7 @@ export const workspaces: Reducer<WorkspacesType> = (
       );
       if (!wasUpdated) {
         newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([
-          <MaterialCompositeRepliesType>{ ...action.payload, evaluations: [] },
+          <MaterialCompositeRepliesType>{ ...action.payload },
         ]);
       }
       return { ...state, currentMaterialsReplies: newCurrentMaterialsReplies };

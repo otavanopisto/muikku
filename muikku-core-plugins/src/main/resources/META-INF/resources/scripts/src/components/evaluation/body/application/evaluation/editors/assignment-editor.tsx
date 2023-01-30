@@ -139,16 +139,14 @@ class AssignmentEditor extends SessionStateComponent<
 
     const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
 
-    const { evaluations } = compositeReplies;
-
-    const latestInfoToUse = evaluations[0];
+    const { evaluationInfo } = compositeReplies;
 
     this.state = {
       ...this.getRecoverStoredState(
         {
-          literalEvaluation: latestInfoToUse ? latestInfoToUse.text : "",
+          literalEvaluation: evaluationInfo ? evaluationInfo.text : "",
           assignmentEvaluationType:
-            latestInfoToUse && latestInfoToUse.type === "INCOMPLETE"
+            evaluationInfo && evaluationInfo.type === "INCOMPLETE"
               ? "INCOMPLETE"
               : "GRADED",
           grade: grade,
@@ -157,10 +155,10 @@ class AssignmentEditor extends SessionStateComponent<
         draftId
       ),
       records:
-        latestInfoToUse &&
-        latestInfoToUse.audioAssessments &&
-        latestInfoToUse.audioAssessments !== null
-          ? audioAssessmentsToRecords(latestInfoToUse.audioAssessments)
+        evaluationInfo &&
+        evaluationInfo.audioAssessments &&
+        evaluationInfo.audioAssessments !== null
+          ? audioAssessmentsToRecords(evaluationInfo.audioAssessments)
           : [],
       locked: false,
       activeGradeSystems,
@@ -217,16 +215,14 @@ class AssignmentEditor extends SessionStateComponent<
       grade = "";
     }
 
-    const { evaluations } = compositeReplies;
-
-    const latestInfoToUse = evaluations[0];
+    const { evaluationInfo } = compositeReplies;
 
     this.setState({
       ...this.getRecoverStoredState(
         {
-          literalEvaluation: latestInfoToUse ? latestInfoToUse.text : "",
+          literalEvaluation: evaluationInfo ? evaluationInfo.text : "",
           assignmentEvaluationType:
-            latestInfoToUse && latestInfoToUse.type === "INCOMPLETE"
+            evaluationInfo && evaluationInfo.type === "INCOMPLETE"
               ? "INCOMPLETE"
               : "GRADED",
           grade: grade,
@@ -234,10 +230,10 @@ class AssignmentEditor extends SessionStateComponent<
         this.state.draftId
       ),
       records:
-        latestInfoToUse &&
-        latestInfoToUse.audioAssessments &&
-        latestInfoToUse.audioAssessments !== null
-          ? audioAssessmentsToRecords(latestInfoToUse.audioAssessments)
+        evaluationInfo &&
+        evaluationInfo.audioAssessments &&
+        evaluationInfo.audioAssessments !== null
+          ? audioAssessmentsToRecords(evaluationInfo.audioAssessments)
           : [],
       showAudioAssessmentWarningOnClose: false,
     });
@@ -277,7 +273,7 @@ class AssignmentEditor extends SessionStateComponent<
               workspaceEntityId,
               userEntityId,
               workspaceMaterialId,
-              this.props.compositeReplies.evaluations[0].id,
+              this.props.compositeReplies.evaluationInfo.id,
               {
                 ...dataToSave,
               }
@@ -381,10 +377,9 @@ class AssignmentEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
-        identifier:
-          compositeReplies.evaluations.length > 0
-            ? compositeReplies.evaluations[0].id.toString()
-            : undefined,
+        identifier: compositeReplies.evaluationInfo
+          ? compositeReplies.evaluationInfo.id.toString()
+          : undefined,
         evaluationType,
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
         gradingScaleIdentifier,
@@ -395,7 +390,7 @@ class AssignmentEditor extends SessionStateComponent<
       },
       materialId: this.props.materialAssignment.materialId,
       defaultGrade,
-      edit: compositeReplies.evaluations.length > 0,
+      edit: !!compositeReplies.evaluationInfo,
     });
   };
 
@@ -406,20 +401,18 @@ class AssignmentEditor extends SessionStateComponent<
     const { compositeReplies, materialEvaluation } = this.props;
     const { activeGradeSystems } = this.state;
 
-    const { evaluations } = compositeReplies;
+    const { evaluationInfo } = compositeReplies;
 
-    const latestInfoToUse = evaluations[0];
-
-    if (latestInfoToUse && latestInfoToUse.date) {
+    if (evaluationInfo && evaluationInfo.date) {
       this.setStateAndClear(
         {
-          literalEvaluation: latestInfoToUse.text,
+          literalEvaluation: evaluationInfo.text,
           grade:
-            latestInfoToUse.type === "INCOMPLETE"
+            evaluationInfo.type === "INCOMPLETE"
               ? `${activeGradeSystems[0].dataSource}-${activeGradeSystems[0].grades[0].id}`
               : `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`,
           assignmentEvaluationType:
-            latestInfoToUse.type === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
+            evaluationInfo.type === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
         },
         this.state.draftId
       );

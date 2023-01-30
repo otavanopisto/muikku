@@ -324,8 +324,8 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    */
   assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) =>
     compositeReply &&
-    compositeReply.evaluations[0] &&
-    compositeReply.evaluations[0].date &&
+    compositeReply.evaluationInfo &&
+    compositeReply.evaluationInfo.date &&
     "state-EVALUATED";
 
   /**
@@ -335,7 +335,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    */
   renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
     if (compositeReply) {
-      const { evaluations } = compositeReply;
+      const { evaluationInfo } = compositeReply;
 
       /**
        * Checking if assigments is submitted at all.
@@ -346,7 +346,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
       /**
        * Evaluation date if evaluated
        */
-      const evaluationDate = evaluations[0] && evaluations[0].date;
+      const evaluationDate = evaluationInfo && evaluationInfo.date;
 
       return (
         <div className="evaluation-modal__item-meta">
