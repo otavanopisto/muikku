@@ -553,22 +553,6 @@ public class EvaluationRESTService extends PluginRESTService {
     
     evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
 
-//    // Remove possible workspace assignment supplementation request
-//    
-//    WorkspaceMaterialEvaluation supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(workspaceMaterial, userEntity);
-//    if (supplementationRequest != null) {
-//      evaluationController.deleteSupplementationRequest(supplementationRequest);
-//    }
-    
-//    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST) {
-//      // If the supplementation request is for an assignment, mark student's reply as INCOMPLETE
-//
-//      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-//      if (reply != null) {
-//        workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
-//      }
-//    }
-    
     // Archive related interim evaluation requests
     
     if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
@@ -676,22 +660,6 @@ public class EvaluationRESTService extends PluginRESTService {
     
     evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
 
-//    // Remove possible workspace assignment supplementation request
-//    
-//    WorkspaceMaterialEvaluation supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(workspaceMaterial, userEntity);
-//    if (supplementationRequest != null) {
-//      evaluationController.deleteSupplementationRequest(supplementationRequest);
-//    }
-    
-//    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST) {
-//      // If the supplementation request is for an assignment, mark student's reply as INCOMPLETE
-//
-//      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-//      if (reply != null) {
-//        workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
-//      }
-//    }
-    
     // Archive related interim evaluation requests
     
     if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {

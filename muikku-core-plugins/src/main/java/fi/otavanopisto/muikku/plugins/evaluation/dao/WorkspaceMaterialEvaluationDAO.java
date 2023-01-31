@@ -55,6 +55,15 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
     return persist(workspaceMaterialEvaluation);
   }
 
+  /**
+   * Lists WorkspaceMaterialEvaluations for given student and material.
+   * They can be of any type i.e. assessments or supplementation requests.
+   * 
+   * @param workspaceMaterialId
+   * @param studentEntityId
+   * @param archived
+   * @return
+   */
   public List<WorkspaceMaterialEvaluation> listByWorkspaceMaterialIdAndStudentEntityIdAndArchived(Long workspaceMaterialId, Long studentEntityId, boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -66,25 +75,6 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.workspaceMaterialId), workspaceMaterialId),
         criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.studentEntityId), studentEntityId),
-        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.archived), archived)
-      )
-    );
-
-    return entityManager.createQuery(criteria).getResultList();
-  }
-
-  public List<WorkspaceMaterialEvaluation> listByWorkspaceMaterialIdAndStudentEntityIdAndTypeAndArchived(Long workspaceMaterialId, Long studentEntityId, WorkspaceMaterialEvaluationType evaluationType, boolean archived) {
-    EntityManager entityManager = getEntityManager(); 
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<WorkspaceMaterialEvaluation> criteria = criteriaBuilder.createQuery(WorkspaceMaterialEvaluation.class);
-    Root<WorkspaceMaterialEvaluation> root = criteria.from(WorkspaceMaterialEvaluation.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.workspaceMaterialId), workspaceMaterialId),
-        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.studentEntityId), studentEntityId),
-        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.evaluationType), evaluationType),
         criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.archived), archived)
       )
     );
