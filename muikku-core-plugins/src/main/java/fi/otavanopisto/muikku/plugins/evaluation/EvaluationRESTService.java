@@ -1471,7 +1471,7 @@ public class EvaluationRESTService extends PluginRESTService {
 
     String creatorName = null;
     if (creatorEntity != null) {
-      UserEntityName userEntityName = userEntityController.getName(creatorEntity);
+      UserEntityName userEntityName = userEntityController.getName(creatorEntity, false);
       creatorName = userEntityName != null ? userEntityName.getDisplayName() : null; 
     }
     restFeedback.setId(journalFeedback.getId());
