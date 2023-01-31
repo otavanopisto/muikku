@@ -8,36 +8,14 @@
   <sql>update WorkspaceMaterialEvaluation set archived = false;</sql>
 
   <sql>
-  CLEANUP PREVIOUS EXPERIMENT
-  drop table SupplementationRequestAudioClip;
-  CLEANUP PREVIOUS EXPERIMENT
-  </sql>
-
-
-  <sql>
-  TODO
-  insert into WorkspaceMaterialEvaluation (studentEntityId, workspaceMaterialId, assessorEntityId, verbalAssessment, evaluated, evaluationType, archived)
-    select studentEntityId, workspaceMaterialId, userEntityId, requestText, requestDate, 'SUPPLEMENTATIONREQUEST', archived
-    from SupplementationRequest
-    where workspaceMaterialId is not null;
-  TODO 
+    insert into WorkspaceMaterialEvaluation (studentEntityId, workspaceMaterialId, assessorEntityId, verbalAssessment, evaluated, evaluationType, archived)
+      select studentEntityId, workspaceMaterialId, userEntityId, requestText, requestDate, 'SUPPLEMENTATIONREQUEST', archived
+      from SupplementationRequest
+      where workspaceMaterialId is not null;
   </sql>
   
-  <sql>
-  TODO
-  delete from SupplementationRequest where workspaceMaterialId is not null;
-  TODO
-  </sql>
+  <sql>delete from SupplementationRequest where workspaceMaterialId is not null;</sql>
+  <sql>alter table SupplementationRequest drop index sr_student_material;</sql>
+  <sql>alter table SupplementationRequest drop column workspaceMaterialId;</sql>
   
-  <sql>
-  TODO
-  alter table SupplementationRequest drop column workspaceMaterialId;
-  TODO
-  </sql>
-  
-  <sql>
-  TODO
-  alter table SupplementationRequest drop index sr_student_material;
-  TODO
-  </sql>
 </update>
