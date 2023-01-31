@@ -11,7 +11,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * FrontpageNavbarProps
  */
-interface FrontpageNavbarProps extends WithTranslation<["frontPage", "common"]> {
+interface FrontpageNavbarProps extends WithTranslation {
   i18nOLD: i18nType;
 }
 
@@ -51,11 +51,7 @@ class FrontpageNavbar extends React.Component<
                 href="#studying"
                 className="link link--frontpage link--full"
               >
-                <span>
-                {this.props.t(
-                    "labels.studying"
-                  )}
-                </span>
+                <span>{this.props.t("labels.studying")}</span>
               </Link>
             ),
           },
@@ -185,6 +181,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["frontPage", "common"])(
+export default withTranslation(["frontPage"])(
   connect(mapStateToProps, mapDispatchToProps)(FrontpageNavbar)
 );

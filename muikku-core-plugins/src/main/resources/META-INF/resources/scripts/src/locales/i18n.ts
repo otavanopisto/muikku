@@ -18,6 +18,7 @@ i18n.use(initReactI18next).init({
   ns: [defaultNS],
   lng: "fi",
   fallbackLng: "fi",
+  fallbackNS: "common",
   interpolation: {
     escapeValue: false, // not needed for react!!
   },

@@ -481,6 +481,7 @@
       "postalCode": "Postinumero",
       "privacyPolicy":  "Opiskelija- ja opintotietorekisterin tietosuojaseloste",
       "streetAddress": "Katuosoite",
+      "studying": "Opiskelu",
       "studying_subject": "Aineopiskelu",
       "tourNettilukio": "Tutustu Nettilukioon",
       "tourNettilukio_aineopiskelu": "Tutustu Nettilukion aineopiskeluun",
@@ -861,16 +862,6 @@
       "updateSuccess_userGroup": "Käyttäjäryhmän muokkaus onnistui "
     }
   },
-
-  "files": {
-    "actions": {
-    },
-    "labels": {
-    },
-    "validation": {
-    },
-    "notifications": {
-    },
 
   "flags": {
     "actions": {
@@ -1542,5 +1533,4 @@
       "removeError_studentOrder": "Opiskelijan tilauksen poisto epäonistui"
     }
   }
-}
 }
