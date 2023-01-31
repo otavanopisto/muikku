@@ -391,7 +391,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 className="link link--application-list"
                 onClick={this.handleOpenNewMessage("person")}
               >
-                {this.props.t("common:messaging.actions.reply")}
+                {/* {this.props.t("common:messaging.actions.reply")} */} asd
               </Link>
             )}
             {this.props.message.sender.studiesEnded ||
@@ -401,7 +401,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 className="link link--application-list"
                 onClick={this.handleOpenNewMessage("all")}
               >
-                {this.props.t("common:messaging.actions.replyAll")}
+                {/* {this.props.t("common:messaging.actions.replyAll")} */} asd
               </Link>
             )}
           </footer>

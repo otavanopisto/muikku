@@ -40,7 +40,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * EvaluationDrawerProps
  */
 interface EvaluationDrawerProps
-  extends WithTranslation<["common", "evaluation"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   onClose?: () => void;
@@ -895,11 +895,11 @@ export class Evaluation extends React.Component<
                         !subjectToBeEvaluated)
                     }
                   >
-                    {isEvaluated &&
+                    {/* {isEvaluated &&
                     isSelectedSubjectEvaluated &&
                     subjectToBeEvaluated
                       ? this.props.t("evaluation:actions.improveGrade")
-                      : this.props.t("evaluation:actions.grade")}
+                      : this.props.t("evaluation:actions.grade")} */} asd
                   </Button>
                   <Button
                     onClick={
@@ -914,7 +914,7 @@ export class Evaluation extends React.Component<
                         !subjectToBeEvaluated)
                     }
                   >
-                    {this.props.t("evaluation:actions.askSupplementation")}
+                    {/* {this.props.t("evaluation:actions.askSupplementation")} */} asd
                   </Button>
                 </div>
               </div>
@@ -961,6 +961,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(Evaluation)
 );

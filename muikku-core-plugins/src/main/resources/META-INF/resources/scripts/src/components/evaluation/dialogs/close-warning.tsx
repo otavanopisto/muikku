@@ -13,7 +13,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * DeleteDialogProps
  */
 interface WarningeDialogProps
-  extends WithTranslation<["common", "evaluation"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
@@ -68,13 +68,13 @@ class WarningDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.handleContinueClick.bind(this, closeDialog)}
         >
-          {this.props.t("evaluation:actions.confirmCancel")}
+          {/* {this.props.t("evaluation:actions.confirmCancel")} */} asd
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.t("common:actions.cancel")}
+          {/* {this.props.t("common:actions.cancel")} */} asd
         </Button>
       </div>
     );
@@ -126,6 +126,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(WarningDialog)
 );

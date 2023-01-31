@@ -19,7 +19,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * SupplementationEditorProps
  */
 interface JournalCommentEditorProps
-  extends WithTranslation<["common", "evaluation"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   locale: LocaleState;
@@ -163,14 +163,14 @@ class JournalCommentEditor extends SessionStateComponent<
             onClick={this.handleSaveClick}
             disabled={this.props.locked}
           >
-            {this.props.t("common:actions.save")}
+            {/* {this.props.t("common:actions.save")} */} asd
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.props.locked}
             buttonModifiers="dialog-cancel"
           >
-            {this.props.t("common:actions.cancel")}
+            {/* {this.props.t("common:actions.cancel")} */} asd
           </Button>
           {this.recovered && (
             <Button
@@ -178,7 +178,7 @@ class JournalCommentEditor extends SessionStateComponent<
               disabled={this.props.locked}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.t("common:actions.remove_draft")}
+              {/* {this.props.t("common:actions.remove_draft")} */} asd
             </Button>
           )}
         </div>
@@ -207,6 +207,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(JournalCommentEditor)
 );

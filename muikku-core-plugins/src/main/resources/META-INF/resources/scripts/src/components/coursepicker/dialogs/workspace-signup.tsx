@@ -21,7 +21,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * WorkspaceSignupDialogProps
  */
 interface WorkspaceSignupDialogProps
-  extends WithTranslation<["common", "workspaces"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
@@ -188,7 +188,7 @@ class WorkspaceSignupDialog extends React.Component<
           onClick={this.signup.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.t("workspaces:actions.signIn")}
+          {/* {this.props.t("workspaces:actions.signIn")} */} asd
         </Button>
       </div>
     );
@@ -229,6 +229,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ signupIntoWorkspace }, dispatch);
 }
 
-export default withTranslation(["common", "workspaces"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceSignupDialog)
 );

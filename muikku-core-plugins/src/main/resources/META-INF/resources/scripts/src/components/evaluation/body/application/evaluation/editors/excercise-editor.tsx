@@ -38,7 +38,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * AssignmentEditorProps
  */
 interface AssignmentEditorProps
-  extends WithTranslation<["common", "evaluation"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
@@ -543,6 +543,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(ExcerciseEditor)
 );

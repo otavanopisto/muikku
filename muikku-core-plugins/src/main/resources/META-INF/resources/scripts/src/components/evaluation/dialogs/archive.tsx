@@ -33,7 +33,7 @@ import { t } from "i18next";
  */
 interface ArchiveDialogProps
   extends AssessmentRequest,
-    WithTranslation<["common", "evaluation"]> {
+    WithTranslation<["common"]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   place: "card" | "modal";
@@ -124,15 +124,15 @@ class ArchiveDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.archiveStudent.bind(this, closeDialog)}
         >
-          {t("evaluation:actions.remove_student")}
+          {/* {t("evaluation:actions.remove_student")} */} asd
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={this.props.onClose ? this.props.onClose : closeDialog}
         >
-          {this.props.place === "card"
+          {/* {this.props.place === "card"
             ? t("common:actions.cancel")
-            : "Ei (TODO: Translate)"}
+            : "Ei (TODO: Translate)"} */} asd
         </Button>
       </div>
     );
@@ -194,6 +194,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(ArchiveDialog)
 );

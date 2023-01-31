@@ -81,7 +81,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   >(undefined);
   const [editorLocked, setEditorLocked] = React.useState(false);
 
-  const { t } = useTranslation(["common", "evaluation"]);
+  const { t } = useTranslation(["common"]);
 
   React.useEffect(() => {
     if (!createNewActive && commentToEdit === undefined) {
@@ -269,7 +269,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           onClick={handleOpenContentClick}
         >
           {title}
-          {isDraft && t("common:actions.remove_draft")}
+          {/* {isDraft && t("common:actions.remove_draft")} */}
           <div className="evaluation-modal__item-meta">
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">

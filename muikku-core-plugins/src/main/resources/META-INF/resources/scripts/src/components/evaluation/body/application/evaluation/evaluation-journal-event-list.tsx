@@ -32,7 +32,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
 ) => {
   const { evaluation, i18nOLD } = props;
 
-  const { t } = useTranslation(["evaluation", "common"]);
+  const { t } = useTranslation([ "common"]);
 
   const [listOfDiaryIds, setListOfDiaryIds] = React.useState<number[]>([]);
   const [journalFilters, setJournalFilters] =
@@ -169,13 +169,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
                 className="link link--evaluation-close-open"
                 onClick={handleCloseAllDiaryEntriesClick}
               >
-                {t("evaluation:actions.closeAll")}
+                {/* {t("evaluation:actions.closeAll")} */} asd
               </Link>
               <Link
                 className="link link--evaluation-close-open"
                 onClick={handleOpenAllDiaryEntriesClick}
               >
-                {t("evaluation:actions.openAll")}
+                {/* {t("evaluation:actions.openAll")} */} asd
               </Link>
             </div>
           ) : null}

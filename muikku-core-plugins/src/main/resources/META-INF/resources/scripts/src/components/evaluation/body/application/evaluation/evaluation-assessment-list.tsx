@@ -35,7 +35,7 @@ interface AssessmentListProps {
 const AssessmentList: React.FC<AssessmentListProps> = (props) => {
   const { evaluation, i18nOLD, workspaces, selectedAssessment } = props;
 
-  const { t } = useTranslation(["evaluation"]);
+  const { t } = useTranslation(["common"]);
 
   const [listOfAssignmentIds, setListOfAssignmentIds] = React.useState<
     number[]
@@ -220,13 +220,13 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
                 className="link link--evaluation-close-open"
                 onClick={handleCloseAllMaterialContentClick}
               >
-                {t("evaluation:actions.closeAll")}
+                {/* {t("evaluation:actions.closeAll")} */} asd
               </Link>
               <Link
                 className="link link--evaluation-close-open"
                 onClick={handleOpenAllMaterialContentClick}
               >
-                {t("evaluation:actions.openAll")}
+                {/* {t("evaluation:actions.openAll")} */} asd
               </Link>
             </div>
           ) : null}

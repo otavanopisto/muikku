@@ -45,7 +45,7 @@ const EvaluationJournalEventComment: React.FC<
   const { comment, created, id, firstName, lastName, authorId } =
     journalComment;
 
-  const { t } = useTranslation(["evaluation", "common"]);
+  const { t } = useTranslation(["common"]);
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
@@ -87,13 +87,13 @@ const EvaluationJournalEventComment: React.FC<
             className="link link--evaluation-list"
             onClick={handleEditCommentClick}
           >
-            {t("common:actions.edit")}
+            {/* {t("common:actions.edit")} */} asd
           </Link>
 
           {canDelete && creatorIsMe && (
             <DeleteJournalComment journalComment={journalComment}>
               <Link className="link link--evaluation-list">
-                {t("common:actions.remove")}
+                {/* {t("common:actions.remove")} */} asd
               </Link>
             </DeleteJournalComment>
           )}

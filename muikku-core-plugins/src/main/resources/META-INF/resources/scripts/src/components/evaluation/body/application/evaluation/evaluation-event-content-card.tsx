@@ -62,7 +62,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
     workspaceSubjectIdentifier,
   } = event;
 
-  const { t } = useTranslation(["evaluation", "common"]);
+  const { t } = useTranslation(["common"]);
 
   /**
    * arrowClassMod
@@ -394,14 +394,14 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
                   type === EvaluationEnum.SUPPLEMENTATION_REQUEST
                 )}
               >
-                {t("common:actions.edit")}
+                {/* {t("common:actions.edit")} */} asd
               </Link>
             )}
 
             {showDeleteLink && (
               <DeleteDialog eventData={event}>
                 <Link className="link link--evaluation-event-delete">
-                  {t("common:actions.remove")}
+                  {/* {t("common:actions.remove")} */} asd
                 </Link>
               </DeleteDialog>
             )}

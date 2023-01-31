@@ -22,7 +22,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * EvaluationSortersProps
  */
 interface EvaluationSortersProps
-  extends WithTranslation<["common", "evaluation"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   evaluations: EvaluationState;
   updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction;
@@ -254,6 +254,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateEvaluationSortFunctionToServer }, dispatch);
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(EvaluationSorters)
 );

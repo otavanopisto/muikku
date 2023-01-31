@@ -32,7 +32,7 @@ import {
  */
 interface EvaluationCardProps
   extends AssessmentRequest,
-    WithTranslation<["common", "evaluation"]> {
+    WithTranslation<["common"]> {
   i18nOLD: i18nType;
   selectedWorkspaceId?: number;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
@@ -62,7 +62,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     ...rest
   } = props;
 
-  const { t } = useTranslation(["common", "evaluation"]);
+  const { t } = useTranslation(["common"]);
 
   /**
    * Handles importance click
@@ -254,11 +254,11 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     rest.workspaceEntityId !== selectedWorkspaceId ? (
       <DeleteRequestDialog {...rest}>
         <ButtonPill
-          aria-label={
+          /* aria-label={
             rest.interimEvaluationRequest
               ? t("evaluation:actions.remove_interimEvaluationRequest")
               : t("evaluation:actions.remove_evaluationRequest")
-          }
+          } */
           buttonModifiers="archive-request"
           icon="trash"
         />
@@ -267,7 +267,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       selectedWorkspaceId === rest.workspaceEntityId ? (
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
-          aria-label={t("evaluation:actions.archiveStudent")}
+          /* aria-label={t("evaluation:actions.archiveStudent")} */
           buttonModifiers="archive-student"
           icon="archive"
         />
@@ -336,7 +336,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       <div className="evaluation-card__footer">
         <div className="evaluation-card__button-set">
           <IconButton
-            aria-label={t("evaluation:actions.markImportant")}
+            /* aria-label={t("evaluation:actions.markImportant")} */
             onClick={handleImportanceClick("important")}
             buttonModifiers={
               evaluationImportantClassesMod
@@ -346,7 +346,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
             icon="star-full"
           />
           <IconButton
-            aria-label={t("evaluation:actions.markNonImportant")}
+            /* aria-label={t("evaluation:actions.markNonImportant")} */
             onClick={handleImportanceClick("unimportant")}
             buttonModifiers={
               evaluationUnimportantClassesMod
@@ -362,7 +362,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
 
           <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
             <ButtonPill
-              aria-label={t("evaluation:actions.evaluateStudent")}
+              /* aria-label={t("evaluation:actions.evaluateStudent")} */
               buttonModifiers="evaluate"
               icon="evaluate"
             />
@@ -394,6 +394,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(EvaluationCard)
 );

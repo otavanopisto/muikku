@@ -28,7 +28,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * SupplementationEditorProps
  */
 interface SupplementationEditorProps
-  extends WithTranslation<["common", "evaluation"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
@@ -351,14 +351,14 @@ class SupplementationEditor extends SessionStateComponent<
             onClick={this.handleEvaluationSupplementationSave}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.save")}
+            {/* {this.props.t("common:actions.save")} */} asd
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
           >
-            {this.props.t("common:actions.cancel")}
+            {/* {this.props.t("common:actions.cancel")} */} asd
           </Button>
           {this.recovered && (
             <Button
@@ -366,7 +366,7 @@ class SupplementationEditor extends SessionStateComponent<
               disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.t("common:actions.remove_draft")}
+              {/* {this.props.t("common:actions.remove_draft")} */} asd
             </Button>
           )}
         </div>
@@ -402,6 +402,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(SupplementationEditor)
 );

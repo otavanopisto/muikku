@@ -34,7 +34,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * WorkspaceEditorProps
  */
 interface WorkspaceEditorProps
-  extends WithTranslation<["common", "evaluation"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
@@ -912,14 +912,14 @@ class WorkspaceEditor extends SessionStateComponent<
             onClick={this.handleEvaluationSave}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.save")}
+            {/* {this.props.t("common:actions.save")} */} asd
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
           >
-            {this.props.t("common:actions.cancel")}
+            {/* {this.props.t("common:actions.cancel")} */} asd
           </Button>
           {this.recovered && (
             <Button
@@ -927,7 +927,7 @@ class WorkspaceEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >
-              {this.props.t("common:actions.remove_draft")}
+              {/* {this.props.t("common:actions.remove_draft")} */} asd
             </Button>
           )}
         </div>
@@ -960,6 +960,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceEditor)
 );

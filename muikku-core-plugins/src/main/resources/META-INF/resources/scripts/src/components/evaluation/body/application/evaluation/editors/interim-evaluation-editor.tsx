@@ -45,7 +45,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * AssignmentEditorProps
  */
 interface InterimEvaluationEditorProps
-  extends WithTranslation<["common", "evaluation"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
@@ -378,7 +378,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
           >
-            {this.props.t("common:actions.save")}
+            {/* {this.props.t("common:actions.save")} */} asd
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
@@ -386,7 +386,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked || this.props.isRecording}
               >
-                {this.props.t("common:actions.cancel")}
+                {/* {this.props.t("common:actions.cancel")} */} asd
               </Button>
             </WarningDialog>
           ) : (
@@ -395,7 +395,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               buttonModifiers="dialog-cancel"
             >
-              {this.props.t("common:actions.cancel")}
+              {/* {this.props.t("common:actions.cancel")} */} asd
             </Button>
           )}
 
@@ -405,7 +405,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.t("common:actions.remove_draft")}
+              {/* {this.props.t("common:actions.remove_draft")} */} asd
             </Button>
           )}
         </div>
@@ -452,6 +452,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(InterimEvaluationEditor)
 );

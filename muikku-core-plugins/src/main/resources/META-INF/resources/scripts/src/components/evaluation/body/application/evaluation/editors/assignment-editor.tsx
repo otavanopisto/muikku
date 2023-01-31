@@ -44,7 +44,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * AssignmentEditorProps
  */
 interface AssignmentEditorProps
-  extends WithTranslation<["common", "evaluation"]> {
+  extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
@@ -705,7 +705,7 @@ class AssignmentEditor extends SessionStateComponent<
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
           >
-            {this.props.t("common:actions.save")}
+            {/* {this.props.t("common:actions.save")} */} asd
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
@@ -713,7 +713,7 @@ class AssignmentEditor extends SessionStateComponent<
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked || this.props.isRecording}
               >
-                {this.props.t("common:actions.cancel")}
+                {/* {this.props.t("common:actions.cancel")} */} asd
               </Button>
             </WarningDialog>
           ) : (
@@ -722,7 +722,7 @@ class AssignmentEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               buttonModifiers="dialog-cancel"
             >
-              {this.props.t("common:actions.cancel")}
+              {/* {this.props.t("common:actions.cancel")} */} asd
             </Button>
           )}
 
@@ -732,7 +732,7 @@ class AssignmentEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.t("common:actions.remove_draft")}
+              {/* {this.props.t("common:actions.remove_draft")} */} asd
             </Button>
           )}
         </div>
@@ -777,6 +777,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(AssignmentEditor)
 );

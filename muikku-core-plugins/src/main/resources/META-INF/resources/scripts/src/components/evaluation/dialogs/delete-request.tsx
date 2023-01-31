@@ -21,7 +21,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface DeleteRequestDialogProps
   extends AssessmentRequest,
-    WithTranslation<["common", "evaluation"]> {
+    WithTranslation<["common"]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
@@ -106,19 +106,19 @@ class DeleteRequestDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.deleteRequest.bind(this, closeDialog)}
         >
-          {this.props.interimEvaluationRequest
+          {/* {this.props.interimEvaluationRequest
             ? this.props.t(
                 "evaluation:actions.confirmRemove_interimEvaluationRequest"
               )
             : this.props.t(
                 "evaluation:actions.confirmRemove_evaluationRequest"
-              )}
+              )} */} asd
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.t("common:actions.cancel")}
+          {/* {this.props.t("common:actions.cancel")} */} asd
         </Button>
       </div>
     );
@@ -188,6 +188,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common", "evaluation"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(DeleteRequestDialog)
 );

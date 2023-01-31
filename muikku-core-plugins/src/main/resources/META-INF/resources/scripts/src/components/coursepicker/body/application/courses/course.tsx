@@ -28,7 +28,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * CourseProps
  */
-interface CourseProps extends WithTranslation<["common", "workspaces"]> {
+interface CourseProps extends WithTranslation<["common"]> {
   i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
@@ -243,9 +243,9 @@ class Course extends React.Component<CourseProps, CourseState> {
                 ]}
                 href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}
               >
-                {this.props.workspace.isCourseMember
+                {/* {this.props.workspace.isCourseMember
                   ? this.props.t("workspaces:actions.continue")
-                  : this.props.t("workspaces:actions.checkOut")}
+                  : this.props.t("workspaces:actions.checkOut")} */} asd
               </Button>
               {this.state.canSignUp && this.props.status.loggedIn ? (
                 <WorkspaceSignupDialog
@@ -264,7 +264,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                       "coursepicker-course-action",
                     ]}
                   >
-                    {this.props.t("workspaces:actions.signIn")}
+                    {/* {this.props.t("workspaces:actions.signIn")} */} asd
                   </Button>
                 </WorkspaceSignupDialog>
               ) : null}
@@ -298,6 +298,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default withTranslation(["common", "workspaces"])(
+export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(Course)
 );
