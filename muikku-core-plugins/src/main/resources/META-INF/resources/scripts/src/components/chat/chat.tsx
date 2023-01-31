@@ -256,46 +256,46 @@ class Chat extends React.Component<IChatProps, IChatState> {
   /**
    * getRoster gets roster from openfire and stores it in the component state
    */
-  getRoster = async () => {
-    const stanza = $iq({
-      from: this.state.connection.jid,
-      type: "get",
-    }).c("query", { xmlns: Strophe.NS.ROSTER });
+  // getRoster = async () => {
+  //   const stanza = $iq({
+  //     from: this.state.connection.jid,
+  //     type: "get",
+  //   }).c("query", { xmlns: Strophe.NS.ROSTER });
 
-    const jids: IChatContact[] = [];
+  //   const jids: IChatContact[] = [];
 
-    const answerStanza: Element = await new Promise((resolve) => {
-      this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
-        resolve(answerStanza);
-      });
-    });
+  //   const answerStanza: Element = await new Promise((resolve) => {
+  //     this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
+  //       resolve(answerStanza);
+  //     });
+  //   });
 
-    const rosterStanza = answerStanza.querySelectorAll("query item");
+  //   const rosterStanza = answerStanza.querySelectorAll("query item");
 
-    rosterStanza.forEach((r) => {
-      const jId = r.getAttribute("jid");
-      jids.push({ jid: jId });
-    });
+  //   rosterStanza.forEach((r) => {
+  //     const jId = r.getAttribute("jid");
+  //     jids.push({ jid: jId });
+  //   });
 
-    if (jids.length > 0) {
-      const chatRoster: IChatContact[] = [];
-      await Promise.all(
-        jids.map(async (contact: IChatContact) => {
-          await promisify(
-            mApi().chat.userInfo.read(contact.jid.split("@")[0], {}),
-            "callback"
-          )().then((user: IChatContact) => {
-            chatRoster.push({
-              ...user,
-              jid: contact.jid,
-            });
-          });
-        })
-      );
+  //   if (jids.length > 0) {
+  //     const chatRoster: IChatContact[] = [];
+  //     await Promise.all(
+  //       jids.map(async (contact: IChatContact) => {
+  //         await promisify(
+  //           mApi().chat.userInfo.read(contact.jid.split("@")[0], {}),
+  //           "callback"
+  //         )().then((user: IChatContact) => {
+  //           chatRoster.push({
+  //             ...user,
+  //             jid: contact.jid,
+  //           });
+  //         });
+  //       })
+  //     );
 
-      this.setState({ roster: chatRoster });
-    }
-  };
+  //     this.setState({ roster: chatRoster });
+  //   }
+  // };
 
   /**
    * loadPersonList loads the person list subjectively
@@ -303,10 +303,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
   loadPersonList = () => {
     if (this.props.status.isStudent) {
       this.props.loadContactGroup("counselors");
-      1;
-      this.getRoster();
-    } else {
-      this.getRoster();
     }
   };
 
@@ -377,12 +373,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       roomDescField: e.target.value,
     });
   }
-
-  // public toggleRoomPersistent() {
-  //   this.setState({
-  //     roomPersistent: !this.state.roomPersistent,
-  //   });
-  // }
 
   /**
    * updateChatRoomConfig
@@ -755,44 +745,47 @@ class Chat extends React.Component<IChatProps, IChatState> {
   /**
    * listExistantChatRooms
    */
-  listExistantChatRooms() {
+  async listExistantChatRooms() {
     const stanza = $iq({
       from: this.state.connection.jid,
       to: "conference." + this.state.connectionHostname,
       type: "get",
     }).c("query", { xmlns: Strophe.NS.DISCO_ITEMS });
-    this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
-      const rooms = answerStanza.querySelectorAll("query item");
-      const currentRooms = [...this.state.availableMucRooms];
-      rooms.forEach((n) => {
-        const roomJID = n.getAttribute("jid");
-        const roomName = n.getAttribute("name");
-        const existsAlreadyIndex = currentRooms.findIndex(
-          (r) => r.roomJID === roomJID
-        );
-        if (existsAlreadyIndex >= 0) {
-          const newReplacement: IAvailableChatRoomType = {
-            roomJID,
-            roomName,
-            roomDesc: currentRooms[existsAlreadyIndex].roomDesc,
-            // roomPersistent: currentRooms[existsAlreadyIndex].roomPersistent,
-          };
-          currentRooms[existsAlreadyIndex] = newReplacement;
-        } else {
-          currentRooms.push({
-            roomJID,
-            roomName,
-            roomDesc: null,
-            // roomPersistent: null,
-          });
-        }
-      });
 
-      this.setState({
-        availableMucRooms: currentRooms.sort((a, b) =>
-          a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())
-        ),
+    const answerStanza: Element = await new Promise((resolve) => {
+      this.state.connection.sendIQ(stanza, (answerStanza) => {
+        resolve(answerStanza);
       });
+    });
+
+    const rooms = answerStanza.querySelectorAll("query item");
+    const currentRooms = [...this.state.availableMucRooms];
+    rooms.forEach((n) => {
+      const roomJID = n.getAttribute("jid");
+      const roomName = n.getAttribute("name");
+      const existsAlreadyIndex = currentRooms.findIndex(
+        (r) => r.roomJID === roomJID
+      );
+      if (existsAlreadyIndex >= 0) {
+        const newReplacement: IAvailableChatRoomType = {
+          roomJID,
+          roomName,
+          roomDesc: currentRooms[existsAlreadyIndex].roomDesc,
+        };
+        currentRooms[existsAlreadyIndex] = newReplacement;
+      } else {
+        currentRooms.push({
+          roomJID,
+          roomName,
+          roomDesc: null,
+        });
+      }
+    });
+
+    this.setState({
+      availableMucRooms: currentRooms.sort((a, b) =>
+        a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())
+      ),
     });
   }
 
@@ -979,15 +972,14 @@ class Chat extends React.Component<IChatProps, IChatState> {
         name: this.props.i18nOLD.text.get("plugin.chat.tabs.label.rooms"),
         component: (
           <div className="chat__panel chat__panel--controlbox">
-            <div className="chat__panel-header chat__panel-header--controlbox">
-              {!this.state.isStudent && (
+            {!this.state.isStudent && (
+              <div className="chat__panel-header chat__panel-header--controlbox">
                 <span
                   onClick={this.toggleCreateChatRoomForm}
                   className="chat__button chat__button--new-room icon-plus"
                 ></span>
-              )}
-            </div>
-
+              </div>
+            )}
             <div className="chat__panel-body chat__panel-body--controlbox">
               <div className="chat__controlbox-rooms-heading">
                 {this.props.i18nOLD.text.get("plugin.chat.rooms.others")}

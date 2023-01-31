@@ -154,17 +154,19 @@ class NavigationAside extends React.Component<
     );
 
     filteredStudents.length > 0 &&
-      filteredStudents.map((student) =>
-        navigationElementList.push(
-          <NavigationElement
-            key={student.userEntityId}
-            isActive={student.userEntityId === journalsState.userEntityId}
-            icon="user"
-            onClick={this.handleOnStudentClick(student.userEntityId)}
-          >
-            {`${student.firstName} ${student.lastName}`}
-          </NavigationElement>
-        )
+      filteredStudents.map(
+        (student) =>
+          student.active &&
+          navigationElementList.push(
+            <NavigationElement
+              key={student.userEntityId}
+              isActive={student.userEntityId === journalsState.userEntityId}
+              icon="user"
+              onClick={this.handleOnStudentClick(student.userEntityId)}
+            >
+              {`${student.firstName} ${student.lastName}`}
+            </NavigationElement>
+          )
       );
 
     return (

@@ -573,17 +573,19 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )()
           ),
 
-          reuseExistantValue(
-            true,
-            workspace && workspace.interimEvaluationRequests,
-            () =>
-              promisify(
-                mApi().evaluation.workspace.interimEvaluationRequests.read(
-                  data.workspaceId
-                ),
-                "callback"
-              )()
-          ),
+          status.loggedIn
+            ? reuseExistantValue(
+                true,
+                workspace && workspace.interimEvaluationRequests,
+                () =>
+                  promisify(
+                    mApi().evaluation.workspace.interimEvaluationRequests.read(
+                      data.workspaceId
+                    ),
+                    "callback"
+                  )()
+              )
+            : null,
 
           status.loggedIn
             ? // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value

@@ -217,7 +217,7 @@ const CKEditorConfig = (
  * MaterialPageTypeConfic
  */
 interface MaterialPageTypeConfic {
-  type: AssignmentType;
+  type: AssignmentType | null;
   classNameMod: string;
   text: string;
 }
@@ -242,6 +242,11 @@ const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
     type: "INTERIM_EVALUATION",
     classNameMod: "material-editor-dropdown-interim-evaluation",
     text: "plugin.workspace.materialsManagement.pageType.interimEvaluation",
+  },
+  {
+    type: null,
+    classNameMod: "material-editor-dropdown-theory",
+    text: "plugin.workspace.materialsManagement.pageType.theory",
   },
 ];
 
@@ -371,21 +376,20 @@ class MaterialEditor extends React.Component<
   /**
    * cycleAssignmentType
    * @param type type
+   * @param onClose onClose
    */
   handleChangeAssignmentType =
-    (type: AssignmentType) =>
+    (type: AssignmentType, onClose: () => void) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       this.props.updateWorkspaceMaterialContentNode({
         workspace: this.props.editorState.currentNodeWorkspace,
         material: this.props.editorState.currentDraftNodeValue,
         update: {
-          assignmentType:
-            this.props.editorState.currentDraftNodeValue.assignmentType !== type
-              ? type
-              : null,
+          assignmentType: type,
         },
         isDraft: true,
       });
+      onClose();
     };
 
   /**
@@ -727,19 +731,19 @@ class MaterialEditor extends React.Component<
    * renderAssignmentPageButton
    * @param materialPageConfig materialPageConfig
    * @param key key
+   * @param onClose onClose
    * @returns assignment page type button
    */
   renderAssignmentPageButton = (
     materialPageConfig: MaterialPageTypeConfic,
-    key: string | number
+    key: string | number,
+    onClose: () => void
   ) => {
     const { assignmentType } = this.props.editorState.currentDraftNodeValue;
 
     const currentAssignmentType = assignmentType || null;
 
-    const isActive =
-      currentAssignmentType &&
-      currentAssignmentType === materialPageConfig.type;
+    const isActive = currentAssignmentType === materialPageConfig.type;
 
     const activePageTypeClassName = isActive
       ? "link--material-editor-dropdown-active"
@@ -753,7 +757,10 @@ class MaterialEditor extends React.Component<
       <Link
         key={key}
         className={`link link--full link--material-editor-dropdown ${pageTypeClassName} ${activePageTypeClassName}`}
-        onClick={this.handleChangeAssignmentType(materialPageConfig.type)}
+        onClick={this.handleChangeAssignmentType(
+          materialPageConfig.type,
+          onClose
+        )}
       >
         <span className="link__icon icon-puzzle"></span>
         <span>{this.props.i18nOLD.text.get(materialPageConfig.text)}</span>
@@ -935,8 +942,9 @@ class MaterialEditor extends React.Component<
               modifier="material-editor-page-type"
               openByHover={false}
               persistent
-              items={MATERIAL_PAGE_TYPE_CONFIGS.map((config, index) =>
-                this.renderAssignmentPageButton(config, index)
+              items={MATERIAL_PAGE_TYPE_CONFIGS.map(
+                (config, index) => (closeDropdown: () => void) =>
+                  this.renderAssignmentPageButton(config, index, closeDropdown)
               )}
             >
               <ButtonPill

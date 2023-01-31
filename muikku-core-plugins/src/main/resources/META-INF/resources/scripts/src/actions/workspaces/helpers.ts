@@ -275,6 +275,12 @@ export async function loadCurrentWorkspaceJournalsHelper(
         journals: currentJournalsList,
         hasMore: (currentJournalState && currentJournalState.hasMore) || false,
         userEntityId,
+        // If user changes, we need to reset the commentsLoaded
+        // because the commentsLoaded holds user based data which is not relevant anymore
+        commentsLoaded:
+          userEntityId === currentJournalState.userEntityId
+            ? currentJournalState.commentsLoaded
+            : [],
         state: journalNextstate,
       },
     },

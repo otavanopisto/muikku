@@ -364,6 +364,12 @@
   }
 }
 
+.link--material-editor-dropdown-theory {
+  .link__icon {
+    color: $color-default-helper;
+  }
+}
+
 // Links used in dropdowns of main functions
 .link--main-functions-settings-dropdown {
   color: $color-default-contrast;

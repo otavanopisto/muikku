@@ -304,14 +304,21 @@ public class WorkspaceEntityController {
           return signupGroupIdentifierCollection.stream()
               .map(o -> SchoolDataIdentifier.fromId((String) o))
               .anyMatch(identifier -> Objects.equals(identifier, userGroupEntity.schoolDataIdentifier()));
-        } else {
+        }
+        else {
           return false;
         }
-      } else {
-        throw new RuntimeException(String.format("Search provider couldn't find a unique workspace. %d results.", searchResult.getTotalHitCount()));
       }
-    } else {
-      throw new RuntimeException("Search provider is not present in application.");
+      else {
+        // #6458: Elastic crash fix
+        logger.warning(String.format("Search provider missing workspace %d", workspaceEntity.getId()));
+        return false;
+      }
+    }
+    else {
+      // #6458: Elastic crash fix
+      logger.severe("Search provider not present in application");
+      return false;
     }
   }
   
