@@ -284,7 +284,6 @@
     "content": {
       "instruction_tasks": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Halutessasi voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee Odottaa käsittelyä. Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (Roskakori-kuvake).</p>",
       "instruction_hints": "Lisää liitetiedosto klikkaamalla tästä tai raahamalla tiedosto tähän laatikkoon",
-      "empty_files": "Ei tiedostoja",
       "lastVisit": "viimeisin: {0}",
       "lastAnsweredAssignment": "viimeisin vastaus: {0}",
       "lastAnsweredExercise": "viimeisin vastaus: {0}",
@@ -302,9 +301,6 @@
       "numberOfSubmittedAssignments": "{0} tehtävää",
       "numberOfVisits": " {0} käyntiä",
       "removing_file": "Oletko varma että haluat poistaa valitsemasi liitetiedoston?"
-    },
-    "notifications": {
-      "warning_fileSize": "Tiedoston koko on liian suuri. Suurin sallittu tiedostokoko on 10MB."
     },
     "wcag": {
       "selectMatriculationSubject": "Valitse aine",
@@ -350,7 +346,6 @@
       "completedWorkspaces_lasMonth": "kurssia viimeisen kuukauden aikana.",
       "empty_counselors": "Ei ohjaajia",
       "empty_courses": "Ei kursseja. Jatkossa näet tässä listassa kurssit, joilla opiskelet, jotka olet suorittanut ja joista sinulle on tehty hyväksiluvut.",
-      "empty_files": "Ei tiedostoja.",
       "empty_studyTime": "Ei asetettu",
       "hopsUnfinished": "Täytä HOPS-lomake nähdäksesi YO-tilanteesi",
       "logins": "kertaa viimeisen kuukauden aikana.",
@@ -894,7 +889,6 @@
       "add_mathFormula": "Lisää kaava",
       "add_image": "Lisää kuva",
       "cancel_assignment": "Peruuta tehtävän palautus",
-      "download_file": "Lataa tiedosto",
       "evaluated_assignment": "Tehtävä on jo arvioitu",
       "notSignedUpWarning": "tästä",
       "record": "Aloita nauhoitus",
@@ -930,7 +924,6 @@
       "assigmments_passed": "Tehtäviä läpäisty",
       "assigmments_returned": "Tehtäviä palautettu",
       "assignments_returned": "Palautetut tehtävät",
-      "attachFile": "Lisää tiedosto",
       "attachments": "Liitteet",
       "attachments_material": "Materiaalin liitteet",
       "cc0": "CC0 1.0 Yleismaailmallinen",
@@ -972,7 +965,6 @@
       "producer_other": "Materiaalin tuottajat",
       "publish": "Julkaise",
       "relations": "Relaatiot",
-      "remove_file": "Tiedoston poisto",
       "remove_instructionVisibilityRestriction": "Poista ohjeiden näkyvyyden rajoitus",
       "remove_materialVisibilityRestriction": "Poista materiaalin näkyvyyden rajoitus",
       "remove_page": "Poista sivu",
@@ -998,7 +990,6 @@
       "totalAssignments": "Tehtäviä yhteensä",
       "unanswered": "Aloittamattomat",
       "wordCount": "Sanoja",
-      "zipFileName": "tiedostot.zip"
     },
     "content": {
       "add_audio": "Lisää äänitiedosto klikkaamalla alla olevaa kenttää",
@@ -1009,7 +1000,6 @@
       "confirm_pagePublication": "Julkaiseminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
       "evaluablesHiddenButAnswered": "Tämä arvoitava tehtävä on piilotettu ja korvattu toisella tehtävällä. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee yhä vastauksesi ja voi sen arvioida.",
       "empty_audio": "Ei äänitiedostoja",
-      "empty_files": "Ei tiedostoja",
       "empty_lisence": "Ei määritetty",
       "empty_materials": "Kurssille ei ole vielä luotu materiaaleja",
       "exerciseHiddenButAnswered": "Tämä harjoitustehtävä on piilotettu ja korvattu toisella tehtävällä. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee yhä vastauksesi ja voi sen arvioida.",
@@ -1029,7 +1019,6 @@
       "statusUploading": "Ladataan palvelimelle {0} %",
       "startRecording": "Aloita äänitys klikkaamalla painiketta",
       "stopRecording": "Lopeta äänitys klikkaamalla painiketta",
-      "unsupportedFileType": "Tiedostotyyppi {0} ei ole tuettu. Olkaa hyvää ja käyttäkää jotakin seuraavista: {1}",
       "viewRestricted": "Tämän materiaalin näyttäminen on rajattu vain kirjautuneille käyttäjille",
       "viewRestricted_workspaceMembers": "Tämän materiaalin näyttäminen on rajattu vain työtilan jäsenille",
       "undoMaterialPage": "Oletko varma, että haluat peruuttaa kaikki muutokset ja palauttaa sivun julkaistuun versioon?",
@@ -1041,7 +1030,6 @@
       "assignmentWithdrawn": "Tehtävän palautus peruutettu",
       "connectionError": "Palvelinyhteys on katkennut, yhdistetään uudelleen..",
       "documentCopied": "Dokumentti ({0}) kopioitu leikepöydälle",
-      "fileSizeTooLarge": "Tiedoston koko on liian suuri. Suurin sallittu tiedostokoko on 10MB.",
       "loading": "Ladataan {0} %",
       "loadError": "Materiaalien lataus epäonnistui",
       "loadError_answers": "Tehtävien vastauksien lataus epäonnistui",
@@ -1058,8 +1046,6 @@
       "updateError": "Materiaalisivun päivitys epäonnistui",
       "updateError_answers": "Tehtävän tilan päivitys epäonnistui",
       "updateError_compositeReplies": "Vastauksen päivitys epäonnistui",
-      "uploading": "Lähetetään tiedostoa {0} %",
-      "uploadSuccess_file": "Tiedosto tallennettu palvelimelle onnistuneesti"
     }
   },
 
@@ -1202,7 +1188,6 @@
 
     "content": {
       "addDetails": "Kurssin nimi on pakollinen tieto. Päivämäärät ovat valinnaisia. Huomaa, että kurssi täytyy erikseen julkaista ennen kuin se näkyy opiskelijoille kurssipoimurissa. Valitse, keillä on pääsy kurssille.",
-      "addFile": "Lisää tiedosto klikkaamalla tästä tai raahaamalla tiedosto tähän laatikkoon",
       "archiveStudent": "Oletko varma että haluat arkistoida käyttäjän {0} työtilasta?",
       "cancel_evaluationRequest": "Peruuta kurssin opettajalle lähetetty arviointipyyntö. Opettaja saa automaattisen tiedon peruutuksesta.",
       "cannotSignUpWarning": "Olet tutustumassa tähän kurssiin mutta sinulla ei ole sille ilmoittautumisoikeutta. Voit halutessasi vastata tehtäviin mutta et voi pyytää kurssiarviointia. Mikäli haluat ilmoittautua kurssille, ota yhteyttä ohjaajaasi.",
@@ -1336,9 +1321,25 @@
   },
 
   "files": {
+    "actions": {
+      "add": "Lisää tiedosto",
+      "download_file": "Lataa tiedosto"
+    },
+    "labels": {
+      "remove": "Tiedoston poisto",
+      "zipFileName": "tiedostot.zip"
+    },
+    "content": {
+      "add": "Lisää tiedosto klikkaamalla tästä tai raahaamalla tiedosto tähän laatikkoon",
+      "empty_files": "Ei tiedostoja"
+    },
     "notifications": {
+      "sizeTooLarge": "Tiedoston koko on liian suuri. Suurin sallittu tiedostokoko on 10MB.",
       "createErrror": "Tiedosto tallennettu palvelimelle onnistuneesti",
-      "removeError": "Tiedoston poisto ei onnistunut"
+      "removeError": "Tiedoston poisto ei onnistunut",
+      "unsupportedFileType": "Tiedostotyyppi {0} ei ole tuettu. Olkaa hyvää ja käyttäkää jotakin seuraavista: {1}",
+      "uploading": "Lähetetään tiedostoa {0} %",
+      "uploadSuccess_file": "Tiedosto tallennettu palvelimelle onnistuneesti"
     }
   },
 
