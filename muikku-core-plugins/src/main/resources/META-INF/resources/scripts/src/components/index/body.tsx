@@ -18,7 +18,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * IndexBodyProps
  */
-interface IndexBodyProps extends WithTranslation<["common"]> {
+interface IndexBodyProps extends WithTranslation<[ "frontPage", "common"]> {
   status: StatusType;
   i18nOLD: i18nType;
 }
@@ -86,6 +86,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["frontPage", "common" ])(
   connect(mapStateToProps, mapDispatchToProps)(IndexBody)
 );
