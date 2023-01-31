@@ -11,7 +11,7 @@
   <properties>
     <!-- WildFly -->
 
-    <wildfly.version>26.1.1.Final</wildfly.version>
+    <wildfly.version>26.1.2.Final</wildfly.version>
 
     <!-- Commons -->
 

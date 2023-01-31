@@ -15,6 +15,13 @@
   <description>Plugin that provides Pyramus OAuth login support </description>
 
   <dependencies>
+    <!-- Servlet -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Jackson -->
     
@@ -66,7 +73,7 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.189</version>
+      <version>0.7.190-SNAPSHOT</version>
     </dependency>
 
   </dependencies>

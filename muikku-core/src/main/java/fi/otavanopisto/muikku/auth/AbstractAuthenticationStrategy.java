@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
@@ -84,7 +83,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     return null;
   }
 
-  protected AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) {
+  protected AuthenticationResult processLogin(HttpServletRequest request, AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) {
     if ((emails == null) || (emails.isEmpty())) {
       return new AuthenticationResult(Status.NO_EMAIL);
     }
@@ -158,10 +157,11 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
 
-    return login(userIdentification, activeUser, newAccount);
+    return login(request, userIdentification, activeUser, newAccount);
   }
 
-  private AuthenticationResult login(UserIdentification userIdentification, User user, boolean newAccount) {
+  private AuthenticationResult login(HttpServletRequest request, UserIdentification userIdentification, User user, boolean newAccount) {
+    String authSource = userIdentification.getAuthSource().getStrategy();
     UserEntity userEntity = userIdentification.getUser();
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     
@@ -184,10 +184,9 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
       userEntityController.updateDefaultIdentifier(userEntity, user.getIdentifier());
       
-      sessionController.login(schoolDataSource.getIdentifier(), user.getIdentifier());
+      sessionController.login(authSource, schoolDataSource.getIdentifier(), user.getIdentifier());
       userEntityController.updateLastLogin(userEntity);
-      HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-      userLoggedInEvent.fire(new LoginEvent(userEntity.getId(), sessionController.getLoggedUser(), this, req.getRemoteAddr()));
+      userLoggedInEvent.fire(new LoginEvent(userEntity.getId(), sessionController.getLoggedUser(), this, request.getRemoteAddr()));
       return new AuthenticationResult(newAccount ? Status.NEW_ACCOUNT : Status.LOGIN);
     } else {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.LOGGED_IN_AS_DIFFERENT_USER);

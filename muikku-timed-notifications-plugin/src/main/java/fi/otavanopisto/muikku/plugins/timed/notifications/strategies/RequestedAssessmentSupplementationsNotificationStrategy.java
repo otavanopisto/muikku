@@ -130,6 +130,12 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
         continue;
       }
 
+      Date studyStartDate = getStudyStartDateIncludingTemporaryLeaves(result);
+      if (!isUsableStudyStartDate(studyStartDate)) {
+        // Skip if the study start date (or end of temporary leave) cannot be determined as it implies the student is not active
+        continue;
+      }
+      
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
       if (studentEntity == null) {
         logger.severe(String.format("UserEntity with identifier %s not found", studentIdentifier));
