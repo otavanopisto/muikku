@@ -989,7 +989,7 @@
       "tableOfContents": "Sisällysluettelo",
       "totalAssignments": "Tehtäviä yhteensä",
       "unanswered": "Aloittamattomat",
-      "wordCount": "Sanoja",
+      "wordCount": "Sanoja"
     },
     "content": {
       "add_audio": "Lisää äänitiedosto klikkaamalla alla olevaa kenttää",
@@ -1045,7 +1045,7 @@
       "saveError_audio":  "Äänitiedoston tallennus epäonnistui",
       "updateError": "Materiaalisivun päivitys epäonnistui",
       "updateError_answers": "Tehtävän tilan päivitys epäonnistui",
-      "updateError_compositeReplies": "Vastauksen päivitys epäonnistui",
+      "updateError_compositeReplies": "Vastauksen päivitys epäonnistui"
     }
   },
 
