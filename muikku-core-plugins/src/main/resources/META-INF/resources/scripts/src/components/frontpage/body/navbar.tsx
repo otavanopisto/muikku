@@ -53,11 +53,7 @@ class FrontpageNavbar extends React.Component<
               >
                 <span>
                 {this.props.t(
-                    "frontPage:labels.studying"
-                  )}
-
-                  {this.props.i18nOLD.text.get(
-                    "plugin.navigation.link.studying"
+                    "labels.studying"
                   )}
                 </span>
               </Link>
