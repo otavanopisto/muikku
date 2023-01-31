@@ -20,6 +20,8 @@ import {
   loadEvaluationCompositeRepliesFromServer,
   UpdateEvaluationSelectedAssessment,
   updateSelectedAssessment,
+  LoadEvaluationJournalFeedbackFromServerTriggerType,
+  loadEvaluationJournalFeedbackFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
@@ -39,6 +41,7 @@ interface EvaluateDialogProps {
   updateSelectedAssessment: UpdateEvaluationSelectedAssessment;
   loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments;
   loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies;
+  loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFromServerTriggerType;
   loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJournalEvents;
   loadBasePriceFromServer: LoadBasePrice;
 }
@@ -71,13 +74,21 @@ class EvaluateDialog extends React.Component<
     assessment: AssessmentRequest
   ) => {
     this.props.updateSelectedAssessment({ assessment });
+
     this.props.loadEvaluationCompositeRepliesFromServer({
       userEntityId: this.props.assessment.userEntityId,
       workspaceId: assessment.workspaceEntityId,
     });
+
     this.props.loadCurrentStudentAssigmentsData({
       workspaceId: assessment.workspaceEntityId,
     });
+
+    this.props.loadEvaluationJournalFeedbackFromServer({
+      userEntityId: assessment.userEntityId,
+      workspaceEntityId: assessment.workspaceEntityId,
+    });
+
     this.props.loadEvaluationSelectedAssessmentJournalEventsFromServer({
       assessment,
     });
@@ -146,8 +157,8 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     {
       updateSelectedAssessment,
       loadCurrentStudentAssigmentsData,
-
       loadEvaluationCompositeRepliesFromServer,
+      loadEvaluationJournalFeedbackFromServer,
       loadEvaluationSelectedAssessmentJournalEventsFromServer,
       loadBasePriceFromServer,
     },
