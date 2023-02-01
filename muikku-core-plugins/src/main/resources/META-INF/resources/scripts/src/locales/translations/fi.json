@@ -453,9 +453,14 @@
       "confirmSave": "Tiedot ovat oikein",
       "exploreMaterials": "Tutustu materiaaleihin",
       "readMore": "Lue koko artikkeli",
+      "tourNettilukio": "Tutustu Nettilukioon",
+      "tourNettilukio_aineopiskelu": "Tutustu Nettilukion aineopiskeluun",
+      "tourNettiperuskoulu": "Tutustu Nettiperuskouluun",
+      "tourNettiperuskoulu_aineopiskelu": "Tutustu Nettiperuskoulun aineopiskeluun",
       "update": "Päivitä tietoja"
     },
     "labels": {
+      "aineopiskelu": "Aineopiskelu",
       "becomeStudent": "Opiskelijaksi",
       "studentApplication": "Hae opiskelijaksi",
       "checkAddress": "Tarkista osoitetietosi",
@@ -477,11 +482,6 @@
       "site": "Muikku",
       "streetAddress": "Katuosoite",
       "studying": "Opiskelu",
-      "studying_subject": "Aineopiskelu",
-      "tourNettilukio": "Tutustu Nettilukioon",
-      "tourNettilukio_aineopiskelu": "Tutustu Nettilukion aineopiskeluun",
-      "tourNettiperuskoulu": "Tutustu Nettiperuskouluun",
-      "tourNettiperuskoulu_aineopiskelu": "Tutustu Nettiperuskoulun aineopiskeluun",
       "wall": "Seinämä",
       "welcome": "Tervetuloa muikkuun!"
     },

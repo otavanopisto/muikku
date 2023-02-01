@@ -7,7 +7,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface FrontpageStudyingProps {
  *
  */
-interface FrontpageStudyingProps extends WithTranslation<["common"]> {
+interface FrontpageStudyingProps extends WithTranslation {
   i18nOLD: i18nType;
 }
 
@@ -31,12 +31,10 @@ class FrontpageStudying extends React.Component<
       <section
         id="studying"
         className="screen-container__section"
-        aria-label={this.props.i18nOLD.text.get(
-          "plugin.wcag.frontPageSectionStudyingLabel"
-        )}
+        aria-label={this.props.t("wcag.studying", { ns: "frontPage" })}
       >
         <h2 className="screen-container__header">
-          {this.props.i18nOLD.text.get("plugin.sectionTitle.studying")}
+          {this.props.t("labels.becomeStudent", { ns: "frontPage" })}
         </h2>
         <div className="ordered-container ordered-container--frontpage-studying">
           <div className="ordered-container__item ordered-container__item--upper-secondary-school">
@@ -49,14 +47,10 @@ class FrontpageStudying extends React.Component<
               />
               <div className="card__content">
                 <div className="card__title card__title--frontpage-upper-secondary-school">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.nettilukio.title"
-                  )}
+                  {this.props.t("labels.nettilukio", { ns: "frontPage" })}
                 </div>
                 <div className="card__text">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.nettilukio.description"
-                  )}
+                  {this.props.t("content.nettilukio", { ns: "frontPage" })}
                 </div>
               </div>
               <div className="card__footer">
@@ -68,9 +62,7 @@ class FrontpageStudying extends React.Component<
                     "frontpage-upper-secondary-school-readmore",
                   ]}
                 >
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.nettilukio.link"
-                  )}{" "}
+                  {this.props.t("actions.tourNettilukio", { ns: "frontPage" })}
                 </Button>
               </div>
             </div>
@@ -85,14 +77,10 @@ class FrontpageStudying extends React.Component<
               />
               <div className="card__content">
                 <div className="card__title card__title--frontpage-secondary-school">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.nettiperuskoulu.title"
-                  )}
+                  {this.props.t("labels.nettiperuskoulu", { ns: "frontPage" })}
                 </div>
                 <div className="card__text">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.nettiperuskoulu.description"
-                  )}
+                  {this.props.t("content.nettiperuskoulu", { ns: "frontPage" })}{" "}
                 </div>
               </div>
               <div className="card__footer">
@@ -104,9 +92,7 @@ class FrontpageStudying extends React.Component<
                     "frontpage-secondary-school-readmore",
                   ]}
                 >
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.nettiperuskoulu.link"
-                  )}
+                  {this.props.t("actions.tourNettilukio", { ns: "frontPage" })}
                 </Button>
               </div>
             </div>
@@ -121,14 +107,10 @@ class FrontpageStudying extends React.Component<
               />
               <div className="card__content">
                 <div className="card__title card__title--frontpage-open-materials">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.aineopiskelu.title"
-                  )}
+                  {this.props.t("labels.aineopiskelu", { ns: "frontPage" })}
                 </div>
                 <div className="card__text">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.aineopiskelu.description"
-                  )}
+                  {this.props.t("content.aineopiskelu", { ns: "frontPage" })}{" "}
                 </div>
               </div>
               <div className="card__footer">
@@ -140,9 +122,10 @@ class FrontpageStudying extends React.Component<
                     "frontpage-open-materials-readmore",
                   ]}
                 >
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.nettilukio.aineopiskelu.link"
-                  )}
+                  {this.props.t("actions.tourNettilukio", {
+                    ns: "frontPage",
+                    context: "aineopiskelu",
+                  })}
                 </Button>
                 <Button
                   openInNewTab="_blank"
@@ -152,9 +135,10 @@ class FrontpageStudying extends React.Component<
                     "frontpage-open-materials-readmore",
                   ]}
                 >
-                  {this.props.i18nOLD.text.get(
-                    "plugin.studying.nettiperuskoulu.aineopiskelu.link"
-                  )}
+                  {this.props.t("actions.tourNettiperuskoulu", {
+                    ns: "frontPage",
+                    context: "aineopiskelu",
+                  })}
                 </Button>
               </div>
             </div>
@@ -165,4 +149,4 @@ class FrontpageStudying extends React.Component<
   }
 }
 
-export default withTranslation(["common"])(FrontpageStudying);
+export default withTranslation(["frontPage"])(FrontpageStudying);
