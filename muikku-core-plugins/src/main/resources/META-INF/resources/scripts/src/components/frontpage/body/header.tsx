@@ -60,9 +60,7 @@ class FrontpageHero extends React.Component<
               ></img>
               <div className="hero__header-container">
                 <h1 className="hero__header hero__header--frontpage-muikku">
-                  {this.props.t("labels.site", {
-                    ns: "frontPage",
-                  })}
+                  {this.props.t("labels.site")}
                 </h1>
               </div>
             </div>

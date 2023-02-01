@@ -30,31 +30,26 @@ class FrontpageFooter extends React.Component<
         <div className="footer__container">
           <div className="footer__item footer__item--contact">
             <h2 className="footer__header">
+              {this.props.t("labels.contact", { ns: "frontPage" })}
+
               {this.props.i18nOLD.text.get("plugin.footer.contact.title")}
             </h2>
             <p className="footer__subitem">
               <span className="glyph icon-location"></span>
-              <b>
-                {this.props.i18nOLD.text.get(
-                  "plugin.footer.streetAddress.label"
-                )}
-              </b>
+              <b>{this.props.t("labels.address")}</b>
               <span>Otavantie 2 B, 50670 Otava</span>
             </p>
             <p className="footer__subitem">
               <span className="glyph icon-phone"></span>
               <b>
+                {this.props.t("labels.phone")}
                 {this.props.i18nOLD.text.get("plugin.footer.phoneNumber.label")}
               </b>
               <span>044 794 3552</span>
             </p>
             <p className="footer__subitem">
               <span className="glyph icon-envelope-alt"></span>
-              <b>
-                {this.props.i18nOLD.text.get(
-                  "plugin.footer.emailAddress.label"
-                )}
-              </b>
+              <b>{this.props.t("labels.email")}</b>
               <span>info@otavia.fi</span>
             </p>
             <p className="footer__subitem footer__subitem--privacy-policy">
@@ -64,13 +59,12 @@ class FrontpageFooter extends React.Component<
                 className="link link--privacy-policy"
                 rel="noreferrer"
               >
-                {this.props.i18nOLD.text.get(
-                  "plugin.footer.ooPrivacyPolicy.label"
-                )}
+                {this.props.t("labels.privacyPolicy", {
+                  ns: "frontPage",
+                  context: "studentRegistry",
+                })}
                 <span className="visually-hidden">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.wcag.externalLink.label"
-                  )}
+                  {this.props.t("wcag.externalLink")}
                 </span>
                 <span
                   role="presentation"
@@ -85,13 +79,11 @@ class FrontpageFooter extends React.Component<
                 className="link link--accessibility-statement"
                 rel="noreferrer"
               >
-                {this.props.i18nOLD.text.get(
-                  "plugin.footer.accesibilityStatement.text"
-                )}
+                {this.props.t("labels.accessibilityStatement", {
+                  ns: "frontPage",
+                })}
                 <span className="visually-hidden">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.wcag.externalLink.label"
-                  )}
+                  {this.props.t("wcag.externalLink")}
                 </span>
                 <span
                   role="presentation"
@@ -125,7 +117,7 @@ class FrontpageFooter extends React.Component<
             >
               <img src="/gfx/plagscan-logo-white.png" alt="Plagscan logo" />
               <span className="visually-hidden">
-                {this.props.i18nOLD.text.get("plugin.wcag.externalLink.label")}
+                {this.props.t("wcag.externalLink")}
               </span>
               <span
                 role="presentation"
@@ -133,6 +125,7 @@ class FrontpageFooter extends React.Component<
               />
             </a>
             <span className="footer__item--plagscan-text">
+              {this.props.t("content.plagScan", { ns: "frontPage" })}
               {this.props.i18nOLD.text.get("plugin.footer.plagscan.text")}
             </span>
             <a
@@ -142,11 +135,11 @@ class FrontpageFooter extends React.Component<
               rel="noreferrer"
             >
               (
-              {this.props.i18nOLD.text.get(
-                "plugin.footer.plagScanPrivacyPolicy.label"
-              )}
+              {this.props.t("labels.privacyPolicy", {
+                ns: "frontPage",
+              })}
               <span className="visually-hidden">
-                {this.props.i18nOLD.text.get("plugin.wcag.externalLink.label")}
+                {this.props.t("wcag.externalLink")}
               </span>
               <span
                 role="presentation"

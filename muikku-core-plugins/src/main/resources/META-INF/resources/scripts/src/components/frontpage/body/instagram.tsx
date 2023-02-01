@@ -52,9 +52,7 @@ class FrontpageInstagram extends React.Component<
                           Instagram muikkuofficial
                         </span>
                         <span className="visually-hidden">
-                          {this.props.i18nOLD.text.get(
-                            "plugin.wcag.externalLink.label"
-                          )}
+                          {this.props.t("wcag.externalLink")}
                         </span>
                       </span>
                     </a>
@@ -70,9 +68,7 @@ class FrontpageInstagram extends React.Component<
                         <span className="visually-hidden">Instagram </span>
                         muikkuofficial
                         <span className="visually-hidden">
-                          {this.props.i18nOLD.text.get(
-                            "plugin.wcag.externalLink.label"
-                          )}
+                          {this.props.t("wcag.externalLink")}
                         </span>
                         <span
                           role="presentation"
@@ -81,13 +77,10 @@ class FrontpageInstagram extends React.Component<
                       </a>
                     </div>
                     <div className="card__meta-body-description">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.studying.nettilukio.title"
-                      )}{" "}
-                      /{" "}
-                      {this.props.i18nOLD.text.get(
-                        "plugin.studying.nettiperuskoulu.title"
-                      )}
+                      {this.props.t("labels.nettilukio", { ns: "frontPage" })} /{" "}
+                      {this.props.t("labels.nettiperuskoulu", {
+                        ns: "frontPage",
+                      })}
                     </div>
                   </div>
                 </div>

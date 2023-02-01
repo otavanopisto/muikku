@@ -43,7 +43,6 @@
       "update": "Päivitä"
     },
     "labels": {
-      "accessibilityStatement": "Saavutettavuusseloste",
       "active": "Aktiiviset",
       "address": "Osoite",
       "announcer": "Tiedotin",
@@ -98,7 +97,6 @@
       "people": "Ihmiset",
       "personalInfo": "Omat tiedot",
       "phone": "Puhelinnumero",
-      "privacyPolicy": "Tietosuojaseloste",
       "profileImage": "Profiilin kuva",
       "remove": "Poista",
       "remove_message": "Poista viesti",
@@ -117,6 +115,7 @@
       "settings_vacation": "Loma-asetukset",
       "signUp": "Kurssille ilmoittautuminen",
       "signUpMessage": "Viesti kurssin opettajalle",
+      "site": "Muikku",
       "staff": "Henkilökunta",
       "stats": "Tilastot",
       "studies": "Opinnot",
@@ -460,9 +459,9 @@
       "update": "Päivitä tietoja"
     },
     "labels": {
+      "accessibilityStatement": "Saavutettavuusseloste",
       "aineopiskelu": "Aineopiskelu",
       "becomeStudent": "Opiskelijaksi",
-      "studentApplication": "Hae opiskelijaksi",
       "checkAddress": "Tarkista osoitetietosi",
       "city": "Kaupunki",
       "contact": "Ota yhteyttä",
@@ -478,9 +477,10 @@
       "openMaterials": "Avoimet materiaalit",
       "organization": "Otavia",
       "postalCode": "Postinumero",
-      "privacyPolicy": "Opiskelija- ja opintotietorekisterin tietosuojaseloste",
-      "site": "Muikku",
+      "privacyPolicy": "Tietosuojaseloste",
+      "privacyPolicy_studentRegistry": "Opiskelija- ja opintotietorekisterin tietosuojaseloste",
       "streetAddress": "Katuosoite",
+      "studentApplication": "Hae opiskelijaksi",
       "studying": "Opiskelu",
       "wall": "Seinämä",
       "welcome": "Tervetuloa muikkuun!"
@@ -514,7 +514,7 @@
     "wcag": {
       "instagram": "Muikkuofficial Instagram julkaisut",
       "organizationDescription": "Otavia organisaation kuvaus",
-      "otaviaNew": "Otavia organisaation uutisia",
+      "otaviaNews": "Otavia organisaation uutisia",
       "studying": "Opiskeluvaihtoehdot Otaviassa",
       "videos": "Otavian esittely videoita"
     }
