@@ -687,11 +687,20 @@ class WorkspaceMaterials extends React.Component<
 
           let showEvenIfHidden = false;
 
-          // if student has submitted something before material has been set to hidden
+          // if student has submitted something before material has been set to hidden or
+          // if student has answered something before material has been set to hidden then also
+          // other states are also shown as they are part of evaluation
           // It will be still shown to student
           if (node.hidden && compositeReplies) {
             showEvenIfHidden =
-              compositeReplies && compositeReplies.submitted !== null;
+              compositeReplies &&
+              (compositeReplies.submitted !== null ||
+                compositeReplies.state === "ANSWERED" ||
+                compositeReplies.state === "SUBMITTED" ||
+                compositeReplies.state === "WITHDRAWN" ||
+                compositeReplies.state === "PASSED" ||
+                compositeReplies.state === "FAILED" ||
+                compositeReplies.state === "INCOMPLETE");
           }
 
           // Actual page material

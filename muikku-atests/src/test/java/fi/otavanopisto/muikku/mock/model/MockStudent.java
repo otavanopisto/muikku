@@ -111,6 +111,14 @@ public class MockStudent extends MockLoggable{
 //    this.courses = courses;
 //  }
 
+  public List<StudentGroupUser> getStudyPeriods() {
+    return studyPeriods;
+  }
+
+  public void setStudyPeriods(List<StudentGroupUser> studyPeriods) {
+    this.studyPeriods = studyPeriods;
+  }
+
   private Long id;
   private Long personId;
   private String firstName;
@@ -124,4 +132,5 @@ public class MockStudent extends MockLoggable{
   private OffsetDateTime studyEndTime;
 //  private List<Long> courses;
   private List<StudentGroupUser> counselors = new ArrayList<>();
+  private List<StudentGroupUser> studyPeriods = new ArrayList<>();
 }

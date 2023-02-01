@@ -94,6 +94,25 @@ export interface EvaluationJournalFilters {
 }
 
 /**
+ * EvaluationJournalFeedback
+ */
+export interface EvaluationJournalFeedback {
+  created: Date;
+  creator: number;
+  creatorName: string;
+  feedback: string;
+  id: number;
+  /**
+   * "userEntityId" of student
+   */
+  student: number;
+  /**
+   * workspaceEntity id
+   */
+  workspaceEntityId: number;
+}
+
+/**
  * Interface for evaluation study diary event
  */
 export interface EvaluationStudyDiaryEvent {

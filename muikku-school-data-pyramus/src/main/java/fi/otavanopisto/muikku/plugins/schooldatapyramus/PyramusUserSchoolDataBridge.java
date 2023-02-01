@@ -54,6 +54,8 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
@@ -1295,6 +1297,25 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
     }
     return new BridgeResponse<List<OrganizationContactPerson>>(response.getStatusCode(), contactPersons);
+  }
+
+  @Override
+  public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
+    if (identifierMapper.isStudentIdentifier(userIdentifier.getIdentifier())) {
+      Long pyramusStudentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+      StudentStudyPeriod[] studyPeriods = listStudentStudyPeriods(pyramusStudentId);
+      List<UserStudyPeriod> userStudyPeriods = new ArrayList<>();
+      
+      for (StudentStudyPeriod studyPeriod : studyPeriods) {
+        if (studyPeriod.getType() == StudentStudyPeriodType.TEMPORARILY_SUSPENDED) {
+          userStudyPeriods.add(new UserStudyPeriod(studyPeriod.getBegin(), studyPeriod.getEnd(), UserStudyPeriodType.TEMPORARILY_SUSPENDED));
+        }
+      }
+      
+      return userStudyPeriods;
+    }
+    
+    return Collections.emptyList();
   }
 
   private StudentStudyPeriod[] listStudentStudyPeriods(Long pyramusStudentId) {

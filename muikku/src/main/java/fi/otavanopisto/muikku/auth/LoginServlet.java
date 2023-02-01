@@ -2,58 +2,50 @@ package fi.otavanopisto.muikku.auth;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.inject.Named;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ocpsoft.rewrite.annotation.Join;
-import org.ocpsoft.rewrite.annotation.Parameter;
-import org.ocpsoft.rewrite.annotation.RequestAction;
-import org.ocpsoft.rewrite.faces.annotation.Deferred;
+import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.otavanopisto.muikku.auth.AuthSourceController;
-import fi.otavanopisto.muikku.auth.AuthenticationProvider;
-import fi.otavanopisto.muikku.auth.AuthenticationResult;
-import fi.otavanopisto.muikku.auth.LoginSessionBean;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.security.AuthSource;
+import fi.otavanopisto.muikku.session.local.LocalSession;
+import fi.otavanopisto.muikku.session.local.LocalSessionController;
 
-@RequestScoped
-@Named
-@Stateful
-@Join (path = "/login", to = "/login.jsf")
-public class LoginBackingBean {
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
 
-  @Parameter
-  private Long authSourceId;
-
-  @Parameter
-  private String redirectUrl;
+  private static final long serialVersionUID = -1021113743275507874L;
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  @LocalSession
+  private LocalSessionController localSessionController;
   
   @Inject
   private AuthSourceController authSourceController;
   
   @Inject
   private LoginSessionBean loginSessionBean;
-  
-  @RequestAction
-  @Deferred
-  public String init() {
+
+  public LoginServlet() {
+    super();
+  }
+
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
-      FacesContext facesContext = FacesContext.getCurrentInstance();
-      ExternalContext externalContext = facesContext.getExternalContext();
-      Map<String, String[]> requestParameters = externalContext.getRequestParameterValuesMap();
+      Long authSourceId = NumberUtils.createLong(request.getParameter("authSourceId"));
+      String redirectUrl = request.getParameter("redirectUrl");
 
       if (authSourceId == null) {
         authSourceId = loginSessionBean.getAuthSourceId();
@@ -83,9 +75,9 @@ public class LoginBackingBean {
           AuthenticationProvider authenticationProvider = authSourceController.findAuthenticationProvider(authSource);
           if (authenticationProvider != null) {
             
-            AuthenticationResult result = authenticationProvider.processLogin(authSource, requestParameters);
+            AuthenticationResult result = authenticationProvider.processLogin(request, authSource);
             if (StringUtils.isNotBlank(result.getRedirectUrl())) {
-              externalContext.redirect(result.getRedirectUrl());
+              response.sendRedirect(result.getRedirectUrl());
             } else {
               loginSessionBean.setAuthSourceId(null);
               String postLoginRedirectUrl = loginSessionBean.getPostLoginRedirectUrl();
@@ -100,6 +92,11 @@ public class LoginBackingBean {
                 case NEW_ACCOUNT:
                   // User created new account
                 break;
+                case LOGOUT:
+                case LOGOUT_WITH_REDIRECT:
+                  logger.log(Level.SEVERE, String.format("Login returned with invalid state: %s", result.getStatus()));
+                  response.sendRedirect(NavigationRules.INTERNAL_ERROR);
+                return;
                 case CONFLICT:
                   switch (result.getConflictReason()) {
                     case EMAIL_BELONGS_TO_ANOTHER_USER:
@@ -114,56 +111,47 @@ public class LoginBackingBean {
                   }         
 
                   logger.log(Level.SEVERE, String.format("Authentication failed on with following message: %s", result.getConflictReason().toString()));
-                  return NavigationRules.INTERNAL_ERROR;
+                  response.sendRedirect(NavigationRules.INTERNAL_ERROR);
+                  return;
                 case INVALID_CREDENTIALS:
                   logger.log(Level.SEVERE, "Erroneous authentication provider status: INVALID_CREDENTIALS in external login page");
-                  return NavigationRules.INTERNAL_ERROR;
+                  response.sendRedirect(NavigationRules.INTERNAL_ERROR);
+                  return;
                 case NO_EMAIL:
-                  return NavigationRules.AUTH_NOEMAIL;
+                  response.sendRedirect(NavigationRules.AUTH_NOEMAIL);
+                  return;
                 case PROCESSING:
                   logger.log(Level.SEVERE, "Erroneous authentication provider status: PROCESSING without redirectUrl");
-                  return NavigationRules.INTERNAL_ERROR;
+                  response.sendRedirect(NavigationRules.INTERNAL_ERROR);
+                  return;
                 case ERROR:
-                  return NavigationRules.INTERNAL_ERROR;
+                  response.sendRedirect(NavigationRules.INTERNAL_ERROR);
+                  return;
               }
               
               if (StringUtils.isBlank(postLoginRedirectUrl)) {
-                postLoginRedirectUrl = externalContext.getRequestContextPath() + "/";
+                postLoginRedirectUrl = request.getContextPath() + "/";
               }
               
-              externalContext.redirect(postLoginRedirectUrl);
+              response.sendRedirect(postLoginRedirectUrl);
             }
           } else {
             logger.log(Level.SEVERE, "Invalid authenticationProvider");
-            return NavigationRules.INTERNAL_ERROR;
+            response.sendRedirect(NavigationRules.INTERNAL_ERROR);
           }
         } else {
           logger.log(Level.SEVERE, "Invalid authSourceId");
-          return NavigationRules.INTERNAL_ERROR;
+          response.sendRedirect(NavigationRules.INTERNAL_ERROR);
         }
       }
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Login failed because of an internal error", e);
-      return NavigationRules.INTERNAL_ERROR;
+      response.sendRedirect(NavigationRules.INTERNAL_ERROR);
     }
-    
-    return null;
-  }  
-  
-  public Long getAuthSourceId() {
-    return authSourceId;
   }
-  
-  public void setAuthSourceId(Long authSourceId) {
-    this.authSourceId = authSourceId;
+
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    doGet(request, response);
   }
-  
-  public String getRedirectUrl() {
-    return redirectUrl;
-  }
-  
-  public void setRedirectUrl(String redirectUrl) {
-    this.redirectUrl = redirectUrl;
-  }
-  
+
 }
