@@ -18,7 +18,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * IndexBodyProps
  */
-interface IndexBodyProps extends WithTranslation<[ "frontPage", "common"]> {
+interface IndexBodyProps extends WithTranslation {
   status: StatusType;
   i18nOLD: i18nType;
 }
@@ -41,7 +41,7 @@ class IndexBody extends React.Component<
         {this.props.status.isActiveUser ? (
           <ScreenContainer viewModifiers="index">
             <h1 className="visually-hidden">
-              {this.props.i18nOLD.text.get("plugin.wcag.indexViewHeader")}
+              {this.props.t("wcag.indexViewHeader", { ns: "frontPage" })}
             </h1>
             <div className="panel-group panel-group--studies">
               {this.props.status.isStudent ? (
@@ -86,6 +86,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["frontPage", "common" ])(
+export default withTranslation(["frontPage"])(
   connect(mapStateToProps, mapDispatchToProps)(IndexBody)
 );

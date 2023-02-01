@@ -201,7 +201,6 @@
       "decreaseRuler": "Pienennä lukiviivaimen korkeutta",
       "externalLink": "Avautuu uuteen välilehteen",
       "increaseRuler": "Suurenna lukiviivaimen korkeutta",
-      "mikäsSeTämäOn?_indexViewHeader": "Front Page of Muikku",
       "invertRulersColors": "Käännä lukiviivaimen värit",
       "localeMenu": "Muikun käyttöliittymän kielivalikko",
       "mainNavigation": "Muikun päänavigaatio",
@@ -512,6 +511,7 @@
       "studentApplication": " Tutustu koulutuksiin ja täytä hakulomake."
     },
     "wcag": {
+      "indexViewHeader": "Muikun etusivu",
       "instagram": "Muikkuofficial Instagram julkaisut",
       "organizationDescription": "Otavia organisaation kuvaus",
       "otaviaNews": "Otavia organisaation uutisia",
