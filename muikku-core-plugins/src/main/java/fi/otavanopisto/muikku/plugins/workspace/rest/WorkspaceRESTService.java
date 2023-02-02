@@ -1103,7 +1103,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
     
-    if (payload.getLanguage() != null && !workspaceEntity.getLanguage().equals(payload.getLanguage())) {
+    if (payload.getLanguage() != null && !payload.getLanguage().equals(workspaceEntity.getLanguage())) {
       workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
     }
 

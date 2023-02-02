@@ -31,6 +31,7 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -449,7 +450,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
         
         // ...then create a new section under the help folder and move all pages under it
         
-        WorkspaceFolder helpSection = workspaceMaterialController.createWorkspaceFolder(helpRoot, "Suoritusohjeet", "suoritusohjeet", null);
+        WorkspaceFolder helpSection = workspaceMaterialController.createWorkspaceFolder(helpRoot, "Suoritusohjeet", "suoritusohjeet", WorkspaceLanguage.fi);
         for (WorkspaceMaterial helpPage : helpPages) {
           workspaceMaterialController.moveUnderParent(helpPage, helpSection);
         }
