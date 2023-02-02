@@ -1,6 +1,5 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   MaterialEvaluationType,
   MaterialAssignmentType,
@@ -37,9 +36,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * AssignmentEditorProps
  */
-interface AssignmentEditorProps
-  extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
@@ -181,6 +178,8 @@ class ExcerciseEditor extends SessionStateComponent<
     dataToSave: AssignmentEvaluationGradeRequest;
     materialId: number;
   }) => {
+    const { t } = this.props;
+
     const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
       data;
 
@@ -229,10 +228,11 @@ class ExcerciseEditor extends SessionStateComponent<
       });
     } catch (error) {
       this.props.displayNotification(
-        this.props.i18nOLD.text.get(
-          "plugin.evaluation.notifications.saveAssigmentGrade.error",
-          error.message
-        ),
+        t("notifications.saveError", {
+          ns: "evaluation",
+          context: "assignmentEvaluation",
+          error: error.message,
+        }),
         "error"
       );
 
@@ -258,6 +258,8 @@ class ExcerciseEditor extends SessionStateComponent<
     dataToSave: AssignmentEvaluationSupplementationRequest;
     materialId: number;
   }) => {
+    const { t } = this.props;
+
     const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
       data;
 
@@ -309,10 +311,11 @@ class ExcerciseEditor extends SessionStateComponent<
       });
     } catch (error) {
       this.props.displayNotification(
-        this.props.i18nOLD.text.get(
-          "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
-          error.message
-        ),
+        t("notifications.saveError", {
+          ns: "evaluation",
+          context: "assignmentSupplementationRequest",
+          error: error.message,
+        }),
         "error"
       );
 
@@ -438,6 +441,8 @@ class ExcerciseEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     return (
       <div className="form" role="form">
         <div className="form__row">
@@ -455,9 +460,7 @@ class ExcerciseEditor extends SessionStateComponent<
               height={!this.state.needsSupplementation ? "auto" : 0}
             >
               <label htmlFor="assignmentEvaluationGrade">
-                {this.props.i18nOLD.text.get(
-                  "plugin.evaluation.evaluationModal.audioAssessments"
-                )}
+                {t("labels.vocalEvaluation", { ns: "evaluation" })}
               </label>
               <Recorder
                 onIsRecordingChange={this.props.onIsRecordingChange}
@@ -474,7 +477,7 @@ class ExcerciseEditor extends SessionStateComponent<
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.save")}
+            {this.props.t("actions.save")}
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
@@ -482,7 +485,7 @@ class ExcerciseEditor extends SessionStateComponent<
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked}
               >
-                {this.props.t("common:actions.cancel")}
+                {this.props.t("actions.cancel")}
               </Button>
             </WarningDialog>
           ) : (
@@ -491,7 +494,7 @@ class ExcerciseEditor extends SessionStateComponent<
               buttonModifiers="dialog-cancel"
               disabled={this.state.locked}
             >
-              {this.props.t("common:actions.cancel")}
+              {this.props.t("actions.cancel")}
             </Button>
           )}
 
@@ -501,7 +504,7 @@ class ExcerciseEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >
-              {this.props.t("common:actions.remove_draft")}
+              {this.props.t("actions.remove_draft")}
             </Button>
           )}
         </div>
@@ -509,9 +512,7 @@ class ExcerciseEditor extends SessionStateComponent<
         {this.props.isRecording && (
           <div className="form__row form__row--evaluation-warning">
             <div className="recording-warning">
-              {this.props.i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
-              )}
+              {t("content.isRecording", { ns: "evaluation" })}
             </div>
           </div>
         )}
@@ -526,7 +527,6 @@ class ExcerciseEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
   };
@@ -543,6 +543,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["evaluation", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(ExcerciseEditor)
 );

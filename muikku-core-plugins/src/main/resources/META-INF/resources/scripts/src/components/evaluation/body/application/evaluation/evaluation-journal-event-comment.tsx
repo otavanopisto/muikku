@@ -14,14 +14,12 @@ import {
 import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { useTranslation } from "react-i18next";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventCommentProps {
-  i18nOLD: i18nType;
   journalComment: JournalComment;
   userEntityId: number;
   workspaceEntityId: number;
@@ -45,7 +43,7 @@ const EvaluationJournalEventComment: React.FC<
   const { comment, created, id, firstName, lastName, authorId } =
     journalComment;
 
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation();
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
@@ -87,13 +85,15 @@ const EvaluationJournalEventComment: React.FC<
             className="link link--evaluation-list"
             onClick={handleEditCommentClick}
           >
-            {/* {t("common:actions.edit")} */} asd
+            {/* {t("common:actions.edit")} */}
+            {t("actions.edit")}
           </Link>
 
           {canDelete && creatorIsMe && (
             <DeleteJournalComment journalComment={journalComment}>
               <Link className="link link--evaluation-list">
-                {/* {t("common:actions.remove")} */} asd
+                {/* {t("common:actions.remove")} */}
+                {t("actions.remove")}
               </Link>
             </DeleteJournalComment>
           )}
@@ -113,7 +113,6 @@ const EvaluationJournalEventComment: React.FC<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

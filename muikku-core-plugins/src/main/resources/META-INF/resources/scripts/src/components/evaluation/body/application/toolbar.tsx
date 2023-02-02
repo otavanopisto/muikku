@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/evaluation.scss";
 import { ButtonPill } from "~/components/general/button";
@@ -22,12 +21,12 @@ import {
   updateEvaluationSearch,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * EvaluationToolbarProps
  */
-interface EvaluationToolbarProps {
-  i18nOLD: i18nType;
+interface EvaluationToolbarProps extends WithTranslation {
   title: string;
   updateEvaluationSearch: UpdateEvaluationSearch;
   evaluations: EvaluationState;
@@ -82,6 +81,8 @@ class EvaluationToolbar extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const checkboxes = [
       <div key="evaluated" className="filter-item">
         <input
@@ -91,9 +92,7 @@ class EvaluationToolbar extends React.Component<
           id="filterEvaluated"
         />
         <label htmlFor="filterEvaluated">
-          {this.props.i18nOLD.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.evaluated"
-          )}
+          {t("labels.evaluated", { ns: "evaluation" })}
         </label>
       </div>,
       <div key="requestEvaluation" className="filter-item">
@@ -104,9 +103,7 @@ class EvaluationToolbar extends React.Component<
           id="filterAssessmentRequest"
         />
         <label htmlFor="filterAssessmentRequest">
-          {this.props.i18nOLD.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.requestEvaluation"
-          )}
+          {t("labels.withEvaluationRequest", { ns: "evaluation" })}
         </label>
       </div>,
       <div key="hasSupplementationRequest" className="filter-item">
@@ -119,9 +116,7 @@ class EvaluationToolbar extends React.Component<
           id="filterSupplementationRequest"
         />
         <label htmlFor="filterSupplementationRequest">
-          {this.props.i18nOLD.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.hasSupplementationRequest"
-          )}
+          {t("labels.withSupplementationRequest", { ns: "evaluation" })}
         </label>
       </div>,
       <div key="noevaluation" className="filter-item">
@@ -132,9 +127,7 @@ class EvaluationToolbar extends React.Component<
           id="filterNotEvaluated"
         />
         <label htmlFor="filterNotEvaluated">
-          {this.props.i18nOLD.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.noevaluation"
-          )}
+          {t("labels.noEvaluation", { ns: "evaluation" })}
         </label>
       </div>,
     ];
@@ -146,9 +139,7 @@ class EvaluationToolbar extends React.Component<
             updateField={this.handleSearchFormElementChange}
             name="guider-search"
             id="searchUsers"
-            placeholder={this.props.i18nOLD.text.get(
-              "plugin.evaluation.freeSearch"
-            )}
+            placeholder={t("labels.search", { ns: "evaluation" })}
             value={this.props.evaluations.evaluationSearch}
           />
           {this.props.evaluations.selectedWorkspaceId ? (
@@ -168,7 +159,6 @@ class EvaluationToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     evaluations: state.evaluations,
   };
 }
@@ -184,4 +174,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EvaluationToolbar);
+export default withTranslation(["evaluation", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EvaluationToolbar)
+);

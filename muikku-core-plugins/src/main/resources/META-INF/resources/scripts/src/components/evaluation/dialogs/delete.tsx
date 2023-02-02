@@ -18,7 +18,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * DeleteDialogProps
  */
-interface DeleteDialogProps extends WithTranslation<["common"]> {
+interface DeleteDialogProps extends WithTranslation {
   i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
@@ -97,13 +97,13 @@ class DeleteDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.handleDeleteEventClick.bind(this, closeDialog)}
         >
-          {/* {this.props.t("common:actions.remove")} */} asd
+          {this.props.t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {/* {this.props.t("common:actions.cancel")} */} asd
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -113,10 +113,11 @@ class DeleteDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        {this.props.i18nOLD.text.get(
-          "plugin.evaluation.workspaceEvaluationDialog.removeDialog.description",
-          studentNameString
-        )}
+        {this.props.t("content.removing", {
+          context: "evaluation",
+          studentName: studentNameString,
+          defaultValue: `Default:Are you sure you want to remove ${studentNameString} from this workspace?`,
+        })}
       </div>
     );
     return (
@@ -262,6 +263,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ removeWorkspaceEventFromServer }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["evaluation"])(
   connect(mapStateToProps, mapDispatchToProps)(DeleteDialog)
 );

@@ -12,7 +12,6 @@ import { StateType } from "~/reducers/index";
 import { Dispatch, bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
@@ -22,7 +21,6 @@ import { useTranslation } from "react-i18next";
  * EvaluationEventContentCardProps
  */
 interface EvaluationEventContentCardProps extends EvaluationEvent {
-  i18nOLD: i18nType;
   showModifyLink: boolean;
   showDeleteLink: boolean;
   selectedAssessment: AssessmentRequest;
@@ -44,7 +42,6 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
   const {
-    i18nOLD,
     showModifyLink,
     showDeleteLink,
     onClickEdit,
@@ -62,7 +59,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
     workspaceSubjectIdentifier,
   } = event;
 
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["evaluation", "common"]);
 
   /**
    * arrowClassMod
@@ -148,13 +145,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
-            {i18nOLD.text.get(
-              "plugin.evaluation.evaluationModal.events.evaluationRequest.1"
-            )}{" "}
+            {t("content.evaluationRequest1", { ns: "evaluation" })}{" "}
             <span className="evaluation-modal__event-type state-REQUESTED">
-              {i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.events.evaluationRequest.2"
-              )}
+              {t("content.evaluationRequest2", { ns: "evaluation" })}
             </span>
           </div>
         );
@@ -164,18 +157,14 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.events.gradePass.1"
-              )}{" "}
+              {t("content.gradePass1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-PASSED">
-                {i18nOLD.text.get(
-                  "plugin.evaluation.evaluationModal.events.gradePass.2"
-                )}
+                {t("content.gradePass2", { ns: "evaluation" })}
               </span>
             </div>
             {grade !== null ? (
@@ -191,18 +180,14 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.events.gradeFail.1"
-              )}{" "}
+              {t("content.gradeFail1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-FAILED">
-                {i18nOLD.text.get(
-                  "plugin.evaluation.evaluationModal.events.gradeFail.2"
-                )}
+                {t("content.gradeFail2", { ns: "evaluation" })}
               </span>
             </div>
             {grade !== null ? (
@@ -218,18 +203,14 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.events.gradeImproved.1"
-              )}{" "}
+              {t("content.gradeImproved1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-IMPROVED">
-                {i18nOLD.text.get(
-                  "plugin.evaluation.evaluationModal.events.gradeImproved.2"
-                )}
+                {t("content.gradeImproved2", { ns: "evaluation" })}
               </span>
             </div>
             {grade !== null ? (
@@ -245,18 +226,14 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.events.supplementationRequest.1"
-              )}{" "}
+              {t("content.supplementationRequest1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-INCOMPLETE">
-                {i18nOLD.text.get(
-                  "plugin.evaluation.evaluationModal.events.supplementationRequest.2"
-                )}
+                {t("content.supplementationRequest2", { ns: "evaluation" })}
               </span>
             </div>
             {grade !== null ||
@@ -273,18 +250,14 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.events.evaluationRequestCancel.1"
-              )}{" "}
+              {t("content.evaluationRequestCancel1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-CANCELLED">
-                {i18nOLD.text.get(
-                  "plugin.evaluation.evaluationModal.events.evaluationRequestCancel.2"
-                )}
+                {t("content.evaluationRequestCancel2", { ns: "evaluation" })}
               </span>
             </div>
             {grade !== null ||
@@ -300,13 +273,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
-            {i18nOLD.text.get(
-              "plugin.evaluation.evaluationModal.events.interimEvaluation.1"
-            )}{" "}
+            {t("content.interimEvaluation1", { ns: "evaluation" })}{" "}
             <span className="evaluation-modal__event-type state-CANCELLED">
-              {i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.events.interimEvaluation.2"
-              )}
+              {t("content.interimEvaluation2", { ns: "evaluation" })}
             </span>
           </div>
         );
@@ -315,13 +284,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
-            {i18nOLD.text.get(
-              "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.1"
-            )}{" "}
+            {t("content.interimEvaluationRequest1", { ns: "evaluation" })}{" "}
             <span className="evaluation-modal__event-type state-REQUESTED">
-              {i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.2"
-              )}
+              {t("content.interimEvaluationRequest2", { ns: "evaluation" })}
             </span>
           </div>
         );
@@ -330,13 +295,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
-            {i18nOLD.text.get(
-              "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.1"
-            )}{" "}
+            {t("content.interimEvaluationRequestCancel1", { ns: "evaluation" })}{" "}
             <span className="evaluation-modal__event-type state-CANCELLED">
-              {i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.2"
-              )}
+              {t("content.interimEvaluationRequestCancel2", {
+                ns: "evaluation",
+              })}
             </span>
           </div>
         );
@@ -394,14 +357,14 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
                   type === EvaluationEnum.SUPPLEMENTATION_REQUEST
                 )}
               >
-                {/* {t("common:actions.edit")} */} asd
+                {t("actions.edit")}
               </Link>
             )}
 
             {showDeleteLink && (
               <DeleteDialog eventData={event}>
                 <Link className="link link--evaluation-event-delete">
-                  {/* {t("common:actions.remove")} */} asd
+                  {t("actions.remove")}
                 </Link>
               </DeleteDialog>
             )}
@@ -417,9 +380,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
+  return {};
 }
 
 /**

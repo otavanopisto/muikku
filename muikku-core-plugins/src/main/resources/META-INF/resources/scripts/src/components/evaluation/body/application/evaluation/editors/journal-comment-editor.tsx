@@ -8,7 +8,6 @@ import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
@@ -18,9 +17,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * SupplementationEditorProps
  */
-interface JournalCommentEditorProps
-  extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface JournalCommentEditorProps extends WithTranslation {
   status: StatusType;
   locale: LocaleState;
   journalComment?: JournalComment;
@@ -138,15 +135,13 @@ class JournalCommentEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     return (
       <div className="form" role="form">
         <div className="form__row">
           <div className="form-element">
-            <label>
-              {this.props.i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.journalComments.formContentLabel"
-              )}
-            </label>
+            <label>{t("labels.content")}</label>
 
             <CKEditor
               onChange={this.handleCKEditorChange}
@@ -163,14 +158,14 @@ class JournalCommentEditor extends SessionStateComponent<
             onClick={this.handleSaveClick}
             disabled={this.props.locked}
           >
-            {/* {this.props.t("common:actions.save")} */} asd
+            {t("actions.save")}
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.props.locked}
             buttonModifiers="dialog-cancel"
           >
-            {/* {this.props.t("common:actions.cancel")} */} asd
+            {t("actions.cancel")}
           </Button>
           {this.recovered && (
             <Button
@@ -178,7 +173,7 @@ class JournalCommentEditor extends SessionStateComponent<
               disabled={this.props.locked}
               onClick={this.handleDeleteEditorDraft}
             >
-              {/* {this.props.t("common:actions.remove_draft")} */} asd
+              {t("actions.remove_draft")}
             </Button>
           )}
         </div>
@@ -193,7 +188,6 @@ class JournalCommentEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     locale: state.locales,
   };

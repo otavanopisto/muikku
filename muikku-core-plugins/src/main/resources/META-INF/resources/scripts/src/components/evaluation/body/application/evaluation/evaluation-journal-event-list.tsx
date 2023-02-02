@@ -5,7 +5,6 @@ import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { displayNotification } from "~/actions/base/notifications";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import EvaluationJournalEvent from "./evaluation-journal-event";
 import Link from "~/components/general/link";
@@ -21,7 +20,6 @@ import { useTranslation } from "react-i18next";
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventProps {
-  i18nOLD: i18nType;
   evaluation: EvaluationState;
 }
 
@@ -34,9 +32,9 @@ interface EvaluationDiaryEventProps {
 const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
   props
 ) => {
-  const { evaluation, i18nOLD } = props;
+  const { evaluation } = props;
 
-  const { t } = useTranslation([ "common"]);
+  const { t } = useTranslation(["evaluation", "journal", "common"]);
 
   const [listOfDiaryIds, setListOfDiaryIds] = React.useState<number[]>([]);
   const [journalFilters, setJournalFilters] =
@@ -189,7 +187,9 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
     ) : (
       <div className="empty">
         <span>
-          {i18nOLD.text.get("plugin.evaluation.evaluationModal.noJournals")}
+          {/* {i18nOLD.text.get("plugin.evaluation.evaluationModal.noJournals")} */}
+
+          {t("content.empty", { ns: "journal" })}
         </span>
       </div>
     );
@@ -198,20 +198,25 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
         <>
-          {i18nOLD.text.get("plugin.evaluation.evaluationModal.journalTitle")}
+          {/* {i18nOLD.text.get("plugin.evaluation.evaluationModal.journalTitle")} */}
+
+          {t("labels.entries", { ns: "journal" })}
+
           {evaluation.evaluationDiaryEntries.state === "READY" ? (
             <div className="evaluation-modal__content-actions">
               <Link
                 className="link link--evaluation-close-open"
                 onClick={handleCloseAllDiaryEntriesClick}
               >
-                {/* {t("evaluation:actions.closeAll")} */} asd
+                {/* {t("evaluation:actions.closeAll")} */}
+                {t("actions.hideAll")}
               </Link>
               <Link
                 className="link link--evaluation-close-open"
                 onClick={handleOpenAllDiaryEntriesClick}
               >
-                {/* {t("evaluation:actions.openAll")} */} asd
+                {/* {t("evaluation:actions.openAll")} */}
+                {t("actions.openAll", { ns: "evaluation" })}
               </Link>
             </div>
           ) : null}
@@ -282,7 +287,6 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     evaluation: state.evaluations,
   };
 }
