@@ -51,7 +51,9 @@ class FrontpageNavbar extends React.Component<
                 href="#studying"
                 className="link link--frontpage link--full"
               >
-                <span>{this.props.t("labels.studying")}</span>
+                <span>
+                  {this.props.t("labels.studying", { ns: "frontPage" })}
+                </span>
               </Link>
             ),
           },
@@ -59,9 +61,7 @@ class FrontpageNavbar extends React.Component<
             modifier: "news",
             item: (
               <Link href="#news" className="link link--frontpage link--full">
-                <span>
-                  {this.props.i18nOLD.text.get("plugin.navigation.link.news")}
-                </span>
+                <span>{this.props.t("labels.news", { ns: "frontPage" })}</span>
               </Link>
             ),
           },
@@ -73,9 +73,7 @@ class FrontpageNavbar extends React.Component<
                 className="link link--frontpage link--full"
               >
                 <span>
-                  {this.props.i18nOLD.text.get(
-                    "plugin.navigation.link.organization"
-                  )}
+                  {this.props.t("labels.organization", { ns: "frontPage" })}
                 </span>
               </Link>
             ),
@@ -85,9 +83,7 @@ class FrontpageNavbar extends React.Component<
             item: (
               <Link href="#contact" className="link link--frontpage link--full">
                 <span>
-                  {this.props.i18nOLD.text.get(
-                    "plugin.navigation.link.contact"
-                  )}
+                  {this.props.t("labels.contact", { ns: "frontPage" })}
                 </span>
               </Link>
             ),
@@ -100,9 +96,7 @@ class FrontpageNavbar extends React.Component<
                 className="link link--frontpage link--highlight link--full"
               >
                 <span>
-                  {this.props.i18nOLD.text.get(
-                    "plugin.navigation.link.openMaterials"
-                  )}
+                  {this.props.t("labels.openMaterials", { ns: "frontPage" })}
                 </span>
               </Link>
             ),
@@ -112,24 +106,18 @@ class FrontpageNavbar extends React.Component<
           <LoginButton key="0" />,
           <ForgotPasswordDialog key="1">
             <Link tabIndex={0} className="link link--forgot-password">
-              <span>
-                {this.props.i18nOLD.text.get(
-                  "plugin.forgotpassword.forgotLink"
-                )}
-              </span>
+              <span>{this.props.t("labels.forgotPasswordLink")}</span>
             </Link>
           </ForgotPasswordDialog>,
         ]}
         menuItems={[
           <Link key="studying" href="#studying" className="link link--full">
             <span>
-              {this.props.i18nOLD.text.get("plugin.navigation.link.studying")}
+              {this.props.t("labels.becomeStudent", { ns: "frontPage" })}
             </span>
           </Link>,
           <Link key="news" href="#news" className="link link--full">
-            <span>
-              {this.props.i18nOLD.text.get("plugin.navigation.link.news")}
-            </span>
+            <span>{this.props.t("labels.news", { ns: "frontPage" })}</span>
           </Link>,
           <Link
             key="organization"
@@ -137,15 +125,11 @@ class FrontpageNavbar extends React.Component<
             className="link link--full"
           >
             <span>
-              {this.props.i18nOLD.text.get(
-                "plugin.navigation.link.organization"
-              )}
+              {this.props.t("labels.organization", { ns: "frontPage" })}
             </span>
           </Link>,
           <Link key="contact" href="#contact" className="link link--full">
-            <span>
-              {this.props.i18nOLD.text.get("plugin.navigation.link.contact")}
-            </span>
+            <span>{this.props.t("labels.contact", { ns: "frontPage" })}</span>
           </Link>,
           <Link
             key="coursepicker"
@@ -153,9 +137,7 @@ class FrontpageNavbar extends React.Component<
             className="link link--highlight link--full"
           >
             <span>
-              {this.props.i18nOLD.text.get(
-                "plugin.navigation.link.openMaterials"
-              )}
+              {this.props.t("labels.openMaterials", { ns: "frontPage" })}
             </span>
           </Link>,
         ]}
