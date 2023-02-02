@@ -32,6 +32,7 @@ import { DraggableElement } from "../react-dnd/draggable-element";
 import { IconButton } from "../button";
 import { useScroll } from "./hooks/useScroll";
 import { useDragDropManager } from "react-dnd";
+import Dropdown from "~/components/general/dropdown";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -244,30 +245,38 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
   return (
     <div className="notebook">
       <div className="notebook__actions">
-        <IconButton
-          icon="plus"
-          buttonModifiers={["notebook-action"]}
-          onClick={handleAddNewNoteClick}
-          disablePropagation={true}
-        />
-        <IconButton
-          icon="move"
-          buttonModifiers={["notebook-action"]}
-          onClick={handleEditEntriesOrderClick}
-          disablePropagation={true}
-        />
-        <IconButton
-          icon="arrow-down"
-          buttonModifiers={["notebook-action"]}
-          onClick={handleOpenAllClick}
-          disablePropagation={true}
-        />
-        <IconButton
-          icon="arrow-up"
-          buttonModifiers={["notebook-action"]}
-          onClick={handleCloseAllClick}
-          disablePropagation={true}
-        />
+        <Dropdown openByHover content={<p>Lisää muistiinpano</p>}>
+          <IconButton
+            icon="plus"
+            buttonModifiers={["notebook-action"]}
+            onClick={handleAddNewNoteClick}
+            disablePropagation={true}
+          />
+        </Dropdown>
+        <Dropdown openByHover content={<p>Järjestele muistiinpanoja</p>}>
+          <IconButton
+            icon="move"
+            buttonModifiers={["notebook-action"]}
+            onClick={handleEditEntriesOrderClick}
+            disablePropagation={true}
+          />
+        </Dropdown>
+        <Dropdown openByHover content={<p>Avaa kaikki</p>}>
+          <IconButton
+            icon="arrow-down"
+            buttonModifiers={["notebook-action"]}
+            onClick={handleOpenAllClick}
+            disablePropagation={true}
+          />
+        </Dropdown>
+        <Dropdown openByHover content={<p>Sulje kaikki</p>}>
+          <IconButton
+            icon="arrow-up"
+            buttonModifiers={["notebook-action"]}
+            onClick={handleCloseAllClick}
+            disablePropagation={true}
+          />
+        </Dropdown>
       </div>
 
       <div className="notebook__body" ref={notebookBodyRef}>
