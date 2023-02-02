@@ -13,7 +13,6 @@ import {
   updateWorkspaceSupplementationToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/evaluation.scss";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
@@ -27,9 +26,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * SupplementationEditorProps
  */
-interface SupplementationEditorProps
-  extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface SupplementationEditorProps extends WithTranslation {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
@@ -330,6 +327,8 @@ class SupplementationEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     return (
       <div className="form" role="form">
         <div className="form__row">
@@ -351,14 +350,14 @@ class SupplementationEditor extends SessionStateComponent<
             onClick={this.handleEvaluationSupplementationSave}
             disabled={this.state.locked}
           >
-            {/* {this.props.t("common:actions.save")} */} asd
+            {t("actions.save")}
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
           >
-            {/* {this.props.t("common:actions.cancel")} */} asd
+            {t("actions.cancel")}
           </Button>
           {this.recovered && (
             <Button
@@ -366,7 +365,7 @@ class SupplementationEditor extends SessionStateComponent<
               disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >
-              {/* {this.props.t("common:actions.remove_draft")} */} asd
+              {t("actions.remove_draft")}
             </Button>
           )}
         </div>
@@ -381,7 +380,6 @@ class SupplementationEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,

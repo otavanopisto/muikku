@@ -19,9 +19,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * ArchiveDialogProps
  */
-interface DeleteRequestDialogProps
-  extends AssessmentRequest,
-    WithTranslation<["common"]> {
+interface DeleteRequestDialogProps extends AssessmentRequest, WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
@@ -106,19 +104,19 @@ class DeleteRequestDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.deleteRequest.bind(this, closeDialog)}
         >
-          {/* {this.props.interimEvaluationRequest
-            ? this.props.t(
-                "evaluation:actions.confirmRemove_interimEvaluationRequest"
-              )
-            : this.props.t(
-                "evaluation:actions.confirmRemove_evaluationRequest"
-              )} */} asd
+          {this.props.interimEvaluationRequest
+            ? this.props.t("actions.remove", {
+                context: "interimEvaluationRequest",
+              })
+            : this.props.t("actions.remove", {
+                context: "evaluationRequest",
+              })}{" "}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {/* {this.props.t("common:actions.cancel")} */} asd
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -130,17 +128,14 @@ class DeleteRequestDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div
         dangerouslySetInnerHTML={this.createHtmlMarkup(
-          this.props.interimEvaluationRequest
-            ? this.props.i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.deleteInterimRequest.confirmationDialog.description",
-                studentNameString,
-                workspaceNameString
-              )
-            : this.props.i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.description",
-                studentNameString,
-                workspaceNameString
-              )
+          this.props.t("content.removing", {
+            context: this.props.interimEvaluationRequest
+              ? "interimRequest"
+              : "evaluationRequest",
+            student: studentNameString,
+            workspace: workspaceNameString,
+            defaultValue: `Are you sure you want to delete the request for ${studentNameString} from ${workspaceNameString}?`,
+          })
         )}
       />
     );
@@ -149,15 +144,14 @@ class DeleteRequestDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-archive-request"
-        title={
-          this.props.interimEvaluationRequest
-            ? this.props.i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.deleteInterimRequest.confirmationDialog.title"
-              )
-            : this.props.i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.title"
-              )
-        }
+        title={this.props.t("labels.remove", {
+          context: this.props.interimEvaluationRequest
+            ? "interimEvaluationRequest"
+            : "evaluationRequest",
+          student: studentNameString,
+          workspace: workspaceNameString,
+          defaultValue: `Delete`,
+        })}
         content={content}
         footer={footer}
       >
@@ -188,6 +182,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["evaluation"])(
   connect(mapStateToProps, mapDispatchToProps)(DeleteRequestDialog)
 );

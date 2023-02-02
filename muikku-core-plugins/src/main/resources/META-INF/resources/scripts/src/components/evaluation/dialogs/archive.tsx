@@ -26,14 +26,11 @@ import {
   archiveStudent,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { t } from "i18next";
 
 /**
  * ArchiveDialogProps
  */
-interface ArchiveDialogProps
-  extends AssessmentRequest,
-    WithTranslation<["common"]> {
+interface ArchiveDialogProps extends AssessmentRequest, WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   place: "card" | "modal";
@@ -124,15 +121,16 @@ class ArchiveDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.archiveStudent.bind(this, closeDialog)}
         >
-          {/* {t("evaluation:actions.remove_student")} */} asd
+          {/* {t("evaluation:actions.remove_student")} */}
+          {this.props.t("actions.archiveStudent", { ns: "evaluation" })}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={this.props.onClose ? this.props.onClose : closeDialog}
         >
-          {/* {this.props.place === "card"
-            ? t("common:actions.cancel")
-            : "Ei (TODO: Translate)"} */} asd
+          {this.props.place === "card"
+            ? this.props.t("actions.cancel")
+            : "Ei (TODO: Translate)"}{" "}
         </Button>
       </div>
     );
@@ -144,10 +142,10 @@ class ArchiveDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div
         dangerouslySetInnerHTML={this.createHtmlMarkup(
-          this.props.i18nOLD.text.get(
-            "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.description",
-            studentNameString
-          )
+          this.props.t("content.archive_student", {
+            ns: "evaluation",
+            studentName: studentNameString,
+          })
         )}
       />
     );
@@ -155,9 +153,7 @@ class ArchiveDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         modifier="evaluation-archive-student"
-        title={this.props.i18nOLD.text.get(
-          "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.title"
-        )}
+        title={this.props.t("labels.archiveStudent", { ns: "evaluation" })}
         content={content}
         footer={footer}
       >
@@ -194,6 +190,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["evaluation", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(ArchiveDialog)
 );

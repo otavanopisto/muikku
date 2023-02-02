@@ -20,7 +20,6 @@ import {
   EvaluationEnum,
   EvaluationGradeSystem,
 } from "~/@types/evaluation";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
@@ -33,9 +32,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * WorkspaceEditorProps
  */
-interface WorkspaceEditorProps
-  extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface WorkspaceEditorProps extends WithTranslation {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
@@ -666,8 +663,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns Array of price options
    */
   parsePriceOptions = (): EvaluationPriceObject[] | undefined => {
-    const { i18nOLD, type, workspaceSubjectToBeEvaluatedIdentifier } =
-      this.props;
+    const { t, type, workspaceSubjectToBeEvaluatedIdentifier } = this.props;
     const { evaluationAssessmentEvents } = this.props.evaluations;
     let { basePriceFromServer } = this.state;
 
@@ -722,9 +718,10 @@ class WorkspaceEditor extends SessionStateComponent<
        * Full billing -> available for course evaluations and raised grades
        */
       priceOptionsArray.push({
-        name: `${i18nOLD.text.get(
-          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull"
-        )} ${basePriceFromServer.toFixed(2)} €`,
+        name: `${t("labels.billing", {
+          ns: "evaluation",
+          context: "full",
+        })} ${basePriceFromServer.toFixed(2)} €`,
         value: basePriceFromServer,
       });
 
@@ -733,9 +730,10 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       if (!isRaised) {
         priceOptionsArray.push({
-          name: `${i18nOLD.text.get(
-            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf"
-          )} ${(basePriceFromServer / 2).toFixed(2)} €`,
+          name: `${t("labels.billing", {
+            ns: "evaluation",
+            context: "half",
+          })} ${(basePriceFromServer / 2).toFixed(2)} €`,
           value: basePriceFromServer / 2,
         });
       }
@@ -744,9 +742,10 @@ class WorkspaceEditor extends SessionStateComponent<
        * No billing -> available for course evaluations and raised grades
        */
       priceOptionsArray.push({
-        name: `${i18nOLD.text.get(
-          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone"
-        )} 0,00 €`,
+        name: `${t("labels.billing", {
+          ns: "evaluation",
+          context: "none",
+        })} 0,00 €`,
         value: 0,
       });
 
@@ -768,9 +767,10 @@ class WorkspaceEditor extends SessionStateComponent<
            * ...then add a custom option with the current price
            */
           priceOptionsArray.push({
-            name: `${i18nOLD.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom"
-            )} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
+            name: `${t("labels.billing", {
+              ns: "evaluation",
+              context: "else",
+            })} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
             value: this.state.existingBilledPriceObject.price,
           });
         }
@@ -805,6 +805,8 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const { existingBilledPriceObject, activeGradeSystems } = this.state;
 
     const options = this.renderSelectOptions();
@@ -863,9 +865,7 @@ class WorkspaceEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="workspaceEvaluationGrade">
-              {this.props.i18nOLD.text.get(
-                "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-              )}
+              {t("labels.grade", { ns: "workspace" })}
             </label>
             <select
               id="workspaceEvaluationGrade"
@@ -889,9 +889,7 @@ class WorkspaceEditor extends SessionStateComponent<
           <div className="form__row">
             <div className="form-element">
               <label htmlFor="workspaceEvaluationBilling">
-                {this.props.i18nOLD.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
-                )}
+                {t("labels.billing")}
               </label>
               <select
                 id="workspaceEvaluationBilling"
@@ -912,14 +910,14 @@ class WorkspaceEditor extends SessionStateComponent<
             onClick={this.handleEvaluationSave}
             disabled={this.state.locked}
           >
-            {/* {this.props.t("common:actions.save")} */} asd
+            {t("actions.save")}
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
           >
-            {/* {this.props.t("common:actions.cancel")} */} asd
+            {t("actions.cancel")}
           </Button>
           {this.recovered && (
             <Button
@@ -927,7 +925,7 @@ class WorkspaceEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >
-              {/* {this.props.t("common:actions.remove_draft")} */} asd
+              {t("actions.remove_draft")}
             </Button>
           )}
         </div>
@@ -942,7 +940,6 @@ class WorkspaceEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,
@@ -960,6 +957,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["evaluation", "workspace", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceEditor)
 );

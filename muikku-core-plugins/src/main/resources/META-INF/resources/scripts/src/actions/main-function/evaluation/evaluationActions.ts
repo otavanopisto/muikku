@@ -54,6 +54,7 @@ import {
   JournalCommentDelete,
   JournalCommentUpdate,
 } from "~/@types/journal";
+import i18n from "~/locales/i18n";
 
 //////State update interfaces
 export type EVALUATION_BASE_PRICE_STATE_UPDATE = SpecificActionType<
@@ -621,10 +622,11 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.gradesystem.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "gradeSystems",
+              defaultValue: "Grade systems could not be loaded",
+            }),
             "error"
           )
         );
@@ -695,10 +697,11 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.evaluationRequest.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "evaluationRequests",
+              defaultValue: "Evaluation requests could not be loaded",
+            }),
             "error"
           )
         );
@@ -756,10 +759,11 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.workspaces.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "workspaces",
+              defaultValue: "Workspaces could not be loaded",
+            }),
             "error"
           )
         );
@@ -816,10 +820,11 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.important.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "importanceRatings",
+              defaultValue: "Importance ratings could not be loaded",
+            }),
             "error"
           )
         );
@@ -876,10 +881,11 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.unimportant.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "importanceRatings",
+              defaultValue: "Importance ratings could not be loaded",
+            }),
             "error"
           )
         );
@@ -941,10 +947,11 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.sort.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "sortCategories",
+              defaultValue: "Sort categories could not be loaded",
+            }),
             "error"
           )
         );
@@ -966,8 +973,6 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       dispatch({
         type: "EVALUATION_ASSESSMENT_EVENTS_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
@@ -1001,10 +1006,11 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.events.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "evaluationEvents",
+              defaultValue: "Evaluation events could not be loaded",
+            }),
             "error"
           )
         );
@@ -1026,8 +1032,6 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       dispatch({
         type: "EVALUATION_JOURNAL_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
@@ -1074,10 +1078,12 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.diaryEvents.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "events",
+              error: err.message,
+              defaultValue: "Journal events could not be loaded",
+            }),
             "error"
           )
         );
@@ -1151,8 +1157,6 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       dispatch({
         type: "EVALUATION_COMPOSITE_REPLIES_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
@@ -1182,10 +1186,12 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
       } catch (err) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.assignmentdata.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "assignmentData",
+              error: err.message,
+              defaultValue: "Assignment data could not be loaded",
+            }),
             "error"
           )
         );
@@ -1241,10 +1247,12 @@ const updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.saveSort.error",
-              err.message
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "evaluation",
+              context: "sorting",
+              error: err.message,
+              defaultValue: "Evaluation sorting could not be updated",
+            }),
             "error"
           )
         );
@@ -1322,10 +1330,11 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
         } catch (err) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18nOLD.text.get(
-                "plugin.evaluation.notifications.createEvaluation.error",
-                err.message
-              ),
+              i18n.t("notifications.saveError", {
+                ns: "evaluation",
+                error: err.message,
+                defaultValue: "Evaluation could not be saved",
+              }),
               "error"
             )
           );
@@ -1364,10 +1373,11 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
         } catch (err) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18nOLD.text.get(
-                "plugin.evaluation.notifications.updateEvaluation.error",
-                err.message
-              ),
+              i18n.t("notifications.updateError", {
+                ns: "evaluation",
+                error: err.message,
+                defaultValue: "Evaluation could not be updated",
+              }),
               "error"
             )
           );
@@ -1428,10 +1438,12 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
         } catch (error) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18nOLD.text.get(
-                "plugin.evaluation.notifications.updateSupplementation.error",
-                error.message
-              ),
+              i18n.t("notifications.saveError", {
+                ns: "evaluation",
+                context: "supplementationRequest",
+                error: error.message,
+                defaultValue: "Supplementation request could not be saved",
+              }),
               "error"
             )
           );
@@ -1461,10 +1473,12 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
         } catch (error) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18nOLD.text.get(
-                "plugin.evaluation.notifications.updateSupplementation.error",
-                error.message
-              ),
+              i18n.t("notifications.saveError", {
+                ns: "evaluation",
+                context: "supplementationRequest",
+                error: error.message,
+                defaultValue: "Supplementation request could not be saved",
+              }),
               "error"
             )
           );
@@ -1548,10 +1562,11 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
         } catch (error) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18nOLD.text.get(
-                "plugin.evaluation.notifications.removeEvent.error",
-                error.message
-              ),
+              i18n.t("notifications.removeError", {
+                ns: "evaluation",
+                error: error.message,
+                defaultValue: "Workspace event could not be removed",
+              }),
               "error"
             )
           );
@@ -1599,10 +1614,12 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
         } catch (error) {
           dispatch(
             notificationActions.displayNotification(
-              state.i18nOLD.text.get(
-                "plugin.evaluation.notifications.removeEvent.error",
-                error.message
-              ),
+              i18n.t("notifications.removeError", {
+                ns: "evaluation",
+                context: "supplementationRequest",
+                error: error.message,
+                defaultValue: "Supplementation request could not be removed",
+              }),
               "error"
             )
           );
@@ -1630,8 +1647,6 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       dispatch({
         type: "EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE",
         payload: "LOADING",
@@ -1687,12 +1702,14 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.assignmentdata.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "assignmentData",
+              defaultValue: "Assignment data could not be loaded",
+            }),
             "error"
           )
         );
@@ -1757,10 +1774,11 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
       } catch (err) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.assignmentdata.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "assignmentData",
+              defaultValue: "Assignment data could not be loaded",
+            }),
             "error"
           )
         );
@@ -1838,10 +1856,12 @@ const updateBillingToServer: UpdateEvaluationEvent =
       } catch (error) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.updatepricing.error",
-              error.message
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "evaluation",
+              context: "pricing",
+              error: error.message,
+              defaultValue: "Pricing could not be updated",
+            }),
             "error"
           )
         );
@@ -1950,12 +1970,20 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
         throw err;
       }
 
+      i18n.t("notifications.loadError", {
+        ns: "evaluation",
+        context: "gradeSystems",
+        defaultValue: "Grade systems could not be loaded",
+      });
+
       dispatch(
         notificationActions.displayNotification(
-          state.i18nOLD.text.get(
-            "plugin.evaluation.notifications.saveImportance.error",
-            err.message
-          ),
+          i18n.t("notifications.updateError", {
+            ns: "evaluation",
+            context: "sorting",
+            error: err.message,
+            defaultValue: "Sorting could not be updated",
+          }),
           "error"
         )
       );
@@ -1994,8 +2022,6 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       try {
         await promisify(
           mApi().evaluation.workspaceuser.evaluationrequestarchive.update(
@@ -2006,12 +2032,20 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
           dispatch(loadEvaluationAssessmentRequestsFromServer());
         });
       } catch (error) {
+        i18n.t("notifications.loadError", {
+          ns: "evaluation",
+          context: "gradeSystems",
+          defaultValue: "Grade systems could not be loaded",
+        });
+
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.deleteRequest.error",
-              error.message
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "evaluation",
+              context: "evaluationRequest",
+              error: error.message,
+              defaultValue: "Evaluation request could not be removed",
+            }),
             "error"
           )
         );
@@ -2030,8 +2064,6 @@ const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       try {
         await promisify(
           mApi().evaluation.interimEvaluationRequest.del(
@@ -2049,10 +2081,12 @@ const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
       } catch (error) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18nOLD.text.get(
-              "plugin.evaluation.notifications.deleteRequest.error",
-              error.message
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "evaluation",
+              context: "interimRequest",
+              error: error.message,
+              defaultValue: "Interim evaluation request could not be removed",
+            }),
             "error"
           )
         );
@@ -2076,8 +2110,6 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    const state = getState();
-
     try {
       await promisify(
         mApi().workspace.workspaces.students.read(
@@ -2102,10 +2134,12 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
     } catch (error) {
       dispatch(
         notificationActions.displayNotification(
-          state.i18nOLD.text.get(
-            "plugin.evaluation.notifications.archiveStudent.error",
-            error.message
-          ),
+          i18n.t("notifications.removeError", {
+            ns: "evaluation",
+            context: "student",
+            error: error.message,
+            defaultValue: "Student could not be archived",
+          }),
           "error"
         )
       );
@@ -2220,12 +2254,15 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
           if (!(err instanceof MApiError)) {
             throw err;
           }
+
           dispatch(
             displayNotification(
-              getState().i18nOLD.text.get(
-                "plugin.evaluation.notifications.loadJournalComments.error",
-                err.message
-              ),
+              i18n.t("notifications.loadError", {
+                ns: "journal",
+                context: "comments",
+                error: err.message,
+                defaultValue: "Journal comments could not be loaded",
+              }),
               "error"
             )
           );
@@ -2303,12 +2340,15 @@ const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType 
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.evaluation.notifications.createJournalComments.error",
-              err.message
-            ),
+            i18n.t("notifications.createError", {
+              ns: "journal",
+              context: "comment",
+              error: err.message,
+              defaultValue: "Journal comment could not be created",
+            }),
             "error"
           )
         );
@@ -2382,12 +2422,14 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.evaluation.notifications.updateJournalComments.error",
-              err.message
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "journal",
+              context: "comment",
+              defaultValue: "Journal comment could not be updated",
+            }),
             "error"
           )
         );
@@ -2477,12 +2519,14 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.evaluation.notifications.deleteJournalComments.error",
-              err.message
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "journal",
+              context: "comment",
+              defaultValue: "Journal comment could not be removed",
+            }),
             "error"
           )
         );

@@ -12,8 +12,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * DeleteDialogProps
  */
-interface WarningeDialogProps
-  extends WithTranslation<["common"]> {
+interface WarningeDialogProps extends WithTranslation {
   i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
@@ -68,13 +67,15 @@ class WarningDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.handleContinueClick.bind(this, closeDialog)}
         >
-          {/* {this.props.t("evaluation:actions.confirmCancel")} */} asd
+          {/* {this.props.t("evaluation:actions.confirmCancel")} */}
+          {this.props.t("actions.confirmCancel")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {/* {this.props.t("common:actions.cancel")} */} asd
+          {/* {this.props.t("common:actions.cancel")} */}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -84,9 +85,10 @@ class WarningDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        {this.props.i18nOLD.text.get(
+        {/* {this.props.i18nOLD.text.get(
           "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.description"
-        )}
+        )} */}
+        {this.props.t("content.unsavedVocalEvaluations", { ns: "evaluation" })}
       </div>
     );
     return (
@@ -94,9 +96,9 @@ class WarningDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
-        title={this.props.i18nOLD.text.get(
-          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.title"
-        )}
+        title={this.props.t("labels.unsavedVocalEvaluations", {
+          ns: "evaluation",
+        })}
         content={content}
         footer={footer}
       >
@@ -126,6 +128,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["evaluation"])(
   connect(mapStateToProps, mapDispatchToProps)(WarningDialog)
 );
