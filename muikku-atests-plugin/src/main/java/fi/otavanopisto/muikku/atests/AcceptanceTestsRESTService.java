@@ -63,6 +63,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
+import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
@@ -70,6 +71,7 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
+import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
@@ -151,6 +153,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private ForumController forumController;
+  
+  @Inject
+  private ForumThreadSubsciptionController forumThreadSubscriptionController;
 
   @Inject
   private FlagController flagController;
@@ -200,22 +205,22 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response test_login(@QueryParam ("role") String role) {
     logger.log(Level.INFO, "Acceptance tests plugin logging in with role " + role);
-    
+
     switch (role) {
       case "ENVIRONMENT-STUDENT":
-        localSessionController.login("PYRAMUS", "STUDENT-1");
+        localSessionController.login("internalauth", "PYRAMUS", "STUDENT-1");
       break;
       case "ENVIRONMENT-TEACHER":
-        localSessionController.login("PYRAMUS", "STAFF-2");
+        localSessionController.login("internalauth", "PYRAMUS", "STAFF-2");
       break;
       case "ENVIRONMENT-MANAGER":
-        localSessionController.login("PYRAMUS", "STAFF-3");
+        localSessionController.login("internalauth", "PYRAMUS", "STAFF-3");
       break;
       case "ENVIRONMENT-ADMINISTRATOR":
-        localSessionController.login("PYRAMUS", "STAFF-4");
+        localSessionController.login("internalauth", "PYRAMUS", "STAFF-4");
       break;
       case "ENVIRONMENT-TRUSTED_SYSTEM":
-        localSessionController.login("PYRAMUS", "STAFF-5");
+        localSessionController.login("internalauth", "PYRAMUS", "STAFF-5");
       break;
       
       case "PSEUDO-EVERYONE":
@@ -224,6 +229,16 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       
     }
     
+    return Response.ok().build();
+  }
+  
+  @GET
+  @Path("/logout")
+  @Produces("text/plain")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_logout() {
+    logger.log(Level.INFO, "Acceptance tests plugin logout");
+    localSessionController.logout();
     return Response.ok().build();
   }
   
@@ -819,19 +834,19 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createPasswordChangeEntry(@PathParam ("EMAIL") String email) {
     UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
-    if (userEntity == null) 
+    if (userEntity == null)
       return Response.status(Status.NOT_FOUND).build();
-        
-    String confirmationHash = "testtesttest";
-    userPendingPasswordChangeDAO.create(userEntity, confirmationHash, DateUtils.addHours(new Date(), 2));
-    return Response.noContent().build();
+     
+      String confirmationHash = "testtesttest";
+      userPendingPasswordChangeDAO.create(userEntity, confirmationHash, DateUtils.addHours(new Date(), 2));
+      return Response.noContent().build();
   }
   
   @DELETE
   @Path("/passwordchange/{EMAIL}")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deletePasswordChangeEntry(@PathParam ("EMAIL") String email) {
-    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email); 
     if (userEntity == null)
       return Response.status(Status.NOT_FOUND).build();
     
@@ -956,6 +971,21 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     return Response.ok(createRestEntity(forumController.createEnvironmentForumArea(payload.getName(), payload.getDescription(), group.getId()))).build();
   }
+  
+  @POST
+  @Path("/discussions/reply")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createDiscussionThreadReply(fi.otavanopisto.muikku.atests.DiscussionThreadReply payload) {
+    ForumThread thread = forumController.getForumThread(payload.getThreadId());
+    if (thread == null) {
+      return Response.status(Status.NOT_FOUND).entity("Thread not found").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getMessage())) {
+      return Response.status(Status.BAD_REQUEST).entity("Message is missing").build(); 
+    }   
+    return Response.ok(createRestEntity(forumController.createForumThreadReply(thread, payload.getMessage(), null))).build();
+  }
 
   @DELETE
   @Path("/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}")
@@ -997,6 +1027,10 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     for(EnvironmentForumArea forumArea : forumAreas) {
       threads = forumController.listForumThreads(forumArea  , 0, Integer.MAX_VALUE, true); 
       for (ForumThread thread : threads) {
+        List<ForumThreadSubscription> subs = forumThreadSubscriptionController.listByThread(thread);
+        for (ForumThreadSubscription sub : subs) {
+          forumThreadSubscriptionController.deleteSubscription(sub);
+        }
         replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
         for (ForumThreadReply reply : replies) {
           forumController.deleteReply(reply); 
@@ -1008,6 +1042,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     for(EnvironmentForumArea forumArea : forumAreas) {
       forumController.deleteArea(forumArea);      
     }
+    
 //    for (ForumAreaGroup group : groups) {
 //      forumController.deleteAreaGroup(group);
 //    }
@@ -1142,6 +1177,14 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   private fi.otavanopisto.muikku.atests.Discussion createRestEntity(EnvironmentForumArea entity) {
     return new fi.otavanopisto.muikku.atests.Discussion(entity.getId(), entity.getName(), entity.getDescription(), entity.getGroup().getId());
+  }
+
+  private fi.otavanopisto.muikku.atests.DiscussionThreadReply createRestEntity(ForumThreadReply entity) {
+    DiscussionThreadReply parentReply = null;
+    if(entity.getParentReply() != null) {
+      parentReply = new DiscussionThreadReply(entity.getParentReply().getId(), entity.getParentReply().getThread().getId(), entity.getParentReply().getMessage(), entity.getParentReply().getDeleted(), createRestEntity(entity.getParentReply()));
+    }
+    return new fi.otavanopisto.muikku.atests.DiscussionThreadReply(entity.getId(), entity.getThread().getId(), entity.getMessage(), entity.getDeleted(), parentReply);
   }
   
   private fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial createRestEntity(WorkspaceMaterial workspaceMaterial, HtmlMaterial htmlMaterial) {

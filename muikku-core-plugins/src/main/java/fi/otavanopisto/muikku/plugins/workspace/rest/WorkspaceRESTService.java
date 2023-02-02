@@ -2733,16 +2733,12 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @PUT
   @Path("/workspaces/{WORKSPACEID}/materials/{WORKSPACEMATERIALID}")
-  @RESTPermitUnimplemented
-  // TODO @LoggedIn
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateWorkspaceMaterial(@PathParam("WORKSPACEID") Long workspaceEntityId,
-      @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial workspaceMaterial) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-    }
+      @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial restWorkspaceMaterial) {
 
     // Workspace
+
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -2752,30 +2748,49 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
-    // WorkspaceNode
-    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getId());
-    if (workspaceNode == null) {
+    // WorkspaceMaterial
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(restWorkspaceMaterial.getId());
+    if (workspaceMaterial == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
     // Workspace material belongs to workspace check
 
-    Long materialWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceNode);
+    Long materialWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial);
     if (!materialWorkspaceEntityId.equals(workspaceEntityId)) {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
     // Actual update
 
-    Long materialId = workspaceMaterial.getMaterialId();
-    WorkspaceNode parentNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getParentId());
-    WorkspaceNode nextSibling = workspaceMaterial.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getNextSiblingId());
-    String title = workspaceMaterial.getTitle();
-    Boolean hidden = workspaceMaterial.getHidden();
-    workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden,
-        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), title, workspaceMaterial.getTitleLanguage());
-    workspaceMaterial.setPath(workspaceNode.getPath());
-    return Response.ok(workspaceMaterial).build();
+    Long materialId = restWorkspaceMaterial.getMaterialId();
+    WorkspaceNode parentNode = workspaceMaterialController.findWorkspaceNodeById(restWorkspaceMaterial.getParentId());
+    WorkspaceNode nextSibling = restWorkspaceMaterial.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restWorkspaceMaterial.getNextSiblingId());
+    boolean titleChanged = !StringUtils.equals(restWorkspaceMaterial.getTitle(), workspaceMaterial.getTitle());
+    Boolean hidden = restWorkspaceMaterial.getHidden();
+    WorkspaceNode workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceMaterial, materialId, parentNode, nextSibling, hidden,
+        restWorkspaceMaterial.getAssignmentType(), restWorkspaceMaterial.getCorrectAnswers(), restWorkspaceMaterial.getTitle(), restWorkspaceMaterial.getTitleLanguage());
+    restWorkspaceMaterial.setPath(workspaceNode.getPath());
+    
+    // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
+    
+    if (restWorkspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.JOURNAL && titleChanged) {
+      List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
+      List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies =
+          workspaceMaterialReplyController.listWorkspaceMaterialRepliesByWorkspaceMaterial(workspaceMaterial);
+      for (WorkspaceMaterialField field : fields) {
+        for (fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply : replies) {
+          String identifier = String.format("%d-%d", field.getId(), reply.getId());
+          WorkspaceJournalEntry journalEntry = workspaceJournalController.findJournalEntryByMaterialFieldReplyIdentifier(identifier);
+          if (journalEntry != null) {
+            workspaceJournalController.updateJournalEntryTitle(journalEntry, restWorkspaceMaterial.getTitle());
+          }
+        }
+      }
+    }
+    
+    return Response.ok(restWorkspaceMaterial).build();
   }
 
   @GET

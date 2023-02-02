@@ -77,6 +77,17 @@
   font-weight: 600;
 }
 
+.table__head--month {
+  padding: 5px;
+  text-align: left;
+  width: 100px;
+}
+
+.table__head--planned-courses {
+  padding: 5px;
+  text-align: left;
+}
+
 .table__head--language,
 .table__head--subject {
   padding: 5px;

@@ -118,7 +118,8 @@ public class UserEntityController implements Serializable {
         }
       }
     }
-    return null;
+    // #6458: Return a skeleton object when search provider is having a bad day
+    return new UserEntityName(null, null, null, null);
   }
   
   public String getStudyTimeEndAsString(OffsetDateTime studyTimeEnd) {

@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceJournalFeedback;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
@@ -54,6 +55,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationR
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGradingScale;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceJournalFeedback;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
@@ -84,7 +86,6 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
-import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -103,10 +104,6 @@ public class EvaluationRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -2380108419567067263L;
   
-  @Inject
-  @BaseUrl
-  private String baseUrl;
-
   @Inject
   private Logger logger;
 
@@ -151,6 +148,7 @@ public class EvaluationRESTService extends PluginRESTService {
 
   @Inject
   private ActivityLogController activityLogController;
+  
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/activity")
@@ -1371,6 +1369,123 @@ public class EvaluationRESTService extends PluginRESTService {
     return Response.status(Status.BAD_REQUEST).build();
   }
   
+  @POST
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTENTITYID}/journalfeedback")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createOrUpdateWorkspaceJournalFeedback(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTENTITYID") Long studentEntityId, RestWorkspaceJournalFeedback payload) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // Entities & null checks
+    UserEntity studentEntity = userEntityController.findUserEntityById(studentEntityId);
+    
+    if (studentEntity == null) {
+      return Response.status(Status.BAD_REQUEST)
+        .entity(String.format("Malformed student entity %d", studentEntity))
+        .build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND)
+        .entity(String.format("Could not find workspace entity %d", workspaceEntityId))
+        .build();
+    }
+    
+    // Create or update
+    WorkspaceJournalFeedback journalFeedback = evaluationController.findWorkspaceJournalFeedbackByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
+    
+    if (journalFeedback != null) {
+      journalFeedback = evaluationController.updateWorkspaceJournalFeedback(journalFeedback, payload.getFeedback());
+    } else {
+      journalFeedback = evaluationController.createWorkspaceJournalFeedback(
+        studentEntity.getId(), 
+        workspaceEntity.getId(), 
+        sessionController.getLoggedUserEntity().getId(), 
+        payload.getFeedback());
+    }
+    return Response.ok(createRestModel(journalFeedback)).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTENTITYID}/journalfeedback")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceStudentJournalFeedback(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTENTITYID") Long studentEntityId) {
+    // Entities
+    UserEntity studentEntity = userEntityController.findUserEntityById(studentEntityId);
+    
+    if (studentEntity == null) {
+      return Response.status(Status.BAD_REQUEST)
+        .entity(String.format("Malformed student entity %s", studentEntity))
+        .build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND)
+        .entity(String.format("Could not find workspace entity %d", workspaceEntityId))
+        .build();
+    }
+    // Access
+    if (!sessionController.getLoggedUserEntity().getId().equals(studentEntity.getId())) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    WorkspaceJournalFeedback journalFeedback = evaluationController.findWorkspaceJournalFeedbackByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
+    
+    if (journalFeedback == null) {
+      return Response.noContent().build();
+    }
+    return Response.ok(createRestModel(journalFeedback)).build();
+  }
+  
+  @DELETE
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTENTITYID}/journalfeedback/{ID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteWorkspaceJournalFeedback(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTENTITYID") Long studentEntityId, @PathParam("ID") Long feedbackId) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    WorkspaceJournalFeedback journalFeedback = evaluationController.findWorkspaceJournalFeedbackByStudentAndWorkspace(studentEntityId, workspaceEntityId);
+    
+    if (journalFeedback == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    evaluationController.deleteWorkspaceJournalFeedback(journalFeedback);
+
+    return Response.noContent().build();
+  
+  }
+  
+  private RestWorkspaceJournalFeedback createRestModel(WorkspaceJournalFeedback journalFeedback) {
+    RestWorkspaceJournalFeedback restFeedback = new RestWorkspaceJournalFeedback();
+    UserEntity creatorEntity = userEntityController.findUserEntityById(journalFeedback.getCreator());
+
+    String creatorName = null;
+    if (creatorEntity != null) {
+      UserEntityName userEntityName = userEntityController.getName(creatorEntity);
+      creatorName = userEntityName != null ? userEntityName.getDisplayName() : null; 
+    }
+    restFeedback.setId(journalFeedback.getId());
+    restFeedback.setCreated(journalFeedback.getCreated());
+    restFeedback.setCreator(journalFeedback.getCreator());
+    restFeedback.setCreatorName(creatorName);
+    restFeedback.setFeedback(journalFeedback.getFeedback());
+    restFeedback.setStudent(journalFeedback.getStudent());
+    restFeedback.setWorkspaceEntityId(journalFeedback.getWorkspaceEntityId());
+    
+    return restFeedback;
+  }
+  
+  
   private List<RestWorkspaceMaterialEvaluation> createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation... entries) {
     List<RestWorkspaceMaterialEvaluation> result = new ArrayList<>();
 
@@ -1380,6 +1495,7 @@ public class EvaluationRESTService extends PluginRESTService {
 
     return result;
   }
+  
   
   private RestWorkspaceMaterialEvaluation createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation evaluation) {
     Boolean passingGrade = null;

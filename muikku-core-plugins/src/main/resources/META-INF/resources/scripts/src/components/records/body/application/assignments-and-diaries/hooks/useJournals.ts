@@ -2,8 +2,11 @@ import * as React from "react";
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { WorkspaceJournalType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
+import {
+  WorkspaceJournalFeedback,
+  WorkspaceJournalType,
+} from "~/reducers/workspaces/journals";
 
 /**
  * UseFollowUpGoalsState
@@ -11,6 +14,7 @@ import { i18nType } from "~/reducers/base/i18n";
 export interface UseDiariesState {
   isLoading: boolean;
   journals: WorkspaceJournalType[];
+  journalFeedback: WorkspaceJournalFeedback | null;
 }
 
 /**
@@ -19,6 +23,7 @@ export interface UseDiariesState {
 const initialState: UseDiariesState = {
   isLoading: false,
   journals: [],
+  journalFeedback: null,
 };
 
 /**
@@ -46,7 +51,7 @@ export const useJournals = (
      * @param userEntityId of student
      * @param workspaceId of student
      */
-    const loadAssignmentData = async (
+    const loadJournalsData = async (
       userEntityId: number,
       workspaceId: number
     ) => {
@@ -61,7 +66,7 @@ export const useJournals = (
         /**
          * Loaded and filtered student activity
          */
-        const [journals] = await Promise.all([
+        const [journals, journalFeedback] = await Promise.all([
           (async () => {
             const journals = <WorkspaceJournalType[]>await promisify(
               mApi().workspace.workspaces.journal.read(workspaceId, {
@@ -73,12 +78,25 @@ export const useJournals = (
             )();
             return journals;
           })(),
+          (async () => {
+            const journalFeedback = <WorkspaceJournalFeedback>(
+              await promisify(
+                mApi().evaluation.workspaces.students.journalfeedback.read(
+                  workspaceId,
+                  userEntityId
+                ),
+                "callback"
+              )()
+            );
+            return journalFeedback;
+          })(),
         ]);
 
         if (!isCancelled) {
           setJournalsData((journalsData) => ({
             ...journalsData,
             journals: journals,
+            journalFeedback: journalFeedback,
             isLoading: false,
           }));
         }
@@ -98,7 +116,7 @@ export const useJournals = (
       }
     };
 
-    loadAssignmentData(userEntityId, workspaceId);
+    loadJournalsData(userEntityId, workspaceId);
 
     return () => {
       isCancelled = true;

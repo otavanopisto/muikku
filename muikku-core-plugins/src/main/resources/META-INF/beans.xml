@@ -6,7 +6,7 @@
 
   <interceptors>
     <class>fi.otavanopisto.security.AdminInterceptor</class>
-    <class>fi.otavanopisto.security.LoggedInInterceptor</class>
+    <class>fi.otavanopisto.muikku.security.LoggedInInterceptor</class>
     <class>fi.otavanopisto.security.PermitInterceptor</class>
     <class>fi.otavanopisto.muikku.security.LoggedInWithQueryParamsInterceptor</class>
     <class>fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptionsInterceptor</class>

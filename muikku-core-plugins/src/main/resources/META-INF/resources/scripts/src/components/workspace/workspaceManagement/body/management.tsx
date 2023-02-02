@@ -799,14 +799,20 @@ class ManagementPanel extends React.Component<
                           "plugin.workspace.management.title.basicInfo.description"
                         )}
                       </label>
-                      <CKEditor
-                        editorTitle={this.props.i18n.text.get(
-                          "plugin.wcag.workspaceDescription.label"
-                        )}
-                        onChange={this.onDescriptionChange}
-                      >
-                        {this.state.workspaceDescription}
-                      </CKEditor>
+                      {
+                        // TODO: This is a temporary fix for Ckedtior not showing content
+                        // between view changes or refreshes. This should be fixed in CKEditor
+                      }
+                      {this.state.workspaceDescription && (
+                        <CKEditor
+                          editorTitle={this.props.i18n.text.get(
+                            "plugin.wcag.workspaceDescription.label"
+                          )}
+                          onChange={this.onDescriptionChange}
+                        >
+                          {this.state.workspaceDescription}
+                        </CKEditor>
+                      )}
                     </div>
                   </div>
                 </div>
