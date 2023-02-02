@@ -5,7 +5,6 @@ import LastMessagesPanel from "./body/latest-messages-panel";
 import WallPanel from "./body/wall-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
 import StudiesPanel from "./body/studies-panel";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -20,7 +19,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface IndexBodyProps extends WithTranslation {
   status: StatusType;
-  i18nOLD: i18nType;
 }
 
 //TODO css get rid of ordered container
@@ -74,7 +72,6 @@ class IndexBody extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

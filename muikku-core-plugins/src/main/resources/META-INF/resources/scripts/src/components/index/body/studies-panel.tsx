@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { withTranslation, WithTranslation } from "react-i18next";
 import {
   WorkspaceListType,
   WorkspaceType,
@@ -23,8 +23,7 @@ import ItemList from "~/components/general/item-list";
 /**
  * WorkspacesPanelProps
  */
-interface WorkspacesPanelProps {
-  i18nOLD: i18nType;
+interface WorkspacesPanelProps extends WithTranslation {
   status: StatusType;
   workspaces: WorkspaceListType;
   lastWorkspace: WorkspaceMaterialReferenceType;
@@ -37,7 +36,7 @@ interface WorkspacesPanelProps {
  * @returns  JSX.element
  */
 const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
-  const { i18nOLD, status, workspaces, lastWorkspace } = props;
+  const { t, status, workspaces, lastWorkspace } = props;
 
   const { nextSuggestions } = useNextCourseSuggestions(
     props.status.userSchoolDataIdentifier,
@@ -49,12 +48,12 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
     <Panel
       icon="icon-books"
       modifier="workspaces"
-      header={i18nOLD.text.get("plugin.frontPage.studies.title")}
+      header={t("labels.studying", { ns: "frontPage" })}
     >
       {lastWorkspace ? (
         <>
           <Panel.BodyTitle>
-            {i18nOLD.text.get("plugin.frontPage.studies.continue.title")}
+            {t("labels.continue", { ns: "frontPage" })}
           </Panel.BodyTitle>
           <Panel.BodyContent>
             <ItemList modifier="continue-studies">
@@ -62,11 +61,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                 {props.lastWorkspace.workspaceName}
               </ItemList.Item>
               <ItemList.ItemFooter modifier="continue-studies">
-                <span>
-                  {props.i18nOLD.text.get(
-                    "plugin.frontPage.latestWorkspace.material.part1"
-                  )}
-                </span>
+                <span>{t("content.pointOfContinue", { ns: "frontPage" })}</span>
                 <Link
                   className="link--index-text-link"
                   href={props.lastWorkspace.url}
@@ -82,7 +77,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       {nextSuggestions.nextCourses.length > 0 ? (
         <>
           <Panel.BodyTitle>
-            {i18nOLD.text.get("plugin.frontPage.studies.next.title")}
+            {t("labels.next", { ns: "frontPage" })}
           </Panel.BodyTitle>
           <Panel.BodyContent>
             <ItemList modifier="suggestions">
@@ -99,15 +94,12 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                     <Link
                       className="link--index"
                       aria-label={
-                        props.i18nOLD.text.get(
-                          "plugin.frontPage.suggestedWorkspaces.checkOut"
-                        ) + workspace.name
+                        t("actions.checkOut", { ns: "workspace" }) +
+                        workspace.name
                       }
                       href={`/workspace/${workspace.urlName}`}
                     >
-                      {props.i18nOLD.text.get(
-                        "plugin.frontPage.suggestedWorkspaces.checkOut"
-                      )}
+                      {t("actions.checkOut", { ns: "workspace" })}
                     </Link>
                     <WorkspaceSignup
                       workspaceSignUpDetails={{
@@ -120,14 +112,11 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                       <Link
                         className="link--index"
                         aria-label={
-                          props.i18nOLD.text.get(
-                            "plugin.frontPage.suggestedWorkspaces.signUp"
-                          ) + workspace.name
+                          t("actions.signUp", { ns: "workspace" }) +
+                          workspace.name
                         }
                       >
-                        {props.i18nOLD.text.get(
-                          "plugin.frontPage.suggestedWorkspaces.signUp"
-                        )}
+                        {t("actions.signUp", { ns: "workspace" })}
                       </Link>
                     </WorkspaceSignup>
                   </ItemList.ItemFooter>
@@ -139,7 +128,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       ) : null}
 
       <Panel.BodyTitle>
-        {i18nOLD.text.get("plugin.frontPage.studies.workspaces.title")}
+        {t("labels.workspaces", { ns: "workspace", context: "yours" })}
       </Panel.BodyTitle>
       {workspaces.length ? (
         <Panel.BodyContent>
@@ -178,24 +167,17 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
         <Panel.BodyContent modifier="empty">
           {status.isStudent ? (
             <>
-              {i18nOLD.text.get(
-                "plugin.frontPage.workspaces.noWorkspaces.part1"
-              )}{" "}
+              {t("content.noWorkspaces", { ns: "frontPage", context: "pt1" })}
               <Link href="/coursepicker" className="link link--index-text-link">
-                {i18nOLD.text.get(
-                  "plugin.frontPage.workspaces.noWorkspaces.coursepicker"
-                )}
-              </Link>{" "}
-              {i18nOLD.text.get(
-                "plugin.frontPage.workspaces.noWorkspaces.part2"
-              )}
+                {t("content.noWorkspaces", {
+                  ns: "frontPage",
+                  context: "coursepicker",
+                })}
+              </Link>
+              {t("content.noWorkspaces", { ns: "frontPage", context: "pt2" })}
             </>
           ) : (
-            <>
-              {i18nOLD.text.get(
-                "plugin.frontPage.workspaces.noWorkspaces.teacher"
-              )}
-            </>
+            <>{t("content.noWorkspaces", { ns: "frontPage" })} </>
           )}
         </Panel.BodyContent>
       )}
@@ -210,7 +192,6 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18nOLD: state.i18nOLD,
     workspaces: state.workspaces.userWorkspaces,
     lastWorkspace: state.workspaces.lastWorkspace,
   };
@@ -224,4 +205,6 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
-export default connect(mapStateToProps, mapDispatchToProps)(StudiesPanel);
+export default withTranslation(["frontPage", "workspace"])(
+  connect(mapStateToProps, mapDispatchToProps)(StudiesPanel)
+);

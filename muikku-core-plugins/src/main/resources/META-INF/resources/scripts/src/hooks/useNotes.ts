@@ -7,7 +7,7 @@ import {
   NotesItemStatus,
   NotesItemUpdate,
 } from "~/@types/notes";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { useTranslation } from "react-i18next";
 import { Role } from "~/reducers/base/status";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
@@ -20,11 +20,11 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
  */
 export const useOnGoingNotes = (
   status: StatusType,
-  i18nOLD: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [notes, setNotes] = React.useState(<NotesItemRead[]>[]);
   const { userId, role } = status;
+  const { t } = useTranslation("tasks");
 
   React.useEffect(() => {
     // This is for students only hook, if you call it as someone else, no loading should happen
@@ -44,13 +44,13 @@ export const useOnGoingNotes = (
         setNotes(notesItems.filter((note) => note.status === "ONGOING"));
       } catch (err) {
         displayNotification(
-          i18nOLD.text.get("plugin.records.tasks.notification.load.error", err),
+          t("notifications.loadError", { error: err }),
           "error"
         );
       }
     };
     loadNotes();
-  }, [userId, role, displayNotification, i18nOLD]);
+  }, [userId, role, displayNotification, t]);
 
   /**
    * changenotesItemStatus
@@ -84,17 +84,12 @@ export const useOnGoingNotes = (
       setNotes(updatedNotesItemList);
 
       displayNotification(
-        i18nOLD.text.get(
-          "plugin.records.tasks.notification.stateUpdate.success"
-        ),
+        t("notifications.updateSuccess", { context: "taskState" }),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18nOLD.text.get(
-          "plugin.records.tasks.notification.stateUpdate.error",
-          err
-        ),
+        t("notifications.updateError", { context: "taskState", error: err }),
         "error"
       );
     }
@@ -133,13 +128,10 @@ export const useOnGoingNotes = (
 
       onSuccess && onSuccess();
 
-      displayNotification(
-        i18nOLD.text.get("plugin.records.tasks.notification.edit.success"),
-        "success"
-      );
+      displayNotification(t("notifications.updateSuccess"), "success");
     } catch (err) {
       displayNotification(
-        i18nOLD.text.get("plugin.records.tasks.notification.edit.error", err),
+        t("notifications.updateError", { error: err }),
         "error"
       );
     }
