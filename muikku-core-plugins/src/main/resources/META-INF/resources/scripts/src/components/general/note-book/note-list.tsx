@@ -115,21 +115,21 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
     >
       <div className="notebook__item-header">
         <div className="notebook__item-actions">
-        <Dropdown openByHover content={<p>Muokkaa muistiinpanoa</p>}>
-          <IconButton
-            icon="pencil"
-            onClick={handleEditClick}
-            disabled={props.isEdited}
-            buttonModifiers={["notebook-item-action"]}
-          />
+          <Dropdown openByHover content={<p>Muokkaa muistiinpanoa</p>}>
+            <IconButton
+              icon="pencil"
+              onClick={handleEditClick}
+              disabled={props.isEdited}
+              buttonModifiers={["notebook-item-action"]}
+            />
           </Dropdown>
           <Dropdown openByHover content={<p>Poista muistiinpano</p>}>
-          <IconButton
-            icon="trash"
-            onClick={() => setDeleteIsActive(!deleteIsActive)}
-            disabled={props.isEdited}
-            buttonModifiers={["notebook-item-action"]}
-          />
+            <IconButton
+              icon="trash"
+              onClick={() => setDeleteIsActive(!deleteIsActive)}
+              disabled={props.isEdited}
+              buttonModifiers={["notebook-item-action"]}
+            />
           </Dropdown>
         </div>
       </div>

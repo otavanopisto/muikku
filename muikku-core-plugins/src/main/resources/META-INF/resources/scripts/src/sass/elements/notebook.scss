@@ -60,9 +60,11 @@
     min-width: 100%;
   }
 
+  /* stylelint-disable selector-class-pattern */
   .cke_wysiwyg_div {
     min-height: 150px;
   }
+  /* stylelint-enable selector-class-pattern */
 
   &.state-OPEN {
     padding: 0 10px 10px;
