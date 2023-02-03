@@ -2,7 +2,6 @@ import FrontpageNavbar from "./body/navbar";
 import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18nOLD";
-import { withTranslation, WithTranslation } from "react-i18next";
 import FrontpageHero from "./body/header";
 import FrontpageStudying from "./body/studying";
 import FrontpageVideos from "./body/videos";
@@ -30,7 +29,7 @@ import { StateType } from "~/reducers";
 /**
  * FrontpageBodyProps
  */
-interface FrontpageBodyProps  {
+interface FrontpageBodyProps {
   i18nOLD: i18nType;
 }
 

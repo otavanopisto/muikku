@@ -90,10 +90,10 @@ class AnnouncementsPanel extends React.Component<
    * @returns label with correct locale string
    */
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
-    let label = this.props.i18nOLD.text.get("plugin.wcag.pager.goToPage.label");
+    let label = this.props.t("wcag.goToPage", { ns: "messaging" });
 
     if (selected) {
-      label = this.props.i18nOLD.text.get("plugin.wcag.pager.current.label");
+      label = this.props.t("wcag.currentPage", { ns: "messaging" });
     }
 
     return label;
@@ -180,7 +180,7 @@ class AnnouncementsPanel extends React.Component<
     const renderPaginationBody = (
       <div
         className="item-list__item item-list__item--announcements"
-        aria-label={this.props.i18nOLD.text.get("plugin.wcag.pager.label")}
+        aria-label={this.props.t("wcag.pager", { ns: "messaging" })}
       >
         <span className="item-list__text-body item-list__text-body--multiline--footer">
           <PagerV2
@@ -200,9 +200,10 @@ class AnnouncementsPanel extends React.Component<
 
     return (
       <Panel
-        header={this.props.i18nOLD.text.get(
-          "plugin.frontPage.announcements.title"
-        )}
+        header={this.props.t("labels.announcement", {
+          ns: "messaging",
+          context: "other",
+        })}
         icon="icon-paper-plane"
         modifier="announcements"
       >
@@ -219,15 +220,10 @@ class AnnouncementsPanel extends React.Component<
               : null}
           </>
         ) : (
-          <div
-            className="empty empty--front-page"
-            aria-label={this.props.i18nOLD.text.get(
-              "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel"
-            )}
-          >
-            {this.props.i18nOLD.text.get(
-              "plugin.frontPage.announcements.noAnnouncements"
-            )}
+          <div className="empty empty--front-page">
+            {this.props.t("content.empty", {
+              context: "announcements",
+            })}
           </div>
         )}
       </Panel>
@@ -254,6 +250,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["frontPage", "messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(AnnouncementsPanel)
 );

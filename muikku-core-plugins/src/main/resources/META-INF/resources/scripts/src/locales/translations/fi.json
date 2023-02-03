@@ -39,11 +39,9 @@
       "show_comments": "Näytä kommentit",
       "signIn": "Kirjaudu sisään",
       "signOut": "Kirjaudu ulos",
-      "signUp": "Ilmoittaudu",
       "update": "Päivitä"
     },
     "labels": {
-      "accessibilityStatement": "Saavutettavuusseloste",
       "active": "Aktiiviset",
       "address": "Osoite",
       "announcer": "Tiedotin",
@@ -98,7 +96,6 @@
       "people": "Ihmiset",
       "personalInfo": "Omat tiedot",
       "phone": "Puhelinnumero",
-      "privacyPolicy": "Tietosuojaseloste",
       "profileImage": "Profiilin kuva",
       "remove": "Poista",
       "remove_message": "Poista viesti",
@@ -117,6 +114,7 @@
       "settings_vacation": "Loma-asetukset",
       "signUp": "Kurssille ilmoittautuminen",
       "signUpMessage": "Viesti kurssin opettajalle",
+      "site": "Muikku",
       "staff": "Henkilökunta",
       "stats": "Tilastot",
       "studies": "Opinnot",
@@ -129,6 +127,7 @@
       "yes": "Kyllä"
     },
     "content": {
+      "empty": "Ei sisältöä",
       "empty_people": "Ei henkilöitä",
       "empty_rooms": "Ei huoneita",
       "helpdesk": "Ongelmia Muikussa? helpdesk(a)muikkuverkko.fi",
@@ -202,7 +201,6 @@
       "decreaseRuler": "Pienennä lukiviivaimen korkeutta",
       "externalLink": "Avautuu uuteen välilehteen",
       "increaseRuler": "Suurenna lukiviivaimen korkeutta",
-      "mikäsSeTämäOn?_indexViewHeader": "Front Page of Muikku",
       "invertRulersColors": "Käännä lukiviivaimen värit",
       "localeMenu": "Muikun käyttöliittymän kielivalikko",
       "mainNavigation": "Muikun päänavigaatio",
@@ -453,11 +451,16 @@
       "confirmSave": "Tiedot ovat oikein",
       "exploreMaterials": "Tutustu materiaaleihin",
       "readMore": "Lue koko artikkeli",
+      "tourNettilukio": "Tutustu Nettilukioon",
+      "tourNettilukio_aineopiskelu": "Tutustu Nettilukion aineopiskeluun",
+      "tourNettiperuskoulu": "Tutustu Nettiperuskouluun",
+      "tourNettiperuskoulu_aineopiskelu": "Tutustu Nettiperuskoulun aineopiskeluun",
       "update": "Päivitä tietoja"
     },
     "labels": {
+      "accessibilityStatement": "Saavutettavuusseloste",
+      "aineopiskelu": "Aineopiskelu",
       "becomeStudent": "Opiskelijaksi",
-      "studentApplication": "Hae opiskelijaksi",
       "checkAddress": "Tarkista osoitetietosi",
       "city": "Kaupunki",
       "contact": "Ota yhteyttä",
@@ -473,15 +476,11 @@
       "openMaterials": "Avoimet materiaalit",
       "organization": "Otavia",
       "postalCode": "Postinumero",
-      "privacyPolicy": "Opiskelija- ja opintotietorekisterin tietosuojaseloste",
-      "site": "Muikku",
+      "privacyPolicy": "Tietosuojaseloste",
+      "privacyPolicy_studentRegistry": "Opiskelija- ja opintotietorekisterin tietosuojaseloste",
       "streetAddress": "Katuosoite",
+      "studentApplication": "Hae opiskelijaksi",
       "studying": "Opiskelu",
-      "studying_subject": "Aineopiskelu",
-      "tourNettilukio": "Tutustu Nettilukioon",
-      "tourNettilukio_aineopiskelu": "Tutustu Nettilukion aineopiskeluun",
-      "tourNettiperuskoulu": "Tutustu Nettiperuskouluun",
-      "tourNettiperuskoulu_aineopiskelu": "Tutustu Nettiperuskoulun aineopiskeluun",
       "wall": "Seinämä",
       "welcome": "Tervetuloa muikkuun!"
     },
@@ -492,16 +491,16 @@
       "educationWednesday": "Koulutuskeskiviikko kokoaa kerran kuussa oppimisesta ja koulutuksesta kiinnostuneet yhteisen teeman äärelle kuulemaan innoittavia alustuksia, jakamaan käytännön vinkkejä ja esimerkkejä parhaista toimintatavoista sekä keskustelemaan siitä, miten koulutuskenttää voidaan käytännössä kehittää.",
       "forgotPassword": "Syötä alla olevaan kenttään sähköpostiosoitteesi, niin lähetämme siihen linkin, jonka avulla voit palauttaa salasanasi.",
       "immigrantEducation": "Maahanmuuttajakoulutukset tarjoavat perusopetusta aikuisille. Otavan Opiston kampuksella Savo kohtaa koko maailman.",
-      "inactiveStudents": "Näkymäsi on rajoitettu, koska opintosi ovat päättyneet. Pääset edelleen suoritusrekisteriisi ja tutustumaan kursseihin.</p><p>Ongelmatilanteissa ota yhteyttä Helpdeskiin (<a href='mailto:helpdesk@muikkuverkko.fi'>helpdesk@muikkuverkko.fi</a>).",
-      "latestWorkspaces1": "Olit viimeksi kohdassa",
+      "inactiveStudent": "Näkymäsi on rajoitettu, koska opintosi ovat päättyneet. Pääset edelleen suoritusrekisteriisi ja tutustumaan kursseihin.</p><p>Ongelmatilanteissa ota yhteyttä Helpdeskiin (<a href='mailto:helpdesk@muikkuverkko.fi'>helpdesk@muikkuverkko.fi</a>).",
+      "pointOfContinue": "Olit viimeksi kohdassa",
       "loginFromCredentials": "Voit nyt kirjautua sisään asettamillasi tunnuksilla",
       "nettilukio": "Tavoitteena aikuislukion päättötodistus ja ylioppilaslakki.",
       "nettiperuskoulu": "Tavoitteena aikuisten perusopetuksen päättötodistus.",
       "newBeginning": "Otavan Opisto on Alku uudelle. Sympaattinen ja viihtyisä kampusalue on täynnä elämää ja mahtavia ihmisiä.",
-      "noWorkspaces1": "Et ole opiskelijana missään työtilassa. Voit käyttää",
-      "noWorkspacesCoursepicker": "kurssipoimuria",
-      "noWorkspaces2": "löytääksesi sinua kiinnostavia kursseja.",
-      "noWorkspaces_teacher": "Sinulla ei ole yhtään työtilaa.",
+      "noWorkspaces": "Sinulla ei ole yhtään kurssia.",
+      "noWorkspaces_pt1": "Et ole opiskelijana missään työtilassa. Voit käyttää",
+      "noWorkspaces_coursepicker": "kurssipoimuria",
+      "noWorkspaces_pt2": "löytääksesi sinua kiinnostavia kursseja.",
       "noUserByEmail": "Muikussa ei ole käyttäjätiliä, jonka sähköpostiosoite olisi {0}.",
       "openMaterials": "Creative Commons -lisensoituja oppimateriaaleja, joiden käyttö ei vaadi rekisteröitymistä.",
       "organization": "<p>Otavia on Mikkelin kaupungin ylläpitämä liikelaitos, jossa voi suorittaa aikuisten lukiokoulutuksen, perusopetuksen ja vapaan sivistystyön opintoja. Otavian erityisosaamista ovat etäopetus ja verkkopedagogiikka, monikulttuuristen ryhmien opetus sekä vapaan sivistystyön koulutukset. Otavia tarjoaa koulutusta ja koulutuksen kehittämiseen liittyviä palveluita alueellisesti, valtakunnallisesti ja globaalisti.</p>",
@@ -512,9 +511,10 @@
       "studentApplication": " Tutustu koulutuksiin ja täytä hakulomake."
     },
     "wcag": {
+      "indexViewHeader": "Muikun etusivu",
       "instagram": "Muikkuofficial Instagram julkaisut",
       "organizationDescription": "Otavia organisaation kuvaus",
-      "otaviaNew": "Otavia organisaation uutisia",
+      "otaviaNews": "Otavia organisaation uutisia",
       "studying": "Opiskeluvaihtoehdot Otaviassa",
       "videos": "Otavian esittely videoita"
     }
@@ -541,7 +541,6 @@
       "create": "Uusi viesti",
       "create_announcement": "Uusi tiedote",
       "create_discussionArea": "Uusi keskustelualue",
-
       "createAndSearchLabels": "Luo ja selaa tunnisteita",
       "description_discussionArea": "Keskustelualueen kuvaus",
       "discussionArea": "Keskustelualue",
@@ -681,28 +680,27 @@
   "tasks": {
     "actions": {
       "approve": "Merkitse hyväksytyksi",
-      "cancel_approvalRequest": "Peruuta hyväksyntäpyyntö",
+      "cancel": "Peruuta hyväksyntäpyyntö",
       "done": "Merkitse tehdyksi",
       "incomplete": "Merkitse keskeneräiseksi",
-      "send_approvalRequest": "Lähetä hyväksyttäväksi"
+      "send": "Lähetä hyväksyttäväksi"
     },
     "notifications": {
       "archiveError": "Tehtävän arkistointi epäonnistui, ole hyvä ja yritä uudelleen. {0}",
       "archiveSuccess": "Tehtävän arkistointi onnistui.",
       "createError": "Tehtävän luonti epäonnistui, ole hyvä ja yritä uudelleen. {0}",
       "createSuccess": "Tehtävä luotiin onnistuneesti.",
-      "loadError": "Tehtävien lataus epäonnistui, ole hyvä ja lataa sivu uudelleen. {0}",
+      "loadError": "Tehtävien lataus epäonnistui, ole hyvä ja lataa sivu uudelleen. {{error}}",
       "unarchiveError": "Tehtävän palautus epäonnistui, ole hyvä ja yritä uudelleen. {0}",
       "unarchiveSuccess": "Tehtävän palautus onnistui.",
       "updateError": "Tehtävän muokkaus epäonnistui, ole hyvä ja yritä uudelleen. {0}",
-      "updateError_taskState": " Tehtävän tilan päivitys epäonnistui, ole hyvä ja yritä uudelleen. {0}",
+      "updateError_taskState": " Tehtävän tilan päivitys epäonnistui, ole hyvä ja yritä uudelleen. {{error}}",
       "updateSuccess": "Tehtävän muokkaus onnistui.",
       "updateSuccess_taskState": "Tehtävän tila päivitettiin onnistuneesti.",
       "ratingError": "Tehtävän tähditys epäonnistui, ole hyvä ja yritä uudelleen. {0}"
     },
     "labels": {
       "active": "Voimassa",
-      "active_tasks": "Aktiiviset tehtävät",
       "create": "Uusi tehtävä",
       "createdByCoucelors": " Ohjaajien lisäämät",
       "details": "Tehtävän tiedot",
@@ -712,12 +710,14 @@
       "priority_high": "Korkea",
       "priority_normal": "Normaali",
       "priority_low": "Matala",
+      "status": "Tila",
       "status_done": "Tehty",
       "status_ongoing": "Kesken",
       "status_overdue": "Myöhässä",
       "status_pending": "Odottaa hyväksymistä",
-      "tasks_student": "Tehtävät",
-      "tasks_staff": "Opiskelijalle annetut tehtävät"
+      "tasks": "Tehtävät",
+      "tasks_active": "Aktiiviset tehtävät",
+      "tasks_student": "Opiskelijalle annetut tehtävät"
     },
     "content": {
       "empty": "Ei tehtäviä",
@@ -1069,7 +1069,8 @@
       "readMore": "Lue lisää",
       "save_journal": "Julkaise merkintä",
       "send_interimEvaluationRequest": "Lähetä välipalautepyyntö",
-      "show_supplementationRequest": "Näytä täydennyspyyntö"
+      "show_supplementationRequest": "Näytä täydennyspyyntö",
+      "signUp": "Ilmoittaudu"
     },
 
     "labels": {
@@ -1106,7 +1107,6 @@
       "discussions": "Kurssin keskustelualueet",
       "edit": "Muokkaa kurssia {0}",
       "edit_info": "Muokkaa kurssin tietoja - {0}",
-
       "educationLevel": "Koulutusaste",
       "educationType": "Koulutusohjelma",
       "endDate": "Loppumispäivä",
@@ -1123,7 +1123,6 @@
       "instructions": "Ohjeet",
       "introduction": "Esittely",
       "image": "Kuva",
-
       "length": "Laajuus",
       "license": "Lisenssi",
       "linkMaterials": "Linkitä materiaalit",
@@ -1182,7 +1181,6 @@
       "visibility": "Näkyvyys",
       "workspaces": "Kurssit",
       "workspaces_yours": "Kurssisi",
-      "workspaces_forYou": "Kursseja sinulle",
       "workspaceLength": "{0} {1}",
       "workspaceDates": "{0}\u2013{1}",
       "workspaceTypeSelect": "Kurssityyppien listausvalinta"

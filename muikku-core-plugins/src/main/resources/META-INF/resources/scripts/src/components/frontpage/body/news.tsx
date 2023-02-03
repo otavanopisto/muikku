@@ -31,12 +31,10 @@ class FrontpageNews extends React.Component<
         id="news"
         role="feed"
         className="screen-container__section"
-        aria-label={this.props.i18nOLD.text.get(
-          "plugin.wcag.frontPageSectionNewsLabel"
-        )}
+        aria-label={this.props.t("wcag.otaviaNews", { ns: "frontPage" })}
       >
         <h2 className="screen-container__header">
-          {this.props.i18nOLD.text.get("plugin.sectionTitle.news")}
+          {this.props.t("labels.news", { ns: "frontPage" })}
         </h2>
         <div className="ordered-container ordered-container--frontpage-news">
           <div className="ordered-container__item ordered-container__item--frontpage-news">

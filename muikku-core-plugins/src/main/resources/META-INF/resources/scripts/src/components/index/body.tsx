@@ -5,7 +5,6 @@ import LastMessagesPanel from "./body/latest-messages-panel";
 import WallPanel from "./body/wall-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
 import StudiesPanel from "./body/studies-panel";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -18,9 +17,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * IndexBodyProps
  */
-interface IndexBodyProps extends WithTranslation<[ "frontPage", "common"]> {
+interface IndexBodyProps extends WithTranslation {
   status: StatusType;
-  i18nOLD: i18nType;
 }
 
 //TODO css get rid of ordered container
@@ -41,7 +39,7 @@ class IndexBody extends React.Component<
         {this.props.status.isActiveUser ? (
           <ScreenContainer viewModifiers="index">
             <h1 className="visually-hidden">
-              {this.props.i18nOLD.text.get("plugin.wcag.indexViewHeader")}
+              {this.props.t("wcag.indexViewHeader", { ns: "frontPage" })}
             </h1>
             <div className="panel-group panel-group--studies">
               {this.props.status.isStudent ? (
@@ -74,7 +72,6 @@ class IndexBody extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }
@@ -86,6 +83,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["frontPage", "common" ])(
+export default withTranslation(["frontPage"])(
   connect(mapStateToProps, mapDispatchToProps)(IndexBody)
 );

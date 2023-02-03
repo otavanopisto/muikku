@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "reducers";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { Panel } from "~/components/general/panel";
 import "~/sass/elements/rich-text.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -9,9 +8,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * StudiesEndedProps
  */
-interface StudiesEndedProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
-}
+interface StudiesEndedProps extends WithTranslation<["frontPage"]> {}
 
 /**
  * StudiesEndedState
@@ -33,15 +30,13 @@ class StudiesEnded extends React.Component<
       <Panel
         icon="icon-blocked"
         modifier="studies-ended"
-        header={this.props.i18nOLD.text.get(
-          "plugin.frontpage.inactiveStudent.messageTitle"
-        )}
+        header={this.props.t("labels.welcome", { ns: "frontPage" })}
       >
         <div
           dangerouslySetInnerHTML={{
-            __html: this.props.i18nOLD.text.get(
-              "plugin.frontpage.inactiveStudent.messageContent"
-            ),
+            __html: this.props.t("content.inactiveStudent", {
+              ns: "frontPage",
+            }),
           }}
         ></div>
       </Panel>
@@ -49,23 +44,4 @@ class StudiesEnded extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(StudiesEnded)
-);
+export default withTranslation(["frontPage"])(StudiesEnded);

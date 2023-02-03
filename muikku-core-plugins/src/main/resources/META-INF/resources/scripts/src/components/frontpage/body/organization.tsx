@@ -6,7 +6,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * FrontpageOrganizationProps
  */
-interface FrontpageOrganizationProps extends WithTranslation<["common"]> {
+interface FrontpageOrganizationProps extends WithTranslation {
   i18nOLD: i18nType;
 }
 
@@ -50,9 +50,9 @@ class FrontpageOrganization extends React.Component<
             <div className="ordered-container__item ordered-container__item--organization-social-media">
               <div className="ordered-container__item-subcontainer ordered-container__item-subcontainer--organization-social-media">
                 <h2 className="ordered-container__subcontainer-header--social-media">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.organization.some.title"
-                  )}
+                  {this.props.t("labels.organization", {
+                    ns: "frontPage",
+                  })}
                 </h2>
                 <ButtonSocial
                   openInNewTab="_blank"
@@ -76,9 +76,9 @@ class FrontpageOrganization extends React.Component<
                 <div
                   className="ordered-container__subcontainer-content ordered-container__subcontainer-content--organization-description"
                   dangerouslySetInnerHTML={{
-                    __html: this.props.i18nOLD.text.get(
-                      "plugin.organization.description"
-                    ),
+                    __html: this.props.t("content.organization", {
+                      ns: "frontPage",
+                    }),
                   }}
                 ></div>
                 <Button
@@ -97,4 +97,4 @@ class FrontpageOrganization extends React.Component<
   }
 }
 
-export default withTranslation(["common"])(FrontpageOrganization);
+export default withTranslation(["frontPage"])(FrontpageOrganization);

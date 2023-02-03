@@ -12,7 +12,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * LastMessagesPanelProps
  */
-interface LastMessagesPanelProps extends WithTranslation<["common"]> {
+interface LastMessagesPanelProps extends WithTranslation {
   i18nOLD: i18nType;
   lastThreads: MessageThreadListType;
 }
@@ -37,9 +37,7 @@ class LastMessagesPanel extends React.Component<
       <Panel
         modifier="latest-messages"
         icon="icon-envelope"
-        header={this.props.i18nOLD.text.get(
-          "plugin.frontPage.latestMessages.title"
-        )}
+        header={this.props.t("labels.lastMessages", { ns: "frontPage" })}
       >
         {this.props.lastThreads.length ? (
           <div className="item-list item-list--panel-latest-messages">
@@ -72,9 +70,7 @@ class LastMessagesPanel extends React.Component<
           </div>
         ) : (
           <div className="empty empty--front-page">
-            {this.props.i18nOLD.text.get(
-              "plugin.frontPage.latestMessages.noMessages"
-            )}
+            {this.props.t("content.empty", { ns: "messaging" })}
           </div>
         )}
       </Panel>
@@ -100,6 +96,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation()(
+export default withTranslation(["frontPage", "messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(LastMessagesPanel)
 );
