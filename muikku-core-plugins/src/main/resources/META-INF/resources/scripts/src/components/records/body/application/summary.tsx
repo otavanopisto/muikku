@@ -221,7 +221,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                 {counselor.properties["profile-phone"] &&
                                 counselor.properties["profile-whatsapp"] ? (
                                   <WhatsappButtonLink
-                                    i18nOLD={this.props.i18nOLD}
                                     mobileNumber={
                                       counselor.properties["profile-phone"]
                                     }

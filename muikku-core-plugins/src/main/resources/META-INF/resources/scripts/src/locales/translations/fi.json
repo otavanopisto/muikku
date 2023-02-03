@@ -125,6 +125,7 @@
       "title": "Otsikko",
       "unreachable": "Voi ei!...",
       "userName": "Käyttäjätunnus",
+      "whatsApp": "WhatsApp",
       "write": "Kirjoita viestisi...",
       "yes": "Kyllä"
     },
@@ -1188,8 +1189,8 @@
       "visibility": "Näkyvyys",
       "workspaces": "Kurssit",
       "workspaces_yours": "Kurssisi",
-      "workspaceLength": "{0} {1}",
-      "workspaceDates": "{0}\u2013{1}",
+      "workspaceLength": "{{length}} {{symbol}}",
+      "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
       "workspaceTypeSelect": "Kurssityyppien listausvalinta"
     },
 
@@ -1542,5 +1543,19 @@
       "loadError": "Tilauksen lataus epäonnistui",
       "removeError_studentOrder": "Opiskelijan tilauksen poisto epäonistui"
     }
+  },
+  "ops": {
+    "mandatory": "Pakollinen",
+    "mandatory_lukioOPS2016": "Pakollinen",
+    "mandatory_lukioOPS2021": "Pakollinen",
+    "nationalLevelOptional": "Valinnainen",
+    "nationalLevelOptional_lukioOPS2016": "Valtakunnallinen syventävä",
+    "nationalLevelOptional_lukioOPS2021": "Valtakunnallinen valinnainen",
+    "schoolLevelOptional": "Paikallinen valinnainen",
+    "schoolLevelOptional_lukioOPS2016": "Paikallinen syventävä",
+    "schoolLevelOptional_lukioOPS2021": "Paikallinen valinnainen",
+    "unspecifiedOptional": "Valinnainen",
+    "unspecifiedOptional_lukioOPS2016": "Muu",
+    "unspecifiedOptional_lukioOPS2021": "Paikallinen valinnainen"
   }
 }
