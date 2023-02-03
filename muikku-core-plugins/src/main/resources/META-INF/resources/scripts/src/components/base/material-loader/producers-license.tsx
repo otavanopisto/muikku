@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Link from "~/components/general/link";
 
@@ -11,6 +12,8 @@ type MaterialLoaderProducersLicenseProps = MaterialLoaderProps;
 export function MaterialLoaderProducersLicense(
   props: MaterialLoaderProducersLicenseProps
 ) {
+  const { t } = useTranslation(["materials", "common"]);
+
   if (
     !(
       (props.material.producers && props.material.producers.length) ||
@@ -31,31 +34,28 @@ export function MaterialLoaderProducersLicense(
       {props.material.producers && props.material.producers.length ? (
         <div className="material-page__producers">
           <div className="material-page__producers-label">
-            {props.i18nOLD.text.get(
-              "plugin.workspace.materials.producersLabel"
-            )}
-            :
+            {t("labels.producer_other", { ns: "materials" })}:
           </div>
           <div className="material-page__producers-item">
             {props.material.producers.map((p) => p.name).join(", ")}
           </div>
         </div>
       ) : null}
-      {props.material.license ? (
+      {license ? (
         <div className="material-page__license">
           <div className="material-page__license-label">
-            {props.i18nOLD.text.get("plugin.workspace.materials.licenseLabel")}:
+            {t("labels.license", { ns: "materials" })}:
           </div>
           {hasLink ? (
             <Link
               className="material-page__license-item"
-              href={props.material.license}
+              href={license}
               openInNewTab="_blank"
             >
-              {props.material.license}
+              {license}
             </Link>
           ) : (
-            <span>{props.material.license}</span>
+            <span>{license}</span>
           )}
         </div>
       ) : null}

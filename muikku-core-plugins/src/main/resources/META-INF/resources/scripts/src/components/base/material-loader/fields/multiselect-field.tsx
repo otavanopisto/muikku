@@ -1,17 +1,17 @@
 import * as React from "react";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import { v4 as uuidv4 } from "uuid";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * MultiSelectFieldProps
  */
-interface MultiSelectFieldProps {
+interface MultiSelectFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -31,7 +31,6 @@ interface MultiSelectFieldProps {
     name: string,
     newValue: any
   ) => any;
-  i18nOLD: i18nType;
 
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
@@ -62,7 +61,7 @@ interface MultiSelectFieldState {
 /**
  * MultiSelectField
  */
-export default class MultiSelectField extends React.Component<
+class MultiSelectField extends React.Component<
   MultiSelectFieldProps,
   MultiSelectFieldState
 > {
@@ -98,7 +97,7 @@ export default class MultiSelectField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -108,9 +107,8 @@ export default class MultiSelectField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(
     nextProps: MultiSelectFieldProps,
@@ -120,7 +118,6 @@ export default class MultiSelectField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18nOLD !== nextProps.i18nOLD ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -132,7 +129,6 @@ export default class MultiSelectField extends React.Component<
 
   /**
    * checkAnswers
-   * @returns
    */
   checkAnswers() {
     // if we are not allowed we return
@@ -198,8 +194,8 @@ export default class MultiSelectField extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(
     prevProps: MultiSelectFieldProps,
@@ -210,8 +206,7 @@ export default class MultiSelectField extends React.Component<
 
   /**
    * toggleValue
-   * @param e
-   * @returns
+   * @param e e
    */
   toggleValue(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
     if (!this.props.content) {
@@ -252,9 +247,11 @@ export default class MultiSelectField extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.content) {
       return null;
     }
@@ -283,9 +280,7 @@ export default class MultiSelectField extends React.Component<
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.assigment.checkAnswers.correctSummary.title"
-              )}
+              {t("labels.answer_correct", { ns: "materials" })}
             </span>
             {correctAnswersFound.map((answer, index) => (
               <span key={index} className="material-page__field-answer-example">
@@ -312,9 +307,7 @@ export default class MultiSelectField extends React.Component<
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
-              )}
+              {t("labels.answer_example", { ns: "materials" })}
             </span>
             <span className="material-page__field-answer-example">
               <StrMathJAX>{this.props.content.explanation}</StrMathJAX>
@@ -378,7 +371,6 @@ export default class MultiSelectField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         <span
@@ -430,3 +422,5 @@ export default class MultiSelectField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(MultiSelectField);

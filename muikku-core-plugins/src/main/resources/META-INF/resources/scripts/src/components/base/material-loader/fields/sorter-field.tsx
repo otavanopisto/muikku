@@ -8,11 +8,11 @@ import * as React from "react";
 import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * SorterFieldItemType
@@ -25,7 +25,7 @@ interface SorterFieldItemType {
 /**
  * SorterFieldProps
  */
-interface SorterFieldProps {
+interface SorterFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -42,7 +42,6 @@ interface SorterFieldProps {
     name: string,
     newValue: any
   ) => any;
-  i18nOLD: i18nType;
 
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
@@ -75,10 +74,7 @@ interface SorterFieldState {
 /**
  * SorterField
  */
-export default class SorterField extends React.Component<
-  SorterFieldProps,
-  SorterFieldState
-> {
+class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
   /**
    * constructor
    * @param props props
@@ -134,7 +130,7 @@ export default class SorterField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -144,9 +140,8 @@ export default class SorterField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(
     nextProps: SorterFieldProps,
@@ -156,7 +151,6 @@ export default class SorterField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18nOLD !== nextProps.i18nOLD ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -168,10 +162,9 @@ export default class SorterField extends React.Component<
 
   /**
    * swap - Swaps two items
-   * @param itemA
-   * @param itemB
-   * @param triggerChange
-   * @returns
+   * @param triggerChange triggerChange
+   * @param itemA itemA
+   * @param itemB itemB
    */
   swap(
     triggerChange: boolean,
@@ -211,7 +204,6 @@ export default class SorterField extends React.Component<
 
   /**
    * checkAnswers
-   * @returns
    */
   checkAnswers() {
     // if not set to actually do we cancel
@@ -267,8 +259,8 @@ export default class SorterField extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(prevProps: SorterFieldProps, prevState: SorterFieldState) {
     this.checkAnswers();
@@ -276,8 +268,7 @@ export default class SorterField extends React.Component<
 
   /**
    * selectItem
-   * @param item
-   * @returns
+   * @param item item
    */
   selectItem(item: SorterFieldItemType) {
     if (this.state.selectedItem) {
@@ -315,6 +306,8 @@ export default class SorterField extends React.Component<
    * @returns
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.content) {
       return null;
     }
@@ -336,9 +329,7 @@ export default class SorterField extends React.Component<
       correctAnswersummaryComponent = (
         <span className="material-page__field-answer-examples material-page__field-answer-examples--sorterfield">
           <span className="material-page__field-answer-examples-title">
-            {this.props.i18nOLD.text.get(
-              "plugin.workspace.assigment.checkAnswers.correctSummary.title"
-            )}
+            {t("labels.answer_correct", { ns: "materials" })}:{" "}
           </span>
           {this.props.content.items.map((answer, index) => (
             <span
@@ -406,7 +397,6 @@ export default class SorterField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         <span
@@ -484,3 +474,5 @@ export default class SorterField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(SorterField);

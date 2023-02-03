@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 
 type MaterialLoaderGradeProps = MaterialLoaderProps;
@@ -8,6 +9,8 @@ type MaterialLoaderGradeProps = MaterialLoaderProps;
  * @param props props
  */
 export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
+  const { t } = useTranslation(["materials", "workspace", "common"]);
+
   const grade =
     (props.material.evaluation && props.material.evaluation.grade) ||
     (props.compositeReplies &&
@@ -22,9 +25,7 @@ export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
       <div className="material-page__assignment-assessment-grade">
         <span className="material-page__assignment-assessment-grade-data material-page__assignment-assessment-grade-data--incomplete">
           {" "}
-          {props.i18nOLD.text.get(
-            "plugin.workspace.materialsLoader.evaluation.grade.incomplete"
-          )}
+          {t("labels.incomplete", { ns: "materials" })}
         </span>
       </div>
     );
@@ -37,10 +38,7 @@ export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
   return (
     <div className="material-page__assignment-assessment-grade">
       <span className="material-page__assignment-assessment-grade-label">
-        {props.i18nOLD.text.get(
-          "plugin.workspace.materialsLoader.evaluation.grade.label"
-        )}
-        :
+        {t("labels.grade", { ns: "workspace" })}:
       </span>
       <span className="material-page__assignment-assessment-grade-data">
         {" "}

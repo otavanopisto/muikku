@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Button from "~/components/general/button";
 
@@ -16,6 +17,8 @@ interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
  * @param props props
  */
 export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
+  const { t } = useTranslation(["materials", "common"]);
+
   const noAnswerOrStateConfig = !props.answerable || !props.stateConfiguration;
   if (
     noAnswerOrStateConfig ||
@@ -39,7 +42,7 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
           buttonModifiers={props.stateConfiguration["button-class"]}
           onClick={props.onPushAnswer}
         >
-          {props.i18nOLD.text.get(props.stateConfiguration["button-text"])}
+          {props.stateConfiguration["button-text"]}
         </Button>
       ) : null}
       {props.stateConfiguration[
@@ -49,11 +52,9 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
           buttonModifiers="muikku-show-correct-answers-button"
           onClick={props.onToggleAnswersVisible}
         >
-          {props.i18nOLD.text.get(
-            props.answersVisible
-              ? "plugin.workspace.materialsLoader.hideAnswers"
-              : "plugin.workspace.materialsLoader.showAnswers"
-          )}
+          {props.answersVisible
+            ? t("actions.hide_answers", { ns: "materials" })
+            : t("actions.show_anwers", { ns: "materials" })}
         </Button>
       ) : null}
     </div>

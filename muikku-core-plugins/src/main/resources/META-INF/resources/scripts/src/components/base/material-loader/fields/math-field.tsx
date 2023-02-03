@@ -12,11 +12,12 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * MathFieldProps
  */
-interface MathFieldProps {
+interface MathFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -52,10 +53,7 @@ interface MathFieldState {
 /**
  * TextField
  */
-export default class TextField extends React.Component<
-  MathFieldProps,
-  MathFieldState
-> {
+class TextField extends React.Component<MathFieldProps, MathFieldState> {
   /**
    * constructor
    * @param props props
@@ -80,7 +78,7 @@ export default class TextField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -90,9 +88,8 @@ export default class TextField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(nextProps: MathFieldProps, nextState: MathFieldState) {
     return (
@@ -119,12 +116,12 @@ export default class TextField extends React.Component<
 
   /**
    * render
-   * @returns
    */
   render() {
     // NOTE you cannot change the formula class name unless you want to break backwards compatibility
     // backwards compability has been broken since you changed the class name from muikku-math-exercise-formula to material-page__mathfield-formula
     // this means old formulas will 100% fail to parse
+    const { t } = this.props;
 
     const fieldSavedStateClass = createFieldSavedStateClass(
       this.state.fieldSavedState
@@ -137,7 +134,6 @@ export default class TextField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         <MathField
@@ -150,28 +146,16 @@ export default class TextField extends React.Component<
           editorClassName="material-page__mathfield-editor"
           imageClassName="material-page__mathfield-image"
           toolbarClassName="material-page__mathfield-toolbar"
-          i18nOLD={{
-            symbols: this.props.i18nOLD.text.get(
-              "plugin.workspace.mathField.symbols"
-            ),
-            relations: this.props.i18nOLD.text.get(
-              "plugin.workspace.mathField.relations"
-            ),
-            geometryAndVectors: this.props.i18nOLD.text.get(
-              "plugin.workspace.mathField.geometryAndVectors"
-            ),
-            setTheoryNotation: this.props.i18nOLD.text.get(
-              "plugin.workspace.mathField.setTheoryNotation"
-            ),
-            mathFormulas: this.props.i18nOLD.text.get(
-              "plugin.workspace.mathField.addMathFormula"
-            ),
-            operators: this.props.i18nOLD.text.get(
-              "plugin.workspace.mathField.operators"
-            ),
-            image: this.props.i18nOLD.text.get(
-              "plugin.workspace.mathField.addImage"
-            ),
+          mathi18n={{
+            symbols: t("labels.symbols", { ns: "materials" }),
+            relations: t("labels.relations", { ns: "materials" }),
+            geometryAndVectors: t("labels.geometryAndVectors", {
+              ns: "materials",
+            }),
+            setTheoryNotation: t("labels.setTheory", { ns: "materials" }),
+            mathFormulas: t("actions.add_mathFormula", { ns: "materials" }),
+            operators: t("labels.operators", { ns: "materials" }),
+            image: t("actions.add_image", { ns: "materials" }),
           }}
           readOnly={this.props.readOnly}
           dontLoadACE={this.props.readOnly}
@@ -181,3 +165,5 @@ export default class TextField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(TextField);

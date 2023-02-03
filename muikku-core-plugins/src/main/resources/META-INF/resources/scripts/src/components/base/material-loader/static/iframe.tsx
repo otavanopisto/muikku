@@ -1,7 +1,6 @@
 import * as React from "react";
 import OutsideClickListener from "~/components/general/outside-click-listener";
 import { prepareH5POn } from "~/lib/h5p";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   HTMLtoReactComponent,
   HTMLToReactComponentRule,
@@ -17,7 +16,6 @@ interface IframeProps {
     //two versions of data
     url?: string;
   };
-  i18nOLD: i18nType;
   invisible?: boolean;
 }
 

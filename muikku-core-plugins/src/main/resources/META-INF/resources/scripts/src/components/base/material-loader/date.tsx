@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 
 type MaterialLoaderDateProps = MaterialLoaderProps;
@@ -8,6 +9,8 @@ type MaterialLoaderDateProps = MaterialLoaderProps;
  * @param props props
  */
 export function MaterialLoaderDate(props: MaterialLoaderDateProps) {
+  const { t } = useTranslation(["materials", "common"]);
+
   const date =
     (props.material.evaluation && props.material.evaluation.evaluated) ||
     (props.compositeReplies &&
@@ -21,10 +24,7 @@ export function MaterialLoaderDate(props: MaterialLoaderDateProps) {
   return (
     <div className="material-page__assignment-assessment-date">
       <span className="material-page__assignment-assessment-date-label">
-        {props.i18nOLD.text.get(
-          "plugin.workspace.materialsLoader.evaluation.date.label"
-        )}
-        :
+        {t("labels.date_one")}:
       </span>
       <span className="material-page__assignment-assessment-date-data">
         {props.i18nOLD.time.format(date)}

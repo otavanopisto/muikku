@@ -13,11 +13,12 @@ import { v4 as uuidv4 } from "uuid";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * SelectFieldProps
  */
-interface SelectFieldProps {
+interface SelectFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -68,10 +69,7 @@ interface SelectFieldState {
 /**
  * SelectField
  */
-export default class SelectField extends React.Component<
-  SelectFieldProps,
-  SelectFieldState
-> {
+class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
   /**
    * constructor
    * @param props props
@@ -99,7 +97,7 @@ export default class SelectField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -109,7 +107,7 @@ export default class SelectField extends React.Component<
 
   /**
    * onSelectChange
-   * @param e
+   * @param e e
    */
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
     // When the select changes, we gotta call it up
@@ -121,8 +119,8 @@ export default class SelectField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(
     nextProps: SelectFieldProps,
@@ -132,7 +130,6 @@ export default class SelectField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18nOLD !== nextProps.i18nOLD ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -144,7 +141,6 @@ export default class SelectField extends React.Component<
 
   /**
    * checkAnswers
-   * @returns
    */
   checkAnswers() {
     // if we are allowed to check answers
@@ -205,8 +201,8 @@ export default class SelectField extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(prevProps: SelectFieldProps, prevState: SelectFieldState) {
     this.checkAnswers();
@@ -214,9 +210,11 @@ export default class SelectField extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.content) {
       return null;
     }
@@ -289,9 +287,7 @@ export default class SelectField extends React.Component<
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.assigment.checkAnswers.correctSummary.title"
-              )}
+              {t("labels.answer_correct", { ns: "materials" })}:{" "}
             </span>
             {correctAnswersFound.map((answer, index) => (
               <span key={index} className="material-page__field-answer-example">
@@ -357,7 +353,6 @@ export default class SelectField extends React.Component<
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
-            i18nOLD={this.props.i18nOLD}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           <select
@@ -397,7 +392,6 @@ export default class SelectField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         <span
@@ -439,3 +433,5 @@ export default class SelectField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(SelectField);

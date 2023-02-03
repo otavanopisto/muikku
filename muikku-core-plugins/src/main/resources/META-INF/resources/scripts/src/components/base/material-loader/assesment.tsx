@@ -2,6 +2,7 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import RecordingsList from "../../general/voice-recorder/recordings-list";
 import { RecordValue } from "../../../@types/recorder";
+import { useTranslation } from "react-i18next";
 
 /**
  * MaterialLoaderAssesmentProps
@@ -14,6 +15,8 @@ type MaterialLoaderAssesmentProps = MaterialLoaderProps;
  * @returns JSX.Element
  */
 export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
+  const { t } = useTranslation(["materials", "evaluation", "common"]);
+
   const literalAssesment =
     (props.material.evaluation && props.material.evaluation.verbalAssessment) ||
     (props.compositeReplies &&
@@ -53,12 +56,8 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
   // Corresponding text is shown whether assessment is
   // given for interim evaluation
   const assessmentLabelText = isInterminEvaluation
-    ? props.i18nOLD.text.get(
-        "plugin.workspace.materialsLoader.evaluation.literalIntermin.label"
-      )
-    : props.i18nOLD.text.get(
-        "plugin.workspace.materialsLoader.evaluation.literal.label"
-      );
+    ? t("labels.interimEvaluation", { ns: "materials" })
+    : t("labels.literalEvaluation", { ns: "evaluation" });
 
   return (
     <div className="material-page__assignment-assessment-literal">
@@ -73,10 +72,7 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
       {audioAssessments !== undefined && audioAssessments.length > 0 ? (
         <>
           <div className="material-page__assignment-assessment-verbal-label">
-            {props.i18nOLD.text.get(
-              "plugin.workspace.materialsLoader.evaluation.verbal.label"
-            )}
-            :
+            {t("labels.vocalEvaluation", { ns: "evaluation" })}:
           </div>
           <div className="voice-container">
             <RecordingsList records={audioRecords} noDeleteFunctions />

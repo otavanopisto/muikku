@@ -1,14 +1,13 @@
 import * as React from "react";
-import { i18nType } from "reducers/base/i18nOLD";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { FieldStateStatus } from "~/@types/shared";
 
 /**
  * SynchronizerProps
  */
-interface SynchronizerProps {
+interface SynchronizerProps extends WithTranslation {
   synced: boolean;
   syncError: string;
-  i18nOLD: i18nType;
   onFieldSavedStateChange?: (savedState: FieldStateStatus) => void;
 }
 
@@ -22,7 +21,7 @@ interface SynchronizerState {
 /**
  * Synchronizer
  */
-export default class Synchronizer extends React.PureComponent<
+class Synchronizer extends React.PureComponent<
   SynchronizerProps,
   SynchronizerState
 > {
@@ -62,6 +61,8 @@ export default class Synchronizer extends React.PureComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     if (
       this.props.synced &&
       !this.state.displaySyncedMessage &&
@@ -73,26 +74,28 @@ export default class Synchronizer extends React.PureComponent<
     let message: string;
     let modifier: string;
     if (this.props.syncError) {
-      message = this.props.i18nOLD.text.get(
-        "plugin.workspace.materials.answerSavingFailed",
-        this.props.syncError
-      );
+      message = t("notifications.saveError_answer", {
+        ns: "materials",
+        error: this.props.syncError,
+      });
+
       modifier = "error";
       this.props.onFieldSavedStateChange
         ? this.props.onFieldSavedStateChange("ERROR")
         : null;
     } else if (!this.props.synced) {
-      message = this.props.i18nOLD.text.get(
-        "plugin.workspace.materials.answerSavingLabel"
-      );
+      message = t("notifications.saving", {
+        ns: "materials",
+      });
+
       modifier = "saving";
       this.props.onFieldSavedStateChange
         ? this.props.onFieldSavedStateChange("SAVING")
         : null;
     } else if (this.state.displaySyncedMessage) {
-      message = this.props.i18nOLD.text.get(
-        "plugin.workspace.materials.answerSavedLabel"
-      );
+      message = t("notifications.saved", {
+        ns: "materials",
+      });
       modifier = "saved";
       this.props.onFieldSavedStateChange
         ? this.props.onFieldSavedStateChange("SAVED")
@@ -108,3 +111,5 @@ export default class Synchronizer extends React.PureComponent<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(Synchronizer);

@@ -5,7 +5,6 @@
  */
 
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import CKEditor from "~/components/general/ckeditor";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
@@ -14,11 +13,12 @@ import TextareaAutosize from "react-textarea-autosize";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * MemoFieldProps
  */
-interface MemoFieldProps {
+interface MemoFieldProps extends WithTranslation {
   type: string;
   content: {
     example: string;
@@ -28,7 +28,6 @@ interface MemoFieldProps {
     richedit: boolean;
   };
   usedAs: UsedAs;
-  i18nOLD: i18nType;
   readOnly?: boolean;
   initialValue?: string;
   onChange?: (
@@ -104,8 +103,8 @@ const ckEditorConfig = {
 
 /**
  * characterCount - Counts the amount of characters
- * @param rawText
- * @returns
+ * @param rawText rawText
+ * @returns number of characters
  */
 function characterCount(rawText: string) {
   return rawText === ""
@@ -118,8 +117,8 @@ function characterCount(rawText: string) {
 
 /**
  * wordCount - Counts the amount of words
- * @param rawText
- * @returns
+ * @param rawText rawText
+ * @returns number of words
  */
 function wordCount(rawText: string) {
   return rawText === "" ? 0 : rawText.trim().split(/\s+/).length;
@@ -128,10 +127,7 @@ function wordCount(rawText: string) {
 /**
  * MemoField
  */
-export default class MemoField extends React.Component<
-  MemoFieldProps,
-  MemoFieldState
-> {
+class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   /**
    * constructor
    * @param props props
@@ -169,7 +165,7 @@ export default class MemoField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -179,16 +175,14 @@ export default class MemoField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(nextProps: MemoFieldProps, nextState: MemoFieldState) {
     return (
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18nOLD !== nextProps.i18nOLD ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -200,7 +194,7 @@ export default class MemoField extends React.Component<
 
   /**
    * onInputChange - very simple this one is for only when raw input from the textarea changes
-   * @param e
+   * @param e e
    */
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     // and update the count
@@ -217,7 +211,7 @@ export default class MemoField extends React.Component<
 
   /**
    * onCKEditorChange - this one is for a ckeditor change
-   * @param value
+   * @param value value
    */
   onCKEditorChange(value: string) {
     // we need the raw text
@@ -235,9 +229,11 @@ export default class MemoField extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     // we have a right answer example for when
     // we are asked for displaying right answer
     // so we need to set it up
@@ -247,9 +243,7 @@ export default class MemoField extends React.Component<
       answerExampleComponent = (
         <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
           <span className="material-page__field-answer-examples-title material-page__field-answer-examples-title--memofield">
-            {this.props.i18nOLD.text.get(
-              "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
-            )}
+            {t("labels.answer_example", { ns: "materials" })}:
           </span>
           <span className="material-page__field-answer-example">
             <StrMathJAX html={true}>
@@ -376,16 +370,13 @@ export default class MemoField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         {field}
         <span className="material-page__counter-wrapper">
           <span className="material-page__word-count-container">
             <span className="material-page__word-count-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.memoField.wordCount"
-              )}
+              {t("labels.wordCount", { ns: "materials" })}
             </span>
             <span className="material-page__word-count">
               {this.state.words}
@@ -393,9 +384,7 @@ export default class MemoField extends React.Component<
           </span>
           <span className="material-page__character-count-container">
             <span className="material-page__character-count-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.memoField.characterCount"
-              )}
+              {t("labels.characterCount", { ns: "materials" })}
             </span>
             <span className="material-page__character-count">
               {this.state.characters}
@@ -407,3 +396,5 @@ export default class MemoField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(MemoField);

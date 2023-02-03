@@ -1,13 +1,11 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
-import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * MaterialLoaderTitleProps
  */
-interface MaterialLoaderTitleProps extends MaterialLoaderProps {
-  i18nOLD: i18nType;
-}
+interface MaterialLoaderTitleProps extends MaterialLoaderProps {}
 
 /* function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
   e.stopPropagation();
@@ -18,6 +16,8 @@ interface MaterialLoaderTitleProps extends MaterialLoaderProps {
  * @param props props
  */
 export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
+  const { t } = useTranslation(["materials", "common"]);
+
   const hidden = props.material.hidden || (props.folder && props.folder.hidden);
 
   if (props.isInFrontPage) {
@@ -70,11 +70,11 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
       {hidden &&
       (materialPageType === "exercise" || materialPageType === "assignment") ? (
         <div className="material-page__title-meta">
-          {props.i18nOLD.text.get(
-            "plugin.workspace.materials." +
-              materialPageType +
-              "HiddenButAnswered"
-          )}
+          {t("hiddenButAnswered", {
+            ns: "materials",
+            context: materialPageType,
+            defaultValue: "Answered but hidden",
+          })}
         </div>
       ) : null}
     </>
