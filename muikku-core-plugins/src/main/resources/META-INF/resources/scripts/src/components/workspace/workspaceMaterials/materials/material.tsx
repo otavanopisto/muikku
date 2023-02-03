@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 
 import MaterialLoader from "~/components/base/material-loader";
 import {
@@ -33,8 +32,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * WorkspaceMaterialProps
  */
-interface WorkspaceMaterialProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface WorkspaceMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
   materialContentNode: MaterialContentNodeType;
@@ -209,7 +207,6 @@ class WorkspaceMaterial extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspaceEditMode: state.workspaces.editMode,
     status: state.status,
   };

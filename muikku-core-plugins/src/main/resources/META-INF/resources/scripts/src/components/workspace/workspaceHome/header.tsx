@@ -322,7 +322,6 @@ class WorkspaceHomeHeader extends React.Component<
                 title={this.props.i18nOLD.text.get(
                   "plugin.workspace.index.courseProgressLabel"
                 )}
-                i18nOLD={this.props.i18nOLD}
                 activity={this.props.workspace.activity}
               />
             </div>
