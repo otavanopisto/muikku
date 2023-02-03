@@ -90,10 +90,10 @@ class AnnouncementsPanel extends React.Component<
    * @returns label with correct locale string
    */
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
-    let label = this.props.i18nOLD.text.get("plugin.wcag.pager.goToPage.label");
+    let label = this.props.t("wcag.goToPage", { ns: "messaging" });
 
     if (selected) {
-      label = this.props.i18nOLD.text.get("plugin.wcag.pager.current.label");
+      label = this.props.t("wcag.currentPage", { ns: "messaging" });
     }
 
     return label;
@@ -200,9 +200,10 @@ class AnnouncementsPanel extends React.Component<
 
     return (
       <Panel
-        header={this.props.i18nOLD.text.get(
-          "plugin.frontPage.announcements.title"
-        )}
+        header={this.props.t("labels.announcement", {
+          ns: "messaging",
+          context: "other",
+        })}
         icon="icon-paper-plane"
         modifier="announcements"
       >
