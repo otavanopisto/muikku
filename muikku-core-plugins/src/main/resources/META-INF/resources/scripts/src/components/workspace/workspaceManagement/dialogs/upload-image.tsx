@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -29,8 +28,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * UploadImageDialogProps
  */
-interface UploadImageDialogProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface UploadImageDialogProps extends WithTranslation {
   displayNotification: DisplayNotificationTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onImageChange: (croppedB64: string, originalB64?: string, file?: File) => any;
@@ -82,6 +80,8 @@ class UploadImageDialog extends React.Component<
    * @param closeDialog closeDialog
    */
   acceptImage(closeDialog: () => void) {
+    const { t } = this.props;
+
     closeDialog();
     this.props.updateCurrentWorkspaceImagesB64({
       originalB64: this.props.b64,
@@ -91,9 +91,7 @@ class UploadImageDialog extends React.Component<
        */
       success: () => {
         this.props.displayNotification(
-          this.props.i18nOLD.text.get(
-            "plugin.workspace.management.notification.coverImage.saved"
-          ),
+          t("notifications.saveSuccess_coverImage", { ns: "workspace" }),
           "success"
         );
         this.props.onImageChange(
@@ -121,10 +119,10 @@ class UploadImageDialog extends React.Component<
    * showLoadError
    */
   showLoadError() {
+    const { t } = this.props;
+
     this.props.displayNotification(
-      this.props.i18nOLD.text.get(
-        "plugin.workspace.management.notification.failedToLoadImage"
-      ),
+      t("notifications.loadError_coverImage", { ns: "workspace" }),
       "error"
     );
   }
@@ -156,6 +154,8 @@ class UploadImageDialog extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
@@ -197,26 +197,20 @@ class UploadImageDialog extends React.Component<
           buttonModifiers={["execute", "standard-ok"]}
           onClick={this.acceptImage.bind(this, closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.management.changeImage.dialog.saveButton.label"
-          )}
+          {t("actions.save")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.management.changeImage.dialog.cancelButton.label"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        title={this.props.i18nOLD.text.get(
-          "plugin.workspace.management.changeImage.dialog.title"
-        )}
+        title={t("labels.coverImage", { ns: "workspace" })}
         content={content}
         footer={footer}
         modifier="upload-header-image"
@@ -231,9 +225,7 @@ class UploadImageDialog extends React.Component<
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
+  return {};
 }
 
 /**
@@ -247,6 +239,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(UploadImageDialog)
 );
