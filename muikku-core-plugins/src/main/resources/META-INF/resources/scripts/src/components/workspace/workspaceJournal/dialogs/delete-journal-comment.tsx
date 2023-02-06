@@ -5,7 +5,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
@@ -19,8 +18,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * DeleteJournalProps
  */
-interface DeleteJournalCommentProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface DeleteJournalCommentProps extends WithTranslation {
   workspaceEntityId: number;
   journalComment: JournalComment;
   deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType;
@@ -77,16 +75,13 @@ class DeleteJournalComment extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
     /**
      * content
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => (
-      <div>
-        {this.props.i18nOLD.text.get(
-          "plugin.workspace.journal.deleteComment.dialog.description"
-        )}
-      </div>
+      <div>{t("content.removing_comment")}</div>
     );
 
     /**
@@ -100,17 +95,13 @@ class DeleteJournalComment extends React.Component<
           onClick={this.deleteJournalComment.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.journal.deleteComment.dialog.deleteButton"
-          )}
+          {t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.journal.deleteComment.dialog.cancelButton"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
@@ -118,9 +109,7 @@ class DeleteJournalComment extends React.Component<
     return (
       <Dialog
         modifier="delete-journal"
-        title={this.props.i18nOLD.text.get(
-          "plugin.workspace.journal.deleteComment.dialog.title"
-        )}
+        title={t("actions.remove_comment")}
         content={content}
         footer={footer}
       >
@@ -135,9 +124,7 @@ class DeleteJournalComment extends React.Component<
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
+  return {};
 }
 
 /**
@@ -148,6 +135,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteWorkspaceJournalComment }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["journal", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(DeleteJournalComment)
 );

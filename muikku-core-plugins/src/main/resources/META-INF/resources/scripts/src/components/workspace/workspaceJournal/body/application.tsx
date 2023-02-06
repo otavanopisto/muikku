@@ -4,7 +4,6 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import HoverButton from "~/components/general/hover-button";
 import Toolbar from "./application/workspace-journals-toolbar";
 import WorkspaceJournalsList from "./application/workspace-journals-list";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
@@ -27,10 +26,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * WorkspaceJournalApplicationProps
  */
-interface WorkspaceJournalApplicationProps extends WithTranslation<["common"]> {
+interface WorkspaceJournalApplicationProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside?: React.ReactElement<any>;
-  i18nOLD: i18nType;
   workspace: WorkspaceType;
   journalsState: JournalsState;
   status: StatusType;
@@ -73,9 +71,9 @@ class WorkspaceJournalApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18nOLD.text.get(
-      "plugin.workspace.journal.pageTitle"
-    );
+    const { t } = this.props;
+
+    const title = t("labels.journal", { ns: "journal" });
     const toolbar = <Toolbar />;
     let primaryOption;
     if (this.props.workspace) {
@@ -85,7 +83,7 @@ class WorkspaceJournalApplication extends React.Component<
         this.props.workspace.students ? (
           <div className="form-element form-element--main-action">
             <label htmlFor="selectJournal" className="visually-hidden">
-              {this.props.i18nOLD.text.get("plugin.wcag.journalSelect.label")}
+              {t("wcag.journalSelect", { ns: "workspace" })}
             </label>
             <select
               id="selectJournal"
@@ -93,11 +91,7 @@ class WorkspaceJournalApplication extends React.Component<
               value={this.props.journalsState.userEntityId || ""}
               onChange={this.onWorkspaceJournalFilterChange}
             >
-              <option value="">
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspace.journal.studentFilter.showAll"
-                )}
-              </option>
+              <option value="">{t("actions.showAll")}</option>
               {(this.props.workspace.students.results || [])
                 .filter(
                   (student, index, array) =>
@@ -119,9 +113,7 @@ class WorkspaceJournalApplication extends React.Component<
         ) : (
           <NewJournal>
             <Button buttonModifiers="primary-function">
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.journal.newEntryButton.label"
-              )}
+              {t("actions.create_journal", { ns: "workspace" })}
             </Button>
           </NewJournal>
         );
@@ -154,7 +146,6 @@ class WorkspaceJournalApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     journalsState: state.journals,
     status: state.status,
@@ -172,6 +163,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["journal", "workspace", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalApplication)
 );

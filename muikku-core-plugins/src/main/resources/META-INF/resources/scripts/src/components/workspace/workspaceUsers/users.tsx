@@ -409,12 +409,10 @@ class WorkspaceUsers extends React.Component<
                         },
                       ]}
                       initialSubject={getWorkspaceMessage(
-                        this.props.i18nOLD,
                         this.props.status,
                         this.props.workspace
                       )}
                       initialMessage={getWorkspaceMessage(
-                        this.props.i18nOLD,
                         this.props.status,
                         this.props.workspace,
                         true
@@ -538,12 +536,10 @@ class WorkspaceUsers extends React.Component<
             extraNamespace="workspace-students"
             initialSelectedItems={[currentStudentBeingSentMessage]}
             initialSubject={getWorkspaceMessage(
-              this.props.i18nOLD,
               this.props.status,
               this.props.workspace
             )}
             initialMessage={getWorkspaceMessage(
-              this.props.i18nOLD,
               this.props.status,
               this.props.workspace,
               true

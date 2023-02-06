@@ -97,6 +97,8 @@ class WorkspaceJournalsListItem extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     const student =
       this.props.workspace.students &&
       this.props.workspace.students.results.find(
@@ -157,13 +159,7 @@ class WorkspaceJournalsListItem extends React.Component<
                   {this.props.journal.title}
                 </span>
               )}
-              {isDraft && (
-                <span>
-                  {this.props.i18nOLD.text.get(
-                    "plugin.workspace.journal.status.draft"
-                  )}
-                </span>
-              )}
+              {isDraft && <span>{t("actions.draft")}</span>}
             </div>
             <div className="application-list__item-header-aside">
               <span>
@@ -200,16 +196,12 @@ class WorkspaceJournalsListItem extends React.Component<
                         className="link link--application-list"
                         onClick={this.handleJournalEditClick}
                       >
-                        {this.props.i18nOLD.text.get(
-                          "plugin.workspace.journal.editEntryButton.label"
-                        )}
+                        {t("actions.edit")}
                       </Link>
 
                       <DeleteJournal journal={this.props.journal}>
                         <Link as="span" className="link link--application-list">
-                          {this.props.i18nOLD.text.get(
-                            "plugin.workspace.journal.deleteEntryButton.label"
-                          )}
+                          {t("actions.remove")}
                         </Link>
                       </DeleteJournal>
                     </div>
@@ -220,10 +212,7 @@ class WorkspaceJournalsListItem extends React.Component<
             {!this.props.asCurrent && (
               <div className="application-list__item-footer-content-aside">
                 <Link onClick={this.handleSetJournalItemClick}>
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspace.journal.comments.title"
-                )}{" "}
-                  ({this.props.journal.commentCount})
+                  {t("labels.comments")}({this.props.journal.commentCount}){" "}
                 </Link>
               </div>
             )}
@@ -256,6 +245,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setCurrentJournal }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["journal", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalsListItem)
 );
