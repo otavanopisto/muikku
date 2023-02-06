@@ -53,6 +53,7 @@ interface TocTopicProps {
    * Toc topic class modifiers
    */
   modifiers?: string[];
+  language?: string;
   name?: string;
   icon?: string;
   className?: string;
@@ -126,6 +127,7 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
                 .join(" ")
             : ""
         }`}
+        lang={props.language}
       >
         {props.name ? (
           <div
@@ -192,6 +194,7 @@ interface TocElementProps {
   onScrollToSection?: () => any;
   scrollPadding?: number;
   disableScroll?: boolean;
+  language?: string;
 }
 
 /**
@@ -227,6 +230,7 @@ export class TocElement extends React.Component<
       onScrollToSection,
       scrollPadding,
       disableScroll,
+      language,
     } = this.props;
 
     return (
@@ -243,6 +247,7 @@ export class TocElement extends React.Component<
         to={href}
         onClick={onClick}
         ref="element"
+        lang={language}
       >
         <span className="toc__text-body">{children}</span>
         {iconAfter ? (
