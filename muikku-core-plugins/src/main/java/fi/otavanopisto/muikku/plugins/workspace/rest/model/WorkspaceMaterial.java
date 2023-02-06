@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 
@@ -10,7 +11,7 @@ public class WorkspaceMaterial {
 
   public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, Boolean hidden,
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      String path, String title) {
+      String path, String title, WorkspaceLanguage titleLanguage) {
     super();
     this.id = id;
     this.materialId = materialId;
@@ -21,6 +22,7 @@ public class WorkspaceMaterial {
     this.correctAnswers = correctAnswers;
     this.path = path;
     this.title = title;
+    this.titleLanguage = titleLanguage;
   }
   
   public Long getId() {
@@ -97,6 +99,15 @@ public class WorkspaceMaterial {
   }
 
 
+  public WorkspaceLanguage getTitleLanguage() {
+    return titleLanguage;
+  }
+
+  public void setTitleLanguage(WorkspaceLanguage titleLanguage) {
+    this.titleLanguage = titleLanguage;
+  }
+
+
   private Long id;
   private Long materialId;
   private Long parentId;
@@ -106,4 +117,5 @@ public class WorkspaceMaterial {
   private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
   private String path;
   private String title;
+  private WorkspaceLanguage titleLanguage;
 }

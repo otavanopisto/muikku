@@ -467,6 +467,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               modifiers={classModifier}
               iconAfter={icon}
               iconAfterTitle={iconTitle}
+              language={node.titleLanguage || this.props.workspace.language}
             >
               {!isTocTopicViewRestrictedFromUser &&
                 node.children
@@ -532,6 +533,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                           this.props.doNotSetHashes
                             ? null
                             : "p-" + subnode.workspaceMaterialId
+                        }
+                        language={
+                          subnode.titleLanguage ||
+                          node.titleLanguage ||
+                          this.props.workspace.language
                         }
                       >
                         {subnode.title}
