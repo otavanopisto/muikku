@@ -72,6 +72,7 @@ import {
   setCurrentWorkspaceMaterialsActiveNodeId,
 } from "~/actions/workspaces/material";
 import "../locales/i18n";
+import i18n from "../locales/i18n";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -470,7 +471,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18nOLD.text.get("plugin.workspace.helpPage.title")
+          i18n.t("labels.instructions", { ns: "workspace" })
         )
       );
       this.props.store.dispatch(
@@ -530,9 +531,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18nOLD.text.get("plugin.workspace.discussions.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.discussion"))
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
@@ -575,7 +574,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18nOLD.text.get("plugin.workspace.announcements.pageTitle")
+          i18n.t("labels.announcement_other", { ns: "messaging" })
         )
       );
 
@@ -621,9 +620,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18nOLD.text.get("plugin.workspace.announcer.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.announcer"))
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
@@ -860,7 +857,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18nOLD.text.get("plugin.workspace.materials.pageTitle")
+          i18n.t("labels.materials", { ns: "materials" })
         )
       );
       this.props.store.dispatch(
@@ -973,21 +970,17 @@ export default class Workspace extends React.Component<
         if (!state.status.canCurrentWorkspaceSignup) {
           this.props.store.dispatch(
             displayNotification(
-              state.i18nOLD.text.get(
-                "plugin.workspace.materials.cannotSignUpWarning"
-              ),
+              i18n.t("content.cannotSignUpWarning", { ns: "workspace" }),
               "notice"
             ) as Action
           );
         } else {
           this.props.store.dispatch(
             displayNotification(
-              state.i18nOLD.text.get(
-                "plugin.workspace.materials.notSignedUpWarning"
-              ) +
-                ` <a href="#signup">${state.i18nOLD.text.get(
-                  "plugin.workspace.materials.notSignedUpWarningLink"
-                )}</a>`,
+              i18n.t("content.notSignedUpWarning", { ns: "materials" }) +
+                ` <a href="#signup">${i18n.t("actions.notSignedUpWarning", {
+                  ns: "materials",
+                })}</a>`,
               "notice"
             ) as Action
           );
@@ -1028,11 +1021,8 @@ export default class Workspace extends React.Component<
         }
       );
 
-      const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18nOLD.text.get("plugin.workspace.users.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.users", { ns: "users" }))
       );
       this.loadWorkspaceUsersData();
       this.loadChatSettings();
@@ -1064,9 +1054,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18nOLD.text.get("plugin.workspace.journal.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.journal", { ns: "journal" }))
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
@@ -1130,9 +1118,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18nOLD.text.get("plugin.workspace.management.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.settings"))
       );
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
       this.props.store.dispatch(
@@ -1176,11 +1162,7 @@ export default class Workspace extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18nOLD.text.get("plugin.workspace.permissions.pageTitle")
-        )
-      );
+      this.props.store.dispatch(titleActions.updateTitle("Permissions"));
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1225,11 +1207,7 @@ export default class Workspace extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          this.props.store
-            .getState()
-            .i18nOLD.text.get("plugin.evaluation.evaluation")
-        )
+        titleActions.updateTitle(i18n.t("labels.evaluation"))
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
