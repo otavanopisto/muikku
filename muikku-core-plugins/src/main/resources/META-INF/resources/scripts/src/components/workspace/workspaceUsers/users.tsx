@@ -3,7 +3,6 @@ import { Dispatch, connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { IconButton } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
@@ -41,10 +40,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * WorkspaceUsersProps
  */
-interface WorkspaceUsersProps extends WithTranslation<["common"]> {
+interface WorkspaceUsersProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
   loadStaffMembers: LoadUsersOfWorkspaceTriggerType;
   loadStudents: LoadUsersOfWorkspaceTriggerType;
 }
@@ -296,6 +294,8 @@ class WorkspaceUsers extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const currentStudentBeingSentMessage: ContactRecipientType = this.state
       .studentCurrentlyBeingSentMessage && {
       type: "user",
@@ -376,16 +376,16 @@ class WorkspaceUsers extends React.Component<
         />
       ) : null;
 
+    t("labels.teacher_other", { ns: "users" });
+
     return (
       <ApplicationPanel
         modifier="workspace-users"
-        title={this.props.i18nOLD.text.get("plugin.workspace.users.pageTitle")}
+        title={t("labels.users", { ns: "users" })}
       >
         <ApplicationSubPanel modifier="workspace-users">
           <ApplicationSubPanel.Header modifier="workspace-users">
-            {this.props.i18nOLD.text.get(
-              "plugin.workspace.users.teachers.title"
-            )}
+            {t("labels.teacher_other", { ns: "users" })}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body modifier="workspace-users">
             <ApplicationList
@@ -409,12 +409,10 @@ class WorkspaceUsers extends React.Component<
                         },
                       ]}
                       initialSubject={getWorkspaceMessage(
-                        this.props.i18nOLD,
                         this.props.status,
                         this.props.workspace
                       )}
                       initialMessage={getWorkspaceMessage(
-                        this.props.i18nOLD,
                         this.props.status,
                         this.props.workspace,
                         true
@@ -459,9 +457,7 @@ class WorkspaceUsers extends React.Component<
         </ApplicationSubPanel>
         <ApplicationSubPanel modifier="workspace-users">
           <ApplicationSubPanel.Header modifier="workspace-users">
-            {this.props.i18nOLD.text.get(
-              "plugin.workspace.users.students.title"
-            )}
+            {t("labels.students")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body modifier="workspace-users">
             <SearchFormElement
@@ -470,9 +466,7 @@ class WorkspaceUsers extends React.Component<
               updateField={this.updateSearch}
               id="WorkspaceUserFilter"
               name="workspace-user-filter"
-              placeholder={this.props.i18nOLD.text.get(
-                "plugin.workspace.users.students.searchStudents"
-              )}
+              placeholder={t("labels.search_students", { ns: "users" })}
             />
             <MobileOnlyTabs
               onTabChange={this.onTabChange}
@@ -481,9 +475,7 @@ class WorkspaceUsers extends React.Component<
               tabs={[
                 {
                   id: "ACTIVE",
-                  name: this.props.i18nOLD.text.get(
-                    "plugin.workspace.users.students.link.active"
-                  ),
+                  name: t("labels.active"),
                   type: "workspace-students",
                   component: (
                     <ApplicationList footer={pager} modifiers="workspace-users">
@@ -492,9 +484,9 @@ class WorkspaceUsers extends React.Component<
                           activeStudents
                         ) : (
                           <div className="loaded-empty">
-                            {this.props.i18nOLD.text.get(
-                              "plugin.workspaces.users.activeStudents.empty"
-                            )}
+                            {t("content.empty_activeStudents", {
+                              ns: "workspace",
+                            })}
                           </div>
                         )
                       ) : null}
@@ -503,9 +495,7 @@ class WorkspaceUsers extends React.Component<
                 },
                 {
                   id: "INACTIVE",
-                  name: this.props.i18nOLD.text.get(
-                    "plugin.workspace.users.students.link.inactive"
-                  ),
+                  name: t("labels.archived"),
                   type: "workspace-students",
                   component: (
                     <ApplicationList
@@ -518,9 +508,9 @@ class WorkspaceUsers extends React.Component<
                           inactiveStudents
                         ) : (
                           <div className="loaded-empty">
-                            {this.props.i18nOLD.text.get(
-                              "plugin.workspaces.users.inActiveStudents.empty"
-                            )}
+                            {t("content.empty_archivedStudent", {
+                              ns: "workspace",
+                            })}
                           </div>
                         )
                       ) : null}
@@ -538,12 +528,10 @@ class WorkspaceUsers extends React.Component<
             extraNamespace="workspace-students"
             initialSelectedItems={[currentStudentBeingSentMessage]}
             initialSubject={getWorkspaceMessage(
-              this.props.i18nOLD,
               this.props.status,
               this.props.workspace
             )}
             initialMessage={getWorkspaceMessage(
-              this.props.i18nOLD,
               this.props.status,
               this.props.workspace,
               true
@@ -568,7 +556,6 @@ class WorkspaceUsers extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };
@@ -588,6 +575,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["users", "workspace", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceUsers)
 );

@@ -18,19 +18,18 @@ import {
 } from "~/components/general/application-list";
 import { bindActionCreators } from "redux";
 import { JournalComment } from "~/@types/journal";
-import { i18nType } from "~/reducers/base/i18nOLD";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
   UpdateWorkspaceJournalCommentTriggerType,
   updatedWorkspaceJournalComment,
 } from "../../../../../actions/workspaces/journals";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalCommentListProps
  */
 interface WorkspaceJournalCommentListItemProps {
-  i18nOLD: i18nType;
   journalComment: JournalComment;
   workspaceEntityId: number;
   status: StatusType;
@@ -44,6 +43,7 @@ interface WorkspaceJournalCommentListItemProps {
 export const WorkspaceJournalCommentListItem: React.FC<
   WorkspaceJournalCommentListItemProps
 > = (props): JSX.Element => {
+  const { t } = useTranslation(["journal", "common"]);
   const { journalComment, status } = props;
 
   const { authorId, comment, firstName, lastName, created } = journalComment;
@@ -147,9 +147,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 className="link link--application-list"
                 onClick={handleEditCommentClick}
               >
-                {props.i18nOLD.text.get(
-                  "plugin.workspace.journal.editCommentButton.label"
-                )}
+                {t("actions.edit")}
               </Link>
 
               <DeleteJournalComment
@@ -157,9 +155,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 workspaceEntityId={props.workspaceEntityId}
               >
                 <Link as="span" className="link link--application-list">
-                  {props.i18nOLD.text.get(
-                    "plugin.workspace.journal.deleteCommentButton.label"
-                  )}
+                  {t("actions.remove")}
                 </Link>
               </DeleteJournalComment>
             </ApplicationListItemFooter>
@@ -175,9 +171,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
+  return {};
 }
 
 /**

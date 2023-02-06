@@ -5,12 +5,9 @@ import {
   WorkspaceType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18nOLD";
-
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-
 import MaterialLoader from "~/components/base/material-loader";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
@@ -21,9 +18,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * DescriptionPanelProps
  */
-interface DescriptionPanelProps extends WithTranslation<["common"]> {
+interface DescriptionPanelProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
   isInFrontPage?: boolean;
   workspaceEditMode: WorkspaceEditModeStateType;
 }
@@ -41,17 +37,17 @@ class DescriptionPanel extends React.Component<
   DescriptionPanelState
 > {
   /**
-   *
+   * render
    */
   render() {
+    const { t } = this.props;
+
     return (
       <div className="panel panel--workspace-description">
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
           <h2 className="panel__header-title">
-            {this.props.i18nOLD.text.get(
-              "plugin.workspace.index.descriptionTitle"
-            )}
+            {t("labels.introduction", { ns: "workspace" })}
           </h2>
         </div>
         <div className="panel__body">
@@ -97,7 +93,6 @@ class DescriptionPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
   };
@@ -110,6 +105,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel)
 );

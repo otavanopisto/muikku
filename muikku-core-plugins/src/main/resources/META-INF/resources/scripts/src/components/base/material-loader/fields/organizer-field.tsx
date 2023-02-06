@@ -2,7 +2,6 @@ import * as React from "react";
 import { shuffle, arrayToObject } from "~/util/modifiers";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
@@ -11,10 +10,10 @@ import { createFieldSavedStateClass } from "../base/index";
 /**
  * FieldType
  */
-interface FieldType {
+/* interface FieldType {
   name: string;
   text: string;
-}
+} */
 
 /**
  * TermType
@@ -61,7 +60,6 @@ interface OrganizerFieldProps {
     name: string,
     newValue: any
   ) => any;
-  i18nOLD: i18nType;
 
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
@@ -178,7 +176,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -188,9 +186,8 @@ export default class OrganizerField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(
     nextProps: OrganizerFieldProps,
@@ -200,7 +197,6 @@ export default class OrganizerField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18nOLD !== nextProps.i18nOLD ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -212,7 +208,6 @@ export default class OrganizerField extends React.Component<
 
   /**
    * checkAnswers
-   * @returns
    */
   checkAnswers() {
     // if we are allowed
@@ -293,8 +288,8 @@ export default class OrganizerField extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(
     prevProps: OrganizerFieldProps,
@@ -305,9 +300,8 @@ export default class OrganizerField extends React.Component<
 
   /**
    * onDropDraggableItem
-   * @param termId
-   * @param categoryId
-   * @returns
+   * @param termId termId
+   * @param categoryId categoryId
    */
   onDropDraggableItem(termId: string, categoryId: string) {
     if (!this.props.content) {
@@ -348,8 +342,8 @@ export default class OrganizerField extends React.Component<
 
   /**
    * deleteTermFromBox
-   * @param categoryId
-   * @param termId
+   * @param categoryId categoryId
+   * @param termId termId
    */
   deleteTermFromBox(categoryId: string, termId: string) {
     // And so when we delete from the item
@@ -386,7 +380,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * selectItemId
-   * @param id
+   * @param id id
    */
   selectItemId(id: string) {
     this.setState({
@@ -396,7 +390,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * selectBox
-   * @param box
+   * @param box box
    */
   selectBox(box: CategoryType) {
     if (this.state.selectedItemId) {
@@ -418,7 +412,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * preventPropagation
-   * @param e
+   * @param e e
    */
   preventPropagation(e: React.MouseEvent<any>) {
     e.stopPropagation();
@@ -428,7 +422,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     if (!this.props.content) {
@@ -502,7 +496,6 @@ export default class OrganizerField extends React.Component<
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
-          i18nOLD={this.props.i18nOLD}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         <span

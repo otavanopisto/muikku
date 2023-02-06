@@ -1,5 +1,4 @@
 import { MaterialContentNodeType } from "~/reducers/workspaces";
-import { i18nType } from "reducers/base/i18nOLD";
 import Any from "./any";
 import Pdf from "./pdf";
 import Flash from "./flash";
@@ -18,12 +17,10 @@ const registry = {
  * BinaryMaterialLoader
  * @param props props
  * @param props.material material
- * @param props.i18nOLD i18nOLD
  * @param props.invisible invisible
  */
 export default function BinaryMaterialLoader(props: {
   material: MaterialContentNodeType;
-  i18nOLD: i18nType;
   invisible?: boolean;
 }) {
   let Element = Any;

@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import CopyWizard from "~/components/workspace/workspaceManagement/body/copyWizard";
@@ -11,8 +10,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * CopyWizardDialogProps
  */
-interface CopyWizardDialogProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface CopyWizardDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
 }
@@ -36,6 +34,8 @@ class CopyWizardDialog extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
@@ -48,9 +48,7 @@ class CopyWizardDialog extends React.Component<
     return (
       <Dialog
         disableScroll={true}
-        title={this.props.i18nOLD.text.get(
-          "plugin.workspace.management.copyWorkspace"
-        )}
+        title={t("actions.copy_workspace", { ns: "workspace" })}
         content={content}
         modifier={["wizard", "copy-workspace"]}
       >
@@ -65,9 +63,7 @@ class CopyWizardDialog extends React.Component<
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
+  return {};
 }
 
 /**
@@ -77,6 +73,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(CopyWizardDialog)
 );

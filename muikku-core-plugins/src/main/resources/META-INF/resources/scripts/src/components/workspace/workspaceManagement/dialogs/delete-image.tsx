@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import Button from "~/components/general/button";
@@ -21,8 +20,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * DeleteImageDialogProps
  */
-interface DeleteImageDialogProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface DeleteImageDialogProps extends WithTranslation {
   displayNotification: DisplayNotificationTriggerType;
   updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,6 +56,8 @@ class DeleteImageDialog extends React.Component<
    * @param closeDialog closeDialog
    */
   deleteImage(closeDialog: () => void) {
+    const { t } = this.props;
+
     closeDialog();
     this.props.updateCurrentWorkspaceImagesB64({
       delete: true,
@@ -66,9 +66,7 @@ class DeleteImageDialog extends React.Component<
        */
       success: () => {
         this.props.displayNotification(
-          this.props.i18nOLD.text.get(
-            "plugin.workspace.management.notification.coverImage.deleted"
-          ),
+          t("notifications.removeSuccess_coverImage", { ns: "workspace" }),
           "success"
         );
         this.props.onDelete();
@@ -80,16 +78,14 @@ class DeleteImageDialog extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      *  content
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => (
-      <div>
-        {this.props.i18nOLD.text.get(
-          "plugin.workspace.management.deleteImage.dialog.description"
-        )}
-      </div>
+      <div>{t("content.removing_image", { ns: "workspace" })}</div>
     );
     /**
      * footer
@@ -101,26 +97,20 @@ class DeleteImageDialog extends React.Component<
           buttonModifiers={["execute", "standard-ok"]}
           onClick={this.deleteImage.bind(this, closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.management.deleteImage.dialog.deleteButton.label"
-          )}
+          {t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.management.deleteImage.dialog.cancelButton.label"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        title={this.props.i18nOLD.text.get(
-          "plugin.workspace.management.changeImage.dialog.title"
-        )}
+        title={t("labels.remove_image", { ns: "workspace" })}
         content={content}
         footer={footer}
         modifier="delete-header-image"
@@ -135,9 +125,7 @@ class DeleteImageDialog extends React.Component<
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
+  return {};
 }
 
 /**
@@ -151,6 +139,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(DeleteImageDialog)
 );

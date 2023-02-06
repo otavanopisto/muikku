@@ -2,16 +2,15 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * ConfirmRemoveDialogProps
  */
-interface ConfirmRemoveDialogProps {
-  i18nOLD: i18nType;
+interface ConfirmRemoveDialogProps extends WithTranslation {
   onConfirm: (fileData: any) => any;
   file: any;
   children: React.ReactElement<any>;
@@ -67,6 +66,8 @@ class ConfirmRemoveDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
@@ -74,11 +75,7 @@ class ConfirmRemoveDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        <span>
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.materials.assignmentFileAttachment.removeDialog.description"
-          )}
-        </span>
+        <span>{t("content.removing_file", { ns: "materials" })}</span>
       </div>
     );
 
@@ -94,18 +91,14 @@ class ConfirmRemoveDialog extends React.Component<
           onClick={this.confirm.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.materials.assignmentFileAttachment.removeDialog.removeButtonLabel"
-          )}
+          {t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={this.cancel.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.materials.assignmentFileAttachment.removeDialog.cancelButtonLabel"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
@@ -113,9 +106,7 @@ class ConfirmRemoveDialog extends React.Component<
     return (
       <Dialog
         modifier="confirm-remove-answer-dialog"
-        title={this.props.i18nOLD.text.get(
-          "plugin.workspace.materials.assignmentFileAttachment.removeDialog.title"
-        )}
+        title={t("labels.remove", { ns: "files" })}
         content={content}
         footer={footer}
       >
@@ -131,9 +122,7 @@ class ConfirmRemoveDialog extends React.Component<
  * @returns object
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
+  return {};
 }
 
 /**
@@ -145,7 +134,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConfirmRemoveDialog);
+export default withTranslation(["workspace", "files", "materials", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ConfirmRemoveDialog)
+);

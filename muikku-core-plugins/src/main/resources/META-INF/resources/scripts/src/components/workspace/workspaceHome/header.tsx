@@ -22,7 +22,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * WorkspaceHomeHeaderProps
  */
-interface WorkspaceHomeHeaderProps extends WithTranslation<["common"]> {
+interface WorkspaceHomeHeaderProps extends WithTranslation {
   workspace: WorkspaceType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
   i18nOLD: i18nType;
@@ -121,9 +121,7 @@ class WorkspaceHomeHeader extends React.Component<
       return localString ? (
         <div className="meta__item">
           <span className="meta__item-label">Pakollisuus:</span>
-          <span className="meta__item-description">
-            {this.props.i18nOLD.text.get(localString)}
-          </span>
+          <span className="meta__item-description">{localString}</span>
         </div>
       ) : null;
     }
@@ -135,6 +133,8 @@ class WorkspaceHomeHeader extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.workspace) {
       return null;
     }
@@ -168,11 +168,11 @@ class WorkspaceHomeHeader extends React.Component<
       // Otherwise first sort by ascending names a -> ö and then by ascending course number order
       workspaceLengthOrLengths = !isCombinationWorkspace ? (
         <span className="meta__item-description">
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.index.courseLength",
-            subjects[0].courseLength,
-            subjects[0].courseLengthSymbol.symbol
-          )}
+          {t("labels.workspaceLength", {
+            ns: "workspace",
+            length: subjects[0].courseLength,
+            symbol: subjects[0].courseLengthSymbol.symbol,
+          })}
         </span>
       ) : (
         <>
@@ -191,10 +191,13 @@ class WorkspaceHomeHeader extends React.Component<
                 s.courseNumber ? s.courseNumber : ""
               }`;
 
-              const codeWithLength = `${codeString} ${this.props.i18nOLD.text.get(
-                "plugin.workspace.index.courseLength",
-                s.courseLength,
-                s.courseLengthSymbol.symbol
+              const codeWithLength = `${codeString} ${t(
+                "labels.workspaceLength",
+                {
+                  ns: "workspace",
+                  length: s.courseLength,
+                  symbol: s.courseLengthSymbol.symbol,
+                }
               )}`;
 
               return (
@@ -265,27 +268,19 @@ class WorkspaceHomeHeader extends React.Component<
         <div className="meta meta--workspace">
           <div className="meta__item">
             <span className="meta__item-label">
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.index.courseLengthLabel"
-              )}
+              {t("labels.length", { ns: "workspace" })}
             </span>
             {workspaceLengthOrLengths}
           </div>
           <div className="meta__item">
             <span className="meta__item-label">
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.index.courseSubjectLabel"
-              )}
+              {t("labels.subject", { ns: "workspace" })}
             </span>
             {workspaceSubjectNameOrNames}
           </div>
           {this.props.workspace.additionalInfo.workspaceType ? (
             <div className="meta__item">
-              <span className="meta__item-label">
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspace.index.courseTypeLabel"
-                )}
-              </span>
+              <span className="meta__item-label">{t("labels.type")}</span>
               <span className="meta__item-description">
                 {this.props.workspace.additionalInfo.workspaceType}
               </span>
@@ -295,20 +290,18 @@ class WorkspaceHomeHeader extends React.Component<
           this.props.workspace.additionalInfo.endDate ? (
             <div className="meta__item">
               <span className="meta__item-label">
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspace.index.courseDatesLabel"
-                )}
+                {t("labels.dates", { ns: "workspace" })}
               </span>
               <span className="meta__item-description">
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspace.index.courseDates",
-                  this.props.i18nOLD.time.format(
+                {t("labels.workspaceDates", {
+                  ns: "workspace",
+                  beginDate: this.props.i18nOLD.time.format(
                     this.props.workspace.additionalInfo.beginDate
                   ),
-                  this.props.i18nOLD.time.format(
+                  endDate: this.props.i18nOLD.time.format(
                     this.props.workspace.additionalInfo.endDate
-                  )
-                )}
+                  ),
+                })}
               </span>
             </div>
           ) : null}
@@ -319,10 +312,7 @@ class WorkspaceHomeHeader extends React.Component<
             <div className="meta__item meta__item--progress-data">
               <ProgressData
                 modifier="workspace-home"
-                title={this.props.i18nOLD.text.get(
-                  "plugin.workspace.index.courseProgressLabel"
-                )}
-                i18nOLD={this.props.i18nOLD}
+                title={t("labels.progress", { ns: "workspace" })}
                 activity={this.props.workspace.activity}
               />
             </div>
@@ -354,6 +344,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateWorkspace }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceHomeHeader)
 );

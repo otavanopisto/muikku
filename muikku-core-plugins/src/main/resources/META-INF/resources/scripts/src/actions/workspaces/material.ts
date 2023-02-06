@@ -19,6 +19,7 @@ import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
+import i18n from "~/locales/i18n";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
@@ -434,9 +435,7 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
               if (file.size >= MAX_ATTACHMENT_SIZE) {
                 reject(
                   new Error(
-                    getState().i18nOLD.text.get(
-                      "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
-                    )
+                    i18n.t("notifications.sizeTooLarge", { ns: "files" })
                   )
                 );
                 return;
@@ -532,9 +531,7 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.workspace.materialsManagement.attachment.notification.success"
-            ),
+            i18n.t("notifications.loadError_attachment", { ns: "materials" }),
             "success"
           )
         );
@@ -926,9 +923,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         if (!showRemoveAnswersDialogForPublish) {
           dispatch(
             displayNotification(
-              getState().i18nOLD.text.get(
-                "plugin.workspace.management.notification.failedToUpdateMaterialPage"
-              ),
+              i18n.t("notifications.updateError", { ns: "materials" }),
               "error"
             )
           );
@@ -966,11 +961,10 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.workspace.management.notification.failedToLoadWorkspaceMaterials"
-            ),
+            i18n.t("notifications.loadError", { ns: "materials" }),
             "error"
           )
         );
@@ -1015,11 +1009,10 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.workspace.management.notification.failedToLoadMaterialAnswers"
-            ),
+            i18n.t("notifications.loadError_answers", { ns: "materials" }),
             "error"
           )
         );
@@ -1133,11 +1126,10 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         if (!showRemoveAnswersDialogForDelete) {
           if (data.material.children && data.material.children.length) {
             // ERROR section has child nodes
+
             dispatch(
               displayNotification(
-                getState().i18nOLD.text.get(
-                  "plugin.workspace.materialsManagement.sectionDeleteNotEmptyMessage"
-                ),
+                i18n.t("content.sectionRemoveDenied", { ns: "materials" }),
                 "error"
               )
             );
@@ -1145,9 +1137,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
             // ERROR generic delete failure
             dispatch(
               displayNotification(
-                getState().i18nOLD.text.get(
-                  "plugin.workspace.materialsManagement.deleteFailed.notification"
-                ),
+                i18n.t("notifications.removeError", { ns: "materials" }),
                 "error"
               )
             );
@@ -1188,11 +1178,10 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.workspace.management.notification.failedToLoadWorkspaceHelp"
-            ),
+            i18n.t("notifications.loadError_instructions", { ns: "workspace" }),
             "error"
           )
         );

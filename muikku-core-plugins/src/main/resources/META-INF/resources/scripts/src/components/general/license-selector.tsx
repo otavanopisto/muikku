@@ -1,5 +1,6 @@
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
+import { withTranslation, WithTranslation } from "react-i18next";
+import i18n from "~/locales/i18n";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/license-selector.scss";
 import "~/sass/elements/wcag.scss";
@@ -7,10 +8,9 @@ import "~/sass/elements/wcag.scss";
 /**
  * LicenseSelectorProps
  */
-interface LicenseSelectorProps {
+interface LicenseSelectorProps extends WithTranslation {
   value: string;
   modifier?: string;
-  i18nOLD: i18nType;
   onChange: (newValue: string) => any;
   wcagLabel?: string;
   wcagDesc?: string;
@@ -37,43 +37,36 @@ interface CCPropsType {
   commercialUse: null | "nc";
 }
 
-const CCPROPS = [
+const CCPROPS: Array<LicensePropertyType> = [
   {
     id: "allowModifications",
-    i18nOLD:
-      "plugin.workspace.materialsManagement.editorView.license.subTitle.allowModifications",
+    text: i18n.t("labels.allowModifications", { ns: "materials" }),
     values: [
       {
         value: null,
-        i18nOLD:
-          "plugin.workspace.materialsManagement.editorView.license.selection.yes",
+        text: i18n.t("labels.yes"),
       },
       {
         value: "nd",
-        i18nOLD:
-          "plugin.workspace.materialsManagement.editorView.license.selection.no",
+        text: i18n.t("labels.no"),
       },
       {
         value: "sa",
-        i18nOLD:
-          "plugin.workspace.materialsManagement.editorView.license.selection.shareAlike",
+        text: i18n.t("labels.shareAlike", { ns: "materials" }),
       },
     ],
   },
   {
     id: "commercialUse",
-    i18nOLD:
-      "plugin.workspace.materialsManagement.editorView.license.subTitle.allowCommercial",
+    text: i18n.t("labels.allowCommercial", { ns: "materials" }),
     values: [
       {
         value: null,
-        i18nOLD:
-          "plugin.workspace.materialsManagement.editorView.license.selection.yes",
+        text: i18n.t("labels.yes"),
       },
       {
         value: "nc",
-        i18nOLD:
-          "plugin.workspace.materialsManagement.editorView.license.selection.no",
+        text: i18n.t("labels.no"),
       },
     ],
   },
@@ -141,7 +134,7 @@ const CCVALUE = function (version: string, properties: CCPropsType) {
  */
 interface LicensePropertyValueType {
   value: string;
-  i18nOLD: string;
+  text: string;
 }
 
 /**
@@ -149,7 +142,7 @@ interface LicensePropertyValueType {
  */
 interface LicensePropertyType {
   id: string;
-  i18nOLD: string;
+  text: string;
   values: Array<LicensePropertyValueType>;
 }
 
@@ -158,7 +151,7 @@ interface LicensePropertyType {
  */
 interface LicenseType {
   id: string;
-  i18nOLD: string;
+  text: string;
   properties?: Array<LicensePropertyType>;
   propertiesParser?: (value: string) => any;
   propertiesDefault?: any;
@@ -169,7 +162,7 @@ interface LicenseType {
 const LICENSES: Array<LicenseType> = [
   {
     id: "CC4",
-    i18nOLD: "plugin.workspace.materialsManagement.editorView.license.cc4",
+    text: "plugin.workspace.materialsManagement.editorView.license.cc4",
     properties: CCPROPS,
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
@@ -178,7 +171,7 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "CC3",
-    i18nOLD: "plugin.workspace.materialsManagement.editorView.license.cc3",
+    text: "plugin.workspace.materialsManagement.editorView.license.cc3",
     properties: CCPROPS,
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
@@ -187,7 +180,7 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "CC0",
-    i18nOLD: "plugin.workspace.materialsManagement.editorView.license.cc0",
+    text: "plugin.workspace.materialsManagement.editorView.license.cc0",
     // eslint-disable-next-line
     value: () => CC0_URL_SSL,
     // eslint-disable-next-line
@@ -196,14 +189,13 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "text_or_link",
-    i18nOLD:
-      "plugin.workspace.materialsManagement.editorView.license.textOrLink",
+    text: "plugin.workspace.materialsManagement.editorView.license.textOrLink",
     // eslint-disable-next-line
     validate: (value: string) => typeof value === "string",
   },
   {
     id: "none",
-    i18nOLD: "plugin.workspace.materialsManagement.editorView.license.none",
+    text: "plugin.workspace.materialsManagement.editorView.license.none",
     // eslint-disable-next-line
     value: () => null,
     // eslint-disable-next-line
@@ -214,7 +206,7 @@ const LICENSES: Array<LicenseType> = [
 /**
  * LicenseSelector
  */
-export class LicenseSelector extends React.Component<
+class LicenseSelector extends React.Component<
   LicenseSelectorProps,
   LicenseSelectorState
 > {
@@ -240,7 +232,8 @@ export class LicenseSelector extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: LicenseSelectorProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: LicenseSelectorProps) {
     if (nextProps.value !== this.state.text) {
       this.setState({
         text: nextProps.value || "",
@@ -306,6 +299,8 @@ export class LicenseSelector extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const currentLicense = LICENSES.find((v) => v.validate(this.props.value));
     const currentPropertyValues = currentLicense.propertiesParser
       ? currentLicense.propertiesParser(this.props.value)
@@ -332,7 +327,7 @@ export class LicenseSelector extends React.Component<
             >
               {LICENSES.map((l) => (
                 <option key={l.id} value={l.id}>
-                  {this.props.i18nOLD.text.get(l.i18nOLD)}
+                  {l.text}
                 </option>
               ))}
             </select>
@@ -342,9 +337,7 @@ export class LicenseSelector extends React.Component<
               {currentLicense.properties.map((property) => (
                 <div className="form__row" key={property.id}>
                   <fieldset className="form__fieldset">
-                    <legend className="form__legend">
-                      {this.props.i18nOLD.text.get(property.i18nOLD)}
-                    </legend>
+                    <legend className="form__legend">{property.text}</legend>
                     <div className="form__fieldset-content form__fieldset-content--horizontal">
                       {property.values.map((v, index) => (
                         <span
@@ -365,9 +358,7 @@ export class LicenseSelector extends React.Component<
                               property.id
                             )}
                           />
-                          <label htmlFor={property.id + index}>
-                            {this.props.i18nOLD.text.get(v.i18nOLD)}
-                          </label>
+                          <label htmlFor={property.id + index}>{v.text}</label>
                         </span>
                       ))}
                     </div>
@@ -380,9 +371,7 @@ export class LicenseSelector extends React.Component<
             <div className="license-selector__options-container">
               <div className="form-element">
                 <label htmlFor="workspaceLicenseLinkOrText">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.workspace.materialsManagement.editorView.license.textOrLink"
-                  )}
+                  {t("labels.textOrLink", { ns: "materials" })}
                 </label>
                 <input
                   id="workspaceLicenseLinkOrText"
@@ -403,3 +392,7 @@ export class LicenseSelector extends React.Component<
     );
   }
 }
+
+export default withTranslation(["workspace", "materials", "common"])(
+  LicenseSelector
+);

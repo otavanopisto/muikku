@@ -27,7 +27,7 @@ import ConfirmPublishRemovePageWithLinkedAnswersDialog from "./confirm-remove-pa
 import equals = require("deep-equal");
 import Tabs, { Tab } from "~/components/general/tabs";
 import AddProducer from "~/components/general/add-producer";
-import { LicenseSelector } from "~/components/general/license-selector";
+import LicenseSelector from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import { PageLocation, UploadingValue } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
@@ -1125,7 +1125,6 @@ class MaterialEditor extends React.Component<
                       producers={
                         this.props.editorState.currentDraftNodeValue.producers
                       }
-                      i18nOLD={this.props.i18nOLD}
                     />
                   </div>
                 ) : null}
@@ -1148,7 +1147,6 @@ class MaterialEditor extends React.Component<
                     modifier="material-editor"
                     value={this.props.editorState.currentDraftNodeValue.license}
                     onChange={this.updateLicense}
-                    i18nOLD={this.props.i18nOLD}
                   />
                 </div>
               </div>

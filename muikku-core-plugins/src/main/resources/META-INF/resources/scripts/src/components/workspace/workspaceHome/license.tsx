@@ -2,18 +2,15 @@ import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Link from "~/components/general/link";
-
 import "~/sass/elements/license.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * LicenseProps
  */
-interface LicenseProps extends WithTranslation<["common"]> {
+interface LicenseProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -29,6 +26,8 @@ class License extends React.Component<LicenseProps, LicenseState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.workspace || !this.props.workspace.materialDefaultLicense) {
       return null;
     }
@@ -83,7 +82,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
           ))}
         </span>
         <span className="license__title">
-          {this.props.i18nOLD.text.get("plugin.workspace.index.licenseLabel")}:
+          {t("wcag.workspaceLicense", { ns: "workspace" })}:
         </span>
         {isLicenseLink ? (
           <Link
@@ -109,7 +108,6 @@ class License extends React.Component<LicenseProps, LicenseState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
   };
 }
@@ -121,6 +119,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(License)
 );

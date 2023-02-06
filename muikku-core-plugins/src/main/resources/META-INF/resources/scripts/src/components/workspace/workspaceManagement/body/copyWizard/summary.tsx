@@ -5,11 +5,15 @@ import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import { CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { StateType } from "~/reducers";
+import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 
 /**
  * StepProps
  */
-interface StepProps extends WithTranslation<["common"]> {
+interface StepProps extends WithTranslation {
   workspace: WorkspaceType;
   i18nOLD: i18nType;
   getStore: () => CopyWizardStoreType;
@@ -41,85 +45,64 @@ class Step extends React.Component<StepProps, StepState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     const copyMaterials = this.props.getStore().copyMaterials;
     const beginDate = this.props.getStore().beginDate;
     const endDate = this.props.getStore().endDate;
     const nameExtension = this.props.getStore().nameExtension;
     return (
       <div className="wizard__content">
-        <h2>
-          {this.props.i18nOLD.text.get(
-            "plugin.workspacecopywizard.summaryPage.title"
-          )}
-        </h2>
+        <h2>{t("labels.summary", { ns: "workspace" })}</h2>
 
         <div className="wizard__summary-row">
-          <label>
-            {this.props.i18nOLD.text.get(
-              "plugin.workspacecopywizard.doCopyButton.label"
-            )}
-          </label>
+          <label>{t("actions.copy_workspace", { ns: "workspace" })}</label>
           <p>
-            {this.props.i18nOLD.text.get(
-              nameExtension
-                ? "plugin.workspacecopywizard.summarySteps.copyWorkspaceName"
-                : "plugin.workspacecopywizard.summarySteps.copyWorkspaceNameWithExtension",
-              this.props.getStore().name,
-              nameExtension
-            )}
+            {nameExtension
+              ? t("labels.nameWithExtension_copySummary", {
+                  ns: "workspace",
+                  workspaceName: this.props.getStore().name,
+                  workspaceNameExtension: nameExtension,
+                })
+              : t("labels.name_copySummary", {
+                  ns: "workspace",
+                  workspaceName: this.props.getStore().name,
+                })}
           </p>
         </div>
         <div className="wizard__summary-row">
-          <label>
-            {this.props.i18nOLD.text.get(
-              "plugin.workspacecopywizard.dates.title"
-            )}
-          </label>
+          <label>{t("labels.date_other")}</label>
           <p>
-            {this.props.i18nOLD.text.get(
-              "plugin.workspacecopywizard.summarySteps.changeDatesBeginDate",
-              beginDate
+            {t("labels.begingDate_copySummary", {
+              ns: "workspace",
+              beginDate: beginDate
                 ? this.props.i18nOLD.time.format(beginDate)
-                : this.props.i18nOLD.text.get(
-                    "plugin.workspacecopywizard.workspaceStartDate.empty.label"
-                  )
-            )}
+                : t("labels.beginDateEmpty", { ns: "workspace" }),
+            })}
           </p>
           <p>
-            {this.props.i18nOLD.text.get(
-              "plugin.workspacecopywizard.summarySteps.changeDatesEndDate",
-              endDate
+            {t("labels.endDate_copySummary", {
+              ns: "workspace",
+              endDate: endDate
                 ? this.props.i18nOLD.time.format(endDate)
-                : this.props.i18nOLD.text.get(
-                    "plugin.workspacecopywizard.workspaceEndDate.empty.label"
-                  )
-            )}
+                : t("labels.endDateEmpty", { ns: "workspace" }),
+            })}
           </p>
         </div>
         <div className="wizard__summary-row">
           <ul>
             {this.props.getStore().copyDiscussionAreas ? (
-              <li>
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspacecopywizard.summarySteps.copyDiscussionAreas"
-                )}
-              </li>
+              <li>{t("labels.copy_discussionsAreas", { ns: "workspace" })}</li>
             ) : null}
             {copyMaterials !== "NO" ? (
               <li>
-                {this.props.i18nOLD.text.get(
-                  copyMaterials === "CLONE"
-                    ? "plugin.workspacecopywizard.summarySteps.copyMaterials"
-                    : "plugin.workspacecopywizard.summarySteps.copyMaterialsLink"
-                )}
+                {copyMaterials === "CLONE"
+                  ? t("labels.copy_materialsClone", { ns: "workspace" })
+                  : t("labels.copy_materialsLink", { ns: "workspace" })}
               </li>
             ) : null}
             {this.props.getStore().copyBackgroundPicture ? (
-              <li>
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspacecopywizard.summarySteps.copyFiles"
-                )}
-              </li>
+              <li>{t("labels.copy_coverImage", { ns: "workspace" })}</li>
             ) : null}
           </ul>
         </div>
@@ -129,26 +112,20 @@ class Step extends React.Component<StepProps, StepState> {
               className="button button--primary-function-content"
               onClick={this.props.onDone}
             >
-              {this.props.i18nOLD.text.get(
-                "plugin.workspacecopywizard.closeWizardButton.label"
-              )}
+              {t("actions.close")}
             </Button>
             <Button
               className="button button--primary-function-content"
               href={`/workspace/${this.props.resultingWorkspace.urlName}`}
             >
-              {this.props.i18nOLD.text.get(
-                "plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label"
-              )}
+              {t("actions.openInMuikku", { ns: "workspace" })}
             </Button>
             <Button
               className="button button--primary-function-content"
               href={this.props.resultingWorkspace.details.externalViewUrl}
               openInNewTab="_blank"
             >
-              {this.props.i18nOLD.text.get(
-                "plugin.workspacecopywizard.gotToWorkspacePyramusButton.label"
-              )}
+              {t("actions.openInPyramus", { ns: "workspace" })}
             </Button>
           </div>
         ) : null}
@@ -157,4 +134,24 @@ class Step extends React.Component<StepProps, StepState> {
   }
 }
 
-export default withTranslation(["common"])(Step);
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18nOLD: state.i18nOLD,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({}, dispatch);
+}
+
+export default withTranslation(["workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Step)
+);

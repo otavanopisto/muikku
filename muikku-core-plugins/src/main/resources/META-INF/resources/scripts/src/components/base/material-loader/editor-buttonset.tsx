@@ -2,6 +2,8 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Dropdown from "~/components/general/dropdown";
 import { ButtonPill } from "~/components/general/button";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 /**
  * EditorButtonSetProps
@@ -107,11 +109,19 @@ function copyPage(props: EditorButtonSetProps) {
   );
   localStorage.setItem("workspace-copied-id", props.workspace.id.toString(10));
 
-  props.displayNotification(
+  /* props.displayNotification(
     props.i18nOLD.text.get(
       "plugin.workspace.materialsManagement.materialCopiedToClipboardMessage",
       props.material.title
     ),
+    "success"
+  ); */
+
+  props.displayNotification(
+    i18next.t("notifications.documentCopied", {
+      ns: "materials",
+      title: props.material.title,
+    }),
     "success"
   );
 }
@@ -121,6 +131,8 @@ function copyPage(props: EditorButtonSetProps) {
  * @param props props
  */
 export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
+  const { t } = useTranslation(["materials", "common"]);
+
   if (!props.editable) {
     return null;
   }
@@ -144,9 +156,7 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
       <Dropdown
         openByHover
         modifier="material-management-tooltip"
-        content={props.i18nOLD.text.get(
-          "plugin.workspace.materialsManagement.editPageTooltip"
-        )}
+        content={t("actions.edit")}
       >
         <ButtonPill
           buttonModifiers="material-management-page"
@@ -158,9 +168,7 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
         <Dropdown
           openByHover
           modifier="material-management-tooltip"
-          content={props.i18nOLD.text.get(
-            "plugin.workspace.materialsManagement.copyPageTooltip"
-          )}
+          content={t("labels.copy", { ns: "materials" })}
         >
           <ButtonPill
             buttonModifiers="material-management-page"
@@ -175,12 +183,8 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
           modifier="material-management-tooltip"
           content={
             props.material.hidden
-              ? props.i18nOLD.text.get(
-                  "plugin.workspace.materialsManagement.showPageTooltip"
-                )
-              : props.i18nOLD.text.get(
-                  "plugin.workspace.materialsManagement.hidePageTooltip"
-                )
+              ? t("labels.setVisible", { ns: "materials" })
+              : t("labels.hide", { ns: "materials" })
           }
         >
           <ButtonPill

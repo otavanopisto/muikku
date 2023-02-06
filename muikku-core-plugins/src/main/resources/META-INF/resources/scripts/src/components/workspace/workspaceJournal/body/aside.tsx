@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
@@ -32,8 +31,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface NavigationAsideProps extends WithTranslation {
   workspace: WorkspaceType;
   journalsState: JournalsState;
   status: StatusType;
@@ -117,6 +115,8 @@ class NavigationAside extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const { workspace, journalsState } = this.props;
 
     if (!workspace) {
@@ -147,9 +147,7 @@ class NavigationAside extends React.Component<
         icon="user"
         onClick={this.handleOnStudentClick(null)}
       >
-        {this.props.i18nOLD.text.get(
-          "plugin.workspace.journal.studentFilter.showAll"
-        )}
+        {t("actions.showAll")}
       </NavigationElement>
     );
 
@@ -172,35 +170,27 @@ class NavigationAside extends React.Component<
     return (
       <Navigation key="journal-navigation-11">
         <NavigationTopic
-          name={this.props.i18nOLD.text.get(
-            "plugin.workspace.journal.filters.title"
-          )}
+          name={t("labels.type_journalEntry", { ns: "workspace" })}
         >
           <NavigationElement
             icon="book"
             isActive={filters.showMandatory}
             onClick={this.handleChangeJournalFilterClick("showMandatory")}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.workspace.journal.filters.mandatory.label"
-            )}
+            {t("labels.mandatories", { ns: "journal" })}
           </NavigationElement>
           <NavigationElement
             icon="book"
             isActive={filters.showOthers}
             onClick={this.handleChangeJournalFilterClick("showOthers")}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.workspace.journal.filters.other.label"
-            )}
+            {t("labels.others", { ns: "journal" })}
           </NavigationElement>
         </NavigationTopic>
 
         {!this.props.status.isStudent && (
           <NavigationTopic
-            name={this.props.i18nOLD.text.get(
-              "plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title"
-            )}
+            name={t("labels.workspaceStudents", { ns: "users" })}
           >
             {navigationElementList}
           </NavigationTopic>
@@ -217,7 +207,6 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     journalsState: state.journals,
     status: state.status,
@@ -240,6 +229,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["journal", "workspace", "users", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
 );

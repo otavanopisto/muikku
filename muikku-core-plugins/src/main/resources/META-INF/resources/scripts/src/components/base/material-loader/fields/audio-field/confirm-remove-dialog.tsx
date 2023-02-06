@@ -2,16 +2,15 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * ConfirmRemoveDialogProps
  */
-interface ConfirmRemoveDialogProps {
-  i18nOLD: i18nType;
+interface ConfirmRemoveDialogProps extends WithTranslation {
   onConfirm: () => any;
   children: React.ReactElement<any>;
 }
@@ -62,17 +61,15 @@ class ConfirmRemoveDialog extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => any) => (
       <div>
-        <span>
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.description"
-          )}
-        </span>
+        <span>{t("content.removing_audio", { ns: "materials" })}</span>
       </div>
     );
 
@@ -87,18 +84,14 @@ class ConfirmRemoveDialog extends React.Component<
           onClick={this.confirm.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.removeButtonLabel"
-          )}
+          {t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={this.cancel.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.cancelButtonLabel"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
@@ -106,9 +99,7 @@ class ConfirmRemoveDialog extends React.Component<
     return (
       <Dialog
         modifier="confirm-remove-answer-dialog"
-        title={this.props.i18nOLD.text.get(
-          "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.title"
-        )}
+        title={t("labels.remove_recording", { ns: "materials" })}
         content={content}
         footer={footer}
       >
@@ -123,9 +114,7 @@ class ConfirmRemoveDialog extends React.Component<
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
+  return {};
 }
 
 /**
@@ -136,7 +125,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConfirmRemoveDialog);
+export default withTranslation(["workspace", "materials", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ConfirmRemoveDialog)
+);

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/journal.scss";
@@ -24,8 +23,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * WorkspaceJournalsProps
  */
-interface WorkspaceJournalsListProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface WorkspaceJournalsListProps extends WithTranslation {
   workspaceJournalsState: WorkspacesStateType;
   workspaceJournalsHasMore: boolean;
   loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType;
@@ -88,6 +86,10 @@ class WorkspaceJournalsList extends BodyScrollLoader<
    * render
    */
   render() {
+    const { t } = this.props;
+
+    t("content.empty_you", { ns: "journal" });
+
     if (
       !this.props.workspace ||
       !this.props.journalsState ||
@@ -108,12 +110,8 @@ class WorkspaceJournalsList extends BodyScrollLoader<
         <div className="empty">
           <span>
             {this.props.status.isStudent
-              ? this.props.i18nOLD.text.get(
-                  "plugin.workspace.journal.noEntries"
-                )
-              : this.props.i18nOLD.text.get(
-                  "plugin.workspace.journal.studentHasNoEntries"
-                )}
+              ? t("content.empty_you", { ns: "journal" })
+              : t("content.empty_student", { ns: "journal" })}
           </span>
         </div>
       );
@@ -145,7 +143,6 @@ class WorkspaceJournalsList extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspaceJournalsState: state.journals && state.journals.state,
     workspaceJournalsHasMore: state.journals && state.journals.hasMore,
     workspace: state.workspaces.currentWorkspace,
@@ -165,6 +162,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["journal", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalsList)
 );
