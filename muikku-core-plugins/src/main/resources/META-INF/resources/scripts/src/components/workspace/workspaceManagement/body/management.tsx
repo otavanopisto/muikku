@@ -749,15 +749,20 @@ class ManagementPanel extends React.Component<
                   <div className="form__row">
                     <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description form-element">
                       <label>{t("labels.description")}</label>
-
-                      <CKEditor
-                        editorTitle={t("wcag.workspaceDescription", {
-                          ns: "workspace",
-                        })}
-                        onChange={this.onDescriptionChange}
-                      >
-                        {this.state.workspaceDescription}
-                      </CKEditor>
+                      {
+                        // TODO: This is a temporary fix for Ckedtior not showing content
+                        // between view changes or refreshes. This should be fixed in CKEditor
+                      }
+                      {this.state.workspaceDescription && (
+                        <CKEditor
+                          editorTitle={t("wcag.workspaceDescription", {
+                            ns: "workspace",
+                          })}
+                          onChange={this.onDescriptionChange}
+                        >
+                          {this.state.workspaceDescription}
+                        </CKEditor>
+                      )}
                     </div>
                   </div>
                 </div>
