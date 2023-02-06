@@ -19,7 +19,6 @@ import {
 interface workspaceUserProps {
   student: ShortWorkspaceUserWithActiveStatusType;
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
   status: StatusType;
   highlight: string;
   onSendMessage?: () => any;

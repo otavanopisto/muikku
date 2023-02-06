@@ -1196,7 +1196,7 @@
 
     "content": {
       "addDetails": "Kurssin nimi on pakollinen tieto. Päivämäärät ovat valinnaisia. Huomaa, että kurssi täytyy erikseen julkaista ennen kuin se näkyy opiskelijoille kurssipoimurissa. Valitse, keillä on pääsy kurssille.",
-      "archiveStudent": "Oletko varma että haluat arkistoida käyttäjän {0} työtilasta?",
+      "archiveStudent": "Oletko varma että haluat arkistoida käyttäjän {{studentName}} työtilasta?",
       "cancel_evaluationRequest": "Peruuta kurssin opettajalle lähetetty arviointipyyntö. Opettaja saa automaattisen tiedon peruutuksesta.",
       "cannotSignUpWarning": "Olet tutustumassa tähän kurssiin mutta sinulla ei ole sille ilmoittautumisoikeutta. Voit halutessasi vastata tehtäviin mutta et voi pyytää kurssiarviointia. Mikäli haluat ilmoittautua kurssille, ota yhteyttä ohjaajaasi.",
       "changeImage": "Klikkaa kuvaa vaihtaaksesi sitä",
@@ -1222,7 +1222,7 @@
       "requestEvaluation": "Pyydä kurssin arviointia opettajalta. Opettaja saa automaattisen tiedon arviointipyynnöstäsi.",
       "selectTemplate": "Valitse kurssipohja, jonka pohjalta kurssi luodaan. Jos haluamasi kurssipohja ei näy listassa, voit käyttää hakua löytääksesi sen.",
       "signUp": "Ilmoittaudu kurssille {0} {1}",
-      "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun käyttäjän {0}?"
+      "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun käyttäjän {{studentName}}?"
     },
 
     "notifications": {
