@@ -29,7 +29,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * CourseProps
  */
 interface CourseProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+  // i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
@@ -135,7 +135,7 @@ class Course extends React.Component<CourseProps, CourseState> {
       const localString =
         suitabilityMap.get(education)[this.props.workspace.mandatority];
 
-      return ` (${this.props.i18nOLD.text.get(localString)})`;
+      return ` (${this.props.t(localString)})`;
     }
   };
 
@@ -245,7 +245,8 @@ class Course extends React.Component<CourseProps, CourseState> {
               >
                 {/* {this.props.workspace.isCourseMember
                   ? this.props.t("workspaces:actions.continue")
-                  : this.props.t("workspaces:actions.checkOut")} */} asd
+                  : this.props.t("workspaces:actions.checkOut")} */}{" "}
+                asd
               </Button>
               {this.state.canSignUp && this.props.status.loggedIn ? (
                 <WorkspaceSignupDialog
@@ -264,7 +265,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                       "coursepicker-course-action",
                     ]}
                   >
-                    {/* {this.props.t("workspaces:actions.signIn")} */} asd
+                    {/* {this.props.t("workspaces:actions.signIn")} */} kirjs
                   </Button>
                 </WorkspaceSignupDialog>
               ) : null}
