@@ -13,14 +13,14 @@ public class WorkspaceNoteController {
   @Inject
   private WorkspaceNoteDAO workspaceNoteDAO;
   
-  public List<WorkspaceNote> listByOwnerAndArchived(Long owner) {
-    List<WorkspaceNote> workspaceNotes = workspaceNoteDAO.listByOwnerAndArchived(owner);
+  public List<WorkspaceNote> listByOwnerAndArchived(Long owner, Boolean archived) {
+    List<WorkspaceNote> workspaceNotes = workspaceNoteDAO.listByOwnerAndArchived(owner, archived);
     workspaceNotes.sort(Comparator.comparing(WorkspaceNote::getOrderNumber));
     return workspaceNotes; 
   }
   
-  public List<WorkspaceNote> listByWorkspaceAndOwnerAndArchived(Long workspaceEntityId, Long owner){
-    List<WorkspaceNote> workspaceNotes = workspaceNoteDAO.listByOwnerAndWorkspaceAndArchived(owner, workspaceEntityId);
+  public List<WorkspaceNote> listByWorkspaceAndOwnerAndArchived(Long workspaceEntityId, Long owner, Boolean archived){
+    List<WorkspaceNote> workspaceNotes = workspaceNoteDAO.listByOwnerAndWorkspaceAndArchived(owner, workspaceEntityId, archived);
     workspaceNotes.sort(Comparator.comparing(WorkspaceNote::getOrderNumber));
     return workspaceNotes;
   }
@@ -39,8 +39,7 @@ public class WorkspaceNoteController {
         title,
         note, 
         workspaceId, 
-        maximumOrderNumber,
-        Boolean.FALSE);
+        maximumOrderNumber);
   }
   
   public WorkspaceNote updateWorkspaceNote(WorkspaceNote workspaceNote, String title, String note) {
@@ -93,14 +92,5 @@ public class WorkspaceNoteController {
   
   public Integer getMaximumOrderNumberByOwnerAndWorkspace(Long workspaceEntityId, Long ownerEntityId) {
     return workspaceNoteDAO.getMaximumOrderNumberByOwnerAndWorkspace(workspaceEntityId, ownerEntityId);
-  }
-  
-  public WorkspaceNote findWorkspaceNoteNextSibling(WorkspaceNote referenceNote) {
-    List<WorkspaceNote> nextSiblings = workspaceNoteDAO.listByOrderNumberGreater(referenceNote);
-    if (nextSiblings.isEmpty()) {
-      return null;
-    }
-
-    return nextSiblings.get(0);
   }
 }

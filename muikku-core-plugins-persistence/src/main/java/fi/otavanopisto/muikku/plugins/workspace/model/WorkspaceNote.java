@@ -87,7 +87,7 @@ public class WorkspaceNote {
   private Integer orderNumber;
   
   @Column (nullable = false)
-  private Boolean archived = Boolean.FALSE;
+  private Boolean archived;
 }
 
   

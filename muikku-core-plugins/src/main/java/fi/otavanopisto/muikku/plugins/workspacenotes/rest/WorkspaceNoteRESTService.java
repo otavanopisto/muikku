@@ -37,7 +37,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @RequestScoped
 @Stateful
 @Produces("application/json")
-@Path ("/workspacenote")
+@Path ("/workspacenotes")
 @RestCatchSchoolDataExceptions
 public class WorkspaceNoteRESTService extends PluginRESTService {
 
@@ -60,7 +60,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   
 
   /*
-   * mApi() call (mApi().workspacenote.workspacenote.create(workspaceEntityId, workspaceNoteRestModel)
+   * mApi() call (mApi().workspacenotes.workspacenote.create(workspaceEntityId, workspaceNoteRestModel)
    * 
    * Editable fields: 
    * 
@@ -94,23 +94,26 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     }
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceNote.getWorkspaceEntityId());
-    WorkspaceNote newWorkspaceNote= workspaceNoteController.createWorkspaceNote(sessionController.getLoggedUserEntity().getId(), workspaceNote.getTitle(), workspaceNote.getWorkspaceNote(), workspaceEntity.getId());
-
-    WorkspaceNoteRestModel workspaceNoteRest = toRestModel(newWorkspaceNote);
     
-    return Response.ok(workspaceNoteRest).build();
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Workspace entity not found").build();
+    }
+    
+    WorkspaceNote newWorkspaceNote = workspaceNoteController.createWorkspaceNote(sessionController.getLoggedUserEntity().getId(), workspaceNote.getTitle(), workspaceNote.getWorkspaceNote(), workspaceEntity.getId());
+
+    return Response.ok(toRestModel(newWorkspaceNote)).build();
   }
   
   /*
-   * mApi() call mApi().workspacenote.workspacenote.update( workspaceNoteId, WorkspaceNoteRestModel) 
+   * mApi() call mApi().workspacenotes.workspacenote.update( workspaceNoteId, WorkspaceNoteRestModel) 
    *  
-   *  Parameter rest model must contain owner & workspaceEntityId
+   *  Parameter rest model must contain owner, workspaceEntityId & nextSiblingId. 
    *  
    *  example:
-   *  {owner: 14, workspaceEntityId: 23, title: "Title", workspaceNote: "updatedNote"}
+   *  {owner: 14, workspaceEntityId: 23, title: "Title", workspaceNote: "updatedNote", nextSiblingId: 2}
    *  
    *  
-   *  Editable field is only title & workspaceNote 
+   *  Editable fields are only title, workspaceNote & nextSiblingId
    *  
    *  returns updated rest model
    *  
@@ -143,68 +146,19 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     } 
     
     if(restModel.getWorkspaceEntityId() == null || !restModel.getWorkspaceEntityId().equals(workspaceNote.getWorkspace())) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity("Workspace entity id mismatch").build();
     }
     
-    // users can only update their own notes (except admins)
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
-    
+    // users can only update their own notes (except admins)    
     if (!restModel.getOwner().equals(sessionController.getLoggedUserEntity().getId())) {
+      EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
+
       if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-    
-    WorkspaceNote updatedWorkspaceNote= workspaceNoteController.updateWorkspaceNote(workspaceNote, restModel.getTitle(), restModel.getWorkspaceNote());
-    
-    WorkspaceNoteRestModel updatedRestModel = toRestModel(updatedWorkspaceNote);
-    
-    return Response.ok(updatedRestModel).build();
-  }
-  
-  /* mApi().workspacenote.workspacenote.updateorder.update(
-   * workspaceNoteId, {owner: 14, nextSiblingId:2, workspaceEntityId:23})
-   * 
-   * Method for drag and drop-kind of thing.
-   * 
-   * Errors:
-   * 404 Not found if can't find workspaceNote
-   * 400 Bad request if workspaceEntityId/owner is null or given workspaceEntityId does not match with workspaceEntityId in WorkspaceNote
-   * 403 Forbidden if updater is someone else than owner/administrator
-   */
-  
-  @PUT
-  @Path ("/workspacenote/{WORKSPACENOTEID}/updateorder")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateOrder(@PathParam ("WORKSPACENOTEID") Long workspaceNoteId, WorkspaceNoteRestModel restModel) {
-    
-    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
-    
-    if (workspaceNote == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    if (restModel.getOwner() == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    } 
-    
-    if(restModel.getWorkspaceEntityId() == null || !restModel.getWorkspaceEntityId().equals(workspaceNote.getWorkspace())) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    // users can only update their own notes (except admins)
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
-    
-    if (!restModel.getOwner().equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-    WorkspaceNote referenceNote = null;
-    
-    if (restModel.getNextSiblingId() != null) {
-      referenceNote = workspaceNoteController.findWorkspaceNoteById(restModel.getNextSiblingId());
-    }
+
+    WorkspaceNote referenceNote = workspaceNoteController.findWorkspaceNoteById(restModel.getNextSiblingId());
     
     if (referenceNote == null) {
       Integer maximumOrderNumber = workspaceNoteController.getMaximumOrderNumberByOwnerAndWorkspace(restModel.getWorkspaceEntityId(), restModel.getOwner());
@@ -213,9 +167,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       workspaceNote = workspaceNoteController.moveAbove(workspaceNote, referenceNote);
     }
     
-    WorkspaceNoteRestModel updatedRestModel = toRestModel(workspaceNote);
+    WorkspaceNote updatedWorkspaceNote= workspaceNoteController.updateWorkspaceNote(workspaceNote, restModel.getTitle(), restModel.getWorkspaceNote());
     
-    return Response.ok(updatedRestModel).build();
+    return Response.ok(toRestModel(updatedWorkspaceNote)).build();
   }
   
   private WorkspaceNoteRestModel toRestModel(WorkspaceNote workspaceNote) {
@@ -258,7 +212,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    // users can only edit their own notes
+    // non-admins can only list their own notes
     EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
     if (!owner.equals(sessionController.getLoggedUserEntity().getId())) {
@@ -267,7 +221,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       }
     }
     
-    List<WorkspaceNote> workspaceNotes = workspaceNoteController.listByOwnerAndArchived(owner);
+    List<WorkspaceNote> workspaceNotes = workspaceNoteController.listByOwnerAndArchived(owner, Boolean.FALSE);
     List<WorkspaceNoteRestModel> workspaceNoteList = new ArrayList<WorkspaceNoteRestModel>();
     
     for (WorkspaceNote workspaceNote : workspaceNotes) {
@@ -298,7 +252,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   @GET
   @Path("/workspace/{WORKSPACEID}/owner/{OWNER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceNoteByWorkspaceAndOwner(@PathParam ("WORKSPACEID") Long workspaceEntityId, @PathParam("OWNER") Long owner, @QueryParam("listArchived") @DefaultValue ("false") Boolean listArchived) {
+  public Response listWorkspaceNoteByWorkspaceAndOwner(@PathParam ("WORKSPACEID") Long workspaceEntityId, @PathParam("OWNER") Long owner) {
 
     if (userEntityController.findUserEntityById(owner) == null || workspaceEntityController.findWorkspaceEntityById(workspaceEntityId) == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -313,7 +267,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       }
     }
     
-    List<WorkspaceNote> workspaceNotes = workspaceNoteController.listByWorkspaceAndOwnerAndArchived(workspaceEntityId, owner);
+    List<WorkspaceNote> workspaceNotes = workspaceNoteController.listByWorkspaceAndOwnerAndArchived(workspaceEntityId, owner, Boolean.FALSE);
     List<WorkspaceNoteRestModel> workspaceNoteList = new ArrayList<WorkspaceNoteRestModel>();
     
     for (WorkspaceNote workspaceNote : workspaceNotes) {

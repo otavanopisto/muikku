@@ -15,14 +15,13 @@ public class WorkspaceNoteDAO extends CorePluginsDAO<WorkspaceNote> {
   
   private static final long serialVersionUID = -2443284063711215599L;
 
-  public WorkspaceNote create(Long owner, String title, String note, Long workspaceEntityId, Integer orderNumber, Boolean archived){
+  public WorkspaceNote create(Long owner, String title, String note, Long workspaceEntityId, Integer orderNumber){
     WorkspaceNote workspaceNote = new WorkspaceNote();
     workspaceNote.setOwner(owner);
     workspaceNote.setTitle(title);
     workspaceNote.setNote(note);
     workspaceNote.setWorkspace(workspaceEntityId);
     workspaceNote.setOrderNumber(orderNumber);
-    workspaceNote.setArchived(archived);
     return persist(workspaceNote);
   }
   
@@ -37,7 +36,7 @@ public class WorkspaceNoteDAO extends CorePluginsDAO<WorkspaceNote> {
     return persist(workspaceNote);
   }
   
-  public List<WorkspaceNote> listByOwnerAndArchived(Long owner){
+  public List<WorkspaceNote> listByOwnerAndArchived(Long owner, Boolean archived){
     
     EntityManager entityManager = getEntityManager(); 
     
@@ -48,13 +47,13 @@ public class WorkspaceNoteDAO extends CorePluginsDAO<WorkspaceNote> {
     criteria.select(root);
     criteria.where(criteriaBuilder.and(
       criteriaBuilder.equal(root.get(WorkspaceNote_.owner), owner),
-      criteriaBuilder.equal(root.get(WorkspaceNote_.archived), Boolean.FALSE)
+      criteriaBuilder.equal(root.get(WorkspaceNote_.archived), archived)
     ));
     
     return entityManager.createQuery(criteria).getResultList();
   }
   
-public List<WorkspaceNote> listByOwnerAndWorkspaceAndArchived(Long owner, Long workspaceEntityId){
+public List<WorkspaceNote> listByOwnerAndWorkspaceAndArchived(Long owner, Long workspaceEntityId, Boolean archived){
     
     EntityManager entityManager = getEntityManager(); 
     
@@ -66,7 +65,7 @@ public List<WorkspaceNote> listByOwnerAndWorkspaceAndArchived(Long owner, Long w
     criteria.where(criteriaBuilder.and(
       criteriaBuilder.equal(root.get(WorkspaceNote_.owner), owner),
       criteriaBuilder.equal(root.get(WorkspaceNote_.workspace), workspaceEntityId),
-      criteriaBuilder.equal(root.get(WorkspaceNote_.archived), Boolean.FALSE)
+      criteriaBuilder.equal(root.get(WorkspaceNote_.archived), archived)
     ));
     
     return entityManager.createQuery(criteria).getResultList();
@@ -94,27 +93,6 @@ public List<WorkspaceNote> listByOwnerAndWorkspaceAndArchived(Long owner, Long w
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
-  }
-  
-  public List<WorkspaceNote> listByOrderNumberGreater(WorkspaceNote note) {
-    EntityManager entityManager = getEntityManager();
-
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<WorkspaceNote> criteria = criteriaBuilder.createQuery(WorkspaceNote.class);
-    Root<WorkspaceNote> root = criteria.from(WorkspaceNote.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceNote_.workspace), note.getWorkspace()),
-        criteriaBuilder.equal(root.get(WorkspaceNote_.owner), note.getOwner()),
-        criteriaBuilder.equal(root.get(WorkspaceNote_.archived), Boolean.FALSE),
-        criteriaBuilder.greaterThan(root.get(WorkspaceNote_.orderNumber), note.getOrderNumber())
-      )
-    );
-    
-    criteria.orderBy(criteriaBuilder.asc(root.get(WorkspaceNote_.orderNumber)));
-    
-    return entityManager.createQuery(criteria).getResultList();
   }
   
   public List<WorkspaceNote> listByOrderNumberEqualOrGreater(WorkspaceNote note) {
