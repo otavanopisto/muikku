@@ -38,6 +38,7 @@ import {
   LoadUsersOfWorkspaceTriggerType,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "./index";
+import i18n from "~/locales/i18n";
 
 /**
  * UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS
@@ -208,11 +209,10 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.workspace.errormessage.workspaceLoadFailed"
-            ),
+            i18n.t("notifications.loadError_one", { ns: "workspace" }),
             "error"
           )
         );
@@ -247,11 +247,12 @@ const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizat
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.coursepicker.errormessage.curriculumFilters"
-            ),
+            i18n.t("notifications.loadError_curriculumFilters", {
+              ns: "workspace",
+            }),
             "error"
           )
         );
@@ -303,11 +304,10 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.organization.workspaces.notification.selectStaff.error"
-            ),
+            i18n.t("notifications.loadError_teachers", { ns: "users" }),
             "error"
           )
         );
@@ -363,11 +363,10 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.organization.workspaces.notification.selectStudents.error"
-            ),
+            i18n.t("notifications.loadError_students", { ns: "workspace" }),
             "error"
           )
         );
@@ -511,11 +510,10 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.workspace.management.notification.save.error"
-            ),
+            i18n.t("notifications.saveError_data", { ns: "workspace" }),
             "error"
           )
         );
@@ -622,11 +620,10 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
       if (!(err instanceof MApiError)) {
         throw err;
       }
+
       dispatch(
         displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.organization.workspaces.notification.workspace.create.error"
-          ),
+          i18n.t("notifications.createError", { ns: "workspace" }),
           "error"
         )
       );

@@ -1257,6 +1257,7 @@
       "loadError_teachers": "Opettajien lataus epäonnistui",
       "loadError_types": "Kurssityyppien lataus epäonnistui",
       "loadError_userGroupPermissions": "Käyttäjäryhmän oikeuksien lataus epäonnistui",
+      "loadError_workspaces": "Kurssien lataus ei onnistunut",
       "removeError_coverImage": "Kurssin kansikuvan poisto epäonnistui",
       "removeSuccess_coverImage": "Kansikuvan poisto onnistui",
       "saveError_data": "Tietojen tallennus epäonnistui",
@@ -1270,6 +1271,7 @@
       "sendError_evaluationRequests": "Arviointipyynnön lähetys epäonnistui",
       "sendError_interimEvaluationRequests": "Välipalautepyynnön lähettäminen epäonnistui",
       "sendSuccess_evaluationRequests": "Arviointipyyntö lähetettiin onnistuneesti",
+      "sendSuccess_evaluationRequestsCancel": "Arviointipyynnön peruutus lähetettiin onnistuneesti",
       "sendSuccess_interimEvaluationRequests": "Välipalautepyyntö lähetetty onnistuneesti",
       "updateError_answers": "Tehtävän tilan päivitys epäonnistui",
       "updateError_coverImage": "Kurssin kansikuvan päivitys epäonnistui",
@@ -1321,16 +1323,16 @@
       "loadError": "Oppimispäiväkirjan lataus epäonnistui",
       "loadError_events": "Virhe ladattaessa opiskelijan päiväkirjatapahtumia: {{error}}",
       "loadError_comments": "Virhe ladattaessa päiväkirjakommentteja: {{error}}",
-      "loadError_feedback": "Virhe ladattaessa päiväkirjan kokonaispalautetta: {0}",
-      "removeError": "Päiväkirjamerkinnän poisto epäonnistui: {0}",
-      "removeError_comment": "Virhe poistettaessa päiväkirjakommenttia: {0}",
-      "removeError_feedback": "Virhe poistattaessa päiväkirjan kokonaispalautetta: {0}",
+      "loadError_feedback": "Virhe ladattaessa päiväkirjan kokonaispalautetta: {{error}}",
+      "removeError": "Päiväkirjamerkinnän poisto epäonnistui: {{error}}",
+      "removeError_comment": "Virhe poistettaessa päiväkirjakommenttia: {{error}}",
+      "removeError_feedback": "Virhe poistattaessa päiväkirjan kokonaispalautetta: {{error}}",
       "removeSuccess_journalFeedback": "Päiväkirjan kokonaispalaute poistettu onnistuneesti",
-      "saveError_journalFeedback": "Virhe tallentaessa päiväkirjan kokonaispalautetta: {0}",
+      "saveError_journalFeedback": "Virhe tallentaessa päiväkirjan kokonaispalautetta: {{error}}",
       "saveSuccess_journalFeedback": "Päiväkirjan kokonaispalaute tallennettu onnistuneesti",
       "updateError": " Päiväkirjamerkinnän päivitys epäonnistui",
       "updateError_comment": "Päiväkirjakommentin muokkaus epäonnistui",
-      "updateError_journalComment": "Virhe päivitettäessä päiväkirjakommenttia: {0}"
+      "updateError_journalComment": "Virhe päivitettäessä päiväkirjakommenttia: {{error}}"
     }
   },
 
