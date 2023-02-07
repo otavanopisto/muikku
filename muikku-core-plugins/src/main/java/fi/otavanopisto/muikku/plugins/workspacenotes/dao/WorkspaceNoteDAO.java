@@ -125,4 +125,25 @@ public List<WorkspaceNote> listByOwnerAndWorkspaceAndArchived(Long owner, Long w
 
     return entityManager.createQuery(criteria).getSingleResult();
   }
+  
+  public List<WorkspaceNote> listByOrderNumberGreater(WorkspaceNote note) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceNote> criteria = criteriaBuilder.createQuery(WorkspaceNote.class);
+    Root<WorkspaceNote> root = criteria.from(WorkspaceNote.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceNote_.workspace), note.getWorkspace()),
+        criteriaBuilder.equal(root.get(WorkspaceNote_.owner), note.getOwner()),
+        criteriaBuilder.equal(root.get(WorkspaceNote_.archived), Boolean.FALSE),
+        criteriaBuilder.greaterThan(root.get(WorkspaceNote_.orderNumber), note.getOrderNumber())
+      )
+    );
+
+    criteria.orderBy(criteriaBuilder.asc(root.get(WorkspaceNote_.orderNumber)));
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
 }

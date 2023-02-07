@@ -93,4 +93,13 @@ public class WorkspaceNoteController {
   public Integer getMaximumOrderNumberByOwnerAndWorkspace(Long workspaceEntityId, Long ownerEntityId) {
     return workspaceNoteDAO.getMaximumOrderNumberByOwnerAndWorkspace(workspaceEntityId, ownerEntityId);
   }
+  
+  public WorkspaceNote findWorkspaceNoteNextSibling(WorkspaceNote referenceNote) {
+    List<WorkspaceNote> nextSiblings = workspaceNoteDAO.listByOrderNumberGreater(referenceNote);
+    if (nextSiblings.isEmpty()) {
+      return null;
+    }
+
+    return nextSiblings.get(0);
+  }
 }

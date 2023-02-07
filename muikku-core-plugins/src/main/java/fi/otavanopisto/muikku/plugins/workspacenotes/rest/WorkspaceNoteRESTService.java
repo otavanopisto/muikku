@@ -157,8 +157,11 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-
-    WorkspaceNote referenceNote = workspaceNoteController.findWorkspaceNoteById(restModel.getNextSiblingId());
+    WorkspaceNote referenceNote = null;
+    
+    if (restModel.getNextSiblingId() != null) {
+      referenceNote = workspaceNoteController.findWorkspaceNoteById(restModel.getNextSiblingId());
+    }
     
     if (referenceNote == null) {
       Integer maximumOrderNumber = workspaceNoteController.getMaximumOrderNumberByOwnerAndWorkspace(restModel.getWorkspaceEntityId(), restModel.getOwner());
@@ -175,6 +178,8 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   private WorkspaceNoteRestModel toRestModel(WorkspaceNote workspaceNote) {
     
     UserEntity userEntity = userEntityController.findUserEntityById(workspaceNote.getOwner());
+    WorkspaceNote nextSibling = workspaceNoteController.findWorkspaceNoteNextSibling(workspaceNote);
+    Long nextSiblingId = nextSibling != null ? nextSibling.getId() : null;
     
     WorkspaceNoteRestModel restModel = new WorkspaceNoteRestModel();
     restModel.setId(workspaceNote.getId());
@@ -182,6 +187,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     restModel.setWorkspaceEntityId(workspaceNote.getWorkspace());
     restModel.setTitle(workspaceNote.getTitle());
     restModel.setWorkspaceNote(workspaceNote.getNote());
+    restModel.setNextSiblingId(nextSiblingId);
 
     return restModel;
   }
