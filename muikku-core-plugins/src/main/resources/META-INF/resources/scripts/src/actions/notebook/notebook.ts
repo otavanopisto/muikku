@@ -385,14 +385,6 @@ const updateEditedNotebookEntry: UpdateEditNotebookEntry =
 
         updatedList[index] = updatedEntry;
 
-        // repair updated orders entries nextSiblingIds
-        // with correct values. Last entry will have nextSiblingId null.
-        /* updatedList = updatedList.map((entry, index) => ({
-          ...entry,
-          nextSiblingId:
-            updatedList.length - 1 === index ? null : updatedList[index + 1].id,
-        })); */
-
         dispatch({
           type: "NOTEBOOK_EDIT_ENTRY",
           payload: updatedList,
