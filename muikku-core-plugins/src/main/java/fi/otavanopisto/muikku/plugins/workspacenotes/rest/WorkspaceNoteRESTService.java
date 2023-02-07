@@ -7,14 +7,12 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -170,9 +168,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       workspaceNote = workspaceNoteController.moveAbove(workspaceNote, referenceNote);
     }
     
-    WorkspaceNote updatedWorkspaceNote= workspaceNoteController.updateWorkspaceNote(workspaceNote, restModel.getTitle(), restModel.getWorkspaceNote());
+    workspaceNote = workspaceNoteController.updateWorkspaceNote(workspaceNote, restModel.getTitle(), restModel.getWorkspaceNote());
     
-    return Response.ok(toRestModel(updatedWorkspaceNote)).build();
+    return Response.ok(toRestModel(workspaceNote)).build();
   }
   
   private WorkspaceNoteRestModel toRestModel(WorkspaceNote workspaceNote) {
@@ -212,7 +210,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   @GET
   @Path("/owner/{OWNER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceNoteByOwner(@PathParam("OWNER") Long owner) {
+  public Response listWorkspaceNotesByOwner(@PathParam("OWNER") Long owner) {
 
     if (userEntityController.findUserEntityById(owner) == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -258,7 +256,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   @GET
   @Path("/workspace/{WORKSPACEID}/owner/{OWNER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceNoteByWorkspaceAndOwner(@PathParam ("WORKSPACEID") Long workspaceEntityId, @PathParam("OWNER") Long owner) {
+  public Response listWorkspaceNotesByWorkspaceAndOwner(@PathParam ("WORKSPACEID") Long workspaceEntityId, @PathParam("OWNER") Long owner) {
 
     if (userEntityController.findUserEntityById(owner) == null || workspaceEntityController.findWorkspaceEntityById(workspaceEntityId) == null) {
       return Response.status(Status.BAD_REQUEST).build();
