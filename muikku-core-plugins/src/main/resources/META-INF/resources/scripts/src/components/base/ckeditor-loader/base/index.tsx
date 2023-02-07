@@ -1,6 +1,5 @@
 import * as React from "react";
 import $ from "~/lib/jquery";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { extractDataSet, HTMLToReactComponentRule } from "~/util/modifiers";
 import { HTMLtoReactComponent } from "~/util/modifiers";
 import { UsedAs } from "~/@types/shared";
@@ -12,7 +11,6 @@ import Link from "../static/link";
  */
 interface BaseProps {
   html: string;
-  i18nOLD: i18nType;
   usedAs: UsedAs;
 }
 
@@ -136,8 +134,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    * @returns JSX.Element
    */
   render() {
-    const i18nOLD = this.props.i18nOLD;
-
     const processingRules: HTMLToReactComponentRule[] = [
       {
         /**
@@ -168,7 +164,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               path={""}
               invisible={false}
               dataset={dataset}
-              i18nOLD={i18nOLD}
               processingRules={processingRules}
             />
           );
@@ -203,7 +198,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               element={element}
               path={""}
               dataset={dataset}
-              i18nOLD={i18nOLD}
               processingRules={processingRules}
             />
           );

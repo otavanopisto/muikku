@@ -1,6 +1,6 @@
 import * as React from "react";
 import { HTMLAttributeAnchorTarget } from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { withTranslation, WithTranslation } from "react-i18next";
 import {
   HTMLtoReactComponent,
   HTMLToReactComponentRule,
@@ -9,24 +9,20 @@ import {
 /**
  * LinkProps
  */
-interface LinkProps {
+interface LinkProps extends WithTranslation {
   element: HTMLElement;
   path: string;
   dataset: {
     //Someone thought it was smart to set up two versions of data
     url?: string;
   };
-  i18nOLD: i18nType;
   processingRules: HTMLToReactComponentRule[];
 }
 
 /**
  * Link
  */
-export default class Link extends React.Component<
-  LinkProps,
-  Record<string, unknown>
-> {
+class Link extends React.Component<LinkProps, Record<string, unknown>> {
   /**
    * constructor
    * @param props props
@@ -43,13 +39,13 @@ export default class Link extends React.Component<
   renderAccessibilityIndicatorByTarget = (
     target: HTMLAttributeAnchorTarget
   ) => {
+    const { t } = this.props;
+
     switch (target) {
       case "_blank":
         return (
           <>
-            <span className="visually-hidden">
-              {this.props.i18nOLD.text.get("plugin.wcag.externalLink.label")}
-            </span>
+            <span className="visually-hidden">{t("wcag.externalLink")}</span>
             <span
               role="presentation"
               className="external-link-indicator icon-external-link"
@@ -121,3 +117,5 @@ export default class Link extends React.Component<
     return HTMLtoReactComponent(this.props.element, newRules);
   }
 }
+
+export default withTranslation(["common"])(Link);
