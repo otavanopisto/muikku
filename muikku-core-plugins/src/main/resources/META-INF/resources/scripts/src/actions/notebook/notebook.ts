@@ -157,7 +157,7 @@ const loadNotebookEntries: LoadNotebookEntries =
       if (workspaces.currentWorkspace) {
         try {
           const entries = (await promisify(
-            mApi().workspacenote.workspace.owner.read(
+            mApi().workspacenotes.workspace.owner.read(
               workspaces.currentWorkspace.id,
               status.userId
             ),
@@ -237,7 +237,7 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
       const dragNote = notes[dragIndex];
 
       // Updated order...
-      const updatedList = update(notes, {
+      let updatedList = update(notes, {
         $splice: [
           [dragIndex, 1],
           [hoverIndex, 0, notes[dragIndex]],
@@ -264,15 +264,10 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
         if (noteToUpdate) {
           try {
             await promisify(
-              mApi().workspacenote.workspacenote.updateorder.update(
-                noteToUpdate.id,
-                {
-                  owner: noteToUpdate.owner,
-                  nextSiblingId:
-                    (nextSiblingNote && nextSiblingNote.id) || null,
-                  workspaceEntityId: noteToUpdate.workspaceEntityId,
-                }
-              ),
+              mApi().workspacenotes.workspacenote.update(noteToUpdate.id, {
+                ...noteToUpdate,
+                nextSiblingId: nextSiblingNote ? nextSiblingNote.id : null,
+              }),
               "callback"
             )();
           } catch (err) {
@@ -290,6 +285,14 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
           }
         }
       }
+
+      // repair updated orders entries nextSiblingIds
+      // with correct values. Last entry will have nextSiblingId null.
+      updatedList = updatedList.map((entry, index) => ({
+        ...entry,
+        nextSiblingId:
+          updatedList.length - 1 === index ? null : updatedList[index + 1].id,
+      }));
 
       dispatch({
         type: "NOTEBOOK_UPDATE_ENTRIES",
@@ -313,21 +316,21 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
 
       try {
         const entry = (await promisify(
-          mApi().workspacenote.workspacenote.create(data.newEntry),
+          mApi().workspacenotes.workspacenote.create(data.newEntry),
           "callback"
         )()) as WorkspaceNote;
 
-        const updatedList = [...state.notebook.notes];
+        let updatedList = [...state.notebook.notes];
 
         updatedList.push(entry);
 
-        /*         // repair updated orders entries nextSiblingIds
+        // repair updated orders entries nextSiblingIds
         // with correct values. Last entry will have nextSiblingId null.
         updatedList = updatedList.map((entry, index) => ({
           ...entry,
           nextSiblingId:
             updatedList.length - 1 === index ? null : updatedList[index + 1].id,
-        })); */
+        }));
 
         dispatch({
           type: "NOTEBOOK_CREATE_ENTRY",
@@ -370,10 +373,7 @@ const updateEditedNotebookEntry: UpdateEditNotebookEntry =
 
       try {
         const updatedEntry = (await promisify(
-          mApi().workspacenote.workspacenote.update(
-            data.editedEntry.id,
-            data.editedEntry
-          ),
+          mApi().workspacenotes.workspacenote.update(data.editedEntry),
           "callback"
         )()) as WorkspaceNote;
 
@@ -384,6 +384,14 @@ const updateEditedNotebookEntry: UpdateEditNotebookEntry =
         );
 
         updatedList[index] = updatedEntry;
+
+        // repair updated orders entries nextSiblingIds
+        // with correct values. Last entry will have nextSiblingId null.
+        /* updatedList = updatedList.map((entry, index) => ({
+          ...entry,
+          nextSiblingId:
+            updatedList.length - 1 === index ? null : updatedList[index + 1].id,
+        })); */
 
         dispatch({
           type: "NOTEBOOK_EDIT_ENTRY",
@@ -420,11 +428,11 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
 
     try {
       await promisify(
-        mApi().workspacenote.archive.del({ id: data.workspaceNoteId }),
+        mApi().workspacenotes.archive.del({ id: data.workspaceNoteId }),
         "callback"
       )();
 
-      const updatedList = [...state.notebook.notes];
+      let updatedList = [...state.notebook.notes];
 
       const index = updatedList.findIndex(
         (entry) => entry.id === data.workspaceNoteId
@@ -432,13 +440,13 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
 
       updatedList.splice(index, 1);
 
-      /* // repair updated orders entries nextSiblingIds
+      // repair updated orders entries nextSiblingIds
       // with correct values. Last entry will have nextSiblingId null.
       updatedList = updatedList.map((entry, index) => ({
         ...entry,
         nextSiblingId:
           updatedList.length - 1 === index ? null : updatedList[index + 1].id,
-      })); */
+      }));
 
       dispatch({
         type: "NOTEBOOK_DELETE_ENTRY",

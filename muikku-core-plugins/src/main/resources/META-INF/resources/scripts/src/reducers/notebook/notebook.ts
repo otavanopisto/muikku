@@ -22,7 +22,7 @@ export interface WorkspaceNote {
    * Backend uses this to determine the order of the notes
    * This is not used in the frontend
    */
-  nextSiblingId: null;
+  nextSiblingId?: number | null;
 }
 
 /**
