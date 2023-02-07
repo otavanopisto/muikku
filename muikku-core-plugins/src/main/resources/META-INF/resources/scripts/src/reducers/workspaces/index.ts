@@ -365,6 +365,17 @@ export interface TemplateWorkspaceType {
 }
 
 /**
+ * Language options for workspace
+ * used as lang attribute jsx
+ */
+export const languageOptions = ["fi", "en"] as const;
+
+/**
+ * Language
+ */
+export type Language = typeof languageOptions[number];
+
+/**
  * WorkspaceType
  */
 export interface WorkspaceType {
@@ -375,6 +386,7 @@ export interface WorkspaceType {
   id: number;
   lastVisit: string;
   materialDefaultLicense: string;
+  language: Language;
   name: string;
   nameExtension?: string | null;
   numVisits: number;
@@ -646,6 +658,7 @@ export type AssignmentType =
  */
 export interface MaterialContentNodeType {
   title: string;
+  titleLanguage?: Language | null;
   license: string;
   viewRestrict: MaterialViewRestriction;
   html: string;
@@ -830,6 +843,9 @@ const initialWorkspacesState: WorkspacesType = {
   },
   materialEditor: {
     currentNodeWorkspace: null,
+    currentNodeValue: null,
+    currentDraftNodeValue: null,
+    parentNodeValue: null,
     section: false,
     opened: false,
     canDelete: true,

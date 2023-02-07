@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
@@ -23,7 +24,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
   private static final long serialVersionUID = -1777382212388116832L;
 
   public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String title, String urlName, Integer orderNumber,
-      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers, WorkspaceLanguage language) {
 
     WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
     workspaceMaterial.setParent(parent);
@@ -34,6 +35,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     workspaceMaterial.setAssignmentType(assignmentType);
     workspaceMaterial.setCorrectAnswers(correctAnswers);
     workspaceMaterial.setTitle(title);
+    workspaceMaterial.setLanguage(language);
 
     return persist(workspaceMaterial);
   }

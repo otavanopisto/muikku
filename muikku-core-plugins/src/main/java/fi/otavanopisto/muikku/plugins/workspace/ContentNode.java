@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.otavanopisto.muikku.plugins.material.rest.MaterialProducer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
@@ -13,7 +14,7 @@ public class ContentNode {
   public ContentNode(String title, String type, String contentType, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Long nextSiblingId, Boolean hidden, String html,  String path,
-      String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict, Boolean contentHiddenForUser) {
+      String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict, Boolean contentHiddenForUser, WorkspaceLanguage titleLanguage) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -33,6 +34,7 @@ public class ContentNode {
     this.viewRestrict = viewRestrict;
     this.producers = producers;
     this.contentHiddenForUser = contentHiddenForUser;
+    this.titleLanguage = titleLanguage;
   }
 
   public void addChild(ContentNode child) {
@@ -155,6 +157,14 @@ public class ContentNode {
     this.contentHiddenForUser = contentHiddenForUser;
   }
 
+  public WorkspaceLanguage getTitleLanguage() {
+    return titleLanguage;
+  }
+
+  public void setTitleLanguage(WorkspaceLanguage titleLanguage) {
+    this.titleLanguage = titleLanguage;
+  }
+
   private String title;
   private String type;
   private String contentType;
@@ -173,5 +183,6 @@ public class ContentNode {
   private MaterialViewRestrict viewRestrict;
   private List<MaterialProducer> producers;
   private Boolean contentHiddenForUser;
+  private WorkspaceLanguage titleLanguage;
 
 }

@@ -692,21 +692,27 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             "correctAnswers",
             "path",
             "title",
+            "titleLanguage",
           ];
+
           if (data.material.type === "folder") {
             fields = [
               "hidden",
               "nextSiblingId",
               "parentId",
               "title",
+              "titleLanguage",
               "path",
               "viewRestrict",
             ];
           }
+
           const result: any = {
             id: data.material.workspaceMaterialId,
           };
+
           let changed = false;
+
           fields.forEach((field) => {
             if (
               typeof (data.update as any)[field] !== "undefined" &&
@@ -719,11 +725,13 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                 ? (data.update as any)[field]
                 : (data.material as any)[field];
           });
+
           if (changed) {
             let urlPath = "materials";
             if (data.material.type === "folder") {
               urlPath = "folders";
             }
+
             newPath = (
               (await promisify(
                 mApi().workspace.workspaces[urlPath].update(
@@ -737,11 +745,14 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           }
 
           const materialFields = ["id", "license", "viewRestrict"];
+
           if (data.material.type === "folder") {
             fields = [];
           }
+
           const materialResult: any = {};
           changed = false;
+
           materialFields.forEach((field) => {
             if (
               typeof (data.update as any)[field] !== "undefined" &&
@@ -754,6 +765,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                 ? (data.update as any)[field]
                 : (data.material as any)[field];
           });
+
           if (changed) {
             await promisify(
               mApi().materials.material.update(
