@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as queryString from "query-string";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
@@ -14,12 +13,12 @@ import {
 import { WorkspacesType } from "~/reducers/workspaces";
 import { SearchFormElement } from "~/components/general/form-element";
 import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CoursepickerToolbarProps
  */
-interface CoursepickerToolbarProps {
-  i18nOLD: i18nType;
+interface CoursepickerToolbarProps extends WithTranslation {
   workspaces: WorkspacesType;
 }
 
@@ -120,8 +119,8 @@ class CoursepickerToolbar extends React.Component<
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
               // TODO: Translate this with new i18next
-              placeholder={this.props.i18nOLD.text.get(
-                "plugin.coursepicker.search.placeholder"
+              placeholder={this.props.t(
+                "labels.search", {ns: "workspace"}
               )}
               value={this.state.searchquery}
             />
@@ -138,7 +137,6 @@ class CoursepickerToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspaces: state.workspaces,
   };
 }
@@ -151,7 +149,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
+export default withTranslation(["workspace"])(connect(
   mapStateToProps,
   mapDispatchToProps
-)(CoursepickerToolbar);
+)(CoursepickerToolbar));

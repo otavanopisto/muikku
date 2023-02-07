@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as queryString from "query-string";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/buttons.scss";
@@ -22,8 +21,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface NavigationAsideProps extends WithTranslation {
   workspaces: WorkspacesType;
   status: StatusType;
 }
@@ -53,9 +51,8 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          // TODO: Translate this using i18next
-          name={this.props.i18nOLD.text.get(
-            "plugin.coursepicker.filters.title"
+          name={this.props.t(
+            "labels.educationLevel", {ns: "workspace"}
           )}
         >
           {this.props.workspaces.availableFilters.educationTypes.map(
@@ -96,9 +93,8 @@ class NavigationAside extends React.Component<
           )}
         </NavigationTopic>
         <NavigationTopic
-          // TODO: Translate this using i18next
-          name={this.props.i18nOLD.text.get(
-            "plugin.coursepicker.filters.curriculum"
+          name={this.props.t(
+            "labels.curriculum", {ns: "workspace"}
           )}
         >
           {this.props.workspaces.availableFilters.curriculums.map(
@@ -139,8 +135,8 @@ class NavigationAside extends React.Component<
         {this.props.workspaces.availableFilters.organizations.length > 1 ? (
           <NavigationTopic
             // TODO: Translate this using i18next
-            name={this.props.i18nOLD.text.get(
-              "plugin.coursepicker.filters.organization"
+            name={this.props.t(
+              "labels.organization", {ns: "workspace"}
             )}
           >
             {this.props.workspaces.availableFilters.organizations.map(
@@ -192,7 +188,6 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspaces: state.workspaces,
     status: state.status,
   };
@@ -206,6 +201,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace"])(
   connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
 );
