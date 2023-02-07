@@ -264,7 +264,7 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
         if (noteToUpdate) {
           try {
             await promisify(
-              mApi().workspacenotes.workspacenote.update(noteToUpdate.id, {
+              mApi().workspacenotes.workspacenote.update({
                 ...noteToUpdate,
                 nextSiblingId: nextSiblingNote ? nextSiblingNote.id : null,
               }),
