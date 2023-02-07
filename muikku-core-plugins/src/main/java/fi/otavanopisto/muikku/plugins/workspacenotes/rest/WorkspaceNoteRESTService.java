@@ -131,11 +131,11 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    *  403 Forbidden if userEntityId does not match with logged user
    */
   @PUT
-  @Path ("/workspacenote/{WORKSPACENOTEID}")
+  @Path ("/workspacenote")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateWorkspaceNote(@PathParam ("WORKSPACENOTEID") Long workspaceNoteId, WorkspaceNoteRestModel restModel) {
+  public Response updateWorkspaceNote(WorkspaceNoteRestModel restModel) {
     
-    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
+    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(restModel.getId());
     
     if (workspaceNote == null) {
       return Response.status(Status.NOT_FOUND).build();
