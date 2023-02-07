@@ -76,11 +76,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
     } else if (this.props.workspaces.length === 0) {
       return (
         <div className="empty">
-          <span>
-            {this.props.t(
-              "content.notFound", {ns: "workspace"}
-            )}
-          </span>
+          <span>{this.props.t("content.notFound", { ns: "workspace" })}</span>
         </div>
       );
     }

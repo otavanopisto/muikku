@@ -51,9 +51,7 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          name={this.props.t(
-            "labels.educationLevel", {ns: "workspace"}
-          )}
+          name={this.props.t("labels.educationLevel", { ns: "workspace" })}
         >
           {this.props.workspaces.availableFilters.educationTypes.map(
             (educationType: WorkspaceEducationFilterType) => {
@@ -93,9 +91,7 @@ class NavigationAside extends React.Component<
           )}
         </NavigationTopic>
         <NavigationTopic
-          name={this.props.t(
-            "labels.curriculum", {ns: "workspace"}
-          )}
+          name={this.props.t("labels.curriculum", { ns: "workspace" })}
         >
           {this.props.workspaces.availableFilters.curriculums.map(
             (curriculum: WorkspaceCurriculumFilterType) => {
@@ -135,9 +131,7 @@ class NavigationAside extends React.Component<
         {this.props.workspaces.availableFilters.organizations.length > 1 ? (
           <NavigationTopic
             // TODO: Translate this using i18next
-            name={this.props.t(
-              "labels.organization", {ns: "workspace"}
-            )}
+            name={this.props.t("labels.organization", { ns: "workspace" })}
           >
             {this.props.workspaces.availableFilters.organizations.map(
               (organization: WorkspaceOrganizationFilterType) => {

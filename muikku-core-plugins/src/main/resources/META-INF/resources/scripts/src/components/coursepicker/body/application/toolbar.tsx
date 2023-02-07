@@ -119,9 +119,7 @@ class CoursepickerToolbar extends React.Component<
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
               // TODO: Translate this with new i18next
-              placeholder={this.props.t(
-                "labels.search", {ns: "workspace"}
-              )}
+              placeholder={this.props.t("labels.search", { ns: "workspace" })}
               value={this.state.searchquery}
             />
           </ApplicationPanelToolsContainer>
@@ -149,7 +147,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default withTranslation(["workspace"])(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CoursepickerToolbar));
+export default withTranslation(["workspace"])(
+  connect(mapStateToProps, mapDispatchToProps)(CoursepickerToolbar)
+);

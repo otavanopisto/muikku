@@ -80,7 +80,7 @@ class CoursepickerApplication extends React.Component<
           {
             // TODO: Translate this using i18next
           }
-          {this.props.t("labels.workspaceTypeSelect", {ns: "workspace"})}
+          {this.props.t("labels.workspaceTypeSelect", { ns: "workspace" })}
         </label>
         {this.props.status.loggedIn ? (
           <select
@@ -99,9 +99,10 @@ class CoursepickerApplication extends React.Component<
                     {
                       // TODO: Translate this using i18next
                     }
-                    {this.props.t(
-                      "labels.workspaces", {ns:"workspace", context: filterTranslationString[filter]}
-                    )}
+                    {this.props.t("labels.workspaces", {
+                      ns: "workspace",
+                      context: filterTranslationString[filter],
+                    })}
                   </option>
                 );
               }
@@ -116,7 +117,10 @@ class CoursepickerApplication extends React.Component<
               {
                 // TODO: Translate this using i18next
               }
-              {this.props.t("labels.workspaces", {ns:"workspace", context:"open"})}
+              {this.props.t("labels.workspaces", {
+                ns: "workspace",
+                context: "open",
+              })}
             </option>
           </select>
         )}
