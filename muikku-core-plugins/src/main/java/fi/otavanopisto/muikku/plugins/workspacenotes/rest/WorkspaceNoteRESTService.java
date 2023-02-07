@@ -105,7 +105,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   }
   
   /*
-   * mApi() call mApi().workspacenotes.workspacenote.update( workspaceNoteId, WorkspaceNoteRestModel) 
+   * mApi() call mApi().workspacenotes.workspacenote.update(WorkspaceNoteRestModel) 
    *  
    *  Parameter rest model must contain owner, workspaceEntityId & nextSiblingId. 
    *  
@@ -192,7 +192,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     return restModel;
   }
   
-  /* mApi() call (mApi().workspaceNote.owner.read(userEntityId)) 
+  /* mApi() call (mApi().workspacenotes.owner.read(userEntityId)) 
    * 
    * returns a list of user's notes from all workspaces
    * 
@@ -238,7 +238,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     return Response.ok(workspaceNoteList).build();
   }
   
-  /* mApi() call (mApi().workspacenote.workspace.owner.read(workspaceEntityId, userEntityId)) 
+  /* mApi() call (mApi().workspacenotes.workspace.owner.read(workspaceEntityId, userEntityId)) 
    * 
    * returns a list of user's notes from the specific workspace
    * 
@@ -284,7 +284,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     return Response.ok(workspaceNoteList).build();
   }
   
-  /* mApi() call (mApi().workspacenote.archive.del(workspaceNoteId)) 
+  /* mApi() call (mApi().workspacenotes.archive.del(workspaceNoteId)) 
    * 
    * returns no content
    * 
