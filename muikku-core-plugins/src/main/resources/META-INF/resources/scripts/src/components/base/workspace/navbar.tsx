@@ -4,7 +4,6 @@ import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -24,6 +23,8 @@ import {
 import { bindActionCreators } from "redux";
 import { Assessment } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
+import i18n from "~/locales/i18n";
 
 /**
  * ItemDataElement
@@ -43,9 +44,8 @@ interface ItemDataElement {
 /**
  * WorkspaceNavbarProps
  */
-interface WorkspaceNavbarProps {
+interface WorkspaceNavbarProps extends WithTranslation {
   activeTrail?: string;
-  i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   status: StatusType;
@@ -122,11 +122,13 @@ class WorkspaceNavbar extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const itemData: ItemDataElement[] = [
       {
         modifier: "settings",
         trail: "workspace-management",
-        text: "plugin.workspace.dock.workspace-edit",
+        text: t("labels.settings", { ns: "workspace" }),
         href: "/workspace/" + this.props.workspaceUrl + "/workspace-management",
         icon: "cogs",
         to: true,
@@ -135,7 +137,7 @@ class WorkspaceNavbar extends React.Component<
       {
         modifier: "home",
         trail: "index",
-        text: "plugin.workspace.dock.home",
+        text: t("labels.home", { ns: "workspace" }),
         href: "/workspace/" + this.props.workspaceUrl,
         icon: "home",
         to: true,
@@ -144,7 +146,7 @@ class WorkspaceNavbar extends React.Component<
       {
         modifier: "help",
         trail: "help",
-        text: "plugin.workspace.dock.guides",
+        text: t("labels.instructions", { ns: "workspace" }),
         href: "/workspace/" + this.props.workspaceUrl + "/help",
         icon: "question",
         to: true,
@@ -153,7 +155,7 @@ class WorkspaceNavbar extends React.Component<
       {
         modifier: "materials",
         trail: "materials",
-        text: "plugin.workspace.dock.materials",
+        text: t("labels.materials", { ns: "materials" }),
         href: "/workspace/" + this.props.workspaceUrl + "/materials",
         icon: "leanpub",
         to: true,
@@ -162,7 +164,7 @@ class WorkspaceNavbar extends React.Component<
       {
         modifier: "discussion",
         trail: "workspace-discussions",
-        text: "plugin.workspace.dock.discussions",
+        text: t("labels.discussion"),
         href: "/workspace/" + this.props.workspaceUrl + "/discussions",
         icon: "bubbles",
         to: true,
@@ -171,7 +173,7 @@ class WorkspaceNavbar extends React.Component<
       {
         modifier: "users",
         trail: "users",
-        text: "plugin.workspace.dock.members",
+        text: t("labels.users", { ns: "users" }),
         href: "/workspace/" + this.props.workspaceUrl + "/users",
         icon: "users",
         to: true,
@@ -180,7 +182,7 @@ class WorkspaceNavbar extends React.Component<
       {
         modifier: "journal",
         trail: "journal",
-        text: "plugin.workspace.dock.journal",
+        text: t("labels.journal", { ns: "journal" }),
         href: "/workspace/" + this.props.workspaceUrl + "/journal",
         icon: "book",
         to: true,
@@ -189,7 +191,7 @@ class WorkspaceNavbar extends React.Component<
       {
         modifier: "announcer",
         trail: "workspace-announcer",
-        text: "plugin.workspace.dock.announcer",
+        text: t("labels.announcer"),
         href: "/workspace/" + this.props.workspaceUrl + "/announcer",
         icon: "paper-plane",
         to: true,
@@ -198,7 +200,7 @@ class WorkspaceNavbar extends React.Component<
       {
         modifier: "evaluation",
         trail: "workspace-evaluation",
-        text: "plugin.evaluation.evaluation",
+        text: t("labels.evaluation"),
         href: "/workspace/" + this.props.workspaceUrl + "/evaluation",
         icon: "evaluate",
         to: true,
@@ -259,8 +261,7 @@ class WorkspaceNavbar extends React.Component<
                 modifier="assessment"
                 content={getTextForAssessmentState(
                   canCancelRequest,
-                  assessmentState.state,
-                  this.props.i18nOLD
+                  assessmentState.state
                 )}
               >
                 <Link
@@ -272,8 +273,7 @@ class WorkspaceNavbar extends React.Component<
                   )}
                   aria-label={getTextForAssessmentState(
                     canCancelRequest,
-                    assessmentState.state,
-                    this.props.i18nOLD
+                    assessmentState.state
                   )}
                   className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(
                     assessmentState.state
@@ -298,11 +298,7 @@ class WorkspaceNavbar extends React.Component<
           )}`}
         />
         <span className="link--menu-text">
-          {getTextForAssessmentState(
-            canCancelRequest,
-            assessmentState.state,
-            this.props.i18nOLD
-          )}
+          {getTextForAssessmentState(canCancelRequest, assessmentState.state)}
         </span>
       </Link>
     ) : null;
@@ -312,9 +308,7 @@ class WorkspaceNavbar extends React.Component<
       editModeSwitch = (
         <span key="edit-mode-switch">
           <label htmlFor="editingMasterSwitch" className="visually-hidden">
-            {this.props.i18nOLD.text.get(
-              "plugin.wcag.mainNavigation.editingMasterSwitch"
-            )}
+            {t("wcag.editingMasterSwitch", { ns: "workspace" })}
           </label>
           <input
             id="editingMasterSwitch"
@@ -336,6 +330,8 @@ class WorkspaceNavbar extends React.Component<
       ? "workspace-edit-mode"
       : "workspace";
 
+    t("labels.forgotPasswordLink");
+
     return (
       <Navbar
         mobileTitle={this.props.title}
@@ -351,11 +347,7 @@ class WorkspaceNavbar extends React.Component<
               return {
                 modifier: item.modifier,
                 item: (
-                  <Dropdown
-                    openByHover
-                    key={item.text}
-                    content={this.props.i18nOLD.text.get(item.text)}
-                  >
+                  <Dropdown openByHover key={item.text} content={item.text}>
                     <Link
                       tabIndex={this.props.activeTrail == item.trail ? 0 : null}
                       as={this.props.activeTrail == item.trail ? "span" : null}
@@ -373,12 +365,8 @@ class WorkspaceNavbar extends React.Component<
                       }`}
                       aria-label={
                         this.props.activeTrail == item.trail
-                          ? this.props.i18nOLD.text.get(
-                              "plugin.wcag.mainNavigation.currentPage.aria.label"
-                            ) +
-                            " " +
-                            this.props.i18nOLD.text.get(item.text)
-                          : this.props.i18nOLD.text.get(item.text)
+                          ? t("wcag.currentPage") + " " + item.text
+                          : item.text
                       }
                       role="menuitem"
                     >
@@ -405,11 +393,7 @@ class WorkspaceNavbar extends React.Component<
                 />,
                 <ForgotPasswordDialog key="forgot-password-dialog">
                   <Link className="link link--forgot-password link--forgot-password-main-function">
-                    <span>
-                      {this.props.i18nOLD.text.get(
-                        "plugin.forgotpassword.forgotLink"
-                      )}
-                    </span>
+                    <span>{t("labels.forgotPasswordLink")}</span>
                   </Link>
                 </ForgotPasswordDialog>,
               ]
@@ -443,9 +427,7 @@ class WorkspaceNavbar extends React.Component<
                       {item.badge >= 100 ? "99+" : item.badge}
                     </span>
                   ) : null}
-                  <span className="link--menu-text">
-                    {this.props.i18nOLD.text.get(item.text)}
-                  </span>
+                  <span className="link--menu-text">{item.text}</span>
                 </Link>
               );
             })
@@ -475,7 +457,6 @@ class WorkspaceNavbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     title: state.title,
     currentWorkspace: state.workspaces.currentWorkspace,
@@ -491,45 +472,45 @@ function mapStateToProps(state: StateType) {
 const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
   bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar);
+export default withTranslation(["workspace", "users", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar)
+);
 
 /**
  * Get text by assessment state
  *
  * @param canCancelRequest canCancelRequest
  * @param state state
- * @param i18nOLD i18nOLD
  * @returns localized text
  */
 function getTextForAssessmentState(
   canCancelRequest: boolean,
-  state: WorkspaceAssessementStateType,
-  i18nOLD: i18nType
+  state: WorkspaceAssessementStateType
 ) {
   let text;
   switch (state) {
     case "interim_evaluation":
     case "interim_evaluation_request":
     case "unassessed":
-      text = "plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip";
+      text = i18n.t("labels.create_evaluationRequest", { ns: "workspace" });
       break;
     case "pending":
     case "pending_pass":
     case "pending_fail":
       if (canCancelRequest) {
-        text = "plugin.workspace.dock.evaluation.cancelEvaluationButtonTooltip";
+        text = i18n.t("labels.cancel_evaluationRequest", { ns: "workspace" });
       } else {
-        text =
-          "plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip";
+        text = i18n.t("labels.create_newEvaluationRequest", {
+          ns: "workspace",
+        });
       }
       break;
     default:
-      text =
-        "plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip";
+      text = i18n.t("labels.create_newEvaluationRequest", { ns: "workspace" });
       break;
   }
 
-  return i18nOLD.text.get(text);
+  return text;
 }
 
 /**

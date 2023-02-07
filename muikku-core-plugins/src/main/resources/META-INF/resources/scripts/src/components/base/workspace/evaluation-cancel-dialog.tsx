@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -12,12 +11,12 @@ import {
   cancelAssessmentAtWorkspace,
   CancelAssessmentAtWorkspaceTriggerType,
 } from "~/actions/workspaces";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * EvaluationCancelDialogProps
  */
-interface EvaluationCancelDialogProps {
-  i18nOLD: i18nType;
+interface EvaluationCancelDialogProps extends WithTranslation {
   workspace: WorkspaceType;
   isOpen: boolean;
   onClose: () => any;
@@ -86,6 +85,8 @@ class EvaluationCancelDialog extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
@@ -93,9 +94,7 @@ class EvaluationCancelDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         <span>
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.evaluation.cancelEvaluation.description"
-          )}
+          {t("content.cancel_evaluationRequest", { ns: "workspace" })}
         </span>
       </div>
     );
@@ -111,18 +110,14 @@ class EvaluationCancelDialog extends React.Component<
           onClick={this.cancel.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.evaluation.cancelEvaluation.cancelRequestButton"
-          )}
+          {t("actions.send")}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.workspace.evaluation.cancelEvaluation.cancelButton"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
@@ -130,9 +125,7 @@ class EvaluationCancelDialog extends React.Component<
     return (
       <Dialog
         modifier="evaluation-cancel-dialog"
-        title={this.props.i18nOLD.text.get(
-          "plugin.workspace.evaluation.cancelEvaluation.title"
-        )}
+        title={t("labels.cancel_evaluationRequest", { ns: "workspace" })}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}
@@ -148,7 +141,6 @@ class EvaluationCancelDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
   };
 }
@@ -161,7 +153,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ cancelAssessmentAtWorkspace }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EvaluationCancelDialog);
+export default withTranslation(["evaluation", "workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EvaluationCancelDialog)
+);

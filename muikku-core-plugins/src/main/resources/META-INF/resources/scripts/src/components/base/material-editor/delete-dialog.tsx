@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -15,17 +14,19 @@ import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
   deleteWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DeleteWorkspaceMaterialDialogProps
  */
-interface DeleteWorkspaceMaterialDialogProps {
-  i18nOLD: i18nType;
+interface DeleteWorkspaceMaterialDialogProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: any;
   isSection?: boolean;
   material: MaterialContentNodeType;
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType;
   materialEditor: WorkspaceMaterialEditorType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDeleteSuccess: () => any;
 }
 
@@ -60,7 +61,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
    * delete
    * @param closeDialog closeDialog
    */
-  delete(closeDialog: () => any) {
+  delete(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
@@ -92,18 +93,22 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <span>
-          {this.props.i18nOLD.text.get(
-            this.props.isSection
-              ? "plugin.workspace.materialsManagement.confirmSectionDelete.text"
-              : "plugin.workspace.materialsManagement.confirmDelete.text"
-          )}
+          {this.props.isSection
+            ? t("content.removing_section", {
+                ns: "materials",
+              })
+            : t("content.removing_page", {
+                ns: "materials",
+              })}
         </span>
       </div>
     );
@@ -112,29 +117,21 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-ok", "fatal"]}
           onClick={this.delete.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            this.props.isSection
-              ? "plugin.workspace.materialsManagement.confirmSectionDelete.confirmButton"
-              : "plugin.workspace.materialsManagement.confirmDelete.confirmButton"
-          )}
+          {t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            this.props.isSection
-              ? "plugin.workspace.materialsManagement.confirmSectionDelete.cancelButton"
-              : "plugin.workspace.materialsManagement.confirmDelete.cancelButton"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
@@ -142,11 +139,15 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
     return (
       <Dialog
         modifier="evaluation-cancel-dialog"
-        title={this.props.i18nOLD.text.get(
+        title={
           this.props.isSection
-            ? "plugin.workspace.materialsManagement.confirmSectionDelete.title"
-            : "plugin.workspace.materialsManagement.confirmDelete.title"
-        )}
+            ? t("labels.remove_section", {
+                ns: "materials",
+              })
+            : t("labels.pageRemoval", {
+                ns: "materials",
+              })
+        }
         content={content}
         footer={footer}
       >
@@ -162,7 +163,6 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     materialEditor: state.workspaces.materialEditor,
   };
 }
@@ -175,7 +175,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteWorkspaceMaterialContentNode }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteWorkspaceMaterialDialog);
+export default withTranslation(["materials", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DeleteWorkspaceMaterialDialog)
+);

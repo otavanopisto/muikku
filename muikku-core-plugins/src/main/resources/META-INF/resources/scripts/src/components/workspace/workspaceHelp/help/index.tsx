@@ -753,7 +753,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         onOpenNavigation={this.onOpenNavigation}
         modifier="materials"
         navigation={this.props.navigation}
-        title={t("labels.materials", { ns: "materials" })}
+        title={t("labels.instructions", { ns: "workspace" })}
         ref="content-panel"
       >
         {results}

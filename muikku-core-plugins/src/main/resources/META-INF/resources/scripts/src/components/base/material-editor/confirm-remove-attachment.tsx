@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -15,15 +14,16 @@ import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
   deleteWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ConfirmRemoveAttachmentProps
  */
-interface ConfirmRemoveAttachmentProps {
-  i18nOLD: i18nType;
+interface ConfirmRemoveAttachmentProps extends WithTranslation {
   materialEditor: WorkspaceMaterialEditorType;
   file: MaterialContentNodeType;
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: any;
 }
 
@@ -58,7 +58,7 @@ class ConfirmRemoveAttachment extends React.Component<
    * confirm
    * @param closeDialog closeDialog
    */
-  confirm(closeDialog: () => any) {
+  confirm(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
@@ -81,23 +81,25 @@ class ConfirmRemoveAttachment extends React.Component<
    * cancel
    * @param closeDialog closeDialog
    */
-  cancel(closeDialog?: () => any) {
+  cancel(closeDialog?: () => void) {
     closeDialog && closeDialog();
   }
   /**
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <span>
-          {this.props.i18nOLD.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.description"
-          )}
+          {t("content.removing_file", {
+            ns: "guider",
+          })}
         </span>
       </div>
     );
@@ -106,25 +108,21 @@ class ConfirmRemoveAttachment extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-ok", "fatal"]}
           onClick={this.confirm.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.yes"
-          )}
+          {t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={this.cancel.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.no"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
@@ -132,9 +130,7 @@ class ConfirmRemoveAttachment extends React.Component<
     return (
       <Dialog
         modifier="confirm-remove-answer-dialog"
-        title={this.props.i18nOLD.text.get(
-          "plugin.guider.flags.deleteAttachmentDialog.title"
-        )}
+        title={t("labels.remove_attachment", { ns: "guider" })}
         content={content}
         footer={footer}
       >
@@ -150,7 +146,6 @@ class ConfirmRemoveAttachment extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     materialEditor: state.workspaces.materialEditor,
   };
 }
@@ -163,7 +158,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteWorkspaceMaterialContentNode }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConfirmRemoveAttachment);
+export default withTranslation(["materials", "guider", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(ConfirmRemoveAttachment)
+);
