@@ -48,10 +48,12 @@ const ACE_DEFAULT_SRC =
 const ACE_MODE_SRC =
   "https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.0/mode-latex.min.js";
 
+  // This is locally built from Digabi's fork of MathQuill
+  // Version number corresponds with Digabi's versioning
 const MQ_DEFAULT_SRC =
-  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.min.js";
+  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.12/mathquill.min.js";
 const MQ_DEFAULT_CSS =
-  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.css";
+  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.12/mathquill.css";
 
 /**
  * MathField

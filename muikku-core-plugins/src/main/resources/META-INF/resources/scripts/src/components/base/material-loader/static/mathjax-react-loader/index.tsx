@@ -7,6 +7,9 @@ const baseConfig = {
   tex2jax: {
     inlineMath: [["\\(", "\\)"]],
   },
+  mml2jax: {
+    preview: "mathml"
+  },
   skipStartupTypeset: true,
 };
 
