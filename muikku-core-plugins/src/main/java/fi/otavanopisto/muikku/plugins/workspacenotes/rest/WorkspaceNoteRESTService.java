@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNote;
@@ -139,22 +138,20 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (restModel.getOwner() == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+    if (restModel.getOwner() == null || !workspaceNote.getOwner().equals(restModel.getOwner())) {
+      return Response.status(Status.BAD_REQUEST).entity("Owner mismatch").build();
     } 
     
-    if(restModel.getWorkspaceEntityId() == null || !restModel.getWorkspaceEntityId().equals(workspaceNote.getWorkspace())) {
+    if (restModel.getWorkspaceEntityId() == null || !restModel.getWorkspaceEntityId().equals(workspaceNote.getWorkspace())) {
       return Response.status(Status.BAD_REQUEST).entity("Workspace entity id mismatch").build();
     }
     
-    // users can only update their own notes (except admins)    
-    if (!restModel.getOwner().equals(sessionController.getLoggedUserEntity().getId())) {
-      EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
-
-      if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
+    // Users can only update their own notes    
+    
+    if (!workspaceNote.getOwner().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
     }
+
     WorkspaceNote referenceNote = null;
     
     if (restModel.getNextSiblingId() != null) {
@@ -174,14 +171,12 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   }
   
   private WorkspaceNoteRestModel toRestModel(WorkspaceNote workspaceNote) {
-    
-    UserEntity userEntity = userEntityController.findUserEntityById(workspaceNote.getOwner());
     WorkspaceNote nextSibling = workspaceNoteController.findWorkspaceNoteNextSibling(workspaceNote);
     Long nextSiblingId = nextSibling != null ? nextSibling.getId() : null;
     
     WorkspaceNoteRestModel restModel = new WorkspaceNoteRestModel();
     restModel.setId(workspaceNote.getId());
-    restModel.setOwner(userEntity.getId());
+    restModel.setOwner(workspaceNote.getOwner());
     restModel.setWorkspaceEntityId(workspaceNote.getWorkspace());
     restModel.setTitle(workspaceNote.getTitle());
     restModel.setWorkspaceNote(workspaceNote.getNote());
