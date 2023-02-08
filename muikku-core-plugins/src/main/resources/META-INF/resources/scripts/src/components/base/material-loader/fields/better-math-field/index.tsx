@@ -44,9 +44,9 @@ interface MathFieldState {
 }
 
 const ACE_DEFAULT_SRC =
-  "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js";
+  "https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.0/ace.min.js";
 const ACE_MODE_SRC =
-  "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/mode-latex.js";
+  "https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.0/mode-latex.min.js";
 
 const MQ_DEFAULT_SRC =
   "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.min.js";
