@@ -22,6 +22,11 @@ import {
 } from "react-dnd-multi-backend";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+import { AnyActionType } from "~/actions";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { StateType } from "~/reducers";
+import { StatusType } from "~/reducers/base/status";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -51,6 +56,7 @@ interface WorkspaceMaterialsBodyProps {
   signupDialogOpen: boolean;
   onCloseEnrollmentDialog: () => void;
   onCloseSignupDialog: () => void;
+  status: StatusType;
 }
 
 /**
@@ -65,7 +71,7 @@ type ToolTab = "notebook" | "table-of-contents" | "journals";
 /**
  * WorkspaceMaterialsBody
  */
-export default class WorkspaceMaterialsBody extends React.Component<
+class WorkspaceMaterialsBody extends React.Component<
   WorkspaceMaterialsBodyProps,
   WorkspaceMaterialBodyState
 > {
@@ -110,7 +116,10 @@ export default class WorkspaceMaterialsBody extends React.Component<
         name: "Sisällysluettelo",
         component: <TableOfContentsComponent ref="content" />,
       },
-      {
+    ];
+
+    if (this.props.status.loggedIn) {
+      materialEditorTabs.push({
         id: "notebook",
         type: "workspace-notebook",
         name: "Muistiinpanot",
@@ -119,8 +128,8 @@ export default class WorkspaceMaterialsBody extends React.Component<
             <NoteBook />
           </DndProvider>
         ),
-      },
-    ];
+      });
+    }
 
     const navigationComponent = (
       <Tabs
@@ -160,3 +169,25 @@ export default class WorkspaceMaterialsBody extends React.Component<
     );
   }
 }
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    status: state.status,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  withRef: true,
+})(WorkspaceMaterialsBody);
