@@ -5,14 +5,14 @@
 import Link from "~/components/general/link";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * LoginButtonProps
  */
-interface LoginButtonProps {
-  i18nOLD: i18nType;
+interface LoginButtonProps extends WithTranslation {
   modifier?: string;
 }
 
@@ -37,6 +37,8 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     return (
       <Link
         tabIndex={0}
@@ -45,7 +47,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
         }`}
         href="/login"
       >
-        <span>{this.props.i18nOLD.text.get("plugin.login.buttonLabel")}</span>
+        <span>{t("actions.signIn")}</span>
       </Link>
     );
   }
@@ -56,17 +58,17 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
+  return {};
 }
 
 /**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginButton);
+export default withTranslation(["frontPage", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(LoginButton)
+);
