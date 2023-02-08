@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity_;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
@@ -21,7 +22,7 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
   
 	private static final long serialVersionUID = -5129003092406973620L;
 
-	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, OrganizationEntity organizationEntity, WorkspaceAccess access, Boolean published, Boolean archived) {
+	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, OrganizationEntity organizationEntity, WorkspaceAccess access, Boolean published, Boolean archived, WorkspaceLanguage language) {
     WorkspaceEntity workspaceEntity = new WorkspaceEntity();
     
     workspaceEntity.setDataSource(dataSource);
@@ -31,6 +32,7 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     workspaceEntity.setAccess(access);
     workspaceEntity.setArchived(archived);
     workspaceEntity.setPublished(published);
+    workspaceEntity.setLanguage(language);
     
     return persist(workspaceEntity);
   }
@@ -218,6 +220,11 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
 
   public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
     workspaceEntity.setAccess(access);
+    return persist(workspaceEntity);
+  }
+  
+  public WorkspaceEntity updateLanguage(WorkspaceEntity workspaceEntity, WorkspaceLanguage language) {
+    workspaceEntity.setLanguage(language);
     return persist(workspaceEntity);
   }
 

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
@@ -22,6 +23,7 @@ public class ToRWorkspaceRestModel extends Workspace {
       WorkspaceAccess access,
       Boolean archived,
       Boolean published,
+      WorkspaceLanguage language,
       String name,
       String nameExtension,
       String description,
@@ -40,6 +42,7 @@ public class ToRWorkspaceRestModel extends Workspace {
         access, 
         archived, 
         published, 
+        language,
         name, 
         nameExtension, 
         description, 

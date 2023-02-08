@@ -512,7 +512,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       }
     }
     
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentNode, payload.getTitle());
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentNode, payload.getTitle(), null);
     if (workspaceFolder == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create workspace folder").build(); 
     }
