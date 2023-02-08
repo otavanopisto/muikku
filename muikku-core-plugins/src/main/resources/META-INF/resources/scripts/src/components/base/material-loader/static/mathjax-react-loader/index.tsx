@@ -8,7 +8,7 @@ const baseConfig = {
     inlineMath: [["\\(", "\\)"]],
   },
   mml2jax: {
-    preview: "mathml"
+    preview: "mathml",
   },
   skipStartupTypeset: true,
 };

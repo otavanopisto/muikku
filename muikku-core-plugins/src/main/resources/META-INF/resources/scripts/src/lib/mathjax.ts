@@ -22,7 +22,8 @@ export const MATHJAXCONFIG = {
     "input/AsciiMath",
     "output/HTML-CSS",
     "output/NativeMML",
-    "output/PreviewHTML"],
+    "output/PreviewHTML",
+  ],
   extensions: [
     "toMathML.js",
     "tex2jax.js",
@@ -32,7 +33,7 @@ export const MATHJAXCONFIG = {
     "MathZoom.js",
     "fast-preview.js",
     "AssistiveMML.js",
-    "a11y/accessibility-menu.js"
+    "a11y/accessibility-menu.js",
   ],
   TeX: {
     extensions: [
@@ -54,15 +55,15 @@ export const MATHJAXCONFIG = {
     lineBreaks: { automatic: true },
   },
   MathML: {
-    useMathMLspacing: true
+    useMathMLspacing: true,
   },
   NativeMML: {
     scale: 100,
-    matchFontHeight: true
+    matchFontHeight: true,
   },
   showProcessingMessages: true,
   messageStyle: "normal",
-  showMathMenu: true
+  showMathMenu: true,
 };
 
 export const MATHJAXSRC =
