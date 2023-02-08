@@ -34,7 +34,7 @@ export function MaterialLoaderProducersLicense(
       {props.material.producers && props.material.producers.length ? (
         <div className="material-page__producers">
           <div className="material-page__producers-label">
-            {t("labels.producer_other", { ns: "materials" })}:
+            {t("labels.producer", { ns: "materials", count: 0 })}:
           </div>
           <div className="material-page__producers-item">
             {props.material.producers.map((p) => p.name).join(", ")}

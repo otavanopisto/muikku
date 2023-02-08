@@ -1099,7 +1099,7 @@ class MaterialEditor extends React.Component<
             {this.props.editorState.canSetProducers ? (
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
-                  {t("labels.producer_other", { ns: "users" })}
+                  {t("labels.producer", { ns: "users", count: 0 })}
                 </h3>
                 {this.props.editorState.currentDraftNodeValue.producers ? (
                   <div className="material-editor__add-producer-container">
@@ -1166,7 +1166,7 @@ class MaterialEditor extends React.Component<
               deleteDialogElement={ConfirmRemoveAttachment}
               hintText={t("content.add_file", { ns: "materials" })}
               deleteFileText={t("actions.remove")}
-              downloadFileText={t("actions.download_one")}
+              downloadFileText={t("actions.download", { count: 1 })}
               showURL
               notificationOfSuccessText={t("notifications.uploadSuccess_file", {
                 ns: "files",
