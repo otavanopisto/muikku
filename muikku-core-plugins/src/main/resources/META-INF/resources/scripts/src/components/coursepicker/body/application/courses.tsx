@@ -5,7 +5,6 @@ import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/message.scss";
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Course from "./courses/course";
 import { StateType } from "~/reducers";
 import ApplicationList, {
@@ -27,7 +26,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * CoursepickerWorkspacesProps
  */
 interface CoursepickerWorkspacesProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
@@ -78,11 +76,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
     } else if (this.props.workspaces.length === 0) {
       return (
         <div className="empty">
-          <span>
-            {this.props.i18nOLD.text.get(
-              "plugin.coursepicker.searchResult.empty"
-            )}
-          </span>
+          <span>{this.props.t("content.notFound", { ns: "workspace" })}</span>
         </div>
       );
     }
@@ -106,7 +100,6 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspacesState: state.workspaces.state,
     workspacesHasMore: state.workspaces.hasMore,
     workspaces: state.workspaces.availableWorkspaces,
@@ -121,6 +114,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ loadMoreWorkspacesFromServer }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace"])(
   connect(mapStateToProps, mapDispatchToProps)(CoursepickerWorkspaces)
 );

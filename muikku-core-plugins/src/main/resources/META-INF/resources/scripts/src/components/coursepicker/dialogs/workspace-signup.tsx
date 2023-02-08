@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -20,9 +19,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * WorkspaceSignupDialogProps
  */
-interface WorkspaceSignupDialogProps
-  extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface WorkspaceSignupDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   isOpen?: boolean;
@@ -124,46 +121,34 @@ class WorkspaceSignupDialog extends React.Component<
       <div>
         <div>
           <div className="dialog__content-row">
-            {
-              // TODO: use i18next
-            }
-            {this.props.i18nOLD.text.get(
-              "plugin.workspaceSignUp.courseDescription",
-              workspaceSignUpDetails.name,
-              workspaceSignUpDetails.nameExtension || ""
-            )}
+            {this.props.t("content.signUp", {
+              ns: "workspace",
+              name: workspaceSignUpDetails.name,
+              nameExtension: workspaceSignUpDetails.nameExtension || "",
+            })}
           </div>
           {hasFees ? (
             <div className="form-element dialog__content-row">
               <p>
                 <label>
-                  {
-                    // TODO: use i18next
-                  }
-                  {this.props.i18nOLD.text.get(
-                    "plugin.workspaceSignUp.fee.label"
-                  )}
+                  {this.props.t("labels.evaluationHasFee", {
+                    ns: "workspace",
+                  })}
                 </label>
               </p>
               <p>
-                {
-                  // TODO: use i18next
-                }
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspaceSignUp.fee.content"
-                )}
+                {this.props.t("content.evaluationHasFee", {
+                  ns: "workspace",
+                })}
               </p>
             </div>
           ) : null}
           <div className="form-element dialog__content-row">
             <p>
               <label htmlFor="signUpMessage">
-                {
-                  // TODO: use i18next
-                }
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspaceSignUp.messageLabel"
-                )}
+                {this.props.t("labels.message", {
+                  ns: "workspace",
+                })}
               </label>
               <textarea
                 id="signUpMessage"
@@ -188,7 +173,9 @@ class WorkspaceSignupDialog extends React.Component<
           onClick={this.signup.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {/* {this.props.t("workspaces:actions.signIn")} */} asd
+          {this.props.t("actions.signUp", {
+            ns: "workspace",
+          })}
         </Button>
       </div>
     );
@@ -196,8 +183,7 @@ class WorkspaceSignupDialog extends React.Component<
     return (
       <Dialog
         modifier="workspace-signup-dialog"
-        // TODO: use i18next
-        title={this.props.i18nOLD.text.get("plugin.workspaceSignUp.title")}
+        title={this.props.t("labels.signUp", { ns: "workspace" })}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}
@@ -215,7 +201,6 @@ class WorkspaceSignupDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     currentWorkspace: state.workspaces.currentWorkspace,
   };
@@ -229,6 +214,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ signupIntoWorkspace }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceSignupDialog)
 );

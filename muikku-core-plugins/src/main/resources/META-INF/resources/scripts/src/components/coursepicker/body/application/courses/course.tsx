@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
@@ -29,7 +28,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * CourseProps
  */
 interface CourseProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
@@ -135,7 +133,7 @@ class Course extends React.Component<CourseProps, CourseState> {
       const localString =
         suitabilityMap.get(education)[this.props.workspace.mandatority];
 
-      return ` (${this.props.i18nOLD.text.get(localString)})`;
+      return ` (${localString})`;
     }
   };
 
@@ -219,9 +217,9 @@ class Course extends React.Component<CourseProps, CourseState> {
             <span
               className="application-list__fee-indicatoricon-coin-euro icon-coin-euro"
               // TODO: Translate using i18next
-              title={this.props.i18nOLD.text.get(
-                "plugin.coursepicker.course.evaluationhasfee"
-              )}
+              title={this.props.t("labels.hasEvaluationFee", {
+                ns: "workspace",
+              })}
             />
           ) : null}
           <span className="application-list__header-secondary">
@@ -245,7 +243,8 @@ class Course extends React.Component<CourseProps, CourseState> {
               >
                 {/* {this.props.workspace.isCourseMember
                   ? this.props.t("workspaces:actions.continue")
-                  : this.props.t("workspaces:actions.checkOut")} */} asd
+                  : this.props.t("workspaces:actions.checkOut")} */}{" "}
+                asd
               </Button>
               {this.state.canSignUp && this.props.status.loggedIn ? (
                 <WorkspaceSignupDialog
@@ -264,7 +263,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                       "coursepicker-course-action",
                     ]}
                   >
-                    {/* {this.props.t("workspaces:actions.signIn")} */} asd
+                    {/* {this.props.t("workspaces:actions.signIn")} */} kirjs
                   </Button>
                 </WorkspaceSignupDialog>
               ) : null}
@@ -284,7 +283,6 @@ class Course extends React.Component<CourseProps, CourseState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     availableCurriculums: state.workspaces.availableFilters.curriculums,
   };
@@ -298,6 +296,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["workspace"])(
   connect(mapStateToProps, mapDispatchToProps)(Course)
 );
