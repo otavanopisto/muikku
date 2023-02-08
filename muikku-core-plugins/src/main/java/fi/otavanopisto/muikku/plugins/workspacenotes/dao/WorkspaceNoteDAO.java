@@ -22,6 +22,7 @@ public class WorkspaceNoteDAO extends CorePluginsDAO<WorkspaceNote> {
     workspaceNote.setNote(note);
     workspaceNote.setWorkspace(workspaceEntityId);
     workspaceNote.setOrderNumber(orderNumber);
+    workspaceNote.setArchived(Boolean.FALSE);
     return persist(workspaceNote);
   }
   
