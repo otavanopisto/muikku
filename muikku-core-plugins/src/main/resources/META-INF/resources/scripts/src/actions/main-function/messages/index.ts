@@ -138,7 +138,7 @@ export type UPDATE_MESSAGES_NAVIGATION_LABEL = SpecificActionType<
   {
     labelId: number;
     update: {
-      text: () => string;
+      text: string;
       color: string;
     };
   }
@@ -1353,12 +1353,7 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
             id: label.id,
             type: "label",
             icon: "tag",
-            /**
-             * text
-             */
-            text() {
-              return label.name;
-            },
+            text: label.name,
             color: colorIntToHex(label.color),
           })),
         });
@@ -1423,9 +1418,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
             /**
              * text
              */
-            text() {
-              return newLabel.name;
-            },
+            text: newLabel.name,
             color: colorIntToHex(newLabel.color),
           },
         });
@@ -1496,7 +1489,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
               /**
                * text
                */
-              text: () => newLabelData.name,
+              text: newLabelData.name,
               color: data.newColor,
             },
           },

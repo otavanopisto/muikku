@@ -47,18 +47,16 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface CommunicatorMessagesProps extends WithTranslation<["common"]> {
   threads: MessageThreadListType;
   hasMore: boolean;
+  i18nOLD: i18nType;
   state: MessagesStateType;
   searchMessages: MessageSearchResult[];
   selectedThreads: MessageThreadListType;
   selectedThreadsIds: Array<number>;
   currentThread: MessageThreadExpandedType;
   messages: MessagesType;
-
   loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType;
   removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType;
   addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType;
-
-  i18nOLD: i18nType;
   status: StatusType;
 }
 
@@ -102,22 +100,12 @@ class CommunicatorMessages extends BodyScrollLoader<
   getThreadUserNames(thread: MessageThreadType, userId: number) {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
-        return (
-          <span>
-            {
-              // TODO: use i18next
-            }
-            {this.props.i18nOLD.text.get("plugin.communicator.sender.self")}
-          </span>
-        );
+        return <span>{this.props.t("labels.self")}</span>;
       }
       if (thread.sender.archived === true) {
         return (
           <span className="message__user-archived">
-            {
-              // TODO: use i18next
-            }
-            {this.props.i18nOLD.text.get("plugin.communicator.sender.archived")}
+            {this.props.t("labels.archived")}
           </span>
         );
       }
@@ -139,21 +127,13 @@ class CommunicatorMessages extends BodyScrollLoader<
     const messageRecipientsList = thread.recipients.map((recipient) => {
       if (recipient.userEntityId === userId) {
         return (
-          <span key={recipient.recipientId}>
-            {
-              // TODO: use i18next
-            }
-            {this.props.i18nOLD.text.get("plugin.communicator.sender.self")}
-          </span>
+          <span key={recipient.recipientId}>{this.props.t("labels.self")}</span>
         );
       }
       if (recipient.archived === true) {
         return (
           <span key={recipient.recipientId} className="message__user-archived">
-            {
-              // TODO: use i18next
-            }
-            {this.props.i18nOLD.text.get("plugin.communicator.sender.archived")}
+            {this.props.t("labels.archived")}
           </span>
         );
       }
@@ -230,12 +210,7 @@ class CommunicatorMessages extends BodyScrollLoader<
     ) {
       return (
         <div className="empty">
-          <span>
-            {
-              // TODO: use i18next
-            }
-            {this.props.i18nOLD.text.get("plugin.communicator.empty.topic")}
-          </span>
+          <span>{this.props.t("content.empty")}</span>
         </div>
       );
     }
@@ -247,20 +222,11 @@ class CommunicatorMessages extends BodyScrollLoader<
             // Lets set the correct messageFolder string based on which folrder the message belongs to
             let messageFolder;
             if (message.folder === "INBOX") {
-              // TODO: use i18next
-              messageFolder = this.props.i18nOLD.text.get(
-                "plugin.communicator.category.title.inbox"
-              );
+              messageFolder = this.props.t("labels.inbox", { ns: "messaging" });
             } else if (message.folder === "SENT") {
-              // TODO: use i18next
-              messageFolder = this.props.i18nOLD.text.get(
-                "plugin.communicator.category.title.sent"
-              );
+              messageFolder = this.props.t("labels.sent", { ns: "messaging" });
             } else {
-              // TODO: use i18next
-              messageFolder = this.props.i18nOLD.text.get(
-                "plugin.communicator.category.title.trash"
-              );
+              messageFolder = this.props.t("labels.trash", { ns: "messaging" });
             }
 
             let senderName = `${message.sender.firstName} ${
@@ -396,10 +362,7 @@ class CommunicatorMessages extends BodyScrollLoader<
               isSelected,
               key: thread.communicatorMessageId,
               wcagLabel: thread.unreadMessagesInThread
-                ? // TODO: use i18next
-                  this.props.i18nOLD.text.get(
-                    "plugin.wcag.messageUnread.aria.label"
-                  )
+                ? this.props.t("wcag.unread", { ns: "messaging" })
                 : null,
               checkboxId: `messageSelect-${index}`,
               /**
@@ -415,12 +378,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                         htmlFor={`messageSelect-` + index}
                         className="visually-hidden"
                       >
-                        {
-                          // TODO: use i18next
-                        }
-                        {this.props.i18nOLD.text.get(
-                          "plugin.wcag.messageSelect.label"
-                        )}
+                        {this.props.t("wcag.setSelected", { ns: "messaging" })}
                       </label>
                       {checkbox}
                     </div>
@@ -436,10 +394,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                     >
                       <span
                         className="message__recipients"
-                        // TODO: use i18next
-                        aria-label={this.props.i18nOLD.text.get(
-                          "plugin.wcag.messageSender.aria.label"
-                        )}
+                        aria-label={this.props.t("wcag.sender", {
+                          ns: "messaging",
+                        })}
                       >
                         {this.getThreadUserNames(
                           thread,
@@ -450,10 +407,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                     {thread.messageCountInThread > 1 ? (
                       <div
                         className="application-list__item-counter"
-                        // TODO: use i18next
-                        aria-label={this.props.i18nOLD.text.get(
-                          "plugin.wcag.messageCount.aria.label"
-                        )}
+                        aria-label={this.props.t("wcag.replyCount", {
+                          ns: "messaging",
+                        })}
                       >
                         {thread.messageCountInThread}
                       </div>
@@ -461,9 +417,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                     <div
                       className="application-list__header-item-date"
                       // TODO: use i18next
-                      aria-label={this.props.i18nOLD.text.get(
-                        "plugin.wcag.messageSendDate.aria.label"
-                      )}
+                      aria-label={this.props.t("wcag.date", {
+                        ns: "messaging",
+                      })}
                     >
                       {this.props.i18nOLD.time.format(
                         thread.threadLatestMessageDate
@@ -473,10 +429,10 @@ class CommunicatorMessages extends BodyScrollLoader<
                   <ApplicationListItemBody modifiers="communicator-message">
                     <span
                       className="application-list__header-item-body"
-                      // TODO: use i18next
-                      aria-label={this.props.i18nOLD.text.get(
-                        "plugin.wcag.messageBody.aria.label"
-                      )}
+                      aria-label={this.props.t("wcag.content", {
+                        ns: "messaging",
+                        context: "truncated",
+                      })}
                     >
                       {thread.caption}
                     </span>
@@ -488,10 +444,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                           <span
                             className="label"
                             key={label.id}
-                            // TODO: use i18next
-                            aria-label={this.props.i18nOLD.text.get(
-                              "plugin.wcag.messageLabel.aria.label"
-                            )}
+                            aria-label={this.props.t("wcag.label", {
+                              ns: "messaging",
+                            })}
                           >
                             <span
                               className="label__icon icon-tag"
@@ -523,6 +478,7 @@ class CommunicatorMessages extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18nOLD: state.i18nOLD,
     threads: state.messages.threads,
     searchMessages: state.messages.searchMessages,
     hasMore: state.messages.hasMore,
@@ -531,7 +487,6 @@ function mapStateToProps(state: StateType) {
     selectedThreadsIds: state.messages.selectedThreadsIds,
     currentThread: state.messages.currentThread,
     messages: state.messages,
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }
@@ -551,6 +506,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(CommunicatorMessages)
 );

@@ -9,7 +9,6 @@ import {
   UpdateSignatureTriggerType,
 } from "~/actions/main-function/messages";
 import { MessageSignatureType } from "~/reducers/main-function/messages";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
@@ -22,8 +21,7 @@ const KEYCODES = {
 /**
  * CommunicatorSignatureUpdateDialogProps
  */
-interface CommunicatorSignatureUpdateDialogProps
-  extends WithTranslation<["common"]> {
+interface CommunicatorSignatureUpdateDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   isOpen: boolean;
@@ -31,7 +29,6 @@ interface CommunicatorSignatureUpdateDialogProps
   onClose: () => any;
   signature: MessageSignatureType;
   updateSignature: UpdateSignatureTriggerType;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -114,10 +111,10 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
           buttonModifiers="dialog-execute"
           onClick={this.update.bind(this, closeDialog)}
         >
-          {this.props.t("common:actions.save")}
+          {this.props.t("actions.save")}
         </Button>
         <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
-          {this.props.t("common:actions.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -143,10 +140,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
         onKeyStroke={this.handleKeydown}
         onOpen={this.resetState}
         modifier="update-signature"
-        // TODO: use i18next
-        title={this.props.i18nOLD.text.get(
-          "plugin.communicator.settings.signature"
-        )}
+        title={this.props.t("labels.signature", { ns: "messaging" })}
         content={content}
         footer={footer}
       >
@@ -163,7 +157,6 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     signature: state.messages.signature,
-    i18nOLD: state.i18nOLD,
   };
 }
 
@@ -175,7 +168,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateSignature }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(
     mapStateToProps,
     mapDispatchToProps
