@@ -4,6 +4,7 @@ import type { FC } from "react";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { IconButton } from "../button";
+import "~/sass/elements/draggable-element.scss";
 
 export const ItemTypes = {
   CARD: "card",
