@@ -74,6 +74,10 @@
   border: 0;
   display: none;
 
+  .tabs__tab--mobile-only-tab {
+    cursor: default;
+  }
+
   @include breakpoint($breakpoint-pad) {
     display: flex;
   }
@@ -259,7 +263,7 @@
     flex-basis: 50%;
 
     &:first-child {
-      padding: 0 10px 0 0;
+      padding: 0 10px;
     }
 
     &:last-child {
@@ -272,7 +276,7 @@
   }
 
   &:first-child {
-    padding: 0 10px 0 0;
+    padding: 0 10px;
   }
 
   &:last-child {

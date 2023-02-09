@@ -470,7 +470,6 @@ class WorkspaceUsers extends React.Component<
             />
             <MobileOnlyTabs
               onTabChange={this.onTabChange}
-              renderAllComponents
               activeTab={this.state.activeTab}
               tabs={[
                 {
