@@ -1,7 +1,7 @@
 import * as React from "react";
 
 /**
- * IUseScroll
+ * UseScroll
  */
 export interface UseScroll {
   position: number;
