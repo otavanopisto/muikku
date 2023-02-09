@@ -169,7 +169,7 @@
       "deleteError": "Poisto epäonnistui. Yritä uudelleen.",
       "emptyError": "Tieto ei voi olla tyhjä",
       "loadError": "Lataus epäonnistui. Yritä ladata sivu uudelleen.",
-      "loadError_credentials": "Tunnusten lataus epäonnistui: {0}",
+      "loadError_credentials": "Tunnusten lataus epäonnistui: {{error}}",
       "loadError_locales": "Virhe lokalisointia ladattaessa",
       "newMessage": "{0} - Uusi viesti",
       "noResults": "Ei tuloksia",
