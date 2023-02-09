@@ -10,6 +10,7 @@ import notificationActions from "~/actions/base/notifications";
 import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import { Dispatch } from "react-redux";
+import i18n from "~/locales/i18n";
 
 export type CONTACT_LOAD_GROUP = SpecificActionType<
   "CONTACT_LOAD_GROUP",
@@ -93,10 +94,11 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
 
       return dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.records.summary.errormessage.contactLoad." + groupName,
-            err.message
-          ),
+          i18n.t("notifications.loadError", {
+            ns: "studies",
+            context: groupName,
+            defaultValue: "Contact group could not be loaded",
+          }),
           "error"
         )
       );
