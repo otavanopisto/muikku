@@ -2,6 +2,7 @@ import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
+import { Dispatch } from "react-redux";
 import {
   MessageThreadListType,
   MessageThreadExpandedType,
@@ -28,6 +29,7 @@ import {
 } from "./helpers";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
+import i18n from "~/locales/i18n";
 
 /**
  * UpdateMessageThreadsCountTriggerType
@@ -162,7 +164,7 @@ export type REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS = SpecificActionType<
 const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
   function updateUnreadMessageThreadsCount() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!getState().status.loggedIn) {
@@ -185,9 +187,9 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.unreadMessageCount"
-            ),
+            i18n.t("notifications.loadError", {
+              context: "unreadMessageCount",
+            }),
             "error"
           )
         );
@@ -209,7 +211,7 @@ export interface LoadLastMessageThreadsFromSeverTriggerType {
 const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType =
   function loadLastMessageThreadsFromServer(maxResults) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -229,9 +231,9 @@ const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerTy
         }
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.lastMessageLoad"
-            ),
+            i18n.t("notifications.loadError", {
+              context: "latestMessage",
+            }),
             "error"
           )
         );
@@ -433,16 +435,14 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
   };
 
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     if (!message.subject) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.subject"
-          ),
+          i18n.t("validation.caption", { ns: "messaging" }),
           "error"
         )
       );
@@ -450,9 +450,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.content"
-          ),
+          i18n.t("validation.content", { ns: "messaging" }),
           "error"
         )
       );
@@ -460,9 +458,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.recipients"
-          ),
+          i18n.t("validation.recipients", { ns: "messaging" }),
           "error"
         )
       );
@@ -588,9 +584,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
 
       dispatch(
         displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.communicator.infomessage.newMessage.success"
-          ),
+          i18n.t("notifications.sendSuccess", { ns: "messaging" }),
           "success"
         )
       );
@@ -600,9 +594,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       }
       dispatch(
         displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.communicator.errormessage.sendFailed"
-          ),
+          i18n.t("notifications.sendError", { ns: "messaging" }),
           "error"
         )
       );
@@ -716,7 +708,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
     callback
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!dontLockToolbar) {
@@ -735,9 +727,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -804,9 +794,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.changeStatusFailed"
-            ),
+            i18n.t("notifications.sendSuccess", { ns: "messaging" }),
             "error"
           )
         );
@@ -842,7 +830,9 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
  */
 const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType =
   function toggleMessageThreadsReadStatus(threads) {
-    return async (dispatch: (arg: AnyActionType) => any) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+    ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
@@ -879,7 +869,7 @@ const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType 
 const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
   function deleteSelectedMessageThreads() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       dispatch({
@@ -893,12 +883,9 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
         (item) => item.location === state.messages.location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -928,9 +915,7 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
             }
             dispatch(
               displayNotification(
-                getState().i18nOLD.text.get(
-                  "plugin.communicator.errormessage.deleteFailed"
-                ),
+                i18n.t("notifications.removeError", { ns: "messaging" }),
                 "error"
               )
             );
@@ -953,7 +938,7 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
 const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
   function deleteCurrentMessageThread() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       dispatch({
@@ -967,12 +952,9 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         (item) => item.location === state.messages.location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -1007,9 +989,7 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.deleteFailed"
-            ),
+            i18n.t("notifications.removeError", { ns: "messaging" }),
             "error"
           )
         );
@@ -1038,7 +1018,7 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
 const loadMessageThread: LoadMessageThreadTriggerType =
   function loadMessageThread(location, messageId) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1047,12 +1027,9 @@ const loadMessageThread: LoadMessageThreadTriggerType =
         (item) => item.location === location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -1089,9 +1066,10 @@ const loadMessageThread: LoadMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.threadLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "messaging",
+              context: "messageThread",
+            }),
             "error"
           )
         );
@@ -1115,7 +1093,7 @@ const loadMessageThread: LoadMessageThreadTriggerType =
 const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
   function loadNewlyReceivedMessage() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1179,9 +1157,10 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
           }
           dispatch(
             displayNotification(
-              getState().i18nOLD.text.get(
-                "plugin.communicator.errormessage.receivedFailed"
-              ),
+              i18n.t("notifications.loadError", {
+                ns: "messaging",
+                context: "receivedMessage",
+              }),
               "error"
             )
           );
@@ -1195,7 +1174,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
  */
 const loadSignature: LoadSignatureTriggerType = function loadSignature() {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     try {
@@ -1214,9 +1193,10 @@ const loadSignature: LoadSignatureTriggerType = function loadSignature() {
       }
       dispatch(
         displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.communicator.errormessage.signatureLoadFailed"
-          ),
+          i18n.t("notifications.loadError", {
+            ns: "messaging",
+            context: "signature",
+          }),
           "error"
         )
       );
@@ -1231,7 +1211,10 @@ const loadSignature: LoadSignatureTriggerType = function loadSignature() {
 const updateSignature: UpdateSignatureTriggerType = function updateSignature(
   newSignature
 ) {
-  return async (dispatch: (arg: AnyActionType) => any, getState: () => any) => {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    getState: () => StateType
+  ) => {
     const state = getState();
 
     try {
@@ -1284,9 +1267,10 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
       }
       dispatch(
         displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.communicator.errormessage.signatureUpdateFailed"
-          ),
+          i18n.t("notifications.updateError", {
+            ns: "messaging",
+            context: "signature",
+          }),
           "error"
         )
       );
@@ -1339,8 +1323,8 @@ export interface RemoveMessagesNavigationLabelTriggerType {
 const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
   function loadMessagesNavigationLabels(callback) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => any
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
     ) => {
       try {
         const labels: LabelListType = <LabelListType>(
@@ -1364,9 +1348,10 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.labelsLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "messaging",
+              context: "labels",
+            }),
             "error"
           )
         );
@@ -1381,15 +1366,13 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
 const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
   function addMessagesNavigationLabel(name) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => any
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
     ) => {
       if (!name) {
         return dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.createUpdateLabels.missing.title"
-            ),
+            i18n.t("validation.name", { context: "labels" }),
             "error"
           )
         );
@@ -1428,9 +1411,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.label.createFailed"
-            ),
+            i18n.t("notifications.createError", { context: "label" }),
             "error"
           )
         );
@@ -1445,16 +1426,14 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
 const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
   function updateMessagesNavigationLabel(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => any
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
     ) => {
       if (!data.newName) {
         data.fail && data.fail();
         return dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.createUpdateLabels.missing.title"
-            ),
+            i18n.t("validation.name", { context: "labels" }),
             "error"
           )
         );
@@ -1502,9 +1481,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.label.updateFailed"
-            ),
+            i18n.t("notifications.updateError", { context: "label" }),
             "error"
           )
         );
@@ -1519,7 +1496,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
 const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
   function removeMessagesNavigationLabel(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1554,9 +1531,7 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.label.deleteFailed"
-            ),
+            i18n.t("notifications.removeError", { context: "label" }),
             "error"
           )
         );
@@ -1570,7 +1545,7 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
 const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
   function restoreSelectedMessageThreads() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       dispatch({
@@ -1584,12 +1559,9 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
         (item) => item.location === state.messages.location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -1619,9 +1591,7 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
             }
             dispatch(
               displayNotification(
-                getState().i18nOLD.text.get(
-                  "plugin.communicator.errormessage.msgRestoreFailed"
-                ),
+                i18n.t("notifications.restoreError", { ns: "messaging" }),
                 "error"
               )
             );
@@ -1644,7 +1614,7 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
 const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
   function restoreCurrentMessageThread() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       dispatch({
@@ -1660,9 +1630,7 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
       if (!item) {
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -1699,7 +1667,7 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18nOLD.text.get("currentThreadRestoreFailed"),
+            i18n.t("notifications.restoreError", { context: "messageThread" }),
             "error"
           )
         );

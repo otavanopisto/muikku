@@ -150,6 +150,7 @@
       "email": "Sähköpostiosoite on pakollinen",
       "endDate": "Loppumispäivämäärä on pakollinen tieto",
       "mandatoryFields": "Pakollinen kenttä",
+      "name": "Nimi on pakollinen tieto",
       "target": "Kohde on pakollinen tieto",
       "username": "Käyttäjätunnus on pakollinen"
     },
@@ -178,11 +179,11 @@
       "passwordRequiredError": "Salasanakenttä ei voi olla tyhjä",
       "reconnectError": "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen. Mikäli ongelma ei katoa tarkista verkkoyhteytesi ja tarvittaessa ota yhteyttä helpdeskiin helpdesk@muikkuverkko.fi.",
       "removeError": "Poisto epäonnistui",
-      "removeError_chatMessage": "Viestin poisto epäonnistui, ole hyvä ja yritä uudelleen.",
       "removeError_chatRoom": "Chat-huoneen <b>{0}</b> poisto epäonnistui, ole hyvä ja yritä uudelleen",
       "removeError_comment": "Kommentin poisto epäonnistui",
       "removeSuccess_chatRoom": "Chat-huoneen <b>{0}</b> poisto onnistui",
       "removeSuccess_comment": "Kommentin poisto onnistui",
+      "restoreError": "Palautus epäonnistui",
       "saveError": "Tietojen tallennus epäonnistui. Yritä uudelleen",
       "saveSuccess": "Tiedot tallennettu onnistuneesti.",
       "sendError": "Lähetys epäonnistui. Kokeile lähettää uudelleen",
@@ -605,9 +606,13 @@
     },
     "validation": {
       "beginDate_announcements": "Tiedotteen alkamispäivämäärä on pakollinen tieto",
+      "caption": "Viestin otsikko on pakollinen tieto.",
       "caption_announcements": "Tiedotteen otsikko on pakollinen tieto",
+      "content": "Viestin sisältö on pakollinen tieto.",
       "content_announcements": "Tiedotteen sisältö on pakollinen tieto",
       "endDate_announcements": "Tiedotteen loppumispäivämäärä on pakollinen tieto",
+      "name_labels": "Tunnisteen nimi on pakollinen tieto",
+      "recipients": "Viestin vastaanottajat on pakollinen tieto.",
       "target_announcements": "Tiedotteen kohderyhmä on pakollinen tieto"
     },
     "notifications": {
@@ -655,6 +660,7 @@
       "sendError": "Viestin lähetys epäonnistui. Kokeile lähettää uudelleen",
       "sendSuccess": "Viestin lähetys onnistui",
       "statusChangeError": "Viestin tilan muutos epäonnistui. Yritä uudelleen.",
+      "updateError": "Viestin muokkaus epäonnistui",
       "updateError_announcements": "Tiedotteen päivittäminen epäonnistui",
       "updateError_contactLog": "Yhteydenoton muokkaus epäonnistui",
       "updateError_label": "Tunnisteen päivitys epäonnistui",
