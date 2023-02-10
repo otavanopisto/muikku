@@ -5,6 +5,7 @@ import { StateType } from "~/reducers";
 import { LocaleReadResponse, LocaleType } from "~/reducers/base/locales";
 import promisify from "~/util/promisify";
 import notificationActions from "~/actions/base/notifications";
+import i18n from "~/locales/i18n";
 
 // ACTIONS for locale
 export type LOCALE_SET = SpecificActionType<"LOCALE_SET", string>;
@@ -41,8 +42,6 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    const state = getState();
-
     try {
       await promisify(
         mApi().me.locale.create({ lang: data.locale }),
@@ -58,10 +57,7 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          state.i18nOLD.text.get(
-            "plugin.notification.locale.changing.error",
-            err.message
-          ),
+          i18n.t("notifications.updateError"),
           "error"
         )
       );
@@ -77,8 +73,6 @@ const loadLocale: LoadLocaleTriggerType = function loadLocale() {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    const state = getState();
-
     try {
       const locale = (await promisify(
         mApi().me.locale.read(),
@@ -92,10 +86,10 @@ const loadLocale: LoadLocaleTriggerType = function loadLocale() {
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          state.i18nOLD.text.get(
-            "plugin.notification.locale.loading.error",
-            err.message
-          ),
+          i18n.t("notifications.loadError", {
+            context: "locales",
+            defaultValue: "Credentials updated successfully",
+          }),
           "error"
         )
       );

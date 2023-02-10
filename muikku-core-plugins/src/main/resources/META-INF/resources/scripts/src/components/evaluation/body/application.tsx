@@ -116,7 +116,7 @@ class EvaluationApplication extends React.Component<
           className="form-element__select form-element__select--main-action"
         >
           <option value="">
-            {t("labels.evaluationRequest_other", { ns: "evaluation" })}
+            {t("labels.evaluationRequest", { ns: "evaluation", count: 0 })}
           </option>
           {workspaceOptions.length > 0 ? (
             <optgroup label={t("labels.courses", { ns: "workspace" })}>

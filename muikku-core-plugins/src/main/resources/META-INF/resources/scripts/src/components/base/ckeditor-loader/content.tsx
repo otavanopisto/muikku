@@ -17,7 +17,7 @@ interface CkeditorLoaderContentProps {
  * @param props props
  */
 function CkeditorLoaderContent(props: CkeditorLoaderContentProps) {
-  return <Base html={props.html} i18nOLD={props.i18nOLD} usedAs="default" />;
+  return <Base html={props.html} usedAs="default" />;
 }
 
 /**

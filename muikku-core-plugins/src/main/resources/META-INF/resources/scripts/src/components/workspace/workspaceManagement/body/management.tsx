@@ -1097,7 +1097,7 @@ class ManagementPanel extends React.Component<
           </section>
           <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header">
-              {t("labels.producer_other", { ns: "users" })}
+              {t("labels.producer", { ns: "users", count: 0 })}
             </h2>
             {this.state.workspaceProducers ? (
               <div className="application-sub-panel__body">

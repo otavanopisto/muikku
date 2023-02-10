@@ -24,7 +24,7 @@ export function MaterialLoaderDate(props: MaterialLoaderDateProps) {
   return (
     <div className="material-page__assignment-assessment-date">
       <span className="material-page__assignment-assessment-date-label">
-        {t("labels.date_one")}:
+        {t("labels.date", { count: 1 })}:
       </span>
       <span className="material-page__assignment-assessment-date-data">
         {props.i18nOLD.time.format(date)}

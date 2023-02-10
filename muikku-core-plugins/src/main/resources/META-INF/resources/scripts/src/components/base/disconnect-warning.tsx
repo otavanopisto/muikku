@@ -5,17 +5,16 @@ import {
 } from "~/actions/base/notifications";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DisconnectedWarningDialogProps
  */
-interface DisconnectedWarningDialogProps {
-  i18nOLD: i18nType;
+interface DisconnectedWarningDialogProps extends WithTranslation {
   dialogOpen: boolean;
   dialogMessage: string;
   closeNotificationDialog: CloseNotificationDialogTrigger;
@@ -49,6 +48,8 @@ class DisconnectedWarningDialog extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
@@ -67,9 +68,7 @@ class DisconnectedWarningDialog extends React.Component<
           buttonModifiers={["disconnect-warning"]}
           onClick={this.cancel(closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.server.unreachable.button.close"
-          )}
+          {t("actions.close")}
         </Button>
       </div>
     );
@@ -77,7 +76,7 @@ class DisconnectedWarningDialog extends React.Component<
     return (
       <Dialog
         isOpen={this.props.dialogOpen}
-        title={this.props.i18nOLD.text.get("plugin.server.unreachable.title")}
+        title={t("labels.unreachable")}
         content={content}
         footer={footer}
         modifier={["disconnect-warning"]}
@@ -93,7 +92,6 @@ class DisconnectedWarningDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     dialogOpen: state.notifications.notificationDialogOpen,
     dialogMessage: state.notifications.dialogMessage,
   };
@@ -106,7 +104,6 @@ function mapDispatchToProps() {
   return { closeNotificationDialog };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DisconnectedWarningDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DisconnectedWarningDialog)
+);

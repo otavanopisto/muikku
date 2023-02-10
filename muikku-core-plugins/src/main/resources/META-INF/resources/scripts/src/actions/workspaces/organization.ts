@@ -212,7 +212,10 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
 
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError_one", { ns: "workspace" }),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              count: 1,
+            }),
             "error"
           )
         );

@@ -7,6 +7,7 @@ import {
 import notificationActions from "~/actions/base/notifications";
 import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
+import i18n from "~/locales/i18n";
 export type LOAD_CREDENTIALS = SpecificActionType<
   "LOAD_CREDENTIALS",
   CredentialsType
@@ -60,12 +61,13 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
           notificationActions.displayNotification(err.message, "error")
         );
       }
+
       return dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed",
-            err.message
-          ),
+          i18n.t("notifications.loadError", {
+            context: "credentials",
+            error: err.message,
+          }),
           "error"
         )
       );
@@ -92,11 +94,13 @@ const updateCredentials: UpdateCredentialsTriggerType =
           type: "CREDENTIALS_STATE",
           payload: <CredentialsStateType>"CHANGED",
         });
+
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.forgotpassword.changeCredentials.messages.success.credentialsReset"
-            ),
+            i18n.t("notifications.updateSuccess", {
+              context: "credentials",
+              defaultValue: "Credentials updated successfully",
+            }),
             "success"
           )
         );

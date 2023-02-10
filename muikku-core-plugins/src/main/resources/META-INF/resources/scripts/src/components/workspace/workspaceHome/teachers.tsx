@@ -60,7 +60,7 @@ class WorkspaceTeachers extends React.Component<
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
           <h2 className="panel__header-title">
-            {t("labels.teacher_other", { ns: "users" })}
+            {t("labels.teacher", { ns: "users", count: 0 })}
           </h2>
         </div>
         {this.props.workspace &&
