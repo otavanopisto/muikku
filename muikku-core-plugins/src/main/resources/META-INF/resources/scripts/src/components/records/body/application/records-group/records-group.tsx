@@ -1,21 +1,17 @@
 import * as React from "react";
-import { AnyActionType } from "~/actions";
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import { StateType } from "~/reducers";
 import {
   RecordGroupType,
   TransferCreditType,
 } from "~/reducers/main-function/records";
 import { WorkspaceType } from "~/reducers/workspaces";
 import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import RecordsGroupItem from "./records-group-item";
 import { StoredCurriculum } from "../records";
+import { useTranslation } from "react-i18next";
 
 /**
  * RecordsListProps
@@ -24,7 +20,6 @@ interface RecordsGroupProps {
   index: number;
   recordGroup: RecordGroupType;
   storedCurriculumIndex: StoredCurriculum;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -33,7 +28,9 @@ interface RecordsGroupProps {
  * @returns JSX.Element
  */
 export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
-  const { recordGroup, index, storedCurriculumIndex, i18nOLD } = props;
+  const { recordGroup, index, storedCurriculumIndex } = props;
+
+  const { t } = useTranslation(["studies", "common"]);
 
   const [workspaceSortDirection, setWorkspaceSortDirection] = React.useState<
     "asc" | "desc"
@@ -115,7 +112,9 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
           onClick={handleTransferedWorkspaceSortDirectionClick}
         >
           <h3 className="application-list__header application-list__header--sorter">
-            {i18nOLD.text.get("plugin.records.transferCredits")}
+            {t("labels.transferCredits", {
+              ns: "studies",
+            })}
             {recordGroup.groupCurriculumIdentifier
               ? storedCurriculumIndex[recordGroup.groupCurriculumIdentifier]
               : null}
@@ -165,21 +164,4 @@ const sortByDirection = <T,>(data: T[], key: keyof T, direction: string) =>
     return 0;
   });
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(mapStateToProps, mapDispatchToProps)(RecordsGroup);
+export default RecordsGroup;

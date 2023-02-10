@@ -5,6 +5,7 @@ import { Assessment } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * AssessmentRequestIndicatorProps
@@ -24,6 +25,8 @@ export const AssessmentRequestIndicator: React.FC<
 > = (props) => {
   const { assessment, i18nOLD } = props;
 
+  const { t } = useTranslation(["studies", "common"]);
+
   if (
     assessment.state === "pending" ||
     assessment.state === "pending_pass" ||
@@ -34,10 +37,14 @@ export const AssessmentRequestIndicator: React.FC<
         openByHover
         content={
           <span>
-            {i18nOLD.text.get(
-              "plugin.records.workspace.pending",
-              props.i18nOLD.time.format(assessment.date)
-            )}
+            {t("content.sent", {
+              ns: "studies",
+              context: "evaluationRequest",
+              defaultValue: `Evaluation request sent on ${i18nOLD.time.format(
+                assessment.date
+              )}`,
+              date: i18nOLD.time.format(assessment.date),
+            })}
           </span>
         }
       >
@@ -50,10 +57,14 @@ export const AssessmentRequestIndicator: React.FC<
         openByHover
         content={
           <span>
-            {i18nOLD.text.get(
-              "plugin.records.workspace.interimEvaluationPending",
-              props.i18nOLD.time.format(assessment.date)
-            )}
+            {t("content.sent", {
+              ns: "studies",
+              context: "interimEvaluationRequest",
+              defaultValue: `Interim evaluation request sent on ${i18nOLD.time.format(
+                assessment.date
+              )}`,
+              date: i18nOLD.time.format(assessment.date),
+            })}
           </span>
         }
       >

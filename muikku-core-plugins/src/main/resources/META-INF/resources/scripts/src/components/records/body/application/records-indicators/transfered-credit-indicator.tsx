@@ -6,6 +6,7 @@ import { AnyActionType } from "~/actions";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import { TransferCreditType } from "~/reducers/main-function/records";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * TransfereCreditValueIndicatorProps
@@ -25,6 +26,8 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
 ) => {
   const { i18nOLD, transferCredit } = props;
 
+  const { t } = useTranslation(["studies", "common"]);
+
   // this shouldn't come to this, but just in case
   if (transferCredit === null) {
     return <div className="application-list__header-secondary" />;
@@ -35,10 +38,10 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
       openByHover
       content={
         <span>
-          {i18nOLD.text.get(
-            "plugin.records.transferCreditsDate",
-            i18nOLD.time.format(transferCredit.date)
-          ) + getShortenGradeExtension(transferCredit.grade)}
+          {t("content.transferCreditsDate", {
+            ns: "studies",
+            date: i18nOLD.time.format(transferCredit.date),
+          }) + getShortenGradeExtension(transferCredit.grade)}
         </span>
       }
     >

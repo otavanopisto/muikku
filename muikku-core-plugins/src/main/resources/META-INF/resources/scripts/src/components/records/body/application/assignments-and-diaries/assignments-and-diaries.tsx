@@ -23,6 +23,7 @@ import Link from "~/components/general/link";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
+import { useTranslation } from "react-i18next";
 
 /**
  * AssignmentsAndDiariesProps
@@ -56,6 +57,14 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     displayNotification,
   } = props;
 
+  const { t } = useTranslation([
+    "studies",
+    "workspace",
+    "materials",
+    "journal",
+    "common",
+  ]);
+
   const [activeTab, setActiveTab] =
     React.useState<AssignmentsTabType>("EVALUATED");
 
@@ -67,35 +76,30 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const { evaluatedAssignmentsData } = useEvaluatedAssignments(
     workspaceId,
     activeTab,
-    i18nOLD,
     displayNotification
   );
 
   const { excerciseAssignmentsData } = useExcerciseAssignments(
     workspaceId,
     activeTab,
-    i18nOLD,
     displayNotification
   );
 
   const { interimEvaluationeAssignmentsData } = useInterimEvaluationAssigments(
     workspaceId,
     activeTab,
-    i18nOLD,
     displayNotification
   );
 
   const { compositeReplyData } = useCompositeReply(
     userEntityId,
     workspaceId,
-    i18nOLD,
     displayNotification
   );
 
   const { journalsData } = useJournals(
     userEntityId,
     workspaceId,
-    i18nOLD,
     displayNotification
   );
 
@@ -302,7 +306,9 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         })
       ) : (
         <div className="empty">
-          <span>{props.i18nOLD.text.get("plugin.records.noassignments")}</span>
+          <span>
+            {t("content.empty", { ns: "workspace", context: "evaluables" })}
+          </span>
         </div>
       )}
     </ApplicationList>
@@ -348,7 +354,9 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         })
       ) : (
         <div className="empty">
-          <span>{props.i18nOLD.text.get("plugin.records.noexercises")}</span>
+          <span>
+            {t("content.empty", { ns: "workspace", context: "exercises" })}
+          </span>
         </div>
       )}
     </ApplicationList>
@@ -396,7 +404,9 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         )
       ) : (
         <div className="empty">
-          <span>{props.i18nOLD.text.get("plugin.records.noexercises")}</span>
+          <span>
+            {t("content.empty", { ns: "workspace", context: "intermin" })}
+          </span>
         </div>
       )}
     </ApplicationList>
@@ -409,7 +419,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const renderJournalsList = (
     <ApplicationSubPanel modifier="studies-journal-entries">
       <ApplicationSubPanel.Header modifier="studies-journal-entries">
-        <span>{props.i18nOLD.text.get("plugin.records.journal.title")}</span>
+        <span>{t("labels.entries", { ns: "journal" })}</span>
         <span>
           <Link
             className="link link--studies-close-open"
@@ -418,7 +428,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             }
             onClick={handleOpenAllJournalsClick}
           >
-            {props.i18nOLD.text.get("plugin.records.openClose.openAll")}
+            {t("actions.openAll")}
           </Link>
           <Link
             className="link link--studies-close-open"
@@ -427,7 +437,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             }
             onClick={handleCloseAllJournalsClick}
           >
-            {props.i18nOLD.text.get("plugin.records.openClose.closeAll")}
+            {t("actions.closeAll")}
           </Link>
         </span>
       </ApplicationSubPanel.Header>
@@ -448,25 +458,24 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
         ) : (
           <div className="empty">
             <span>
-              {props.i18nOLD.text.get("plugin.records.nojournalentries")}
+              {t("content.empty", { ns: "workspace", context: "journals" })}
             </span>
           </div>
         )}
       </ApplicationSubPanel.Body>
     </ApplicationSubPanel>
   );
+  t("actions.openAll");
 
   const panelTabs: Tab[] = [
     {
       id: "EVALUATED",
-      name: props.i18nOLD.text.get("plugin.records.assignments.title"),
+      name: t("labels.evaluables", { ns: "materials", count: 0 }),
       type: "assignments",
       component: (
         <ApplicationSubPanel modifier="studies-assignments">
           <ApplicationSubPanel.Header modifier="studies-assignments">
-            <span>
-              {props.i18nOLD.text.get("plugin.records.assignments.title")}
-            </span>
+            <span>{t("labels.evaluables", { ns: "materials", count: 0 })}</span>
             <span>
               <Link
                 className="link link--studies-close-open"
@@ -476,7 +485,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleOpenAllAssignmentsByTypeClick("EVALUATED")}
               >
-                {props.i18nOLD.text.get("plugin.records.openClose.openAll")}
+                {t("actions.openAll")}
               </Link>
               <Link
                 className="link link--studies-close-open"
@@ -486,7 +495,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleCloseAllAssignmentsByTypeClick("EVALUATED")}
               >
-                {props.i18nOLD.text.get("plugin.records.openClose.closeAll")}
+                {t("actions.closeAll")}
               </Link>
             </span>
           </ApplicationSubPanel.Header>
@@ -503,14 +512,12 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     },
     {
       id: "EXCERCISE",
-      name: props.i18nOLD.text.get("plugin.records.exercises.title"),
+      name: t("labels.exercise", { ns: "materials", count: 0 }),
       type: "excercises",
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            <span>
-              {props.i18nOLD.text.get("plugin.records.exercises.title")}
-            </span>
+            <span>{t("labels.exercise", { ns: "materials", count: 0 })}</span>
             <span>
               <Link
                 className="link link--studies-close-open"
@@ -520,7 +527,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleOpenAllAssignmentsByTypeClick("EXERCISE")}
               >
-                {props.i18nOLD.text.get("plugin.records.openClose.openAll")}
+                {t("actions.openAll")}
               </Link>
               <Link
                 className="link link--studies-close-open"
@@ -530,7 +537,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleCloseAllAssignmentsByTypeClick("EXERCISE")}
               >
-                {props.i18nOLD.text.get("plugin.records.openClose.closeAll")}
+                {t("actions.closeAll")}
               </Link>
             </span>
           </ApplicationSubPanel.Header>
@@ -548,13 +555,12 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     },
     {
       id: "INTERIM_EVALUATION",
-      name: "Välipalautteet",
+      name: t("labels.interimEvaluations", { ns: "materials" }),
       type: "interim_evaluations",
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            {/* <span>{props.i18nOLD.text.get("plugin.records.exercises.title")}</span> */}
-            <span>Välipalautteet:</span>
+            <span>{t("labels.interimEvaluations", { ns: "materials" })}:</span>
             <span>
               <Link
                 className="link link--studies-close-open"
@@ -567,7 +573,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                   "INTERIM_EVALUATION"
                 )}
               >
-                {props.i18nOLD.text.get("plugin.records.openClose.openAll")}
+                {t("actions.openAll")}
               </Link>
               <Link
                 className="link link--studies-close-open"
@@ -580,7 +586,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                   "INTERIM_EVALUATION"
                 )}
               >
-                {props.i18nOLD.text.get("plugin.records.openClose.closeAll")}
+                {t("actions.closeAll")}
               </Link>
             </span>
           </ApplicationSubPanel.Header>

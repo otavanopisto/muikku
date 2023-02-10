@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/activity-badge.scss";
 import "~/sass/elements/empty.scss";
@@ -23,8 +22,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * RecordsProps
  */
-interface RecordsProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface RecordsProps extends WithTranslation {
   records: RecordsType;
   status: StatusType;
 }
@@ -60,6 +58,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
+    t("labels.studies");
+
+    t("content.empty", { ns: "studies", context: "courses" });
+
     if (
       this.props.records.userDataStatus === "LOADING" ||
       this.props.records.userDataStatus === "WAIT"
@@ -111,9 +115,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   <div className="application-sub-panel__item">
                     <div className="empty">
                       <span>
-                        {this.props.i18nOLD.text.get(
-                          "plugin.records.courses.empty"
-                        )}
+                        {t("content.empty", {
+                          ns: "studies",
+                          context: "courses",
+                        })}
                       </span>
                     </div>
                   </div>
@@ -134,13 +139,13 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         }
       >
         <h2 className="application-panel__content-header">
-          {this.props.i18nOLD.text.get("plugin.records.records.title")}
+          {t("labels.records", { ns: "studies" })}
         </h2>
 
         {studentRecords}
         <ApplicationSubPanel>
           <ApplicationSubPanel.Header>
-            {this.props.i18nOLD.text.get("plugin.records.files.title")}
+            {t("labels.files")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
             {this.props.records.files.length ? (
@@ -165,7 +170,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               <ApplicationListItem className="application-list__item application-list__item--studies-file-attacment">
                 <div className="empty">
                   <span>
-                    {this.props.i18nOLD.text.get("plugin.records.files.empty")}
+                    {t("content.empty", { ns: "files", context: "files" })}
                   </span>
                 </div>
               </ApplicationListItem>
@@ -183,7 +188,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     records: state.records,
     status: state.status,
   };
@@ -196,6 +200,6 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
-export default withTranslation(["common"])(
+export default withTranslation(["studies", "files", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(Records)
 );

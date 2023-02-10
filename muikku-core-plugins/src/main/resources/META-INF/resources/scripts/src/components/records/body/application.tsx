@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
-import { i18nType } from "reducers/base/i18nOLD";
 import Records from "./application/records";
 import Summary from "./application/summary";
 import Hops from "./application/hops";
@@ -29,8 +28,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * StudiesApplicationProps
  */
-interface StudiesApplicationProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface StudiesApplicationProps extends WithTranslation {
   location: TranscriptOfRecordLocationType;
   hops: HOPSType;
   status: StatusType;
@@ -174,12 +172,14 @@ class StudiesApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18nOLD.text.get("plugin.records.pageTitle");
+    const { t } = this.props;
+
+    const title = t("labels.studies");
 
     let panelTabs: Tab[] = [
       {
         id: "SUMMARY",
-        name: this.props.i18nOLD.text.get("plugin.records.category.summary"),
+        name: t("labels.summary", { ns: "studies" }),
         hash: "summary",
         type: "summary",
         /**
@@ -194,7 +194,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "RECORDS",
-        name: this.props.i18nOLD.text.get("plugin.records.category.records"),
+        name: t("labels.records", { ns: "studies" }),
         hash: "records",
         type: "records",
         component: (
@@ -205,7 +205,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "HOPS",
-        name: this.props.i18nOLD.text.get("plugin.records.category.hops"),
+        name: t("labels.hops", { ns: "studies" }),
         hash: "hops",
         type: "hops",
         component: (
@@ -216,7 +216,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "YO",
-        name: this.props.i18nOLD.text.get("plugin.records.category.yo"),
+        name: t("labels.matriculationExams", { ns: "studies" }),
         hash: "yo",
         type: "yo",
         component: (
@@ -254,7 +254,6 @@ class StudiesApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     location: state.records.location,
     hops: state.hops,
     records: state.records,
@@ -270,6 +269,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["studies", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(StudiesApplication)
 );
