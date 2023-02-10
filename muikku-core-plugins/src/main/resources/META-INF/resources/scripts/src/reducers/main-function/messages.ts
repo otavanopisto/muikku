@@ -1,7 +1,7 @@
 import { ActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { UserGroupType, UserType } from "~/reducers/user-index";
 import { Reducer } from "redux";
+import i18n from "~/locales/i18n";
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
@@ -180,10 +180,7 @@ export interface MessagesNavigationItemUpdateType {
   id?: string | number;
   icon?: string;
   color?: string;
-  /**
-   *
-   */
-  text?(i18nOLD: i18nType): string;
+  text: string;
 }
 
 /**
@@ -195,10 +192,7 @@ export interface MessagesNavigationItemType {
   id: string | number;
   icon: string;
   color?: string;
-  /**
-   *
-   */
-  text(i18nOLD: i18nType): string;
+  text: string;
 }
 
 /**
@@ -220,52 +214,34 @@ const defaultNavigation: MessagesNavigationItemListType = [
     type: "folder",
     id: "inbox",
     icon: "folder",
-    /**
-     * text
-     * @param i18nOLD i18nOLD
-     */
-    text(i18nOLD: i18nType): string {
-      return i18nOLD.text.get("plugin.communicator.category.title.inbox");
-    },
+    text: i18n.t("labels.inbox", { ns: "messaging" }),
   },
   {
     location: "unread",
     type: "folder",
     id: "unread",
     icon: "folder",
-    /**
-     * text
-     * @param i18nOLD i18nOLD
-     */
-    text(i18nOLD: i18nType): string {
-      return i18nOLD.text.get("plugin.communicator.category.title.unread");
-    },
+    text: i18n.t("labels.unread", {
+      ns: "messaging",
+    }),
   },
   {
     location: "sent",
     type: "folder",
     id: "sent",
     icon: "folder",
-    /**
-     * text
-     * @param i18nOLD i18nOLD
-     */
-    text(i18nOLD: i18nType): string {
-      return i18nOLD.text.get("plugin.communicator.category.title.sent");
-    },
+    text: i18n.t("labels.sent", {
+      ns: "messaging",
+    }),
   },
   {
     location: "trash",
     type: "folder",
     id: "trash",
     icon: "trash-alt",
-    /**
-     * text
-     * @param i18nOLD i18nOLD
-     */
-    text(i18nOLD: i18nType): string {
-      return i18nOLD.text.get("plugin.communicator.category.title.trash");
-    },
+    text: i18n.t("labels.trash", {
+      ns: "messaging",
+    }),
   },
 ];
 
@@ -325,8 +301,8 @@ function sortNavigationItems(
     return -1;
   }
 
-  const labelAUpperCase = itemA.text(null).toUpperCase();
-  const labelBUpperCase = itemB.text(null).toUpperCase();
+  const labelAUpperCase = itemA.text.toUpperCase();
+  const labelBUpperCase = itemB.text.toUpperCase();
   return labelAUpperCase < labelBUpperCase
     ? -1
     : labelAUpperCase > labelBUpperCase

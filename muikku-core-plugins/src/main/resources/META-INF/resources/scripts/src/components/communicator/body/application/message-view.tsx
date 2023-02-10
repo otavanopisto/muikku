@@ -7,9 +7,7 @@ import {
 import TouchPager from "~/components/general/touch-pager";
 import { StateType } from "~/reducers";
 import Message from "./message-view/message";
-
 import "~/sass/elements/link.scss";
-
 import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/message.scss";

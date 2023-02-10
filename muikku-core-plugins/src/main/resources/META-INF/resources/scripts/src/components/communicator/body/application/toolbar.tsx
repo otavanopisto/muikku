@@ -291,7 +291,7 @@ class CommunicatorToolbar extends React.Component<
                 {
                   // TODO: simplify this and use i18next
                 }
-                {"  " + currentLocation.text(this.props.i18nOLD)}
+                {"  " + currentLocation.text}
               </span>
               {currentLocation.type === "label" ? (
                 <LabelUpdateDialog label={currentLocation}>
@@ -352,7 +352,7 @@ class CommunicatorToolbar extends React.Component<
                       item.type === "label" &&
                       filterMatch(
                         // TODO: simplify this and use i18next
-                        item.text(this.props.i18nOLD),
+                        item.text,
                         this.state.labelFilter
                       )
                   )
@@ -385,10 +385,7 @@ class CommunicatorToolbar extends React.Component<
                           style={{ color: label.color }}
                         ></span>
                         <span className="link__text">
-                          {filterHighlight(
-                            label.text(this.props.i18nOLD),
-                            this.state.labelFilter
-                          )}
+                          {filterHighlight(label.text, this.state.labelFilter)}
                         </span>
                       </Link>
                     );
@@ -463,7 +460,7 @@ class CommunicatorToolbar extends React.Component<
             {
               // TODO: simplify and use i18next
             }
-            {"  " + currentLocation.text(this.props.i18nOLD)}
+            {"  " + currentLocation.text}
           </span>
           {currentLocation.type === "label" ? (
             <LabelUpdateDialog label={currentLocation}>
@@ -530,7 +527,7 @@ class CommunicatorToolbar extends React.Component<
                   item.type === "label" &&
                   filterMatch(
                     // TODO: simplify and use i18next
-                    item.text(this.props.i18nOLD),
+                    item.text,
                     this.state.labelFilter
                   )
               )
@@ -565,11 +562,7 @@ class CommunicatorToolbar extends React.Component<
                       style={{ color: label.color }}
                     ></span>
                     <span className="link__text">
-                      {filterHighlight(
-                        // TODO: simplify and use i18next
-                        label.text(this.props.i18nOLD),
-                        this.state.labelFilter
-                      )}
+                      {filterHighlight(label.text, this.state.labelFilter)}
                     </span>
                   </Link>
                 );

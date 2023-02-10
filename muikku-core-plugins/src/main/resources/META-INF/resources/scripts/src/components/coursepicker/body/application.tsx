@@ -6,9 +6,7 @@ import CoursepickerWorkspaces from "./application/courses";
 import * as queryString from "query-string";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
-
 import { StateType } from "~/reducers";
-
 import { WorkspaceBaseFilterType, WorkspacesType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -17,7 +15,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * CoursepickerApplicationProps
  */
-interface CoursepickerApplicationProps extends WithTranslation<["common"]> {
+interface CoursepickerApplicationProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
   workspaces: WorkspacesType;
@@ -70,16 +68,11 @@ class CoursepickerApplication extends React.Component<
       MY_COURSES: "own",
       UNPUBLISHED: "unpublished",
     };
-
-    // TODO: Translate this using i18next
     const title = this.props.t("labels.coursepicker");
     const toolbar = <Toolbar />;
     const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectCourses" className="visually-hidden">
-          {
-            // TODO: Translate this using i18next
-          }
           {this.props.t("labels.workspaceTypeSelect", { ns: "workspace" })}
         </label>
         {this.props.status.loggedIn ? (
@@ -96,9 +89,6 @@ class CoursepickerApplication extends React.Component<
                 }
                 return (
                   <option key={filter} value={filter}>
-                    {
-                      // TODO: Translate this using i18next
-                    }
                     {this.props.t("labels.workspaces", {
                       ns: "workspace",
                       context: filterTranslationString[filter],
@@ -114,9 +104,6 @@ class CoursepickerApplication extends React.Component<
             className="form-element__select form-element__select--main-action"
           >
             <option>
-              {
-                // TODO: Translate this using i18next
-              }
               {this.props.t("labels.workspaces", {
                 ns: "workspace",
                 context: "open",

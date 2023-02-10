@@ -25,13 +25,12 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * AnswerMessageDrawerProps
  */
-interface AnswerMessageDrawerProps extends WithTranslation<["common"]> {
+interface AnswerMessageDrawerProps extends WithTranslation {
   replyThreadId?: number;
   replyToAll?: boolean;
   messageId?: number;
   extraNamespace?: string;
   initialSelectedItems?: Array<ContactRecipientType>;
-  i18nOLD: i18nType;
   signature: MessageSignatureType;
   sendMessage: SendMessageTriggerType;
   initialSubject?: string;
@@ -262,13 +261,10 @@ class AnswerMessageDrawer extends SessionStateComponent<
    * render
    */
   render() {
-    // TODO: use i18next
     const editorTitle =
-      this.props.i18nOLD.text.get("plugin.communicator.answertomessage.label") +
+      this.props.t("labels.reply", { ns: "messaging" }) +
       " - " +
-      this.props.i18nOLD.text.get(
-        "plugin.communicator.createmessage.title.content"
-      );
+      this.props.t("labels.content");
 
     const content = (
       <>
@@ -283,14 +279,14 @@ class AnswerMessageDrawer extends SessionStateComponent<
           hasWorkspacePermission={
             this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
           }
-          // TODO: use i18next
-          placeholder={this.props.i18nOLD.text.get(
-            "plugin.communicator.createmessage.title.recipients"
-          )}
-          // TODO: use i18next
-          label={this.props.i18nOLD.text.get(
-            "plugin.communicator.createmessage.title.recipients"
-          )}
+          placeholder={this.props.t("labels.recipients", {
+            ns: "messaging",
+            count: 0,
+          })}
+          label={this.props.t("labels.recipients", {
+            ns: "messaging",
+            count: 0,
+          })}
           selectedItems={this.state.selectedItems}
           onChange={this.setSelectedItems}
           autofocus={!this.props.initialSelectedItems}
@@ -299,12 +295,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         <div className="env-dialog__row" key="new-message-2">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">
-              {
-                // TODO: use i18next
-              }
-              {this.props.i18nOLD.text.get(
-                "plugin.communicator.createmessage.title.subject"
-              )}
+              {this.props.t("labels.title")}
             </label>
             <input
               id="messageTitle"
@@ -322,12 +313,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         >
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
-              {
-                // TODO: use i18next
-              }
-              {this.props.i18nOLD.text.get(
-                "plugin.communicator.createmessage.title.content"
-              )}
+              {this.props.t("labels.content")}
             </label>
             <CKEditor
               editorTitle={editorTitle}
@@ -353,12 +339,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
               htmlFor="messageSignature"
               className="env-dialog__input-label"
             >
-              {
-                // TODO: use i18next
-              }
-              {this.props.i18nOLD.text.get(
-                "plugin.communicator.createmessage.checkbox.signature"
-              )}
+              {this.props.t("labels.addSignature", { ns: "messaging" })}
             </label>
             <span className="env-dialog__input-description">
               <i
@@ -380,14 +361,14 @@ class AnswerMessageDrawer extends SessionStateComponent<
           onClick={this.sendMessage.bind(this)}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.send")}
+          {this.props.t("actions.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           disabled={this.state.locked}
           onClick={this.handleCancelClick}
         >
-          {this.props.t("common:actions.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -395,7 +376,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.remove_draft")}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -406,12 +387,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {
-                // TODO: use i18next
-              }
-              {this.props.i18nOLD.text.get(
-                "plugin.communicator.answertomessage.label"
-              )}
+              {this.props.t("labels.reply", { ns: "messaging" })}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>
@@ -442,7 +418,6 @@ function getStateIdentifier(props: AnswerMessageDrawerProps) {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     signature: state.messages && state.messages.signature,
     status: state.status,
   };
@@ -457,6 +432,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ sendMessage }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(AnswerMessageDrawer)
 );

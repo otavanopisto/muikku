@@ -79,7 +79,7 @@ class CommunicatorApplication extends React.Component<
    */
   render() {
     // TODO: use i18next
-    const title = this.props.i18nOLD.text.get("plugin.communicator.pageTitle");
+    const title = this.props.t("labels.communicator");
     const icon = (
       <Dropdown
         modifier="main-functions-settings"
@@ -91,12 +91,7 @@ class CommunicatorApplication extends React.Component<
               onClick={this.openDialogSignature.bind(this, closeDropdown)}
             >
               <span>
-                {
-                  // TODO: use i18next
-                }
-                {this.props.i18nOLD.text.get(
-                  "plugin.communicator.settings.signature"
-                )}
+                {this.props.t("labels.signature", { ns: "messaging" })}
               </span>
             </Link>
           ),
@@ -108,10 +103,7 @@ class CommunicatorApplication extends React.Component<
     const primaryOption = (
       <NewMessage>
         <Button buttonModifiers="primary-function">
-          {
-            // TODO: use i18next
-          }
-          {this.props.i18nOLD.text.get("plugin.communicator.newMessage.label")}
+          {this.props.t("labels.create", { ns: "messaging" })}
         </Button>
       </NewMessage>
     );
@@ -160,9 +152,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-const componentWithTranslation = withTranslation(["common"], { withRef: true })(
-  CommunicatorApplication
-);
+const componentWithTranslation = withTranslation(["messaging"], {
+  withRef: true,
+})(CommunicatorApplication);
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
