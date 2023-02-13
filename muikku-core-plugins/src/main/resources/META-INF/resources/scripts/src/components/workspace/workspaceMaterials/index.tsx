@@ -11,25 +11,69 @@ import MaterialEditor from "~/components/base/material-editor";
 import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
 import EnrollmentDialog from "../enrollment-dialog";
+import MaterialExtraToolDrawer from "./extra-tools-drawer";
+import Tabs, { Tab } from "~/components/general/tabs";
+import NoteBook from "~/components/general/note-book/note-book";
+import {
+  DndProvider,
+  MouseTransition,
+  MultiBackendOptions,
+  TouchTransition,
+} from "react-dnd-multi-backend";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
+import { AnyActionType } from "~/actions";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { StateType } from "~/reducers";
+import { StatusType } from "~/reducers/base/status";
+
+export const HTML5toTouch: MultiBackendOptions = {
+  backends: [
+    {
+      id: "html5",
+      backend: HTML5Backend,
+      transition: MouseTransition,
+    },
+    {
+      id: "touch",
+      backend: TouchBackend,
+      options: { enableMouseEvents: true },
+      preview: true,
+      transition: TouchTransition,
+    },
+  ],
+};
 
 /**
  * WorkspaceMaterialsBodyProps
  */
 interface WorkspaceMaterialsBodyProps {
   workspaceUrl: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (newId: number) => any;
   enrollmentDialogOpen: boolean;
   signupDialogOpen: boolean;
   onCloseEnrollmentDialog: () => void;
   onCloseSignupDialog: () => void;
+  status: StatusType;
 }
+
+/**
+ * WorkspaceMaterialBodyState
+ */
+interface WorkspaceMaterialBodyState {
+  activeTab: ToolTab;
+}
+
+type ToolTab = "notebook" | "table-of-contents" | "journals";
 
 /**
  * WorkspaceMaterialsBody
  */
-export default class WorkspaceMaterialsBody extends React.Component<
+class WorkspaceMaterialsBody extends React.Component<
   WorkspaceMaterialsBodyProps,
-  Record<string, unknown>
+  WorkspaceMaterialBodyState
 > {
   /**
    * constructor
@@ -38,6 +82,10 @@ export default class WorkspaceMaterialsBody extends React.Component<
   constructor(props: WorkspaceMaterialsBodyProps) {
     super(props);
 
+    this.state = {
+      activeTab: "table-of-contents",
+    };
+
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
 
@@ -45,14 +93,54 @@ export default class WorkspaceMaterialsBody extends React.Component<
    * onOpenNavigation
    */
   onOpenNavigation() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.refs.content as any).getWrappedInstance().refresh();
   }
+
+  /**
+   * handleActiveTabChange
+   * @param tab change to
+   */
+  handleActiveTabChange = (tab: ToolTab) => {
+    this.setState({ activeTab: tab });
+  };
 
   /**
    * render
    */
   render() {
-    const navigationComponent = <TableOfContentsComponent ref="content" />;
+    const materialEditorTabs: Tab[] = [
+      {
+        id: "table-of-contents",
+        type: "workspace-table-of-contents",
+        name: "Sisällysluettelo",
+        component: <TableOfContentsComponent ref="content" />,
+      },
+    ];
+
+    if (this.props.status.loggedIn) {
+      materialEditorTabs.push({
+        id: "notebook",
+        type: "workspace-notebook",
+        name: "Muistiinpanot",
+        component: (
+          <DndProvider options={HTML5toTouch}>
+            <NoteBook />
+          </DndProvider>
+        ),
+      });
+    }
+
+    const navigationComponent = (
+      <Tabs
+        renderAllComponents={true}
+        modifier="workspace-materials"
+        activeTab={this.state.activeTab}
+        onTabChange={this.handleActiveTabChange}
+        tabs={materialEditorTabs}
+      ></Tabs>
+    );
+
     return (
       <div>
         <WorkspaceNavbar
@@ -68,6 +156,9 @@ export default class WorkspaceMaterialsBody extends React.Component<
           onClose={this.props.onCloseSignupDialog}
         />
         <MaterialEditor locationPage="Materials" />
+        <MaterialExtraToolDrawer
+          closeIconModifiers={["workspace-extra-tools-close"]}
+        />
         <Materials
           onOpenNavigation={this.onOpenNavigation}
           navigation={navigationComponent}
@@ -78,3 +169,25 @@ export default class WorkspaceMaterialsBody extends React.Component<
     );
   }
 }
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    status: state.status,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  withRef: true,
+})(WorkspaceMaterialsBody);

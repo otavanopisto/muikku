@@ -545,22 +545,23 @@ class ContentComponent extends SessionStateComponent<
 
     return (
       <Toc
-        tocHeaderTitle={this.props.i18n.text.get(
-          "plugin.workspace.materials.tocTitle"
-        )}
+        modifier="workspace-materials"
+        // tocHeaderTitle={this.props.i18n.text.get(
+        //   "plugin.workspace.materials.tocTitle"
+        // )}
         tocHeaderExtraContent={
           <div>
             <Dropdown openByHover content={<p>Avaa kaikki</p>}>
               <IconButton
                 icon="arrow-down"
-                buttonModifiers={["toc-open-close-sections"]}
+                buttonModifiers={["toc-action"]}
                 onClick={this.handleToggleAllSectionsOpen("open")}
               />
             </Dropdown>
             <Dropdown openByHover content={<p>Sulje kaikki</p>}>
               <IconButton
                 icon="arrow-up"
-                buttonModifiers={["toc-open-close-sections"]}
+                buttonModifiers={["toc-action"]}
                 onClick={this.handleToggleAllSectionsOpen("close")}
               />
             </Dropdown>
@@ -684,7 +685,7 @@ class ContentComponent extends SessionStateComponent<
                 </>
               }
             >
-              <IconButton icon="filter" buttonModifiers={["toc-filter"]} />
+              <IconButton icon="filter" buttonModifiers={["toc-action"]} />
             </Dropdown>
           </div>
         }
