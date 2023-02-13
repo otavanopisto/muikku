@@ -1,17 +1,16 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import ApplicationSubPanel, {
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import { OrganizationSummaryType } from "~/reducers/organization/summary";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SummaryProps
  */
-interface SummaryProps {
-  i18nOLD: i18nType;
+interface SummaryProps extends WithTranslation {
   summary: OrganizationSummaryType;
 }
 
@@ -28,7 +27,26 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
    * render
    */
   render() {
-    const { summary } = this.props;
+    const { summary, t } = this.props;
+
+    const organizationTypeTranslation: { [key: string]: string } = {
+      ORGANIZATION_ADMINISTRATOR: t("labels.administrator", {
+        ns: "organization",
+      }),
+      ORGANIZATION_REPORT: t("labels.certificates", {
+        ns: "organization",
+      }),
+      ORGANIZATION_BILLING: t("labels.billing", {
+        ns: "organization",
+      }),
+      ORGANIZATION_SIGNATORY: t("labels.signatory", {
+        ns: "organization",
+      }),
+      ORGANIZATION_INFO: t("labels.information", {
+        ns: "organization",
+      }),
+    };
+
     return (
       <div>
         {/* Commented for later use
@@ -92,48 +110,44 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </ApplicationSubPanel> */}
         <ApplicationSubPanel modifier="organization-summary">
           <ApplicationSubPanel.Header modifier="organization-summary">
-            {this.props.i18nOLD.text.get(
-              "plugin.organization.summary.info.title"
-            )}
+            {t("labels.info", { ns: "organization" })}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body modifier="organization-summary">
             <ApplicationSubPanelItem
               modifier="organization-summary"
-              title={this.props.i18nOLD.text.get(
-                "plugin.organization.summary.info.subtitle.activeInactive"
-              )}
+              title={t("labels.workspacesAndStudents", { ns: "organization" })}
             >
               <ApplicationSubPanelItem.Content modifier="primary">
-                {this.props.i18nOLD.text.get(
-                  "plugin.organization.summary.info.workspaces.publishedUnpublished.text",
-                  summary.workspaces && summary.workspaces.publishedCount,
-                  summary.workspaces && summary.workspaces.unpublishedCount
-                )}
+                {t("content.publishedUnpublished", {
+                  ns: "organization",
+                  publishedCount:
+                    summary.workspaces && summary.workspaces.publishedCount,
+                  unpublishedCount:
+                    summary.workspaces && summary.workspaces.unpublishedCount,
+                })}
               </ApplicationSubPanelItem.Content>
               <ApplicationSubPanelItem.Content modifier="primary">
-                {this.props.i18nOLD.text.get(
-                  "plugin.organization.summary.info.students.activeInactive.text",
-                  summary.students && summary.students.activeStudents,
-                  summary.students && summary.students.inactiveStudents
-                )}
+                {t("content.activeInactive", {
+                  ns: "organization",
+                  activeCount:
+                    summary.students && summary.students.activeStudents,
+                  archivedCount:
+                    summary.students && summary.students.inactiveStudents,
+                })}
               </ApplicationSubPanelItem.Content>
             </ApplicationSubPanelItem>
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
         <ApplicationSubPanel modifier="organization-summary">
           <ApplicationSubPanel.Header modifier="organization-summary">
-            {this.props.i18nOLD.text.get(
-              "plugin.organization.summary.contact.title"
-            )}
+            {t("labels.contactInfo")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body modifier="organization-summary">
             {this.props.summary.contacts.map((contact) => (
               <ApplicationSubPanelItem
                 key={"contact-" + contact.id}
                 modifier="organization-contact-information"
-                title={this.props.i18nOLD.text.get(
-                  "plugin.organization.summary.contact.subtitle." + contact.type
-                )}
+                title={organizationTypeTranslation[contact.type]}
               >
                 <ApplicationSubPanelItem.Content modifier="organization-contact-information">
                   <div>{contact.name}</div>
@@ -154,7 +168,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     summary: state.organizationSummary,
   };
 }
@@ -166,4 +179,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Summary);
+export default withTranslation(["common", "users", "organization"])(
+  connect(mapStateToProps, mapDispatchToProps)(Summary)
+);

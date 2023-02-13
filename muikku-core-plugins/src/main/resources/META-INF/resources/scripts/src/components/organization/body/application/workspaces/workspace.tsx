@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
@@ -23,8 +22,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * CourseProps
  */
-interface CourseProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface CourseProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceType;
   activeFilters: WorkspacesActiveFiltersType;
@@ -66,6 +64,8 @@ class Workspace extends React.Component<CourseProps, CourseState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     const actions = (
       <div>
         <WorkspaceDialog
@@ -103,17 +103,13 @@ class Workspace extends React.Component<CourseProps, CourseState> {
               <div className="application-list__item-body-meta-content">
                 <div>
                   <label>
-                    {this.props.i18nOLD.text.get(
-                      "plugin.organization.workspaces.workspace.educationType.title"
-                    )}
+                    {t("labels.educationType", { ns: "workspace" })}:
                   </label>
                   <span>{this.props.workspace.educationTypeName}</span>
                 </div>
                 <div>
                   <label>
-                    {this.props.i18nOLD.text.get(
-                      "plugin.organization.workspaces.workspace.teachers.title"
-                    )}
+                    {t("labels.teacher", { ns: "users", count: 1 })}:
                   </label>
                   <span className="application-list__item-body">
                     {this.props.workspace.teachers.map((teacher, index) => {
@@ -131,19 +127,11 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                   </span>
                 </div>
                 <div>
-                  <label>
-                    {this.props.i18nOLD.text.get(
-                      "plugin.organization.workspaces.workspace.studentCount.title"
-                    )}
-                  </label>
+                  <label>{t("labels.student_count", { ns: "users" })}:</label>
                   <span>{this.props.workspace.studentCount}</span>
                 </div>
               </div>
-              <label>
-                {this.props.i18nOLD.text.get(
-                  "plugin.organization.workspaces.workspace.description.title"
-                )}
-              </label>
+              <label>{t("labels.description")}:</label>
               <article
                 className="rich-text"
                 dangerouslySetInnerHTML={{
@@ -160,9 +148,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                 ]}
                 href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}
               >
-                {this.props.i18nOLD.text.get(
-                  "plugin.organization.workspaces.workspace.goto"
-                )}
+                {t("labels.goto", { ns: "workspace" })}
               </Button>
             </ApplicationListItemFooter>
           </div>
@@ -178,7 +164,6 @@ class Workspace extends React.Component<CourseProps, CourseState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     activeFilters: state.organizationWorkspaces.activeFilters,
   };
@@ -191,6 +176,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["common", "users", "workspace"])(
   connect(mapStateToProps, mapDispatchToProps)(Workspace)
 );

@@ -13,8 +13,6 @@ import Users from "./application/users";
 import UserGroups from "./application/usergroups";
 import OrganizationWorkspaces from "./application/workspaces";
 import WorkspacesAside from "./application/workspaces/aside";
-
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { ButtonPill } from "~/components/general/button";
 import WorkspaceDialog from "../dialogs/new-workspace";
 import UserGroupDialog from "../dialogs/new-usergroup";
@@ -40,15 +38,13 @@ type OrganizationTabs = "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES";
 /**
  * OrganizationManagementApplicationProps
  */
-interface OrganizationManagementApplicationProps
-  extends WithTranslation<["common"]> {
+interface OrganizationManagementApplicationProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
   loadUsers: LoadUsersTriggerType;
   loadUserGroups: LoadUsersTriggerType;
   loadWorkspaces: LoadWorkspacesFromServerTriggerType;
   activeFilters: WorkspacesActiveFiltersType;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -145,7 +141,9 @@ class OrganizationManagementApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18nOLD.text.get("plugin.organization.pageTitle");
+    const { t } = this.props;
+
+    const title = t("labels.organizationManagament");
     const usersPrimaryAction = (
       <UserDialog>
         <ButtonPill buttonModifiers="organization" icon="plus" />
@@ -182,9 +180,7 @@ class OrganizationManagementApplication extends React.Component<
           <SearchFormElement
             value={this.state.workspaceSearchFieldValue}
             id="organizationWorkpaceSearch"
-            placeholder={this.props.i18nOLD.text.get(
-              "plugin.organization.workspaces.search.placeholder"
-            )}
+            placeholder={t("labels.search", { ns: "workspace" })}
             name="organization-workspace-search"
             updateField={this.doWorkspaceSearch}
           ></SearchFormElement>
@@ -198,9 +194,7 @@ class OrganizationManagementApplication extends React.Component<
           <SearchFormElement
             value={this.state.userSearchFieldValue}
             id="organizationUserSearch"
-            placeholder={this.props.i18nOLD.text.get(
-              "plugin.organization.users.search.placeholder"
-            )}
+            placeholder={t("labels.search", { ns: "users" })}
             name="organization-user-search"
             updateField={this.doUserSearch}
           ></SearchFormElement>
@@ -214,9 +208,10 @@ class OrganizationManagementApplication extends React.Component<
           <SearchFormElement
             value={this.state.userGroupSearchFieldValue}
             id="oganizationUserGroupSearch"
-            placeholder={this.props.i18nOLD.text.get(
-              "plugin.organization.userGroups.search.placeholder"
-            )}
+            placeholder={t("labels.search", {
+              ns: "users",
+              context: "userGroups",
+            })}
             name="organization-user-group-search"
             updateField={this.doUserGroupSearch}
           ></SearchFormElement>
@@ -232,9 +227,7 @@ class OrganizationManagementApplication extends React.Component<
         panelTabs={[
           {
             id: "SUMMARY",
-            name: this.props.i18nOLD.text.get(
-              "plugin.organization.tab.title.summary"
-            ),
+            name: t("labels.summary", { ns: "organization" }),
             /**
              * component
              */
@@ -246,9 +239,7 @@ class OrganizationManagementApplication extends React.Component<
           },
           {
             id: "USERS",
-            name: this.props.i18nOLD.text.get(
-              "plugin.organization.tab.title.users"
-            ),
+            name: t("labels.users", { ns: "users" }),
             mobileAction: usersPrimaryActionMobile,
             component: (
               <ApplicationPanelBody
@@ -262,9 +253,7 @@ class OrganizationManagementApplication extends React.Component<
           },
           {
             id: "USERSGROUPS",
-            name: this.props.i18nOLD.text.get(
-              "plugin.organization.tab.title.userGroups"
-            ),
+            name: t("labels.userGroups", { ns: "users" }),
             mobileAction: userGroupsPrimaryActionMobile,
             component: (
               <ApplicationPanelBody
@@ -278,9 +267,7 @@ class OrganizationManagementApplication extends React.Component<
           },
           {
             id: "COURSES",
-            name: this.props.i18nOLD.text.get(
-              "plugin.organization.tab.title.courses"
-            ),
+            name: t("labels.courses", { ns: "workspace" }),
             mobileAction: coursesPrimaryActionMobile,
             component: (
               <ApplicationPanelBody
@@ -312,7 +299,6 @@ class OrganizationManagementApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     activeFilters: state.organizationWorkspaces.activeFilters,
   };
 }
@@ -327,7 +313,12 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
     dispatch
   );
 
-export default withTranslation(["common"])(
+export default withTranslation([
+  "organization",
+  "workspace",
+  "users",
+  "common",
+])(
   connect(
     mapStateToProps,
     mapDispatchToProps

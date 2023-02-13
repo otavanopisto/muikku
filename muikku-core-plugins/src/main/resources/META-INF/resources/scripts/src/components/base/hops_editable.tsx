@@ -208,7 +208,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           {this.state.hops.goalMatriculationExam === "yes" && (
             <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
               <div className="application-sub-panel__item-title">
-                {t("content.matriculationSubjects", { ns: "hops" })}
+                {t("content.matriculationSubjectsGoal", { ns: "hops" })}
               </div>
               <div className="application-sub-panel__item-data">
                 <MatriculationSubjectsList

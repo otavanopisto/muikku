@@ -10,7 +10,6 @@ import { MatriculationSubjectCode } from "../matriculation-subjects/matriculatio
  */
 interface MatriculationEligibilityRowProps extends WithTranslation {
   subject: SubjectEligibilityType;
-  i18nOLD: i18nType;
 }
 
 /**

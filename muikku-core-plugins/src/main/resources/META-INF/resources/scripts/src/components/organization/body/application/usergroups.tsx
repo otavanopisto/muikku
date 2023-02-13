@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
@@ -15,12 +14,12 @@ import {
 import { UserGroupType } from "~/reducers/user-index";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
 import { AnyActionType } from "~/actions";
+import { useTranslation } from "react-i18next";
 
 /**
  * OrganizationUserGroupsProps
  */
 interface OrganizationUserGroupsProps {
-  i18nOLD: i18nType;
   userGroups: Array<UserGroupType>;
   userGroupsState: WorkspacesStateType;
   userGroupsHasMore: boolean;
@@ -34,6 +33,8 @@ interface OrganizationUserGroupsProps {
 const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
   props
 ) => {
+  const { t } = useTranslation(["users", "common"]);
+
   const { userGroups, userGroupsState, userGroupsHasMore, loadMoreUserGroups } =
     props;
   const lastUserGroupRef = useInfinityScroll(
@@ -48,9 +49,11 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
     return (
       <div className="empty">
         <span>
-          {props.i18nOLD.text.get(
-            "plugin.organization.userGroups.error.loadError"
-          )}
+          {t("notifications.loadError", {
+            ns: "users",
+            context: "userGroups",
+            defaultValue: "Error loading user groups",
+          })}
         </span>
       </div>
     );
@@ -58,9 +61,11 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
     return (
       <div className="empty">
         <span>
-          {props.i18nOLD.text.get(
-            "plugin.organization.userGroups.searchResult.empty"
-          )}
+          {t("notifications.notFound", {
+            ns: "users",
+            context: "userGroups",
+            defaultValue: "No user groups found",
+          })}
         </span>
       </div>
     );
@@ -100,7 +105,6 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     userGroups: state.userGroups.list,
     userGroupsState: state.userGroups.state,
     userGroupsHasMore: state.userGroups.hasMore,
