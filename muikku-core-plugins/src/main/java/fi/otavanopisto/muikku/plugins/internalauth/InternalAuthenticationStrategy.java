@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +37,8 @@ public class InternalAuthenticationStrategy extends AbstractAuthenticationStrate
   }
 
   @Override
-  public AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters) {
+  public AuthenticationResult processLogin(HttpServletRequest request, AuthSource authSource) {
+    Map<String, String[]> requestParameters = request.getParameterMap();
     String email = StringUtils.lowerCase(getFirstRequestParameter(requestParameters, "email"));
     String password = getFirstRequestParameter(requestParameters, "password");
     
@@ -45,11 +47,16 @@ public class InternalAuthenticationStrategy extends AbstractAuthenticationStrate
     if (internalAuth != null) {
       UserEntity userEntity = userEntityController.findUserEntityById(internalAuth.getUserEntityId());
       if (userEntity != null) {
-        return processLogin(authSource, requestParameters, DigestUtils.md5Hex("INTERNAL-" + internalAuth.getId()), Arrays.asList(email), null, null);
+        return processLogin(request, authSource, requestParameters, DigestUtils.md5Hex("INTERNAL-" + internalAuth.getId()), Arrays.asList(email), null, null);
       }
     }
     
     return new AuthenticationResult(Status.INVALID_CREDENTIALS);
+  }
+
+  @Override
+  public AuthenticationResult processLogout(AuthSource authSource) {
+    return new AuthenticationResult(Status.LOGOUT);
   }
 
   @Override

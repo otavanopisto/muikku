@@ -82,7 +82,7 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        UserEntityName studentName = userEntityController.getName(studentEntity);
+        UserEntityName studentName = userEntityController.getName(studentEntity, false);
         if (studentName == null) {
           logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
           continue;
@@ -169,8 +169,8 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       }
       OffsetDateTime sendNotificationIfNotLoggedInBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
 
-      Date studyStartDate = getDateResult(result.get("studyStartDate"));
-      if (studyStartDate == null) {
+      Date studyStartDate = getStudyStartDateIncludingTemporaryLeaves(result);
+      if (!isUsableStudyStartDate(studyStartDate)) {
         continue;
       }
       Long userEntityId = new Long((int) result.get("userEntityId"));

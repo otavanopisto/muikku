@@ -5,7 +5,7 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
  <interceptors>
   <class>fi.otavanopisto.security.AdminInterceptor</class>
-  <class>fi.otavanopisto.security.LoggedInInterceptor</class>
+  <class>fi.otavanopisto.muikku.security.LoggedInInterceptor</class>
   <class>fi.otavanopisto.security.PermitInterceptor</class>
   <class>fi.otavanopisto.security.rest.AuthorizedResourceInterceptor</class>
   <class>fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptionsInterceptor</class>

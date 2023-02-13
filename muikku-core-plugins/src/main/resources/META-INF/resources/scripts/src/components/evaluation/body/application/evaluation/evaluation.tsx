@@ -649,7 +649,9 @@ export class Evaluation extends React.Component<
               workspaces={workspaces}
               selectedAssessment={this.props.selectedAssessment}
             />
-            <EvaluationJournalEventList />
+            <EvaluationJournalEventList
+              selectedAssessment={this.props.selectedAssessment}
+            />
           </div>
         </section>
         <section className="evaluation-modal__container">

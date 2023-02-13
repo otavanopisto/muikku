@@ -12,7 +12,7 @@
   color: $color-button-default-text;
   cursor: pointer;
   display: flex;
-  font-family: $button-font-family;
+  font-family: $system-font-family;
   font-size: $button-mobile-font-size;
   justify-content: center;
   overflow: hidden;
@@ -130,7 +130,7 @@
 }
 
 .button--branded {
-  font-family: $button-branded-font-family;
+  font-family: $branded-font-family;
 }
 
 .button--warn {
@@ -840,6 +840,17 @@
     font-size: $button-pill-desktop-font-size;
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
+  }
+}
+
+.button-pill--evaluation-journal-sorter {
+  background: $color-default;
+  color: $color-button-default-text;
+
+  &:hover,
+  &.hover {
+    background: $color-default;
+    color: $color-button-default-text;
   }
 }
 

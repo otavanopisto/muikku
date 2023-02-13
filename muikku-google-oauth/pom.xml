@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.197-SNAPSHOT</version>
+    <version>1.1.198-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -15,6 +15,13 @@
   <description>Plugin that provides Google OAuth login support </description>
 
   <dependencies>
+    <!-- Servlet -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Jackson -->
     

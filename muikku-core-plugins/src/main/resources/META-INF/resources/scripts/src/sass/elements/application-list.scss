@@ -324,6 +324,7 @@
 
 .application-list__header-item-body {
   display: inline-block;
+  line-height: 1.3275rem;
 }
 
 .application-list__item-content > span:not(:first-child) {
@@ -694,6 +695,7 @@
 
 .application-list__item-content-header {
   font-size: 1rem;
+  line-height: 1.3275rem;
   padding: 10px;
 }
 
@@ -889,7 +891,8 @@
 .application-list__item-header-main-content--journal-comment-creator {
   font-size: 0.875rem;
   font-weight: 600;
-  padding: 0 0 0 15px;
+  margin-right: 5px;
+  padding: 0 5px 0 15px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
@@ -1173,15 +1176,12 @@
   padding: 0 0 10px;
 
   label {
+    font-weight: 600;
     margin-right: 5px;
   }
 
   div {
     padding: 5px 0;
-  }
-
-  span {
-    font-weight: 300;
   }
 }
 

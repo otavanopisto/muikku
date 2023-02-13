@@ -634,7 +634,7 @@ public class PyramusMock {
         List<Student> studentsList = new ArrayList<>();
         for (MockStudent mockStudent : pmock.students) {
           Student student = TestUtilities.studentFromMockStudent(mockStudent);
-                
+
           stubFor(get(urlEqualTo(String.format("/1/students/students/%d", student.getId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -643,6 +643,12 @@ public class PyramusMock {
 
           Email email = new Email(student.getId(), (long) 1, true, mockStudent.getEmail());
           Email[] emails = { email };
+          
+          stubFor(get(urlEqualTo(String.format("/1/users/users/%d/defaultEmailAddress", student.getId())))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(email))
+                .withStatus(200)));
           
           stubFor(get(urlEqualTo(String.format("/1/students/students/%d/emails", student.getId())))
             .willReturn(aResponse()
@@ -673,6 +679,12 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(studentArray))
               .withStatus(200)));
 
+          stubFor(get(urlMatching(String.format("/1/students/students/%d/studyPeriods", student.getId())))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(mockStudent.getStudyPeriods()))
+                .withStatus(200)));
+          
           studentsList.add(student);
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
           payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
@@ -821,6 +833,13 @@ public class PyramusMock {
           Email email = new Email(staffMember.getId(), 1l, true, mockStaffMember.getEmail());
           Email[] emails = { email };
 
+          stubFor(get(urlEqualTo(String.format("/1/users/users/%d/defaultEmailAddress", staffMember.getId())))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(email))
+                .withStatus(200)));
+
+          
           stubFor(get(urlEqualTo(String.format("/1/staff/members/%d/emails", staffMember.getId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")

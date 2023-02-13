@@ -100,6 +100,14 @@ public class WorkspaceEntity implements ArchivableEntity, OrganizationalEntity, 
   public void setOrganizationEntity(OrganizationEntity organizationEntity) {
     this.organizationEntity = organizationEntity;
   }
+  
+  public WorkspaceLanguage getLanguage() {
+    return language;
+  }
+  
+  public void setLanguage(WorkspaceLanguage language) {
+    this.language = language;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -135,4 +143,9 @@ public class WorkspaceEntity implements ArchivableEntity, OrganizationalEntity, 
   private Boolean archived;
   
   private String defaultMaterialLicense;
+  
+  @NotNull
+  @Column(nullable = false)
+  @Enumerated (EnumType.STRING)
+  private WorkspaceLanguage language;
 }

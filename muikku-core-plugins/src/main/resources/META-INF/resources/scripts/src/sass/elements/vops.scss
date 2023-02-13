@@ -44,7 +44,7 @@
   color: $color-text-link;
   cursor: pointer;
   display: inline-block;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $vops-legend-header-size;
   text-decoration: underline;
 }
@@ -56,7 +56,7 @@
 }
 
 .vops__legend-topic {
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $vops-legend-header-size;
   text-transform: uppercase;
   width: 100%;
@@ -86,13 +86,13 @@
 }
 
 .vops__legend-item-text {
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $vops-legend-item-text-font-size;
   margin-left: 5px;
 }
 
 .vops__data {
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $vops-data-text-font-size;
   padding: 10px;
   width: 100%;
@@ -194,14 +194,14 @@
 }
 
 .vops__row-item--text-primary {
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $vops-row-item-font-size;
   text-align: left;
   vertical-align: middle;
 }
 
 .vops__row-item--text {
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $vops-row-item-font-size;
   text-align: center;
 }

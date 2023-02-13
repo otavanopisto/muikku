@@ -18,6 +18,9 @@ public class UserEntityName {
   }
   
   public String getDisplayName() {
+    if (firstName == null || lastName == null) {
+      return firstName != null ? firstName : lastName;
+    }
     return String.format("%s %s", firstName, lastName);
   }
   

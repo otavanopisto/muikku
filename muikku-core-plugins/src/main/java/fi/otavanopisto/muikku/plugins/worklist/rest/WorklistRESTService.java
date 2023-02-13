@@ -34,6 +34,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
@@ -43,6 +44,7 @@ import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -60,6 +62,9 @@ public class WorklistRESTService {
 
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private UserController userController;
 
   @Inject
   private UserSchoolDataController userSchoolDataController;
@@ -405,6 +410,17 @@ public class WorklistRESTService {
     if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
+
+    UserEntityName currentUserName = userEntityController.getName(sessionController.getLoggedUserEntity(), false);
+    if (currentUserName == null) {
+      User user = userController.findUserByIdentifier(sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier());
+      if (user != null) {
+        currentUserName = new UserEntityName(user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName());
+      }
+    }
+    if (currentUserName == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Unable to resolve user name %s", sessionController.getLoggedUserIdentifier())).build();
+    }
     
     // Do the actual update
     
@@ -438,7 +454,6 @@ public class WorklistRESTService {
         List<String> approverEmails = approvers.stream().map(WorklistApproverRestModel::getEmail).collect(Collectors.toList());
         String mailSubject = localeController.getText(sessionController.getLocale(), "rest.worklist.approveMail.subject");
         String mailContent = localeController.getText(sessionController.getLocale(), "rest.worklist.approveMail.content");
-        UserEntityName currentUserName = userEntityController.getName(sessionController.getLoggedUserEntity());
         mailContent = MessageFormat.format(
             mailContent,
             // Parameters for the human readable content of the message

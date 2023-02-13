@@ -79,14 +79,23 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
 
   /**
    * Shows hidden evaluation assignment if it's has been submitted and assignment
-   * is set to be hidden
+   * is set to be hidden or even if student has answered it before it was set to hidden then
+   * other states are also shown as they are part of evaluation
    *
    * @param compositeReply assignment compositereply
    * @returns boolean whether to show assignment or not
    */
   const showAsHiddenEvaluationAssignment = (
     compositeReply?: MaterialCompositeRepliesType
-  ): boolean => compositeReply && compositeReply.submitted !== null;
+  ): boolean =>
+    compositeReply &&
+    (compositeReply.submitted !== null ||
+      compositeReply.state === "ANSWERED" ||
+      compositeReply.state === "SUBMITTED" ||
+      compositeReply.state === "WITHDRAWN" ||
+      compositeReply.state === "PASSED" ||
+      compositeReply.state === "FAILED" ||
+      compositeReply.state === "INCOMPLETE");
 
   /**
    * Handles close specific material content
@@ -118,17 +127,13 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
     setListOfAssignmentIds(updatedList);
   };
 
-  /**
-   * renderEvaluationAssessmentAssignments
-   */
+  // renderEvaluationAssessmentAssignments
   const renderEvaluationAssessmentAssignments =
     evaluation.evaluationCurrentStudentAssigments.data &&
     evaluation.evaluationCurrentStudentAssigments.data.assigments.length > 0 ? (
       evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
         (item, i) => {
-          /**
-           * Possible composite reply
-           */
+          // Possible composite reply
           const compositeReply =
             evaluation.evaluationCompositeReplies &&
             evaluation.evaluationCompositeReplies.data &&
@@ -138,17 +143,13 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
 
           let showAsHidden = false;
 
-          /**
-           * If item is set to be hidden check is student has submitted it before
-           * it was set to hidden
-           */
+          // If item is set to be hidden check is student has submitted it before
+          // it was set to hidden
           if (item.hidden) {
             showAsHidden = showAsHiddenEvaluationAssignment(compositeReply);
           }
 
-          /**
-           * Don't show assignment
-           */
+          // Don't show assignment
           if (item.hidden && !showAsHidden) {
             return null;
           }
@@ -212,13 +213,13 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
           evaluation.evaluationCompositeReplies.state === "READY" ? (
             <div className="evaluation-modal__content-actions">
               <Link
-                className="link link--evaluation-close-open"
+                className="link link--evaluation link--evaluation-open-close"
                 onClick={handleCloseAllMaterialContentClick}
               >
                 {i18n.text.get("plugin.evaluation.evaluationModal.closeAll")}
               </Link>
               <Link
-                className="link link--evaluation-close-open"
+                className="link link--evaluation link--evaluation-open-close"
                 onClick={handleOpenAllMaterialContentClick}
               >
                 {i18n.text.get("plugin.evaluation.evaluationModal.openAll")}

@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html
   xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
   lang="#{sessionBackingBean.locale}"
 >
   <!-- Base takes no parameters -->
@@ -139,10 +136,11 @@
         type="text/css"
         href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.4.2/style.css"
       />
-      <link
-        href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=cyrillic"
-        rel="stylesheet"
-      />
+
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;display=swap" rel="stylesheet" />
+      
       <ui:insert name="styles"></ui:insert>
 
       <!-- Here goes what a page needs, usually their controllers -->
@@ -151,17 +149,6 @@
 
     <body>
       <div id="app"></div>
-
-      <h:form style="display: none" pt:aria-hidden="true">
-        <a jsf:action="#{logoutWidgetBackingBean.logout}" id="logout"></a>
-      </h:form>
-
-      <a
-        id="login"
-        style="display: none"
-        jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]"
-        aria-hidden="true"
-      ></a>
 
       <!-- Google Analytics -->
       <script>

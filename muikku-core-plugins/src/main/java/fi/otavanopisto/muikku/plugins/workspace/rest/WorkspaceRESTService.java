@@ -77,6 +77,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -1100,6 +1101,10 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
       workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
+    }
+    
+    if (payload.getLanguage() != null && !payload.getLanguage().equals(workspaceEntity.getLanguage())) {
+      workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
     }
 
     workspaceEntity = workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
@@ -2445,12 +2450,13 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial createRestModel(WorkspaceMaterial workspaceMaterial) {
-    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
-    Long nextSiblingId = workspaceNode != null ? workspaceNode.getId() : null;
+    WorkspaceNode workspaceNodeNextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
+    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getId());
+    Long nextSiblingId = workspaceNodeNextSibling != null ? workspaceNodeNextSibling.getId() : null;
 
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
-        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
+        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(), workspaceNode.getLanguage());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -2489,6 +2495,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntity.getAccess(),
         workspaceEntity.getArchived(),
         workspaceEntity.getPublished(),
+        workspaceEntity.getLanguage(),
         name,
         nameExtension,
         description,
@@ -2509,7 +2516,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceFolder.getHidden(),
         workspaceFolder.getTitle(),
         workspaceFolder.getPath(),
-        workspaceFolder.getViewRestrict());
+        workspaceFolder.getViewRestrict(),
+        workspaceFolder.getLanguage());
   }
 
   @DELETE
@@ -2678,8 +2686,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     Boolean hidden = restFolder.getHidden();
     String title = restFolder.getTitle();
     MaterialViewRestrict viewRestrict = restFolder.getViewRestrict();
+    
+    WorkspaceLanguage titleLanguage = restFolder.getTitleLanguage();
+    
 
-    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden, viewRestrict);
+    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden, viewRestrict, titleLanguage);
     return Response.ok(createRestModel(workspaceFolder)).build();
   }
 
@@ -2713,7 +2724,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode parentFolder = restFolder.getParentId() == null ? rootFolder : workspaceMaterialController.findWorkspaceNodeById(restFolder.getParentId());
     String title = restFolder.getTitle() == null ? "Untitled" : restFolder.getTitle();
 
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title);
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title, null);
     if (nextSibling != null) {
       workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
     }
@@ -2759,7 +2770,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     boolean titleChanged = !StringUtils.equals(restWorkspaceMaterial.getTitle(), workspaceMaterial.getTitle());
     Boolean hidden = restWorkspaceMaterial.getHidden();
     WorkspaceNode workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceMaterial, materialId, parentNode, nextSibling, hidden,
-        restWorkspaceMaterial.getAssignmentType(), restWorkspaceMaterial.getCorrectAnswers(), restWorkspaceMaterial.getTitle());
+        restWorkspaceMaterial.getAssignmentType(), restWorkspaceMaterial.getCorrectAnswers(), restWorkspaceMaterial.getTitle(), restWorkspaceMaterial.getTitleLanguage());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
     
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
@@ -3539,7 +3550,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private WorkspaceJournalCommentRESTModel toRestModel(WorkspaceEntity workspaceEntity, WorkspaceJournalComment workspaceJournalComment) {
     UserEntity author = userEntityController.findUserEntityById(workspaceJournalComment.getCreator());
-    UserEntityName userEntityName = author == null ? null : userEntityController.getName(author);
+    UserEntityName userEntityName = author == null ? null : userEntityController.getName(author, true);
     WorkspaceJournalCommentRESTModel result = new WorkspaceJournalCommentRESTModel();
     result.setId(workspaceJournalComment.getId());
     result.setJournalEntryId(workspaceJournalComment.getJournalEntry().getId());
@@ -3561,7 +3572,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private WorkspaceJournalEntryRESTModel toRestModel(WorkspaceJournalEntry workspaceJournalEntry) {
     UserEntity entryUserEntity = userEntityController.findUserEntityById(workspaceJournalEntry.getUserEntityId());
-    UserEntityName userEntityName = entryUserEntity == null ? null : userEntityController.getName(entryUserEntity);
+    UserEntityName userEntityName = entryUserEntity == null ? null : userEntityController.getName(entryUserEntity, true);
 
     WorkspaceJournalEntryRESTModel result = new WorkspaceJournalEntryRESTModel();
     result.setId(workspaceJournalEntry.getId());
