@@ -1101,7 +1101,7 @@ class MaterialEditor extends React.Component<
                   <div className="form__row">
                     <div className="form-element">
                       <select
-                        className="form-element__input form-element__input--material-editor-title"
+                        className="form-element__select form-element__select--material-editor"
                         onChange={this.updateTitleLanguage}
                         value={
                           this.props.editorState.currentDraftNodeValue
@@ -1223,7 +1223,7 @@ class MaterialEditor extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <select
-                      className="form-element__input form-element__input--material-editor-title"
+                      className="form-element__select form-element__select--material-editor"
                       onChange={this.updateTitleLanguage}
                       value={
                         this.props.editorState.currentDraftNodeValue
