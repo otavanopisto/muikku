@@ -228,7 +228,7 @@ class DiscussionSubscriptions extends React.Component<
     // FIRST: subscribed thread is related to workspace and we are not in that workspace...
     // so we create url by hand and open it to new tab with focus on that tab (To specific workspace)
     if (relatedToWorkspace && !inThatWorkspace) {
-      const hashString = `${thread.forumAreaId}/1/${thread.id}/1`;
+      const hashString = `${thread.forumAreaId}/1/${thread.forumAreaId}/${thread.id}/1`;
 
       const url = `https://${window.location.hostname}/workspace/${subscribedThread.workspaceUrlName}/discussions#${hashString}`;
       this.open(url);
@@ -236,7 +236,7 @@ class DiscussionSubscriptions extends React.Component<
     // SECOND: subscribed thread is not related to any workspace, but we are in some workspace...
     // same procedure, create url and open it to new tab with focus on that tab. (To enviromental level)
     else if (!relatedToWorkspace && activeWorkspace) {
-      const hashString = `${thread.forumAreaId}/1/${thread.id}/1`;
+      const hashString = `${thread.forumAreaId}/1/${thread.forumAreaId}/${thread.id}/1`;
 
       const url = `https://${window.location.hostname}/discussion#${hashString}`;
       this.open(url);
@@ -248,17 +248,8 @@ class DiscussionSubscriptions extends React.Component<
       (relatedToWorkspace && inThatWorkspace) ||
       (!relatedToWorkspace && !inThatWorkspace)
     ) {
-      // Opened area is where thread belongs to
-      if (this.props.discussion.areaId === thread.forumAreaId) {
-        window.location.hash =
-          thread.forumAreaId +
-          "/" +
-          this.props.discussion.page +
-          "/" +
-          thread.id +
-          "/1";
-      }
-      window.location.hash = thread.forumAreaId + "/1" + "/" + thread.id + "/1";
+      window.location.hash =
+        "subs/" + thread.forumAreaId + "/" + thread.id + "/1";
     }
   }
 
