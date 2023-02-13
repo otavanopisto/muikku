@@ -23,6 +23,11 @@ export function MaterialLoaderExternalContent(
 ) {
   let className = "material-page__content-wrapper";
 
+  const langAttribute =
+    props.material.titleLanguage ||
+    props.folder.titleLanguage ||
+    props.workspace.language;
+
   if (props.material.contentHiddenForUser) {
     className =
       "material-page__content material-page__content--view-restricted";
@@ -33,7 +38,7 @@ export function MaterialLoaderExternalContent(
     props.material.assignment.assignmentType === "INTERIM_EVALUATION"
   ) {
     return (
-      <div className={className}>
+      <div className={className} lang={langAttribute}>
         <InterimEvaluationEditor {...props} />
       </div>
     );
@@ -41,7 +46,7 @@ export function MaterialLoaderExternalContent(
 
   if (props.material.assignmentType === "INTERIM_EVALUATION") {
     return (
-      <div className={className}>
+      <div className={className} lang={langAttribute}>
         <InterimEvaluationEditor {...props} />
       </div>
     );

@@ -2,7 +2,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap");
 
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
 
@@ -10,7 +10,7 @@
 .rich-text,
 .cke_editable {
   color: $color-text-default;
-  font-family: "Open Sans", "Arial", sans-serif;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
   line-height: 1.25rem;
@@ -29,7 +29,7 @@
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 0.1em; // This prevents unnecessary scrollbars to be rendered
+    padding: 0.2em 0.1em; // This prevents unnecessary scrollbars to be rendered and fixes equation from cutting out unnecessarily
     vertical-align: middle;
   }
 
@@ -49,26 +49,27 @@
     margin: 10px 0;
   }
 
-  // Only allow h3 and h4 inside ckeditor
-  h3,
-  h4 {
-    font-weight: 400;
-    margin: 10px 0;
-  }
-
+  // We only allow h3 and h4 inside ckeditor
   h3 {
     font-size: 1.125rem;
+    font-weight: 400;
+    margin: 25px 0 10px;
 
     @include breakpoint($breakpoint-pad) {
-      font-size: 1.25rem;
+      font-size: 1.3125rem;
+      font-weight: 300;
+      margin: 35px 0 10px;
     }
   }
 
   h4 {
     font-size: 1rem;
+    font-weight: 400;
+    margin: 20px 0 10px;
 
     @include breakpoint($breakpoint-pad) {
       font-size: 1.125rem;
+      margin: 25px 0 10px;
     }
   }
 
@@ -78,7 +79,7 @@
   }
 
   i {
-    font-style: italc;
+    font-style: italic;
   }
 
   a {
@@ -204,7 +205,7 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-richtext-font-size;
     font-weight: 300;
-    line-height: 1.75rem;
+    line-height: 1.625rem;
   }
 }
 

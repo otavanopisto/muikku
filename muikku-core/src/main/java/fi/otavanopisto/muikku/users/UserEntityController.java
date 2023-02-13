@@ -93,33 +93,35 @@ public class UserEntityController implements Serializable {
     return createUserEntity(schoolDataSource, identifier, null);
   }
   
-  public UserEntityName getName(UserEntity userEntity) {
-    return getName(userEntity.defaultSchoolDataIdentifier());
+  public UserEntityName getName(UserEntity userEntity, boolean guaranteeReturnObject) {
+    return getName(userEntity == null ? null : userEntity.defaultSchoolDataIdentifier(), guaranteeReturnObject);
   }
 
-  public UserEntityName getName(SchoolDataIdentifier identifier) {
-    for (SearchProvider searchProvider : searchProviders) {
-      if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
-        SearchResult searchResult = searchProvider.findUser(identifier, true);
-        if (searchResult.getTotalHitCount() > 0) {
-          List<Map<String, Object>> results = searchResult.getResults();
-          // Settle for first match but prefer default identifier 
-          Map<String, Object> match = results.get(0);
-          if (searchResult.getTotalHitCount() >  1) {
-            for (Map<String, Object> result : results) {
-              String identifierString = (String) result.get("identifier");
-              if (StringUtils.equals(identifier.getIdentifier(), identifierString)) {
-                match = result;
-                break;
+  public UserEntityName getName(SchoolDataIdentifier identifier, boolean guaranteeReturnObject) {
+    if (identifier != null) {
+      for (SearchProvider searchProvider : searchProviders) {
+        if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
+          SearchResult searchResult = searchProvider.findUser(identifier, true);
+          if (searchResult.getTotalHitCount() > 0) {
+            List<Map<String, Object>> results = searchResult.getResults();
+            // Settle for first match but prefer default identifier 
+            Map<String, Object> match = results.get(0);
+            if (searchResult.getTotalHitCount() >  1) {
+              for (Map<String, Object> result : results) {
+                String identifierString = (String) result.get("identifier");
+                if (StringUtils.equals(identifier.getIdentifier(), identifierString)) {
+                  match = result;
+                  break;
+                }
               }
             }
+            return new UserEntityName((String) match.get("firstName"), (String) match.get("lastName"), (String) match.get("nickName"), (String) match.get("studyProgrammeName"));
           }
-          return new UserEntityName((String) match.get("firstName"), (String) match.get("lastName"), (String) match.get("nickName"), (String) match.get("studyProgrammeName"));
         }
       }
     }
-    // #6458: Return a skeleton object when search provider is having a bad day
-    return new UserEntityName(null, null, null, null);
+    // #6458: (Optionally) return a skeleton object when search provider is having a bad day
+    return guaranteeReturnObject ? new UserEntityName("?", "?", null, null) : null;
   }
   
   public String getStudyTimeEndAsString(OffsetDateTime studyTimeEnd) {

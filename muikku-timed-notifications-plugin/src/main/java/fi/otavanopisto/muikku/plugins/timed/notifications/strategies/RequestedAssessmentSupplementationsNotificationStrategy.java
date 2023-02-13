@@ -201,7 +201,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
           if (workspace != null) {
             String workspaceName = StringUtils.isBlank(workspace.getNameExtension()) ? workspace.getName() : String.format("%s (%s)", workspace.getName(), workspace.getNameExtension()); 
             Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-            UserEntityName studentName = userEntityController.getName(studentEntity);
+            UserEntityName studentName = userEntityController.getName(studentEntity, false);
             if (studentName == null) {
               logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
               continue;

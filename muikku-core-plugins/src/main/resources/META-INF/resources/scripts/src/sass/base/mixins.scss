@@ -20,7 +20,7 @@
 
 @mixin text {
   color: $color-text-default;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
 
@@ -31,14 +31,14 @@
 
 @mixin assessment-text {
   color: $color-text-default;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
 }
 
 @mixin taskfield-text {
   color: $color-text-default;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
 
@@ -72,11 +72,6 @@
 @mixin mainfunction-subpanel-title {
   font-size: 1.1875rem;
   font-weight: 400;
-}
-
-@mixin workspace-subpanel-title {
-  font-size: 1.225rem;
-  font-weight: 300;
 }
 
 @mixin form-element-toolbar {

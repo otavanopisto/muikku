@@ -391,7 +391,7 @@ public class HopsRestService {
       else {
         SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(historyEntry.getModifier());
         UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
-        UserEntityName userEntityName = userEntityController.getName(sdi);
+        UserEntityName userEntityName = userEntityController.getName(sdi, false);
 
         if (userEntity != null && userEntityName != null) {
           UserBasicInfo userDetails = new UserBasicInfo();
@@ -455,7 +455,7 @@ public class HopsRestService {
 
     historyItem.setId(updatedHistory.getId());
 
-    UserEntityName userEntityName = userEntityController.getName(sdi);
+    UserEntityName userEntityName = userEntityController.getName(sdi, false);
     if (userEntityName != null) {
       historyItem.setModifier(userEntityName.getDisplayName());
     }
@@ -842,7 +842,7 @@ public class HopsRestService {
 
     List<UserEntity> counselorEntities = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
     for (UserEntity counselorEntity : counselorEntities) {
-      UserEntityName counselorName = userEntityController.getName(counselorEntity);
+      UserEntityName counselorName = userEntityController.getName(counselorEntity, false);
       if (counselorName != null) {
         counselorList.add(counselorName.getDisplayName());
       }

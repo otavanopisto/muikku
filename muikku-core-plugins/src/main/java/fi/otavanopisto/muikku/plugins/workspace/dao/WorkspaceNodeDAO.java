@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode_;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 
@@ -188,6 +189,11 @@ public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
 
   public WorkspaceNode updateTitle(WorkspaceNode node, String title) {
     node.setTitle(title);
+    return persist(node);
+  }
+
+  public WorkspaceNode updateLanguage(WorkspaceNode node, WorkspaceLanguage language) {
+    node.setLanguage(language);
     return persist(node);
   }
 
