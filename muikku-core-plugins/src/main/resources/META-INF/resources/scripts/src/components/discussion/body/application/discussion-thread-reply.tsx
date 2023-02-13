@@ -22,12 +22,12 @@ import {
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
 import { AnyActionType } from "~/actions";
-import { withTranslation } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DiscussionThreadReplyProps
  */
-interface DiscussionThreadReplyProps {
+interface DiscussionThreadReplyProps extends WithTranslation {
   discussionItem: DiscussionThreadReplyType;
   i18nOLD: i18nType;
   status: StatusType;
@@ -137,25 +137,16 @@ class DiscussionThreadReply extends React.Component<
             {discussionItem.deleted ? (
               <DiscussionThreadBody>
                 <div className="rich-text">
-                  {
-                    // TODO: use i18next
-                    this.props.i18nOLD.text.get(
-                      "plugin.discussion.infomessage.message.removed"
-                    )
-                  }
+                  {this.props.i18n.t("content.removed", { ns: "messaging" })}
                 </div>
-
                 {discussionItem.created !== discussionItem.lastModified ? (
                   <span className="application-list__item-edited">
-                    {
-                      // TODO: use i18next
-                      this.props.i18nOLD.text.get(
-                        "plugin.discussion.content.isEdited",
-                        this.props.i18nOLD.time.format(
-                          discussionItem.lastModified
-                        )
-                      )
-                    }
+                    {this.props.i18n.t("labels.edited", {
+                      context: "in",
+                      time: this.props.i18nOLD.time.format(
+                        discussionItem.lastModified
+                      ),
+                    })}
                   </span>
                 ) : null}
               </DiscussionThreadBody>
@@ -163,15 +154,12 @@ class DiscussionThreadReply extends React.Component<
               <DiscussionThreadBody html={discussionItem.message}>
                 {discussionItem.created !== discussionItem.lastModified ? (
                   <span className="application-list__item-edited">
-                    {
-                      // TODO: use i18next
-                      this.props.i18nOLD.text.get(
-                        "plugin.discussion.content.isEdited",
-                        this.props.i18nOLD.time.format(
-                          discussionItem.lastModified
-                        )
-                      )
-                    }
+                    {this.props.i18n.t("labels.edited", {
+                      context: "in",
+                      time: this.props.i18nOLD.time.format(
+                        discussionItem.lastModified
+                      ),
+                    })}
                   </span>
                 ) : null}
               </DiscussionThreadBody>
@@ -186,12 +174,7 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("answer")}
                   >
-                    {
-                      // TODO: use i18next
-                      this.props.i18nOLD.text.get(
-                        "plugin.discussion.reply.message"
-                      )
-                    }
+                    {this.props.i18n.t("actions.reply", { ns: "messaging" })}
                   </Link>
                 ) : null}
                 {!threadLocked || !isStudent ? (
@@ -201,12 +184,7 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("quote")}
                   >
-                    {
-                      // TODO: use i18next
-                      this.props.i18nOLD.text.get(
-                        "plugin.discussion.reply.quote"
-                      )
-                    }
+                    {this.props.i18n.t("actions.quote")}
                   </Link>
                 ) : null}
                 {canEditMessage ? (
@@ -216,12 +194,7 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("modify")}
                   >
-                    {
-                      // TODO: use i18next
-                      this.props.i18nOLD.text.get(
-                        "plugin.discussion.reply.edit"
-                      )
-                    }
+                    {this.props.i18n.t("actions.edit")}
                   </Link>
                 ) : null}
                 {canRemoveMessage ? (
@@ -231,12 +204,7 @@ class DiscussionThreadReply extends React.Component<
                       as="span"
                       className="link link--application-list"
                     >
-                      {
-                        // TODO: use i18next
-                        this.props.i18nOLD.text.get(
-                          "plugin.discussion.reply.delete"
-                        )
-                      }
+                      {this.props.i18n.t("actions.remove")}
                     </Link>
                   </DeleteThreadComponent>
                 ) : null}
@@ -247,16 +215,13 @@ class DiscussionThreadReply extends React.Component<
                     onClick={onHideShowSubRepliesClick(discussionItem.id)}
                     className="link link--application-list"
                   >
-                    {
-                      // TODO: use i18next
-                      parentHasHiddenSiblings
-                        ? this.props.i18nOLD.text.get(
-                            "plugin.discussion.reply.showAllReplies"
-                          )
-                        : this.props.i18nOLD.text.get(
-                            "plugin.discussion.reply.hideAllReplies"
-                          )
-                    }
+                    {parentHasHiddenSiblings
+                      ? this.props.i18n.t("actions.show", {
+                          context: "comments",
+                        })
+                      : this.props.i18n.t("actions.hide", {
+                          context: "comments",
+                        })}
                   </Link>
                 ) : null}
               </DiscussionThreadFooter>
