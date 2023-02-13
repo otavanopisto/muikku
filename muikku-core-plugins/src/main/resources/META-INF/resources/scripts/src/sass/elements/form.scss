@@ -47,6 +47,12 @@
   justify-content: flex-start;
 }
 
+.form__buttons--notebook {
+  .button {
+    margin: 0 10px 0 0;
+  }
+}
+
 .form__buttons--evaluation {
   justify-content: center;
 
@@ -376,6 +382,10 @@ legend {
   &.VALID {
     border-color: $color-success;
   }
+}
+
+.form-element__input--note-title {
+  width: 100%;
 }
 
 .form-element__input--material-editor-title {

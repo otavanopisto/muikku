@@ -29,7 +29,7 @@
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 0.1em; // This prevents unnecessary scrollbars to be rendered
+    padding: 0.2em 0.1em; // This prevents unnecessary scrollbars to be rendered and fixes equation from cutting out unnecessarily
     vertical-align: middle;
   }
 
