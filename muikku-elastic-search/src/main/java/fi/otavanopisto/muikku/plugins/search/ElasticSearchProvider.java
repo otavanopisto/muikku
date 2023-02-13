@@ -256,7 +256,7 @@ public class ElasticSearchProvider implements SearchProvider {
       }
 
       if (Boolean.TRUE.equals(onlyDefaultUsers)) {
-        query.must(termQuery("isDefaultIdentifier", true));
+        query.filter(termQuery("isDefaultIdentifier", true));
       }
 
       if (StringUtils.isNotBlank(text) && !ArrayUtils.isEmpty(textFields)) {
@@ -282,11 +282,11 @@ public class ElasticSearchProvider implements SearchProvider {
       }
 
       if (startedStudiesBefore != null) {
-        query.must(rangeQuery("studyStartDate").lt((long) startedStudiesBefore.getTime() / 1000));
+        query.filter(rangeQuery("studyStartDate").lt((long) startedStudiesBefore.getTime() / 1000));
       }
 
       if (studyTimeEndsBefore != null) {
-        query.must(rangeQuery("studyTimeEnd").lt((long) studyTimeEndsBefore.getTime() / 1000));
+        query.filter(rangeQuery("studyTimeEnd").lt((long) studyTimeEndsBefore.getTime() / 1000));
       }
 
       if (archetypes != null) {
@@ -295,7 +295,7 @@ public class ElasticSearchProvider implements SearchProvider {
           archetypeNames.add(archetypeToIndexString(archetype));
         }
 
-        query.must(termsQuery("archetype", archetypeNames.toArray(new String[0])));
+        query.filter(termsQuery("archetype", archetypeNames.toArray(new String[0])));
       }
 
       Set<String> organizationIdentifiers = organizations
@@ -303,20 +303,20 @@ public class ElasticSearchProvider implements SearchProvider {
           .filter(Objects::nonNull).map(organization -> String.format("%s-%s", organization.getDataSource().getIdentifier(), organization.getIdentifier()))
           .collect(Collectors.toSet());
       if (CollectionUtils.isNotEmpty(organizationIdentifiers)) {
-        query.must(termsQuery("organizationIdentifier", organizationIdentifiers.toArray()));
+        query.filter(termsQuery("organizationIdentifier", organizationIdentifiers.toArray()));
       }
       
       // #6250: Limit search to given study programmes only (note that the search should only be about students in this case)
       
       if (studyProgrammeIdentifiers != null && !studyProgrammeIdentifiers.isEmpty()) {
         Set<String> studyProgrammeStrings = studyProgrammeIdentifiers.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toSet());
-        query.must(termsQuery("studyProgrammeIdentifier", studyProgrammeStrings.toArray()));
+        query.filter(termsQuery("studyProgrammeIdentifier", studyProgrammeStrings.toArray()));
       }
 
       // #6170: If both group and workspace filters have been provided, possibly treat them as a join rather than an intersection
       
       if (groups != null && workspaces != null && joinGroupsAndWorkspaces) {
-        query.must(
+        query.filter(
             boolQuery()
             .should(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))))
             .should(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))))
@@ -324,11 +324,11 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       else {
         if (groups != null) {
-          query.must(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
+          query.filter(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
         }
 
         if (workspaces != null) {
-          query.must(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
+          query.filter(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
         }
       }
 
@@ -337,7 +337,7 @@ public class ElasticSearchProvider implements SearchProvider {
         for (SchoolDataIdentifier userIdentifier : userIdentifiers) {
           includeIdsQuery.addIds(String.format("%s/%s", userIdentifier.getIdentifier(), userIdentifier.getDataSource()));
         }
-        query.must(includeIdsQuery);
+        query.filter(includeIdsQuery);
       }
 
       if (includeInactiveStudents == false) {
@@ -357,7 +357,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
         Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
 
-        query.must(
+        query.filter(
           boolQuery()
           .should(termsQuery("archetype",
               archetypeToIndexString(EnvironmentRoleArchetype.TEACHER),
@@ -367,23 +367,23 @@ public class ElasticSearchProvider implements SearchProvider {
               archetypeToIndexString(EnvironmentRoleArchetype.ADMINISTRATOR))
             )
             .should(boolQuery()
-              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .must(existsQuery("studyStartDate"))
-              .must(rangeQuery("studyStartDate").lte(now))
+              .filter(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+              .filter(existsQuery("studyStartDate"))
+              .filter(rangeQuery("studyStartDate").lte(now))
               .mustNot(existsQuery("studyEndDate"))
             )
             .should(boolQuery()
-              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .must(existsQuery("studyStartDate"))
-              .must(rangeQuery("studyStartDate").lte(now))
-              .must(existsQuery("studyEndDate"))
-              .must(rangeQuery("studyEndDate").gte(now))
+              .filter(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+              .filter(existsQuery("studyStartDate"))
+              .filter(rangeQuery("studyStartDate").lte(now))
+              .filter(existsQuery("studyEndDate"))
+              .filter(rangeQuery("studyEndDate").gte(now))
             )
             .should(boolQuery()
-              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+              .filter(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
               .mustNot(existsQuery("studyEndDate"))
               .mustNot(existsQuery("studyStartDate"))
-              .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+              .filter(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
             )
         );
       }
