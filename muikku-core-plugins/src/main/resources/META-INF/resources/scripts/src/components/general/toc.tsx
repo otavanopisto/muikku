@@ -26,13 +26,13 @@ interface TocProps {
  */
 export const Toc: React.FC<TocProps> = (props) => (
   <div className={`toc ${props.modifier ? "toc--" + props.modifier : ""}`}>
-    <div className="toc-header">
+    <div className="toc__header">
       {props.tocHeaderTitle && (
         <h2 className="toc__title">{props.tocHeaderTitle}</h2>
       )}
       {props.tocHeaderExtraContent && props.tocHeaderExtraContent}
     </div>
-    <div className="toc-item-container">{props.children}</div>
+    <div className="toc__item-container">{props.children}</div>
   </div>
 );
 

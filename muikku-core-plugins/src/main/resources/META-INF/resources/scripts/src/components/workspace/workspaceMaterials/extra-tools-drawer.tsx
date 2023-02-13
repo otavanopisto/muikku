@@ -20,7 +20,7 @@ import {
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 
-import "~/sass/elements/workspace-extra-tools.scss";
+import "~/sass/elements/workspace-extra-tools-drawer.scss";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
