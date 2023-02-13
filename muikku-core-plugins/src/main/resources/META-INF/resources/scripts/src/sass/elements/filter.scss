@@ -25,7 +25,7 @@
 .filter-category {
   align-items: center;
   display: flex;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-desktop-font-size;
   height: 100%;
 }
@@ -43,7 +43,7 @@
 .filter-item {
   align-items: center;
   display: flex;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-desktop-font-size;
   height: 100%;
   margin-right: 10px;

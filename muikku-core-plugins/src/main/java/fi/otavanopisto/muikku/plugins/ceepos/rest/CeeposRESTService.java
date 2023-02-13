@@ -181,17 +181,34 @@ public class CeeposRESTService {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid product %s", payload.getProduct().getCode())).build();
     }
     
-    // Contact emails for this order
+    // Contact emails and student name for this order
     
     String staffEmail = null;
     String studentEmail = null;
+    UserEntityName userEntityName = null;
     schoolDataBridgeSessionController.startSystemSession();
     try {
       staffEmail = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
       studentEmail = userController.getUserDefaultEmailAddress(studentIdentifier);
+      userEntityName = userEntityController.getName(studentUserEntity, false);
+      if (userEntityName == null) {
+        User user = userController.findUserByIdentifier(studentUserEntity.defaultSchoolDataIdentifier());
+        if (user != null) {
+          userEntityName = new UserEntityName(user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName());
+        }
+      }
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
+    }
+    if (staffEmail == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Missing staff email %s", sessionController.getLoggedUserIdentifier())).build();
+    }
+    if (studentEmail == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Missing student email %s", payload.getStudentIdentifier())).build();
+    }
+    if (userEntityName == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Unable to resolve student name %s", payload.getStudentIdentifier())).build();
     }
     
     // Create order and complement the payload object accordingly
@@ -224,7 +241,6 @@ public class CeeposRESTService {
     paymentUrl.append("&hash=");
     paymentUrl.append(hash);
 
-    UserEntityName userEntityName = userEntityController.getName(studentUserEntity);
     String mailSubject = localeController.getText(sessionController.getLocale(), "ceepos.mail.orderCreated.subject", new String[] {
         order.getId().toString()
     });
@@ -478,14 +494,20 @@ public class CeeposRESTService {
     // Resolve name and email
     
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-    UserEntityName userEntityName = userEntityController.getName(userEntity);
-    String email = "";
+    UserEntityName userEntityName = userEntityController.getName(userEntity, false);
+    if (userEntityName == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Unable to resolve user name %s", sessionController.getLoggedUserIdentifier())).build();
+    }
+    String email = null;
     schoolDataBridgeSessionController.startSystemSession();
     try {
       email = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
+    }
+    if (email == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Unable to resolve student email %s", sessionController.getLoggedUserIdentifier())).build();
     }
     
     // Create payload to Ceepos
@@ -931,7 +953,11 @@ public class CeeposRESTService {
       }
       
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
-      UserEntityName userEntityName = userEntityController.getName(userEntity);
+      UserEntityName userEntityName = userEntityController.getName(userEntity, false);
+      if (userEntityName == null) {
+        // Programmatic confirmation; we'd really like a name here but settle with email if there's a problem 
+        userEntityName = new UserEntityName(studentEmail, null, null, null);
+      }
       Locale locale = new Locale(StringUtils.defaultIfEmpty(userEntity.getLocale(), "fi"));
       String mailSubject = localeController.getText(locale, "ceepos.mail.orderDelivered.subject", new String[] {
           paymentConfirmation.getId()

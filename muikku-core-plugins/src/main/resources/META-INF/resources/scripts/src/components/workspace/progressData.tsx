@@ -1,7 +1,4 @@
-import {
-  WorkspaceActivityType,
-  WorkspaceStudentActivityType,
-} from "~/reducers/workspaces";
+import { WorkspaceActivityType } from "~/reducers/workspaces";
 import { i18nType } from "reducers/base/i18n";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";

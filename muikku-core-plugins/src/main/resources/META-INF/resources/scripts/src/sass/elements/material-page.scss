@@ -69,7 +69,7 @@
   padding: 0 10px;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.375rem;
+    font-size: 1.5rem;
     margin: 20px 0;
     padding: 0 20px;
   }
@@ -210,7 +210,7 @@
 // METADATA
 .material-page__metadata-container {
   border-top: 1px solid $color-application-panel-box-border;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 300;
   margin: 15px 0 0;
   padding: 5px 10px;
@@ -235,7 +235,6 @@
   flex-grow: 0;
   flex-shrink: 0;
   margin: 0 5px 0 0;
-  text-transform: uppercase;
 }
 
 .material-page__producers-item {
@@ -258,7 +257,6 @@
   flex-grow: 0;
   flex-shrink: 0;
   margin: 0 5px 0 0;
-  text-transform: uppercase;
 }
 
 .material-page__license-item {
@@ -276,10 +274,15 @@
   figcaption {
     background: lighten($color-workspace, 45%);
     color: $color-text-default;
-    font-family: $text-font-family;
+    font-family: $system-font-family;
     font-size: $text-mobile-font-size;
     line-height: 1.125rem;
-    padding: 10px;
+    padding: 6px 10px;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 0.875rem;
+      line-height: 1.3125rem;
+    }
   }
 
   .image__details {
@@ -315,7 +318,7 @@
     background: $color-default;
     color: $color-text-default;
     display: none;
-    font-family: $text-font-family;
+    font-family: $system-font-family;
     font-size: $text-mobile-font-size;
     font-weight: 400;
     margin: 2.25rem 0 0;
@@ -406,7 +409,7 @@
   display: flex;
   flex-flow: row nowrap;
   font-size: 0.875rem;
-  font-weight: 300;
+  font-weight: 400;
   justify-content: center;
   margin: 10px 0;
 
@@ -490,7 +493,7 @@
 
 .material-page__field-answer-examples-title {
   font-weight: 400;
-  line-height: 1.15rem;
+  line-height: 1.375rem;
   padding: 2px 4px;
 }
 
@@ -501,7 +504,7 @@
 .material-page__field-answer-example {
   border-radius: 2px;
   font-weight: 300;
-  line-height: 1.15rem;
+  line-height: 1.375rem;
   margin: 0 4px 0 0;
   padding: 2px 4px;
 }
@@ -1102,7 +1105,6 @@
     flex-flow: row nowrap;
     flex-grow: 0;
     flex-shrink: 0;
-    font-weight: 300;
     margin: 0 10px;
     padding: 6px 10px;
     text-decoration: none;
@@ -1242,15 +1244,16 @@
 
 .material-page__sorterfield-item-label {
   flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
   line-height: 1; // This prevents text misalignment in mobile views
   max-width: calc(100% - 25px);
+  overflow-wrap: initial;
   padding: 6px 6px 6px 0;
 
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
-    max-width: calc(100% - 28px);
+    max-width: calc(100% - 27px); // Width of the drang handle
     padding: 4px 6px 4px 0;
   }
 }
@@ -2046,7 +2049,7 @@ mark[data-muikku-word-definition] {
 }
 
 // THINKING BOX & JOURNAL BOX
-// Thinking box is deprecated style is deprecated but CANNOT be removed from the css.
+// Thinking box style is deprecated but CANNOT be removed from the css.
 // Thinking box was primarily used to provide journal specific information
 // so new style has been added called JOURNAL BOX. Existing THINKINGBOXes
 // inherits JOURNAL BOX styling
@@ -2328,7 +2331,7 @@ mark[data-muikku-word-definition] {
   border-radius: 0;
   color: $color-default-contrast;
   display: inline-block;
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 35px;
   padding: 15px 20px;
 }
@@ -2337,7 +2340,7 @@ mark[data-muikku-word-definition] {
 .material-citation-basic {
   color: $color-default-contrast;
   display: inline-block;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-style: italic;
   line-height: 40px;
   padding: 10px 35px;
@@ -2385,7 +2388,7 @@ mark[data-muikku-word-definition] {
     color: $color-material-citation-quote;
     content: open-quote;
     font-family: "Arial", sans-serif;
-    font-size: 60px;
+    font-size: 3.75rem;
     left: 16px;
     position: absolute;
     top: 26px;

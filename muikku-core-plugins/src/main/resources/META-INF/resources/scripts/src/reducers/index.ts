@@ -32,6 +32,7 @@ import { CeeposState } from "./main-function/ceepos";
 import { Calendar } from "./main-function/calendar";
 import { JournalsState } from "./workspaces/journals";
 import { Contacts } from "./base/contacts";
+import { NoteBookState } from "./notebook/notebook";
 
 /**
  * StateType
@@ -69,4 +70,5 @@ export interface StateType {
   calendar?: Calendar;
   easyToUse?: EasyToUseFunctionState;
   journals?: JournalsState;
+  notebook?: NoteBookState;
 }

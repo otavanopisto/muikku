@@ -365,6 +365,17 @@ export interface TemplateWorkspaceType {
 }
 
 /**
+ * Language options for workspace
+ * used as lang attribute jsx
+ */
+export const languageOptions = ["fi", "en"] as const;
+
+/**
+ * Language
+ */
+export type Language = typeof languageOptions[number];
+
+/**
  * WorkspaceType
  */
 export interface WorkspaceType {
@@ -375,6 +386,7 @@ export interface WorkspaceType {
   id: number;
   lastVisit: string;
   materialDefaultLicense: string;
+  language: Language;
   name: string;
   nameExtension?: string | null;
   numVisits: number;
@@ -591,6 +603,13 @@ export interface WorkspaceMaterialEditorType {
   showUpdateLinkedMaterialsDialogForPublishCount: number;
 }
 
+/**
+ * WorkspaceMaterialExtraTools
+ */
+export interface WorkspaceMaterialExtraTools {
+  opened: boolean;
+}
+
 export type WorkspacesPatchType = Partial<WorkspacesType>;
 
 export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
@@ -639,6 +658,7 @@ export type AssignmentType =
  */
 export interface MaterialContentNodeType {
   title: string;
+  titleLanguage?: Language | null;
   license: string;
   viewRestrict: MaterialViewRestriction;
   html: string;
@@ -782,6 +802,7 @@ export interface WorkspacesType {
   // Workspace material editor and boolean to indicate if edit mode is active
   editMode?: WorkspaceEditModeStateType;
   materialEditor?: WorkspaceMaterialEditorType;
+  materialExtraTools?: WorkspaceMaterialExtraTools;
 }
 
 /**
@@ -822,6 +843,9 @@ const initialWorkspacesState: WorkspacesType = {
   },
   materialEditor: {
     currentNodeWorkspace: null,
+    currentNodeValue: null,
+    currentDraftNodeValue: null,
+    parentNodeValue: null,
     section: false,
     opened: false,
     canDelete: true,
@@ -843,6 +867,9 @@ const initialWorkspacesState: WorkspacesType = {
     showRemoveLinkedAnswersDialogForPublish: false,
     showUpdateLinkedMaterialsDialogForPublishCount: 0,
     canSetTitle: true,
+  },
+  materialExtraTools: {
+    opened: false,
   },
 };
 
@@ -1306,6 +1333,15 @@ export const workspaces: Reducer<WorkspacesType> = (
 
     case "UPDATE_WORKSPACES_EDIT_MODE_STATE":
       return { ...state, editMode: { ...state.editMode, ...action.payload } };
+
+    case "MATERIAL_UPDATE_SHOW_EXTRA_TOOLS":
+      return {
+        ...state,
+        materialExtraTools: {
+          ...state.materialExtraTools,
+          opened: !state.materialExtraTools.opened,
+        },
+      };
 
     default:
       return state;

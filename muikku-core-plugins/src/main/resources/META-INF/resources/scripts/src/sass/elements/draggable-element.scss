@@ -1,0 +1,34 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.draggable-element {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 10px;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.draggable-element__handle {
+  align-items: center;
+  background: $color-default-lighter-generic-background;
+  border-radius: 10px 0 0 10px;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  transition: width 0.3s;
+}
+
+.draggable-element__body {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
