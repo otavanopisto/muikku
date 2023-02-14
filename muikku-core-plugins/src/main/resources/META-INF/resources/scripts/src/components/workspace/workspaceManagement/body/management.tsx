@@ -11,6 +11,7 @@ import {
   WorkspaceDetailsType,
   WorkspacePermissionsType,
   Language,
+  languageOptions,
 } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
@@ -48,7 +49,10 @@ import {
 import { filterMatch, filterHighlight } from "~/util/modifiers";
 import { SearchFormElement } from "~/components/general/form-element";
 import * as moment from "moment";
-import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import {
+  langAttributeLocale,
+  outputCorrectDatePickerLocale,
+} from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
@@ -785,8 +789,11 @@ class ManagementPanel extends React.Component<
                         value={this.state.workspaceLanguage}
                         onChange={this.updateWorkspaceLanguage}
                       >
-                        <option value="fi">fi</option>
-                        <option value="en">en</option>
+                        {languageOptions.map((language) => (
+                          <option key={language} value={language}>
+                            {langAttributeLocale[language]}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
