@@ -8,6 +8,7 @@ import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
+import "~/sass/elements/react-select-override.scss";
 
 import { i18nType } from "~/reducers/base/i18n";
 import { DiscussionType } from "~/reducers/discussion";
@@ -196,9 +197,9 @@ class CommunicatorToolbar extends React.Component<
         let label = area.name;
 
         if (subscribed) {
-          label = `${area.name} ${this.props.i18n.text.get(
+          label = `${area.name} (${this.props.i18n.text.get(
             "plugin.discussion.subscribed.area.label"
-          )}`;
+          )})`;
         }
 
         return {
@@ -277,7 +278,8 @@ class CommunicatorToolbar extends React.Component<
               {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
             </label>
             <Select<DiscussionAreaOptionWithExtraContent>
-              classNamePrefix="form-element__select"
+              className="react-select-override"
+              classNamePrefix="react-select-override"
               onChange={this.handleSelectChange}
               value={currentSelectValue}
               options={options}

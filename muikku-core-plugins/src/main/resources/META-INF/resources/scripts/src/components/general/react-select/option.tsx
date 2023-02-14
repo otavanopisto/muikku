@@ -14,8 +14,15 @@ export const OptionWithDescription = <CustomValue,>(
 
   return (
     <components.Option {...props}>
-      <h3>{data.label}</h3>
-      {data.extraContent && data.extraContent}
+      <label className="react-select-override__option-label">
+        {data.label}
+      </label>
+
+      {data.extraContent && (
+        <div className="react-select-override__option-body">
+          {data.extraContent}
+        </div>
+      )}
     </components.Option>
   );
 };

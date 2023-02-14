@@ -7,6 +7,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
+import "~/sass/elements/react-select-override.scss";
 import Select from "react-select";
 import { StateType } from "~/reducers";
 
@@ -101,7 +102,8 @@ class CoursepickerApplication extends React.Component<
         </label>
         {this.props.status.loggedIn ? (
           <Select<CoursepickerFilterOption>
-            classNamePrefix="form-element__select"
+            className="react-select-override"
+            classNamePrefix="react-select-override"
             value={currentSelectValue}
             onChange={this.onCoursepickerFilterChange}
             options={options}
@@ -115,7 +117,8 @@ class CoursepickerApplication extends React.Component<
           />
         ) : (
           <Select<CoursepickerFilterOption>
-            classNamePrefix="form-element__select"
+            className="react-select-override"
+            classNamePrefix="react-select-override"
             value={options[0]}
             options={[options[0]]}
             isDisabled={true}

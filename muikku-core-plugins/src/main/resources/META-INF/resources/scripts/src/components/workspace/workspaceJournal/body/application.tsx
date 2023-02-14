@@ -8,6 +8,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
+import "~/sass/elements/react-select-override.scss";
 import { StateType } from "~/reducers";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
@@ -148,6 +149,8 @@ class WorkspaceJournalApplication extends React.Component<
             {this.props.i18n.text.get("plugin.wcag.journalSelect.label")}
           </label>
           <Select
+            className="react-select-override"
+            classNamePrefix="react-select-override"
             id="selectJournal"
             options={allOptions}
             value={selectedOption}

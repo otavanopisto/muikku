@@ -18,6 +18,7 @@ import { EvaluationWorkspace } from "../../../@types/evaluation";
 import { AnyActionType } from "~/actions";
 import { OptionDefault } from "~/components/general/react-select/types";
 import Select from "react-select";
+import "~/sass/elements/react-select-override.scss";
 
 /**
  * GroupedOptionEvaluation
@@ -149,6 +150,8 @@ class EvaluationApplication extends React.Component<
 
         <Select<OptionDefault<number> | OptionDefault<string>>
           onChange={this.handleWorkspaceSelectChange}
+          className="react-select-override"
+          classNamePrefix="react-select-override"
           value={selectedOptions}
           options={groupedOptions}
           styles={{
