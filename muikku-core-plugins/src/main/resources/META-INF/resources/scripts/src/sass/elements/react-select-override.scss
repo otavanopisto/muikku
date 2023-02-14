@@ -41,6 +41,12 @@
 
   .react-select-override__menu {
     @include text;
+
+    min-width: 200px;
+
+    @include breakpoint($breakpoint-pad) {
+      min-width: 300px;
+    }
   }
 
   .react-select-override__menu-list {
@@ -64,6 +70,14 @@
 
     background-color: $color-info;
     color: $color-default;
+  }
+
+  .react-select-override__group-heading {
+    @include text;
+
+    font-weight: 600;
+    margin: 5px 0;
+    text-transform: none;
   }
 
   .react-select-override__option-label {
