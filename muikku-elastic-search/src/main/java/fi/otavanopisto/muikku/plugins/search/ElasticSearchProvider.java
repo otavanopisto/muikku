@@ -252,7 +252,7 @@ public class ElasticSearchProvider implements SearchProvider {
       BoolQueryBuilder query = boolQuery();
 
       if (!Boolean.TRUE.equals(includeHidden)) {
-        query.mustNot(termQuery("hidden", true));
+        query.filter(boolQuery().mustNot(termQuery("hidden", true)));
       }
 
       if (Boolean.TRUE.equals(onlyDefaultUsers)) {
@@ -278,7 +278,7 @@ public class ElasticSearchProvider implements SearchProvider {
         for (SchoolDataIdentifier excludeSchoolDataIdentifier : excludeSchoolDataIdentifiers) {
           excludeIdsQuery.addIds(String.format("%s/%s", excludeSchoolDataIdentifier.getIdentifier(), excludeSchoolDataIdentifier.getDataSource()));
         }
-        query.mustNot(excludeIdsQuery);
+        query.filter(boolQuery().mustNot(excludeIdsQuery));
       }
 
       if (startedStudiesBefore != null) {
@@ -367,23 +367,23 @@ public class ElasticSearchProvider implements SearchProvider {
               archetypeToIndexString(EnvironmentRoleArchetype.ADMINISTRATOR))
             )
             .should(boolQuery()
-              .filter(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .filter(existsQuery("studyStartDate"))
-              .filter(rangeQuery("studyStartDate").lte(now))
+              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+              .must(existsQuery("studyStartDate"))
+              .must(rangeQuery("studyStartDate").lte(now))
               .mustNot(existsQuery("studyEndDate"))
             )
             .should(boolQuery()
-              .filter(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .filter(existsQuery("studyStartDate"))
-              .filter(rangeQuery("studyStartDate").lte(now))
-              .filter(existsQuery("studyEndDate"))
-              .filter(rangeQuery("studyEndDate").gte(now))
+              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+              .must(existsQuery("studyStartDate"))
+              .must(rangeQuery("studyStartDate").lte(now))
+              .must(existsQuery("studyEndDate"))
+              .must(rangeQuery("studyEndDate").gte(now))
             )
             .should(boolQuery()
-              .filter(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
               .mustNot(existsQuery("studyEndDate"))
               .mustNot(existsQuery("studyStartDate"))
-              .filter(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+              .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
             )
         );
       }
