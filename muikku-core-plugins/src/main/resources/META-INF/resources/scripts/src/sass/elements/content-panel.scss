@@ -58,14 +58,17 @@
 }
 
 .content-panel__aside {
+  align-items: center;
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
   margin: 10px;
 
   @include breakpoint($breakpoint-desktop) {
-    justify-self: flex-end;
-    margin: -35px 10px 10px auto;
+    display: flex;
+    justify-content: flex-end;
+    margin: -35px 0 10px auto;
     max-width: 300px;
     min-width: 250px;
 
@@ -100,7 +103,7 @@
   background-color: transparent;
   bottom: 0;
   display: none;
-  overflow-y: auto;
+  overflow-y: hidden;
   position: fixed;
   right: 0;
   top: 0;
@@ -148,9 +151,9 @@
     top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop});
     z-index: 1; // This does not need high z-index as ToC in desktop mode will never overlap with anything. Setting lower z-index also fixes possible stack order issues with zoomed images
 
-    &:hover {
-      background: $color-default;
-    }
+    // &:hover {
+    //   background: $color-default;
+    // }
 
     &.displayed {
       display: flex;
@@ -165,31 +168,12 @@
 .content-panel__navigation-content {
   @include prefix(transition, webkit moz o ms, right 0.3s);
 
-  background-color: $color-application-panel-box-background;
-  border: solid 1px $color-application-panel-box-border;
   bottom: 0;
   box-shadow: 0 2px 3px $color-panel-shadow;
-  overflow-y: auto;
-  overscroll-behavior: contain;
   position: absolute;
   right: 0;
-  scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
-  scrollbar-width: thin;
   top: 0;
   width: 90%;
-
-  &::-webkit-scrollbar {
-    width: 7.5px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: $color-scrollbar-background;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $color-scrollbar-handle;
-    border-radius: 3px;
-  }
 
   @include breakpoint($breakpoint-pad) {
     width: 70%;
@@ -211,15 +195,10 @@
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(65% - 60px);
-    margin: 0 50px 10px 0;
+    margin: 0 30px 10px 0;
     max-width: 700px;
     min-width: 650px;
     order: 1;
-  }
-
-  @include breakpoint($breakpoint-desktop-xl) {
-    flex-basis: calc(65% - 80px);
-    margin: 0 70px 10px 0;
   }
 }
 
@@ -286,9 +265,13 @@
   justify-content: center;
   position: fixed;
   right: -1px;
-  top: 70px;
+  top: 60px;
   width: 2rem;
   z-index: 10;
+
+  @include breakpoint($breakpoint-pad) {
+    top: 72px;
+  }
 
   @include breakpoint($breakpoint-desktop) {
     display: none;

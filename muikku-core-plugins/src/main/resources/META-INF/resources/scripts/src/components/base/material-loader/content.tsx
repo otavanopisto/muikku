@@ -130,6 +130,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
           />
         )}
       </div>
+
       {props.material.type === "binary" ? (
         <BinaryMaterialLoader
           material={props.material}
