@@ -1827,9 +1827,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return ckeContent;
   }
   
-  protected String getCKEditorContentInMaterials() {
+  protected String getVisibleCKEditorContentInMaterials() {
     waitForPresent(".cke_wysiwyg_div p");
-    String ckeContent = getElementText(".cke_wysiwyg_div p");
+    List<WebElement> elements = findElements(".cke_wysiwyg_div p");
+    String ckeContent = "";
+    for (WebElement webElement : elements) {
+      if(webElement.isDisplayed()) {
+        ckeContent = webElement.getText();
+      }
+        
+    }
     return ckeContent;
   }
   
@@ -1896,7 +1903,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       sendKeys(".cke_wysiwyg_div", text);
     }
   }
-    
+
+  protected void addTextToSpesificCKEditor(String selector, String text) {
+    waitForPresent(selector + " .cke_contents");
+    waitAndClick(selector + " .cke_contents");
+    sendKeys(selector + " .cke_wysiwyg_div", text);
+  }
+  
   protected void setTextAreaText(String selector, String value) {
     JavascriptExecutor js = (JavascriptExecutor) getWebDriver();
     String jsString = String.format("$('%s').html('%s');", selector, value );

@@ -644,6 +644,12 @@ public class PyramusMock {
           Email email = new Email(student.getId(), (long) 1, true, mockStudent.getEmail());
           Email[] emails = { email };
           
+          stubFor(get(urlEqualTo(String.format("/1/users/users/%d/defaultEmailAddress", student.getId())))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(email))
+                .withStatus(200)));
+          
           stubFor(get(urlEqualTo(String.format("/1/students/students/%d/emails", student.getId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -827,6 +833,13 @@ public class PyramusMock {
           Email email = new Email(staffMember.getId(), 1l, true, mockStaffMember.getEmail());
           Email[] emails = { email };
 
+          stubFor(get(urlEqualTo(String.format("/1/users/users/%d/defaultEmailAddress", staffMember.getId())))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(email))
+                .withStatus(200)));
+
+          
           stubFor(get(urlEqualTo(String.format("/1/staff/members/%d/emails", staffMember.getId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")

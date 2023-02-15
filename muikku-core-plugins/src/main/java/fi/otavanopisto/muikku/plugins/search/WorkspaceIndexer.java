@@ -149,7 +149,7 @@ public class WorkspaceIndexer {
       SchoolDataIdentifier staffMemberIdentifier = staffMember.getUserIdentifier();
       
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(staffMemberIdentifier);
-      UserEntityName userEntityName = userEntity != null ? userEntityController.getName(userEntity) : null;
+      UserEntityName userEntityName = userEntity != null ? userEntityController.getName(userEntity, false) : null;
       
       if (userEntityName != null) {
         indexedWorkspace.addStaffMember(new IndexedWorkspaceUser(staffMemberIdentifier, 

@@ -40,12 +40,12 @@ interface ContentPanelState {
  * @param target t
  * @returns boolean
  */
-function checkLinkClicked(target: HTMLElement): boolean {
+/* function checkLinkClicked(target: HTMLElement): boolean {
   return (
     target.nodeName.toLowerCase() === "a" ||
     (target.parentElement ? checkLinkClicked(target.parentElement) : false)
   );
-}
+} */
 
 /**
  * ContentPanel
@@ -54,6 +54,8 @@ export default class ContentPanel extends React.Component<
   ContentPanelProps,
   ContentPanelState
 > {
+  private myRef = React.createRef<HTMLDivElement>();
+
   private touchCordX: number;
   private touchCordY: number;
   private touchMovementX: number;
@@ -83,25 +85,47 @@ export default class ContentPanel extends React.Component<
   }
 
   /**
+   * componentDidMount
+   */
+  componentDidMount(): void {
+    this.myRef.current.addEventListener("touchstart", this.onTouchStart, {
+      passive: false,
+    });
+    this.myRef.current.addEventListener("touchmove", this.onTouchMove, {
+      passive: false,
+    });
+
+    this.myRef.current.addEventListener("touchend", this.onTouchEnd, {
+      passive: false,
+    });
+  }
+
+  /**
+   * openNavigation
+   */
+  componentWillUnmount(): void {
+    this.myRef.current.removeEventListener("touchstart", this.onTouchStart);
+    this.myRef.current.removeEventListener("touchmove", this.onTouchMove);
+    this.myRef.current.removeEventListener("touchend", this.onTouchEnd);
+  }
+
+  /**
    * onTouchStart
    * @param e e
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onTouchStart(e: React.TouchEvent<any>) {
+  onTouchStart(e: TouchEvent) {
     this.setState({ dragging: true });
     this.touchCordX = e.changedTouches[0].pageX;
     this.touchCordY = e.changedTouches[0].pageY;
     this.touchMovementX = 0;
     this.preventXMovement = false;
-    e.preventDefault();
   }
 
   /**
    * onTouchMove
    * @param e e
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onTouchMove(e: React.TouchEvent<any>) {
+  onTouchMove(e: TouchEvent) {
     let diffX = e.changedTouches[0].pageX - this.touchCordX;
     const diffY = e.changedTouches[0].pageY - this.touchCordY;
     const absoluteDifferenceX = Math.abs(diffX - this.state.drag);
@@ -123,15 +147,13 @@ export default class ContentPanel extends React.Component<
     if (!this.preventXMovement) {
       this.setState({ drag: diffX });
     }
-    e.preventDefault();
   }
 
   /**
    * onTouchEnd
    * @param e e
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onTouchEnd(e: React.TouchEvent<any>) {
+  onTouchEnd(e: TouchEvent) {
     const width = (
       document.querySelector(
         ".content-panel__navigation-content"
@@ -143,21 +165,14 @@ export default class ContentPanel extends React.Component<
     const menuHasSlidedEnoughForClosing = Math.abs(diff) >= width * 0.33;
     const youJustClickedTheOverlay =
       e.target === this.refs["menu-overlay"] && movement <= 5;
-    const youJustClickedALink =
-      checkLinkClicked(e.target as HTMLElement) && movement <= 5;
 
     this.setState({ dragging: false });
     setTimeout(() => {
       this.setState({ drag: null });
-      if (
-        menuHasSlidedEnoughForClosing ||
-        youJustClickedTheOverlay ||
-        youJustClickedALink
-      ) {
+      if (menuHasSlidedEnoughForClosing || youJustClickedTheOverlay) {
         this.closeNavigation();
       }
     }, 10);
-    e.preventDefault();
   }
 
   /**
@@ -179,8 +194,8 @@ export default class ContentPanel extends React.Component<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   closeNavigationByOverlay(e: React.MouseEvent<any>) {
     const isOverlay = e.target === e.currentTarget;
-    const isLink = checkLinkClicked(e.target as HTMLElement);
-    if (!this.state.dragging && (isOverlay || isLink)) {
+
+    if (!this.state.dragging && isOverlay) {
       this.closeNavigation();
     }
   }
@@ -232,16 +247,13 @@ export default class ContentPanel extends React.Component<
               {/* Rendering the ToC */}
               {this.props.navigation && (
                 <nav
-                  ref="menu-overlay"
+                  ref={this.myRef}
                   className={`content-panel__navigation ${
                     this.state.displayed ? "displayed" : ""
                   } ${this.state.visible ? "visible" : ""} ${
                     this.state.dragging ? "dragging" : ""
                   }`}
                   onClick={this.closeNavigationByOverlay}
-                  onTouchStart={this.onTouchStart}
-                  onTouchMove={this.onTouchMove}
-                  onTouchEnd={this.onTouchEnd}
                 >
                   <div
                     className="content-panel__navigation-content"
