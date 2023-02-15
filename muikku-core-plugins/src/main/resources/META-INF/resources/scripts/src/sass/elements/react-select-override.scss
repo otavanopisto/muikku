@@ -42,15 +42,21 @@
   .react-select-override__menu {
     @include text;
 
-    min-width: 200px;
+    display: flex;
+    max-width: 300px;
+    min-width: 100px;
 
     @include breakpoint($breakpoint-pad) {
-      min-width: 300px;
+      max-width: 400px;
     }
   }
 
   .react-select-override__menu-list {
     @include text;
+
+    display: flex;
+    flex-basis: 100%;
+    flex-flow: column nowrap;
   }
 
   .react-select-override__option {

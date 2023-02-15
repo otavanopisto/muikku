@@ -273,7 +273,7 @@ class CommunicatorToolbar extends React.Component<
             buttonModifiers={["discussion-toolbar"]}
           />
 
-          <div className="form-element" style={{ width: "500px" }}>
+          <div className="form-element">
             <label htmlFor="discussionAreaSelect" className="visually-hidden">
               {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
             </label>
