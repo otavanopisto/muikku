@@ -27,6 +27,8 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
+import SessionStateComponent from "~/components/general/session-state-component";
+import { WorkspaceType } from "~/reducers/workspaces";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -64,6 +66,7 @@ interface WorkspaceMaterialsBodyProps {
  */
 interface WorkspaceMaterialBodyState {
   activeTab: ToolTab;
+  draftId: string;
 }
 
 type ToolTab = "notebook" | "table-of-contents" | "journals";
@@ -71,7 +74,7 @@ type ToolTab = "notebook" | "table-of-contents" | "journals";
 /**
  * WorkspaceMaterialsBody
  */
-class WorkspaceMaterialsBody extends React.Component<
+class WorkspaceMaterialsBody extends SessionStateComponent<
   WorkspaceMaterialsBodyProps,
   WorkspaceMaterialBodyState
 > {
@@ -80,13 +83,33 @@ class WorkspaceMaterialsBody extends React.Component<
    * @param props props
    */
   constructor(props: WorkspaceMaterialsBodyProps) {
-    super(props);
+    super(props, "workspace-materials");
+
+    const draftId = `-${this.props.status.userId}`;
 
     this.state = {
-      activeTab: "table-of-contents",
+      ...this.getRecoverStoredState({
+        activeTab: "table-of-contents",
+        draftId,
+      }),
+      draftId,
     };
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
+  }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount(): void {
+    this.setState({
+      ...this.getRecoverStoredState(
+        {
+          activeTab: "table-of-contents",
+        },
+        this.state.draftId
+      ),
+    });
   }
 
   /**
@@ -102,7 +125,7 @@ class WorkspaceMaterialsBody extends React.Component<
    * @param tab change to
    */
   handleActiveTabChange = (tab: ToolTab) => {
-    this.setState({ activeTab: tab });
+    this.setStateAndStore({ activeTab: tab }, this.state.draftId);
   };
 
   /**

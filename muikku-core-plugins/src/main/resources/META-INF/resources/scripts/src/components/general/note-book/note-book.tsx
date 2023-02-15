@@ -33,6 +33,7 @@ import { IconButton } from "../button";
 import { useScroll } from "./hooks/useScroll";
 import { useDragDropManager } from "react-dnd";
 import Dropdown from "~/components/general/dropdown";
+import { useLocalStorage } from "usehooks-ts";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -82,7 +83,12 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
 
   const notebookBodyRef = React.useRef<HTMLDivElement>(null);
 
-  const [openedItems, setOpenedItems] = React.useState<number[]>([]);
+  const openString = `opened-notes-${props.currentWorkspace.id}-${props.status.userId}`;
+
+  const [openedItems, setOpenedItems] = useLocalStorage<number[]>(
+    openString,
+    []
+  );
   const [editOrder, setEditOrder] = React.useState<boolean>(false);
 
   React.useEffect(() => {

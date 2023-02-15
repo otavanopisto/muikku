@@ -114,7 +114,21 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
       key={props.note.id}
     >
       <div className="notebook__item-header">
+        <div className="notebook__item-title" onClick={handleOpenClick}>
+          {props.note.title}
+        </div>
         <div className="notebook__item-actions">
+          <Dropdown
+            openByHover
+            content={showContent ? <p>Sulje sisältö</p> : <p>Näytä sisältö</p>}
+          >
+            <IconButton
+              icon="arrow-down"
+              onClick={handleOpenClick}
+              className={showContent ? "state-OPEN" : ""}
+              buttonModifiers={["notebook-item-action", "note-item-content"]}
+            />
+          </Dropdown>
           <Dropdown openByHover content={<p>Muokkaa muistiinpanoa</p>}>
             <IconButton
               icon="pencil"
@@ -133,7 +147,10 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
           </Dropdown>
         </div>
       </div>
-      <AnimateHeight height={deleteIsActive ? "auto" : 0}>
+      <AnimateHeight
+        height={deleteIsActive ? "auto" : 0}
+        contentClassName="notebook__item-delete-container"
+      >
         <div className="notebook__item-delete">
           <div className="notebook__item-description">
             Haluatko varmasti poistaa muistiinpanon?
@@ -151,10 +168,8 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
           </div>
         </div>
       </AnimateHeight>
-      <div className="notebook__item-title" onClick={handleOpenClick}>
-        {props.note.title}
-      </div>
-      <AnimateHeight height={showContent ? "auto" : 28}>
+
+      <AnimateHeight height={showContent ? "auto" : 40}>
         <article className="notebook__item-body rich-text">
           <CkeditorContentLoader html={props.note.workspaceNote} />
         </article>
