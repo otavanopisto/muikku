@@ -38,8 +38,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * DiscussionToolbarProps
  */
-interface DiscussionToolbarProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface DiscussionToolbarProps extends WithTranslation {
   discussion: DiscussionType;
   status: StatusType;
   showOnlySubscribedThreads: ShowOnlySubscribedThreads;
@@ -227,10 +226,7 @@ class CommunicatorToolbar extends React.Component<
 
           <div className="form-element">
             <label htmlFor="discussionAreaSelect" className="visually-hidden">
-              {
-                // TODO: use i18next
-                this.props.i18nOLD.text.get("plugin.wcag.areaSelect.label")
-              }
+              {this.props.i18n.t("wcag.selectArea", { ns: "messaging" })}
             </label>
             <select
               id="discussionAreaSelect"
@@ -239,20 +235,12 @@ class CommunicatorToolbar extends React.Component<
               value={this.selectValue()}
             >
               <option value="">
-                {
-                  // TODO: use i18next
-                  this.props.i18nOLD.text.get(
-                    "plugin.discussion.browseareas.all"
-                  )
-                }
+                {this.props.i18n.t("labels.allDiscussionAreas", {
+                  ns: "messaging",
+                })}
               </option>
               <option value="subs">
-                {
-                  // TODO: use i18next
-                  this.props.i18nOLD.text.get(
-                    "plugin.discussion.browseareas.subscribtions"
-                  )
-                }
+                {this.props.i18n.t("labels.subscriptions")}
               </option>
               {this.props.discussion.areas.map((area) => {
                 const subscribed =
@@ -265,9 +253,9 @@ class CommunicatorToolbar extends React.Component<
                   <option key={area.id} value={area.id}>
                     {area.name}{" "}
                     {subscribed &&
-                      `(${this.props.i18nOLD.text.get(
-                        "plugin.discussion.subscribed.area.label"
-                      )})`}
+                      `(${this.props.i18n.t("labels.subscribed", {
+                        ns: "messaging",
+                      })})`}
                   </option>
                 );
               })}
@@ -285,7 +273,6 @@ class CommunicatorToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     status: state.status,
   };

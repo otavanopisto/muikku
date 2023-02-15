@@ -20,7 +20,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * DiscussionNewAreaProps
  */
 interface DiscussionNewAreaProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   createDiscussionArea: CreateDiscussionAreaTriggerType;
@@ -152,10 +151,7 @@ class DiscussionNewArea extends SessionStateComponent<
       <div className="env-dialog__row" key="1">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaName" className="env-dialog__label">
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get("plugin.discussion.createarea.name")
-            }
+            {this.props.i18n.t("labels.name", { context: "discussionArea" })}
           </label>
           <input
             id="forumAreaName"
@@ -177,24 +173,16 @@ class DiscussionNewArea extends SessionStateComponent<
             onChange={this.handleToggleSubscribeAreaClick}
           />
           <label htmlFor="messageLocked" className="env-dialog__input-label">
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get(
-                "plugin.discussion.createarea.subscribe"
-              )
-            }
+            {this.props.i18n.t("labels.subscribe", { ns: "messaging" })}
           </label>
         </div>
       </div>,
       <div className="env-dialog__row" key="3">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaDescription" className="env-dialog__label">
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get(
-                "plugin.discussion.createarea.description"
-              )
-            }
+            {this.props.i18n.t("labels.description", {
+              context: "discussionArea",
+            })}
           </label>
           <textarea
             id="forumAreaDescription"
@@ -216,14 +204,14 @@ class DiscussionNewArea extends SessionStateComponent<
           onClick={this.createArea.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.save")}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -231,7 +219,7 @@ class DiscussionNewArea extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.remove_draft")}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -240,10 +228,9 @@ class DiscussionNewArea extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-area"
-        // TODO: use i18next
-        title={this.props.i18nOLD.text.get(
-          "plugin.discussion.createarea.topic"
-        )}
+        title={this.props.i18n.t("labels.create", {
+          context: "discussionArea",
+        })}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
@@ -255,16 +242,6 @@ class DiscussionNewArea extends SessionStateComponent<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -273,5 +250,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(DiscussionNewArea)
+  connect(null, mapDispatchToProps)(DiscussionNewArea)
 );

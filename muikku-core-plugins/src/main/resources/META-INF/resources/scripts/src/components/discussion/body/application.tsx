@@ -23,7 +23,7 @@ interface DiscussionApplicationState {}
 /**
  * DiscussionApplicationProps
  */
-interface DiscussionApplicationProps extends WithTranslation<["common"]> {
+interface DiscussionApplicationProps extends WithTranslation {
   i18nOLD: i18nType;
   discussion: DiscussionType;
 }
@@ -42,24 +42,26 @@ class DiscussionApplication extends React.Component<
   constructor(props: DiscussionApplicationProps) {
     super(props);
   }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    this.props.i18n.setDefaultNamespace("messaging");
+  }
+
   /**
    * render
    */
   render() {
-    // TODO: use i18next
-    const title = this.props.i18nOLD.text.get("plugin.forum.pageTitle");
+    const title = this.props.i18nOLD.text.get("labels.discussion");
     const toolbar = <Toolbar />;
     const primaryOption =
       !this.props.discussion.current &&
       this.props.discussion.areas.length > 0 ? (
         <NewThread>
           <Button buttonModifiers="primary-function">
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.topic"
-              )
-            }
+            {this.props.i18n.t("actions.create")}
           </Button>
         </NewThread>
       ) : null;
@@ -110,6 +112,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(DiscussionApplication)
 );

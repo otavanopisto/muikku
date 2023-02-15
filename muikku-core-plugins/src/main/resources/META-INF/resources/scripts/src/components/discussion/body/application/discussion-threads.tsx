@@ -40,7 +40,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * DiscussionThreadsProps
  */
-interface DiscussionThreadsProps extends WithTranslation<["common"]> {
+interface DiscussionThreadsProps extends WithTranslation {
   discussion: DiscussionType;
   i18nOLD: i18nType;
   status: StatusType;
@@ -89,12 +89,10 @@ class DDiscussionThreads extends React.Component<
    * @returns label with correct locale string
    */
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
-    // TODO: use i18next
-    let label = this.props.i18nOLD.text.get("plugin.wcag.pager.goToPage.label");
+    let label = this.props.i18n.t("wcag.goToPage", { ns: "messaging" });
 
     if (selected) {
-      // TODO: use i18next
-      label = this.props.i18nOLD.text.get("plugin.wcag.pager.current.label");
+      label = this.props.i18n.t("wcag.currentPage", { ns: "messaging" });
     }
 
     return label;
@@ -160,12 +158,7 @@ class DDiscussionThreads extends React.Component<
     ) {
       return (
         <div className="empty">
-          <span>
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get("plugin.communicator.empty.topic")
-            }
-          </span>
+          <span>{this.props.i18n.t("content.empty", { ns: "messaging" })}</span>
         </div>
       );
     }
@@ -200,14 +193,12 @@ class DDiscussionThreads extends React.Component<
               firstName={user.firstName}
               hasImage={user.hasImage}
               userCategory={userCategory}
-              // TODO: use i18next
-              avatarAriaLabel={this.props.i18nOLD.text.get(
-                "plugin.wcag.userAvatar.label"
-              )}
+              avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
+                ns: "messaging",
+              })}
             />
           );
         }
-
         return (
           <DiscussionThread
             key={thread.id}
@@ -234,10 +225,9 @@ class DDiscussionThreads extends React.Component<
                   <Dropdown
                     openByHover
                     modifier="discussion-tooltip"
-                    // TODO: use i18next
-                    content={this.props.i18nOLD.text.get(
-                      "plugin.discussion.unsubscribe.thread"
-                    )}
+                    content={this.props.i18n.t("labels.unsubscribe", {
+                      ns: "messaging",
+                    })}
                   >
                     <IconButton
                       icon="bookmark-full"
@@ -252,10 +242,9 @@ class DDiscussionThreads extends React.Component<
                   <Dropdown
                     openByHover
                     modifier="discussion-tooltip"
-                    // TODO: use i18next
-                    content={this.props.i18nOLD.text.get(
-                      "plugin.discussion.subscribe.thread"
-                    )}
+                    content={this.props.i18n.t("labels.subscribe", {
+                      ns: "messaging",
+                    })}
                   >
                     <IconButton
                       icon="bookmark-empty"
@@ -287,22 +276,15 @@ class DDiscussionThreads extends React.Component<
                       user,
                       this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                     )}
-                  ,{" "}
-                  {
-                    // TODO: use i18next
-                    this.props.i18nOLD.time.format(thread.created)
-                  }
+                  , {this.props.i18nOLD.time.format(thread.created)}
                 </span>
               </div>
               <div className="application-list__item-footer-content-aside">
                 <div className="application-list__item-counter-container">
                   <span className="application-list__item-counter-title">
-                    {
-                      // TODO: use i18next
-                      this.props.i18nOLD.text.get(
-                        "plugin.discussion.titleText.replyCount"
-                      )
-                    }{" "}
+                    {this.props.i18n.t("labels.replyCount", {
+                      ns: "messaging",
+                    })}
                   </span>
                   <span className="application-list__item-counter">
                     {thread.numReplies}
@@ -310,16 +292,10 @@ class DDiscussionThreads extends React.Component<
                 </div>
                 <div className="application-list__item-date">
                   <span>
-                    {
-                      // TODO: use i18next
-                      this.props.i18nOLD.text.get(
-                        "plugin.discussion.titleText.lastMessage"
-                      )
-                    }{" "}
-                    {
-                      // TODO: use i18next
-                      this.props.i18nOLD.time.format(thread.updated)
-                    }
+                    {this.props.i18n.t("labels.lastMessage", {
+                      ns: "messaging",
+                      time: this.props.i18nOLD.time.format(thread.updated),
+                    })}
                   </span>
                 </div>
               </div>
@@ -376,6 +352,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(DDiscussionThreads)
 );

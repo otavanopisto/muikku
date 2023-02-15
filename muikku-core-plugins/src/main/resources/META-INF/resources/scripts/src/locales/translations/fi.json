@@ -57,6 +57,7 @@
       "contactInfo": "Yhteystiedot",
       "content": "Sisältö",
       "coursepicker": "Kurssipoimuri",
+      "create": "Luo uusi",
       "create_room": "Luo uusi huone",
       "created": "Luotu",
       "credentials": "Aseta tunnuksesi",
@@ -101,6 +102,7 @@
       "personalInfo": "Omat tiedot",
       "phone": "Puhelinnumero",
       "profileImage": "Profiilin kuva",
+      "reply": "Vastaa",
       "remove": "Poista",
       "remove_message": "Poista viesti",
       "remove_roster": "Poistetaan {0} listasta",
@@ -139,7 +141,7 @@
       "helpdesk": "Ongelmia Muikussa? helpdesk(a)muikkuverkko.fi",
       "missingFields": "Täytä puuttuvat pakolliset kentät!",
       "or": "tai",
-      "removing_message": "Oletko aivan varma että haluat poistaa viestin?",
+      "removing": "Oletko varma poistosta?",
       "removing_person": "Oletko varma, että haluat poistaa käyttäjän listasta?",
       "removing_room": "Oletko aivan varma että haluat poistaa huoneen <b>{0}</b>? Tätä toimintoa ei voi peruuttaa.",
       "removing_comment": "Oletko varma että haluat poistaa kommentin?"
@@ -298,7 +300,6 @@
       "lastEvaluationFailed": "viimeisin ei-läpäisevä arviointi: {0}",
       "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {0}",
       "lastJournalEntry": "viimeisin merkintä: {0}",
-      "lastMessage": "viimeisin viesti: {0}",
       "lastSubmittedAssignment": "viimeisin palautus: {0}",
       "numberOfAnsweredAssignments": "{0} tehtävää",
       "numberOfAnsweredExercises": "{0} tehtävää",
@@ -544,6 +545,7 @@
 
   "messaging": {
     "actions": {
+      "create": "Uusi viesti",
       "create_label": "Uusi tunniste",
       "hide_comments": "Piilota vastaukset",
       "remove": "Poista viesti",
@@ -555,7 +557,7 @@
     },
     "labels": {
       "addSignature": "Lisää allekirjoitus",
-      "all_discussionArea": "Kaikki keskustelualueet",
+      "allDiscussionAreas": "Kaikki keskustelualueet",
       "announcement_one": "Tiedote",
       "announcement_other": "Tiedotteet",
       "archive_announements": "Arkistoi tiedotteita",
@@ -570,9 +572,10 @@
       "edit_announcement": "Muokkaa tiedotetta",
       "edit_discussionArea": "Muokkaa keskustelualuetta",
       "edit_label": "Muokkaa tunnistetta",
+      "edited": "Viestiä muokattu",
       "edited_in": "Muokattu: {{time}}",
       "inbox": "Saapuneet",
-      "lastMessage": "Viimeisin viesti",
+      "lastMessage": "Viimeisin viesti: {{time}}",
       "lock": "Lukitse viesti",
       "name_discussionArea": "Keskustelualueen nimi",
       "pin": "Kiinnitä viesti",
@@ -611,8 +614,9 @@
       "notFound_announcement": "Valittua tiedotetta ei löytytynyt.",
       "removed": "Viesti on poistettu",
       "noneSelected_announcements": "Et ole valinnut yhtään tiedotetta",
+      "removing": "Oletko varma, että haluat poistaa viestin?",
       "removing_announcement": "Oletko varma että haluat poistaa tiedotteen?",
-      "removing_area": "Huom! Keskustelualueen poisto poistaa myös kaikki sen alla olevat viestit!",
+      "removing_discussionArea": "Huom! Keskustelualueen poisto poistaa myös kaikki sen alla olevat viestit!",
       "removing_label": "Haluatko poistaa tunnisteen: {0}?",
       "removing_reply": "Vastaus poistetaan lopullisesti, oletko varma, että haluat jatkaa?",
       "removing_thread": "Viesti ja siihen tulleet vastaukset poistetaan lopullisesti. Oletko aivan varma, että haluat jatkaa?"

@@ -24,8 +24,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * ReplyThreadDrawerProps
  */
-interface ReplyThreadDrawerProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface ReplyThreadDrawerProps extends WithTranslation {
   reply?: DiscussionThreadReplyType;
   quote?: string;
   quoteAuthor?: string;
@@ -169,22 +168,16 @@ class ReplyThreadDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    // TODO: use i18next
     const editorTitle =
-      this.props.i18nOLD.text.get("plugin.discussion.answertomessage.topic") +
+      this.props.i18n.t("labels.reply", { ns: "messaging" }) +
       " - " +
-      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
+      this.props.i18n.t("labels.content");
 
     const content = (
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.content"
-              )
-            }
+            {this.props.i18n.t("labels.content")}
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -204,14 +197,14 @@ class ReplyThreadDrawer extends SessionStateComponent<
           onClick={this.createReply.bind(this)}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.save")}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnCancelClick}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -219,7 +212,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.remove_draft")}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -230,12 +223,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {
-                // TODO: use i18next
-                this.props.i18nOLD.text.get(
-                  "plugin.discussion.answertomessage.topic"
-                )
-              }
+              {this.props.i18n.t("labels.reply", { ns: "messaging" })}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>
@@ -253,7 +241,6 @@ class ReplyThreadDrawer extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     currentId: state.discussion.current.id,
   };
 }

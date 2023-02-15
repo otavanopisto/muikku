@@ -20,8 +20,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * ReplyThreadProps
  */
-interface ReplyThreadProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface ReplyThreadProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   reply?: DiscussionThreadReplyType;
@@ -203,9 +202,9 @@ class ReplyThread extends SessionStateComponent<
   render() {
     // TODO: use i18next
     const editorTitle =
-      this.props.i18nOLD.text.get("plugin.discussion.reply.topic") +
+      this.props.i18n.t("labels.reply", { ns: "messaging" }) +
       " - " +
-      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
+      this.props.i18n.t("labels.content");
 
     /**
      * content
@@ -218,9 +217,7 @@ class ReplyThread extends SessionStateComponent<
           <label className="env-dialog__label">
             {
               // TODO: use i18next
-              this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.content"
-              )
+              this.props.i18n.t("labels.content")
             }
           </label>
           <CKEditor
@@ -247,14 +244,14 @@ class ReplyThread extends SessionStateComponent<
           onClick={this.createReply.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.send")}
+          {this.props.t("actions.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -262,7 +259,7 @@ class ReplyThread extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.remove_draft")}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -271,8 +268,7 @@ class ReplyThread extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="reply-thread"
-        // TODO: use i18next
-        title={this.props.i18nOLD.text.get("plugin.discussion.reply.topic")}
+        title={this.props.i18n.t("labels.reply")}
         content={content}
         footer={footer}
         onOpen={this.onDialogOpen}
@@ -290,7 +286,6 @@ class ReplyThread extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     currentId: state.discussion.current.id,
   };
 }
@@ -304,6 +299,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ replyToCurrentDiscussionThread }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(ReplyThread)
 );

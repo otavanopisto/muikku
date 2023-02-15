@@ -43,7 +43,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * DiscussionThreadsProps
  */
-interface DiscussionSubscribedThreadsProps extends WithTranslation<["common"]> {
+interface DiscussionSubscribedThreadsProps extends WithTranslation {
   discussion: DiscussionType;
   i18nOLD: i18nType;
   status: StatusType;
@@ -243,12 +243,7 @@ class DiscussionSubscribedThreads extends React.Component<
         return (
           <div className="empty">
             <span>
-              {
-                // TODO: use i18next
-                this.props.i18nOLD.text.get(
-                  "plugin.discussion.browseareas.subscribtions.empty.title"
-                )
-              }
+              {this.props.i18n.t("content.empty", { context: "subscriptions" })}
             </span>
           </div>
         );
@@ -283,10 +278,9 @@ class DiscussionSubscribedThreads extends React.Component<
               firstName={user.firstName}
               hasImage={user.hasImage}
               userCategory={userCategory}
-              // TODO: use i18next
-              avatarAriaLabel={this.props.i18nOLD.text.get(
-                "plugin.wcag.userAvatar.label"
-              )}
+              avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
+                ns: "messaging",
+              })}
             />
           );
         }
@@ -315,10 +309,9 @@ class DiscussionSubscribedThreads extends React.Component<
               <Dropdown
                 openByHover
                 modifier="discussion-tooltip"
-                // TODO: use i18next
-                content={this.props.i18nOLD.text.get(
-                  "plugin.discussion.unsubscribe.thread"
-                )}
+                content={this.props.i18n.t("labels.unsubscribe", {
+                  ns: "messaging",
+                })}
               >
                 <IconButton
                   icon="bookmark-full"
@@ -368,8 +361,10 @@ class DiscussionSubscribedThreads extends React.Component<
                   <span>
                     {this.props.i18n.t("labels.lastMessage", {
                       ns: "messaging",
+                      time: this.props.i18nOLD.time.format(
+                        subscribredThread.updated
+                      ),
                     })}
-                    {this.props.i18nOLD.time.format(subscribredThread.updated)}
                   </span>
                 </div>
               </div>
@@ -493,8 +488,12 @@ class DiscussionSubscribedThreads extends React.Component<
               </div>
               <div className="application-list__item-date">
                 <span>
-                  {this.props.i18n.t("labels.lastMessage", { ns: "messaging" })}
-                  {this.props.i18nOLD.time.format(subscribredThread.updated)}
+                  {this.props.i18n.t("labels.lastMessage", {
+                    ns: "messaging",
+                    time: this.props.i18nOLD.time.format(
+                      subscribredThread.updated
+                    ),
+                  })}
                 </span>
               </div>
             </div>
@@ -522,7 +521,9 @@ class DiscussionSubscribedThreads extends React.Component<
           )}
         </DiscussionThreads>
         <DiscussionThreadsListHeader>
-          {this.props.i18n.t("labels.subscriptions", { context: "workspace" })}
+          {this.props.i18n.t("labels.subscriptions", {
+            context: "workspace",
+          })}
         </DiscussionThreadsListHeader>
         <DiscussionThreads>
           {workspaceLevelThreadsItems.length > 0 ? (
@@ -569,6 +570,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(DiscussionSubscribedThreads)
 );

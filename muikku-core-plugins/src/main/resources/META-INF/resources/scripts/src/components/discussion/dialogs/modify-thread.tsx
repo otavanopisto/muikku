@@ -4,7 +4,6 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { DiscussionType, DiscussionThreadType } from "~/reducers/discussion";
 import {
   modifyDiscussionThread,
@@ -21,10 +20,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * ModifyThreadProps
  */
-interface ModifyThreadProps extends WithTranslation<["common"]> {
+interface ModifyThreadProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  i18nOLD: i18nType;
   discussion: DiscussionType;
   thread: DiscussionThreadType;
   modifyDiscussionThread: ModifyDiscussionThreadTriggerType;
@@ -202,11 +200,10 @@ class ModifyThread extends SessionStateComponent<
    * render
    */
   render() {
-    // TODO: use i18next
     const editorTitle =
-      this.props.i18nOLD.text.get("plugin.discussion.editmessage.topic") +
+      this.props.i18n.t("labels.edit") +
       " - " +
-      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
+      this.props.i18n.t("labels.content");
 
     /**
      * content
@@ -216,20 +213,12 @@ class ModifyThread extends SessionStateComponent<
       <div key="1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.title"
-              )
-            }
+            {this.props.i18n.t("labels.title")}
           </label>
           <input
             id="messageTitle"
             className="env-dialog__input env-dialog__input--new-discussion-thread-title"
-            // TODO: use i18next
-            placeholder={this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.title"
-            )}
+            placeholder={this.props.i18n.t("labels.title")}
             value={this.state.title}
             onChange={this.onTitleChange}
             autoFocus
@@ -247,12 +236,7 @@ class ModifyThread extends SessionStateComponent<
               onChange={this.togglePinned}
             />
             <label htmlFor="messagePinned" className="env-dialog__input-label">
-              {
-                // TODO: use i18next
-                this.props.i18nOLD.text.get(
-                  "plugin.discussion.createmessage.pinned"
-                )
-              }
+              {this.props.i18n.t("labels.pin", { ns: "messaging" })}
             </label>
           </div>
           <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
@@ -264,12 +248,7 @@ class ModifyThread extends SessionStateComponent<
               onChange={this.toggleLocked}
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
-              {
-                // TODO: use i18next
-                this.props.i18nOLD.text.get(
-                  "plugin.discussion.createmessage.locked"
-                )
-              }
+              {this.props.i18n.t("labels.lock", { ns: "messaging" })}
             </label>
           </div>
         </div>
@@ -277,12 +256,7 @@ class ModifyThread extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get(
-                "plugin.discussion.createmessage.content"
-              )
-            }
+            {this.props.i18n.t("labels.content")}
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -305,14 +279,14 @@ class ModifyThread extends SessionStateComponent<
           onClick={this.modifyThread.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.save")}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -320,7 +294,7 @@ class ModifyThread extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.remove_draft")}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -329,10 +303,7 @@ class ModifyThread extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="modify-message"
-        // TODO: use i18next
-        title={this.props.i18nOLD.text.get(
-          "plugin.discussion.editmessage.topic"
-        )}
+        title={this.props.i18n.t("labels.edit")}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
@@ -349,7 +320,6 @@ class ModifyThread extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     status: state.status,
   };
@@ -363,6 +333,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyDiscussionThread }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(ModifyThread)
 );

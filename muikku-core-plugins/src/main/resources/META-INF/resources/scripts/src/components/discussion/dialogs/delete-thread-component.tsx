@@ -22,9 +22,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * DiscussionDeleteThreadComponentProps
  */
-interface DiscussionDeleteThreadComponentProps
-  extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface DiscussionDeleteThreadComponentProps extends WithTranslation {
   reply?: DiscussionThreadReplyType;
   deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType;
   deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType;
@@ -111,14 +109,13 @@ class DiscussionDeleteThreadComponent extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        {
-          // TODO: use i18next
-          this.props.reply
-            ? this.props.i18nOLD.text.get("plugin.discussion.removeReply.text")
-            : this.props.i18nOLD.text.get(
-                "plugin.discussion.confirmThreadRemovalDialog.text"
-              )
-        }
+        {this.props.reply
+          ? this.props.i18n.t("content.removing", {
+              context: "reply",
+            })
+          : this.props.i18n.t("content.removing", {
+              context: "thread",
+            })}
       </div>
     );
 
@@ -133,13 +130,13 @@ class DiscussionDeleteThreadComponent extends React.Component<
           onClick={this.deleteComponent.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.remove")}
+          {this.props.t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.t("common:actions.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -147,11 +144,14 @@ class DiscussionDeleteThreadComponent extends React.Component<
     return (
       <Dialog
         modifier="delete-area"
-        // TODO: use i18next
         title={
           this.props.reply
-            ? this.props.i18nOLD.text.get("plugin.discussion.removeReply")
-            : this.props.i18nOLD.text.get("plugin.discussion.removeThread")
+            ? this.props.i18n.t("content.removing", {
+                context: "reply",
+              })
+            : this.props.i18n.t("content.removing", {
+                context: "thread",
+              })
         }
         content={content}
         footer={footer}
@@ -160,16 +160,6 @@ class DiscussionDeleteThreadComponent extends React.Component<
       </Dialog>
     );
   }
-}
-
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
 }
 
 /**
@@ -183,6 +173,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(DiscussionDeleteThreadComponent)
+export default withTranslation(["messaging"])(
+  connect(null, mapDispatchToProps)(DiscussionDeleteThreadComponent)
 );

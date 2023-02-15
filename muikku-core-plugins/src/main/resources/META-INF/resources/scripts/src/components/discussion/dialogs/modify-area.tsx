@@ -21,7 +21,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * DiscussionModifyAreaProps
  */
 interface DiscussionModifyAreaProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   discussion: DiscussionType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
@@ -189,19 +188,16 @@ class DiscussionModifyArea extends SessionStateComponent<
       <div className="env-dialog__row" key="1">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaName" className="env-dialog__label">
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get("plugin.discussion.editArea.name")
-            }
+            {this.props.i18n.t("labels.name", { context: "discussionArea" })}
           </label>
           <input
             id="forumAreaName"
             type="text"
             className="env-dialog__input env-dialog__input--new-discussion-area-name"
             // TODO: use i18next
-            placeholder={this.props.i18nOLD.text.get(
-              "plugin.discussion.editArea.name"
-            )}
+            placeholder={this.props.i18n.t("labels.name", {
+              context: "discussionArea",
+            })}
             value={this.state.name}
             onChange={this.onNameChange}
             autoFocus
@@ -211,12 +207,9 @@ class DiscussionModifyArea extends SessionStateComponent<
       <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaDescription" className="env-dialog__label">
-            {
-              // TODO: use i18next
-              this.props.i18nOLD.text.get(
-                "plugin.discussion.editArea.description"
-              )
-            }
+            {this.props.i18n.t("labels.description", {
+              context: "discussionArea",
+            })}
           </label>
           <textarea
             id="forumAreaDescription"
@@ -264,7 +257,7 @@ class DiscussionModifyArea extends SessionStateComponent<
       <EnvironmentDialog
         modifier="modify-area"
         // TODO: use i18next
-        title={this.props.i18nOLD.text.get("plugin.discussion.editArea.topic")}
+        title={this.props.i18n.t("labels.edit", { context: "discussionArea" })}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
@@ -281,7 +274,6 @@ class DiscussionModifyArea extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
   };
 }
@@ -294,6 +286,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateDiscussionArea }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(DiscussionModifyArea)
 );

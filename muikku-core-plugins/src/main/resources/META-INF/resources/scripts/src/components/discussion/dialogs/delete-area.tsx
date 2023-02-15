@@ -4,7 +4,6 @@ import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
@@ -21,7 +20,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * DiscussionDeleteAreaProps
  */
 interface DiscussionDeleteAreaProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   discussion: DiscussionType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
@@ -94,10 +92,7 @@ class DiscussionDeleteArea extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        {
-          // TODO: use i18next
-          this.props.i18nOLD.text.get("plugin.discussion.deletearea.info")
-        }
+        {this.props.i18n.t("content.removing", { context: "discussionArea" })}
       </div>
     );
 
@@ -126,9 +121,9 @@ class DiscussionDeleteArea extends React.Component<
     return (
       <Dialog
         modifier="delete-area"
-        title={this.props.i18nOLD.text.get(
-          "plugin.discussion.deletearea.topic"
-        )}
+        title={this.props.i18n.t("labels.remove", {
+          context: "discussionArea",
+        })}
         content={content}
         footer={footer}
       >
@@ -144,7 +139,6 @@ class DiscussionDeleteArea extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
   };
 }

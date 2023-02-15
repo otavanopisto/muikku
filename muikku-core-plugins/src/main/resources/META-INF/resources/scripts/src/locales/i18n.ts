@@ -12,11 +12,10 @@ export const availableLanguages = Object.keys(resources);
 export const defaultNS = "common";
 
 i18n.use(initReactI18next).init({
-  defaultNS,
   debug: true,
   resources,
-  ns: [defaultNS],
   lng: "fi",
+  defaultNS: defaultNS,
   fallbackLng: "fi",
   fallbackNS: "common",
   interpolation: {
