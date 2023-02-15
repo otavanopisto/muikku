@@ -7,6 +7,13 @@
 .react-select-override {
   background-color: $color-default;
 
+  /* stylelint-disable declaration-no-important */
+
+  // We have to put important here as react-select appends it's menu container inside
+  // the main container and therefore with relative positioning menu width cannot exceed the main container's width
+  position: unset !important;
+  /* stylelint-enable declaration-no-important */
+
   .react-select-override__control {
     border-color: $color-form-element-border;
     border-radius: 2px;
@@ -17,6 +24,7 @@
     font-size: $text-mobile-font-size;
     height: $select-height-mobile;
     max-width: 150px;
+    width: 100%;
 
     &:hover {
       border-color: $color-form-element-border;
@@ -45,6 +53,7 @@
     display: flex;
     max-width: 300px;
     min-width: 100px;
+    top: unset;
 
     @include breakpoint($breakpoint-pad) {
       max-width: 400px;
