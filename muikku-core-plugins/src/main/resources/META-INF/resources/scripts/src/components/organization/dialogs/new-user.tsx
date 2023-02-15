@@ -14,7 +14,6 @@ import {
   CreateStaffmemberTriggerType,
   CreateStudentTriggerType,
 } from "~/actions/main-function/users";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
@@ -26,10 +25,9 @@ import { AnyActionType } from "~/actions";
 /**
  * OrganizationUserProps
  */
-interface OrganizationUserProps extends WithTranslation<["common"]> {
+interface OrganizationUserProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  i18nOLD: i18nType;
   status: StatusType;
   data?: CreateUserType;
   studyprogrammes: StudyprogrammeTypes;
@@ -235,6 +233,8 @@ class OrganizationUser extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
@@ -246,25 +246,17 @@ class OrganizationUser extends React.Component<
             id="userRole"
             name="role"
             modifiers="new-user"
-            label={this.props.i18nOLD.text.get(
-              "plugin.organization.users.addUser.label.role"
-            )}
+            label={t("labels.role", { ns: "users" })}
             updateField={this.updateField}
           >
             <option value="STUDENT">
-              {this.props.i18nOLD.text.get(
-                "plugin.organization.users.role.STUDENT"
-              )}
+              {t("labels.student", { ns: "users", count: 1 })}
             </option>
             <option value="MANAGER">
-              {this.props.i18nOLD.text.get(
-                "plugin.organization.users.role.MANAGER"
-              )}
+              {t("labels.manager", { ns: "users" })}
             </option>
             <option value="TEACHER">
-              {this.props.i18nOLD.text.get(
-                "plugin.organization.users.role.TEACHER"
-              )}
+              {t("labels.teacher", { ns: "users", count: 1 })}
             </option>
           </SelectFormElement>
         </DialogRow>
@@ -276,9 +268,7 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             valid={this.state.firstNameValid}
             mandatory={true}
-            label={this.props.i18nOLD.text.get(
-              "plugin.organization.users.addUser.label.firstName"
-            )}
+            label={t("labels.firstName", { ns: "users" })}
             updateField={this.updateField}
           />
           <InputFormElement
@@ -288,9 +278,7 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             valid={this.state.lastNameValid}
             mandatory={true}
-            label={this.props.i18nOLD.text.get(
-              "plugin.organization.users.addUser.label.lastName"
-            )}
+            label={t("labels.lastName", { ns: "users" })}
             updateField={this.updateField}
           />
         </DialogRow>
@@ -301,9 +289,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.emailValid}
             mandatory={true}
             updateField={this.updateField}
-            label={this.props.i18nOLD.text.get(
-              "plugin.organization.users.addUser.label.email"
-            )}
+            label={t("labels.email", { ns: "users" })}
           />
         </DialogRow>
         {this.state.user.role == "STUDENT" ? (
@@ -311,9 +297,7 @@ class OrganizationUser extends React.Component<
             <DialogRow modifiers="new-user">
               <SSNFormElement
                 modifiers="new-user"
-                label={this.props.i18nOLD.text.get(
-                  "plugin.organization.users.addUser.label.SSN"
-                )}
+                label={t("labels.SSN", { ns: "users" })}
                 updateField={this.updateField}
               />
             </DialogRow>
@@ -324,9 +308,7 @@ class OrganizationUser extends React.Component<
                 mandatory={true}
                 name="studyProgrammeIdentifier"
                 modifiers="new-user"
-                label={this.props.i18nOLD.text.get(
-                  "plugin.organization.users.addUser.label.studyprogramme"
-                )}
+                label={t("labels.studyProgramme", { ns: "users" })}
                 updateField={this.updateField}
               >
                 {this.props.studyprogrammes &&
@@ -352,12 +334,8 @@ class OrganizationUser extends React.Component<
     const footer = (closePortal: () => void) => (
       <FormActionsElement
         locked={this.state.locked}
-        executeLabel={this.props.i18nOLD.text.get(
-          "plugin.organization.users.addUser.execute"
-        )}
-        cancelLabel={this.props.i18nOLD.text.get(
-          "plugin.organization.users.addUser.cancel"
-        )}
+        executeLabel={t("actions.create")}
+        cancelLabel={t("actions.cancel")}
         executeClick={this.saveUser.bind(this, closePortal)}
         cancelClick={this.cancelDialog.bind(this, closePortal)}
       />
@@ -368,9 +346,7 @@ class OrganizationUser extends React.Component<
         onClose={this.clearComponentState}
         executing={this.state.executing}
         modifier="new-user"
-        title={this.props.i18nOLD.text.get(
-          "plugin.organization.users.addUser.title"
-        )}
+        title={t("labels.add_user", { ns: "users" })}
         content={content}
         footer={footer}
       >
@@ -386,7 +362,6 @@ class OrganizationUser extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     studyprogrammes: state.studyprogrammes,
   };
@@ -400,6 +375,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ createStudent, createStaffmember }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["users", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(OrganizationUser)
 );

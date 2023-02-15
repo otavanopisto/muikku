@@ -1,9 +1,8 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
-import { StateType } from "~/reducers";
 import mApi from "~/lib/mApi";
-import MatriculationSubjectType from "./matriculation-subject-type";
+import MatriculationSubjectType, {
+  MatriculationSubjectCode,
+} from "./matriculation-subject-type";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -15,7 +14,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface MatriculationSubjectsListProps extends WithTranslation {
   initialMatriculationSubjects?: string[];
   onMatriculationSubjectsChange: (matriculationSubjects: string[]) => void;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -117,10 +115,8 @@ class MatriculationSubjectsList extends React.Component<
    * @param code matriculation subject code
    * @returns subject name or empty string if not found
    */
-  getMatriculationSubjectNameByCode = (code: string): string =>
-    this.props.i18nOLD.text.get(
-      `plugin.records.hops.matriculationSubject.${code}`
-    );
+  getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
+    this.props.t(`matriculationSubjects.${code}`, { ns: "hops" });
 
   /**
    * Component did mount life-cycle method
@@ -156,14 +152,10 @@ class MatriculationSubjectsList extends React.Component<
    * Renders component
    */
   render() {
+    const { t } = this.props;
+
     if (this.state.loading) {
-      return (
-        <div className="loader">
-          {this.props.i18nOLD.text.get(
-            "plugin.records.hops.goals.matriculationSubjectLoading"
-          )}
-        </div>
-      );
+      return <div className="loader">{t("labels.loading")}</div>;
     }
 
     const matriculationSubjectInputs =
@@ -177,9 +169,7 @@ class MatriculationSubjectsList extends React.Component<
               htmlFor={`matriculationSubject` + index}
               className="visually-hidden"
             >
-              {this.props.i18nOLD.text.get(
-                "plugin.wcag.matriculationSubjectSelect.label"
-              )}
+              {t("wcag.select", { ns: "guider" })}
             </label>
             <select
               id={`matriculationSubject` + index}
@@ -188,14 +178,14 @@ class MatriculationSubjectsList extends React.Component<
               onChange={this.handleMatriculationSubjectChange.bind(this, index)}
             >
               <option disabled value="">
-                {this.props.i18nOLD.text.get(
-                  "plugin.records.hops.goals.matriculationSubjectChoose"
-                )}
+                {t("labels.select", { ns: "hops" })}
               </option>
               {this.state.matriculationSubjects.map(
                 (subject: MatriculationSubjectType, index: number) => (
                   <option key={index} value={subject.code}>
-                    {this.getMatriculationSubjectNameByCode(subject.code)}
+                    {this.getMatriculationSubjectNameByCode(
+                      subject.code as MatriculationSubjectCode
+                    )}
                   </option>
                 )
               )}
@@ -207,9 +197,7 @@ class MatriculationSubjectsList extends React.Component<
               ]}
               onClick={this.handleMatriculationSubjectRemove.bind(this, index)}
             >
-              {this.props.i18nOLD.text.get(
-                "plugin.records.hops.goals.matriculationSubjectRemove"
-              )}
+              {t("actions.remove")}
             </Button>
           </div>
         )
@@ -223,9 +211,7 @@ class MatriculationSubjectsList extends React.Component<
             buttonModifiers={["primary-function-content", "add-subject-row"]}
             onClick={this.handleMatriculationSubjectAdd.bind(this)}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.records.hops.goals.matriculationSubjectAdd"
-            )}
+            {t("actions.addSubject", { ns: "studies" })}
           </Button>
         </div>
       </div>
@@ -233,23 +219,6 @@ class MatriculationSubjectsList extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(MatriculationSubjectsList)
+export default withTranslation(["studies", "guider", "hops", "common"])(
+  MatriculationSubjectsList
 );

@@ -1,10 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { StateType } from "~/reducers";
 import AssignmentsAndDiaries from "../body/application/assignments-and-diaries/assignments-and-diaries";
 import { WorkspaceType } from "~/reducers/workspaces";
 
@@ -14,7 +11,6 @@ import { WorkspaceType } from "~/reducers/workspaces";
 interface WorkspaceAssignmentsAndDiaryDialogProps {
   workspace: WorkspaceType;
   workspaceId: number;
-  i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
 }
@@ -69,24 +65,4 @@ class WorkspaceAssignmentsAndDiaryDialog extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceAssignmentsAndDiaryDialog);
+export default WorkspaceAssignmentsAndDiaryDialog;

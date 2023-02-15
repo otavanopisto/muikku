@@ -1,17 +1,13 @@
 import * as React from "react";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * ActivityIndicatorProps
  */
 interface ActivityIndicatorProps {
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -21,7 +17,9 @@ interface ActivityIndicatorProps {
  * @returns JSX.Element
  */
 const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
-  const { workspace, i18nOLD } = props;
+  const { workspace } = props;
+
+  const { t } = useTranslation(["studies", "common"]);
 
   if (!workspace.activity) {
     return null;
@@ -39,10 +37,10 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
           openByHover
           content={
             <span>
-              {i18nOLD.text.get(
-                "plugin.records.workspace.activity.assignment.title",
-                workspace.activity.evaluablesDonePercent
-              )}
+              {t("labels.evaluablesDone", {
+                ns: "studies",
+                percent: workspace.activity.evaluablesDonePercent,
+              })}
             </span>
           }
         >
@@ -63,10 +61,10 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
           openByHover
           content={
             <span>
-              {i18nOLD.text.get(
-                "plugin.records.workspace.activity.exercise.title",
-                workspace.activity.exercisesDonePercent
-              )}
+              {t("labels.exercisesDone", {
+                ns: "studies",
+                percent: workspace.activity.exercisesDonePercent,
+              })}
             </span>
           }
         >
@@ -86,21 +84,4 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityIndicator);
+export default ActivityIndicator;

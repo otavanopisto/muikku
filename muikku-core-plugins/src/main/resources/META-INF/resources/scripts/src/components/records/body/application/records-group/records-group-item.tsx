@@ -1,5 +1,6 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
+import { useTranslation } from "react-i18next";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import {
@@ -32,6 +33,14 @@ interface RecordsGroupItemProps {
  */
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const { workspace, isCombinationWorkspace } = props;
+
+  const { t } = useTranslation([
+    "studies",
+    "evaluation",
+    "materials",
+    "workspace",
+    "common",
+  ]);
 
   const [showE, setShowE] = React.useState(false);
 
@@ -156,10 +165,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 ></div>
                 <div className="workspace-assessment__date">
                   <span className="workspace-assessment__date-label">
-                    {i18nOLD.text.get(
-                      "plugin.records.workspace.assessment.date.label"
-                    )}
-                    :
+                    {t("labels.date", { count: 0 })}:
                   </span>
                   <span className="workspace-assessment__date-data">
                     {i18nOLD.time.format(a.date)}
@@ -168,12 +174,12 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 <div className="workspace-assessment__literal">
                   <div className="workspace-assessment__literal-label">
                     {assessmentIsPending
-                      ? i18nOLD.text.get(
-                          "plugin.records.workspace.assessment.interimEvaluationrequest.label"
-                        )
-                      : i18nOLD.text.get(
-                          "plugin.records.workspace.assessment.interimEvaluation"
-                        )}
+                      ? t("labels.interimEvaluationRequest", {
+                          ns: "evaluation",
+                        })
+                      : t("labels.interimEvaluation", {
+                          ns: "materials",
+                        })}
                     :
                   </div>
                   <div
@@ -209,10 +215,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {i18nOLD.text.get(
-                        "plugin.records.workspace.assessment.date.label"
-                      )}
-                      :
+                      {t("labels.date", { count: 1 })}:
                     </span>
 
                     <span className="workspace-assessment__date-data">
@@ -222,25 +225,27 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
                   <div className="workspace-assessment__grade">
                     <span className="workspace-assessment__grade-label">
-                      {i18nOLD.text.get(
-                        "plugin.records.workspace.assessment.grade.label"
-                      )}
+                      {t("labels.grade", {
+                        ns: "workspace",
+                      })}
                       :
                     </span>
                     <span className="workspace-assessment__grade-data">
                       {assessmentIsIncomplete
-                        ? i18nOLD.text.get(
-                            "plugin.records.workspace.assessment.grade.incomplete.data"
-                          )
+                        ? t("labels.incomplete", {
+                            ns: "studies",
+                          })
                         : a.grade}
                     </span>
                   </div>
 
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
-                      {i18nOLD.text.get(
-                        "plugin.records.workspace.assessment.literal.label"
-                      )}
+                      {t("labels.evaluation", {
+                        ns: "evaluation",
+                        context: "literal",
+                        defaultValue: "Literal evaluation",
+                      })}
                       :
                     </div>
                     <div
@@ -261,10 +266,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                   ></div>
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {i18nOLD.text.get(
-                        "plugin.records.workspace.assessment.date.label"
-                      )}
-                      :
+                      {t("labels.date", { count: 1 })}:
                     </span>
                     <span className="workspace-assessment__date-data">
                       {i18nOLD.time.format(a.date)}
@@ -272,9 +274,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                   </div>
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
-                      {i18nOLD.text.get(
-                        "plugin.records.workspace.assessment.request.label"
-                      )}
+                      {t("labels.evaluationRequest", {
+                        ns: "evaluation",
+                        count: 1,
+                      })}
                       :
                     </div>
                     <div
@@ -321,9 +324,9 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               workspace={workspace}
             >
               <Button buttonModifiers={["info", "assignments-and-exercieses"]}>
-                {props.i18nOLD.text.get(
-                  "plugin.records.assignmentsAndExercisesButton.label"
-                )}
+                {t("actions.assignments", {
+                  ns: "studies",
+                })}
               </Button>
             </WorkspaceAssignmentsAndDiaryDialog>
           </span>

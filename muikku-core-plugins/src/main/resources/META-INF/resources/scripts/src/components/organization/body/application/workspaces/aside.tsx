@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as queryString from "query-string";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
@@ -19,8 +18,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface NavigationAsideProps extends WithTranslation {
   workspaces: WorkspacesType;
 }
 
@@ -57,17 +55,16 @@ class WorkspacesAside extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
     );
+
     return (
       <Navigation>
-        <NavigationTopic
-          name={this.props.i18nOLD.text.get(
-            "plugin.coursepicker.filters.title"
-          )}
-        >
+        <NavigationTopic name={t("labels.educationLevel", { ns: "workspace" })}>
           {this.props.workspaces.availableFilters.educationTypes.map(
             (educationType: WorkspaceEducationFilterType) => {
               const isActive =
@@ -105,11 +102,7 @@ class WorkspacesAside extends React.Component<
             }
           )}
         </NavigationTopic>
-        <NavigationTopic
-          name={this.props.i18nOLD.text.get(
-            "plugin.coursepicker.filters.curriculum"
-          )}
-        >
+        <NavigationTopic name={t("labels.curriculum", { ns: "workspace" })}>
           {this.props.workspaces.availableFilters.curriculums.map(
             (curriculum: WorkspaceCurriculumFilterType) => {
               const isActive =
@@ -146,9 +139,11 @@ class WorkspacesAside extends React.Component<
           )}
         </NavigationTopic>
         <NavigationTopic
-          name={this.props.i18nOLD.text.get(
-            "plugin.organization.filters.published.title"
-          )}
+          name={t("labels.published", {
+            ns: "organization",
+            context: "workspace",
+            defaultValue: "Published",
+          })}
         >
           {this.props.workspaces.availableFilters.stateFilters.map(
             (stateFilter) => {
@@ -198,7 +193,6 @@ class WorkspacesAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspaces: state.organizationWorkspaces,
   };
 }
@@ -210,6 +204,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["common", "workspace"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspacesAside)
 );

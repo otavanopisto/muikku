@@ -11,7 +11,6 @@ import {
   updateStaffmember,
   UpdateStaffmemberTriggerType,
 } from "~/actions/main-function/users";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
@@ -23,10 +22,9 @@ import { AnyActionType } from "~/actions";
 /**
  * OrganizationUserProps
  */
-interface OrganizationUserProps extends WithTranslation<["common"]> {
+interface OrganizationUserProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  i18nOLD: i18nType;
   status: StatusType;
   data?: UserType;
   studyprogrammes: StudyprogrammeTypes;
@@ -171,6 +169,8 @@ class OrganizationUser extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
@@ -182,21 +182,15 @@ class OrganizationUser extends React.Component<
             id="staffRole"
             name="role"
             modifiers="new-user"
-            label={this.props.i18nOLD.text.get(
-              "plugin.organization.users.addUser.label.role"
-            )}
+            label={t("labels.role", { ns: "users" })}
             updateField={this.updateField}
             value={this.props.data.role}
           >
             <option value="MANAGER">
-              {this.props.i18nOLD.text.get(
-                "plugin.organization.users.role.MANAGER"
-              )}
+              {t("labels.manager", { ns: "users" })}
             </option>
             <option value="TEACHER">
-              {this.props.i18nOLD.text.get(
-                "plugin.organization.users.role.TEACHER"
-              )}
+              {t("labels.teacher", { ns: "users", count: 1 })}
             </option>
           </SelectFormElement>
         </DialogRow>
@@ -208,9 +202,7 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             valid={this.state.firstNameValid}
             mandatory={true}
-            label={this.props.i18nOLD.text.get(
-              "plugin.organization.users.addUser.label.firstName"
-            )}
+            label={t("labels.firstName", { ns: "users" })}
             updateField={this.updateField}
           />
           <InputFormElement
@@ -220,9 +212,7 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             valid={this.state.lastNameValid}
             mandatory={true}
-            label={this.props.i18nOLD.text.get(
-              "plugin.organization.users.addUser.label.lastName"
-            )}
+            label={t("labels.lastName", { ns: "users" })}
             updateField={this.updateField}
           />
         </DialogRow>
@@ -233,9 +223,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.emailValid}
             mandatory={true}
             updateField={this.updateField}
-            label={this.props.i18nOLD.text.get(
-              "plugin.organization.users.addUser.label.email"
-            )}
+            label={t("labels.email", { ns: "users" })}
           />
         </DialogRow>
       </div>
@@ -248,12 +236,8 @@ class OrganizationUser extends React.Component<
     const footer = (closePortal: () => void) => (
       <FormActionsElement
         locked={this.state.locked}
-        executeLabel={this.props.i18nOLD.text.get(
-          "plugin.organization.users.editUser.execute"
-        )}
-        cancelLabel={this.props.i18nOLD.text.get(
-          "plugin.organization.users.addUser.cancel"
-        )}
+        executeLabel={t("actions.save")}
+        cancelLabel={t("actions.cancel")}
         executeClick={this.saveUser.bind(this, closePortal)}
         cancelClick={this.cancelDialog.bind(this, closePortal)}
       />
@@ -262,9 +246,7 @@ class OrganizationUser extends React.Component<
     return (
       <Dialog
         modifier="new-user"
-        title={this.props.i18nOLD.text.get(
-          "plugin.organization.users.editUser.title"
-        )}
+        title={t("labels.edit", { ns: "users" })}
         content={content}
         footer={footer}
       >
@@ -280,7 +262,6 @@ class OrganizationUser extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     studyprogrammes: state.studyprogrammes,
   };
@@ -294,6 +275,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateStaffmember }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["users", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(OrganizationUser)
 );

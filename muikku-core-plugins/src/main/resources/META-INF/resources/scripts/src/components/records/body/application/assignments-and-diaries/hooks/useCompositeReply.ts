@@ -3,7 +3,7 @@ import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { useTranslation } from "react-i18next";
 
 /**
  * UseFollowUpGoalsState
@@ -26,16 +26,16 @@ const initialState: UseCompositeReplyState = {
  *
  * @param userEntityId userEntityId
  * @param workspaceId workspaceId
- * @param i18nOLD i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useCompositeReply = (
   userEntityId: number,
   workspaceId: number,
-  i18nOLD: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
+  const { t } = useTranslation(["studies", "common"]);
+
   const [compositeReplyData, setCompositeReplyData] =
     React.useState(initialState);
 
@@ -87,9 +87,10 @@ export const useCompositeReply = (
       } catch (err) {
         if (!isCancelled) {
           displayNotification(
-            `${i18nOLD.text.get(
-              "plugin.records.errormessage.workspaceCompositeReplyLoadFailed"
-            )}, ${err.message}`,
+            `${t("notifications.loadError", {
+              ns: "studies",
+              context: "workspaceCompositeReplies",
+            })}, ${err.message}`,
             "error"
           );
           setCompositeReplyData((compositeReplyData) => ({
@@ -105,7 +106,7 @@ export const useCompositeReply = (
     return () => {
       isCancelled = true;
     };
-  }, [userEntityId, workspaceId, displayNotification, i18nOLD]);
+  }, [userEntityId, workspaceId, displayNotification, t]);
 
   return {
     compositeReplyData,

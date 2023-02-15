@@ -25,7 +25,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * MaterialProps
  */
-interface MaterialProps extends WithTranslation<["common"]> {
+interface MaterialProps extends WithTranslation {
   material: MaterialContentNodeType;
   workspace: WorkspaceType;
   i18nOLD: i18nType;

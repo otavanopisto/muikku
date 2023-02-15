@@ -6,6 +6,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * AssessmentProps
@@ -26,6 +27,8 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
 ) => {
   const { i18nOLD, assessment, isCombinationWorkspace } = props;
 
+  const { t } = useTranslation(["studies", "common"]);
+
   if (!assessment) {
     return null;
   }
@@ -38,10 +41,10 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         openByHover
         content={
           <span>
-            {i18nOLD.text.get(
-              "plugin.records.workspace.evaluated",
-              i18nOLD.time.format(assessment.date)
-            ) + getShortenGradeExtension(assessment.grade)}
+            {t("labels.evaluated", {
+              ns: "studies",
+              date: i18nOLD.time.format(assessment.date),
+            }) + getShortenGradeExtension(assessment.grade)}
           </span>
         }
       >
@@ -57,8 +60,12 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
   } else if (assessment.state === "incomplete") {
     const status = i18nOLD.text.get(
       assessment.state === "incomplete"
-        ? "plugin.records.workspace.incomplete"
-        : "plugin.records.workspace.failed"
+        ? t("labels.incomplete", {
+            ns: "studies",
+          })
+        : t("labels.failed", {
+            ns: "studies",
+          })
     );
 
     return (
@@ -66,10 +73,10 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         openByHover
         content={
           <span>
-            {i18nOLD.text.get(
-              "plugin.records.workspace.evaluated",
-              i18nOLD.time.format(assessment.date)
-            ) +
+            {t("labels.evaluated", {
+              ns: "studies",
+              date: i18nOLD.time.format(assessment.date),
+            }) +
               " - " +
               status}
           </span>
@@ -94,11 +101,13 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           content={
             <span>
               {assessment.grade
-                ? i18nOLD.text.get(
-                    "plugin.records.workspace.evaluated",
-                    i18nOLD.time.format(assessment.date)
-                  ) + getShortenGradeExtension(assessment.grade)
-                : i18nOLD.text.get("plugin.records.workspace.notEvaluated")}
+                ? t("labels.evaluated", {
+                    ns: "studies",
+                    date: i18nOLD.time.format(assessment.date),
+                  }) + getShortenGradeExtension(assessment.grade)
+                : t("content.notEvaluated", {
+                    ns: "studies",
+                  })}
             </span>
           }
         >

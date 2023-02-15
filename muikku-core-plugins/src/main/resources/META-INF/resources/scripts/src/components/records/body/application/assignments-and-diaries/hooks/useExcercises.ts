@@ -7,7 +7,7 @@ import {
   MaterialContentNodeType,
 } from "~/reducers/workspaces";
 import { AssignmentsTabType } from "../assignments-and-diaries";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { useTranslation } from "react-i18next";
 
 /**
  * UseFollowUpGoalsState
@@ -30,16 +30,16 @@ const initialState: UseAssignmentExcerciseState = {
  *
  * @param workspaceId workspaceId
  * @param tabOpen tabOpen
- * @param i18nOLD i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useExcerciseAssignments = (
   workspaceId: number,
   tabOpen: AssignmentsTabType,
-  i18nOLD: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
+  const { t } = useTranslation(["studies", "common"]);
+
   const [excerciseAssignmentsData, setExcerciseAssignmentsData] =
     React.useState(initialState);
 
@@ -106,10 +106,16 @@ export const useExcerciseAssignments = (
         }
       } catch (err) {
         if (!isCancelled) {
+          t("notifications.loadError", {
+            ns: "studies",
+            context: "workspaceAssignments",
+          });
+
           displayNotification(
-            `${i18nOLD.text.get(
-              "plugin.records.errormessage.workspaceAssignmentsExcerciseLoadFailed"
-            )}, ${err.message}`,
+            `${t("notifications.loadError", {
+              ns: "studies",
+              context: "workspaceExercises",
+            })}, ${err.message}`,
             "error"
           );
           setExcerciseAssignmentsData((excerciseAssignmentsData) => ({
@@ -139,7 +145,7 @@ export const useExcerciseAssignments = (
     displayNotification,
     tabOpen,
     excerciseAssignmentsData.excerciseAssignments.length,
-    i18nOLD,
+    t,
   ]);
 
   return {

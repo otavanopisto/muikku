@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/form.scss";
@@ -20,8 +19,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * HopsProps
  */
-interface HopsProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
+interface HopsProps extends WithTranslation {
   records: RecordsType;
   status: StatusType;
   hops: HOPSType;
@@ -69,7 +67,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   renderUpperSecondaryHops = () => (
     <section>
       <h2 className="application-panel__content-header">
-        {this.props.i18nOLD.text.get("plugin.records.hops.title")}
+        {this.props.t("labels.title", { ns: "hops" })}
       </h2>
       <HopsGraph onHopsChange={this.setHopsToWithDelay} />
     </section>
@@ -86,7 +84,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
     ) {
       return (
         <div className="empty">
-          <span>Hopsia ei ole aktivoitu ohjaajan toimesta!</span>
+          <span>
+            {this.props.t("content.hopsNotActivatedByCouncelor", {
+              ns: "hops",
+            })}
+          </span>
         </div>
       );
     }
@@ -139,7 +141,6 @@ class Hops extends React.Component<HopsProps, HopsState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     records: (state as any).records,
     hops: state.hops,
@@ -155,6 +156,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setHopsTo }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["hops", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(Hops)
 );

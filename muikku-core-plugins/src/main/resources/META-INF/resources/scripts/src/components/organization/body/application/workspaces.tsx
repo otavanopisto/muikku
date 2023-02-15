@@ -7,7 +7,6 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
 import Workspace from "./workspaces/workspace";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/ref-wrapper.scss";
 import { LoadMoreWorkspacesFromServerTriggerType } from "~/actions/workspaces";
 import { loadMoreOrganizationWorkspacesFromServer } from "~/actions/workspaces/organization";
@@ -18,12 +17,12 @@ import {
   WorkspaceListType,
 } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
+import { useTranslation } from "react-i18next";
 
 /**
  * OrganizationWorkspacesProps
  */
 interface OrganizationWorkspacesProps {
-  i18nOLD: i18nType;
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
@@ -37,37 +36,35 @@ interface OrganizationWorkspacesProps {
 const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
   props
 ) => {
+  const { t } = useTranslation(["common", "organization", "workspace"]);
+
   const {
     workspacesState,
     workspacesHasMore,
     loadMoreOrganizationWorkspacesFromServer,
     workspaces,
   } = props;
+
   const loadMoreWorkspacesRef = useInfinityScroll(
     workspacesHasMore,
     workspacesState,
     loadMoreOrganizationWorkspacesFromServer
   );
+
   if (workspacesState === "LOADING") {
     return null;
   } else if (workspacesState === "ERROR") {
     return (
       <div className="empty">
         <span>
-          {props.i18nOLD.text.get(
-            "plugin.organization.workspaces.error.loadError"
-          )}
+          {t("notifications.loadError", { ns: "workspace", count: 1 })}
         </span>
       </div>
     );
   } else if (workspaces.length === 0) {
     return (
       <div className="empty">
-        <span>
-          {props.i18nOLD.text.get(
-            "plugin.organization.workspaces.searchResult.empty"
-          )}
-        </span>
+        <span>{t("content.empty", { ns: "workspace" })}</span>
       </div>
     );
   }
@@ -103,7 +100,6 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspacesState: state.organizationWorkspaces.state,
     workspacesHasMore: state.organizationWorkspaces.hasMore,
     workspaces: state.organizationWorkspaces.availableWorkspaces,
