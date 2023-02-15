@@ -47,6 +47,12 @@
   justify-content: flex-start;
 }
 
+.form__buttons--notebook {
+  .button {
+    margin: 0 10px 0 0;
+  }
+}
+
 .form__buttons--evaluation {
   justify-content: center;
 
@@ -101,7 +107,7 @@ legend {
 
 .form__legend {
   display: block;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 600;
   padding: 0 0 5px;
@@ -133,7 +139,7 @@ legend {
 
   label {
     display: block;
-    font-family: $text-font-family;
+    font-family: $system-font-family;
     font-size: $text-mobile-font-size;
     font-weight: 600;
     padding: 0 0 5px;
@@ -358,7 +364,7 @@ legend {
   appearance: none;
   border: solid 2px $color-form-element-border;
   border-radius: 2px;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   height: $input-height-mobile;
   padding: 0 10px;
@@ -376,6 +382,10 @@ legend {
   &.VALID {
     border-color: $color-success;
   }
+}
+
+.form-element__input--note-title {
+  width: 100%;
 }
 
 .form-element__input--material-editor-title {
@@ -531,7 +541,7 @@ legend {
   background-color: transparent;
   border: 2px solid $color-form-element-border;
   border-radius: 2px;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   height: $select-height-mobile;
   padding: 0 25px 0 10px;
@@ -630,7 +640,7 @@ legend {
   background-color: transparent;
   border: 2px solid $color-form-element-border;
   border-radius: 2px;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   min-height: 150px;
   padding: 8px 10px;

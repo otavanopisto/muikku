@@ -331,7 +331,7 @@ public class EvaluationRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-    UserEntityName studentName = userEntityController.getName(studentEntity);
+    UserEntityName studentName = userEntityController.getName(studentEntity, true);
     
     // Result object
     
@@ -363,7 +363,7 @@ public class EvaluationRESTService extends PluginRESTService {
     workspaceAssessments.sort(Comparator.comparing(WorkspaceAssessment::getDate));
     Set<SchoolDataIdentifier> seenWorkspaceSubjects = new HashSet<>();
     for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
-      UserEntityName assessorName = userEntityController.getName(workspaceAssessment.getAssessingUserIdentifier());
+      UserEntityName assessorName = userEntityController.getName(workspaceAssessment.getAssessingUserIdentifier(), true);
       
       // More data from Pyramus (urgh)
 
@@ -405,7 +405,7 @@ public class EvaluationRESTService extends PluginRESTService {
         studentEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
     for (SupplementationRequest supplementationRequest : supplementationRequests) {
       UserEntity assessorEntity = userEntityController.findUserEntityById(supplementationRequest.getUserEntityId());
-      UserEntityName assessorName = userEntityController.getName(assessorEntity);
+      UserEntityName assessorName = userEntityController.getName(assessorEntity, true);
       RestEvaluationEvent event = new RestEvaluationEvent();
       event.setWorkspaceSubjectIdentifier(supplementationRequest.getWorkspaceSubjectIdentifier());
       event.setStudent(studentName.getDisplayName());
@@ -475,7 +475,7 @@ public class EvaluationRESTService extends PluginRESTService {
         RestEvaluationEvent event = new RestEvaluationEvent();
         event.setWorkspaceSubjectIdentifier(null);
         event.setStudent(studentName.getDisplayName());
-        event.setAuthor(userEntityController.getName(assessor).getDisplayName());
+        event.setAuthor(userEntityController.getName(assessor, true).getDisplayName());
         event.setDate(evaluation.getEvaluated());
         event.setIdentifier(evaluation.getId().toString());
         event.setText(evaluation.getVerbalAssessment());
@@ -1491,7 +1491,7 @@ public class EvaluationRESTService extends PluginRESTService {
 
     String creatorName = null;
     if (creatorEntity != null) {
-      UserEntityName userEntityName = userEntityController.getName(creatorEntity);
+      UserEntityName userEntityName = userEntityController.getName(creatorEntity, false);
       creatorName = userEntityName != null ? userEntityName.getDisplayName() : null; 
     }
     restFeedback.setId(journalFeedback.getId());
@@ -1680,7 +1680,7 @@ public class EvaluationRESTService extends PluginRESTService {
     UserEntity userEntity = userEntityController.findUserEntityById(interimEvaluationRequest.getUserEntityId());            
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(interimEvaluationRequest.getWorkspaceEntityId());
     WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
-    UserEntityName userEntityName = userEntityController.getName(userEntity.defaultSchoolDataIdentifier());
+    UserEntityName userEntityName = userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true);
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
         workspaceEntity, userEntity.defaultSchoolDataIdentifier());
     WorkspaceUser workspaceUser = workspaceUserEntity == null

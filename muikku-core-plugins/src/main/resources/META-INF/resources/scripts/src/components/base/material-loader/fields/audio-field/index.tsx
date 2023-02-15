@@ -19,8 +19,7 @@ import { createFieldSavedStateClass } from "../../base/index";
 if (!(window as any).MediaRecorder) {
   const script = document.createElement("script");
   // CONTEXTPATHREMOVED
-  script.src =
-    "/javax.faces.resource/scripts/dist/polyfill-mediarecorder.js.jsf";
+  script.src = "/scripts/dist/polyfill-mediarecorder.js";
   script.async = true;
   document.head.appendChild(script);
 }

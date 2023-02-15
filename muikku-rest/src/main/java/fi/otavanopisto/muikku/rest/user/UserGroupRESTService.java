@@ -464,7 +464,7 @@ public class UserGroupRESTService extends AbstractRESTService {
       Long userEntityId = userSchoolDataIdentifier.getUserEntity().getId();
       UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
 
-      UserEntityName userName = userEntityController.getName(userSchoolDataIdentifier.getUserEntity());
+      UserEntityName userName = userEntityController.getName(userSchoolDataIdentifier.getUserEntity(), true);
       String email = userEmailEntityController.getUserDefaultEmailAddress(userIdentifier, false);
       
       Map<String, String> propertyMap = new HashMap<String, String>();

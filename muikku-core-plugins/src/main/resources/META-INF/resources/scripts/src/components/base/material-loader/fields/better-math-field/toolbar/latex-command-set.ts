@@ -1,4 +1,4 @@
-//Source https://github.com/digabi/rich-text-editor/blob/master/app/latexCommandsWithSvg.js
+//Source https://github.com/digabi/rich-text-editor/blob/master/src/latexCommandsWithSvg.js
 /**
  * LatexCommandType
  */
