@@ -18,6 +18,7 @@ import {
 } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
+import i18n from "~/locales/i18n";
 
 const MAX_LOADED_AT_ONCE = 30;
 
@@ -676,9 +677,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.title"
-            ),
+            i18n.t("validation.caption", { ns: "messaging" }),
             "error"
           )
         );
@@ -686,9 +685,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.content"
-            ),
+            i18n.t("validation.content", { ns: "messaging" }),
             "error"
           )
         );
@@ -775,9 +772,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.title"
-            ),
+            i18n.t("validation.caption", { ns: "messaging" }),
             "error"
           )
         );
@@ -785,9 +780,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.content"
-            ),
+            i18n.t("validation.content", { ns: "messaging" }),
             "error"
           )
         );
@@ -1142,9 +1135,10 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.discussion.errormessage.deleteReply"
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "messaging",
+              context: "reply",
+            }),
             "error"
           )
         );
@@ -1278,9 +1272,7 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.discussion.errormessage.createForumArea.missing.areaName"
-            ),
+            i18n.t("validation.name", { ns: "messaging" }),
             "error"
           )
         );
@@ -1357,9 +1349,7 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.discussion.errormessage.createForumArea.missing.areaName"
-            ),
+            i18n.t("validation.name", { ns: "messaging" }),
             "error"
           )
         );
