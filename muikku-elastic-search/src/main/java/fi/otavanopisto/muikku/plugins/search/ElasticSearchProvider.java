@@ -392,7 +392,6 @@ public class ElasticSearchProvider implements SearchProvider {
           .query(query)
           .from(start)
           .size(maxResults)
-          .sort("_score", SortOrder.DESC)
           .sort("lastName.untouched", SortOrder.ASC)
           .sort("firstName.untouched", SortOrder.ASC);
 
