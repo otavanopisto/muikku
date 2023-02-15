@@ -83,10 +83,8 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
 
   const notebookBodyRef = React.useRef<HTMLDivElement>(null);
 
-  const openString = `opened-notes-${props.currentWorkspace.id}-${props.status.userId}`;
-
   const [openedItems, setOpenedItems] = useLocalStorage<number[]>(
-    openString,
+    `opened-notes-${props.currentWorkspace.id}-${props.status.userId}`,
     []
   );
   const [editOrder, setEditOrder] = React.useState<boolean>(false);
