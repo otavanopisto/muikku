@@ -16,14 +16,24 @@ export function queueJax() {
 let queue: Array<Function> = [];
 
 export const MATHJAXCONFIG = {
-  jax: ["input/TeX", "output/SVG"],
+  jax: [
+    "input/TeX",
+    "input/MathML",
+    "input/AsciiMath",
+    "output/HTML-CSS",
+    "output/NativeMML",
+    "output/PreviewHTML",
+  ],
   extensions: [
     "toMathML.js",
     "tex2jax.js",
     "MathMenu.js",
+    "mml2jax.js",
+    "asciimath2jax.js",
     "MathZoom.js",
     "fast-preview.js",
     "AssistiveMML.js",
+    "a11y/accessibility-menu.js",
   ],
   TeX: {
     extensions: [
@@ -40,9 +50,20 @@ export const MATHJAXCONFIG = {
     EqnChunk: 1000000,
     EqnDelay: 0,
     font: "STIX-Web",
-    scale: "80",
+    scale: "100",
+    minScaleAdjust: "90",
     lineBreaks: { automatic: true },
   },
+  MathML: {
+    useMathMLspacing: true,
+  },
+  NativeMML: {
+    scale: 100,
+    matchFontHeight: true,
+  },
+  showProcessingMessages: true,
+  messageStyle: "normal",
+  showMathMenu: true,
 };
 
 export const MATHJAXSRC =

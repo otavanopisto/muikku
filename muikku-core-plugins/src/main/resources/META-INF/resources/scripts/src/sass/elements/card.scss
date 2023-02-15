@@ -22,7 +22,7 @@
   border-radius: 3px;
   display: flex;
   flex-direction: column;
-  font-family: $card-font-family;
+  font-family: $branded-font-family;
   height: 100%;
   min-height: 45px;
   overflow: hidden;
@@ -196,7 +196,7 @@
 .card--ceepos {
   background: transparent;
   border: 0;
-  font-family: "Open Sans", "Arial", sans-serif;
+  font-family: $system-font-family;
   height: auto;
   margin: 10px;
   max-width: 430px;
@@ -219,7 +219,7 @@
 
 .card__hero-text--ceepos {
   color: $color-info;
-  font-family: "Exo 2", "Arial", sans-serif;
+  font-family: $branded-font-family;
   font-size: 2rem;
   font-weight: 900;
   padding: 0 1rem;

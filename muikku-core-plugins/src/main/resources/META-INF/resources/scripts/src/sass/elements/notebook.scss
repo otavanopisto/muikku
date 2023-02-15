@@ -1,0 +1,166 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.notebook {
+  background: $color-default;
+  border-bottom: solid 1px $color-application-panel-box-border;
+  border-left: solid 1px $color-application-panel-box-border;
+  border-right: solid 1px $color-application-panel-box-border;
+  display: flex;
+  flex-flow: column wrap;
+  height: 100%;
+  width: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+
+.notebook__actions {
+  align-items: center;
+  display: flex;
+  height: 2.625rem;
+  justify-content: flex-end;
+}
+
+.notebook__body {
+  height: calc(100vh - 77px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
+  scrollbar-width: thin;
+
+  @include breakpoint($breakpoint-pad) {
+    bottom: 0;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 2.625rem;
+  }
+}
+
+.notebook__editor {
+  padding: 0 10px;
+
+  .cke {
+    // This needs to be here so we can override the ckeditor's visuals/size partly
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
+  }
+
+  /* stylelint-disable selector-class-pattern */
+  .cke_wysiwyg_div {
+    min-height: 150px;
+  }
+  /* stylelint-enable selector-class-pattern */
+
+  &.state-OPEN {
+    padding: 0 10px 10px;
+  }
+}
+
+.notebook__items {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 0 10px 10px;
+  position: relative;
+}
+
+.notebook__item {
+  border: 1px solid $color-default-separator-border;
+  border-radius: 3px;
+  box-shadow: 0 0 15px rgba(0 0 0 / 2%);
+  padding: 10px;
+  width: 100%;
+
+  &.state-DELETING {
+    border: 2px solid $color-fatal;
+    padding: 9px;
+  }
+}
+
+.notebook__item-delete {
+  align-items: center;
+  background: lighten($color-fatal, 40%);
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 5px 0 10px;
+  padding: 10px;
+}
+
+.notebook__item-description {
+  font-weight: 400;
+  margin: 5px 0;
+}
+
+.notebook__item-buttonset {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 5px 0;
+
+  .button {
+    margin: 0 5px;
+  }
+}
+
+.notebook__item-header {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+}
+
+.notebook__item-title {
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 0.9375rem;
+  }
+}
+
+.notebook__item-actions {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 5px;
+  width: 100%;
+}
+
+.notebook__item-body {
+  &.rich-text {
+    font-size: 0.8125rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 0.9375rem;
+      line-height: 1.5rem;
+    }
+  }
+
+  p {
+    margin: 10px 0;
+  }
+
+  p:first-child {
+    margin-top: 0;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}

@@ -5,6 +5,7 @@ export interface SpecialCharacterType {
   character: string;
   latexCommand: string;
   popular?: boolean;
+  noWrite?: boolean;
 }
 
 export default [
@@ -113,7 +114,7 @@ export default [
       { character: "∅", latexCommand: "\\empty" },
       { character: "∧", latexCommand: "\\and" },
       { character: "∨", latexCommand: "\\or" },
-      { character: "¬" },
+      { character: "¬", latexCommand: "\\neg" },
     ],
   },
 ];

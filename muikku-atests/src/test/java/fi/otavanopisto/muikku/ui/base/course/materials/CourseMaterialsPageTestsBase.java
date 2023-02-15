@@ -1152,14 +1152,13 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
-          waitForElementToBeClickable(".cke_wysiwyg_div p");
-          addTextToCKEditor(contentInput);
+          addTextToSpesificCKEditor(".material-page__memofield-wrapper", contentInput);
           waitForPresent(".material-page__memofield-wrapper.state-SAVED");
           navigate("/", false);
           waitForPresent(".panel__header-title");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
-          String actualInput = getCKEditorContentInMaterials();
+          String actualInput = getVisibleCKEditorContentInMaterials();
           assertEquals(contentInput, actualInput);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
