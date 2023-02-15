@@ -252,7 +252,7 @@ public class ElasticSearchProvider implements SearchProvider {
       BoolQueryBuilder query = boolQuery();
 
       if (!Boolean.TRUE.equals(includeHidden)) {
-        query.filter(boolQuery().mustNot(termQuery("hidden", true)));
+        query.mustNot(termQuery("hidden", true));
       }
 
       if (Boolean.TRUE.equals(onlyDefaultUsers)) {
@@ -278,7 +278,7 @@ public class ElasticSearchProvider implements SearchProvider {
         for (SchoolDataIdentifier excludeSchoolDataIdentifier : excludeSchoolDataIdentifiers) {
           excludeIdsQuery.addIds(String.format("%s/%s", excludeSchoolDataIdentifier.getIdentifier(), excludeSchoolDataIdentifier.getDataSource()));
         }
-        query.filter(boolQuery().mustNot(excludeIdsQuery));
+        query.mustNot(excludeIdsQuery);
       }
 
       if (startedStudiesBefore != null) {
@@ -387,6 +387,8 @@ public class ElasticSearchProvider implements SearchProvider {
             )
         );
       }
+      
+      System.out.println(query.toString());
       
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)
