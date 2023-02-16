@@ -12,17 +12,17 @@ import { i18nType } from "~/reducers/base/i18n";
 /**
  * UseFollowUpGoalsState
  */
-export interface UseAssignmentExcerciseState {
+export interface UseAssignmentExerciseState {
   isLoading: boolean;
-  excerciseAssignments: MaterialContentNodeType[];
+  exerciseAssignments: MaterialContentNodeType[];
 }
 
 /**
  * Intial state
  */
-const initialState: UseAssignmentExcerciseState = {
+const initialState: UseAssignmentExerciseState = {
   isLoading: false,
-  excerciseAssignments: [],
+  exerciseAssignments: [],
 };
 
 /**
@@ -34,27 +34,27 @@ const initialState: UseAssignmentExcerciseState = {
  * @param displayNotification displayNotification
  * @returns student study hours
  */
-export const useExcerciseAssignments = (
+export const useExerciseAssignments = (
   workspaceId: number,
   tabOpen: AssignmentsTabType,
   i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
-  const [excerciseAssignmentsData, setExcerciseAssignmentsData] =
+  const [exerciseAssignmentsData, setExerciseAssignmentsData] =
     React.useState(initialState);
 
   React.useEffect(() => {
     let isCancelled = false;
 
     /**
-     * loadExcercisenData
+     * loadExercisenData
      * Loads student activity data
      * @param workspaceId of student
      */
-    const loadExcercisenData = async (workspaceId: number) => {
+    const loadExercisenData = async (workspaceId: number) => {
       if (!isCancelled) {
-        setExcerciseAssignmentsData((excerciseAssignmentsData) => ({
-          ...excerciseAssignmentsData,
+        setExerciseAssignmentsData((exerciseAssignmentsData) => ({
+          ...exerciseAssignmentsData,
           isLoading: true,
         }));
       }
@@ -98,9 +98,9 @@ export const useExcerciseAssignments = (
         ]);
 
         if (!isCancelled) {
-          setExcerciseAssignmentsData((excerciseAssignmentsData) => ({
-            ...excerciseAssignmentsData,
-            excerciseAssignments: materials,
+          setExerciseAssignmentsData((exerciseAssignmentsData) => ({
+            ...exerciseAssignmentsData,
+            exerciseAssignments: materials,
             isLoading: false,
           }));
         }
@@ -108,12 +108,12 @@ export const useExcerciseAssignments = (
         if (!isCancelled) {
           displayNotification(
             `${i18n.text.get(
-              "plugin.records.errormessage.workspaceAssignmentsExcerciseLoadFailed"
+              "plugin.records.errormessage.workspaceAssignmentsExerciseLoadFailed"
             )}, ${err.message}`,
             "error"
           );
-          setExcerciseAssignmentsData((excerciseAssignmentsData) => ({
-            ...excerciseAssignmentsData,
+          setExerciseAssignmentsData((exerciseAssignmentsData) => ({
+            ...exerciseAssignmentsData,
             isLoading: false,
           }));
         }
@@ -126,9 +126,9 @@ export const useExcerciseAssignments = (
      */
     if (
       tabOpen === "EXERCISE" &&
-      excerciseAssignmentsData.excerciseAssignments.length === 0
+      exerciseAssignmentsData.exerciseAssignments.length === 0
     ) {
-      loadExcercisenData(workspaceId);
+      loadExercisenData(workspaceId);
     }
 
     return () => {
@@ -138,11 +138,11 @@ export const useExcerciseAssignments = (
     workspaceId,
     displayNotification,
     tabOpen,
-    excerciseAssignmentsData.excerciseAssignments.length,
+    exerciseAssignmentsData.exerciseAssignments.length,
     i18n,
   ]);
 
   return {
-    excerciseAssignmentsData,
+    exerciseAssignmentsData,
   };
 };

@@ -22,7 +22,7 @@ import {
   loadUserWorkspaceEducationFiltersFromServer,
 } from "~/actions/workspaces";
 import {
-  loadLastWorkspaceFromServer,
+  loadLastWorkspacesFromServer,
   loadUserWorkspacesFromServer,
 } from "~/actions/workspaces";
 import {
@@ -628,7 +628,7 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action
       );
-      this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
+      this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
       this.props.store.dispatch(

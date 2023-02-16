@@ -70,7 +70,7 @@ class DeleteJournalComment extends React.Component<
         journalEntryId: this.props.journalComment.journalEntryId,
       },
       journalEntryId: this.props.journalComment.journalEntryId,
-      workspaceEntityId: 1,
+      workspaceEntityId: this.props.workspaceEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
         localStorage.removeItem(
