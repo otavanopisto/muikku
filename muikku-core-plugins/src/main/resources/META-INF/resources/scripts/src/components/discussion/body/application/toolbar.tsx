@@ -1,15 +1,12 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/breadcrumb.scss";
 import "~/sass/elements/application-panel.scss";
-
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 import "~/sass/elements/react-select-override.scss";
-
 import { i18nType } from "~/reducers/base/i18n";
 import { DiscussionType } from "~/reducers/discussion";
 import NewArea from "../../dialogs/new-area";
@@ -204,9 +201,7 @@ class DiscussionToolbar extends React.Component<
       },
       {
         value: "subs",
-        label: this.props.i18n.text.get(
-          "plugin.discussion.browseareas.subscribtions"
-        ),
+        label: "Tilatut keskustelut",
       },
       ...otherOptions,
     ];

@@ -12,7 +12,7 @@ import DiscussionCurrentThread from "./application/discussion-current-thread";
 import Button from "~/components/general/button";
 import "~/sass/elements/link.scss";
 import { AnyActionType } from "../../../actions/index";
-import DiscussionSubscribedThreads from "./application/discussion-subscribed-threads";
+import DiscussionSubscriptions from "./application/discussion-subscriptions";
 
 /**
  * DiscussionApplicationState
@@ -73,7 +73,7 @@ class DiscussionApplication extends React.Component<
           {!this.props.discussion.subscribedThreadOnly && <DiscussionThreads />}
 
           {this.props.discussion.subscribedThreadOnly && (
-            <DiscussionSubscribedThreads />
+            <DiscussionSubscriptions />
           )}
 
           <DiscussionCurrentThread />
