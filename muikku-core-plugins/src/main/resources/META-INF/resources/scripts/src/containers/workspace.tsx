@@ -24,13 +24,14 @@ import { RouteComponentProps } from "react-router";
 import {
   setCurrentWorkspace,
   loadStaffMembersOfWorkspace,
-  updateLastWorkspace,
+  updateLastWorkspaces,
   loadStudentsOfWorkspace,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadCurrentWorkspaceUserGroupPermissions,
   loadWorkspaceChatStatus,
   setAvailableCurriculums,
+  loadLastWorkspacesFromServer,
 } from "~/actions/workspaces";
 import {
   loadAnnouncementsAsAClient,
@@ -296,8 +297,9 @@ export default class Workspace extends React.Component<
 
         if (state.workspaces.currentWorkspace.isCourseMember) {
           this.props.store.dispatch(
-            updateLastWorkspace({
+            updateLastWorkspaces({
               url: location.origin + location.pathname,
+              workspaceId: state.workspaces.currentWorkspace.id,
               workspaceName: state.workspaces.currentWorkspace.name,
               materialName:
                 state.workspaces.currentMaterials[0].children[0].title,
@@ -340,8 +342,9 @@ export default class Workspace extends React.Component<
         });
         if (indexFound !== -1) {
           this.props.store.dispatch(
-            updateLastWorkspace({
+            updateLastWorkspaces({
               url: location.origin + location.pathname + newHash,
+              workspaceId: state.workspaces.currentWorkspace.id,
               workspaceName: state.workspaces.currentWorkspace.name,
               materialName: materialChapter.children[indexFound].title,
             }) as Action
@@ -883,6 +886,8 @@ export default class Workspace extends React.Component<
           state.status.currentWorkspaceId
         ) as Action
       );
+
+      this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
       this.props.store.dispatch(
         loadWholeWorkspaceMaterials(
           state.status.currentWorkspaceId,
