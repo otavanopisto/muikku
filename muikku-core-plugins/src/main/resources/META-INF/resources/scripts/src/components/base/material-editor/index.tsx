@@ -43,6 +43,7 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
+import { langAttributeLocale } from "~/helper-functions/locale";
 
 /**
  * MaterialEditorProps
@@ -1115,7 +1116,7 @@ class MaterialEditor extends React.Component<
                         </option>
                         {languageOptions.map((language) => (
                           <option key={language} value={language}>
-                            {language.toUpperCase()}
+                            {langAttributeLocale[language]}
                           </option>
                         ))}
                       </select>
@@ -1237,7 +1238,7 @@ class MaterialEditor extends React.Component<
                       </option>
                       {languageOptions.map((language) => (
                         <option key={language} value={language}>
-                          {language.toUpperCase()}
+                          {langAttributeLocale[language]}
                         </option>
                       ))}
                     </select>
