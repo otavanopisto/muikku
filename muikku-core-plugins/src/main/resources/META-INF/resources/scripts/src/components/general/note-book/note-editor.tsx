@@ -105,6 +105,8 @@ class NoteEditor extends SessionStateComponent<
   NoteEditorProps,
   NoteEditorState
 > {
+  private inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+  private focusIsUsed = false;
   /**
    * Constructor
    *
@@ -135,6 +137,8 @@ class NoteEditor extends SessionStateComponent<
    * componentDidMount
    */
   componentDidMount() {
+    this.inputRef.current.focus();
+
     this.setState(
       this.getRecoverStoredState(
         {
@@ -156,6 +160,13 @@ class NoteEditor extends SessionStateComponent<
     prevProps: Readonly<NoteEditorProps>,
     prevState: Readonly<NoteEditorState>
   ): void {
+    // Focus input if editor is opened, this is done only once for each active editor
+    // and is reset when note is changed or editor is closed
+    if (this.props.editorOpen && !this.focusIsUsed) {
+      this.inputRef.current.focus();
+      this.focusIsUsed = true;
+    }
+
     if (prevProps.note?.id !== this.props.note?.id) {
       const { status, currentWorkspace } = this.props;
 
@@ -235,6 +246,7 @@ class NoteEditor extends SessionStateComponent<
           );
 
           this.props.toggleNotebookEditor({ open: false });
+          this.focusIsUsed = false;
         },
       });
     } else {
@@ -256,6 +268,7 @@ class NoteEditor extends SessionStateComponent<
           );
 
           this.props.toggleNotebookEditor({ open: false });
+          this.focusIsUsed = false;
         },
       });
     }
@@ -266,6 +279,7 @@ class NoteEditor extends SessionStateComponent<
    */
   handleCancelClick = () => {
     this.props.toggleNotebookEditor({ open: false });
+    this.focusIsUsed = false;
   };
 
   /**
@@ -287,6 +301,7 @@ class NoteEditor extends SessionStateComponent<
                 </label>
 
                 <input
+                  ref={this.inputRef}
                   className="form-element__input form-element__input--note-title"
                   id="note-entry-title"
                   value={this.state.noteTitle}

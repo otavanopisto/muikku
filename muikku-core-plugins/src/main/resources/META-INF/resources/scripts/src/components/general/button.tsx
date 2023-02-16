@@ -239,9 +239,9 @@ export class IconButton extends React.Component<IconButtonProps, ButtonState> {
             ? reactivationDelayWrapper.bind(null, this.props.onClick)
             : null
         }
-        className={`button-icon ${(modifiers || [])
-          .map((s) => `button-icon--${s}`)
-          .join(" ")}`}
+        className={`button-icon ${
+          this.props.className ? this.props.className : ""
+        } ${(modifiers || []).map((s) => `button-icon--${s}`).join(" ")}`}
       >
         {this.props.icon && <span className={`icon-${this.props.icon}`}></span>}
         {this.props.children}
