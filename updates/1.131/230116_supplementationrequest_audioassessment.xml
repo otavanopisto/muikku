@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>alter table WorkspaceMaterialEvaluation add column evaluationType varchar(255) not null;</sql>
+  <sql>alter table WorkspaceMaterialEvaluation add column archived bit not null;</sql>
+  
+  <sql>update WorkspaceMaterialEvaluation set evaluationType = 'ASSESSMENT';</sql>
+  <sql>update WorkspaceMaterialEvaluation set archived = false;</sql>
+
+  <sql>
+    insert into WorkspaceMaterialEvaluation (studentEntityId, workspaceMaterialId, assessorEntityId, verbalAssessment, evaluated, evaluationType, archived)
+      select studentEntityId, workspaceMaterialId, userEntityId, requestText, requestDate, 'SUPPLEMENTATIONREQUEST', archived
+      from SupplementationRequest
+      where workspaceMaterialId is not null;
+  </sql>
+  
+  <sql>delete from SupplementationRequest where workspaceMaterialId is not null;</sql>
+  <sql>alter table SupplementationRequest drop index sr_student_material;</sql>
+  <sql>alter table SupplementationRequest drop column workspaceMaterialId;</sql>
+  
+</update>

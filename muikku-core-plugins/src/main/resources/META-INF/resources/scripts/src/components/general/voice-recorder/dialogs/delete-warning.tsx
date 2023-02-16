@@ -13,9 +13,11 @@ import { i18nType } from "~/reducers/base/i18n";
  */
 interface DeleteDialogProps {
   i18n: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
   onDeleteAudio: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
 }
 
@@ -33,7 +35,7 @@ class DeleteDialog extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: DeleteDialogProps) {
     super(props);
@@ -46,6 +48,7 @@ class DeleteDialog extends React.Component<
    * handleDeleteEventClick
    * @param closeDialog closeDialog
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleDeleteAudioFieldClick(closeDialog: () => any) {
     this.props.onDeleteAudio();
     closeDialog();
@@ -61,6 +64,7 @@ class DeleteDialog extends React.Component<
      * @param closeDialog closeDialog
      * @returns JSX.Element
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -87,6 +91,7 @@ class DeleteDialog extends React.Component<
      * @param closeDialog closeDialog
      * @returns JSX.Element
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
@@ -115,7 +120,7 @@ class DeleteDialog extends React.Component<
  */
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -125,7 +130,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);

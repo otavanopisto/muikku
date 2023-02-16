@@ -197,8 +197,8 @@ class HopsMotivationAndStudySkills extends React.Component<
                   scaleLength={5}
                   labelOnSeparateRow={true}
                   label="Tehtävien tekeminen"
-                  selectedValue={wayToLearn.byDoingExcercises}
-                  groupName="byDoingExcercises"
+                  selectedValue={wayToLearn.byDoingExercises}
+                  groupName="byDoingExercises"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                   required

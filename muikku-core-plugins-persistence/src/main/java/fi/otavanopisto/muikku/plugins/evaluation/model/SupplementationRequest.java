@@ -18,8 +18,7 @@ import javax.validation.constraints.NotNull;
 @Table (
   indexes = {
     @Index ( name = "sr_student_workspace", columnList = "studentEntityId, workspaceEntityId" ),
-    @Index ( name = "sr_student_workspace_subject", columnList = "studentEntityId, workspaceEntityId, workspaceSubjectIdentifier" ),
-    @Index ( name = "sr_student_material", columnList = "studentEntityId, workspaceMaterialId" )
+    @Index ( name = "sr_student_workspace_subject", columnList = "studentEntityId, workspaceEntityId, workspaceSubjectIdentifier" )
   }
 )
 public class SupplementationRequest {
@@ -64,14 +63,6 @@ public class SupplementationRequest {
     this.workspaceEntityId = workspaceEntityId;
   }
 
-  public Long getWorkspaceMaterialId() {
-    return workspaceMaterialId;
-  }
-
-  public void setWorkspaceMaterialId(Long workspaceMaterialId) {
-    this.workspaceMaterialId = workspaceMaterialId;
-  }
-
   public String getRequestText() {
     return requestText;
   }
@@ -112,8 +103,6 @@ public class SupplementationRequest {
   
   private String workspaceSubjectIdentifier;
   
-  private Long workspaceMaterialId;
-
   @NotNull
   @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)

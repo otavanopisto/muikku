@@ -7,7 +7,10 @@ import {
   WorkspaceStudentListType,
 } from "~/reducers/user-index";
 import { repairContentNodes } from "~/util/modifiers";
-import { AudioAssessment } from "../../@types/evaluation";
+import {
+  AssignmentEvaluationType,
+  AudioAssessment,
+} from "../../@types/evaluation";
 
 /**
  * OrganizationCourseTeacherType
@@ -717,8 +720,9 @@ export type MaterialCompositeRepliesStateType =
 export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>;
   state: MaterialCompositeRepliesStateType;
-
-  //Available sometimes
+  /**
+   * evaluationInfo of the material assignments
+   */
   evaluationInfo?: MaterialEvaluationInfo;
 
   //Available when loaded specifically (eg. via records)
@@ -736,7 +740,9 @@ export interface MaterialCompositeRepliesType {
  * MaterialEvaluationInfo
  */
 export interface MaterialEvaluationInfo {
+  id: number;
   type: MaterialCompositeRepliesStateType;
+  evaluationType: AssignmentEvaluationType;
   text: string;
   grade: string;
   date: string;
@@ -1053,7 +1059,7 @@ export const workspaces: Reducer<WorkspacesType> = (
       );
       if (!wasUpdated) {
         newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([
-          <MaterialCompositeRepliesType>action.payload,
+          <MaterialCompositeRepliesType>{ ...action.payload },
         ]);
       }
       return { ...state, currentMaterialsReplies: newCurrentMaterialsReplies };
