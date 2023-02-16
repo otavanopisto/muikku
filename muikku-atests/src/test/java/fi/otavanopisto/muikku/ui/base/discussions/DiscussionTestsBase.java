@@ -132,8 +132,9 @@ public class DiscussionTestsBase extends AbstractUITest {
       sleep(1000);
       waitAndClick(".env-dialog__actions .button--dialog-execute");
       waitUntilElementGoesAway(".env-dialog__actions", 10);
-      waitUntilCountOfElements(".application-panel__toolbar select.form-element__select--toolbar-selector option", 3);
-      assertTrue(isInSelection(".application-panel__toolbar select.form-element__select--toolbar-selector", "Test Area"));
+      waitAndClick(".application-panel__toolbar .react-select-override .react-select-override__control");
+      waitUntilCountOfElements(".application-panel__toolbar .react-select-override .react-select-override__menu .react-select-override__option", 3);
+      assertText(".application-panel__toolbar .react-select-override .react-select-override__menu .react-select-override__option:nth-child(3) .react-select-override__option-label", "Test area");
     } finally {
       cleanUpDiscussions();
       mockBuilder.wiremockReset();
@@ -181,8 +182,10 @@ public class DiscussionTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(admin);
         login();
         navigate("/discussion", false);
-        waitForPresent("#discussionAreaSelect");
-        selectOption("#discussionAreaSelect", "subs");
+        waitForPresent(".react-select-override");
+        //selectOption("#discussionAreaSelect", "subs");
+        waitAndClick(".react-select-override .react-select-override__control");
+        waitAndClick(".react-select-override .react-select-override__menu #react-select-2-option-1");
         waitForPresent(".application-list__item-header--discussion-thread-list");
         waitForVisible(".application-list__item-content-main--discussion .button-icon--discussion-subscription.active");
         waitAndClick(".application-list__item-header--discussion");
