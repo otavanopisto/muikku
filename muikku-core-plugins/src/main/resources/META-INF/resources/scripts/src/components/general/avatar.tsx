@@ -38,7 +38,7 @@ const Avatar = (props: AvatarProps) => {
       aria-label={avatarAriaLabel}
     >
       <div
-        className={`avatar avatar--category-${category}${
+        className={`avatar avatar--category-${category} ${
           props.size ? "avatar--" + props.size : ""
         }`}
       >
