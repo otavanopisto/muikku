@@ -1287,6 +1287,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
+          
+//          Create note
           waitAndClick("#notebook");
           waitAndClick(".notebook__actions .icon-plus");
           waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
@@ -1296,7 +1298,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           addTextToCKEditor(".notebook__editor.state-OPEN", note);
           waitAndClick(".notebook__editor.state-OPEN .button--dialog-execute");
           assertPresent(".notification-queue__items .notification-queue__item--success");
-
+//          Assert note
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
           waitAndClick("#notebook");
@@ -1305,7 +1307,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClick(".notebook__items .notebook__item-title");
           waitForPresent(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p");
           assertText(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p", note);
-          
+//          Edit note
           waitAndClick(".notebook__items .notebook__item .notebook__item-header .icon-pencil");
           waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
           clearElement(".notebook__editor.state-OPEN #note-entry-title");
@@ -1318,7 +1320,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForVisible(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p");
           assertText(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p", "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. "
               + "The all mighty vendace is nigh! (edited)");
-         
+//         Create second note
           waitAndClick(".notebook__actions .icon-plus");
           waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
           waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "Second test note");
@@ -1327,7 +1329,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           addTextToCKEditor(".notebook__editor.state-OPEN", note);
           waitAndClick(".notebook__editor.state-OPEN .button--dialog-execute");
           assertPresent(".notification-queue__items .notification-queue__item--success");
-          
+//        Test expand function      
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
           waitAndClick("#notebook");
@@ -1336,11 +1338,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClick(".notebook__actions .icon-arrow-down");
           waitForPresent(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-auto .notebook__item-body p");
           assertText(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-auto .notebook__item-body p", note);
-          
+//        Test collapse function
           waitAndClick(".notebook__actions .icon-arrow-up");
           waitForPresent(".notebook__items .draggable-element:first-child .notebook__item .rah-static--height-specific");
           waitForPresent(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-specific");
-
+//          Test deleting
           waitAndClickAndConfirmVisible(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-header .icon-trash", ".notebook__items .draggable-element:last-child .notebook__item-delete .button--fatal", 5, 500);
           waitAndClick(".notebook__items .draggable-element:last-child .notebook__item-delete .button--fatal");
           waitForNotVisible(".notebook__items .draggable-element:last-child .notebook__item-delete .button--fatal");
