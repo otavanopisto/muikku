@@ -1,11 +1,9 @@
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
 import { WorkspaceType } from "~/reducers/workspaces";
 import GraphFilter from "~/components/general/graph/filters/graph-filter";
 import "~/sass/elements/chart.scss";
 import "~/sass/elements/filter.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let AmCharts: any = null;
@@ -13,8 +11,7 @@ let AmCharts: any = null;
 /**
  * CurrentStudentWorkspaceStatisticsProps
  */
-interface CurrentStudentWorkspaceStatisticsProps {
-  i18nOLD: i18nType;
+interface CurrentStudentWorkspaceStatisticsProps extends WithTranslation {
   workspace: WorkspaceType;
 }
 
@@ -193,7 +190,7 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "WORKSPACE_VISIT",
         balloonText:
-          this.props.i18nOLD.text.get("plugin.guider.visitsLabel") +
+          this.props.i18n.t("labels.visits", { ns: "guider" }) +
           " <b>[[WORKSPACE_VISIT]]</b>",
         fillAlphas: 0.7,
         lineAlpha: 0.2,
@@ -211,8 +208,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "MATERIAL_ASSIGNMENTDONE",
         balloonText:
-          this.props.i18nOLD.text.get("plugin.guider.assignmentsLabel") +
-          " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
+          this.props.i18n.t("labels.evaluables", {
+            count: 0,
+            ns: "materials",
+          }) + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         fillAlphas: 0.9,
         lineAlpha: 0.2,
         lineColor: "#ce01bd",
@@ -228,7 +227,7 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "MATERIAL_EXERCISEDONE",
         balloonText:
-          this.props.i18nOLD.text.get("plugin.guider.exercisesLabel") +
+          this.props.i18n.t("labels.exercises", { count: 0, ns: "materials" }) +
           " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         fillAlphas: 0.9,
         lineAlpha: 0.2,
@@ -335,14 +334,4 @@ class CurrentStudentStatistics extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-export default connect(mapStateToProps)(CurrentStudentStatistics);
+export default withTranslation()(CurrentStudentStatistics);

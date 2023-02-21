@@ -6,7 +6,6 @@ import Dialog, {
 import Tabs from "~/components/general/tabs";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
@@ -50,7 +49,6 @@ interface StudentDialogProps extends WithTranslation<["common"]> {
   currentStudentStatus: GuiderCurrentStudentStateType;
   onClose?: () => void;
   onOpen?: () => void;
-  i18nOLD: i18nType;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
@@ -158,17 +156,13 @@ class StudentDialog extends React.Component<
     const tabs = [
       {
         id: "STUDIES",
-        name: this.props.i18nOLD.text.get(
-          "plugin.guider.user.tabs.title.situation"
-        ),
+        name: this.props.i18n.t("labels.situation", { ns: "guider" }),
         type: "guider-student",
         component: <StateOfStudies />,
       },
       {
         id: "GUIDANCE_RELATIONS",
-        name: this.props.i18nOLD.text.get(
-          "plugin.guider.user.tabs.title.guidanceRelations"
-        ),
+        name: this.props.i18n.t("labels.relations", { ns: "guider" }),
         type: "guider-student",
         component: (
           <GuidanceRelation contactLogsPerPage={this.contactLogsPerPage} />
@@ -176,9 +170,7 @@ class StudentDialog extends React.Component<
       },
       {
         id: "STUDY_HISTORY",
-        name: this.props.i18nOLD.text.get(
-          "plugin.guider.user.tabs.title.studyHistory"
-        ),
+        name: this.props.i18n.t("labels.studyHistory", { ns: "guider" }),
         type: "guider-student",
         component: <StudyHistory />,
       },
@@ -311,7 +303,6 @@ class StudentDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     currentStudentStatus: state.guider.currentStudentState,
     guider: state.guider,

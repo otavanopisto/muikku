@@ -4,7 +4,6 @@ import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import mApi from "~/lib/mApi";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
@@ -24,14 +23,13 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * GuiderLabelShareDialogProps
  */
-interface GuiderLabelShareDialogProps extends WithTranslation<["common"]> {
+interface GuiderLabelShareDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   label: GuiderUserLabelType;
   isOpen?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
-  i18nOLD: i18nType;
   displayNotification: DisplayNotificationTriggerType;
   userIndex: UserIndexType;
 }
@@ -186,17 +184,13 @@ class GuiderLabelShareDialog extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.guider.flags.editFlagDialog.cancel"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
         <Button
           buttonModifiers={["success", "standard-ok"]}
           onClick={this.share.bind(this, closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.guider.flags.shareFlagDialog.save"
-          )}
+          {this.props.i18n.t("actions.save")}
         </Button>
       </div>
     );
@@ -225,10 +219,10 @@ class GuiderLabelShareDialog extends React.Component<
         onClose={this.props.onClose}
         onOpen={this.getShares}
         modifier="guider-share-label"
-        title={this.props.i18nOLD.text.get(
-          "plugin.guider.flags.shareFlagDialog.title",
-          this.props.label.name
-        )}
+        title={this.props.i18n.t("labels.share", {
+          ns: "flags",
+          flag: this.props.label.name,
+        })}
         content={content}
         footer={footer}
       >
@@ -244,7 +238,6 @@ class GuiderLabelShareDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     userIndex: state.userIndex,
   };
 }
@@ -257,6 +250,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["guider", "flags"])(
   connect(mapStateToProps, mapDispatchToProps)(GuiderLabelShareDialog)
 );

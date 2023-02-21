@@ -23,11 +23,12 @@ import {
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 /**
  * StudentWorkspaceProps
  */
-interface StudentWorkspaceProps extends WithTranslation<["common"]> {
+interface StudentWorkspaceProps extends WithTranslation {
   /**Localization */
   i18nOLD: i18nType;
   workspace: WorkspaceType;
@@ -92,25 +93,43 @@ class StudentWorkspace extends React.Component<
       case "pending":
       case "pending_pass":
       case "pending_fail":
-        stateText = "plugin.guider.assessmentState.PENDING";
+        stateText = this.props.i18n.t("labels.sent", {
+          context: "evaluationRequest",
+        });
         break;
       case "pass":
-        stateText = "plugin.guider.assessmentState.PASS";
+        stateText = this.props.i18n.t("labels.evaluationState", {
+          ns: "guider",
+          context: "pass",
+        });
         break;
       case "fail":
-        stateText = "plugin.guider.assessmentState.FAIL";
+        stateText = this.props.i18n.t("labels.evaluationState", {
+          ns: "guider",
+          context: "fail",
+        });
         break;
       case "incomplete":
-        stateText = "plugin.guider.assessmentState.INCOMPLETE";
+        stateText = this.props.i18n.t("labels.evaluationState", {
+          ns: "guider",
+          context: "incomplete",
+        });
         break;
       case "interim_evaluation_request":
-        stateText = "plugin.guider.assessmentState.PENDING_INTERIM_EVALUATION";
+        stateText = this.props.i18n.t("labels.sent", {
+          context: "interimEvaluation",
+        });
         break;
       case "interim_evaluation":
-        stateText = "plugin.guider.assessmentState.INTERIM_EVALUATION";
+        stateText = this.props.i18n.t("labels.evaluated", {
+          ns: "guider",
+          context: "interim",
+        });
         break;
       default:
-        stateText = "plugin.guider.assessmentState.UNASSESSED";
+        stateText = this.props.i18n.t("labels.notSent", {
+          context: "evaluationRequest",
+        });
         break;
     }
 
@@ -199,7 +218,9 @@ class StudentWorkspace extends React.Component<
     const renderCourseActivity = () => (
       <div className="application-sub-panel__item application-sub-panel__item--course-activity">
         <div className="application-sub-panel__item-title">
-          {this.props.i18nOLD.text.get("plugin.guider.assessmentStateLabel")}
+          {this.props.i18n.t("labels.evaluationState", {
+            ns: "guider",
+          })}
         </div>
         <div className="application-sub-panel__item-data">
           {this.props.workspace.activity.assessmentState.map((a) => {
@@ -222,7 +243,7 @@ class StudentWorkspace extends React.Component<
             /**
              * State text by default
              */
-            let resultingStateText = this.props.i18nOLD.text.get(stateText);
+            let resultingStateText = stateText;
 
             /**
              * Add date to string if date is present
@@ -277,7 +298,6 @@ class StudentWorkspace extends React.Component<
               ) ? (
                 <span className="activity-badge activity-badge--percent">
                   <GuiderWorkspacePercents
-                    i18nOLD={this.props.i18nOLD}
                     activity={this.props.workspace.activity}
                   />
                 </span>
@@ -547,6 +567,7 @@ interface GuiderAssessmentProps {
  */
 const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
   const { assessment, i18nOLD } = props;
+  const { t } = useTranslation(["workspace", "common"]);
 
   if (assessment) {
     // We can have situation where course module has PASSED assessment and also it's state is INCOMPLETE
@@ -560,10 +581,11 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
       return (
         <span
           title={
-            i18nOLD.text.get(
-              "plugin.guider.evaluated",
-              i18nOLD.time.format(assessment.date)
-            ) + getShortenGradeExtension(assessment.grade)
+            t("labels.evaluated", {
+              ns: "workspace",
+              context: "in",
+              date: i18nOLD.time.format(assessment.date),
+            }) + getShortenGradeExtension(assessment.grade)
           }
           className={`application-list__indicator-badge application-list__indicator-badge--course ${modifier}`}
         >
@@ -571,22 +593,21 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
         </span>
       );
     } else if (assessment.state === "incomplete") {
-      const status = i18nOLD.text.get(
+      const status =
         assessment.state === "incomplete"
-          ? "plugin.guider.workspace.incomplete"
-          : "plugin.guider.workspace.failed"
-      );
-
+          ? t("labels.incomplete", { ns: "workspace" })
+          : t("labels.failed", { ns: "workspace" });
       const modifier =
         assessment.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED";
 
       return (
         <span
           title={
-            i18nOLD.text.get(
-              "plugin.guider.evaluated",
-              i18nOLD.time.format(assessment.date)
-            ) +
+            t("labels.evaluated", {
+              ns: "workspace",
+              context: "in",
+              date: i18nOLD.time.format(assessment.date),
+            }) +
             " - " +
             status
           }
@@ -605,7 +626,6 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
  */
 interface GuiderWorkspacePercentsProps {
   activity?: WorkspaceActivityType;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -617,25 +637,28 @@ const GuiderWorkspacePercents: React.FC<GuiderWorkspacePercentsProps> = (
   props
 ) => {
   const { activity } = props;
+  const { t } = useTranslation(["materials", "common"]);
 
   return (
     <>
       <span
         className="activity-badge__item activity-badge__item--assignment-percent"
-        title={props.i18nOLD.text.get(
-          "plugin.guider.headerEvaluatedTitle",
-          activity.evaluablesDonePercent
-        )}
+        title={t("labels.evaluables", {
+          ns: "materials",
+          context: "donePercent",
+          percent: activity.evaluablesDonePercent,
+        })}
       >
         {activity.evaluablesDonePercent}%
       </span>
       <span>/</span>
       <span
         className="activity-badge__item activity-badge__item--exercise-percent"
-        title={props.i18nOLD.text.get(
-          "plugin.guider.headerExercisesTitle",
-          activity.exercisesDonePercent
-        )}
+        title={t("labels.exercises", {
+          ns: "materials",
+          context: "donePercent",
+          percent: activity.exercisesDonePercent,
+        })}
       >
         {activity.exercisesDonePercent}%
       </span>

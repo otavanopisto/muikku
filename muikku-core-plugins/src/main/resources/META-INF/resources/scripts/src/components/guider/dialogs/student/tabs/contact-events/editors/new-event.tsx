@@ -30,7 +30,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * NewContactEventProps
  */
-interface NewContactEventProps extends WithTranslation<["common"]> {
+interface NewContactEventProps extends WithTranslation {
   children?: JSX.Element;
   i18nOLD: i18nType;
   createContactLogEvent: CreateContactLogEventTriggerType;
@@ -221,8 +221,8 @@ class NewContactEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--new-contact-event">
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
             <label htmlFor="contactEventdate" className="env-dialog__label">
-              {this.props.i18nOLD.text.get(
-                "plugin.guider.user.dialog.createContactEvent.date"
+              {this.props.i18n.t(
+                "labels.create",  {ns: "messaging", context: "contactEvent"}
               )}
             </label>
             <DatePicker
@@ -238,8 +238,8 @@ class NewContactEvent extends SessionStateComponent<
           </div>
           <div className="env-dialog__form-element-container">
             <label htmlFor="contactEventTypes" className="env-dialog__label">
-              {this.props.i18nOLD.text.get(
-                "plugin.guider.user.dialog.createContactEvent.type"
+              {this.props.i18n.t(
+                "labels.type"
               )}
             </label>
             <select
@@ -250,8 +250,8 @@ class NewContactEvent extends SessionStateComponent<
             >
               {contactTypesArray.map((contactType) => (
                 <option key={contactType} value={contactType}>
-                  {this.props.i18nOLD.text.get(
-                    "plugin.guider.contact.type." + contactType
+                  {this.props.i18n.t(
+                    "labels.type", {context: contactType, ns: "messaging"}
                   )}
                 </option>
               ))}
@@ -306,8 +306,8 @@ class NewContactEvent extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.communicator.createmessage.button.clearDraft"
+            {this.props.i18n.t(
+              "actions.remove", {ns :}
             )}
           </Button>
         ) : null}
@@ -317,8 +317,8 @@ class NewContactEvent extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-contact-event"
-        title={this.props.i18nOLD.text.get(
-          "plugin.guider.user.dialog.createContactEvent.title"
+        title={this.props.i18n.t(
+          "labels.create", {ns: "messaging", context: "contactEvent"}
         )}
         content={content}
         footer={footer}
@@ -359,6 +359,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["guider"])(
   connect(mapStateToProps, mapDispatchToProps)(NewContactEvent)
 );

@@ -28,7 +28,6 @@ type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
 interface StudentProps extends WithTranslation<"common"> {
   student: GuiderStudentType;
   checkbox: React.ReactElement<HTMLInputElement>;
-  i18nOLD: i18nType;
   index: number;
   status: StatusType;
 }
@@ -79,7 +78,7 @@ class Student extends React.Component<StudentProps, StudentState> {
               htmlFor={`userSelect-` + this.props.index}
               className="visually-hidden"
             >
-              {this.props.i18nOLD.text.get("plugin.wcag.userSelect.label")}
+              {this.props.i18n.t("wcag.userSelect", { ns: "guider" })}
             </label>
             {this.props.checkbox}
           </div>
@@ -96,7 +95,6 @@ class Student extends React.Component<StudentProps, StudentState> {
             {this.props.student.studyProgrammeName}
           </span>
         </ApplicationListItemHeader>
-
         <ApplicationListItemFooter modifiers="student">
           <div className="labels">
             {studyTimeEndState !== "ONGOING" ? (
@@ -105,10 +103,11 @@ class Student extends React.Component<StudentProps, StudentState> {
                   className={`label__icon icon-clock state-${studyTimeEndState}`}
                 ></span>
                 <span className="label__text">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.guider.user.state." + studyTimeEndState,
-                    moment(this.props.student.studyTimeEnd).format("LL")
-                  )}{" "}
+                  {this.props.i18n.t("labels.studyTime", {
+                    ns: "guider",
+                    context: studyTimeEndState,
+                    time: moment(this.props.student.studyTimeEnd).format("LL"),
+                  })}{" "}
                 </span>
               </div>
             ) : null}
@@ -138,9 +137,8 @@ class Student extends React.Component<StudentProps, StudentState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }
 
-export default withTranslation(["common"])(connect(mapStateToProps)(Student));
+export default withTranslation(["guider"])(connect(mapStateToProps)(Student));

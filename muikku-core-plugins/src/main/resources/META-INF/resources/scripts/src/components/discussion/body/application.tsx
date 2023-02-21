@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import NewThread from "../dialogs/new-thread";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import HoverButton from "~/components/general/hover-button";
@@ -24,7 +23,6 @@ interface DiscussionApplicationState {}
  * DiscussionApplicationProps
  */
 interface DiscussionApplicationProps extends WithTranslation {
-  i18nOLD: i18nType;
   discussion: DiscussionType;
 }
 
@@ -54,7 +52,7 @@ class DiscussionApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18nOLD.text.get("labels.discussion");
+    const title = this.props.i18n.t("labels.discussion");
     const toolbar = <Toolbar />;
     const primaryOption =
       !this.props.discussion.current &&
@@ -80,7 +78,6 @@ class DiscussionApplication extends React.Component<
           toolbar={toolbar}
         >
           {!this.props.discussion.subscribedThreadOnly && <DiscussionThreads />}
-
           {this.props.discussion.subscribedThreadOnly && (
             <DiscussionSubscribedThreads />
           )}
@@ -99,7 +96,6 @@ class DiscussionApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
   };
 }

@@ -2,11 +2,8 @@ import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
-
 import { AnyActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import {
   removeFileFromCurrentStudent,
   RemoveFileFromCurrentStudentTriggerType,
@@ -25,7 +22,6 @@ interface FileDeleteDialogProps extends WithTranslation<["common"]> {
   isOpen?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
-  i18nOLD: i18nType;
   file: UserFileType;
   removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType;
 }
@@ -75,17 +71,13 @@ class FileDeleteDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.deleteFile.bind(this, closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.yes"
-          )}
+          {this.props.i18n.t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.no"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -96,9 +88,7 @@ class FileDeleteDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        {this.props.i18nOLD.text.get(
-          "plugin.guider.flags.deleteAttachmentDialog.description"
-        )}
+        {this.props.i18n.t("content.removing", { context: "attachment" })}
       </div>
     );
     return (
@@ -106,9 +96,7 @@ class FileDeleteDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="guider-delete-file"
-        title={this.props.i18nOLD.text.get(
-          "plugin.guider.flags.deleteAttachmentDialog.title"
-        )}
+        title={this.props.i18n.t("labels.remove", { context: "attachment" })}
         content={content}
         footer={footer}
       >
@@ -119,16 +107,6 @@ class FileDeleteDialog extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -136,6 +114,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ removeFileFromCurrentStudent }, dispatch);
 }
 
-export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(FileDeleteDialog)
+export default withTranslation(["guider"])(
+  connect(null, mapDispatchToProps)(FileDeleteDialog)
 );

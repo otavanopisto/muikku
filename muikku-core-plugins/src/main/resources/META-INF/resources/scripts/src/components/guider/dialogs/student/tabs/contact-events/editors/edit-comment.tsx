@@ -21,7 +21,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * EditContactLogEventCommentStateProps
  */
 interface EditContactLogEventCommentProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   status: StatusType;
   comment: ContactLogEventComment;
   studentUserEntityId: number;
@@ -144,17 +143,15 @@ class EditContactLogEventComment extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18nOLD.text.get("plugin.discussion.answertomessage.topic") +
+      this.props.i18n.t("labels.reply", { ns: "messaging" }) +
       " - " +
-      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
+      this.props.i18n.t("labels.content");
 
     const content = (
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.content"
-            )}
+            {this.props.i18n.t("labels.content")}
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -174,16 +171,14 @@ class EditContactLogEventComment extends SessionStateComponent<
           onClick={this.editContactEventComment}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
+          {this.props.i18n.t("actions.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnEditorClose}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.createmessage.cancel"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -191,9 +186,7 @@ class EditContactLogEventComment extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.i18n.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -204,9 +197,7 @@ class EditContactLogEventComment extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18nOLD.text.get(
-                "plugin.guider.user.dialog.editContactLogComment.title"
-              )}
+              {this.props.i18n.t("labels.edit", { context: "comment" })}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>
@@ -224,7 +215,6 @@ class EditContactLogEventComment extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

@@ -6,7 +6,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
@@ -16,7 +15,6 @@ import {
   deleteCurrentDiscussionThread,
   deleteDiscussionThreadReplyFromCurrent,
 } from "~/actions/discussion";
-import { StateType } from "~/reducers";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -146,12 +144,10 @@ class DiscussionDeleteThreadComponent extends React.Component<
         modifier="delete-area"
         title={
           this.props.reply
-            ? this.props.i18n.t("content.removing", {
+            ? this.props.i18n.t("labels.remove", {
                 context: "reply",
               })
-            : this.props.i18n.t("content.removing", {
-                context: "thread",
-              })
+            : this.props.i18n.t("labels.remove")
         }
         content={content}
         footer={footer}

@@ -97,7 +97,8 @@ class ConfirmRemoveAttachment extends React.Component<
     const content = (closeDialog: () => void) => (
       <div>
         <span>
-          {t("content.removing_file", {
+          {t("content.removing", {
+            context: "file",
             ns: "guider",
           })}
         </span>
