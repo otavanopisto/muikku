@@ -144,9 +144,9 @@
       "missingFields": "Täytä puuttuvat pakolliset kentät!",
       "or": "tai",
       "removing": "Oletko varma poistosta?",
+      "removing_comment": "Oletko varma, että haluat poistaa kommentin?",
       "removing_person": "Oletko varma, että haluat poistaa käyttäjän listasta?",
-      "removing_room": "Oletko aivan varma että haluat poistaa huoneen <b>{0}</b>? Tätä toimintoa ei voi peruuttaa.",
-      "removing_comment": "Oletko varma että haluat poistaa kommentin?"
+      "removing_room": "Oletko aivan varma että haluat poistaa huoneen <b>{0}</b>? Tätä toimintoa ei voi peruuttaa."
     },
 
     "validation": {
@@ -265,6 +265,7 @@
       "evaluationState_pass": "Arvioitu - hyväksytty",
       "evaluationState_fail": "Arvioitu - hylätty",
       "evaluationState_incomplete": "Arvioitu - täydennettäväksi",
+      "contactLog": "Yhteydenotot",
       "contactInfo_student": "Opiskelijan yhteystiedot",
       "contactInfo_guardian": "Huoltajan / yhteyshenkilön yhteystiedot",
       "created_interimEvaluation": "Välipalaute annettu",
@@ -282,6 +283,9 @@
       "notSent_evaluationRequest": "Arviointipyyntöä ei lähetetty",
       "relations": "Ohjaussuhde",
       "remove_attachment": "Poista liitetiedosto",
+      "studentNotification_studytime": "Opintoaika loppu",
+      "studentNotification_nopassedcourses": "",
+      "studentNotification_assessmentrequest": "",
       "sent_evaluationRequest": "Arviointipyyntö lähetetty",
       "sent_interimEvaluation": "Välipalautepyyntö lähetetty",
       "school": "Koulu",
@@ -299,8 +303,8 @@
     },
 
     "content": {
-      "instruction_tasks": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Halutessasi voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee Odottaa käsittelyä. Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (Roskakori-kuvake).</p>",
-      "instruction_hints": "Lisää liitetiedosto klikkaamalla tästä tai raahamalla tiedosto tähän laatikkoon",
+      "addTaskInstruction": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Halutessasi voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee Odottaa käsittelyä. Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (Roskakori-kuvake).</p>",
+      "addAddatchmentInstruction": "Lisää liitetiedosto klikkaamalla tästä tai raahamalla tiedosto tähän laatikkoon",
       "lastVisit": "viimeisin: {0}",
       "lastAnsweredAssignment": "viimeisin vastaus: {0}",
       "lastAnsweredExercise": "viimeisin vastaus: {0}",
@@ -592,6 +596,7 @@
       "create_label": "Uusi tunniste",
       "hide_comments": "Piilota vastaukset",
       "remove": "Poista viesti",
+      "remove_contactEntry": "Poista yhteydenotto",
       "remove_comment": "Poista vastaus",
       "remove_label": "Poista tunniste",
       "reply": "Vastaa",
@@ -625,6 +630,7 @@
       "discussionArea": "Keskustelualue",
       "edit": "Muokkaa viestiä",
       "edit_announcement": "Muokkaa tiedotetta",
+      "edit_contactEvent": "Muokkaa yhteydenottoa",
       "edit_discussionArea": "Muokkaa keskustelualuetta",
       "edit_label": "Muokkaa tunnistetta",
       "edited": "Viestiä muokattu",
@@ -632,6 +638,7 @@
       "inbox": "Saapuneet",
       "lastMessage": "Viimeisin viesti: {{time}}",
       "lock": "Lukitse viesti",
+      "message": "Viesti",
       "name_discussionArea": "Keskustelualueen nimi",
       "pin": "Kiinnitä viesti",
       "recipients_one": "Vastaanottaja",
@@ -672,6 +679,7 @@
       "noneSelected_announcements": "Et ole valinnut yhtään tiedotetta",
       "removing": "Oletko varma, että haluat poistaa viestin?",
       "removing_announcement": "Oletko varma että haluat poistaa tiedotteen?",
+      "removing_contactEntry": "Oletko varma, että haluat poistaa yhteydenoton? Jos poistat yhteydenoton, myös sen kommentit poistuvat.",
       "removing_discussionArea": "Huom! Keskustelualueen poisto poistaa myös kaikki sen alla olevat viestit!",
       "removing_label": "Haluatko poistaa tunnisteen: {0}?",
       "removing_reply": "Vastaus poistetaan lopullisesti, oletko varma, että haluat jatkaa?",
@@ -729,7 +737,6 @@
       "removeError_reply": "Virhe vastauksen poistossa.",
       "removeSuccess": "Viestin poisto onnistui",
       "removeSuccess_contactLog": "Yhteydenoton poisto onnistui",
-      "removing_contactLog": "Oletko varma, että haluat poistaa yhteydenoton? Jos poistat yhteydenoton, myös sen kommentit poistuvat.",
       "restoreError": "Viestin palautus epäonnistui",
       "restoreError_messageThread": "Keskusteluketjun palautus epäonnistui",
       "sendError": "Viestin lähetys epäonnistui. Kokeile lähettää uudelleen",
@@ -906,9 +913,10 @@
     },
     "content": {
       "editDetails": "Nimi on pakollinen tieto. Voit merkitä käyttäjäryhmän halutessasi ohjausryhmäksi.",
-      "empty_studentGroups": "Ei opiskelijaryhmiä",
-      "empty_students": "Hakukriteereillä ei löydy yhtään opiskelijaa",
-      "empty_teachers": "Hakukriteereillä ei löydy yhtään opettajaa",
+      "empty": "Käyttäjiä ei löytynyt",
+      "empty_studentGroups": "Opiskelijaryhmiä ei löytynyt",
+      "empty_students": "Opiskelijoita ei löytynyt",
+      "empty_teachers": "Opettajia ei löytynyt",
       "noneSelected_councelors": "Ei valittuja ohjaajia",
       "noneSelected_students": "Ei valittuja opiskelijoita",
       "noneSelected_teachers": "Ei valittuja opettajia",
@@ -931,6 +939,7 @@
       "createSuccess": "Opiskelijan luonti onnistui",
       "createSuccess_staff": "Henkilöstön edustajan luonti onnistui",
       "createSuccess_userGroup": "Käyttäjäryhmän luonti onnistui",
+      "loadError": "Virhe käyttäjien lataamisessa",
       "loadError_student": "Virhe opiskelijoiden lataamisessa. Yritä ladata sivu uudelleen.",
       "loadError_student_one": "Virhe opiskelijan lataamisessa. Yritä ladata sivu uudelleen.",
       "loadError_userGroups": "Opiskelijaryhmien lataus epäonnistui. Yritä ladata sivu uudelleen.",
@@ -952,6 +961,7 @@
 
   "flags": {
     "actions": {
+      "create": "Luo uusi lippu",
       "remove": "Poista lippu",
       "removed": "Poisto tallennuksessa",
       "share": "Jaa lippu"
@@ -961,6 +971,10 @@
       "createAndShare": "Luo ja selaa lippuja",
       "edit": "Muokkaa lippua",
       "flags": "Liput",
+      "notification": "Heräte",
+      "notification_studytime": "Heräte opintoajan päättymisestä",
+      "notification_nopassedcourses": "Heräte vähäisistä kurssisuorituksista vuoden aikana",
+      "notification_assessmentrequest": "Heräte inaktiivisuudesta ensimmäisen 2kk aikana",
       "share": "Jaa lippu {{flag}}"
     },
     "validation": {
@@ -1197,7 +1211,6 @@
       "copy_discussionsAreas": "Kopioi keskustelualueet",
       "copy_coverImage": "Kopioi taustakuva",
       "copy_workspace": "Tee kopio kurssista",
-      "courses": "Kurssit",
       "coverImage": "Kurssin taustakuva",
       "create": "Luo uusi kurssi",
       "creating": "Luodaan kurssia",
@@ -1450,15 +1463,15 @@
     },
     "content": {
       "add": "Lisää tiedosto klikkaamalla tästä tai raahaamalla tiedosto tähän laatikkoon",
-      "empty_files": "Ei tiedostoja"
+      "empty": "Ei tiedostoja"
     },
     "notifications": {
       "sizeTooLarge": "Tiedoston koko on liian suuri. Suurin sallittu tiedostokoko on 10MB.",
-      "createErrror": "Tiedosto tallennettu palvelimelle onnistuneesti",
+      "createErrror": "Tiedoston tallennus epäonistui",
       "removeError": "Tiedoston poisto ei onnistunut",
       "unsupportedFileType": "Tiedostotyyppi {0} ei ole tuettu. Olkaa hyvää ja käyttäkää jotakin seuraavista: {1}",
       "uploading": "Lähetetään tiedostoa {{progress}} %",
-      "uploadSuccess_file": "Tiedosto tallennettu palvelimelle onnistuneesti"
+      "uploadSuccess": "Tiedosto tallennettu palvelimelle onnistuneesti"
     }
   },
 
@@ -1605,6 +1618,7 @@
       "pay": "Maksa tilaus",
       "remove": "Poista tilaus"
     },
+
     "labels": {
       "complete": "Viimeistele tilaus",
       "confirm": "Vahvista tilaus",
@@ -1612,18 +1626,22 @@
       "id": "Tilausnumero",
       "info": "Tilauksen tiedot",
       "open": "Avoimet tilaukset",
+      "order_one": "Tilaus",
+      "order_other": "Tilaukset",
       "price": "Hinta",
       "product": "Tuote",
-      "purchase_cancelled": "Peruutettu",
-      "purchase_complete": "Valmis",
-      "purchase_created": "Luotu",
-      "purchase_errored": "Virhe",
-      "purchase_ongoing": "Käynnissä",
-      "purchase_paid": "Maksettu",
-      "purchases": "Tilaukset",
+      "state": "Tila",
+      "state_CANCELLED": "Peruutettu",
+      "state_COMPLETE": "Valmis",
+      "state_CREATED": "Luotu",
+      "state_ERRORED": "Virhe",
+      "state_ONGOING": "Käynnissä",
+      "state_PAID": "Maksettu",
       "remove": "Poista valittu tilaus"
     },
+
     "content": {
+      "test": "muu",
       "cancelled": "Opiskelija peruutti tilauksen.",
       "complete": "Tilaus on viety loppuun ja opiskelijan opintoaikaa on pidennetty.",
       "created": "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.",
@@ -1635,25 +1653,28 @@
       "finishingOrder": "Oletko varma että haluat viimeistellä opiskelijan tilauksen?",
       "nonActiveUser": " Näyttää siltä että sinun opintosi ovat päättyneet ja näin ollen tilauksesi opinto-oikeutesi jatkamiseksi on keskeytetty.",
       "noProducts": "Ei ostettavia tuotteita",
+      "noPurchases": "Opiskelijalla ei ole tilauksia",
       "ongoing": "Opiskelija on aloittanut tilauksen maksamisen.",
       "orderConfirmed": "Opiskelija saa sähköpostitse tiedon luomastasi tilauksesta. Sähköpostiviestissä on linkki Mikkelin kaupungin verkkokauppaan, jossa opiskelija voi maksaa opiskelumaksun. Maksulinkki on voimassa 24 tuntia siitä, kun opiskelija on avannut sen ensimmäisen kerran.",
       "paid": "Opiskelija on maksanut tilauksen, mutta opintoajan lisäys epäonnistui. Tilaus pitää viimeistellä manuaalisesti. Pyydä opiskelijalta kuitti maksamisesta ja ota yhteyttä helpdeskiin (helpdesk@muikkuverkko.fi).",
-      "purchase_cancelled": "Peruutit tilauksen. Jos haluat uuden tilauksen, ota yhteyttä ohjaajaasi.",
-      "purchase_complete": "Tilaus on viety loppuun ja opintoaikaasi on pidennetty.",
-      "purchase_created": "Tilaus on luotu ja sinulle on toimitettu sähköpostitse ohjeet maksamista varten.",
-      "purchase_errored": "Tilauksen käsittelyssä tapahtui virhe. Ota yhteyttä ohjaajaasi.",
-      "purchase_ongoing": "Olet aloittanut tilauksen maksamisen. Muista, että sähköpostin maksulinkki toimii vain 24 tuntia.",
-      "purchase_paid": "Olet maksanut tilauksen, mutta opintoajan lisäys epäonnistui. Ota yhteyttä ohjaajaasi.",
+      "state": "Opiskelijan tilauksen tila",
+      "state_CANCELLED": "Peruutit tilauksen. Jos haluat uuden tilauksen, ota yhteyttä ohjaajaasi.",
+      "state_COMPLETE": "Tilaus on viety loppuun ja opintoaikaasi on pidennetty.",
+      "state_CREATED": "Tilaus on luotu ja sinulle on toimitettu sähköpostitse ohjeet maksamista varten.",
+      "state_ERRORED": "Tilauksen käsittelyssä tapahtui virhe. Ota yhteyttä ohjaajaasi.",
+      "state_ONGOING": "Olet aloittanut tilauksen maksamisen. Muista, että sähköpostin maksulinkki toimii vain 24 tuntia.",
+      "state_PAID": "Olet maksanut tilauksen, mutta opintoajan lisäys epäonnistui. Ota yhteyttä ohjaajaasi.",
       "redirect": "Sinut uudelleenohjataan Mikkelin kaupungin verkkokauppaan.",
-      "removing_studentOrder": "Oletko varma että haluat poistaa opiskelijan tilauksen?"
+      "removing": "Oletko varma että haluat poistaa opiskelijan tilauksen?"
     },
+
     "notifications": {
       "cancelSuccess": "Keskeytit tilauksen maksutapahtuman. Ole hyvä ja ota yhteyttä ohjaajaasi.",
-      "completionError_studentOrder": "Opiskelijan tilauksen viimeistely epäonistui",
+      "completionError": "Opiskelijan tilauksen viimeistely epäonistui",
       "createError": "Tilauksen maksutapahtumassa tapahtui virhe. Ole hyvä ja ota yhteyttä ohjaajaasi",
       "createSuccess": "Tilauksen maksutapahtuma onnistui.",
       "loadError": "Tilauksen lataus epäonnistui",
-      "removeError_studentOrder": "Opiskelijan tilauksen poisto epäonistui"
+      "removeError": "Opiskelijan tilauksen poisto epäonistui"
     }
   },
   "ops": {

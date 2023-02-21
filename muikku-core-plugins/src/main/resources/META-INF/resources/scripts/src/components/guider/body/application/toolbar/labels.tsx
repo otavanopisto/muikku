@@ -102,9 +102,9 @@ class GuiderToolbarLabels extends React.Component<
                 value={this.state.labelFilter}
                 onChange={this.updateLabelFilter}
                 type="text"
-                placeholder={this.props.i18nOLD.text.get(
-                  "plugin.guider.flags.create.textfield.placeholder"
-                )}
+                placeholder={this.props.i18n.t("labels.createAndShare", {
+                  ns: "flags",
+                })}
               />
             </div>,
             <Link
@@ -115,7 +115,7 @@ class GuiderToolbarLabels extends React.Component<
                 this.state.labelFilter
               )}
             >
-              {this.props.i18nOLD.text.get("plugin.guider.flags.create")}
+              {this.props.i18n.t("actions.create", { ns: "flags" })}
             </Link>,
           ].concat(
             this.props.guider.availableFilters.labels
@@ -189,9 +189,9 @@ class GuiderToolbarLabels extends React.Component<
               value={this.state.labelFilter}
               onChange={this.updateLabelFilter}
               type="text"
-              placeholder={this.props.i18nOLD.text.get(
-                "plugin.guider.flags.create.textfield.placeholder"
-              )}
+              placeholder={this.props.i18n.t("labels.createAndShare", {
+                ns: "flags",
+              })}
             />
           </div>,
           <Link
@@ -203,7 +203,7 @@ class GuiderToolbarLabels extends React.Component<
               this.state.labelFilter
             )}
           >
-            {this.props.i18nOLD.text.get("plugin.guider.flags.create")}
+            {this.props.i18n.t("actions.create", { ns: "flags" })}
           </Link>,
         ].concat(
           this.props.guider.availableFilters.labels

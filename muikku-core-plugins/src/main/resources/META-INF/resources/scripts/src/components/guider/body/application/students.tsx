@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import StudentDialog from "../../dialogs/student";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -40,7 +39,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * GuiderStudentsProps
  */
 interface GuiderStudentsProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   guiderStudentsState: GuiderStudentsStateType;
   guiderStudentsHasMore: boolean;
   loadMoreStudents: LoadMoreStudentsTriggerType;
@@ -131,16 +129,20 @@ class GuiderStudents extends BodyScrollLoader<
     } else if (this.props.guiderStudentsState === "ERROR") {
       return (
         <div className="empty">
-          {this.props.i18nOLD.text.get("plugin.guider.errorMessage.users")}
+          {this.props.i18n.t("notifications.loadError", {
+            ns: "orders",
+            context: "student",
+          })}
         </div>
       );
     } else if (this.props.guider.students.length === 0) {
       return (
         <div className="empty">
           <span>
-            {this.props.i18nOLD.text.get(
-              "plugin.guider.errorMessage.nostudents"
-            )}
+            {this.props.i18n.t("content.empty", {
+              ns: "users",
+              context: "students",
+            })}
           </span>
         </div>
       );
@@ -213,7 +215,6 @@ class GuiderStudents extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     guiderStudentsState: state.guider.studentsState,
     guiderStudentsHasMore: state.guider.hasMore,
     guiderStudentsCurrent: state.guider.currentStudent,
@@ -236,6 +237,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["users"])(
   connect(mapStateToProps, mapDispatchToProps)(GuiderStudents)
 );

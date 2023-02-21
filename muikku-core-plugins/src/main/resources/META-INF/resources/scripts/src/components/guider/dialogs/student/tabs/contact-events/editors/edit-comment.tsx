@@ -1,4 +1,3 @@
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";

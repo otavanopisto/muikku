@@ -1,7 +1,6 @@
 import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -19,12 +18,12 @@ import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
+import { useTranslation } from "react-i18next";
 
 /**
  * CeeposButtonProps
  */
 interface CeeposButtonProps {
-  i18nOLD: i18nType;
   status: StatusType;
   guider: GuiderType;
   doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType;
@@ -36,11 +35,11 @@ interface CeeposButtonProps {
  * @returns JSX.elenment
  */
 export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
-  const { guider, i18nOLD, status, doOrderForCurrentStudent } = props;
-
+  const { guider, status, doOrderForCurrentStudent } = props;
   const [isConfirmDialogOpenFor, setIsConfirmDialogOpenFor] =
     React.useState<PurchaseProductType>(null);
 
+  const { t } = useTranslation("orders");
   /**
    * Logic for whether new order can be created.
    *
@@ -68,9 +67,7 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
       </span>
       <br />
       <br />
-      <span>
-        {i18nOLD.text.get("plugin.guider.orderConfirmDialog.description")}
-      </span>
+      <span>{t("content.orderConfirmed")}</span>
     </div>
   );
 
@@ -99,13 +96,13 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
         buttonModifiers={["standard-ok", "execute"]}
         onClick={acceptOrderCreation}
       >
-        {i18nOLD.text.get("plugin.guider.orderConfirmDialog.okButton")}
+        {t("actions.create", { ns: "common" })}
       </Button>
       <Button
         buttonModifiers={["cancel", "standard-cancel"]}
         onClick={declineOrderCreation}
       >
-        {i18nOLD.text.get("plugin.guider.orderConfirmDialog.cancelButton")}
+        {t("actions.cancel", { ns: "common" })}
       </Button>
     </div>
   );
@@ -158,14 +155,14 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
         </>
       ) : (
         <div className="empty">
-          <span>{i18nOLD.text.get("plugin.guider.noPurchasableProducts")}</span>
+          <span>{t("content.noProducts")}</span>
         </div>
       )}
       {/* Confirm order creation dialog */}
       <Dialog
         modifier="dialog-confirm-order"
         isOpen={!!isConfirmDialogOpenFor}
-        title={i18nOLD.text.get("plugin.guider.orderConfirmDialog.title")}
+        title={t("labels.confirm")}
         onClose={declineOrderCreation}
         content={orderConfirmDialogContent}
         footer={orderConfirmDialogFooter}
@@ -180,7 +177,6 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     guider: state.guider,
     status: state.status,
   };

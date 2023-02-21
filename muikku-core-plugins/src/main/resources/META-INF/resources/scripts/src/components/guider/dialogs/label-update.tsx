@@ -5,8 +5,6 @@ import { bindActionCreators } from "redux";
 //Another weird typescript bug, won't import properly
 import { ChromePicker, ColorState } from "react-color";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
-
 import "~/sass/elements/form.scss";
 
 import { GuiderUserLabelType } from "~/reducers/main-function/guider";

@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import Link from "~/components/general/link";
+import { useTranslation } from "react-i18next";
 
 /**
  * ContactEventProps
@@ -42,10 +43,11 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
     creatorId,
     id,
   } = props.event;
-  const { modifier, studentId, i18nOLD, allPrivileges, status } = props;
+  const { modifier, studentId, allPrivileges, status } = props;
   const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
   const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
   const [commentEditOpen, setCommentEditOpen] = React.useState<number[]>([]);
+  const { t } = useTranslation(["messaging", "common"]);
   return (
     <div
       className={`contact-event ${
@@ -62,7 +64,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         <div className="contact-event__title">
           <div className="contact-event__creator">{creatorName}</div>
           <div className={`contact-event__type type-${type}`}>
-            {i18nOLD.text.get("plugin.guider.contact.type." + type)}
+            {t("labels.type", { context: type })}
           </div>
           <div className="contact-event__date">
             {moment(entryDate).format("dddd, MMMM Do YYYY")}
@@ -89,20 +91,20 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           className="link link--contact-event-footer"
           onClick={() => setCreateCommentOpen(true)}
         >
-          {i18nOLD.text.get("plugin.guider.user.contactLog.actions.comment")}
+          {t("actions.comment")}
         </Link>
         <Link
           className="link link--contact-event-footer"
           onClick={() => setEventEditOpen(true)}
         >
-          {i18nOLD.text.get("plugin.guider.user.contactLog.actions.edit")}
+          {t("actions.edit")}
         </Link>
         <ContactEventDeletePrompt
           studentUserEntityId={studentId}
           contactLogEntryId={id}
         >
           <Link className="link link--contact-event-footer">
-            {i18nOLD.text.get("plugin.guider.user.contactLog.actions.delete")}
+            {t("actions.remove")}
           </Link>
         </ContactEventDeletePrompt>
       </div>
@@ -162,9 +164,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                       setCommentEditOpen([...commentEditOpen, ...[comment.id]])
                     }
                   >
-                    {i18nOLD.text.get(
-                      "plugin.guider.user.contactLog.actions.edit"
-                    )}
+                    {t("actions.edit")}
                   </Link>
                   <ContactEventDeletePrompt
                     studentUserEntityId={studentId}
@@ -172,9 +172,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                     commentId={comment.id}
                   >
                     <Link className="link link--contact-event-footer">
-                      {i18nOLD.text.get(
-                        "plugin.guider.user.contactLog.actions.delete"
-                      )}
+                      {t("actions.remove")}
                     </Link>
                   </ContactEventDeletePrompt>
                 </div>
@@ -194,8 +192,8 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
+    i18nOLD: state.i18nOLD,
   };
 }
 

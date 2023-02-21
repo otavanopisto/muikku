@@ -208,9 +208,7 @@ class NewContactEvent extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const editorTitle = this.props.i18nOLD.text.get(
-      "plugin.guider.user.dialog.createContactEvent.title"
-    );
+    const editorTitle = this.props.i18n.t("labels.create", { ns: "messaging" });
 
     /**
      * content
@@ -221,9 +219,10 @@ class NewContactEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--new-contact-event">
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
             <label htmlFor="contactEventdate" className="env-dialog__label">
-              {this.props.i18n.t(
-                "labels.create",  {ns: "messaging", context: "contactEvent"}
-              )}
+              {this.props.i18n.t("labels.create", {
+                ns: "messaging",
+                context: "contactEvent",
+              })}
             </label>
             <DatePicker
               className="env-dialog__input"
@@ -238,9 +237,7 @@ class NewContactEvent extends SessionStateComponent<
           </div>
           <div className="env-dialog__form-element-container">
             <label htmlFor="contactEventTypes" className="env-dialog__label">
-              {this.props.i18n.t(
-                "labels.type"
-              )}
+              {this.props.i18n.t("labels.type")}
             </label>
             <select
               id="contactEventTypes"
@@ -248,11 +245,12 @@ class NewContactEvent extends SessionStateComponent<
               onChange={this.onTypeChange}
               value={this.state.type}
             >
-              {contactTypesArray.map((contactType) => (
-                <option key={contactType} value={contactType}>
-                  {this.props.i18n.t(
-                    "labels.type", {context: contactType, ns: "messaging"}
-                  )}
+              {contactTypesArray.map((contactTyp) => (
+                <option key={contactTyp} value={contactTyp}>
+                  {this.props.i18n.t("labels.type", {
+                    context: contactTyp,
+                    ns: "messaging",
+                  })}
                 </option>
               ))}
             </select>
@@ -262,9 +260,7 @@ class NewContactEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--ckeditor">
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
-              {this.props.i18nOLD.text.get(
-                "plugin.guider.user.dialog.createContactEvent.text"
-              )}
+              {this.props.i18n.t("labels.message", { ns: "messaging" })}
             </label>
             <CKEditor
               editorTitle={editorTitle}
@@ -287,18 +283,14 @@ class NewContactEvent extends SessionStateComponent<
           onClick={this.saveContactEvent.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.communicator.createmessage.button.send"
-          )}
+          {this.props.i18n.t("actions.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.communicator.createmessage.button.cancel"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -306,9 +298,7 @@ class NewContactEvent extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.t(
-              "actions.remove", {ns :}
-            )}
+            {this.props.i18n.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -317,9 +307,10 @@ class NewContactEvent extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-contact-event"
-        title={this.props.i18n.t(
-          "labels.create", {ns: "messaging", context: "contactEvent"}
-        )}
+        title={this.props.i18n.t("labels.create", {
+          ns: "messaging",
+          context: "contactEvent",
+        })}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}

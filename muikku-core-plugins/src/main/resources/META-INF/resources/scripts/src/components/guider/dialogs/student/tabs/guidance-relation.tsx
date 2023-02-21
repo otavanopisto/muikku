@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -16,12 +15,12 @@ import {
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
 } from "~/actions/main-function/guider";
+import { useTranslation } from "react-i18next";
 
 /**
  * GuidanceRelationProps
  */
 interface GuidanceRelationProps {
-  i18nOLD: i18nType;
   currentStudent: GuiderStudentUserProfileType;
   contactLogsPerPage: number;
   loadStudentContactLogs: LoadContactLogsTriggerType;
@@ -38,7 +37,8 @@ export const ContactLogsContext = React.createContext(10);
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18nOLD, currentStudent, contactLogsPerPage } = props;
+  const { currentStudent, contactLogsPerPage } = props;
+  const { t } = useTranslation("guider");
 
   if (!currentStudent) {
     return null;
@@ -69,11 +69,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
 
   return (
     <ApplicationSubPanel>
-      <ApplicationSubPanelViewHeader
-        title={i18nOLD.text.get(
-          "plugin.guider.user.tabs.title.guidanceRelations"
-        )}
-      >
+      <ApplicationSubPanelViewHeader title={t("labels.relations")}>
         <NewContactEvent logsPerPage={contactLogsPerPage}>
           <ButtonPill
             icon="bubbles"
@@ -115,7 +111,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
         ) : null}*/}
         <ApplicationSubPanel modifier="guidance-relation-contact-events">
           <ApplicationSubPanel.Header>
-            {i18nOLD.text.get("plugin.guider.user.contactLog.title")}
+            {t("labels.contactLog")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
             <ContactLogsContext.Provider value={contactLogsPerPage}>
@@ -144,7 +140,10 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                 </>
               ) : (
                 <div className="empty">
-                  {i18nOLD.text.get("plugin.guider.user.contactLog.empty")}
+                  {t("content.empty", {
+                    ns: "messaging",
+                    context: "contactLog",
+                  })}
                 </div>
               )}
             </ContactLogsContext.Provider>
@@ -162,7 +161,6 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     currentStudent: state.guider.currentStudent,
   };
 }

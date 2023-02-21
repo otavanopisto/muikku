@@ -1,7 +1,7 @@
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { useTranslation } from "react-i18next";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import {
@@ -23,7 +23,6 @@ import {
  * ContactEventDeletePromptProps
  */
 interface ContactEventDeletePromptProps {
-  i18nOLD: i18nType;
   commentId?: number;
   contactLogs: ContactLogData;
   contactLogEntryId: number;
@@ -43,7 +42,6 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
 ) => {
   const [locked, setLocked] = React.useState<boolean>(false);
   const {
-    i18nOLD,
     commentId,
     contactLogEntryId,
     studentUserEntityId,
@@ -53,6 +51,7 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
     loadStudentContactLogs,
   } = props;
   const contactLogsPerPage = React.useContext(ContactLogsContext);
+  const { t } = useTranslation(["guider", "common"]);
   /**
    * handleOnDelete
    * @param closeDialog closeDialog
@@ -106,12 +105,8 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
   const content = (closeDialog: () => void) => (
     <div>
       {commentId
-        ? i18nOLD.text.get(
-            "plugin.guider.user.dialog.removePrompt.comment.content"
-          )
-        : i18nOLD.text.get(
-            "plugin.guider.user.dialog.removePrompt.entry.content"
-          )}
+        ? t("content.removing", { context: "comment" })
+        : t("content.removing", { ns: "messaging", context: "contactEntry" })}
     </div>
   );
 
@@ -127,17 +122,13 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
         onClick={() => handleOnDelete(closeDialog)}
         disabled={locked}
       >
-        {i18nOLD.text.get(
-          "plugin.discussion.confirmThreadRemovalDialog.confirmButton"
-        )}
+        {t("actions.remove")}
       </Button>
       <Button
         buttonModifiers={["cancel", "standard-cancel"]}
         onClick={closeDialog}
       >
-        {i18nOLD.text.get(
-          "plugin.discussion.confirmThreadRemovalDialog.cancelButton"
-        )}
+        {t("actions.cancel")}
       </Button>
     </div>
   );
@@ -153,12 +144,8 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
       modifier="delete-area"
       title={
         commentId
-          ? i18nOLD.text.get(
-              "plugin.guider.user.dialog.removePrompt.comment.title"
-            )
-          : i18nOLD.text.get(
-              "plugin.guider.user.dialog.removePrompt.entry.title"
-            )
+          ? t("actions.remove", { context: "comment" })
+          : t("actions.remove", { context: "contactEntry" })
       }
       content={content}
       footer={footer}
@@ -175,7 +162,6 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     contactLogs: state.guider.currentStudent.contactLogs,
   };
 }

@@ -168,18 +168,16 @@ class EditContactLogEventEvent extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18nOLD.text.get("plugin.discussion.answertomessage.topic") +
+      this.props.i18n.t("labels.reply", { ns: "messaging" }) +
       " - " +
-      this.props.i18nOLD.text.get("plugin.discussion.createmessage.content");
+      this.props.i18n.t("labels.content");
 
     const content = (
       <>
         <div className="env-dialog__row env-dialog__row--new-contact-event">
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
             <label htmlFor="contactEventdate" className="env-dialog__label">
-              {this.props.i18nOLD.text.get(
-                "plugin.guider.user.dialog.createContactEvent.date"
-              )}
+              {this.props.i18n.t("labels.date", { count: 1 })}
             </label>
             <DatePicker
               className="env-dialog__input"
@@ -194,9 +192,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
           </div>
           <div className="env-dialog__form-element-container">
             <label htmlFor="contactEventTypes" className="env-dialog__label">
-              {this.props.i18nOLD.text.get(
-                "plugin.guider.user.dialog.createContactEvent.type"
-              )}
+              {this.props.i18n.t("labels.type")}
             </label>
             <select
               id="contactEventTypes"
@@ -206,9 +202,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
             >
               {contactTypesArray.map((contactType) => (
                 <option key={contactType} value={contactType}>
-                  {this.props.i18nOLD.text.get(
-                    "plugin.guider.contact.type." + contactType
-                  )}
+                  {this.props.i18n.t("labels.type", { context: contactType })}
                 </option>
               ))}
             </select>
@@ -218,9 +212,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--ckeditor">
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
-              {this.props.i18nOLD.text.get(
-                "plugin.guider.user.dialog.createContactEvent.text"
-              )}
+              {this.props.i18n.t("labels.message", { ns: "messaging" })}
             </label>
             <CKEditor
               editorTitle={editorTitle}
@@ -240,16 +232,14 @@ class EditContactLogEventEvent extends SessionStateComponent<
           onClick={this.editContactEvent}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get("plugin.discussion.createmessage.send")}
+          {this.props.i18n.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnEditorClose}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.discussion.createmessage.cancel"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -257,9 +247,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.i18n.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -270,9 +258,10 @@ class EditContactLogEventEvent extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18nOLD.text.get(
-                "plugin.guider.user.dialog.editContactLog.title"
-              )}
+              {this.props.i18n.t("labels.edit", {
+                ns: "messaging",
+                context: "contactEvent",
+              })}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>

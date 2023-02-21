@@ -49,7 +49,7 @@ class NavigationAside extends React.Component<
       <Navigation>
         {this.props.guider.availableFilters.labels.length > 0 && (
           <NavigationTopic
-            name={this.props.i18nOLD.text.get("plugin.guider.filters.flags")}
+            name={this.props.i18n.t("labels.flags", { ns: "flags" })}
           >
             {this.props.guider.availableFilters.labels.map(
               (label: GuiderUserLabelType) => {
@@ -96,9 +96,7 @@ class NavigationAside extends React.Component<
 
         {this.props.guider.availableFilters.workspaces.length > 0 && (
           <NavigationTopic
-            name={this.props.i18nOLD.text.get(
-              "plugin.guider.filters.workspaces"
-            )}
+            name={this.props.i18n.t("labels.workspaces", { ns: "workspace" })}
           >
             {this.props.guider.availableFilters.workspaces.map(
               (workspace: GuiderWorkspaceType) => {
@@ -144,9 +142,7 @@ class NavigationAside extends React.Component<
 
         {this.props.guider.availableFilters.userGroups.length > 0 && (
           <NavigationTopic
-            name={this.props.i18nOLD.text.get(
-              "plugin.guider.filters.userGroups"
-            )}
+            name={this.props.i18n.t("labels.studentGroups", { ns: "users" })}
           >
             {this.props.guider.availableFilters.userGroups.map(
               (userGroup: UserGroupType) => {
@@ -209,6 +205,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["guider"])(
   connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
 );
