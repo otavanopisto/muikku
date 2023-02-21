@@ -16,17 +16,12 @@ import EvaluationSorters from "./application/evaluation-list/evaluation-sorters"
 import { WorkspaceType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "../../../@types/evaluation";
 import { AnyActionType } from "~/actions";
-import { OptionDefault } from "~/components/general/react-select/types";
+import {
+  GroupedOption,
+  OptionDefault,
+} from "~/components/general/react-select/types";
 import Select from "react-select";
 import "~/sass/elements/react-select-override.scss";
-
-/**
- * GroupedOptionEvaluation
- */
-export interface GroupedOption<T> {
-  readonly label: string;
-  readonly options: readonly T[];
-}
 
 /**
  * EvaluationApplicationProps
