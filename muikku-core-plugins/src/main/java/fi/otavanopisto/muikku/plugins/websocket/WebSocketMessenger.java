@@ -36,7 +36,15 @@ public class WebSocketMessenger {
     sessions = new ConcurrentHashMap<>();
   }
   
+  public WebSocketSessionInfo getSessionInfo(String ticket) {
+    return sessions.get(ticket);
+  }
+  
   public void registerTicket(String ticket, Long userEntityId) {
+    WebSocketSessionInfo sessionInfo = sessions.get(ticket);
+    if (sessionInfo != null) {
+      discardSession(sessionInfo.getSession(), ticket, null);
+    }
     // Actual web socket session has not yet been opened but in order to validate
     // this ticket in openSession, we register it to the session map 
     sessions.put(ticket, new WebSocketSessionInfo(userEntityId));
