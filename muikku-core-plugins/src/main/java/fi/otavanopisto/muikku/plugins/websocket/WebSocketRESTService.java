@@ -42,8 +42,7 @@ public class WebSocketRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response check(@PathParam("TICKET") String ticket) {
     WebSocketSessionInfo sessionInfo = websocketMessenger.getSessionInfo(ticket);
-    // A valid ticket should point to a session which exists and contain a websocket that is open
-    if (sessionInfo != null && sessionInfo.getSession() != null && sessionInfo.getSession().isOpen()) {
+    if (sessionInfo != null) {
       UserEntity user = sessionController.getLoggedUserEntity(); 
       // Since we're logged in, the requested ticket really should belong to us but just in case it didn't,
       // we treat it as not found in order to get the logged in user to renew it properly
