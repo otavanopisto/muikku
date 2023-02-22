@@ -5,6 +5,7 @@ import { i18nType } from "reducers/base/i18n";
 import Students from "./application/students";
 import Toolbar from "./application/toolbar";
 import { StateType } from "~/reducers";
+import Select from "react-select";
 
 /**
  * GuiderApplicationProps
@@ -40,20 +41,32 @@ class GuiderApplication extends React.Component<
   render() {
     const title = this.props.i18n.text.get("plugin.guider.guider");
     const toolbar = <Toolbar />;
+
+    const options = [
+      {
+        value: "all",
+        label: this.props.i18n.text.get("plugin.guider.students.all"),
+      },
+    ];
+
     const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectUsers" className="visually-hidden">
           {this.props.i18n.text.get("plugin.coursepicker.select.label")}
         </label>
-        <select
+        <Select
           id="selectUsers"
-          className="form-element__select form-element__select--main-action"
-          disabled
-        >
-          <option>
-            {this.props.i18n.text.get("plugin.guider.students.all")}
-          </option>
-        </select>
+          isDisabled={true}
+          options={options}
+          value={options[0]}
+          styles={{
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            container: (baseStyles, state) => ({
+              ...baseStyles,
+              width: "100%",
+            }),
+          }}
+        ></Select>
       </div>
     );
     return (

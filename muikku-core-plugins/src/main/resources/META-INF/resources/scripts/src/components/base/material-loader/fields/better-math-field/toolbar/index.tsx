@@ -86,10 +86,7 @@ export default class MathFieldToolbar extends React.Component<
           (s as SpecialCharacterType).latexCommand ||
           (s as SpecialCharacterType).character,
         html: (s as SpecialCharacterType).character,
-        useWrite:
-          ((s as SpecialCharacterType).noWrite &&
-            !(s as SpecialCharacterType).noWrite) ||
-          true,
+        useWrite: (s as SpecialCharacterType).noWrite ? false : true,
       });
       return;
     }
