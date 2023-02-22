@@ -380,7 +380,10 @@ class StateOfStudies extends React.Component<
                 ) ? (
                   <ApplicationSubPanel>
                     <ApplicationSubPanel.Header>
-                      {this.props.i18n.t("labels.purchases", { ns: "orders" })}
+                      {this.props.i18n.t("labels.orders", {
+                        ns: "orders",
+                        count: 0,
+                      })}
                     </ApplicationSubPanel.Header>
                     <ApplicationSubPanel.Body>
                       <Ceepos />

@@ -415,6 +415,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18nOLD: state.i18nOLD,
     guider: state.guider,
     locale: state.locales.current,
     status: state.status,

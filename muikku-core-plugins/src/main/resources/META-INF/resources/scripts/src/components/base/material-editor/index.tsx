@@ -1168,7 +1168,7 @@ class MaterialEditor extends React.Component<
               deleteFileText={t("actions.remove")}
               downloadFileText={t("actions.download", { count: 1 })}
               showURL
-              notificationOfSuccessText={t("notifications.uploadSuccess_file", {
+              notificationOfSuccessText={t("notifications.uploadSuccess", {
                 ns: "files",
               })}
               displayNotificationOnSuccess

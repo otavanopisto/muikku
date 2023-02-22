@@ -214,9 +214,7 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
         <span className={`material-page__filefield ${ElementDisabledState}`}>
           <FileUploader
             emptyText={
-              this.props.readOnly
-                ? t("content.empty_files", { ns: "files" })
-                : null
+              this.props.readOnly ? t("content.empty", { ns: "files" }) : null
             }
             readOnly={this.props.readOnly}
             url={this.props.status.contextPath + "/tempFileUploadServlet"}
@@ -252,7 +250,7 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
               })
             }
             invisible={this.props.invisible}
-            notificationOfSuccessText={t("notifications.uploadSuccess_file", {
+            notificationOfSuccessText={t("notifications.uploadSuccess", {
               ns: "files",
             })}
             displayNotificationOnSuccess

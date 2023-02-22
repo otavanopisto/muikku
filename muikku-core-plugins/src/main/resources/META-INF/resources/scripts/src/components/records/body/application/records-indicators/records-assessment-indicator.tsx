@@ -41,7 +41,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         openByHover
         content={
           <span>
-            {t("labels.evaluated", {
+            {t("labels.evaluablesDone", {
               ns: "studies",
               date: i18nOLD.time.format(assessment.date),
             }) + getShortenGradeExtension(assessment.grade)}
@@ -61,10 +61,10 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
     const status = i18nOLD.text.get(
       assessment.state === "incomplete"
         ? t("labels.incomplete", {
-            ns: "studies",
+            ns: "workspace",
           })
         : t("labels.failed", {
-            ns: "studies",
+            ns: "workspace",
           })
     );
 
@@ -73,7 +73,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         openByHover
         content={
           <span>
-            {t("labels.evaluated", {
+            {t("labels.evaluablesDone", {
               ns: "studies",
               date: i18nOLD.time.format(assessment.date),
             }) +
@@ -101,7 +101,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           content={
             <span>
               {assessment.grade
-                ? t("labels.evaluated", {
+                ? t("labels.evaluablesDone", {
                     ns: "studies",
                     date: i18nOLD.time.format(assessment.date),
                   }) + getShortenGradeExtension(assessment.grade)

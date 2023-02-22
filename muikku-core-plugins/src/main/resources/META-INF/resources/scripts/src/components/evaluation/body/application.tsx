@@ -119,7 +119,7 @@ class EvaluationApplication extends React.Component<
             {t("labels.evaluationRequest", { ns: "evaluation", count: 0 })}
           </option>
           {workspaceOptions.length > 0 ? (
-            <optgroup label={t("labels.courses", { ns: "workspace" })}>
+            <optgroup label={t("labels.workspaces", { ns: "workspace" })}>
               {workspaceOptions}
             </optgroup>
           ) : null}

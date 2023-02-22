@@ -267,7 +267,7 @@ class OrganizationManagementApplication extends React.Component<
           },
           {
             id: "COURSES",
-            name: t("labels.courses", { ns: "workspace" }),
+            name: t("labels.workspaces", { ns: "workspace" }),
             mobileAction: coursesPrimaryActionMobile,
             component: (
               <ApplicationPanelBody

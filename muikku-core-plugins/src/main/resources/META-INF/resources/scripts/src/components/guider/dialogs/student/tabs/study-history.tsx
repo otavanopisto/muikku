@@ -123,7 +123,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         onFileSuccess={(file: File, data: UserFileType) => {
           addFileToCurrentStudent(data);
         }}
-        hintText={t("content.addTaskInstuction")}
+        hintText={t("content.addAttachmentInstruction")}
         fileTooLargeErrorText={t("notifications.sizeTooLarge", { ns: "files" })}
         files={files}
         fileIdKey="id"

@@ -17,7 +17,7 @@ export default function Any(props: { material: MaterialContentNodeType }) {
         href={`/rest/materials/binary/${props.material.materialId}/content`}
         openInNewTab={props.material.title}
       >
-        {t("actions.download_file", { ns: "files" })}
+        {t("actions.download", { ns: "files" })}
       </Link>
     </div>
   );

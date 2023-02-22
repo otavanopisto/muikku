@@ -233,7 +233,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     <span className="workspace-assessment__grade-data">
                       {assessmentIsIncomplete
                         ? t("labels.incomplete", {
-                            ns: "studies",
+                            ns: "workspace",
                           })
                         : a.grade}
                     </span>

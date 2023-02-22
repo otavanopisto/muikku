@@ -512,12 +512,12 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     },
     {
       id: "EXCERCISE",
-      name: t("labels.exercise", { ns: "materials", count: 0 }),
+      name: t("labels.exercises", { ns: "materials", count: 0 }),
       type: "excercises",
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            <span>{t("labels.exercise", { ns: "materials", count: 0 })}</span>
+            <span>{t("labels.exercises", { ns: "materials", count: 0 })}</span>
             <span>
               <Link
                 className="link link--studies-close-open"
