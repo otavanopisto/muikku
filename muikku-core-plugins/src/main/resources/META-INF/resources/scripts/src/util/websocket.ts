@@ -263,8 +263,7 @@ export default class MuikkuWebsocket {
     if (this.discarded) {
       this.ticket = null;
       callback();
-    }
-    else if (this.ticket) {
+    } else if (this.ticket) {
       // We have a ticket, so we need to validate it before using it
       $.ajax({
         url: "/rest/websocket/ticket/" + this.ticket + "/check",
