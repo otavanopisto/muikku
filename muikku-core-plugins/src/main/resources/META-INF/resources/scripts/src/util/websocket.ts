@@ -53,7 +53,7 @@ export default class MuikkuWebsocket {
     listeners: ListenerType,
     options = {
       reconnectInterval: 10000,
-      pingInterval: 5000,
+      pingInterval: 10000,
     }
   ) {
     this.options = options;
@@ -440,7 +440,7 @@ export default class MuikkuWebsocket {
         this.gotPong = false;
         this.sendMessage("ping:ping", {});
       } else {
-        // Didn't get a pong to our latest ping in five seconds, reconnect
+        // Didn't get a pong to our latest ping in ten seconds, reconnect
         if (!this.reconnecting && !this.discarded) {
           this.startReconnecting();
         }

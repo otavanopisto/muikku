@@ -2,25 +2,27 @@ package fi.otavanopisto.muikku.plugins.websocket;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
+
+import org.apache.commons.codec.binary.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 
 @ApplicationScoped
-@Transactional
+@Singleton
 public class WebSocketMessenger {
   
   @Inject
@@ -29,14 +31,15 @@ public class WebSocketMessenger {
   @Inject
   private Event<WebSocketMessageEvent> webSocketMessageEvent;
 
-  @Inject
-  private WebSocketTicketController webSocketTicketController;
-
-  private Map<String, Session> sessions;
-  
   @PostConstruct
   public void init() {
     sessions = new ConcurrentHashMap<>();
+  }
+  
+  public void registerTicket(String ticket, Long userEntityId) {
+    // Actual web socket session has not yet been opened but in order to validate
+    // this ticket in openSession, we register it to the session map 
+    sessions.put(ticket, new WebSocketSessionInfo(userEntityId));
   }
   
   public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
@@ -57,20 +60,23 @@ public class WebSocketMessenger {
     }
     
     for (String ticket : sessions.keySet()) {
-      Session session = sessions.get(ticket);
+      WebSocketSessionInfo sessionInfo = sessions.get(ticket);
       try {
-        if (session == null || !session.isOpen()) {
-          closeSession(session, ticket, null);
+        if (sessionInfo == null || sessionInfo.getSession() == null) {
+          continue; // session not found or not yet opened, so skip it
+        }
+        else if (!sessionInfo.getSession().isOpen()) {
+          discardSession(sessionInfo.getSession(), ticket, null);
           continue;
         }
-        Long userId = (Long) session.getUserProperties().get("UserId");
-        if (userId != null && recipientIds.contains(userId)) {
-          session.getBasicRemote().sendText(strMessage);
+        if (sessionInfo.getUserEntityId() != null && recipientIds.contains(sessionInfo.getUserEntityId())) {
+          sessionInfo.getSession().getBasicRemote().sendText(strMessage);
+          sessionInfo.access();
         }
       }
       catch (Exception e) {
         logger.log(Level.WARNING, String.format("Unable to send websocket message: %s", e.getMessage()));
-        closeSession(session, ticket, null);
+        discardSession(sessionInfo.getSession(), ticket, null);
       }
     }
   }
@@ -87,31 +93,34 @@ public class WebSocketMessenger {
       return;
     }
     
-    Session session = sessions.get(ticket);
+    WebSocketSessionInfo sessionInfo = sessions.get(ticket);
     try {
-      if (session == null || !session.isOpen()) {
-        closeSession(session, ticket, null);
+      if (sessionInfo == null || sessionInfo.getSession() == null) {
+        return; // session not found or not yet opened, so skip it
+      }
+      else if (!sessionInfo.getSession().isOpen()) {
+        discardSession(sessionInfo.getSession(), ticket, null);
       }
       else {
-        session.getBasicRemote().sendText(strMessage);
+        sessionInfo.getSession().getBasicRemote().sendText(strMessage);
+        sessionInfo.access();
       }
     }
     catch (Exception e) {
       logger.log(Level.WARNING, String.format("Unable to send websocket message: %s", e.getMessage()));
-      closeSession(session, ticket, null);
+      discardSession(sessionInfo.getSession(), ticket, null);
     }
   }
   
-  public void openSession(Session session, String ticketId) {
+  public void openSession(Session session, String ticket) {
     try {
-      WebSocketTicket ticket = webSocketTicketController.findTicket(ticketId);
-      if (ticket != null) {
-        session.getUserProperties().put("UserId", ticket.getUser());
-        sessions.put(ticketId, session);
+      WebSocketSessionInfo sessionInfo = sessions.get(ticket);
+      if (sessionInfo != null && sessionInfo.getSession() == null) {
+        sessionInfo.setSession(session);
+        sessionInfo.access();
       }
       else {
-        CloseReason reason = new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Invalid ticket");
-        closeSession(session, ticketId, reason);
+        discardSession(session, ticket, new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Invalid ticket"));
       }
     }
     catch (Exception e) {
@@ -119,7 +128,7 @@ public class WebSocketMessenger {
     }
   }
 
-  public void closeSession(Session session, String ticket, CloseReason closeReason) {
+  public void discardSession(Session session, String ticket, CloseReason closeReason) {
     // In normal cases the session is already closed (by client) but should it still
     // be open for any reason, make a silent last-ditch effort to close it gracefully 
     if (session != null && session.isOpen()) {
@@ -137,26 +146,37 @@ public class WebSocketMessenger {
     }
     // Remove session and its corresponding ticket
     sessions.remove(ticket);
-    webSocketTicketController.removeTicket(ticket);
   }
 
-  public void handleMessage(String message, Session session, String ticketId) {
+  public void handleMessage(String message, Session session, String ticket) {
     ObjectMapper mapper = new ObjectMapper();
     try {
-      WebSocketTicket ticket = webSocketTicketController.findTicket(ticketId);
-      if (ticket != null) {
+      WebSocketSessionInfo sessionInfo = sessions.get(ticket);
+      if (sessionInfo != null && sessionInfo.getSession() != null && StringUtils.equals(session.getId(), sessionInfo.getSession().getId())) {
         WebSocketMessage messageData = mapper.readValue(message, WebSocketMessage.class);
-        WebSocketMessageEvent event = new WebSocketMessageEvent(ticket.getTicket(), ticket.getUser(), messageData);
+        WebSocketMessageEvent event = new WebSocketMessageEvent(ticket, sessionInfo.getUserEntityId(), messageData);
         webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(messageData.getEventType())).fire(event);
+        sessionInfo.access();
       }
       else {
-        CloseReason reason = new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Invalid ticket");
-        closeSession(session, ticketId, reason);
+        discardSession(session, ticket, new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Invalid ticket"));
       }
     }
     catch (Exception e) {
       logger.log(Level.WARNING, "Failed to handle WebSocket message", e);
     }
   }
+
+  @Schedule(hour = "*", persistent = false)
+  private void discardExpiredSessions() {
+    for (String ticket : sessions.keySet()) {
+      WebSocketSessionInfo sessionInfo = sessions.get(ticket);
+      if (sessionInfo.expired()) {
+        discardSession(sessionInfo.getSession(), ticket, null);
+      }
+    }
+  }  
+  
+  private ConcurrentHashMap<String, WebSocketSessionInfo> sessions;
   
 }
