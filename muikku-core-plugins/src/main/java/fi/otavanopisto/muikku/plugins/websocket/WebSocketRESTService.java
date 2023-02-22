@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.plugins.websocket;
 
-import java.util.UUID;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -35,9 +33,7 @@ public class WebSocketRESTService extends PluginRESTService {
   @Path ("/ticket")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createTicket() {
-    String ticket = UUID.randomUUID().toString();
-    Long userEntityId = sessionController.getLoggedUserEntity().getId();
-    websocketMessenger.registerTicket(ticket, userEntityId);
+    String ticket = websocketMessenger.registerTicket(sessionController.getLoggedUserEntity().getId());
     return Response.ok(ticket).build();
   }
 
@@ -46,11 +42,15 @@ public class WebSocketRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response check(@PathParam("TICKET") String ticket) {
     WebSocketSessionInfo sessionInfo = websocketMessenger.getSessionInfo(ticket);
-    if (sessionInfo != null) {
+    // A valid ticket should point to a session which exists and contain a websocket that is open
+    if (sessionInfo != null && sessionInfo.getSession() != null && sessionInfo.getSession().isOpen()) {
       UserEntity user = sessionController.getLoggedUserEntity(); 
-      return user.getId().equals(sessionInfo.getUserEntityId()) ? Response.noContent().build() : Response.status(Response.Status.FORBIDDEN).build();
+      // Since we're logged in, the requested ticket really should belong to us but just in case it didn't,
+      // we treat it as not found in order to get the logged in user to renew it properly
+      return user.getId().equals(sessionInfo.getUserEntityId()) ? Response.noContent().build() : Response.status(Response.Status.NOT_FOUND).build();
     }
     else {
+      // The entire ticket (and associated websocket) has disappeared from the server
       return Response.status(Response.Status.NOT_FOUND).build();
     }
   }

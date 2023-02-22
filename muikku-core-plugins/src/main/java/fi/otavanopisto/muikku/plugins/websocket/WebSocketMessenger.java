@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.websocket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,14 +41,15 @@ public class WebSocketMessenger {
     return sessions.get(ticket);
   }
   
-  public void registerTicket(String ticket, Long userEntityId) {
-    WebSocketSessionInfo sessionInfo = sessions.get(ticket);
-    if (sessionInfo != null) {
-      discardSession(sessionInfo.getSession(), ticket, null);
+  public String registerTicket(Long userEntityId) {
+    String ticket = UUID.randomUUID().toString();
+    while (sessions.containsKey(ticket)) {
+      ticket = UUID.randomUUID().toString();
     }
     // Actual web socket session has not yet been opened but in order to validate
     // this ticket in openSession, we register it to the session map 
     sessions.put(ticket, new WebSocketSessionInfo(userEntityId));
+    return ticket;
   }
   
   public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
