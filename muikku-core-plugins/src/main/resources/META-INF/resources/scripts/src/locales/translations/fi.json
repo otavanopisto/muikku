@@ -189,6 +189,7 @@
       "removeError": "Poisto epäonnistui",
       "removeError_chatRoom": "Chat-huoneen <b>{0}</b> poisto epäonnistui, ole hyvä ja yritä uudelleen",
       "removeError_comment": "Kommentin poisto epäonnistui",
+      "removeSuccess": "Poisto onnistui",
       "removeSuccess_chatRoom": "Chat-huoneen <b>{0}</b> poisto onnistui",
       "removeSuccess_comment": "Kommentin poisto onnistui",
       "restoreError": "Palautus epäonnistui",
@@ -201,6 +202,7 @@
       "updateError_chatStatus": "Chatin tilan vaihto epäonnistui.",
       "updateError_chatUserName": "Chatin käyttäjänimen vaihto epäonnistui.",
       "updateError_comment": "Kommentin muokkaus epäonnistui",
+      "updateSuccess": "Muokkaus onnistui.",
       "updateSuccess_chatStatus": "Chatin tila vaihdettu onnistuneesti.",
       "updateSuccess_chatUserName": "Chatin käyttäjänimi vaihdettu onnistuneesti.",
       "updateSuccess_comment": "Kommentin muokkaus onnistui",
@@ -715,11 +717,11 @@
       "availableError_announcements": "Kyseistä tiedotetta ei ole saatavilla tai sitä ei ole olemassa.",
       "captionRequiredError": "Viestillä täytyy olla otsikko",
       "contentRequiredError": "Viestillä täytyy olla sisältö",
-      "createError_announcements": "Tiedotteen luominen epäonnistui. Yritä uudelleen.",
+      "createError": "Tiedotteen luominen epäonnistui. Yritä uudelleen.",
       "createError_contactLog": "Yhteydenoton luonti epäonnistui",
       "createError_label": "Tunnisteen luominen epäonnistui",
       "createError_discussionArea": "Virhe uuden keskustelualueen luomisessa",
-      "createSuccess_announcements": "Tiedote luotu",
+      "createSuccess": "Tiedote luotu",
       "createSuccess_contactLog": "Yhteydenoton luonti onnistui",
       "deleteError_announcements": "Tiedotteen poisto epäonnistui. Yritä uudelleen.",
       "doesNotExistError_label": "Tunnistetta ei ole olemassa",
@@ -758,6 +760,7 @@
       "updateError_label": "Tunnisteen päivitys epäonnistui",
       "updateError_signature": "Allekirjoituksen päivitys epäonnistui",
       "updateError_discussionArea": "Virhe keskustelualueen muokkauksessa",
+      "updateSuccess": "Viestin muokkaus onnistui",
       "updateSuccess_announcements": "Tiedotetta muokattu",
       "updateSuccess_contactLog": "Yhteydenoton muokkaus onnistui",
       "workspacesRequiredError": "Viestillä ei ole määriteltyjä kohdetyöntiloja"
@@ -953,8 +956,8 @@
       "createSuccess_staff": "Henkilöstön edustajan luonti onnistui",
       "createSuccess_userGroup": "Käyttäjäryhmän luonti onnistui",
       "loadError": "Virhe käyttäjien lataamisessa",
-      "loadError_student": "Virhe opiskelijoiden lataamisessa. Yritä ladata sivu uudelleen.",
-      "loadError_student_one": "Virhe opiskelijan lataamisessa. Yritä ladata sivu uudelleen.",
+      "loadError_students_other": "Virhe opiskelijoiden lataamisessa. Yritä ladata sivu uudelleen.",
+      "loadError_students_one": "Virhe opiskelijan lataamisessa. Yritä ladata sivu uudelleen.",
       "loadError_userGroups": "Opiskelijaryhmien lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_profilePicture": "Profiilikuvan lataus epäonnistui",
       "loadError_teachers": "Opettajien lataus epäonnistui",
@@ -1687,7 +1690,8 @@
       "createError": "Tilauksen maksutapahtumassa tapahtui virhe. Ole hyvä ja ota yhteyttä ohjaajaasi",
       "createSuccess": "Tilauksen maksutapahtuma onnistui.",
       "loadError": "Tilauksen lataus epäonnistui",
-      "removeError": "Opiskelijan tilauksen poisto epäonistui"
+      "removeError": "Opiskelijan tilauksen poisto epäonistui",
+      "updateError": "Tilauksen päivittäminen epäonnistui"
     }
   },
   "ops": {
