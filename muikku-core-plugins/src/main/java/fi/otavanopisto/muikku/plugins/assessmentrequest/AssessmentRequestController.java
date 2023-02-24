@@ -69,6 +69,10 @@ public class AssessmentRequestController {
         workspaceIdentifier.getIdentifier(),
         studentIdentifier.getIdentifier());
   }
+  
+  public WorkspaceAssessmentRequest findLatestAssessmentRequestByWorkspaceAndStudent(WorkspaceEntity workspaceEntity, SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
+    return gradingController.findLatestAssessmentRequestByWorkspaceAndStudent(studentIdentifier, workspaceIdentifier);
+  }
 
   public List<WorkspaceAssessmentRequest> listByWorkspace(WorkspaceEntity workspaceEntity) {
     return gradingController.listWorkspaceAssessmentRequests(workspaceEntity.getDataSource().getIdentifier(), workspaceEntity.getIdentifier());
