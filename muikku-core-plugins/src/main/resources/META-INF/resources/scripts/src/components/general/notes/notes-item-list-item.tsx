@@ -9,15 +9,14 @@ import Link from "~/components/general/link";
 import * as moment from "moment";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import NoteInformationDialog from "./dialogs/note-information-dialog";
 import { isOverdue } from "~/helper-functions/dates";
+import { useTranslation } from "react-i18next";
 
 /**
  * NotesListItemProps
  */
 export interface NotesListItemProps {
-  i18nOLD: i18nType;
   archived: boolean;
   notesItem: NotesItemRead;
   containerModifier?: string[];
@@ -83,8 +82,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       status,
     } = notesItem;
 
+    const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
-
     const updatedModifiers = [];
 
     if (containerModifier && containerModifier.length > 0) {
@@ -204,9 +203,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       if (startDate && dueDate) {
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
-            <span className="notes__item-dates-text">
-              {props.i18nOLD.text.get("plugin.records.tasks.dates.active")}
-            </span>
+            <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")} - {moment(dueDate).format("l")}
             </span>
@@ -215,9 +212,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       } else if (startDate) {
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
-            <span className="notes__item-dates-text">
-              {props.i18nOLD.text.get("plugin.records.tasks.dates.active")}
-            </span>
+            <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")}
             </span>
@@ -227,9 +222,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       } else if (dueDate) {
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
-            <span className="notes__item-dates-text">
-              {props.i18nOLD.text.get("plugin.records.tasks.dates.active")}
-            </span>
+            <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
             <span className="notes__item-dates-date">
               {moment(dueDate).format("l")}
@@ -253,7 +246,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             key="note-overdue"
             className="notes__item-status notes__item-status--overdue"
           >
-            {props.i18nOLD.text.get("plugin.records.tasks.status.overdue")}
+            {t("labels.status", { context: "overdue" })}
           </div>
         );
       }
@@ -265,7 +258,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               key="note-ongoing"
               className="notes__item-status notes__item-status--ongoing"
             >
-              {props.i18nOLD.text.get("plugin.records.tasks.status.ongoing")}
+              {t("labels.status", { context: "ongoing" })}
             </div>
           );
           break;
@@ -275,7 +268,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               key="note-pending"
               className="notes__item-status notes__item-status--pending"
             >
-              {props.i18nOLD.text.get("plugin.records.tasks.status.pending")}
+              {t("labels.status", { context: "pending" })}
             </div>
           );
           break;
@@ -286,7 +279,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               className="notes__item-status notes__item-status--done"
             >
               <span className="notes__item-status-indicator icon-check"></span>
-              {props.i18nOLD.text.get("plugin.records.tasks.status.done")}
+              {t("labels.status", { context: "done" })}
             </div>
           );
           break;
@@ -317,9 +310,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.APPROVAL_PENDING
                 )}
               >
-                {props.i18nOLD.text.get(
-                  "plugin.records.tasks.action.requestApproval"
-                )}
+                {t("actions.send")}
               </Link>
             </div>
           );
@@ -332,9 +323,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                     NotesItemStatus.APPROVED
                   )}
                 >
-                  {props.i18nOLD.text.get(
-                    "plugin.records.tasks.action.markAsDone"
-                  )}
+                  {t("actions.done")}
                 </Link>
               </div>
             );
@@ -349,9 +338,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.ONGOING
                 )}
               >
-                {props.i18nOLD.text.get(
-                  "plugin.records.tasks.action.cancelApprovalRequest"
-                )}
+                {t("actions.cancel")}
               </Link>
             </div>
           );
@@ -366,9 +353,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.ONGOING
                 )}
               >
-                {props.i18nOLD.text.get(
-                  "plugin.records.tasks.action.markAsIncomplete"
-                )}
+                {t("actions.incomplete")}
               </Link>
             </div>
           );
@@ -387,9 +372,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                     NotesItemStatus.APPROVED
                   )}
                 >
-                  {props.i18nOLD.text.get(
-                    "plugin.records.tasks.action.markAsApproved"
-                  )}
+                  {t("actions.approve")}
                 </Link>
               </div>
               <div className="dropdown__container-item">
@@ -399,9 +382,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                     NotesItemStatus.ONGOING
                   )}
                 >
-                  {props.i18nOLD.text.get(
-                    "plugin.records.tasks.action.markAsIncomplete"
-                  )}
+                  {t("actions.incomplete")}
                 </Link>
               </div>
             </>
@@ -416,9 +397,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.APPROVAL_PENDING
                 )}
               >
-                {props.i18nOLD.text.get(
-                  "plugin.records.tasks.action.markAsIncomplete"
-                )}
+                {t("actions.incomplete")}
               </Link>
             </div>
           );

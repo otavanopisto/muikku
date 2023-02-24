@@ -15,6 +15,7 @@ import NotesItemList from "./notes-item-list";
 import { ButtonPill } from "~/components/general/button";
 import NotesItemNew from "./notes-item-new";
 import NotesItemListFilters from "./notes-item-list-filters";
+import { useTranslation } from "react-i18next";
 
 /**
  * NotesProps
@@ -55,14 +56,9 @@ interface NotesProps {
  * @returns JSX.Element
  */
 const Notes: React.FC<NotesProps> = (props) => {
-  const {
-    showHistoryPanel,
-    displayNotification,
-    userId,
-    studentId,
-    usePlace,
-    i18nOLD,
-  } = props;
+  const { showHistoryPanel, displayNotification, userId, studentId, usePlace } =
+    props;
+  const { t } = useTranslation("tasks");
 
   const [activeTab, setActiveTab] = React.useState("active");
 
@@ -74,7 +70,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     returnArchivedNotesItem,
     updateNotesItemStatus,
     pinNotesItem,
-  } = useNotesItem(studentId, i18nOLD, displayNotification);
+  } = useNotesItem(studentId, displayNotification);
 
   const [activeNoteFilters, setActiveNoteFilters] =
     React.useState<NotesItemFilters>({
@@ -125,7 +121,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     {
       id: "active",
       type: "notes",
-      name: props.i18nOLD.text.get("plugin.records.tasks.tab.activeTasks"),
+      name: t("labels.tasks", { context: "active" }),
       /**
        * component
        */
@@ -145,14 +141,12 @@ const Notes: React.FC<NotesProps> = (props) => {
             </div>
 
             <NotesItemListFilters
-              i18nOLD={i18nOLD}
               usePlace={usePlace}
               filters={activeNoteFilters}
               onFilttersChange={handleActiveFiltersChange}
             />
           </NotesToolbar>
           <NotesItemList
-            i18nOLD={i18nOLD}
             filters={activeNoteFilters}
             isLoadingList={notesItems.isLoadingList}
             notesItems={notesItems.notesItemList}
@@ -172,7 +166,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     notesTabs.push({
       id: "archived",
       type: "notes",
-      name: props.i18nOLD.text.get("plugin.records.tasks.tab.archivedTasks"),
+      name: t("labels.tasks", { context: "archived" }),
       /**
        * component
        */
@@ -192,14 +186,12 @@ const Notes: React.FC<NotesProps> = (props) => {
               </NotesItemNew>
             </div>
             <NotesItemListFilters
-              i18nOLD={props.i18nOLD}
               usePlace={usePlace}
               filters={activeNoteFilters}
               onFilttersChange={handleNonActiveFiltersChange}
             />
           </NotesToolbar>
           <NotesItemList
-            i18nOLD={props.i18nOLD}
             filters={nonActiveNoteFilters}
             isLoadingList={notesItems.isLoadingList}
             notesItems={notesItems.notesArchivedItemList}

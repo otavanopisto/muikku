@@ -3,8 +3,7 @@ import { NotesLocation, NotesItemFilters } from "~/@types/notes";
 import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemFilterChip from "./notes-item-list-filters-chip";
-import { i18nType } from "~/reducers/base/i18nOLD";
-
+import { useTranslation } from "react-i18next";
 import "~/sass/elements/filter.scss";
 
 /**
@@ -13,7 +12,6 @@ import "~/sass/elements/filter.scss";
 interface NotesItemListFilttersProps {
   usePlace: NotesLocation;
   filters: NotesItemFilters;
-  i18nOLD: i18nType;
   onFilttersChange: (updatedFilters: NotesItemFilters) => void;
 }
 
@@ -24,7 +22,7 @@ interface NotesItemListFilttersProps {
  */
 const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
   const { filters, onFilttersChange, usePlace } = props;
-
+  const { t } = useTranslation("tasks");
   /**
    * Handles filter chip click
    * @param name name
@@ -61,27 +59,21 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
     <>
       <div className="notes__toolbar-section">
         <NotesItemFilterChip
-          label={props.i18nOLD.text.get(
-            "plugin.records.tasks.priority.high.label"
-          )}
+          label={t("labels.priority", { context: "high" })}
           modifier="note-priority-high"
           activeModifier={filters.high ? "active" : null}
           name="high"
           onChipClick={handleFilterChipClick}
         />
         <NotesItemFilterChip
-          label={props.i18nOLD.text.get(
-            "plugin.records.tasks.priority.normal.label"
-          )}
+          label={t("labels.priority", { context: "normal" })}
           modifier="note-priority-normal"
           activeModifier={filters.normal ? "active" : null}
           name="normal"
           onChipClick={handleFilterChipClick}
         />
         <NotesItemFilterChip
-          label={props.i18nOLD.text.get(
-            "plugin.records.tasks.priority.low.label"
-          )}
+          label={t("labels.priority", { context: "low" })}
           modifier="note-priority-low"
           activeModifier={filters.low ? "active" : null}
           name="low"
@@ -94,7 +86,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
             items={[
               <div key="filterTitle" className="filter-category">
                 <div className="filter-category__label">
-                  {props.i18nOLD.text.get("plugin.records.tasks.filter.label")}
+                  {t("labels.filter")}
                 </div>
               </div>,
 
@@ -109,9 +101,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
                   htmlFor="notesFilterMyOwn"
                   className="filter-item__label"
                 >
-                  {props.i18nOLD.text.get(
-                    "plugin.records.tasks.filter.createdbyme"
-                  )}
+                  {t("labels.own")}
                 </label>
               </div>,
 
@@ -126,9 +116,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
                   htmlFor="notesFilterFromGuider"
                   className="filter-item__label"
                 >
-                  {props.i18nOLD.text.get(
-                    "plugin.records.tasks.filter.createdbyguidanceCounselor"
-                  )}
+                  {t("labels.createdByCoucelors")}
                 </label>
               </div>,
             ]}

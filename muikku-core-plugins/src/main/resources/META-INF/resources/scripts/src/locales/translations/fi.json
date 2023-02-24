@@ -261,6 +261,7 @@
 
   "guider": {
     "labels": {
+      "answered": "Vastatut",
       "evaluationState": "Arvioinnin tila",
       "evaluationState_pass": "Arvioitu - hyväksytty",
       "evaluationState_fail": "Arvioitu - hylätty",
@@ -271,7 +272,10 @@
       "created_interimEvaluation": "Välipalaute annettu",
       "discussionMessages": "Keskusteluviestit",
       "endDate": "Opintojen päättymispäivä",
+      "entries": "Oppimispäiväkirjamerkinnät",
       "evaluated": "Arvioitu {{date}}",
+      "evaluatedWithNonPassingGrade": "Arvioitu ei-läpäisevällä arvosanalla",
+      "evaluatedWithPassingGrade": "Arvioitu läpäisevällä arvosanalla",
       "evaluated_interim": "Välipalaute annettu",
       "history": "Historia",
       "hops": "Opiskelusuunnitelma (HOPS)",
@@ -297,6 +301,7 @@
       "studyHistory": "Opintohistoria",
       "studyProgress": "Opintojen edistyminen",
       "submittedAssignments": "Palautetut",
+      "unanswered": "Aloittamattomat",
       "visits": "Käynnit työtilassa",
       "vacationAutoReply": "Lomaviesti käytössä",
       "workspaceVisits": "Käynyt kurssilla"
@@ -305,22 +310,27 @@
     "content": {
       "addTaskInstruction": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Halutessasi voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee Odottaa käsittelyä. Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (Roskakori-kuvake).</p>",
       "addAttachmentInstruction": "Lisää liitetiedosto klikkaamalla tästä tai raahamalla tiedosto tähän laatikkoon",
-      "lastVisit": "viimeisin: {0}",
-      "lastAnsweredAssignment": "viimeisin vastaus: {0}",
-      "lastAnsweredExercise": "viimeisin vastaus: {0}",
-      "lastEvaluationFailed": "viimeisin ei-läpäisevä arviointi: {0}",
-      "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {0}",
-      "lastJournalEntry": "viimeisin merkintä: {0}",
-      "lastSubmittedAssignment": "viimeisin palautus: {0}",
+      "empty": "-",
+      "lastVisit": "viimeisin: {{value}}",
+      "lastAnswered": "viimeisin vastaus: {{value}}",
+      "lastMessage": "Viimeisin viesti: {{value}}",
+
+      "lastEvaluationFailed": "viimeisin ei-läpäisevä arviointi: {{value}}",
+      "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {{value}}",
+      "lastJournalEntry": "viimeisin merkintä: {{value}}",
+      "lastSubmittedAssignment": "viimeisin palautus: {{value}}",
       "notInWorkspaces": "Opiskelija ei ole missään työtilassa",
-      "numberOfAnsweredAssignments": "{0} tehtävää",
+      "numberOfAssignments": "{{value}} tehtävää",
+
+      "lastAnsweredExercise": "viimeisin vastaus: {0}",
       "numberOfAnsweredExercises": "{0} tehtävää",
       "numberOfEvaluationFailed": "{0} tehtävää",
       "numberOfEvaluationPassed": "{0} tehtävää",
-      "numberOfJournalEntries": "{0} merkintää",
-      "numberOfMessages": "{0} viestiä",
       "numberOfSubmittedAssignments": "{0} tehtävää",
-      "numberOfVisits": " {0} käyntiä",
+
+      "numberOfJournalEntries": "{{value}} merkintää",
+      "numberOfMessages": "{{value} viestiä",
+      "numberOfVisits": " {{value}} käyntiä",
       "removing_attachment": "Oletko varma että haluat poistaa valitsemasi liitetiedoston?"
     },
     "wcag": {
@@ -781,18 +791,19 @@
       "send": "Lähetä hyväksyttäväksi"
     },
     "notifications": {
-      "archiveError": "Tehtävän arkistointi epäonnistui, ole hyvä ja yritä uudelleen. {0}",
+      "archiveError": "Tehtävän arkistointi epäonnistui, ole hyvä ja yritä uudelleen. {{error}}",
       "archiveSuccess": "Tehtävän arkistointi onnistui.",
-      "createError": "Tehtävän luonti epäonnistui, ole hyvä ja yritä uudelleen. {0}",
+      "createError": "Tehtävän luonti epäonnistui, ole hyvä ja yritä uudelleen. {{error}}",
       "createSuccess": "Tehtävä luotiin onnistuneesti.",
       "loadError": "Tehtävien lataus epäonnistui, ole hyvä ja lataa sivu uudelleen. {{error}}",
-      "unarchiveError": "Tehtävän palautus epäonnistui, ole hyvä ja yritä uudelleen. {0}",
+      "pinError": "Tehtävän kiinnittäminen epäonnistui. {{error}}",
+      "unarchiveError": "Tehtävän palautus epäonnistui, ole hyvä ja yritä uudelleen. {{error}}",
       "unarchiveSuccess": "Tehtävän palautus onnistui.",
-      "updateError": "Tehtävän muokkaus epäonnistui, ole hyvä ja yritä uudelleen. {0}",
-      "updateError_taskState": " Tehtävän tilan päivitys epäonnistui, ole hyvä ja yritä uudelleen. {{error}}",
+      "updateError": "Tehtävän muokkaus epäonnistui, ole hyvä ja yritä uudelleen. {{error}}",
+      "updateError_state": " Tehtävän tilan päivitys epäonnistui, ole hyvä ja yritä uudelleen. {{error}}",
       "updateSuccess": "Tehtävän muokkaus onnistui.",
-      "updateSuccess_taskState": "Tehtävän tila päivitettiin onnistuneesti.",
-      "ratingError": "Tehtävän tähditys epäonnistui, ole hyvä ja yritä uudelleen. {0}"
+      "updateSuccess_state": "Tehtävän tila päivitettiin onnistuneesti.",
+      "ratingError": "Tehtävän tähditys epäonnistui, ole hyvä ja yritä uudelleen. {{error}}"
     },
     "labels": {
       "active": "Voimassa",
@@ -801,6 +812,7 @@
       "details": "Tehtävän tiedot",
       "edit": "Muokkaa tehtävää",
       "filter": "Suodata muistioita",
+      "own": "Omat",
       "priority": "Tärkeys",
       "priority_high": "Korkea",
       "priority_normal": "Normaali",
@@ -812,6 +824,7 @@
       "status_pending": "Odottaa hyväksymistä",
       "tasks": "Tehtävät",
       "tasks_active": "Aktiiviset tehtävät",
+      "tasks_archived": "Arkistoidut tehtävät",
       "tasks_student": "Opiskelijalle annetut tehtävät"
     },
     "content": {

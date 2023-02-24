@@ -425,7 +425,7 @@ class StateOfStudies extends React.Component<
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>
-                  {this.props.i18n.t("labels.studyProgress", { ns: "guider" })}
+                  {this.props.i18n.t("labels.tasks", { ns: "tasks" })}
                   <Instructions
                     modifier="instructions"
                     alignSelfVertically="top"

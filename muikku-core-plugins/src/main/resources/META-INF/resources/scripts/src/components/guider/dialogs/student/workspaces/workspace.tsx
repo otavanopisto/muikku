@@ -335,9 +335,9 @@ class StudentWorkspace extends React.Component<
               {renderCourseActivity()}
 
               <CourseActivityRow<WorkspaceActivityType>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits"
-                givenDateAttributeLocale="plugin.guider.user.details.lastVisit"
-                labelTranslationString="plugin.guider.visitedLabel"
+                conditionalAttributeLocale="content.numberOfVisits"
+                givenDateAttributeLocale="content.lastVisit"
+                labelTranslationString="labels.visits"
                 conditionalAttribute="numVisits"
                 givenDateAttribute="lastVisit"
                 mainAttribute="activity"
@@ -345,9 +345,9 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceActivityType>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfJournalEntries"
-                givenDateAttributeLocale="plugin.guider.user.details.lastJournalEntry"
-                labelTranslationString="plugin.guider.journalEntriesLabel"
+                conditionalAttributeLocale="content.numberOfJournalEntries"
+                givenDateAttributeLocale="content.lastJournalEntry"
+                labelTranslationString="labels.entries"
                 conditionalAttribute="journalEntryCount"
                 givenDateAttribute="lastJournalEntry"
                 mainAttribute="activity"
@@ -355,9 +355,9 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceForumStatisticsType>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfMessages"
-                givenDateAttributeLocale="plugin.guider.user.details.lastMessage"
-                labelTranslationString="plugin.guider.discussion-messagesLabel"
+                conditionalAttributeLocale="content.numberOfMessages"
+                givenDateAttributeLocale="content.lastMessage"
+                labelTranslationString="labels.discussionMessages"
                 conditionalAttribute="messageCount"
                 givenDateAttribute="latestMessage"
                 mainAttribute="forumStatistics"
@@ -365,20 +365,23 @@ class StudentWorkspace extends React.Component<
               />
 
               <h4 className="application-sub-panel__item-header">
-                {this.props.i18nOLD.text.get("plugin.guider.assignmentsLabel")}
+                {this.props.i18n.t("labels.evaluables", {
+                  ns: "materials",
+                  count: 0,
+                })}
               </h4>
 
               <CourseActivityRow<WorkspaceActivityType>
-                labelTranslationString="plugin.guider.unansweredAssignmentsLabel"
+                labelTranslationString="labels.unanswered"
                 conditionalAttribute="evaluablesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
               <CourseActivityRow<WorkspaceActivityType>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredAssignments"
-                givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredAssignment"
-                labelTranslationString="plugin.guider.answeredAssignmentsLabel"
+                conditionalAttributeLocale="content.numberOfAssignments"
+                givenDateAttributeLocale="content.lastAnswered"
+                labelTranslationString="labels.answered"
                 conditionalAttribute="evaluablesAnswered"
                 givenDateAttribute="evaluablesAnsweredLastDate"
                 mainAttribute="activity"
@@ -386,9 +389,9 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceActivityType>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfSubmittedAssignments"
-                givenDateAttributeLocale="plugin.guider.user.details.lastSubmittedAssignment"
-                labelTranslationString="plugin.guider.submittedAssignmentsLabel"
+                conditionalAttributeLocale="content.numberOfAssignments"
+                givenDateAttributeLocale="content.lastSubmittedAssignment"
+                labelTranslationString="labels.submittedAssignments"
                 conditionalAttribute="evaluablesSubmitted"
                 givenDateAttribute="evaluablesSubmittedLastDate"
                 mainAttribute="activity"
@@ -396,9 +399,9 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceActivityType>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationFailed"
-                givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationFailed"
-                labelTranslationString="plugin.guider.failedAssingmentsLabel"
+                conditionalAttributeLocale="content.numberOfAssignments"
+                givenDateAttributeLocale="content.lastEvaluationFailed"
+                labelTranslationString="labels.evaluatedWithNonPassingGrade"
                 conditionalAttribute="evaluablesFailed"
                 givenDateAttribute="evaluablesFailedLastDate"
                 mainAttribute="activity"
@@ -406,30 +409,32 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceActivityType>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationPassed"
-                givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationPassed"
-                labelTranslationString="plugin.guider.passedAssingmentsLabel"
+                conditionalAttributeLocale="content.numberOfAssignments"
+                givenDateAttributeLocale="content.lastEvaluationPassed"
+                labelTranslationString="labels.evaluatedWithPassingGrade"
                 conditionalAttribute="evaluablesPassed"
                 givenDateAttribute="evaluablesPassedLastDate"
                 mainAttribute="activity"
                 {...this.props}
               />
-
               <h4 className="application-sub-panel__item-header">
-                {this.props.i18nOLD.text.get("plugin.guider.exercisesLabel")}
+                {this.props.i18n.t("labels.exercises", {
+                  ns: "materials",
+                  count: 0,
+                })}
               </h4>
 
               <CourseActivityRow<WorkspaceActivityType>
-                labelTranslationString="plugin.guider.unansweredExercisesLabel"
+                labelTranslationString="labels.unanswered"
                 conditionalAttribute="exercisesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
               <CourseActivityRow<WorkspaceActivityType>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredExercises"
-                givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredExercise"
-                labelTranslationString="plugin.guider.answeredExercisesLabel"
+                conditionalAttributeLocale="content.numberOfAssignments"
+                givenDateAttributeLocale="content.lastAnswered"
+                labelTranslationString="labels.answered"
                 conditionalAttribute="exercisesAnswered"
                 givenDateAttribute="exercisesAnsweredLastDate"
                 mainAttribute="activity"
@@ -461,7 +466,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["guider"])(
   connect(mapStateToProps, mapDispatchToProps)(StudentWorkspace)
 );
 
@@ -490,11 +495,12 @@ interface CourseActivityRowProps<C> {
  * @returns JSX.Element
  */
 const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
-  let output = "-";
-
   const { mainAttribute, conditionalAttribute } = props;
+  const { t } = useTranslation("guider");
 
   const workspace = props.workspace;
+
+  let output = t("content.empty");
 
   /**
    * "Any" type should not be used and should be fixed. As now there currently is no better solution.
@@ -503,13 +509,14 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (((workspace[mainAttribute] as any)[conditionalAttribute] as number) > 0) {
     if (props.conditionalAttributeLocale) {
-      output = props.i18nOLD.text.get(
-        props.conditionalAttributeLocale,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (props.workspace[props.mainAttribute] as any)[
+      const locale = t(props.conditionalAttributeLocale, {
+        defaultValue: "content.empty",
+        value: (props.workspace[props.mainAttribute] as any)[
           props.conditionalAttribute
-        ]
-      );
+        ],
+      });
+
+      output = locale;
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       output = (props.workspace as any)[props.mainAttribute][
@@ -521,15 +528,14 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
       output += ", ";
 
       if (props.givenDateAttributeLocale) {
-        output += props.i18nOLD.text.get(
-          props.givenDateAttributeLocale,
-          props.i18nOLD.time.format(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        output += t(props.givenDateAttributeLocale, {
+          defaultValue: "content.empty",
+          value: props.i18nOLD.time.format(
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
             ]
-          )
-        );
+          ),
+        });
       } else {
         output += props.i18nOLD.time.format(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -543,7 +549,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
   return (
     <div className="application-sub-panel__item application-sub-panel__item--course-activity">
       <div className="application-sub-panel__item-title">
-        {props.i18nOLD.text.get(props.labelTranslationString)}
+        {t(props.labelTranslationString, { defaultValue: "muu" })}
       </div>
       <div className="application-sub-panel__item-data">
         <span className="application-sub-panel__single-entry">{output}</span>

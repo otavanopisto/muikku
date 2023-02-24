@@ -1,12 +1,11 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { useTranslation } from "react-i18next";
 
 /**
  * NotesItemListProps
  */
 interface NotesItemListProps {
   isLoadingList: boolean;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -16,6 +15,7 @@ interface NotesItemListProps {
  */
 const NotesItemListWithoutAnimation: React.FC<NotesItemListProps> = (props) => {
   const { children, isLoadingList } = props;
+  const { t } = useTranslation("tasks");
 
   if (isLoadingList) {
     return <div className="loader-empty" />;
@@ -24,7 +24,7 @@ const NotesItemListWithoutAnimation: React.FC<NotesItemListProps> = (props) => {
   if (React.Children.count(children) === 0) {
     return (
       <div className="empty">
-        <span>{props.i18nOLD.text.get("plugin.records.tasks.empty")}</span>
+        <span>{t("content.empty")}</span>
       </div>
     );
   }

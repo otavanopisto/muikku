@@ -17,11 +17,12 @@ import {
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NotesItemNewProps
  */
-interface NotesItemNewProps {
+interface NotesItemNewProps extends WithTranslation {
   /**
    * Id of note owner (recipient)
    */
@@ -133,9 +134,7 @@ class NotesItemNew extends SessionStateComponent<
       <div key="new-note-1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.records.tasks.createEditnote.title.label"
-            )}
+            {this.props.i18n.t("labels.title")}
           </label>
           <input
             className="env-dialog__input"
@@ -149,7 +148,7 @@ class NotesItemNew extends SessionStateComponent<
 
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get("plugin.records.tasks.priority.label")}
+            {this.props.i18n.t("labels.priority", { ns: "tasks" })}
           </label>
           <select
             className="env-dialog__select"
@@ -162,19 +161,22 @@ class NotesItemNew extends SessionStateComponent<
             value={this.state.notesItem.priority}
           >
             <option value={NotesItemPriority.HIGH}>
-              {this.props.i18nOLD.text.get(
-                "plugin.records.tasks.priority.high.label"
-              )}
+              {this.props.i18n.t("labels.priority", {
+                ns: "tasks",
+                context: "high",
+              })}
             </option>
             <option value={NotesItemPriority.NORMAL}>
-              {this.props.i18nOLD.text.get(
-                "plugin.records.tasks.priority.normal.label"
-              )}
+              {this.props.i18n.t("labels.priority", {
+                ns: "tasks",
+                context: "normal",
+              })}
             </option>
             <option value={NotesItemPriority.LOW}>
-              {this.props.i18nOLD.text.get(
-                "plugin.records.tasks.priority.low.label"
-              )}
+              {this.props.i18n.t("labels.priority", {
+                ns: "tasks",
+                context: "low",
+              })}
             </option>
           </select>
         </div>
@@ -182,9 +184,7 @@ class NotesItemNew extends SessionStateComponent<
       <div key="new-note-2" className="env-dialog__row env-dialog__row--dates">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.records.tasks.createEditnote.startdate.label"
-            )}
+            {this.props.i18n.t("labels.beginDate")}
           </label>
           <DatePicker
             className="env-dialog__input"
@@ -206,9 +206,7 @@ class NotesItemNew extends SessionStateComponent<
         </div>
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.records.tasks.createEditnote.enddate.label"
-            )}
+            {this.props.i18n.t("labels.endDate", {ns: "common"})}
           </label>
           <DatePicker
             className="env-dialog__input"
@@ -233,9 +231,7 @@ class NotesItemNew extends SessionStateComponent<
       <div key="new-note-3" className="env-dialog__row">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.records.tasks.createEditnote.content.label"
-            )}
+            {this.props.i18n.t("labels.description")}
           </label>
           <CKEditor
             onChange={(e) => this.handleNotesItemChange("description", e)}
@@ -255,10 +251,10 @@ class NotesItemNew extends SessionStateComponent<
           buttonModifiers={["dialog-execute"]}
           onClick={this.handleSaveClick(closeDialog)}
         >
-          {this.props.i18nOLD.text.get("plugin.records.tasks.send")}
+          {this.props.i18n.t("actions.save")}
         </Button>
         <Button buttonModifiers={["dialog-cancel"]} onClick={closeDialog}>
-          {this.props.i18nOLD.text.get("plugin.records.tasks.cancel")}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -266,9 +262,7 @@ class NotesItemNew extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="add-note"
-        title={this.props.i18nOLD.text.get(
-          "plugin.records.tasks.createnote.topic"
-        )}
+        title={this.props.i18n.t("labels.create", { ns: "tasks" })}
         content={content}
         footer={footer}
         onOpen={this.clearUp}
@@ -297,4 +291,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NotesItemNew);
+export default withTranslation("tasks")(
+  connect(mapStateToProps, mapDispatchToProps)(NotesItemNew)
+);
