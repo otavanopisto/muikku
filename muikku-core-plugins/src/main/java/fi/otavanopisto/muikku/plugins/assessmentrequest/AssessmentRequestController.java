@@ -70,7 +70,7 @@ public class AssessmentRequestController {
         studentIdentifier.getIdentifier());
   }
   
-  public WorkspaceAssessmentRequest findLatestAssessmentRequestByWorkspaceAndStudent(WorkspaceEntity workspaceEntity, SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
+  public WorkspaceAssessmentRequest findLatestAssessmentRequestByWorkspaceAndStudent(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
     return gradingController.findLatestAssessmentRequestByWorkspaceAndStudent(studentIdentifier, workspaceIdentifier);
   }
 

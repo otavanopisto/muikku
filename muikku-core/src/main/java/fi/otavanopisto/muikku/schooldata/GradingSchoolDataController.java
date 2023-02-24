@@ -317,7 +317,7 @@ public class GradingSchoolDataController {
   }
   
   public WorkspaceAssessmentRequest findLatestAssessmentRequestByWorkspaceAndStudent(String schoolDataSource, String workspaceIdentifier, String studentIdentifier) {
-    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier("PYRAMUS");
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
       return schoolDataBridge.findLatestAssessmentRequestByWorkspaceAndStudent(workspaceIdentifier, studentIdentifier);
