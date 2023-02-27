@@ -166,7 +166,7 @@ public class PedagogyRestService {
   }
 
   /**
-   * mApi().pedagogy.form.visibility.update('PYRAMUS-STUDENT-123', {visibility: String});
+   * mApi().pedagogy.form.visibility.update('PYRAMUS-STUDENT-123', {visibility: [String]});
    */
   @Path("/form/{STUDENTIDENTIFIER}/visibility")
   @PUT
