@@ -29,24 +29,21 @@
 .toc__header {
   align-items: center;
   display: flex;
-  height: 2.625rem;
+  flex-flow: row nowrap;
+  height: 2.25rem;
   justify-content: flex-end;
+}
+
+.toc__header--workspace-guides {
+  justify-content: flex-start;
 }
 
 .toc__title {
   @include text;
 
-  font-size: calc(#{$text-mobile-font-size} * 1.35);
   font-weight: 400;
   line-height: 1;
-  margin: 13px 10px;
-  text-transform: uppercase;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: calc(#{$text-mobile-font-size} * 1.5);
-    font-weight: 300;
-    margin: 12px 10px;
-  }
+  padding: 11px 10px 10px;
 }
 
 .toc__section-title-container {

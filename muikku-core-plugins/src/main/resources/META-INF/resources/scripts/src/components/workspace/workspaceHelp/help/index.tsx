@@ -763,7 +763,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     return (
       <ContentPanel
         onOpenNavigation={this.onOpenNavigation}
-        modifier="materials"
+        modifier="workspace-guides"
         navigation={this.props.navigation}
         title={this.props.i18n.text.get("plugin.workspace.helpPage.title")}
         ref="content-panel"
