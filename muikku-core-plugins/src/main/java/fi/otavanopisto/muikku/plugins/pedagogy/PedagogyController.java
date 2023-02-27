@@ -31,7 +31,7 @@ public class PedagogyController {
 
     // Default values for a new form
 
-    PedagogyFormState state = PedagogyFormState.INACTIVE;
+    PedagogyFormState state = PedagogyFormState.ACTIVE;
     Long ownerId = sessionController.getLoggedUserEntity().getId();
     String visibility = null;
 

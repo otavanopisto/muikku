@@ -113,12 +113,8 @@ public class PedagogyRestService {
         return Response.status(Status.FORBIDDEN).build();
       }
       if (usdi.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
-        // Student can only access their own form...
+        // Student can only access their own form
         if (!StringUtils.equals(sessionController.getLoggedUserIdentifier(), form.getStudentIdentifier())) {
-          return Response.status(Status.FORBIDDEN).build();
-        }
-        // ...but not if it's still inactive
-        if (form.getState() == PedagogyFormState.INACTIVE) {
           return Response.status(Status.FORBIDDEN).build();
         }
       }
@@ -191,6 +187,17 @@ public class PedagogyRestService {
   }
   
   /**
+   * mApi().pedagogy.form.state.read('PYRAMUS-STUDENT-123');
+   */
+  @Path("/form/{STUDENTIDENTIFIER}/state")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getFormState(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
+    return Response.ok(form == null ? PedagogyFormState.INACTIVE : form.getState()).build();
+  }
+
+  /**
    * mApi().pedagogy.form.state.update('PYRAMUS-STUDENT-123', {state: String});
    */
   @Path("/form/{STUDENTIDENTIFIER}/state")
@@ -207,6 +214,8 @@ public class PedagogyRestService {
     if (!sessionController.getLoggedUserEntity().getId().equals(form.getOwner())) {
       return Response.status(Status.FORBIDDEN).entity("State can only be updated by form owner").build();
     }
+    
+    // TODO If state is set to INACTIVE, is it an error or a request to delete the form altogether?
     
     // State update
     
