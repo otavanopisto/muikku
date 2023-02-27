@@ -146,7 +146,7 @@ public class PedagogyRestService {
   @Path("/form/{STUDENTIDENTIFIER}/formData")
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response pashaa(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, PedagogyFormUpdatePayload payload) {
+  public Response updateFormData(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, PedagogyFormUpdatePayload payload) {
     
     // Payload validation
     
