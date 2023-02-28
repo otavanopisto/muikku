@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.pedagogy.rest;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormVisibility;
@@ -73,8 +73,17 @@ public class PedagogyFormRestModel {
     this.ownerId = ownerId;
   }
 
+  public Map<String, String> getStudentInfo() {
+    return studentInfo;
+  }
+
+  public void setStudentInfo(Map<String, String> studentInfo) {
+    this.studentInfo = studentInfo;
+  }
+
   private Long id;
   private String studentIdentifier;
+  private Map<String, String> studentInfo;
   private Date created;
   private Long ownerId;
   private String formData;

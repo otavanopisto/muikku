@@ -51,6 +51,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
@@ -766,7 +767,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       // Convert Pyramus student group id to Muikku userGroupEntityId
 
       SchoolDataIdentifier userGroupIdentifier = new SchoolDataIdentifier(
-          identifierMapper.getStudentGroupIdentifier(new Long(response.getEntity().getIdentifier())),
+          identifierMapper.getStudentGroupIdentifier(Long.valueOf(response.getEntity().getIdentifier())),
           SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
       Long userGroupEntityId = userGroupDiscoveryWaiter.waitDiscovered(userGroupIdentifier);
       response.getEntity().setIdentifier(userGroupEntityId.toString());
@@ -779,7 +780,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     // Convert Muikku userGroupEntityId to Pyramus student group id
 
-    Long userGroupEntityId = new Long(payload.getIdentifier());
+    Long userGroupEntityId = Long.valueOf(payload.getIdentifier());
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
     Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
     payload.setIdentifier(pyramusStudentGroupId.toString());
@@ -809,7 +810,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     // Convert Muikku userGroupEntityId to Pyramus student group id
 
-    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    Long userGroupEntityId = Long.valueOf(payload.getGroupIdentifier());
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
     Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
     payload.setGroupIdentifier(pyramusStudentGroupId.toString());
@@ -845,7 +846,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     // Convert Muikku userGroupEntityId to Pyramus student group id
 
-    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    Long userGroupEntityId = Long.valueOf(payload.getGroupIdentifier());
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
     Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
     payload.setGroupIdentifier(pyramusStudentGroupId.toString());
@@ -1670,6 +1671,21 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return null;
     }
     return pyramusClient.get(String.format("/users/users/%d/defaultEmailAddress", userId), String.class);
+  }
+
+  @Override
+  public UserContactInfo getUserContactInfo(String userIdentifier) {
+    Long userId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (userId == null) {
+      userId = identifierMapper.getPyramusStaffId(userIdentifier);
+    }
+    if (userId == null) {
+      return null;
+    }
+    fi.otavanopisto.pyramus.rest.model.UserContactInfo contactInfo = pyramusClient.get(
+        String.format("/users/users/%d/contactInfo", userId),
+        fi.otavanopisto.pyramus.rest.model.UserContactInfo.class);
+    return contactInfo == null ? null : entityFactory.createEntity(contactInfo);
   }
   
   @Override

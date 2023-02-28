@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
@@ -139,6 +140,15 @@ public interface UserSchoolDataBridge {
    * @return User's default email address
    */
   public String getUserDefaultEmailAddress(String userIdentifier);
+  
+  /**
+   * Returns contact info of the given user.
+   * 
+   * @param userIdentifier User identifier
+   * 
+   * @return User's contact info
+   */
+  public UserContactInfo getUserContactInfo(String userIdentifier);
   
   /**
    * Increases student's study time end by given months.

@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
@@ -163,6 +164,10 @@ public class UserSchoolDataController {
   
   public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).getUserDefaultEmailAddress(userIdentifier);
+  }
+  
+  public UserContactInfo getUserContactInfo(String schoolDataSource, String userIdentifier) {
+    return getUserBridge(schoolDataSource).getUserContactInfo(userIdentifier);
   }
   
   public User increaseStudyTime(SchoolDataIdentifier schoolDataIdentifier, Integer months) {

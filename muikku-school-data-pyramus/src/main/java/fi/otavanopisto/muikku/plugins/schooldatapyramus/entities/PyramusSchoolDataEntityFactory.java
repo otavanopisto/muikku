@@ -30,6 +30,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
@@ -127,6 +128,20 @@ public class PyramusSchoolDataEntityFactory {
     }
 
     return result;
+  }
+  
+  public UserContactInfo createEntity(fi.otavanopisto.pyramus.rest.model.UserContactInfo userContactInfo) {
+    return new PyramusUserContactInfo(
+        userContactInfo.getFirstName(),
+        userContactInfo.getLastName(),
+        userContactInfo.getDateOfBirth(),
+        userContactInfo.getPhoneNumber(),
+        userContactInfo.getAddressName(),
+        userContactInfo.getStreetAddress(),
+        userContactInfo.getZipCode(),
+        userContactInfo.getCity(),
+        userContactInfo.getCountry(),
+        userContactInfo.getEmail());
   }
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,

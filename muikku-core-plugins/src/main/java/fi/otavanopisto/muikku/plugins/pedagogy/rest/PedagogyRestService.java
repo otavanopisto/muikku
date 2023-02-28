@@ -34,8 +34,11 @@ import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormVisibility;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
@@ -63,7 +66,13 @@ public class PedagogyRestService {
   private UserEntityFileController userEntityFileController;
   
   @Inject
+  private UserController userController;
+
+  @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   /**
    * mApi().pedagogy.form.create('PYRAMUS-STUDENT-123', {formData: String});
@@ -133,7 +142,7 @@ public class PedagogyRestService {
     
     // Return form
 
-    return Response.ok(form).build();
+    return Response.ok(toRestModel(form)).build();
   }
 
   /**
@@ -158,7 +167,7 @@ public class PedagogyRestService {
     
     form = pedagogyController.updateFormData(form, payload.getFormData(), payload.getFields(), payload.getDetails(), sessionController.getLoggedUserEntity().getId());
     
-    return Response.ok(form).build();
+    return Response.ok(toRestModel(form)).build();
   }
 
   /**
@@ -183,7 +192,7 @@ public class PedagogyRestService {
     
     form = pedagogyController.updateVisibility(form, payload.getVisibility(), sessionController.getLoggedUserEntity().getId());
     
-    return Response.ok(form).build();
+    return Response.ok(toRestModel(form)).build();
   }
   
   /**
@@ -221,11 +230,37 @@ public class PedagogyRestService {
     
     form = pedagogyController.updateState(form, payload.getState(), sessionController.getLoggedUserEntity().getId());
     
-    return Response.ok(form).build();
+    return Response.ok(toRestModel(form)).build();
   }
 
   private PedagogyFormRestModel toRestModel(PedagogyForm form) {
     PedagogyFormRestModel model = new PedagogyFormRestModel();
+    
+    // User contact info
+    
+    UserContactInfo contactInfo = null;
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(form.getStudentIdentifier());
+      contactInfo = userController.getUserContactInfo(identifier.getDataSource(), identifier.getIdentifier());
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    if (contactInfo != null) {
+      Map<String, String> studentInfo = new HashMap<>();
+      studentInfo.put("firstName", contactInfo.getFirstName());
+      studentInfo.put("lastName", contactInfo.getLastName());
+      studentInfo.put("dateOfBirth", contactInfo.getDateOfBirth().toString());
+      studentInfo.put("phoneNumber", contactInfo.getPhoneNumber());
+      studentInfo.put("addressName", contactInfo.getAddressName());
+      studentInfo.put("streetAddress", contactInfo.getStreetAddress());
+      studentInfo.put("zipCode", contactInfo.getZipCode());
+      studentInfo.put("city", contactInfo.getCity());
+      studentInfo.put("country", contactInfo.getCountry());
+      studentInfo.put("email", contactInfo.getEmail());
+      model.setStudentInfo(studentInfo);
+    }
 
     // Normal fields
     
