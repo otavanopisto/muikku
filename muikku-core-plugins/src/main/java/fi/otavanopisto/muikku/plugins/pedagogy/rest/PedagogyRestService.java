@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.pedagogy.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -274,6 +275,9 @@ public class PedagogyRestService {
     
     if (!StringUtils.isEmpty(form.getVisibility())) {
       model.setVisibility(Stream.of(form.getVisibility().split(",")).map(v -> PedagogyFormVisibility.valueOf(v)).collect(Collectors.toList()));
+    }
+    else {
+      model.setVisibility(Collections.emptyList());
     }
     
     // Form history
