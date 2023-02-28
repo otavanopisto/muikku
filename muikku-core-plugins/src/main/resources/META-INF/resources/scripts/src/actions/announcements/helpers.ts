@@ -84,14 +84,14 @@ export async function loadAnnouncementsHelper(
     params.workspaceEntityId = workspaceId;
   }
   switch (item.id) {
-    case "past":
+    case "expired":
       params.timeFrame = "EXPIRED";
       break;
     case "archived":
       params.timeFrame = "ALL";
       params.onlyArchived = true;
       break;
-    case "mine":
+    case "own":
       params.timeFrame = "ALL";
       params.onlyMine = true;
       break;

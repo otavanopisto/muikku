@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { Reducer } from "redux";
+import i18n from "~/locales/i18n";
 
 /**
  * AnnouncerNavigationItemType
@@ -10,10 +10,7 @@ export interface AnnouncerNavigationItemType {
   id: string | number;
   icon: string;
   color?: string;
-  /**
-   * text
-   */
-  text(i18nOLD: i18nType): string;
+  text: string;
 }
 
 export type AnnouncerNavigationItemListType =
@@ -24,49 +21,25 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "active",
     id: "active",
     icon: "folder",
-    /**
-     * text
-     * @param i18nOLD i18nOLD
-     */
-    text(i18nOLD: i18nType): string {
-      return i18nOLD.text.get("plugin.announcer.cat.active");
-    },
+    text: i18n.t("labels.category", { context: "active", ns: "messaging" }),
   },
   {
-    location: "past",
-    id: "past",
+    location: "expired",
+    id: "expired",
     icon: "folder",
-    /**
-     * text
-     * @param i18nOLD i18nOLD
-     */
-    text(i18nOLD: i18nType): string {
-      return i18nOLD.text.get("plugin.announcer.cat.past");
-    },
+    text: i18n.t("labels.category", { context: "expired", ns: "messaging" }),
   },
   {
-    location: "mine",
-    id: "mine",
+    location: "own",
+    id: "own",
     icon: "folder",
-    /**
-     * text
-     * @param i18nOLD i18nOLD
-     */
-    text(i18nOLD: i18nType): string {
-      return i18nOLD.text.get("plugin.announcer.cat.mine");
-    },
+    text: i18n.t("labels.category", { context: "own", ns: "messaging" }),
   },
   {
     location: "archived",
     id: "archived",
     icon: "trash-alt",
-    /**
-     * text
-     * @param i18nOLD i18nOLD
-     */
-    text(i18nOLD: i18nType): string {
-      return i18nOLD.text.get("plugin.announcer.cat.archived");
-    },
+    text: i18n.t("labels.category", { context: "archived", ns: "messaging" }),
   },
 ];
 

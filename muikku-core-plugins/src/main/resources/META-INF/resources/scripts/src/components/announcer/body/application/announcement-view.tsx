@@ -17,7 +17,6 @@ import ApplicationList, {
 import { AnnouncementsType } from "~/reducers/announcements";
 import { UserIndexType } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions/index";
-import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 
 /**
  * MessageViewProps

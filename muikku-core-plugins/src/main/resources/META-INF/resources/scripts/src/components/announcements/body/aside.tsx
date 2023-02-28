@@ -8,11 +8,12 @@ import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/item-list.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AnnouncementsAsideProps
  */
-interface AnnouncementsAsideProps {
+interface AnnouncementsAsideProps extends WithTranslation {
   i18nOLD: i18nType;
   announcements: AnnouncementsType;
 }
@@ -91,7 +92,7 @@ class AnnouncementsAside extends React.Component<
           </div>
         ) : (
           <div>
-            {this.props.i18nOLD.text.get("plugin.announcer.empty.title")}
+            {this.props.i18n.t("content.empty", { context: "announcements" })}
           </div>
         )}
       </>
@@ -120,4 +121,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementsAside);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncementsAside)
+);

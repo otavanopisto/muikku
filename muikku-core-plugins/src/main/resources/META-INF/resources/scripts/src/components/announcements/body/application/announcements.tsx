@@ -11,11 +11,12 @@ import { AnnouncementType } from "~/reducers/announcements";
 import { StateType } from "~/reducers";
 import { UserIndexType } from "~/reducers/user-index";
 import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AnnouncementProps
  */
-interface AnnouncementProps {
+interface AnnouncementProps extends WithTranslation {
   i18nOLD: i18nType;
   announcement: AnnouncementType;
   userIndex: UserIndexType;
@@ -47,9 +48,7 @@ class Announcement extends React.Component<
   render() {
     if (!this.props.announcement) {
       return (
-        <div>
-          {this.props.i18nOLD.text.get("plugin.announcer.announcement.empty")}
-        </div>
+        <div>{this.props.i18n.t("content.empty", { ns: "messaging" })}</div>
       );
     }
     return (
@@ -119,4 +118,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Announcement);
+export default withTranslation("messaging")(
+  connect(mapStateToProps, mapDispatchToProps)(Announcement)
+);

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
@@ -32,11 +33,12 @@ import ApplicationList, {
   ApplicationListItemDate,
 } from "~/components/general/application-list";
 import { UserIndexType } from "~/reducers/user-index";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AnnouncementsProps
  */
-interface AnnouncementsProps {
+interface AnnouncementsProps extends WithTranslation {
   i18nOLD: i18nType;
   announcements: AnnouncementsType;
   userIndex: UserIndexType;
@@ -112,9 +114,9 @@ class Announcements extends React.Component<
                           htmlFor={`announcementSelect-` + announcement.id}
                           className="visually-hidden"
                         >
-                          {this.props.i18nOLD.text.get(
-                            "plugin.wcag.announcementSelect.label"
-                          )}
+                          {this.props.i18n.t("content.empty", {
+                            context: "announcements",
+                          })}
                         </label>
                         {checkbox}
                       </div>
@@ -174,9 +176,7 @@ class Announcements extends React.Component<
                           tabIndex={0}
                           className="link link--application-list"
                         >
-                          {this.props.i18nOLD.text.get(
-                            "plugin.announcer.link.edit"
-                          )}
+                          {this.props.i18n.t("actions.edit")}
                         </Link>
                       </NewEditAnnouncement>
                       {this.props.announcements.location !== "archived" ? (
@@ -185,9 +185,7 @@ class Announcements extends React.Component<
                             tabIndex={0}
                             className="link link--application-list"
                           >
-                            {this.props.i18nOLD.text.get(
-                              "plugin.announcer.link.delete"
-                            )}
+                            {this.props.i18n.t("actions.remove")}
                           </Link>
                         </DeleteAnnouncementDialog>
                       ) : null}
@@ -221,7 +219,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       addToAnnouncementsSelected,
@@ -231,4 +229,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Announcements);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(Announcements)
+);

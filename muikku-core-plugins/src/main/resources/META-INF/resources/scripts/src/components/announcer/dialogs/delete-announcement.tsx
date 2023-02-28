@@ -15,12 +15,12 @@ import {
 } from "~/actions/announcements";
 import { AnnouncementType } from "reducers/announcements";
 import { StateType } from "~/reducers";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DeleteAnnouncementDialogProps
  */
-interface DeleteAnnouncementDialogProps {
-  i18nOLD: i18nType;
+interface DeleteAnnouncementDialogProps extends WithTranslation {
   announcement?: AnnouncementType;
   children: React.ReactElement<any>;
   deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType;
@@ -100,15 +100,7 @@ class DeleteAnnouncementDialog extends React.Component<
      * @returns JSX.Element
      */
     const content = (closeDialog: () => any) => (
-      <div>
-        {this.props.announcement
-          ? this.props.i18nOLD.text.get(
-              "plugin.announcer.deleteDialog.description"
-            )
-          : this.props.i18nOLD.text.get(
-              "plugin.announcer.deleteDialog.description"
-            )}
-      </div>
+      <div>{this.props.i18n.t("content.removing")}</div>
     );
 
     /**
@@ -123,17 +115,13 @@ class DeleteAnnouncementDialog extends React.Component<
           onClick={this.deleteAnnouncement.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.announcer.deleteDialog.deleteButton.label"
-          )}
+          {this.props.i18n.t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.announcer.deleteDialog.cancelButton.label"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -141,9 +129,7 @@ class DeleteAnnouncementDialog extends React.Component<
     return (
       <Dialog
         modifier="delete-announcement"
-        title={this.props.i18nOLD.text.get(
-          "plugin.announcer.deleteDialog.title"
-        )}
+        title={this.props.i18n.t("labels.remove", { context: "announcement" })}
         content={content}
         footer={footer}
       >
@@ -151,17 +137,6 @@ class DeleteAnnouncementDialog extends React.Component<
       </Dialog>
     );
   }
-}
-
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
 }
 
 /**
@@ -176,7 +151,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteAnnouncementDialog);
+export default withTranslation()(
+  connect(null, mapDispatchToProps)(DeleteAnnouncementDialog)
+);

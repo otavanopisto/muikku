@@ -64,7 +64,6 @@ class MainFunctionNavbar extends React.Component<
         text: t("labels.home"),
         href: "/",
         icon: "home",
-        // Go to frontpage if not logged in
         to: this.props.status.loggedIn,
         condition: true,
       },
@@ -120,8 +119,8 @@ class MainFunctionNavbar extends React.Component<
       {
         modifier: "announcer",
         trail: "announcer",
-        text: "plugin.announcer.announcer",
-        href: t("labels.announcer"),
+        text: t("labels.announcer"),
+        href: "/announcer",
         icon: "paper-plane",
         to: true,
         condition: this.props.status.permissions.ANNOUNCER_TOOL,

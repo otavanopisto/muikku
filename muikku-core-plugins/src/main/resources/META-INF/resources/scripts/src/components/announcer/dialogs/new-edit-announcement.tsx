@@ -28,6 +28,7 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * TargetItemsListType
@@ -37,7 +38,7 @@ type TargetItemsListType = Array<ContactRecipientType>;
 /**
  * NewEditAnnouncementProps
  */
-interface NewEditAnnouncementProps {
+interface NewEditAnnouncementProps extends WithTranslation {
   children: React.ReactElement<any>;
   i18nOLD: i18nType;
   announcement?: AnnouncementType;
@@ -46,7 +47,6 @@ interface NewEditAnnouncementProps {
   updateAnnouncement: UpdateAnnouncementTriggerType;
   displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
-
   workspaceId: number;
   workspaces: WorkspacesType;
 }
@@ -406,9 +406,7 @@ class NewEditAnnouncement extends SessionStateComponent<
     if (this.props.status.role === Role.TEACHER) {
       if (this.state.currentTarget.length <= 0) {
         this.props.displayNotification(
-          this.props.i18nOLD.text.get(
-            "plugin.announcer.errormessage.createAnnouncement.missing.targetGroup"
-          ),
+          this.props.i18n.t("validation.targetGroup", { ns: "messaging" }),
           "error"
         );
 
@@ -534,20 +532,16 @@ class NewEditAnnouncement extends SessionStateComponent<
     let editorTitle: string;
     if (this.props.announcement) {
       editorTitle =
-        this.props.i18nOLD.text.get("plugin.announcer.editannouncement.topic") +
+        this.props.i18n.t("labels.edit", { context: "announcement" }) +
         " - " +
-        this.props.i18nOLD.text.get(
-          "plugin.announcer.createannouncement.content.label"
-        );
+        this.props.i18n.t("labels.content");
     } else {
       editorTitle =
-        this.props.i18nOLD.text.get(
-          "plugin.announcer.createannouncement.topic"
-        ) +
+        this.props.i18n.t("labels.create", {
+          context: "announcement",
+        }) +
         " - " +
-        this.props.i18nOLD.text.get(
-          "plugin.announcer.createannouncement.content.label"
-        );
+        this.props.i18n.t("labels.content");
     }
 
     /**
@@ -563,9 +557,7 @@ class NewEditAnnouncement extends SessionStateComponent<
       >
         <div className="env-dialog__form-element-container">
           <label htmlFor="announcementStartSate" className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.announcer.createannouncement.startdate.label"
-            )}
+            {this.props.i18n.t("labels.beginDate")}
           </label>
           <DatePicker
             id="announcementStartSate"
@@ -580,9 +572,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         </div>
         <div className="env-dialog__form-element-container">
           <label htmlFor="announcementEndDate" className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.announcer.createannouncement.enddate.label"
-            )}
+            {this.props.i18n.t("labels.endDate")}
           </label>
           <DatePicker
             id="announcementEndDate"
@@ -614,20 +604,14 @@ class NewEditAnnouncement extends SessionStateComponent<
         onChange={this.setTargetItems}
         autofocus={!this.props.announcement}
         showFullNames={false}
-        placeholder={this.props.i18nOLD.text.get(
-          "plugin.announcer.createannouncement.target.placeholder"
-        )}
-        label={this.props.i18nOLD.text.get(
-          "plugin.announcer.createannouncement.target.label"
-        )}
+        placeholder={this.props.i18n.t("labels.search", { context: "target" })}
+        label={this.props.i18n.t("labels.target", { ns: "messaging" })}
         required={this.props.status.role === Role.TEACHER}
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
           <label htmlFor="announcementTitle" className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.announcer.createannouncement.title.label"
-            )}
+            {this.props.i18n.t("labels.title", { context: "announcement" })}
           </label>
           <input
             id="announcementTitle"
@@ -645,9 +629,7 @@ class NewEditAnnouncement extends SessionStateComponent<
       >
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18nOLD.text.get(
-              "plugin.announcer.createannouncement.content.label"
-            )}
+            {this.props.i18n.t("labels.content")}
           </label>
           <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>
             {this.state.text}
@@ -668,20 +650,14 @@ class NewEditAnnouncement extends SessionStateComponent<
           onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            this.props.announcement
-              ? "plugin.announcer.editannouncement.button.send"
-              : "plugin.announcer.createannouncement.button.send"
-          )}
+          {this.props.i18n.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.announcer.createannouncement.button.cancel"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -689,9 +665,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18nOLD.text.get(
-              "plugin.announcer.createannouncement.button.clearDraft"
-            )}
+            {this.props.i18n.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -703,12 +677,12 @@ class NewEditAnnouncement extends SessionStateComponent<
         onOpen={this.checkAgainstStoredState}
         title={
           this.props.announcement
-            ? this.props.i18nOLD.text.get(
-                "plugin.announcer.editannouncement.topic"
-              )
-            : this.props.i18nOLD.text.get(
-                "plugin.announcer.createannouncement.topic"
-              )
+            ? this.props.i18n.t("labels.edit", {
+                context: "announcement",
+              })
+            : this.props.i18n.t("labels.create", {
+                context: "announcement",
+              })
         }
         content={content}
         footer={footer}
@@ -750,7 +724,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NewEditAnnouncement);
+export default withTranslation("messaging")(
+  connect(mapStateToProps, mapDispatchToProps)(NewEditAnnouncement)
+);

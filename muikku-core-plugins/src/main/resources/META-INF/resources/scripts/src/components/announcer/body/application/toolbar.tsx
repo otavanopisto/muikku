@@ -22,12 +22,13 @@ import {
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
 } from "~/actions/announcements";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AnnouncerToolbarProps
  */
-interface AnnouncerToolbarProps {
-  i18nOLD: i18nType;
+interface AnnouncerToolbarProps extends WithTranslation {
   announcements: AnnouncementsType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
@@ -163,9 +164,10 @@ class AnnouncerToolbar extends React.Component<
             <div className="application-panel__mobile-current-folder">
               <span className="application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
-                {this.props.i18nOLD.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location
-                )}
+                {this.props.i18n.t("labels.category", {
+                  context: this.props.announcements.location,
+                  ns: "messaging",
+                })}
               </span>
             </div>
 
@@ -214,9 +216,10 @@ class AnnouncerToolbar extends React.Component<
             <div className="application-panel__mobile-current-folder">
               <span className="glyph application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
-                {this.props.i18nOLD.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location
-                )}
+                {this.props.i18n.t("labels.category", {
+                  context: this.props.announcements.location,
+                  ns: "messaging",
+                })}
               </span>
             </div>
             {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}
@@ -253,7 +256,6 @@ class AnnouncerToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     announcements: state.announcements,
   };
 }
@@ -263,11 +265,13 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateAnnouncement, removeFromAnnouncementsSelected },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncerToolbar);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncerToolbar)
+);

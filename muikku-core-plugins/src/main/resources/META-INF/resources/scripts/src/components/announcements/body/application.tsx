@@ -2,8 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import ReadingPanel from "~/components/general/reading-panel";
 import Announcements from "./application/announcements";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { withTranslation, WithTranslation } from "react-i18next";
 import "~/sass/elements/link.scss";
 
 {
@@ -16,9 +15,8 @@ import "~/sass/elements/loaders.scss";
 /**
  * AnnouncementsApplicationProps
  */
-interface AnnouncementsApplicationProps {
+interface AnnouncementsApplicationProps extends WithTranslation {
   aside: React.ReactElement<any>;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -26,11 +24,21 @@ interface AnnouncementsApplicationProps {
  */
 class AnnouncementsApplication extends React.Component<AnnouncementsApplicationProps> {
   /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    this.props.i18n.setDefaultNamespace("messaging");
+  }
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18nOLD.text.get("plugin.announcements.pageTitle");
+    const title = this.props.i18n.t("labels.announcement", {
+      ns: "messaging",
+      count: 0,
+    });
     return (
       <ReadingPanel
         modifier="announcement"
@@ -44,23 +52,11 @@ class AnnouncementsApplication extends React.Component<AnnouncementsApplicationP
 }
 
 /**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @returns object
  */
 const mapDispatchToProps = () => ({});
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AnnouncementsApplication);
+export default withTranslation("messaging")(
+  connect(null, mapDispatchToProps)(AnnouncementsApplication)
+);
