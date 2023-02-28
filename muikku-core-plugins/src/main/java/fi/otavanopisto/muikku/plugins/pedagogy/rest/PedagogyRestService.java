@@ -251,7 +251,7 @@ public class PedagogyRestService {
       Map<String, String> studentInfo = new HashMap<>();
       studentInfo.put("firstName", contactInfo.getFirstName());
       studentInfo.put("lastName", contactInfo.getLastName());
-      studentInfo.put("dateOfBirth", contactInfo.getDateOfBirth().toString());
+      studentInfo.put("dateOfBirth", contactInfo.getDateOfBirth() == null ? null : contactInfo.getDateOfBirth().toString());
       studentInfo.put("phoneNumber", contactInfo.getPhoneNumber());
       studentInfo.put("addressName", contactInfo.getAddressName());
       studentInfo.put("streetAddress", contactInfo.getStreetAddress());
