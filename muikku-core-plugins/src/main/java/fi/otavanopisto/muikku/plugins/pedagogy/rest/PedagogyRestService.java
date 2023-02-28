@@ -304,12 +304,12 @@ public class PedagogyRestService {
         historyModel.setModifierName(names.get(historyItem.getCreator()).getDisplayName());
         historyModelList.add(historyModel);
       }
-      model.setHistory(historyModelList);
       
       // Form creation date is the date of the first history item
 
       model.setCreated(historyList.get(historyList.size() - 1).getCreated());
     }
+    model.setHistory(historyModelList);
     
     return model;
   }
