@@ -164,6 +164,9 @@ public class PedagogyRestService {
     if (!sessionController.getLoggedUserEntity().getId().equals(form.getOwner())) {
       return Response.status(Status.FORBIDDEN).entity("Form can only be updated by owner").build();
     }
+    if (StringUtils.isEmpty(payload.getFormData())) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing form data").build();
+    }
     
     // Form data update
     
@@ -222,10 +225,20 @@ public class PedagogyRestService {
     if (form == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %s not found", studentIdentifier)).build();
     }
-    if (!sessionController.getLoggedUserEntity().getId().equals(form.getOwner())) {
-      return Response.status(Status.FORBIDDEN).entity("State can only be updated by form owner").build();
-    }
     
+    // Valid change; only supports ACTIVE -> PENDING by form owner and PENDING -> APPROVED by form student
+    
+    boolean validChange = false;
+    if (payload.getState() == PedagogyFormState.PENDING) {
+      validChange = form.getState() == PedagogyFormState.ACTIVE && sessionController.getLoggedUserEntity().getId().equals(form.getOwner()); 
+    }
+    else if (payload.getState() == PedagogyFormState.APPROVED) {
+      validChange = form.getState() == PedagogyFormState.PENDING && StringUtils.equals(sessionController.getLoggedUserIdentifier(), form.getStudentIdentifier()); 
+    }
+    if (!validChange) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid state change").build();
+    }
+
     // TODO If state is set to INACTIVE, is it an error or a request to delete the form altogether?
     
     // State update
