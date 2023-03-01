@@ -63,7 +63,7 @@ public class PedagogyController {
 
     // State update
 
-    pedagogyFormDAO.updateState(form, state);
+    form = pedagogyFormDAO.updateState(form, state);
 
     // History entry
 
@@ -78,7 +78,8 @@ public class PedagogyController {
 
     String visibilityStr = visibility == null || visibility.isEmpty() ? null
         : String.join(",", visibility.stream().map(Object::toString).collect(Collectors.toList()));
-    pedagogyFormDAO.updateVisibility(form, visibilityStr);
+    form = pedagogyFormDAO.updateVisibility(form, visibilityStr);
+    form = pedagogyFormDAO.updateState(form, PedagogyFormState.APPROVED);
 
     // History entry
 
