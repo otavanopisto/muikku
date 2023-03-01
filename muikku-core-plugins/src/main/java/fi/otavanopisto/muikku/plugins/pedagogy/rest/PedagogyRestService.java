@@ -125,7 +125,7 @@ public class PedagogyRestService {
       }
       if (usdi.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
         // Student can only access their own form
-        if (!StringUtils.equals(sessionController.getLoggedUserIdentifier(), form.getStudentIdentifier())) {
+        if (!StringUtils.equals(sessionController.getLoggedUser().toId(), form.getStudentIdentifier())) {
           return Response.status(Status.FORBIDDEN).build();
         }
       }
@@ -189,7 +189,7 @@ public class PedagogyRestService {
     if (form == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %s not found", studentIdentifier)).build();
     }
-    if (!StringUtils.equals(sessionController.getLoggedUserIdentifier(), form.getStudentIdentifier())) {
+    if (!StringUtils.equals(sessionController.getLoggedUser().toId(), form.getStudentIdentifier())) {
       return Response.status(Status.FORBIDDEN).entity("Visibility can only be updated by student").build();
     }
     
@@ -233,7 +233,7 @@ public class PedagogyRestService {
       validChange = form.getState() == PedagogyFormState.ACTIVE && sessionController.getLoggedUserEntity().getId().equals(form.getOwner()); 
     }
     else if (payload.getState() == PedagogyFormState.APPROVED) {
-      validChange = form.getState() == PedagogyFormState.PENDING && StringUtils.equals(sessionController.getLoggedUserIdentifier(), form.getStudentIdentifier()); 
+      validChange = form.getState() == PedagogyFormState.PENDING && StringUtils.equals(sessionController.getLoggedUser().toId(), form.getStudentIdentifier()); 
     }
     if (!validChange) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid state change").build();
