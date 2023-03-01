@@ -50,11 +50,13 @@ public class PedagogyController {
 
     pedagogyFormDAO.updateFormData(form, formData);
 
-    // History entry
+    // History entry about modify, if form is in an appropriate state
 
-    String fieldStr = modifiedFields == null || modifiedFields.isEmpty() ? null
-        : String.join(",", modifiedFields.stream().map(Object::toString).collect(Collectors.toList()));
-    pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Lomaketta muokattu" : details, modifierId, fieldStr);
+    if (form.getState() == PedagogyFormState.PENDING || form.getState() == PedagogyFormState.APPROVED) {
+      String fieldStr = modifiedFields == null || modifiedFields.isEmpty() ? null
+          : String.join(",", modifiedFields.stream().map(Object::toString).collect(Collectors.toList()));
+      pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Lomaketta muokattu" : details, modifierId, fieldStr);
+    }
 
     return form;
   }
@@ -66,8 +68,19 @@ public class PedagogyController {
     form = pedagogyFormDAO.updateState(form, state);
 
     // History entry
-
-    pedagogyFormHistoryDAO.create(form, "Lomakkeen tilaa muutettu", modifierId);
+    
+    String details = null;
+    switch (state) {
+    case PENDING:
+      details = "Lomake odottaa opiskelijan hyväksyntää";
+      break;
+    case APPROVED:
+      details = "Opiskelija on hyväksynyt lomakkeen sisällön";
+      break;
+     default:
+       break;
+    }
+    pedagogyFormHistoryDAO.create(form, details, modifierId);
 
     return form;
   }
@@ -79,11 +92,10 @@ public class PedagogyController {
     String visibilityStr = visibility == null || visibility.isEmpty() ? null
         : String.join(",", visibility.stream().map(Object::toString).collect(Collectors.toList()));
     form = pedagogyFormDAO.updateVisibility(form, visibilityStr);
-    form = pedagogyFormDAO.updateState(form, PedagogyFormState.APPROVED);
 
     // History entry
 
-    pedagogyFormHistoryDAO.create(form, "Lomakkeen näkyvyyttä muutettu", modifierId);
+    pedagogyFormHistoryDAO.create(form, "Lomakkeen jako-oikeuksia muutettu", modifierId);
 
     return form;
   }
