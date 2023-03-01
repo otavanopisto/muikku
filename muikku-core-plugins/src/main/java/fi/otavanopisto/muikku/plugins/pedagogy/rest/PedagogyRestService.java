@@ -114,8 +114,9 @@ public class PedagogyRestService {
     // Access check
     
     PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
+    // UI wants a skeleton return object for the student even if they don't yet have a form at all...
     if (form == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %s not found", studentIdentifier)).build();
+      return Response.ok(toRestModel(form, studentIdentifier)).build();
     }
     if (!sessionController.getLoggedUserEntity().getId().equals(form.getOwner())) {
       UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(sessionController.getLoggedUserEntity());
@@ -233,8 +234,12 @@ public class PedagogyRestService {
     
     return Response.ok(toRestModel(form)).build();
   }
-
+  
   private PedagogyFormRestModel toRestModel(PedagogyForm form) {
+    return toRestModel(form, form.getStudentIdentifier());
+  }
+
+  private PedagogyFormRestModel toRestModel(PedagogyForm form, String studentIdentifier) {
     PedagogyFormRestModel model = new PedagogyFormRestModel();
     
     // User contact info
@@ -242,7 +247,7 @@ public class PedagogyRestService {
     UserContactInfo contactInfo = null;
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(form.getStudentIdentifier());
+      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
       contactInfo = userController.getUserContactInfo(identifier.getDataSource(), identifier.getIdentifier());
     }
     finally {
@@ -262,58 +267,65 @@ public class PedagogyRestService {
       studentInfo.put("email", contactInfo.getEmail());
       model.setStudentInfo(studentInfo);
     }
+    model.setStudentIdentifier(studentIdentifier);
 
     // Normal fields
     
-    model.setFormData(form.getFormData());
-    model.setId(form.getId());
-    model.setOwnerId(form.getOwner());
-    model.setState(form.getState());
-    model.setStudentIdentifier(form.getStudentIdentifier());
-    
-    // Comma-delimited visibility string to enum list
-    
-    if (!StringUtils.isEmpty(form.getVisibility())) {
-      model.setVisibility(Stream.of(form.getVisibility().split(",")).map(v -> PedagogyFormVisibility.valueOf(v)).collect(Collectors.toList()));
+    if (form != null) {
+      model.setFormData(form.getFormData());
+      model.setId(form.getId());
+      model.setOwnerId(form.getOwner());
+      model.setState(form.getState());
+
+      // Comma-delimited visibility string to enum list
+
+      if (!StringUtils.isEmpty(form.getVisibility())) {
+        model.setVisibility(Stream.of(form.getVisibility().split(",")).map(v -> PedagogyFormVisibility.valueOf(v)).collect(Collectors.toList()));
+      }
+      else {
+        model.setVisibility(Collections.emptyList());
+      }
+
+      // Form history
+
+      List<PedagogyFormHistoryRestModel> historyModelList = new ArrayList<>();
+      List<PedagogyFormHistory> historyList = pedagogyController.listHistory(form);
+      if (!historyList.isEmpty()) {
+        // Temporary cache for names and avatars
+        Map<Long, UserEntityName> names = new HashMap<>();
+        Set<Long> avatars = new HashSet<>();
+        for (PedagogyFormHistory historyItem : historyList) {
+          PedagogyFormHistoryRestModel historyModel = new PedagogyFormHistoryRestModel();
+          historyModel.setDate(historyItem.getCreated());
+          historyModel.setDetails(historyItem.getDetails());
+          if (!StringUtils.isEmpty(historyItem.getFields())) {
+            historyModel.setEditedFields(Arrays.asList(historyItem.getFields().split(",")));
+          }
+          // Cache name and avatar
+          if (!names.containsKey(historyItem.getCreator())) {
+            UserEntity userEntity = userEntityController.findUserEntityById(historyItem.getCreator());
+            names.put(historyItem.getCreator(), userEntityController.getName(userEntity, true));
+            if (userEntityFileController.hasProfilePicture(userEntity)) {
+              avatars.add(historyItem.getCreator());
+            }
+          }
+          historyModel.setModifierHasAvatar(avatars.contains(historyItem.getCreator()));
+          historyModel.setModifierId(historyItem.getCreator());
+          historyModel.setModifierName(names.get(historyItem.getCreator()).getDisplayName());
+          historyModelList.add(historyModel);
+        }
+
+        // Form creation date is the date of the first history item
+
+        model.setCreated(historyList.get(historyList.size() - 1).getCreated());
+      }
+      model.setHistory(historyModelList);
     }
     else {
+      model.setState(PedagogyFormState.INACTIVE);
       model.setVisibility(Collections.emptyList());
+      model.setHistory(Collections.emptyList());
     }
-    
-    // Form history
-    
-    List<PedagogyFormHistoryRestModel> historyModelList = new ArrayList<>();
-    List<PedagogyFormHistory> historyList = pedagogyController.listHistory(form);
-    if (!historyList.isEmpty()) {
-      // Temporary cache for names and avatars
-      Map<Long, UserEntityName> names = new HashMap<>();
-      Set<Long> avatars = new HashSet<>();
-      for (PedagogyFormHistory historyItem : historyList) {
-        PedagogyFormHistoryRestModel historyModel = new PedagogyFormHistoryRestModel();
-        historyModel.setDate(historyItem.getCreated());
-        historyModel.setDetails(historyItem.getDetails());
-        if (!StringUtils.isEmpty(historyItem.getFields())) {
-          historyModel.setEditedFields(Arrays.asList(historyItem.getFields().split(",")));
-        }
-        // Cache name and avatar
-        if (!names.containsKey(historyItem.getCreator())) {
-          UserEntity userEntity = userEntityController.findUserEntityById(historyItem.getCreator());
-          names.put(historyItem.getCreator(), userEntityController.getName(userEntity, true));
-          if (userEntityFileController.hasProfilePicture(userEntity)) {
-            avatars.add(historyItem.getCreator());
-          }
-        }
-        historyModel.setModifierHasAvatar(avatars.contains(historyItem.getCreator()));
-        historyModel.setModifierId(historyItem.getCreator());
-        historyModel.setModifierName(names.get(historyItem.getCreator()).getDisplayName());
-        historyModelList.add(historyModel);
-      }
-      
-      // Form creation date is the date of the first history item
-
-      model.setCreated(historyList.get(historyList.size() - 1).getCreated());
-    }
-    model.setHistory(historyModelList);
     
     return model;
   }
