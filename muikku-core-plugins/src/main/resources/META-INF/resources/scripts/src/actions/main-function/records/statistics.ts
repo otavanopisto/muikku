@@ -6,6 +6,7 @@ import {
   StatisticsStatusType,
 } from "~/reducers/main-function/records/statistics";
 import { StateType } from "~/reducers";
+import i18n from "~/locales/i18n";
 
 export type UPDATE_STUDIES_STATISTICS = SpecificActionType<
   "UPDATE_STUDIES_STATISTICS",
@@ -43,9 +44,10 @@ const updateStatistics: UpdateStatisticsTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.records.statistics.errormessage.statisticsUpdateFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              context: "statistics",
+              ns: "studies",
+            }),
             "error"
           )
         );

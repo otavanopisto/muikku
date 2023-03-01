@@ -17,11 +17,11 @@ import {
   WorkspaceType,
   WorkspaceJournalListType,
   MaterialContentNodeType,
-  MaterialEvaluationType,
   MaterialAssignmentType,
   MaterialCompositeRepliesType,
   WorkspaceActivityType,
 } from "~/reducers/workspaces";
+import i18n from "~/locales/i18n";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
@@ -342,9 +342,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.records.errormessage.recordsLoadFailed "
-            ),
+            i18n.t("notifications.loadError", { ns: "studies" }),
             "error"
           )
         );
@@ -496,9 +494,10 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.records.errormessage.userWorkspaceLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "studies",
+              context: "userAndWorkspace",
+            }),
             "error"
           )
         );

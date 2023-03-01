@@ -13,6 +13,7 @@ import mApi, { MApiError } from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
+import i18n from "~/locales/i18n";
 
 /**
  * loadAnnouncementsHelper
@@ -131,9 +132,10 @@ export async function loadAnnouncementsHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18nOLD.text.get(
-          "plugin.announcer.errormessage.loadAnnouncements"
-        ),
+        i18n.t("notifications.loadError", {
+          context: "announcements",
+          count: 0,
+        }),
         "error"
       )
     );

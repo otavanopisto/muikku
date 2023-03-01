@@ -23,6 +23,7 @@ import {
   WorklistTemplate,
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
+import i18n from "~/locales/i18n";
 
 /**
  * LoadProfilePropertiesSetTriggerType
@@ -604,9 +605,7 @@ const uploadProfileImage: UploadProfileImageTriggerType =
         dispatch(updateStatusHasImage(true));
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.profile.changeImage.dialog.notif.successful"
-            ),
+            i18n.t("notifications.saveSuccess", { ns: "users" }),
             "success"
           )
         );
@@ -618,9 +617,7 @@ const uploadProfileImage: UploadProfileImageTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.profile.changeImage.dialog.notif.error"
-            ),
+            i18n.t("notifications.saveError", { ns: "users" }),
             "error"
           )
         );
@@ -657,9 +654,7 @@ const deleteProfileImage: DeleteProfileImageTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.profile.errormessage.profileImage.remove"
-            ),
+            i18n.t("notifications.removeError", { ns: "users" }),
             "error"
           )
         );
@@ -783,7 +778,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
         data.fail && data.fail();
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
+            i18n.t("notifications.createError", { ns: "worklist" }),
             "error"
           )
         );
@@ -853,7 +848,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
         data.fail && data.fail();
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
+            i18n.t("notifications.removeError", { ns: "worklist" }),
             "error"
           )
         );
@@ -951,7 +946,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
         data.fail && data.fail();
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
+            i18n.t("notifications.updateError", { ns: "worklist" }),
             "error"
           )
         );
@@ -989,7 +984,7 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
+            i18n.t("notifications.loadError", { ns: "worklist" }),
             "error"
           )
         );
@@ -1037,7 +1032,10 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
+            i18n.t("notifications.loadError", {
+              ns: "worklist",
+              context: "sections",
+            }),
             "error"
           )
         );
@@ -1090,7 +1088,10 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
+            i18n.t("notifications.loadError", {
+              ns: "worklist",
+              context: "section",
+            }),
             "error"
           )
         );
@@ -1153,7 +1154,9 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.profile.errormessage.worklist"),
+            i18n.t("notifications.updateError", {
+              ns: "worklist",
+            }),
             "error"
           )
         );
@@ -1189,9 +1192,7 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.profile.errormessage.purchases"
-            ),
+            i18n.t("notifications.loadError", { ns: "orders", count: 0 }),
             "error"
           )
         );

@@ -244,8 +244,16 @@
       "total": "Yhteensä"
     },
     "content": {
-      "removing_workListEntry": "Oletko varma että haluat poistaa työlistan merkinnän?",
+      "removing": "Oletko varma että haluat poistaa työlistan merkinnän?",
       "worklistApproval": "Voit lähettää edellisen kuukauden työlistan hyväksyttäväksi viimeistään 10. päivänä kuluvaa kuukautta."
+    },
+
+    "notifications": {
+      "createError": "Merkinnän luominen epäonnistui",
+      "loadError": "Merkintäpohjien lataus epäonnistui",
+      "loadError_section": "Osa-alueen lataus epäonnistui",
+      "removeError": "Merkinnän poistaminen epäonnistui",
+      "updateError": "Merkinnän muokkaus epäonnistui"
     }
   },
 
@@ -396,7 +404,6 @@
       "loadError_councelors": "Ohjaajien lataus epäonnistui",
       "loadError_matriculation": "YO-tietojen lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_statistics": "Tilastojen lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
-      "loadError_summary": "Yhteenvedon tietojen lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_userAndWorkspace": "Käyttäjän ja kurssin lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_workspaces": "Kurssien lataus epäonnistui. Yritä ladata sivu uudelleen",
       "loadError_workspaceJournal": "Kurssin päiväkirjamerkintöjen lataus epäonnistui. Yritä ladata sivu uudelleen.",
@@ -404,8 +411,9 @@
       "loadError_workspaceExercises": "Kurssin harjoitustehtävien lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_workspaceInterim": "Kurssin välipalautetehtävien lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_workspaceCompositeReplies": "Kurssin tehtävien lataus epäonnistui. Yritä ladata sivu uudelleen",
-      "updateError_matriculation": "YO-kirjoitusoikeustietojen lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
-      "updateError_matriculationEligiblity": "Osallistumisoikeuden lataaminen aineelle {0}  epäonnistui"
+      "updateError": "YO-kirjoitusoikeustietojen lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
+      "updateError_matriculationEligiblity": "Osallistumisoikeuden lataaminen aineelle {{subject}} epäonnistui",
+      "updateError_summary": "Yhteenvedon tietojen lataaminen epäonnistui. Yritä ladata sivu uudelleen."
     }
   },
 
@@ -702,12 +710,12 @@
       "removing_thread": "Viesti ja siihen tulleet vastaukset poistetaan lopullisesti. Oletko aivan varma, että haluat jatkaa?"
     },
     "validation": {
-      "beginDate_announcements": "Tiedotteen alkamispäivämäärä on pakollinen tieto",
+      "beginDate": "Tiedotteen alkamispäivämäärä on pakollinen tieto",
       "caption": "Viestin otsikko on pakollinen tieto.",
       "caption_announcements": "Tiedotteen otsikko on pakollinen tieto",
       "content": "Viestin sisältö on pakollinen tieto.",
       "content_announcements": "Tiedotteen sisältö on pakollinen tieto",
-      "endDate_announcements": "Tiedotteen loppumispäivämäärä on pakollinen tieto",
+      "endDate": "Tiedotteen loppumispäivämäärä on pakollinen tieto",
       "name": "Alueen nimi on pakollinen tieto",
       "name_labels": "Tunnisteen nimi on pakollinen tieto",
       "recipients": "Viestin vastaanottajat on pakollinen tieto.",
@@ -718,16 +726,13 @@
       "alreadyExistsError_label": "Antamallasi nimellä oleva tunniste löytyy jo",
       "archiveError_announcements": "Virhe arkistoitaessa",
       "archiveSuccess_announcements": "Arkistointi onnistui",
-      "availableError_announcements": "Kyseistä tiedotetta ei ole saatavilla tai sitä ei ole olemassa.",
-      "captionRequiredError": "Viestillä täytyy olla otsikko",
-      "contentRequiredError": "Viestillä täytyy olla sisältö",
+      "availableError": "Kyseistä tiedotetta ei ole saatavilla tai sitä ei ole olemassa.",
       "createError": "Tiedotteen luominen epäonnistui. Yritä uudelleen.",
       "createError_contactLog": "Yhteydenoton luonti epäonnistui",
       "createError_label": "Tunnisteen luominen epäonnistui",
       "createError_discussionArea": "Virhe uuden keskustelualueen luomisessa",
       "createSuccess": "Tiedote luotu",
       "createSuccess_contactLog": "Yhteydenoton luonti onnistui",
-      "deleteError_announcements": "Tiedotteen poisto epäonnistui. Yritä uudelleen.",
       "doesNotExistError_label": "Tunnistetta ei ole olemassa",
       "locationError": "Väärä osoite",
       "loadError": "Viestien lataaminen epäonnistui, Yritä ladata sivu uudelleen",
@@ -747,6 +752,7 @@
       "nameRequiredError_area": "Alueella täytyy olla nimi",
       "recipientsRequiredError": "Viestillä ei ole vastaanottajia",
       "removeError": "Viestin poisto epäonnistui. Ole hyvä ja yritä uudelleen.",
+      "removeError_announcements": "Tiedotteen poisto epäonnistui. Yritä uudelleen.",
       "removeError_contactLog": "Yhteydenoton poisto epäonnistui",
       "removeError_discussionArea": "Virhe keskustelualueen poistamisessa",
       "removeError_label": "Tunnisteen poisto epäonnistui.",
@@ -966,10 +972,10 @@
       "loadError_profilePicture": "Profiilikuvan lataus epäonnistui",
       "loadError_teachers": "Opettajien lataus epäonnistui",
       "noResults_student": "Ei opiskelijoita",
-      "removeError_profilePicture": "Profiilikuvan poisto epäonnistui",
-      "saveError_profilePicture": "Profiilikuvan tallennus epäonnistui",
+      "removeError": "Profiilikuvan poisto epäonnistui",
+      "saveError": "Profiilikuvan tallennus epäonnistui",
       "sendError": "Lähetys epäonnistui. Kokeile lähettää uudelleen",
-      "saveSuccess_profilePicture": "Profiilikuvan tallennus onnistui",
+      "saveSuccess": "Profiilikuvan tallennus onnistui",
       "updateError_student": "Opiskelijan muokkaus epäonnistui",
       "updateError_staff": "Henkilöstön edustajan muokkaus epäonnistui",
       "updateError_userGroup": "Käyttäjäryhmän muokkaus epäonnistui",
@@ -1622,7 +1628,7 @@
   "calendar": {
     "notifications": {
       "createError": "Tapahtuman luominen epäonnistui",
-      "deleteError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
+      "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
       "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
       "loadError": "Tapahtumien lataus epäonnistui",
       "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui"
@@ -1691,9 +1697,11 @@
     "notifications": {
       "cancelSuccess": "Keskeytit tilauksen maksutapahtuman. Ole hyvä ja ota yhteyttä ohjaajaasi.",
       "completionError": "Opiskelijan tilauksen viimeistely epäonistui",
-      "createError": "Tilauksen maksutapahtumassa tapahtui virhe. Ole hyvä ja ota yhteyttä ohjaajaasi",
+      "createError": "Tilauksen luominen epäonnistui",
+      "createError_purchase": "Tilauksen maksutapahtumassa tapahtui virhe. Ole hyvä ja ota yhteyttä ohjaajaasi",
       "createSuccess": "Tilauksen maksutapahtuma onnistui.",
-      "loadError": "Tilauksen lataus epäonnistui",
+      "loadError_one": "Tilauksen lataus epäonnistui",
+      "loadError_other": "Tilausten lataus epäonnistui",
       "removeError": "Opiskelijan tilauksen poisto epäonistui",
       "updateError": "Tilauksen päivittäminen epäonnistui"
     }

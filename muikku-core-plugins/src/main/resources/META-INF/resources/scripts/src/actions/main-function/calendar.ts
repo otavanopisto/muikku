@@ -4,6 +4,7 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { EventsState, CalendarEvent } from "~/reducers/main-function/calendar";
+import i18n from "~/locales/i18n";
 
 /**
  *
@@ -73,6 +74,8 @@ export interface deleteCalendarEventTrigger {
 export interface UPDATE_CALENDAR_EVENTS_STATUS
   extends SpecificActionType<"UPDATE_CALENDAR_EVENTS_STATUS", EventsState> {}
 
+// TODO needs a "range" evaluation to avoid unnecessary loads
+
 /**
  * LoadCalendarEvents thunk action creator
  *
@@ -80,11 +83,9 @@ export interface UPDATE_CALENDAR_EVENTS_STATUS
  * @param start start date string
  * @param end end date string
  * @param type events type
+ * @param reload should be reloaded?
  * @returns thunk function
  */
-
-// TODO needs a "range" evaluation to avoid unnecessary loads
-
 const loadCalendarEvents: LoadCalendarEventsTriggerType =
   function loadCalendarEvents(
     userEntityId: number,
@@ -125,7 +126,9 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.calendar.events.load.error"),
+            i18n.t("notifications.loadError", {
+              ns: "calendar",
+            }),
             "error"
           )
         );
@@ -166,7 +169,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.calendar.events.create.error"),
+            i18n.t("notifications.createError", { ns: "calendar" }),
             "error"
           )
         );
@@ -203,7 +206,9 @@ const updateCalendarEvent: createCalendarEventTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.calendar.events.update.error"),
+            i18n.t("notifications.updateError", {
+              ns: "calendar",
+            }),
             "error"
           )
         );
@@ -230,9 +235,7 @@ const changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.calendar.events.attendance.error"
-            ),
+            i18n.t("notifications.attendanceError", { ns: "calendar" }),
             "error"
           )
         );
@@ -260,7 +263,7 @@ const deleteCalendarEvent: deleteCalendarEventTrigger =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("plugin.calendar.events.delete.error"),
+            i18n.t("notifications.removeError", { ns: "calendar" }),
             "error"
           )
         );

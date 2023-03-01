@@ -2088,9 +2088,7 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.guider.errorMessage.purchasefailed"
-            ),
+            i18n.t("notifications.createError", { ns: "orders" }),
             "error"
           )
         );
