@@ -81,11 +81,20 @@ public class PedagogyFormRestModel {
     this.studentInfo = studentInfo;
   }
 
+  public Map<String, String> getOwnerInfo() {
+    return ownerInfo;
+  }
+
+  public void setOwnerInfo(Map<String, String> ownerInfo) {
+    this.ownerInfo = ownerInfo;
+  }
+
   private Long id;
   private String studentIdentifier;
   private Map<String, String> studentInfo;
   private Date created;
   private Long ownerId;
+  private Map<String, String> ownerInfo;
   private String formData;
   private PedagogyFormState state;
   private List<PedagogyFormVisibility> visibility;

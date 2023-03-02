@@ -255,39 +255,32 @@ public class PedagogyRestService {
   private PedagogyFormRestModel toRestModel(PedagogyForm form, String studentIdentifier) {
     PedagogyFormRestModel model = new PedagogyFormRestModel();
     
-    // User contact info
+    // Owner and student contact info
     
-    UserContactInfo contactInfo = null;
     schoolDataBridgeSessionController.startSystemSession();
     try {
       SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
-      contactInfo = userController.getUserContactInfo(identifier.getDataSource(), identifier.getIdentifier());
+      UserContactInfo contactInfo = userController.getUserContactInfo(identifier.getDataSource(), identifier.getIdentifier());
+      model.setStudentInfo(toMap(contactInfo));
+      if (form != null && form.getOwner() != null) {
+        model.setOwnerId(form.getOwner());
+        UserEntity userEntity = userEntityController.findUserEntityById(form.getOwner());
+        if (userEntity != null) {
+          contactInfo = userController.getUserContactInfo(userEntity.getDefaultSchoolDataSource().getIdentifier(), userEntity.getDefaultIdentifier());
+          model.setOwnerInfo(toMap(contactInfo));
+        }
+      }
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
-    if (contactInfo != null) {
-      Map<String, String> studentInfo = new HashMap<>();
-      studentInfo.put("firstName", contactInfo.getFirstName());
-      studentInfo.put("lastName", contactInfo.getLastName());
-      studentInfo.put("dateOfBirth", contactInfo.getDateOfBirth() == null ? null : contactInfo.getDateOfBirth().toString());
-      studentInfo.put("phoneNumber", contactInfo.getPhoneNumber());
-      studentInfo.put("addressName", contactInfo.getAddressName());
-      studentInfo.put("streetAddress", contactInfo.getStreetAddress());
-      studentInfo.put("zipCode", contactInfo.getZipCode());
-      studentInfo.put("city", contactInfo.getCity());
-      studentInfo.put("country", contactInfo.getCountry());
-      studentInfo.put("email", contactInfo.getEmail());
-      model.setStudentInfo(studentInfo);
-    }
     model.setStudentIdentifier(studentIdentifier);
-
+    
     // Normal fields
     
     if (form != null) {
       model.setFormData(form.getFormData());
       model.setId(form.getId());
-      model.setOwnerId(form.getOwner());
       model.setState(form.getState());
 
       // Comma-delimited visibility string to enum list
@@ -341,6 +334,24 @@ public class PedagogyRestService {
     }
     
     return model;
+  }
+  
+  private Map<String, String> toMap(UserContactInfo contactInfo) {
+    if (contactInfo == null) {
+      return null;
+    }
+    Map<String, String> infoMap = new HashMap<>();
+    infoMap.put("firstName", contactInfo.getFirstName());
+    infoMap.put("lastName", contactInfo.getLastName());
+    infoMap.put("dateOfBirth", contactInfo.getDateOfBirth() == null ? null : contactInfo.getDateOfBirth().toString());
+    infoMap.put("phoneNumber", contactInfo.getPhoneNumber());
+    infoMap.put("addressName", contactInfo.getAddressName());
+    infoMap.put("streetAddress", contactInfo.getStreetAddress());
+    infoMap.put("zipCode", contactInfo.getZipCode());
+    infoMap.put("city", contactInfo.getCity());
+    infoMap.put("country", contactInfo.getCountry());
+    infoMap.put("email", contactInfo.getEmail());
+    return infoMap;
   }
 
 }
