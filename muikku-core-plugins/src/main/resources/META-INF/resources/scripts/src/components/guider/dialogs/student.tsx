@@ -32,6 +32,7 @@ import { getName } from "~/util/modifiers";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
 import { COMPULSORY_HOPS_VISIBLITY } from "../../general/hops-compulsory-education-wizard/index";
+import UpperSecondaryPedagogicalSupportForm from "~/components/general/pedagogical-support-form";
 
 export type tabs =
   | "STUDIES"
@@ -180,6 +181,17 @@ class StudentDialog extends React.Component<
         ),
         type: "guider-student",
         component: <StudyHistory />,
+      },
+      {
+        id: "PEDAGOGICAL_SUPPORT",
+        name: "Pedagoginen tuki",
+        type: "guider-student",
+        component: (
+          <UpperSecondaryPedagogicalSupportForm
+            useCase="GUIDER"
+            studentId={this.props.guider.currentStudent?.basic?.id}
+          />
+        ),
       },
     ];
 

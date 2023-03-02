@@ -24,6 +24,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
+import UpperSecondaryPedagogicalSupportForm from "~/components/general/pedagogical-support-form";
 
 /**
  * StudiesApplicationProps
@@ -45,7 +46,8 @@ type StudiesTab =
   | "HOPS"
   | "SUMMARY"
   | "YO"
-  | "STUDY_INFO";
+  | "STUDY_INFO"
+  | "PEDAGOGY_FORM";
 
 /**
  * StudiesApplicationState
@@ -152,7 +154,7 @@ class StudiesApplication extends React.Component<
    * @param hash hash
    */
   onTabChange = (
-    id: "RECORDS" | "HOPS" | "SUMMARY" | "YO",
+    id: "RECORDS" | "HOPS" | "SUMMARY" | "YO" | "PEDAGOGY_FORM",
     hash?: string | Tab
   ) => {
     if (hash) {
@@ -221,6 +223,20 @@ class StudiesApplication extends React.Component<
         component: (
           <ApplicationPanelBody modifier="tabs">
             <YO />
+          </ApplicationPanelBody>
+        ),
+      },
+      {
+        id: "PEDAGOGY_FORM",
+        name: "Pedagoginen tuen lomake",
+        hash: "pedagogy-form",
+        type: "pedagogy-form",
+        component: (
+          <ApplicationPanelBody modifier="tabs">
+            <UpperSecondaryPedagogicalSupportForm
+              useCase="STUDENT"
+              studentId={this.props.status.userSchoolDataIdentifier}
+            />
           </ApplicationPanelBody>
         ),
       },
