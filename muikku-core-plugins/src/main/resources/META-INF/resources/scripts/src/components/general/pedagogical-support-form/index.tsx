@@ -153,6 +153,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
       component: (
         <Step2
           loading={loading}
+          pedagogyData={data}
           formData={formData}
           onFormDataChange={handleFormDataChange}
         />
@@ -243,7 +244,10 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
                 onCancelClick={handleCancelSaveWithExtraDetailsClick}
                 onExtraDetailsChange={handleExtraDetailsChange}
               >
-                <Button disabled={!editIsActive && changedFields.length > 0}>
+                <Button
+                  buttonModifiers={["success"]}
+                  disabled={!editIsActive && changedFields.length === 0}
+                >
                   Tallenna muokkaukset
                 </Button>
               </SaveWithExtraDetailsDialog>

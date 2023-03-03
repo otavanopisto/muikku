@@ -169,7 +169,7 @@ export interface FormData {
 /**
  * The student information of the form
  */
-export interface StudentInfo {
+export interface UserInfo {
   /**
    * The first name of the student
    * must include the middle names if the student has one
@@ -233,6 +233,10 @@ export interface PedagogyForm {
    */
   ownerId: number;
   /**
+   * Info of the user who created the document
+   */
+  ownerInfo: UserInfo;
+  /**
    * The id of the form
    */
   id: number;
@@ -245,7 +249,7 @@ export interface PedagogyForm {
    * Student information. Data is automatically filled in from the student's profile
    * and can not be changed in the form
    */
-  studentInfo: StudentInfo;
+  studentInfo: UserInfo;
   /**
    * The data of the form
    * @example "JSON möhkäle"

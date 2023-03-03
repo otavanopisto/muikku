@@ -42,6 +42,13 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
     props.onFormDataChange(updatedFormData);
   };
 
+  const ownerNameWithPhone = pedagogyData
+    ? `${pedagogyData?.ownerInfo.firstName} ${pedagogyData?.ownerInfo.lastName}` +
+      (pedagogyData?.ownerInfo.phoneNumber
+        ? ` (${pedagogyData?.ownerInfo.phoneNumber})`
+        : "")
+    : "-";
+
   return (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
@@ -74,7 +81,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
               label="Asiakirjan laatija:"
               type="text"
               className="hops__input"
-              value="Eka Vekara"
+              value={ownerNameWithPhone || "-"}
               disabled
             />
           </div>
