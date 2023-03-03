@@ -309,25 +309,20 @@ class EvaluationAssessmentAssignment extends React.Component<
     if (compositeReply) {
       const { evaluationInfo } = compositeReply;
 
-      if (
-        (evaluationInfo && evaluationInfo.grade) ||
-        (evaluationInfo &&
-          evaluationInfo.type === "PASSED" &&
-          this.props.assigment.assignmentType === "EXERCISE")
-      ) {
-        // Evaluated if graded or if assignment type is exercise and info type returns PASSED
-        return "state-EVALUATED";
-      } else if (
-        (compositeReply.state === "SUBMITTED" &&
-          evaluationInfo &&
-          evaluationInfo.type === "INCOMPLETE") ||
-        evaluationInfo === null
-      ) {
-        // Supplemented as in use to be incomplete but user has submitted it again
-        return "state-SUPPLEMENTED";
-      } else {
-        // Incomplete
-        return "state-INCOMPLETE";
+      if (evaluationInfo) {
+        switch (evaluationInfo.type) {
+          case "FAILED":
+            return "state-FAILED";
+
+          case "INCOMPLETE":
+            if (compositeReply.state === "SUBMITTED") {
+              return "state-SUPPLEMENTED";
+            }
+            return "state-INCOMPLETE";
+
+          default:
+            return "state-EVALUATED";
+        }
       }
     }
   };
@@ -342,17 +337,20 @@ class EvaluationAssessmentAssignment extends React.Component<
       const { evaluationInfo } = compositeReply;
 
       if (evaluationInfo) {
-        if (evaluationInfo.type !== "INCOMPLETE") {
-          return "state-EVALUATED";
-        } else if (
-          compositeReply.state === "SUBMITTED" &&
-          evaluationInfo.type === "INCOMPLETE"
-        ) {
-          return "state-SUPPLEMENTED";
+        switch (evaluationInfo.type) {
+          case "FAILED":
+            return "state-FAILED";
+
+          case "INCOMPLETE":
+            if (compositeReply.state === "SUBMITTED") {
+              return "state-SUPPLEMENTED";
+            }
+            return "state-INCOMPLETE";
+
+          default:
+            return "state-EVALUATED";
         }
       }
-
-      return "state-INCOMPLETE";
     }
   };
 
