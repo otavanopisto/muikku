@@ -415,7 +415,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     return (
       <Toc
-        modifier="workspace-guides"
+        modifier="workspace-instructions"
         tocHeaderTitle={this.props.i18n.text.get(
           "plugin.workspace.materials.tocTitle"
         )}
