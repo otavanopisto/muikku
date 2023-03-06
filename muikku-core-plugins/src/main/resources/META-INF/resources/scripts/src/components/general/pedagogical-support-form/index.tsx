@@ -15,6 +15,8 @@ import VisibilityDialog from "./dialogs/visibility";
 import { FormData, Visibility } from "./types/index";
 import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
 import WarningDialog from "./dialogs/warning";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
 
@@ -128,7 +130,10 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
    * Handle update form data click
    */
   const handleSaveWithExtraDetailsClick = () => {
-    updateFormData();
+    unstable_batchedUpdates(() => {
+      setEditIsActive(false);
+      updateFormData();
+    });
   };
 
   /**
@@ -144,15 +149,12 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
   const steps = [
     {
       name: "Perustiedot",
-      component: (
-        <Step1 loading={loading} pedagogyData={data} status={props.status} />
-      ),
+      component: <Step1 pedagogyData={data} status={props.status} />,
     },
     {
       name: "Asiakirja",
       component: (
         <Step2
-          loading={loading}
           pedagogyData={data}
           formData={formData}
           onFormDataChange={handleFormDataChange}
@@ -163,7 +165,6 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
       name: "Pedagogisen tuen tarve",
       component: (
         <Step3
-          loading={loading}
           pedagogyData={data}
           formData={formData}
           onFormDataChange={handleFormDataChange}
@@ -174,7 +175,6 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
       name: "Toteutetut tukitoimet",
       component: (
         <Step4
-          loading={loading}
           pedagogyData={data}
           formData={formData}
           onFormDataChange={handleFormDataChange}
@@ -185,7 +185,6 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
       name: "Tuen seuranta ja arviointi",
       component: (
         <Step5
-          loading={loading}
           pedagogyData={data}
           formData={formData}
           onFormDataChange={handleFormDataChange}
@@ -194,7 +193,9 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
     },
     {
       name: "Luvat ja hyväksyminen",
-      component: <Step6 loading={loading} />,
+      component: (
+        <Step6 formIsApproved={formIsApproved} visibility={visibility} />
+      ),
     },
   ];
 

@@ -10,7 +10,6 @@ import { PedagogyContext } from "..";
  * BasicInformationProps
  */
 interface DocumentInformationProps {
-  loading: boolean;
   formData?: FormData;
   pedagogyData?: PedagogyForm;
   onFormDataChange: (updatedFormData: FormData) => void;

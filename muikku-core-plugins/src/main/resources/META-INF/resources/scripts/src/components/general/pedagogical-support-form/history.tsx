@@ -2,7 +2,7 @@ import * as moment from "moment";
 import * as React from "react";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
-import { IconButton } from "~/components/general/button";
+/* import { IconButton } from "~/components/general/button"; */
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/hops.scss";
 import { HistoryEntry } from "./types";
@@ -45,32 +45,46 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
   const viewingOwnHistorEvent =
     props.status.userId === props.historyEntry.modifierId;
 
+  const editedFields =
+    props.historyEntry?.editedFields?.map((field) => (
+      <li key={field} style={{ display: "list-item" }}>
+        <span>{field}</span>
+      </li>
+    )) || null;
+
   return (
     <>
       {viewingOwnHistorEvent ? (
         <div className="hops-container__history-event hops-container__history-event--created-by-me">
           <div className="hops-container__history-event-primary">
             <span className="hops-container__history-event-text">
-              Muokkasit HOPS:ia
+              Muokkasit pedagogisen tuen lomaketta
             </span>
             <span className="hops-container__history-event-date">
               {moment(props.historyEntry.date).format("l")}
             </span>
-            {props.showEdit && (
+            {/* {props.showEdit && (
               <span className="hops-container__history-event-action">
                 <IconButton
                   buttonModifiers={["edit-hops-history-event-description"]}
                   icon="pencil"
-                  /* onClick={handleEditClick} */
+                  onClick={handleEditClick}
                 />
               </span>
-            )}
+            )} */}
           </div>
 
           {props.historyEntry.details && (
-            <div className="hops-container__history-event-secondary">
-              <span>{props.historyEntry.details}</span>
-            </div>
+            <>
+              <div className="hops-container__history-event-secondary">
+                <span>{props.historyEntry.details}</span>
+              </div>
+              {editedFields && (
+                <div className="hops-container__history-event-secondary">
+                  <ul>{editedFields}</ul>
+                </div>
+              )}
+            </>
           )}
         </div>
       ) : (
@@ -88,7 +102,7 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
               </span>
             </span>
             <span className="hops-container__history-event-text">
-              muokkasi HOPS:ia
+              muokkasi pedagogisen tuen lomaketta
             </span>
             <span className="hops-container__history-event-date">
               {moment(props.historyEntry.date).format("l")}
@@ -96,9 +110,16 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
           </div>
 
           {props.historyEntry.details && (
-            <div className="hops-container__history-event-secondary">
-              <span>{props.historyEntry.details}</span>
-            </div>
+            <>
+              <div className="hops-container__history-event-secondary">
+                <span>{props.historyEntry.details}</span>
+              </div>
+              {editedFields && (
+                <div className="hops-container__history-event-secondary">
+                  <ul>{editedFields}</ul>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}

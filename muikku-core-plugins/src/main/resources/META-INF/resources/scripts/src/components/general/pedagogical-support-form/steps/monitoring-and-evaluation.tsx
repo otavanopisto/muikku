@@ -3,12 +3,13 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import { FormData, PedagogyForm } from "../types";
 import CKEditor from "../../ckeditor";
+import { PedagogyContext } from "..";
+import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 
 /**
  * BasicInformationProps
  */
 interface MonitoringAndEvaluationProps {
-  loading: boolean;
   pedagogyData?: PedagogyForm;
   formData?: FormData;
   onFormDataChange: (updatedFormData: FormData) => void;
@@ -23,6 +24,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
   props
 ) => {
   const { formData, onFormDataChange } = props;
+  const { editIsActive } = React.useContext(PedagogyContext);
 
   /**
    * handleStudentOpinionChange
@@ -46,6 +48,9 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     });
   };
 
+  const studentOpinion = formData?.studentOpinionOfSupport || "";
+  const schoolOpinion = formData?.schoolOpinionOfSupport || "";
+
   return (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
@@ -53,23 +58,46 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
           TUEN SEURANTA JA ARVIOINTI
         </legend>
         <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <label className="env-dialog__label">Opiskelijan näkemys</label>
-            <CKEditor onChange={handleStudentOpinionChange}>
-              {formData?.studentOpinionOfSupport || ""}
-            </CKEditor>
-          </div>
+          {editIsActive ? (
+            <div className="hops__form-element-container">
+              <label className="hops__label">Opiskelijan näkemys</label>
+              <CKEditor onChange={handleStudentOpinionChange}>
+                {studentOpinion}
+              </CKEditor>
+            </div>
+          ) : (
+            <div className="hops__form-element-container">
+              <label className="hops__label">Opiskelijan näkemys</label>
+              {studentOpinion === "" ? (
+                <p>Opiskelijan näkemystä ei ole vielä asetettu</p>
+              ) : (
+                <CkeditorLoaderContent html={studentOpinion} />
+              )}
+            </div>
+          )}
         </div>
         <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <label className="env-dialog__label">
-              Lukion näkemys tuen vaikuttavuudesta
-            </label>
-
-            <CKEditor onChange={handleSchoolOpinionChange}>
-              {formData?.schoolOpinionOfSupport || ""}
-            </CKEditor>
-          </div>
+          {editIsActive ? (
+            <div className="hops__form-element-container">
+              <label className="hops__label">
+                Lukion näkemys tuen vaikuttavuudesta
+              </label>
+              <CKEditor onChange={handleSchoolOpinionChange}>
+                {schoolOpinion}
+              </CKEditor>
+            </div>
+          ) : (
+            <div className="hops__form-element-container">
+              <label className="hops__label">
+                Lukion näkemys tuen vaikuttavuudesta
+              </label>
+              {schoolOpinion === "" ? (
+                <p>Lukion näkemystä ei ole vielä asetettu</p>
+              ) : (
+                <CkeditorLoaderContent html={schoolOpinion} />
+              )}
+            </div>
+          )}
         </div>
       </fieldset>
     </section>

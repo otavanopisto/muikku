@@ -83,7 +83,9 @@ class SaveExtraDetailsDialog extends React.Component<
             <h4>Muokatut kentät:</h4>
             <ul>
               {changedFields.map((fieldKey, i) => (
-                <li key={fieldKey}>{formFieldsWithTranslation[fieldKey]}</li>
+                <li key={fieldKey} style={{ display: "list-item" }}>
+                  {formFieldsWithTranslation[fieldKey]}
+                </li>
               ))}
             </ul>
           </div>

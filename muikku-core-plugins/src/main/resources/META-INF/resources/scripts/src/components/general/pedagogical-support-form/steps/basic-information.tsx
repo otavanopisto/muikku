@@ -11,7 +11,6 @@ import { StatusType } from "~/reducers/base/status";
  * BasicInformationProps
  */
 interface BasicInformationProps {
-  loading: boolean;
   pedagogyData?: PedagogyForm;
   status: StatusType;
 }

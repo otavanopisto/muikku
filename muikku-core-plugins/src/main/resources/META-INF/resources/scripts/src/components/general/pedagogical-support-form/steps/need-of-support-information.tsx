@@ -18,7 +18,6 @@ import { PedagogyContext } from "..";
  * BasicInformationProps
  */
 interface NeedOfSupportInformationProps {
-  loading: boolean;
   pedagogyData?: PedagogyForm;
   formData?: FormData;
   onFormDataChange: (updatedFormData: FormData) => void;

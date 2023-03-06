@@ -13,7 +13,6 @@ import { PedagogyContext } from "..";
  * BasicInformationProps
  */
 interface ImplementedSupportActionsProps {
-  loading: boolean;
   pedagogyData?: PedagogyForm;
   formData?: FormData;
   onFormDataChange: (updatedFormData: FormData) => void;
