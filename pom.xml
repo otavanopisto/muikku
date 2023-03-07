@@ -105,7 +105,11 @@
 					<artifactId>sass-maven-plugin</artifactId>
 					<version>1.1.1</version>
 				</plugin>
-
+        <!-- Override version for maven-install-plugin because deploy with classifier doesn't work with 3.1.0' -->
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
