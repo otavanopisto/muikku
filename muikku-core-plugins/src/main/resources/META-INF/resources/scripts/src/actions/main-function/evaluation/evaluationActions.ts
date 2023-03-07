@@ -3,7 +3,6 @@ import {
   EvaluationStateType,
   EvaluationGradeSystem,
   AssignmentEvaluationGradeRequest,
-  AssignmentEvaluationSupplementationRequest,
   WorkspaceEvaluationSaveReturn,
   EvaluationBasePriceById,
   EvaluationJournalCommentsByJournal,
@@ -442,21 +441,6 @@ export interface SaveEvaluationAssignmentGradeEvaluation {
     userEntityId: number;
     workspaceMaterialId: number;
     dataToSave: AssignmentEvaluationGradeRequest;
-    materialId: number;
-    onSuccess?: () => void;
-    onFail?: () => void;
-  }): AnyActionType;
-}
-
-/**
- * SaveEvaluationAssignmentSupplementation
- */
-export interface SaveEvaluationAssignmentSupplementation {
-  (data: {
-    workspaceEntityId: number;
-    userEntityId: number;
-    workspaceMaterialId: number;
-    dataToSave: AssignmentEvaluationSupplementationRequest;
     materialId: number;
     onSuccess?: () => void;
     onFail?: () => void;
@@ -1882,7 +1866,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
                 "callback"
               )() || [];
 
-            const assignmentsExcercise =
+            const assignmentsExercise =
               <MaterialAssignmentType[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EXERCISE",
@@ -1901,7 +1885,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
             const assignments = [
               ...assignmentsInterim,
               ...assignmentsEvaluated,
-              ...assignmentsExcercise,
+              ...assignmentsExercise,
             ];
 
             return assignments;

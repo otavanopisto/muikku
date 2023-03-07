@@ -53,7 +53,7 @@ export default class MuikkuWebsocket {
     listeners: ListenerType,
     options = {
       reconnectInterval: 10000,
-      pingInterval: 5000,
+      pingInterval: 10000,
     }
   ) {
     this.options = options;
@@ -263,8 +263,7 @@ export default class MuikkuWebsocket {
     if (this.discarded) {
       this.ticket = null;
       callback();
-    }
-    if (this.ticket) {
+    } else if (this.ticket) {
       // We have a ticket, so we need to validate it before using it
       $.ajax({
         url: "/rest/websocket/ticket/" + this.ticket + "/check",
@@ -279,7 +278,9 @@ export default class MuikkuWebsocket {
         error: $.proxy(function (jqXHR: any) {
           if (jqXHR.status == 403) {
             // According to server, we are no longer logged in. Stop everything, user needs to login again
-            // TODO localization
+            this.discarded = true;
+            this.ticket = null;
+            this.discardCurrentWebSocket(true);
             this.store.dispatch(
               actions.openNotificationDialog(
                 this.store
@@ -287,9 +288,6 @@ export default class MuikkuWebsocket {
                   .i18n.text.get("plugin.server.unreachable.403")
               ) as Action
             );
-            this.ticket = null;
-            this.discarded = true;
-            this.discardCurrentWebSocket(true);
             callback();
           } else if (jqXHR.status == 404) {
             // Ticket no longer passes validation but we are still logged in, so try to renew the ticket
@@ -299,7 +297,9 @@ export default class MuikkuWebsocket {
             });
           } else if (jqXHR.status == 502) {
             // Server is down. Stop everything, user needs to reload page
-            // TODO localization
+            this.discarded = true;
+            this.ticket = null;
+            this.discardCurrentWebSocket(true);
             this.store.dispatch(
               actions.openNotificationDialog(
                 this.store
@@ -307,9 +307,6 @@ export default class MuikkuWebsocket {
                   .i18n.text.get("plugin.server.unreachable.502")
               ) as Action
             );
-            this.ticket = null;
-            this.discarded = true;
-            this.discardCurrentWebSocket(true);
             callback();
           } else {
             // Something else happened. Carry on since we're most likely reconnecting anyway
@@ -335,25 +332,26 @@ export default class MuikkuWebsocket {
     // Check if we have given up for good
     if (this.discarded) {
       callback();
+    } else {
+      $.ajax({
+        url: "/rest/websocket/ticket",
+        type: "GET",
+        dataType: "text",
+        /**
+         * success
+         * @param data data
+         */
+        success: function (data: any) {
+          callback(data);
+        },
+        /**
+         * error
+         */
+        error: function () {
+          callback();
+        },
+      });
     }
-    $.ajax({
-      url: "/rest/websocket/ticket",
-      type: "GET",
-      dataType: "text",
-      /**
-       * success
-       * @param data data
-       */
-      success: function (data: any) {
-        callback(data);
-      },
-      /**
-       * error
-       */
-      error: function () {
-        callback();
-      },
-    });
   }
 
   /**
@@ -440,7 +438,7 @@ export default class MuikkuWebsocket {
         this.gotPong = false;
         this.sendMessage("ping:ping", {});
       } else {
-        // Didn't get a pong to our latest ping in five seconds, reconnect
+        // Didn't get a pong to our latest ping in ten seconds, reconnect
         if (!this.reconnecting && !this.discarded) {
           this.startReconnecting();
         }
@@ -485,7 +483,7 @@ export default class MuikkuWebsocket {
       } else {
         this.reconnectRetries++;
         if (this.reconnectRetries == 6) {
-          // one minute have passed, let's give up
+          // one minute has passed, let's give up
           this.discarded = true;
           this.discardCurrentWebSocket(true);
           // TODO localization

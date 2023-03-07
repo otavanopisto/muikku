@@ -51,9 +51,9 @@ const ACE_MODE_SRC =
 // This is locally built from Digabi's fork of MathQuill
 // Version number corresponds with Digabi's versioning
 const MQ_DEFAULT_SRC =
-  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.12/mathquill.min.js";
+  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.min.js";
 const MQ_DEFAULT_CSS =
-  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.12/mathquill.css";
+  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.css";
 
 /**
  * MathField

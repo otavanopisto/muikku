@@ -25,7 +25,7 @@ export function MaterialLoaderExternalContent(
 
   const langAttribute =
     props.material.titleLanguage ||
-    props.folder.titleLanguage ||
+    props.folder?.titleLanguage ||
     props.workspace.language;
 
   if (props.material.contentHiddenForUser) {

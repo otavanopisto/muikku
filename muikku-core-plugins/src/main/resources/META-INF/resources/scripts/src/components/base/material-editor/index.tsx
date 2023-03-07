@@ -43,6 +43,7 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
+import { langAttributeLocale } from "~/helper-functions/locale";
 
 /**
  * MaterialEditorProps
@@ -228,7 +229,7 @@ const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
   {
     type: "EXERCISE",
     classNameMod: "material-editor-dropdown-exercise",
-    text: "plugin.workspace.materialsManagement.pageType.excercise",
+    text: "plugin.workspace.materialsManagement.pageType.exercise",
   },
   {
     type: "EVALUATED",
@@ -1101,7 +1102,7 @@ class MaterialEditor extends React.Component<
                   <div className="form__row">
                     <div className="form-element">
                       <select
-                        className="form-element__input form-element__input--material-editor-title"
+                        className="form-element__select form-element__select--material-editor"
                         onChange={this.updateTitleLanguage}
                         value={
                           this.props.editorState.currentDraftNodeValue
@@ -1115,7 +1116,7 @@ class MaterialEditor extends React.Component<
                         </option>
                         {languageOptions.map((language) => (
                           <option key={language} value={language}>
-                            {language.toUpperCase()}
+                            {langAttributeLocale[language]}
                           </option>
                         ))}
                       </select>
@@ -1223,7 +1224,7 @@ class MaterialEditor extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <select
-                      className="form-element__input form-element__input--material-editor-title"
+                      className="form-element__select form-element__select--material-editor"
                       onChange={this.updateTitleLanguage}
                       value={
                         this.props.editorState.currentDraftNodeValue
@@ -1237,7 +1238,7 @@ class MaterialEditor extends React.Component<
                       </option>
                       {languageOptions.map((language) => (
                         <option key={language} value={language}>
-                          {language.toUpperCase()}
+                          {langAttributeLocale[language]}
                         </option>
                       ))}
                     </select>

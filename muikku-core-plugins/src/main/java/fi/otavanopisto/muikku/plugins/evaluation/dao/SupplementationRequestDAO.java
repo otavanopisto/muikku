@@ -24,7 +24,6 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
       Long studentEntityId,
       Long workspaceEntityId,
       SchoolDataIdentifier workspaceSubjectIdentifier,
-      Long workspaceMaterialId,
       Date requestDate,
       String requestText) {
     SupplementationRequest supplementationRequest = new SupplementationRequest();
@@ -33,7 +32,6 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     supplementationRequest.setStudentEntityId(studentEntityId);
     supplementationRequest.setWorkspaceEntityId(workspaceEntityId);
     supplementationRequest.setWorkspaceSubjectIdentifier(workspaceSubjectIdentifier != null ? workspaceSubjectIdentifier.toId() : null);
-    supplementationRequest.setWorkspaceMaterialId(workspaceMaterialId);
     supplementationRequest.setRequestDate(requestDate);
     supplementationRequest.setRequestText(requestText);
     supplementationRequest.setArchived(Boolean.FALSE);
@@ -47,7 +45,6 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
       Long studentEntityId,
       Long workspaceEntityId,
       SchoolDataIdentifier workspaceSubjectIdentifier,
-      Long workspaceMaterialId,
       Date requestDate,
       String requestText,
       Boolean archived) {
@@ -55,7 +52,6 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     supplementationRequest.setStudentEntityId(studentEntityId);
     supplementationRequest.setWorkspaceEntityId(workspaceEntityId);
     supplementationRequest.setWorkspaceSubjectIdentifier(workspaceSubjectIdentifier != null ? workspaceSubjectIdentifier.toId() : null);
-    supplementationRequest.setWorkspaceMaterialId(workspaceMaterialId);
     supplementationRequest.setRequestDate(requestDate);
     supplementationRequest.setRequestText(requestText);
     supplementationRequest.setArchived(archived);
@@ -136,24 +132,6 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<SupplementationRequest> listByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {
-    EntityManager entityManager = getEntityManager(); 
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<SupplementationRequest> criteria = criteriaBuilder.createQuery(SupplementationRequest.class);
-    Root<SupplementationRequest> root = criteria.from(SupplementationRequest.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(SupplementationRequest_.studentEntityId), studentEntityId),
-        criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceMaterialId), workspaceMaterialId),
-        criteriaBuilder.equal(root.get(SupplementationRequest_.archived), archived)
-      )
-    );
-    
-    return entityManager.createQuery(criteria).getResultList();
-  }
-
   public void archive(SupplementationRequest supplementationRequest) {
     supplementationRequest.setArchived(Boolean.TRUE);
     getEntityManager().persist(supplementationRequest);

@@ -1,14 +1,12 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/breadcrumb.scss";
 import "~/sass/elements/application-panel.scss";
-
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
-
+import "~/sass/elements/react-select-override.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import { DiscussionType } from "~/reducers/discussion";
 import NewArea from "../../dialogs/new-area";
@@ -23,7 +21,7 @@ import {
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
-import { IconButton } from "../../../general/button";
+import Select from "react-select";
 import {
   SubscribeDiscussionArea,
   subscribeDiscussionArea,
@@ -34,6 +32,12 @@ import {
   ShowOnlySubscribedThreads,
   showOnlySubscribedThreads,
 } from "~/actions/discussion/index";
+import { OptionWithExtraContent } from "~/components/general/react-select/types";
+import { OptionWithDescription } from "~/components/general/react-select/option";
+
+type DiscussionAreaOptionWithExtraContent = OptionWithExtraContent<
+  string | number
+>;
 
 /**
  * DiscussionToolbarProps
@@ -66,7 +70,6 @@ class DiscussionToolbar extends React.Component<
   constructor(props: DiscussionToolbarProps) {
     super(props);
 
-    this.onSelectChange = this.onSelectChange.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
   }
 
@@ -93,12 +96,14 @@ class DiscussionToolbar extends React.Component<
   };
 
   /**
-   * onSelectChange
-   * @param e e
+   * handleSelectChange
+   * @param selectedOptions selectedOptions
    */
-  onSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    window.location.hash = e.target.value;
-  }
+  handleSelectChange = (
+    selectedOptions: DiscussionAreaOptionWithExtraContent
+  ) => {
+    window.location.hash = selectedOptions.value as string;
+  };
 
   /**
    * onGoBackClick
@@ -167,6 +172,44 @@ class DiscussionToolbar extends React.Component<
         (sArea) => sArea.areaId === this.props.discussion.areaId
       ) !== -1;
 
+    const otherOptions: DiscussionAreaOptionWithExtraContent[] =
+      this.props.discussion.areas.map((area) => {
+        const subscribed =
+          this.props.discussion.subscribedAreas.findIndex(
+            (sArea) => sArea.areaId === area.id
+          ) !== -1;
+
+        let label = area.name;
+
+        if (subscribed) {
+          label = `${area.name} (${this.props.i18n.text.get(
+            "plugin.discussion.subscribed.area.label"
+          )})`;
+        }
+
+        return {
+          value: area.id,
+          label,
+          extraContent: area.description,
+        } as DiscussionAreaOptionWithExtraContent;
+      });
+
+    const options: DiscussionAreaOptionWithExtraContent[] = [
+      {
+        value: "",
+        label: this.props.i18n.text.get("plugin.discussion.browseareas.all"),
+      },
+      {
+        value: "subs",
+        label: "Tilatut keskustelut",
+      },
+      ...otherOptions,
+    ];
+
+    const currentSelectValue = options.find(
+      (option) => option.value === this.selectValue()
+    );
+
     return (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
@@ -217,37 +260,15 @@ class DiscussionToolbar extends React.Component<
             <label htmlFor="discussionAreaSelect" className="visually-hidden">
               {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
             </label>
-            <select
-              id="discussionAreaSelect"
-              className="form-element__select form-element__select--toolbar-selector"
-              onChange={this.onSelectChange}
-              value={this.selectValue()}
-            >
-              <option value="">
-                {this.props.i18n.text.get("plugin.discussion.browseareas.all")}
-              </option>
-              <option value="subs">
-                {this.props.i18n.text.get(
-                  "plugin.discussion.browseareas.subscribtions"
-                )}
-              </option>
-              {this.props.discussion.areas.map((area) => {
-                const subscribed =
-                  this.props.discussion.subscribedAreas.findIndex(
-                    (sArea) => sArea.areaId === area.id
-                  ) !== -1;
-
-                return (
-                  <option key={area.id} value={area.id}>
-                    {area.name}{" "}
-                    {subscribed &&
-                      `(${this.props.i18n.text.get(
-                        "plugin.discussion.subscribed.area.label"
-                      )})`}
-                  </option>
-                );
-              })}
-            </select>
+            <Select<DiscussionAreaOptionWithExtraContent>
+              className="react-select-override"
+              classNamePrefix="react-select-override"
+              onChange={this.handleSelectChange}
+              value={currentSelectValue}
+              options={options}
+              components={{ Option: OptionWithDescription }}
+              isSearchable={false}
+            />
           </div>
         </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>

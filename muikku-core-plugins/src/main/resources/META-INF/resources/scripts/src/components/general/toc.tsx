@@ -26,7 +26,11 @@ interface TocProps {
  */
 export const Toc: React.FC<TocProps> = (props) => (
   <div className={`toc ${props.modifier ? "toc--" + props.modifier : ""}`}>
-    <div className="toc__header">
+    <div
+      className={`toc__header ${
+        props.modifier ? "toc__header--" + props.modifier : ""
+      }`}
+    >
       {props.tocHeaderTitle && (
         <h2 className="toc__title">{props.tocHeaderTitle}</h2>
       )}

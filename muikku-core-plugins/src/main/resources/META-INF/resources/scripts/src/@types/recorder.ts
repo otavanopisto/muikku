@@ -21,12 +21,14 @@ export interface RecordValue {
 }
 
 export type Recorder = {
+  uploading: boolean;
   seconds: number;
   initRecording: boolean;
   mediaStream: MediaStream | null;
   mediaRecorder: MediaRecorder | null;
   audio: string | null;
   values: RecordValue[];
+  blob: Blob | null;
 };
 
 export type UseRecorder = {
@@ -34,6 +36,7 @@ export type UseRecorder = {
   startRecording: () => void;
   cancelRecording: () => void;
   saveRecording: () => void;
+  deleteAudio: (audioKey: string) => void;
 };
 
 export type Audio = {

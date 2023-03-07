@@ -406,7 +406,7 @@ export interface FollowUp {
 export interface WayToLearn {
   byReadingMaterials?: number;
   byTakingNotes?: number;
-  byDoingExcercises?: number;
+  byDoingExercises?: number;
   byMemorizing?: number;
   byWatchingVideos?: number;
   byListeningTeaching?: number;

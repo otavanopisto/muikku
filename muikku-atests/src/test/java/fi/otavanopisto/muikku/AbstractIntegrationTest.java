@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -454,6 +455,13 @@ public abstract class AbstractIntegrationTest {
       connection.close();
     }
   }
+  
+  protected String getResourceContents(String file) throws IOException {
+    ClassLoader classLoader = getClass().getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream(file);
+    String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+    return content;
+ }
   
   enum RoleType {
     PSEUDO,

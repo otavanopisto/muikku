@@ -1,17 +1,12 @@
 package fi.otavanopisto.muikku.plugins.websocket;
 
-import java.util.Date;
-import java.util.UUID;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -32,34 +27,29 @@ public class WebSocketRESTService extends PluginRESTService {
   private SessionController sessionController;
   
   @Inject
-  private WebSocketTicketController webSocketTicketController;
-  
-  @Context
-  private HttpServletRequest request;
+  private WebSocketMessenger websocketMessenger;
   
   @GET
   @Path ("/ticket")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createTicket() {
-    UserEntity userEntity = sessionController.getLoggedUserEntity(); 
-    Long userEntityId = userEntity.getId();
-    Date timestamp = new Date();
-    String ip = request.getRemoteAddr();
-    String ticket = UUID.randomUUID().toString();
-    webSocketTicketController.createTicket(ticket, userEntityId, ip, timestamp);
+    String ticket = websocketMessenger.registerTicket(sessionController.getLoggedUserEntity().getId());
     return Response.ok(ticket).build();
   }
 
   @GET
   @Path ("/ticket/{TICKET}/check")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response check(@PathParam("TICKET") String ticketStr) {
-    WebSocketTicket ticket = webSocketTicketController.findTicket(ticketStr);
-    if (ticket != null) {
+  public Response check(@PathParam("TICKET") String ticket) {
+    WebSocketSessionInfo sessionInfo = websocketMessenger.getSessionInfo(ticket);
+    if (sessionInfo != null) {
       UserEntity user = sessionController.getLoggedUserEntity(); 
-      return user.getId().equals(ticket.getUser()) ? Response.noContent().build() : Response.status(Response.Status.FORBIDDEN).build();
+      // Since we're logged in, the requested ticket really should belong to us but just in case it didn't,
+      // we treat it as not found in order to get the logged in user to renew it properly
+      return user.getId().equals(sessionInfo.getUserEntityId()) ? Response.noContent().build() : Response.status(Response.Status.NOT_FOUND).build();
     }
     else {
+      // The entire ticket (and associated websocket) has disappeared from the server
       return Response.status(Response.Status.NOT_FOUND).build();
     }
   }

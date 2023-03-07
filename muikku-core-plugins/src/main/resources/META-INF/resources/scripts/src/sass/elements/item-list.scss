@@ -139,7 +139,8 @@
 }
 
 .item-list__item-actions--continue-studies {
-  padding: 0 15px 15px 8px;
+  flex-wrap: wrap;
+  padding: 0 15px 15px 31px;
 
   span::after {
     content: "\00a0"; /* &nbsp; */

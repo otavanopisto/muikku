@@ -293,6 +293,15 @@ export type EvaluationImportantStatus =
 export type EvaluationStateType = "LOADING" | "READY" | "ERROR";
 
 /**
+ * AudioAssessment
+ */
+export interface AudioAssessment {
+  id: string;
+  name: string;
+  contentType: string;
+}
+
+/**
  * WorkspaceEvaluationSaveRequest
  */
 export interface WorkspaceEvaluationSaveRequest {
@@ -350,19 +359,17 @@ export interface BilledPrice {
   price: number;
 }
 
-/**
- * AudioAssessment
- */
-export interface AudioAssessment {
-  id: string;
-  name: string;
-  contentType: string;
+export enum AssignmentEvaluationType {
+  ASSESSMENT = "ASSESSMENT",
+  SUPPLEMENTATIONREQUEST = "SUPPLEMENTATIONREQUEST",
 }
 
 /**
  * AssignmentEvaluationGradeRequest
  */
 export interface AssignmentEvaluationGradeRequest {
+  identifier?: string;
+  evaluationType: AssignmentEvaluationType;
   assessorIdentifier: string;
   gradingScaleIdentifier: string;
   gradeIdentifier: string;
@@ -375,21 +382,11 @@ export interface AssignmentEvaluationGradeRequest {
  * AssignmentInterminEvaluationRequest
  */
 export interface AssignmentInterminEvaluationRequest {
+  evaluationType: AssignmentEvaluationType;
   assessorIdentifier: string;
   verbalAssessment: string;
   assessmentDate: number;
   audioAssessments: AudioAssessment[];
-}
-
-/**
- * AssignmentEvaluationSupplementationRequest
- */
-export interface AssignmentEvaluationSupplementationRequest {
-  userEntityId: number;
-  studentEntityId: number;
-  workspaceMaterialId: string;
-  requestDate: number;
-  requestText: string;
 }
 
 /**

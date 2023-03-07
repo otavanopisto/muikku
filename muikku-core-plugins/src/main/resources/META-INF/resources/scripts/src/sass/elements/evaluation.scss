@@ -369,6 +369,12 @@
   justify-content: space-between;
   padding: 10px 0;
 
+  &.state-FAILED {
+    .button-pill--evaluate {
+      background: $color-failed;
+    }
+  }
+
   &.state-EVALUATED {
     .button-pill--evaluate {
       background: $color-passed;
@@ -502,6 +508,12 @@
     border-radius: 2px;
     color: $color-default;
   }
+
+  &.state-FAILED {
+    background: $color-failed;
+    border-radius: 2px;
+    color: $color-default;
+  }
 }
 
 .evaluation-modal__item-functions {
@@ -607,7 +619,7 @@
 }
 
 .evaluation-modal__evaluate-drawer--assignment,
-.evaluation-modal__evaluate-drawer--excercise,
+.evaluation-modal__evaluate-drawer--exercise,
 .evaluation-modal__evaluate-drawer--interim-evaluation {
   z-index: 211;
 }
