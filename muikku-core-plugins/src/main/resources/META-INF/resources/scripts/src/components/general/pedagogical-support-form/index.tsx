@@ -17,6 +17,8 @@ import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
 import WarningDialog from "./dialogs/warning";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { PDFViewer } from "@react-pdf/renderer";
+import PedagogyPDF from "./PedagogyPDF";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
 
@@ -62,6 +64,14 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
     updateVisibility,
   } = usePedagogy(props.studentId, props.displayNotification);
   const [editIsActive, setEditIsActive] = React.useState(false);
+  const [showPDF, setShowPDF] = React.useState(false);
+
+  /**
+   * Handle PDF click
+   */
+  const handlePDFClick = () => {
+    setShowPDF(!showPDF);
+  };
 
   /**
    * Handle edit click
@@ -220,6 +230,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                margin: "10px 0",
               }}
             >
               <Button buttonModifiers={["execute"]} onClick={sendToStudent}>
@@ -237,6 +248,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                margin: "10px 0",
               }}
             >
               <SaveWithExtraDetailsDialog
@@ -300,6 +312,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                margin: "10px 0",
               }}
             >
               <VisibilityAndApprovalDialog
@@ -323,6 +336,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                margin: "10px 0",
               }}
             >
               <VisibilityDialog
@@ -330,8 +344,18 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
                 onVisibilityChange={handleVisibilityPermissionChange}
                 onSaveClick={updateVisibility}
               >
-                <Button buttonModifiers={["info"]}>Muuta jako-oikeuksia</Button>
+                <Button buttonModifiers={["info"]} disabled={showPDF}>
+                  Muuta jako-oikeuksia
+                </Button>
               </VisibilityDialog>
+
+              <Button
+                buttonModifiers={["cancel"]}
+                disabled={loading}
+                onClick={handlePDFClick}
+              >
+                {showPDF ? "Sulje PDF" : "PDF"}
+              </Button>
             </div>
           );
 
@@ -345,9 +369,8 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
   return (
     <PedagogyContext.Provider value={{ useCase: props.useCase, editIsActive }}>
       <div className="wizard">
-        {renderWizardToolbar()}
-
-        <div className="wizard_container">
+        <div className="wizard_container" style={{ position: "relative" }}>
+          {renderWizardToolbar()}
           {loading ? (
             <OverlayComponent>
               <div style={{ height: "fit-content" }}>
@@ -371,18 +394,24 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
             </OverlayComponent>
           ) : null}
 
-          <StepZilla
-            steps={steps}
-            dontValidate={false}
-            preventEnterSubmission={true}
-            showNavigation={true}
-            showSteps={true}
-            prevBtnOnLastStep={true}
-            nextButtonCls="button button--wizard"
-            backButtonCls="button button--wizard"
-            nextButtonText="Seuraava"
-            backButtonText="Edellinen"
-          />
+          {showPDF ? (
+            <PDFViewer style={{ width: "100%", height: "calc(100vh - 200px)" }}>
+              <PedagogyPDF data={data} />
+            </PDFViewer>
+          ) : (
+            <StepZilla
+              steps={steps}
+              dontValidate={false}
+              preventEnterSubmission={true}
+              showNavigation={true}
+              showSteps={true}
+              prevBtnOnLastStep={true}
+              nextButtonCls="button button--wizard"
+              backButtonCls="button button--wizard"
+              nextButtonText="Seuraava"
+              backButtonText="Edellinen"
+            />
+          )}
         </div>
       </div>
     </PedagogyContext.Provider>
@@ -435,6 +464,7 @@ const OverlayComponent: React.FC<OverlayComponentProsp> = (props) => (
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      zIndex: 100,
     }}
   >
     {props.children}
@@ -456,4 +486,5 @@ export const formFieldsWithTranslation: { [key: string]: string } = {
     "Ennakko suunnitelma ylioppilaskirjoituksiin - Muu toimenpide?",
   studentOpinionOfSupport: "Opiskelijan näkemys",
   schoolOpinionOfSupport: "Lukion näkemys tuen vaikuttavuudesta",
+  supportActionsImplemented: "Toteutetut tukitoimet",
 };

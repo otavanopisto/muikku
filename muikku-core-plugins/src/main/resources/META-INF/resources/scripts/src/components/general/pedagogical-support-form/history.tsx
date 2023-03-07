@@ -5,6 +5,7 @@ import { StatusType } from "~/reducers/base/status";
 /* import { IconButton } from "~/components/general/button"; */
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/hops.scss";
+import { formFieldsWithTranslation } from ".";
 import { HistoryEntry } from "./types";
 
 /**
@@ -48,7 +49,7 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
   const editedFields =
     props.historyEntry?.editedFields?.map((field) => (
       <li key={field} style={{ display: "list-item" }}>
-        <span>{field}</span>
+        <span>{formFieldsWithTranslation[field]}</span>
       </li>
     )) || null;
 
@@ -81,7 +82,10 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
               </div>
               {editedFields && (
                 <div className="hops-container__history-event-secondary">
-                  <ul>{editedFields}</ul>
+                  <div>
+                    <label className="hops__label">Muokatut kentät</label>
+                    <ul>{editedFields}</ul>
+                  </div>
                 </div>
               )}
             </>
@@ -116,7 +120,10 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
               </div>
               {editedFields && (
                 <div className="hops-container__history-event-secondary">
-                  <ul>{editedFields}</ul>
+                  <div>
+                    <label className="hops__label">Muokatut kentät</label>
+                    <ul>{editedFields}</ul>
+                  </div>
                 </div>
               )}
             </>

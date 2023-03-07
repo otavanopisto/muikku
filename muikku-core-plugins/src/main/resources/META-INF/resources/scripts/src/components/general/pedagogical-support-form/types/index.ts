@@ -113,6 +113,23 @@ export interface SupportActionImplementation {
 }
 
 /**
+ * The opinion of the student and the school
+ */
+export interface PedagogyOpinion {
+  studentOpinion?: Opinion;
+  schoolOpinion?: Opinion;
+}
+
+/**
+ * Opinion
+ */
+export interface Opinion {
+  opinion: string;
+  creationDate?: Date;
+  updatedDate?: Date;
+}
+
+/**
  * FormData
  */
 export interface FormData {

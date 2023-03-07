@@ -300,7 +300,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
 export default NeedOfSupportInformation;
 
-const supportReasonsOptions: OptionDefault<SupportReason>[] = [
+export const supportReasonsOptions: OptionDefault<SupportReason>[] = [
   {
     value: "disease",
     label: "Sairaus",
@@ -331,7 +331,7 @@ const supportReasonsOptions: OptionDefault<SupportReason>[] = [
   },
 ];
 
-const supportActionsOptions: OptionDefault<SupportAction>[] = [
+export const supportActionsOptions: OptionDefault<SupportAction>[] = [
   {
     value: "remedialInstruction",
     label: "Tukiopetus",
@@ -358,7 +358,7 @@ const supportActionsOptions: OptionDefault<SupportAction>[] = [
   },
 ];
 
-const matriculationSupportActionsOptions: OptionDefault<SupportActionMatriculationExamination>[] =
+export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatriculationExamination>[] =
   [
     {
       value: "extraTime",
