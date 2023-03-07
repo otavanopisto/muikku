@@ -371,7 +371,7 @@ export default class MemoField extends React.Component<
     // and here the element itself
     return (
       <span
-        className={`material-page__memofield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

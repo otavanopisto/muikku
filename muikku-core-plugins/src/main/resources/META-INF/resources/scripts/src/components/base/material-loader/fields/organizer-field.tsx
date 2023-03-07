@@ -436,7 +436,7 @@ export default class OrganizerField extends React.Component<
     }
     if (this.props.invisible) {
       return (
-        <span className="material-page__organizerfield-wrapper">
+        <span className="material-page__organizerfield-wrapper rs_skip_always">
           <span className="material-page__organizerfield">
             <span className="material-page__organizerfield-terms">
               <span className="material-page__organizerfield-terms-title">
@@ -497,7 +497,7 @@ export default class OrganizerField extends React.Component<
     // we add that class name in our component
     return (
       <span
-        className={`material-page__organizerfield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__organizerfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

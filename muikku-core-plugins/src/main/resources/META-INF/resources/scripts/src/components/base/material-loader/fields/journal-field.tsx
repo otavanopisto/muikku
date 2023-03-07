@@ -283,7 +283,7 @@ export default class JournalField extends React.Component<
     // and here the element itself
     return (
       <span
-        className={`material-page__journalfield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__journalfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

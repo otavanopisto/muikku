@@ -182,7 +182,7 @@ class WorkspaceMaterial extends React.Component<
                 <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
                 {isAssignment && hasEvaluation ? (
                   <div
-                    className={`material-page__assignment-assessment ${evalStateClassName} rs_skip`}
+                    className={`material-page__assignment-assessment ${evalStateClassName} rs_skip_always`}
                   >
                     <div
                       className={`material-page__assignment-assessment-icon ${evalStateIcon}`}

@@ -132,7 +132,7 @@ export default class TextField extends React.Component<
 
     return (
       <div
-        className={`material-page__mathfield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__mathfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

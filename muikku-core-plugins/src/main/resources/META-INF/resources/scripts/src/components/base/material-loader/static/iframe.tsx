@@ -194,7 +194,7 @@ export default class Iframe extends React.Component<IframeProps, IframeState> {
           }
 
           return (
-            <span className="material-page__iframe-wrapper">
+            <span className="material-page__iframe-wrapper rs_skip_always">
               <OutsideClickListener
                 containerStyle={containerStyle}
                 onClickOutside={this.handleClickOutside}

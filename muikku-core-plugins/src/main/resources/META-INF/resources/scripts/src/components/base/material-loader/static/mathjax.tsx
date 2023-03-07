@@ -47,10 +47,12 @@ export default class MathJAX extends React.Component<
     }
     //TODO remove the data-muikku-word-definition thing, it's basically used for styling alone
     if (this.props.invisible) {
-      return <span className="math-tex">{this.props.children}</span>;
+      return (
+        <span className="math-tex rs_skip_always">{this.props.children}</span>
+      );
     }
     return (
-      <span className="math-tex">
+      <span className="math-tex rs_skip_always">
         <MathjaxReactLoader
           script={MATHJAXSRC}
           config={MATHJAXCONFIG}

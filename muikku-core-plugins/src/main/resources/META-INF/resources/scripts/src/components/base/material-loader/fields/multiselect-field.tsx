@@ -326,7 +326,7 @@ export default class MultiSelectField extends React.Component<
 
     if (this.props.invisible) {
       return (
-        <span className="material-page__checkbox-wrapper">
+        <span className="material-page__checkbox-wrapper rs_skip_always">
           <span
             className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${
               this.props.content.listType === "checkbox-horizontal"
@@ -373,7 +373,7 @@ export default class MultiSelectField extends React.Component<
     // and we render
     return (
       <span
-        className={`material-page__checkbox-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__checkbox-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

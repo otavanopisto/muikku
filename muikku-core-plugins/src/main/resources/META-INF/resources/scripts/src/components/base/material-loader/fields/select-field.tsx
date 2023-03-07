@@ -226,7 +226,7 @@ export default class SelectField extends React.Component<
         this.props.content.listType === "list"
       ) {
         return (
-          <span className="material-page__selectfield-wrapper">
+          <span className="material-page__selectfield-wrapper rs_skip_always">
             <select
               className="material-page__selectfield"
               size={
@@ -241,7 +241,10 @@ export default class SelectField extends React.Component<
       }
 
       return (
-        <span className="material-page__radiobutton-wrapper" ref="base">
+        <span
+          className="material-page__radiobutton-wrapper rs_skip_always"
+          ref="base"
+        >
           {this.props.content.options.map((o) => (
             <span
               className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${
@@ -352,7 +355,7 @@ export default class SelectField extends React.Component<
         this.props.content.listType === "list" ? "list" : "dropdown";
       return (
         <span
-          className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass}`}
+          className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
@@ -392,7 +395,7 @@ export default class SelectField extends React.Component<
     //this is for the standard
     return (
       <span
-        className={`material-page__radiobutton-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__radiobutton-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

@@ -206,7 +206,7 @@ export default class FileField extends React.Component<
     // and this is the container
     return (
       <span
-        className={`material-page__filefield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__filefield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

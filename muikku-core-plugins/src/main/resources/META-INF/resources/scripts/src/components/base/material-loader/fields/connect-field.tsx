@@ -565,7 +565,7 @@ export default class ConnectField extends React.Component<
 
     return (
       <span
-        className={`material-page__connectfield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__connectfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

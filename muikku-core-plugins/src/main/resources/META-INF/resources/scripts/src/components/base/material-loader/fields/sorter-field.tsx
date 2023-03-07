@@ -368,7 +368,10 @@ export default class SorterField extends React.Component<
         );
       });
       return (
-        <span ref="base" className="material-page__sorterfield-wrapper">
+        <span
+          ref="base"
+          className="material-page__sorterfield-wrapper rs_skip_always"
+        >
           <span
             className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}
           >
@@ -401,7 +404,7 @@ export default class SorterField extends React.Component<
     // we use that element and the class to create the field
     return (
       <span
-        className={`material-page__sorterfield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__sorterfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}
@@ -462,7 +465,7 @@ export default class SorterField extends React.Component<
                   this.state.selectedItem.id === item.id
                     ? "material-page__sorterfield-item--selected"
                     : ""
-                } ${itemStateAfterCheck}`}
+                } ${itemStateAfterCheck} rs_skip_always`}
                 key={item.id}
                 interactionGroup={this.props.content.name}
                 interactionData={item}

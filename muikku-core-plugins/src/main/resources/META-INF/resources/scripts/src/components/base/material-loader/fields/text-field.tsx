@@ -285,7 +285,10 @@ export default class TextField extends React.Component<
 
     if (this.props.invisible) {
       return (
-        <span ref="base" className="material-page__textfield-wrapper">
+        <span
+          ref="base"
+          className="material-page__textfield-wrapper rs_skip_always"
+        >
           <span className="material-page__textfield">
             <input readOnly />
           </span>
@@ -379,7 +382,7 @@ export default class TextField extends React.Component<
         </span>
       );
       return (
-        <span className="material-page__textfield-wrapper">
+        <span className="material-page__textfield-wrapper rs_skip_always">
           {component}
           {correctAnswersummaryComponent}
         </span>
@@ -397,7 +400,7 @@ export default class TextField extends React.Component<
       );
 
       return (
-        <span className="material-page__textfield-wrapper">
+        <span className="material-page__textfield-wrapper rs_skip_always">
           {component}
           {correctAnswersummaryComponent}
         </span>
@@ -424,7 +427,9 @@ export default class TextField extends React.Component<
       );
     } else {
       component = (
-        <span className={`material-page__textfield ${fieldStateAfterCheck}`}>
+        <span
+          className={`material-page__textfield ${fieldStateAfterCheck} rs_skip_always`}
+        >
           <input
             type="text"
             value={this.state.value}
@@ -446,7 +451,7 @@ export default class TextField extends React.Component<
     // Standard modifiable version
     return (
       <span
-        className={`material-page__textfield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__textfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

@@ -448,7 +448,7 @@ export default class AudioField extends React.Component<
         ));
       }
       return (
-        <span className="material-page__audiofield-wrapper">
+        <span className="material-page__audiofield-wrapper rs_skip_always">
           <span className="material-page__audiofield">
             {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
               <input type="file" />
