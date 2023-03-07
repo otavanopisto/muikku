@@ -7,11 +7,15 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
-
+import "~/sass/elements/react-select-override.scss";
+import Select from "react-select";
 import { StateType } from "~/reducers";
 
 import { WorkspaceBaseFilterType, WorkspacesType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
+import { OptionDefault } from "~/components/general/react-select/types";
+
+type CoursepickerFilterOption = OptionDefault<WorkspaceBaseFilterType>;
 
 /**
  * CoursepickerApplicationProps
@@ -48,14 +52,14 @@ class CoursepickerApplication extends React.Component<
 
   /**
    * onCoursepickerFilterChange
-   * @param e e
+   * @param selectedOption selectedOption
    */
-  onCoursepickerFilterChange(e: React.ChangeEvent<HTMLSelectElement>) {
+  onCoursepickerFilterChange(selectedOption: CoursepickerFilterOption) {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
     );
-    locationData.b = e.target.value;
+    locationData.b = selectedOption.value;
     window.location.hash =
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
   }
@@ -70,6 +74,25 @@ class CoursepickerApplication extends React.Component<
       UNPUBLISHED: "plugin.coursepicker.unpublished",
     };
 
+    const options: CoursepickerFilterOption[] =
+      this.props.workspaces.availableFilters.baseFilters
+        .map((filter: WorkspaceBaseFilterType) => {
+          if (this.props.status.isStudent && filter === "UNPUBLISHED") {
+            return null;
+          }
+
+          return {
+            value: filter,
+            label: this.props.i18n.text.get(filterTranslationString[filter]),
+          } as CoursepickerFilterOption;
+        })
+        .filter((option) => option !== null);
+
+    const currentSelectValue = options.find(
+      (option) =>
+        option.value === this.props.workspaces.activeFilters.baseFilter
+    );
+
     const title = this.props.i18n.text.get("plugin.coursepicker.pageTitle");
     const toolbar = <Toolbar />;
     const primaryOption = (
@@ -78,34 +101,35 @@ class CoursepickerApplication extends React.Component<
           {this.props.i18n.text.get("plugin.coursepicker.select.label")}
         </label>
         {this.props.status.loggedIn ? (
-          <select
-            id="selectCourses"
-            className="form-element__select form-element__select--main-action"
-            value={this.props.workspaces.activeFilters.baseFilter}
+          <Select<CoursepickerFilterOption>
+            className="react-select-override"
+            classNamePrefix="react-select-override"
+            value={currentSelectValue}
             onChange={this.onCoursepickerFilterChange}
-          >
-            {this.props.workspaces.availableFilters.baseFilters.map(
-              (filter: WorkspaceBaseFilterType) => {
-                if (this.props.status.isStudent && filter === "UNPUBLISHED") {
-                  return false;
-                }
-                return (
-                  <option key={filter} value={filter}>
-                    {this.props.i18n.text.get(filterTranslationString[filter])}
-                  </option>
-                );
-              }
-            )}
-          </select>
+            options={options}
+            styles={{
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              container: (baseStyles, state) => ({
+                ...baseStyles,
+                width: "100%",
+              }),
+            }}
+          />
         ) : (
-          <select
-            id="selectCourses"
-            className="form-element__select form-element__select--main-action"
-          >
-            <option>
-              {this.props.i18n.text.get("plugin.coursepicker.opencourses")}
-            </option>
-          </select>
+          <Select<CoursepickerFilterOption>
+            className="react-select-override"
+            classNamePrefix="react-select-override"
+            value={options[0]}
+            options={[options[0]]}
+            isDisabled={true}
+            styles={{
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              container: (baseStyles, state) => ({
+                ...baseStyles,
+                width: "100%",
+              }),
+            }}
+          />
         )}
       </div>
     );

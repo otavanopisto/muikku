@@ -5,6 +5,7 @@ import java.util.Set;
 
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 
 public class Workspace {
 
@@ -18,6 +19,7 @@ public class Workspace {
       WorkspaceAccess access,
       Boolean archived,
       Boolean published,
+      WorkspaceLanguage language,
       String name,
       String nameExtension,
       String description,
@@ -35,6 +37,7 @@ public class Workspace {
     this.archived = archived;
     this.access = access;
     this.published = published;
+    this.language = language;
     this.name = name;
     this.nameExtension = nameExtension;
     this.description = description;
@@ -165,6 +168,14 @@ public class Workspace {
     this.organizationEntityId = organizationEntityId;
   }
 
+  public WorkspaceLanguage getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(WorkspaceLanguage language) {
+    this.language = language;
+  }
+
   private Long id;
   private Long organizationEntityId;
   private String urlName;
@@ -180,4 +191,5 @@ public class Workspace {
   private Boolean published;
   private Set<String> curriculumIdentifiers;
   private boolean hasCustomImage;
+  private WorkspaceLanguage language;
 }

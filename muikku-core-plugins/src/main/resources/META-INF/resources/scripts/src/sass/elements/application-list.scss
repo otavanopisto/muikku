@@ -324,6 +324,7 @@
 
 .application-list__header-item-body {
   display: inline-block;
+  line-height: 1.3275rem;
 }
 
 .application-list__item-content > span:not(:first-child) {
@@ -694,6 +695,7 @@
 
 .application-list__item-content-header {
   font-size: 1rem;
+  line-height: 1.3275rem;
   padding: 10px;
 }
 
@@ -714,7 +716,7 @@
 }
 
 .application-list__item-footer {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   padding: 0;
 }
@@ -749,8 +751,17 @@
   }
 }
 
+.application-list__item-footer-content-main--discussion-subscriptions {
+  align-items: flex-start;
+  flex-flow: column nowrap;
+}
+
 .application-list__item-footer-meta {
   margin: 0 10px 0 0;
+}
+
+.application-list__item-footer-meta--discussion-subscriptions {
+  margin: 5px 10px 0 0;
 }
 
 .application-list__item-date {
@@ -773,6 +784,16 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+}
+
+.application-list__item-header-main--journal-entry {
+  border-left: 3px solid $color-journal-entry;
+  padding: 0 0 0 10px;
+}
+
+.application-list__item-header-main--journal-entry-mandatory {
+  border-left: 3px solid $color-journal-page;
+  padding: 0 0 0 10px;
 }
 
 .application-list__item-header-main-content {
@@ -880,7 +901,8 @@
 .application-list__item-header-main-content--journal-comment-creator {
   font-size: 0.875rem;
   font-weight: 600;
-  padding: 0 0 0 15px;
+  margin-right: 5px;
+  padding: 0 5px 0 15px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
@@ -963,13 +985,11 @@
 
 .application-list__item-header--discussion {
   justify-content: space-between;
-  margin: 0 0 10px;
 }
 
 .application-list__item-header--discussion-thread-list {
   font-size: 1.1875rem;
   justify-content: space-between;
-  margin: 0 0 10px;
 }
 
 .application-list__item-text-body--discussion-message {
@@ -982,6 +1002,19 @@
   position: relative;
   text-overflow: ellipsis;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    line-height: 1.25rem;
+  }
+}
+
+.application-list__item-text-body--discussion-area-description {
+  font-size: $text-mobile-font-size;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.125rem;
+  margin: 0 0 5px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -1041,7 +1074,6 @@
 
 .application-list__item-footer--discussion-message {
   flex-flow: row wrap;
-  padding: 10px 0;
 }
 
 // Announcer
@@ -1154,15 +1186,12 @@
   padding: 0 0 10px;
 
   label {
+    font-weight: 600;
     margin-right: 5px;
   }
 
   div {
     padding: 5px 0;
-  }
-
-  span {
-    font-weight: 300;
   }
 }
 

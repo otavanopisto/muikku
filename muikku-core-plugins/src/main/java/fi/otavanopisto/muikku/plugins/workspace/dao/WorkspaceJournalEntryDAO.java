@@ -185,7 +185,12 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     return entityManager.createQuery(criteria).getSingleResult();
   }
   
-  public WorkspaceJournalEntry updateContent(WorkspaceJournalEntry workspaceJournalEntry, String title, String html) {
+  public WorkspaceJournalEntry updateTitle(WorkspaceJournalEntry workspaceJournalEntry, String title) {
+    workspaceJournalEntry.setTitle(title);
+    return persist(workspaceJournalEntry);
+  }
+
+  public WorkspaceJournalEntry update(WorkspaceJournalEntry workspaceJournalEntry, String title, String html) {
     workspaceJournalEntry.setTitle(title);
     workspaceJournalEntry.setHtml(html);
     return persist(workspaceJournalEntry);

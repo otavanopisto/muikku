@@ -6,7 +6,7 @@
 .table {
   border-collapse: separate;
   border-spacing: 0;
-  font-family: "Open Sans", "Arial", sans-serif;
+  font-family: $system-font-family;
   table-layout: fixed;
   width: 100%;
 }
@@ -75,6 +75,17 @@
 .table__head {
   color: $color-default-contrast;
   font-weight: 600;
+}
+
+.table__head--month {
+  padding: 5px;
+  text-align: left;
+  width: 100px;
+}
+
+.table__head--planned-courses {
+  padding: 5px;
+  text-align: left;
 }
 
 .table__head--language,

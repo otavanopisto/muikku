@@ -16,6 +16,12 @@ import EvaluationSorters from "./application/evaluation-list/evaluation-sorters"
 import { WorkspaceType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "../../../@types/evaluation";
 import { AnyActionType } from "~/actions";
+import {
+  GroupedOption,
+  OptionDefault,
+} from "~/components/general/react-select/types";
+import Select from "react-select";
+import "~/sass/elements/react-select-override.scss";
 
 /**
  * EvaluationApplicationProps
@@ -52,13 +58,18 @@ class EvaluationApplication extends React.Component<
    * handleWorkspaceSelectChange
    * @param e e
    */
-  handleWorkspaceSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.setSelectedWorkspaceId({
-      workspaceId:
-        e.currentTarget.value === ""
-          ? undefined
-          : parseInt(e.currentTarget.value),
-    });
+  handleWorkspaceSelectChange = (
+    e: OptionDefault<number> | OptionDefault<string>
+  ) => {
+    if (typeof e.value === "string" && e.value === "") {
+      this.props.setSelectedWorkspaceId({
+        workspaceId: undefined,
+      });
+    } else if (typeof e.value === "number") {
+      this.props.setSelectedWorkspaceId({
+        workspaceId: e.value,
+      });
+    }
   };
 
   /**
@@ -87,18 +98,41 @@ class EvaluationApplication extends React.Component<
 
     workspaces.sort((a, b) => a.name.trim().localeCompare(b.name.trim()));
 
+    const evaluationRequestOption = {
+      label: this.props.i18n.text.get("plugin.evaluation.allRequests"),
+      value: "",
+    };
+
     /**
      * Maps options
      */
-    const workspaceOptions = workspaces.map((wItem, i) => (
-      <option key={wItem.id} value={wItem.id}>
-        {`${wItem.name} ${
-          wItem.nameExtension !== null && wItem.nameExtension !== ""
-            ? `(${wItem.nameExtension})`
-            : ""
-        } `}
-      </option>
-    ));
+    const workspaceOptions = workspaces.map(
+      (wItem, i) =>
+        ({
+          label: wItem.name,
+          value: wItem.id,
+        } as OptionDefault<number>)
+    );
+
+    const groupedOptions: (
+      | GroupedOption<OptionDefault<number>>
+      | OptionDefault<string>
+    )[] = [
+      evaluationRequestOption,
+      {
+        label: this.props.i18n.text.get("plugin.evaluation.workspaces"),
+        options: workspaceOptions,
+      },
+    ];
+
+    const selectedOptions = [evaluationRequestOption, ...workspaceOptions].find(
+      (option) =>
+        (typeof option.value === "string" &&
+          this.props.evaluations.selectedWorkspaceId === undefined &&
+          option.value === "") ||
+        (typeof option.value === "number" &&
+          this.props.evaluations.selectedWorkspaceId === option.value)
+    );
 
     /**
      * Renders primary options aka select with label
@@ -109,22 +143,20 @@ class EvaluationApplication extends React.Component<
           {this.props.i18n.text.get("plugin.coursepicker.select.label")}
         </label>
 
-        <select
+        <Select<OptionDefault<number> | OptionDefault<string>>
           onChange={this.handleWorkspaceSelectChange}
-          value={this.props.evaluations.selectedWorkspaceId || undefined}
-          className="form-element__select form-element__select--main-action"
-        >
-          <option value="">
-            {this.props.i18n.text.get("plugin.evaluation.allRequests")}
-          </option>
-          {workspaceOptions.length > 0 ? (
-            <optgroup
-              label={this.props.i18n.text.get("plugin.evaluation.workspaces")}
-            >
-              {workspaceOptions}
-            </optgroup>
-          ) : null}
-        </select>
+          className="react-select-override"
+          classNamePrefix="react-select-override"
+          value={selectedOptions}
+          options={groupedOptions}
+          styles={{
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            container: (baseStyles, state) => ({
+              ...baseStyles,
+              width: "100%",
+            }),
+          }}
+        />
       </div>
     );
 

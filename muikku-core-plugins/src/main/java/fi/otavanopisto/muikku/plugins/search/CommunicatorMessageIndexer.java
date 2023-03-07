@@ -104,7 +104,7 @@ public class CommunicatorMessageIndexer {
       //set sender
       Long senderId = communicatorMessage.getSender();
       UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
-      UserEntityName senderName = userEntityController.getName(senderEntity);
+      UserEntityName senderName = userEntityController.getName(senderEntity, false);
       
       if (senderName != null) {
         IndexedCommunicatorMessageSender senderData = new IndexedCommunicatorMessageSender();
@@ -224,7 +224,7 @@ public class CommunicatorMessageIndexer {
   private IndexedCommunicatorMessageRecipient indexedMessageRecipientModel(CommunicatorMessageRecipient recipient, CommunicatorMessageId communicatorMessageId) {
     Long recipientId = recipient.getRecipient();
     UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
-    UserEntityName recipientName = userEntityController.getName(recipientEntity);
+    UserEntityName recipientName = userEntityController.getName(recipientEntity, false);
 
     if (recipientName != null) {
       IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();

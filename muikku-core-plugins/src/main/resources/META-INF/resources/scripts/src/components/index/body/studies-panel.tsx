@@ -27,7 +27,7 @@ interface WorkspacesPanelProps {
   i18n: i18nType;
   status: StatusType;
   workspaces: WorkspaceListType;
-  lastWorkspace: WorkspaceMaterialReferenceType;
+  lastWorkspaces: WorkspaceMaterialReferenceType[];
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -37,7 +37,7 @@ interface WorkspacesPanelProps {
  * @returns  JSX.element
  */
 const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
-  const { i18n, status, workspaces, lastWorkspace } = props;
+  const { i18n, status, workspaces, lastWorkspaces } = props;
 
   const { nextSuggestions } = useNextCourseSuggestions(
     props.status.userSchoolDataIdentifier,
@@ -51,30 +51,35 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       modifier="workspaces"
       header={i18n.text.get("plugin.frontPage.studies.title")}
     >
-      {lastWorkspace ? (
+      {lastWorkspaces && lastWorkspaces.length > 0 ? (
         <>
           <Panel.BodyTitle>
             {i18n.text.get("plugin.frontPage.studies.continue.title")}
           </Panel.BodyTitle>
           <Panel.BodyContent>
-            <ItemList modifier="continue-studies">
-              <ItemList.Item icon="icon-forward" modifier="continue-studies">
-                {props.lastWorkspace.workspaceName}
-              </ItemList.Item>
-              <ItemList.ItemFooter modifier="continue-studies">
-                <span>
-                  {props.i18n.text.get(
-                    "plugin.frontPage.latestWorkspace.material.part1"
-                  )}
-                </span>
-                <Link
-                  className="link--index-text-link"
-                  href={props.lastWorkspace.url}
-                >
-                  {props.lastWorkspace.materialName}
-                </Link>
-              </ItemList.ItemFooter>
-            </ItemList>
+            {lastWorkspaces.map((lastWorkspace) => (
+              <ItemList
+                key={lastWorkspace.workspaceId}
+                modifier="continue-studies"
+              >
+                <ItemList.Item icon="icon-forward" modifier="continue-studies">
+                  {lastWorkspace.workspaceName}
+                </ItemList.Item>
+                <ItemList.ItemFooter modifier="continue-studies">
+                  <span>
+                    {props.i18n.text.get(
+                      "plugin.frontPage.latestWorkspace.material.part1"
+                    )}
+                  </span>
+                  <Link
+                    className="link--index-text-link"
+                    href={lastWorkspace.url}
+                  >
+                    {lastWorkspace.materialName}
+                  </Link>
+                </ItemList.ItemFooter>
+              </ItemList>
+            ))}
           </Panel.BodyContent>
         </>
       ) : null}
@@ -208,7 +213,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     i18n: state.i18n,
     workspaces: state.workspaces.userWorkspaces,
-    lastWorkspace: state.workspaces.lastWorkspace,
+    lastWorkspaces: state.workspaces.lastWorkspaces,
   };
 }
 

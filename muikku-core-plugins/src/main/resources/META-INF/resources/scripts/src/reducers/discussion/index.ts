@@ -31,15 +31,15 @@ export interface DiscussionSubscribedArea {
   /**
    * Id of workspace.
    */
-  workspaceId: null;
+  workspaceId?: number;
   /**
    * Includes name extension
    */
-  workspaceUrlName: null;
+  workspaceUrlName?: string;
   /**
    * url of workspace
    */
-  workspaceName: null;
+  workspaceName?: string;
 }
 
 /**
@@ -78,6 +78,7 @@ export interface DiscussionSubscribedThread {
 export interface DiscussionThreadType {
   created: string;
   creator: DiscussionUserType;
+  entryPoint: number[];
   forumAreaId: number;
   id: number;
   lastModified: string;

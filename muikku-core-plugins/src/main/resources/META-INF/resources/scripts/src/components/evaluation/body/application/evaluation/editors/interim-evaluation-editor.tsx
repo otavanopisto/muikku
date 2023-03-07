@@ -27,6 +27,7 @@ import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import {
   AssessmentRequest,
+  AssignmentEvaluationType,
   AssignmentInterminEvaluationRequest,
   AudioAssessment,
   EvaluationGradeSystem,
@@ -273,6 +274,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
         verbalAssessment: this.state.literalEvaluation,
         assessmentDate: new Date().getTime(),
         audioAssessments: this.state.audioAssessments,
+        evaluationType: AssignmentEvaluationType.ASSESSMENT,
       },
       materialId: this.props.materialAssignment.materialId,
     });

@@ -84,7 +84,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        UserEntityName studentName = userEntityController.getName(studentEntity);
+        UserEntityName studentName = userEntityController.getName(studentEntity, false);
         if (studentName == null) {
           logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
           continue;
@@ -144,8 +144,9 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
         continue;
       }
       
-      Date studyStartDate = getDateResult(result.get("studyStartDate"));
-      if (studyStartDate == null) {
+      Date studyStartDate = getStudyStartDateIncludingTemporaryLeaves(result);
+      if (!isUsableStudyStartDate(studyStartDate)) {
+        // Skip if the study start date (or end of temporary leave) cannot be determined as it implies the student is not active
         continue;
       }
       

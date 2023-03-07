@@ -11,13 +11,14 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation_;
 
 public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMaterialEvaluation> {
 
   private static final long serialVersionUID = 3327224161244826382L;
   
-  public WorkspaceMaterialEvaluation create(Long studentEntityId, Long workspaceMaterialId, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, Long assessorEntityId, Date evaluated, String verbalAssessment) {
+  public WorkspaceMaterialEvaluation create(Long studentEntityId, Long workspaceMaterialId, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, Long assessorEntityId, Date evaluated, String verbalAssessment, WorkspaceMaterialEvaluationType evaluationType) {
     WorkspaceMaterialEvaluation workspaceMaterialEvaluation = new WorkspaceMaterialEvaluation();
     workspaceMaterialEvaluation.setAssessorEntityId(assessorEntityId);
     workspaceMaterialEvaluation.setEvaluated(evaluated);
@@ -28,6 +29,8 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
     workspaceMaterialEvaluation.setStudentEntityId(studentEntityId);
     workspaceMaterialEvaluation.setVerbalAssessment(verbalAssessment);
     workspaceMaterialEvaluation.setWorkspaceMaterialId(workspaceMaterialId);
+    workspaceMaterialEvaluation.setEvaluationType(evaluationType);
+    workspaceMaterialEvaluation.setArchived(false);
     
     return persist(workspaceMaterialEvaluation);
   }
@@ -52,7 +55,16 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
     return persist(workspaceMaterialEvaluation);
   }
 
-  public List<WorkspaceMaterialEvaluation> listByWorkspaceMaterialIdAndStudentEntityId(Long workspaceMaterialId, Long studentEntityId) {
+  /**
+   * Lists WorkspaceMaterialEvaluations for given student and material.
+   * They can be of any type i.e. assessments or supplementation requests.
+   * 
+   * @param workspaceMaterialId
+   * @param studentEntityId
+   * @param archived
+   * @return
+   */
+  public List<WorkspaceMaterialEvaluation> listByWorkspaceMaterialIdAndStudentEntityIdAndArchived(Long workspaceMaterialId, Long studentEntityId, boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -62,7 +74,8 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.workspaceMaterialId), workspaceMaterialId),
-        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.studentEntityId), studentEntityId)
+        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.studentEntityId), studentEntityId),
+        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.archived), archived)
       )
     );
 
@@ -112,6 +125,11 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
   
   public WorkspaceMaterialEvaluation updateEvaluated(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, Date evaluated) {
     workspaceMaterialEvaluation.setEvaluated(evaluated);
+    return persist(workspaceMaterialEvaluation);
+  }
+  
+  public WorkspaceMaterialEvaluation updateEvaluationType(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, WorkspaceMaterialEvaluationType evaluationType) {
+    workspaceMaterialEvaluation.setEvaluationType(evaluationType);
     return persist(workspaceMaterialEvaluation);
   }
   

@@ -32,6 +32,8 @@ import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import {
+  materialShowOrHideExtraTools,
+  MaterialShowOrHideExtraToolsTriggerType,
   setWorkspaceMaterialEditorState,
   createWorkspaceMaterialContentNode,
   updateWorkspaceMaterialContentNode,
@@ -61,6 +63,7 @@ interface WorkspaceMaterialsProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType;
 }
 
 /**
@@ -350,6 +353,13 @@ class WorkspaceMaterials extends React.Component<
       });
     });
   }
+
+  /**
+   * handleOpenMaterialExtraToolsDrawerClick
+   */
+  handleOpenMaterialExtraToolsDrawerClick = () => {
+    this.props.materialShowOrHideExtraTools();
+  };
 
   /**
    * onOpenNavigation
@@ -682,11 +692,20 @@ class WorkspaceMaterials extends React.Component<
 
           let showEvenIfHidden = false;
 
-          // if student has submitted something before material has been set to hidden
+          // if student has submitted something before material has been set to hidden or
+          // if student has answered something before material has been set to hidden then also
+          // other states are also shown as they are part of evaluation
           // It will be still shown to student
           if (node.hidden && compositeReplies) {
             showEvenIfHidden =
-              compositeReplies && compositeReplies.submitted !== null;
+              compositeReplies &&
+              (compositeReplies.submitted !== null ||
+                compositeReplies.state === "ANSWERED" ||
+                compositeReplies.state === "SUBMITTED" ||
+                compositeReplies.state === "WITHDRAWN" ||
+                compositeReplies.state === "PASSED" ||
+                compositeReplies.state === "FAILED" ||
+                compositeReplies.state === "INCOMPLETE");
           }
 
           // Actual page material
@@ -739,6 +758,7 @@ class WorkspaceMaterials extends React.Component<
               transform: "translateY(" + -this.state.defaultOffset + "px)",
             }}
           />
+
           {/*TOP OF THE CHAPTER*/}
           <h2
             className={`content-panel__chapter-title ${
@@ -781,7 +801,10 @@ class WorkspaceMaterials extends React.Component<
                 </Dropdown>
               </div>
             ) : null}
-            <div className="content-panel__chapter-title-text">
+            <div
+              className="content-panel__chapter-title-text"
+              lang={section.titleLanguage || this.props.workspace.language}
+            >
               {section.title}
             </div>
           </h2>
@@ -817,7 +840,7 @@ class WorkspaceMaterials extends React.Component<
       <ContentPanel
         aside={progressData}
         onOpenNavigation={this.onOpenNavigation}
-        modifier="materials"
+        modifier="workspace-materials"
         navigation={this.props.navigation}
         title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")}
         readspeakerComponent={
@@ -862,6 +885,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       setWorkspaceMaterialEditorState,
       createWorkspaceMaterialContentNode,
       updateWorkspaceMaterialContentNode,
+      materialShowOrHideExtraTools,
     },
     dispatch
   );

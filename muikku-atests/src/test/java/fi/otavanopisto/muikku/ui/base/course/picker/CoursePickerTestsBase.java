@@ -39,9 +39,10 @@ public class CoursePickerTestsBase extends AbstractUITest {
         navigate("/coursepicker", false);
         waitForVisible(".application-panel__actions-aside");
   //      Course selector
-        waitForPresent(".application-panel__actions-aside select > option:nth-child(1)");
-        waitForPresent(".application-panel__actions-aside select > option:nth-child(2)");
-        waitForPresent(".application-panel__actions-aside select > option:nth-child(3)");
+        waitAndClick(".application-panel__actions-aside .react-select-override .react-select-override__control");
+        waitForPresent(".application-panel__actions-aside .react-select-override .react-select-override__menu .react-select-override__option:nth-child(1)");
+        waitForPresent(".application-panel__actions-aside .react-select-override .react-select-override__menu .react-select-override__option:nth-child(2)");
+        waitForPresent(".application-panel__actions-aside .react-select-override .react-select-override__menu .react-select-override__option:nth-child(3)");
   //      Search field
         waitForVisible(".application-panel__toolbar-actions-main input");
   //      Side navigation

@@ -33,8 +33,8 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
-        waitForPresent(".application-panel__actions-aside select.form-element__select");
-        assertVisible(".application-panel__actions-aside select.form-element__select");
+        waitForPresent(".application-panel__actions-aside .react-select-override");
+        assertVisible(".application-panel__actions-aside  .react-select-override");
       } finally {
         deleteWorkspace(workspace.getId());
       }

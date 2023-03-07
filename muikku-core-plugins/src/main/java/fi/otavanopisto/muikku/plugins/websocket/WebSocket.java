@@ -23,7 +23,7 @@ public class WebSocket {
   
   @OnClose
   public void onClose(final Session session, CloseReason closeReason, @PathParam("TICKET") String ticket) {
-    webSocketMessenger.closeSession(session, ticket, closeReason);
+    webSocketMessenger.discardSession(session, ticket, closeReason);
   }
 
   @OnMessage

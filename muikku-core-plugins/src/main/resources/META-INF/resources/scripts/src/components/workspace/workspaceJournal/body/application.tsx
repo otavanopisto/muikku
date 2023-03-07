@@ -8,6 +8,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
+import "~/sass/elements/react-select-override.scss";
 import { StateType } from "~/reducers";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
@@ -22,6 +23,14 @@ import {
 } from "~/actions/workspaces/journals";
 import WorkspaceJournalView from "./application/workspace-journal-view";
 import { JournalsState } from "~/reducers/workspaces/journals";
+import { OptionDefault } from "~/components/general/react-select/types";
+import { ShortWorkspaceUserWithActiveStatusType } from "~/reducers/user-index";
+import Select from "react-select";
+
+type JournalStudentFilterOption = OptionDefault<
+  ShortWorkspaceUserWithActiveStatusType | string
+>;
+import WorkspaceJournalFeedback from "./application/workspace-journal-feedback";
 
 /**
  * WorkspaceJournalApplicationProps
@@ -55,16 +64,21 @@ class WorkspaceJournalApplication extends React.Component<
   constructor(props: WorkspaceJournalApplicationProps) {
     super(props);
 
-    this.onWorkspaceJournalFilterChange =
-      this.onWorkspaceJournalFilterChange.bind(this);
+    this.handleWorkspaceJournalFilterChange =
+      this.handleWorkspaceJournalFilterChange.bind(this);
   }
 
   /**
-   * onWorkspaceJournalFilterChange
-   * @param e e
+   * Handles workspace journal filter change
+   * @param selectedOption selectedOption which can be either a string or a ShortWorkspaceUserWithActiveStatusType
    */
-  onWorkspaceJournalFilterChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const newValue = parseInt(e.target.value) || null;
+  handleWorkspaceJournalFilterChange(
+    selectedOption: JournalStudentFilterOption
+  ) {
+    const newValue =
+      typeof selectedOption.value === "string"
+        ? null
+        : selectedOption.value.userEntityId;
     this.props.loadCurrentWorkspaceJournalsFromServer(newValue);
   }
 
@@ -76,54 +90,81 @@ class WorkspaceJournalApplication extends React.Component<
       "plugin.workspace.journal.pageTitle"
     );
     const toolbar = <Toolbar />;
-    let primaryOption;
-    if (this.props.workspace) {
-      primaryOption =
-        !this.props.status.isStudent &&
-        this.props.journalsState &&
-        this.props.workspace.students ? (
-          <div className="form-element form-element--main-action">
-            <label htmlFor="selectJournal" className="visually-hidden">
-              {this.props.i18n.text.get("plugin.wcag.journalSelect.label")}
-            </label>
-            <select
-              id="selectJournal"
-              className="form-element__select form-element__select--main-action"
-              value={this.props.journalsState.userEntityId || ""}
-              onChange={this.onWorkspaceJournalFilterChange}
-            >
-              <option value="">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.journal.studentFilter.showAll"
-                )}
-              </option>
-              {(this.props.workspace.students.results || [])
-                .filter(
-                  (student, index, array) =>
-                    array.findIndex(
-                      (otherStudent) =>
-                        otherStudent.userEntityId === student.userEntityId
-                    ) === index
-                )
-                .map((student) => (
-                  <option
-                    key={student.userEntityId}
-                    value={student.userEntityId}
-                  >
-                    {getName(student, true)}
-                  </option>
-                ))}
-            </select>
-          </div>
-        ) : (
-          <NewJournal>
-            <Button buttonModifiers="primary-function">
-              {this.props.i18n.text.get(
-                "plugin.workspace.journal.newEntryButton.label"
-              )}
-            </Button>
-          </NewJournal>
+
+    let primaryOption = (
+      <NewJournal>
+        <Button buttonModifiers="primary-function">
+          {this.props.i18n.text.get(
+            "plugin.workspace.journal.newEntryButton.label"
+          )}
+        </Button>
+      </NewJournal>
+    );
+
+    if (
+      this.props.workspace &&
+      !this.props.status.isStudent &&
+      this.props.journalsState &&
+      this.props.workspace.students
+    ) {
+      const studentFilterOptions = (this.props.workspace.students.results || [])
+        .filter(
+          (student, index, array) =>
+            array.findIndex(
+              (otherStudent) =>
+                otherStudent.userEntityId === student.userEntityId
+            ) === index
+        )
+        .map(
+          (student) =>
+            ({
+              value: student,
+              label: getName(student, true),
+            } as JournalStudentFilterOption)
         );
+
+      const allOptions = [
+        {
+          value: "",
+          label: this.props.i18n.text.get(
+            "plugin.workspace.journal.studentFilter.showAll"
+          ),
+        } as JournalStudentFilterOption,
+        ...studentFilterOptions,
+      ];
+
+      const selectedOption = allOptions.find((option) => {
+        const valueToFind = this.props.journalsState.userEntityId || "";
+
+        if (typeof option.value === "string") {
+          return option.value === valueToFind;
+        } else {
+          return option.value.userEntityId === valueToFind;
+        }
+      });
+
+      primaryOption = (
+        <div className="form-element form-element--main-action">
+          <label htmlFor="selectJournal" className="visually-hidden">
+            {this.props.i18n.text.get("plugin.wcag.journalSelect.label")}
+          </label>
+          <Select
+            className="react-select-override"
+            classNamePrefix="react-select-override"
+            id="selectJournal"
+            options={allOptions}
+            value={selectedOption}
+            onChange={this.handleWorkspaceJournalFilterChange}
+            styles={{
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              container: (baseStyles, state) => ({
+                ...baseStyles,
+                width: "100%",
+              }),
+            }}
+          />
+        </div>
+      );
     }
 
     return (
@@ -135,6 +176,14 @@ class WorkspaceJournalApplication extends React.Component<
           primaryOption={primaryOption}
         >
           <WorkspaceJournalView />
+
+          {this.props.journalsState.journalFeedback && (
+            <WorkspaceJournalFeedback
+              i18n={this.props.i18n}
+              journalFeedback={this.props.journalsState.journalFeedback}
+            />
+          )}
+
           <WorkspaceJournalsList />
         </ApplicationPanel>
         {this.props.status.isStudent ? (

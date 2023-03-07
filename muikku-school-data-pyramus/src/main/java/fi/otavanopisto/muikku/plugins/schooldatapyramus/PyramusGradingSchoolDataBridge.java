@@ -365,6 +365,20 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null;
     }
   }
+  
+  @Override
+  public WorkspaceAssessmentRequest findLatestAssessmentRequestByWorkspaceAndStudent(String workspaceIdentifier,
+      String studentIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    
+    if ((courseId != null) && (studentId != null)) {
+      return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/latest", studentId, courseId), CourseAssessmentRequest.class));
+    } else {
+      logger.log(Level.SEVERE, String.format("Could not find WorkspaceAssessmentRequest for courseId %d, studentId %d", courseId, studentId));
+      return null;
+    }
+  }
 
   @Override
   public List<WorkspaceActivity> listWorkspaceActivities(String studentIdentifier, String workspaceIdentifier, boolean includeTransferCredits) {

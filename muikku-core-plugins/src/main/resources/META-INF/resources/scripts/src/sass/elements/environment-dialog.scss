@@ -28,7 +28,7 @@
 
   label {
     display: block;
-    font-family: $text-font-family;
+    font-family: $system-font-family;
     font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -57,9 +57,9 @@
 .env-dialog__content {
   display: flex;
   flex-direction: column;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   height: 100%;
-  overflow: auto;
+  max-height: 100vh;
   width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
@@ -93,11 +93,12 @@
   flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
+  overflow: auto;
   padding: 0 10px;
 }
 
 .env-dialog__footer {
-  padding: 0 10px 10px;
+  padding: 10px;
 }
 
 .env-dialog__actions {
@@ -146,7 +147,6 @@
 .env-dialog__row--options {
   align-items: center;
   display: flex;
-  padding: 10px 0;
 }
 
 // This encapsulates titles and selection that appear on the same row
@@ -230,7 +230,7 @@
   align-items: center;
   color: $color-text-default;
   display: flex;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
   height: 1.45rem;
@@ -247,7 +247,6 @@
   border-radius: 4px;
   color: $color-form-element-selected-item-text;
   display: inline-flex;
-  font-weight: 300;
   height: 24px;
   margin: 4px 4px 0 0;
   padding: 2px 4px;
@@ -296,6 +295,10 @@
   @include breakpoint($breakpoint-pad) {
     height: $input-height-desktop;
   }
+}
+
+.env-dialog__input:disabled {
+  background-color: $color-disabled-background;
 }
 
 .env-dialog__input-label {
@@ -348,7 +351,7 @@
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   height: $select-height-mobile;
   padding: 3px 6px;
@@ -365,7 +368,7 @@
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  font-family: $text-font-family;
+  font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   height: 100px;
   padding: 8px;

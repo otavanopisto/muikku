@@ -12,7 +12,7 @@
   color: $color-button-default-text;
   cursor: pointer;
   display: flex;
-  font-family: $button-font-family;
+  font-family: $system-font-family;
   font-size: $button-mobile-font-size;
   justify-content: center;
   overflow: hidden;
@@ -130,7 +130,7 @@
 }
 
 .button--branded {
-  font-family: $button-branded-font-family;
+  font-family: $branded-font-family;
 }
 
 .button--warn {
@@ -728,6 +728,14 @@
   }
 }
 
+.button-icon--workspace-notebook {
+  height: 25px; // This button is used as a trigger top open extra tools panel. Height is the same as workspace activity container.
+}
+
+.button-icon--workspace-extra-tools-close {
+  height: 2.25rem; // This button is used as a trigger to close extra tools panel. Height is the same as tab height.
+}
+
 .button__icon--left {
   margin-left: 0;
   margin-right: 5px;
@@ -748,6 +756,25 @@
   &:hover {
     color: $color-info;
   }
+}
+
+.button-icon--workspace-add-note-from-context {
+  background: $color-default;
+  border: 1px solid $color-notes-action-button;
+  border-radius: 25px 25px 25px 3px;
+  box-shadow: 0 0 10px rgba(0 0 0 / 20%);
+  color: $color-notes-action-button;
+  font-size: 1.5rem;
+  padding: 10px;
+
+  &:hover {
+    background: $color-default;
+    color: $color-info;
+  }
+}
+
+.button-icon--notebook-drag-handle {
+  height: 100%;
 }
 
 .button-icon--journal-central {
@@ -840,6 +867,17 @@
     font-size: $button-pill-desktop-font-size;
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
+  }
+}
+
+.button-pill--evaluation-journal-sorter {
+  background: $color-default;
+  color: $color-button-default-text;
+
+  &:hover,
+  &.hover {
+    background: $color-default;
+    color: $color-button-default-text;
   }
 }
 
@@ -2206,13 +2244,42 @@
   }
 }
 
-.button-icon--toc-filter,
-.button-icon--toc-open-close-sections {
+.button-icon--toc-action,
+.button-icon--notebook-action {
   color: $color-default-contrast;
   font-size: 1rem;
   height: 1.5rem;
-  margin: 0 10px 0 0;
+  margin: 0 5px;
   width: 1.5rem;
+
+  &:first-child {
+    margin-left: 10px;
+  }
+
+  &:last-child {
+    margin-right: 10px;
+  }
+}
+
+.button-icon--notebook-item-action {
+  color: $color-default-contrast;
+  font-size: 0.875rem;
+  height: 1.25rem;
+  margin: 0 5px;
+  width: 1.25rem;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.button-icon--note-item-content {
+  transform: rotate(0deg);
+  transition: 0.3s ease-in-out transform;
+
+  &.state-OPEN {
+    transform: rotate(-180deg);
+  }
 }
 
 .button-icon--reading-ruler-active {

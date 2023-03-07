@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,8 +25,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
@@ -54,6 +56,8 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
@@ -1243,9 +1247,23 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   public boolean isActiveUser(User user) {
-    // Student with set study end date has ended studies
+    /**
+     * If student has study end date set we check if the date has passed
+     */
     if (user.getStudyEndDate() != null) {
-      return false;
+      /**
+       * user.getStudyEndDate really should be either just LocalDate or have 
+       * proper zoned time on it but it doesn't. That's the reason for all the 
+       * zone stuff here. This zone conversion probably only works when the 
+       * user.getStudyEndDate is same zone as the current server is.
+       */
+      LocalDate studyEndDateAsLocalDate = user.getStudyEndDate().atZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
+      LocalDateTime studyEndDate = studyEndDateAsLocalDate.atTime(23, 59, 59);
+      
+      // If current time is past the studyEndDate the studies have ended - otherwise continue to the other checks
+      if (LocalDateTime.now().isAfter(studyEndDate)) {
+        return false;
+      }
     }
 
     if (identifierMapper.isStudentIdentifier(user.getIdentifier())) {
@@ -1295,6 +1313,25 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
     }
     return new BridgeResponse<List<OrganizationContactPerson>>(response.getStatusCode(), contactPersons);
+  }
+
+  @Override
+  public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
+    if (identifierMapper.isStudentIdentifier(userIdentifier.getIdentifier())) {
+      Long pyramusStudentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+      StudentStudyPeriod[] studyPeriods = listStudentStudyPeriods(pyramusStudentId);
+      List<UserStudyPeriod> userStudyPeriods = new ArrayList<>();
+      
+      for (StudentStudyPeriod studyPeriod : studyPeriods) {
+        if (studyPeriod.getType() == StudentStudyPeriodType.TEMPORARILY_SUSPENDED) {
+          userStudyPeriods.add(new UserStudyPeriod(studyPeriod.getBegin(), studyPeriod.getEnd(), UserStudyPeriodType.TEMPORARILY_SUSPENDED));
+        }
+      }
+      
+      return userStudyPeriods;
+    }
+    
+    return Collections.emptyList();
   }
 
   private StudentStudyPeriod[] listStudentStudyPeriods(Long pyramusStudentId) {

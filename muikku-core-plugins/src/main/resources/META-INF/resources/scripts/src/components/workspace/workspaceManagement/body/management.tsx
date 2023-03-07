@@ -10,6 +10,8 @@ import {
   WorkspaceUpdateType,
   WorkspaceDetailsType,
   WorkspacePermissionsType,
+  Language,
+  languageOptions,
 } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
@@ -47,7 +49,10 @@ import {
 import { filterMatch, filterHighlight } from "~/util/modifiers";
 import { SearchFormElement } from "~/components/general/form-element";
 import * as moment from "moment";
-import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import {
+  langAttributeLocale,
+  outputCorrectDatePickerLocale,
+} from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
@@ -72,6 +77,7 @@ interface ManagementPanelProps {
  */
 interface ManagementPanelState {
   workspaceName: string;
+  workspaceLanguage: Language;
   workspacePublished: boolean;
   workspaceAccess: WorkspaceAccessType;
   workspaceExtension: string;
@@ -116,6 +122,7 @@ class ManagementPanel extends React.Component<
     super(props);
     this.state = {
       workspaceName: null,
+      workspaceLanguage: "fi",
       workspacePublished: false,
       workspaceAccess: null,
       workspaceExtension: null,
@@ -138,6 +145,7 @@ class ManagementPanel extends React.Component<
     };
 
     this.updateWorkspaceName = this.updateWorkspaceName.bind(this);
+    this.updateWorkspaceLanguage = this.updateWorkspaceLanguage.bind(this);
     this.setWorkspacePublishedTo = this.setWorkspacePublishedTo.bind(this);
     this.setWorkspaceAccessTo = this.setWorkspaceAccessTo.bind(this);
     this.updateWorkspaceType = this.updateWorkspaceType.bind(this);
@@ -229,6 +237,9 @@ class ManagementPanel extends React.Component<
         nextProps.workspace && nextProps.workspace.permissions
           ? nextProps.workspace.permissions
           : [],
+      workspaceLanguage: nextProps.workspace
+        ? nextProps.workspace.language
+        : "fi",
     });
   }
 
@@ -239,6 +250,16 @@ class ManagementPanel extends React.Component<
   updateWorkspaceName(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       workspaceName: e.target.value,
+    });
+  }
+
+  /**
+   * updateWorkspaceName
+   * @param e e
+   */
+  updateWorkspaceLanguage(e: React.ChangeEvent<HTMLSelectElement>) {
+    this.setState({
+      workspaceLanguage: e.currentTarget.value as Language,
     });
   }
 
@@ -568,6 +589,7 @@ class ManagementPanel extends React.Component<
       materialDefaultLicense: this.state.workspaceLicense,
       description: this.state.workspaceDescription,
       hasCustomImage: this.state.workspaceHasCustomImage,
+      language: this.state.workspaceLanguage,
     };
     const currentWorkspaceAsUpdate: WorkspaceUpdateType = {
       name: this.props.workspace.name,
@@ -577,6 +599,7 @@ class ManagementPanel extends React.Component<
       materialDefaultLicense: this.props.workspace.materialDefaultLicense,
       description: this.props.workspace.description,
       hasCustomImage: this.props.workspace.hasCustomImage,
+      language: this.props.workspace.language,
     };
 
     if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)) {
@@ -753,6 +776,27 @@ class ManagementPanel extends React.Component<
                       </div>
                     </div>
                   </div>
+                  <div className="form__row">
+                    <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
+                      <label htmlFor="workspaceLanguage">
+                        {this.props.i18n.text.get(
+                          "plugin.workspace.management.title.basicInfo.localeCode"
+                        )}
+                      </label>
+                      <select
+                        id="workspaceLanguage"
+                        className="form-element__select"
+                        value={this.state.workspaceLanguage}
+                        onChange={this.updateWorkspaceLanguage}
+                      >
+                        {languageOptions.map((language) => (
+                          <option key={language} value={language}>
+                            {langAttributeLocale[language]}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 </div>
                 <div className="form__subdivision">
                   <div className="form__row">
@@ -762,14 +806,20 @@ class ManagementPanel extends React.Component<
                           "plugin.workspace.management.title.basicInfo.description"
                         )}
                       </label>
-                      <CKEditor
-                        editorTitle={this.props.i18n.text.get(
-                          "plugin.wcag.workspaceDescription.label"
-                        )}
-                        onChange={this.onDescriptionChange}
-                      >
-                        {this.state.workspaceDescription}
-                      </CKEditor>
+                      {
+                        // TODO: This is a temporary fix for Ckedtior not showing content
+                        // between view changes or refreshes. This should be fixed in CKEditor
+                      }
+                      {this.state.workspaceDescription && (
+                        <CKEditor
+                          editorTitle={this.props.i18n.text.get(
+                            "plugin.wcag.workspaceDescription.label"
+                          )}
+                          onChange={this.onDescriptionChange}
+                        >
+                          {this.state.workspaceDescription}
+                        </CKEditor>
+                      )}
                     </div>
                   </div>
                 </div>

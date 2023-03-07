@@ -22,7 +22,7 @@ import {
   loadUserWorkspaceEducationFiltersFromServer,
 } from "~/actions/workspaces";
 import {
-  loadLastWorkspaceFromServer,
+  loadLastWorkspacesFromServer,
   loadUserWorkspacesFromServer,
 } from "~/actions/workspaces";
 import {
@@ -411,19 +411,29 @@ export default class MainFunction extends React.Component<
     this.props.store.dispatch(loadSubscribedDiscussionAreaList({}) as Action);
     this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
     if (location.includes("subs")) {
-      const payload: DiscussionPatchType = {
-        current: state.discussion.current && undefined,
-        areaId: undefined,
-      };
+      if (location.length <= 2) {
+        const payload: DiscussionPatchType = {
+          current: state.discussion.current && undefined,
+          areaId: undefined,
+        };
 
-      this.props.store.dispatch({
-        type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
-        payload,
-      });
+        this.props.store.dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+          payload,
+        });
 
-      this.props.store.dispatch(
-        showOnlySubscribedThreads({ value: true }) as Action
-      );
+        this.props.store.dispatch(
+          showOnlySubscribedThreads({ value: true }) as Action
+        );
+      } else {
+        this.props.store.dispatch(
+          loadDiscussionThreadFromServer({
+            areaId: parseInt(location[1]),
+            threadId: parseInt(location[2]),
+            threadPage: parseInt(location[3]) || 1,
+          }) as Action
+        );
+      }
     } else {
       state.discussion.subscribedThreadOnly &&
         this.props.store.dispatch(
@@ -459,10 +469,10 @@ export default class MainFunction extends React.Component<
         //and there can be a page as #1/2/3/4
         this.props.store.dispatch(
           loadDiscussionThreadFromServer({
-            areaId: parseInt(location[0]),
-            page: parseInt(location[1]),
-            threadId: parseInt(location[2]),
-            threadPage: parseInt(location[3]) || 1,
+            areaId: parseInt(location[2]),
+            // page: parseInt(location[1]),
+            threadId: parseInt(location[3]),
+            threadPage: parseInt(location[4]) || 1,
           }) as Action
         );
       }
@@ -618,7 +628,7 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action
       );
-      this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
+      this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
       this.props.store.dispatch(

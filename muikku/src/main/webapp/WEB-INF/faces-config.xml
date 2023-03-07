@@ -12,10 +12,6 @@
     </locale-config>
   </application>
 
-  <lifecycle>
-    <phase-listener>fi.otavanopisto.muikku.jsf.PostRedirectMessagesSupport</phase-listener>
-  </lifecycle>
-
   <factory>
     <exception-handler-factory>fi.otavanopisto.muikku.errors.ExceptionHandlerFactory</exception-handler-factory>
   </factory>

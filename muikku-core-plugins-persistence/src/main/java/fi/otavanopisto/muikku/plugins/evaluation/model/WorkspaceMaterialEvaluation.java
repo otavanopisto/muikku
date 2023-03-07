@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -102,6 +104,22 @@ public class WorkspaceMaterialEvaluation {
     this.verbalAssessment = verbalAssessment;
   }
 
+  public Boolean getArchived() {
+    return archived;
+  }
+
+  public void setArchived(Boolean archived) {
+    this.archived = archived;
+  }
+
+  public WorkspaceMaterialEvaluationType getEvaluationType() {
+    return evaluationType;
+  }
+
+  public void setEvaluationType(WorkspaceMaterialEvaluationType evaluationType) {
+    this.evaluationType = evaluationType;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -137,4 +155,12 @@ public class WorkspaceMaterialEvaluation {
 
   @Lob
   private String verbalAssessment;
+  
+  @Column (nullable = false)
+  @Enumerated (EnumType.STRING)
+  private WorkspaceMaterialEvaluationType evaluationType;
+  
+  @NotNull
+  @Column(nullable = false)
+  private Boolean archived;
 }

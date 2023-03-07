@@ -20,6 +20,8 @@ import {
  */
 interface DeleteJournalCommentProps {
   i18n: i18nType;
+  userEntityId: number;
+  workspaceEntityId: number;
   journalComment: JournalComment;
   deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,6 +61,8 @@ class DeleteJournalComment extends React.Component<
    * @param closeDialog closeDialog
    */
   deleteJournalComment(closeDialog: () => void) {
+    const { journalComment, userEntityId, workspaceEntityId } = this.props;
+
     this.setState({ locked: true });
     this.props.deleteEvaluationJournalComment({
       deleteCommentPayload: {
@@ -66,9 +70,13 @@ class DeleteJournalComment extends React.Component<
         journalEntryId: this.props.journalComment.journalEntryId,
       },
       journalEntryId: this.props.journalComment.journalEntryId,
-      workspaceEntityId: 1,
+      workspaceEntityId: this.props.workspaceEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
+        localStorage.removeItem(
+          `diary-journalComment-edit.${userEntityId}-${workspaceEntityId}-${journalComment.journalEntryId}-${journalComment.id}.journalCommentText`
+        );
+
         this.setState({ locked: false });
         closeDialog();
       },

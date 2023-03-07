@@ -4,7 +4,6 @@ import CKEditor from "~/components/general/ckeditor";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers/index";
 import { AnyActionType } from "~/actions/index";
-import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
@@ -19,7 +18,6 @@ import { JournalComment } from "~/@types/journal";
  */
 interface JournalCommentEditorProps {
   i18n: i18nType;
-  status: StatusType;
   locale: LocaleState;
   journalComment?: JournalComment;
   locked: boolean;
@@ -198,7 +196,6 @@ class JournalCommentEditor extends SessionStateComponent<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status,
     locale: state.locales,
   };
 }

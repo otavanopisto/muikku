@@ -53,6 +53,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     this.representedUserId = null;
     this.activeUserIdentifier = null;
     this.activeUserSchoolDataSource = null;
+    this.authSource = null;
   }
 
   @Permit(MuikkuPermissions.REPRESENT_USER)
@@ -184,12 +185,20 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
 
   @Override
-  public void login(String dataSource, String identifier) {
+  public String getAuthSource() {
+    return authSource;
+  }
+  
+  @Override
+  public void login(String authSource, String dataSource, String identifier) {
+    this.authSource = authSource;
     this.activeUserIdentifier = identifier;
     this.activeUserSchoolDataSource = dataSource;
   }
   
   private Long representedUserId;
+  
+  private String authSource;
   
   private String activeUserIdentifier;
   

@@ -392,7 +392,15 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         .withHeader("Content-Type", "application/json")
         .withBody(studentArrayJson)
         .withStatus(200)));
-    
+
+    /**
+     * Empty study periods list - implement support for them if some tests need these at some point
+     */
+    stubFor(get(urlEqualTo(String.format("/1/students/students/%d/studyPeriods", studentId)))
+        .willReturn(aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody("[]").withStatus(200)));
+
     addPayload(payloads, objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
 
     return student;
