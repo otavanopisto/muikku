@@ -90,7 +90,7 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
         className="rsbtn_play"
         accessKey="L"
         title="Escucha esta p&aacute;gina utilizando ReadSpeaker webReader"
-        href={`https://app-eu.readspeaker.com/cgi-bin/rsent?customerid=3&amp;lang=fi_fi&amp;voice=Elina&amp;${readParameterType}=${readParameters}&amp;url=${encodeURIComponent(
+        href={`https://app-eu.readspeaker.com/cgi-bin/rsent?customerid=13624&lang=fi_fi&${readParameterType}=${readParameters}&url=${encodeURIComponent(
           document.location.href
         )}`}
       >

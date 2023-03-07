@@ -13,7 +13,7 @@ export const useReadSpeakerReader = (
   displayNotification: DisplayNotificationTriggerType
 ): { rspkr: React.MutableRefObject<any>; rspkrLoaded: boolean } => {
   const url =
-    "https://cdn-eu.readspeaker.com/script/3/webReader/webReader.js?pids=wr";
+    "https://cdn-eu.readspeaker.com/script/13624/webReader/webReader.js?pids=wr";
 
   const rspkr = React.useRef(null);
 
