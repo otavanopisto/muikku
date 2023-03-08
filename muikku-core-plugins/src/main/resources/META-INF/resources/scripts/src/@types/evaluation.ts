@@ -382,6 +382,7 @@ export interface AssignmentEvaluationGradeRequest {
  * AssignmentInterminEvaluationRequest
  */
 export interface AssignmentInterminEvaluationRequest {
+  evaluationType: AssignmentEvaluationType;
   assessorIdentifier: string;
   verbalAssessment: string;
   assessmentDate: number;

@@ -89,8 +89,19 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     }
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+    WorkspaceAssessmentRequest assessmentRequest = null;
+    
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+    assessmentRequest = assessmentRequestController.findLatestAssessmentRequestByWorkspaceAndStudent(workspaceIdentifier, sessionController.getLoggedUser());
+    
+    if (assessmentRequest != null) {
+      if (assessmentRequest.getHandled().equals(Boolean.FALSE)) {
+        return Response.noContent().build();
+      }
+    } 
+    
     try {
-      WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
+      assessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
       communicatorAssessmentRequestController.sendAssessmentRequestMessage(assessmentRequest);
       return Response.ok(restModel(assessmentRequest)).build();
     }
