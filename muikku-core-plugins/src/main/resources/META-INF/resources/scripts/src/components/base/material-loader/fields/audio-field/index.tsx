@@ -626,7 +626,7 @@ export default class AudioField extends React.Component<
     // and this is the container
     return (
       <span
-        className={`material-page__audiofield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__audiofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

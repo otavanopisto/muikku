@@ -545,7 +545,7 @@ class ContentComponent extends SessionStateComponent<
 
     return (
       <Toc
-        modifier="workspace-materials rs_skip_always"
+        modifier="workspace-materials"
         // tocHeaderTitle={this.props.i18n.text.get(
         //   "plugin.workspace.materials.tocTitle"
         // )}
