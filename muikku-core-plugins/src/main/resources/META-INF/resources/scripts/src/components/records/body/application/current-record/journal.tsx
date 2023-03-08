@@ -68,7 +68,13 @@ const Journal: React.FC<JournalProps> = (props) => {
         className="application-list__item-header--journal-entry"
         onClick={onJournalClick(journal.id)}
       >
-        <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+        <div
+          className={`application-list__item-header-main application-list__item-header-main--journal-entry ${
+            journal.isMaterialField
+              ? "application-list__item-header-main--journal-entry-mandatory"
+              : ""
+          }`}
+        >
           <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title-in-studies">
             {journal.title}
           </span>

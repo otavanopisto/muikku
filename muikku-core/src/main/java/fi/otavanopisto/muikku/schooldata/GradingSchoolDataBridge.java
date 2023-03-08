@@ -148,6 +148,18 @@ public interface GradingSchoolDataBridge {
    * @return the most recent workspace assessment given to the student, or <code>null</code> if none exists
    */
   public WorkspaceAssessment findLatestWorkspaceAssessmentByStudent(String studentIdentifier); 
+  
+  /**
+   * Returns the most recent assessment request sent by the given student and workspace, or <code>null</code> if none exists.
+   * 
+   * @param studentIdentifier student identifier
+   * 
+   * @param workspaceIdentifier workspace identifier
+   * 
+   * @return the most recent assessment request sent by the given student and workspace, or <code>null</code> if none exists
+   */
+  public WorkspaceAssessmentRequest findLatestAssessmentRequestByWorkspaceAndStudent(String workspaceIdentifier, String studentIdentifier); 
+  
 
   /**
    * Returns the most recent assessment request sent by the given student, or <code>null</code> if none exists.

@@ -369,6 +369,12 @@
   justify-content: space-between;
   padding: 10px 0;
 
+  &.state-FAILED {
+    .button-pill--evaluate {
+      background: $color-failed;
+    }
+  }
+
   &.state-EVALUATED {
     .button-pill--evaluate {
       background: $color-passed;
@@ -499,6 +505,12 @@
 
   &.state-INCOMPLETE {
     background: $color-incomplete;
+    border-radius: 2px;
+    color: $color-default;
+  }
+
+  &.state-FAILED {
+    background: $color-failed;
     border-radius: 2px;
     color: $color-default;
   }
