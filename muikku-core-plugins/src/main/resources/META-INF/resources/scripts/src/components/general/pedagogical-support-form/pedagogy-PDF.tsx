@@ -9,7 +9,7 @@ import {
   supportActionsOptions,
   supportReasonsOptions,
 } from "./steps/need-of-support-information";
-import { styles } from "./pedagogyPDF-styles";
+import { styles } from "./pedagogy-PDF-styles";
 import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
 
 Font.register({
