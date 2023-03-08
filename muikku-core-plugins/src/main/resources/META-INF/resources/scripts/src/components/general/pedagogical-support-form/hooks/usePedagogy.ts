@@ -1,15 +1,15 @@
 import * as React from "react";
-import {
-  FormData,
-  PedagogyForm,
-  SupportActionImplementation,
-  Visibility,
-} from "./../types/index";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import {
+  FormData,
+  PedagogyForm,
+  SupportActionImplementation,
+  Visibility,
+} from "~/@types/pedagogy-form";
 
 /**
  * usePedagogy

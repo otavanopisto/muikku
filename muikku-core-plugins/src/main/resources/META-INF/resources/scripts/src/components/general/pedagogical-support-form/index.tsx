@@ -12,13 +12,13 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import VisibilityAndApprovalDialog from "./dialogs/visibility-and-approval";
 import VisibilityDialog from "./dialogs/visibility";
-import { FormData, Visibility } from "./types/index";
 import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
 import WarningDialog from "./dialogs/warning";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { PDFViewer } from "@react-pdf/renderer";
-import PedagogyPDF from "./PedagogyPDF";
+import PedagogyPDF from "./pedagogy-PDF";
+import { FormData, Visibility } from "~/@types/pedagogy-form";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
 

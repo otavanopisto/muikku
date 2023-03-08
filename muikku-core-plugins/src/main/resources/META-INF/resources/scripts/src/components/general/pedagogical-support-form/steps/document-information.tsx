@@ -4,8 +4,8 @@ import "~/sass/elements/form.scss";
 import { TextField } from "../../hops-compulsory-education-wizard/text-field";
 import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
 import DatePicker from "react-datepicker";
-import { FormData, PedagogyForm } from "../types";
 import { PedagogyContext } from "..";
+import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
 /**
  * BasicInformationProps
  */

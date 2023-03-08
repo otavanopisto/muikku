@@ -1,14 +1,5 @@
 import * as React from "react";
-import {
-  Document,
-  Page,
-  StyleSheet,
-  Text,
-  Image,
-  View,
-  Font,
-} from "@react-pdf/renderer";
-import { FormData, PedagogyForm } from "./types";
+import { Document, Page, Text, Image, View, Font } from "@react-pdf/renderer";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import * as moment from "moment";
@@ -18,104 +9,12 @@ import {
   supportActionsOptions,
   supportReasonsOptions,
 } from "./steps/need-of-support-information";
+import { styles } from "./pedagogyPDF-styles";
+import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
 
 Font.register({
   family: "Oswald",
   src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
-});
-
-const styles = StyleSheet.create({
-  body: {
-    paddingTop: 35,
-    paddingBottom: 65,
-    paddingHorizontal: 35,
-  },
-  title: {
-    fontSize: 24,
-    fontFamily: "Oswald",
-  },
-  subtitle: {
-    fontSize: 18,
-    fontFamily: "Oswald",
-  },
-  pageTitle: {
-    fontSize: 18,
-    fontFamily: "Oswald",
-    textTransform: "uppercase",
-  },
-  header: {
-    color: "grey",
-    display: "flex",
-    flexDirection: "row",
-    marginBottom: 20,
-    height: "auto",
-  },
-  headerInfoContainer: {
-    width: "60%",
-  },
-  headerImageContainer: {
-    width: "40%",
-  },
-  headerImage: {
-    height: "auto",
-    width: 100,
-  },
-  footer: {
-    position: "absolute",
-    bottom: 30,
-    right: 0,
-    marginTop: 20,
-    paddingHorizontal: 35,
-  },
-  footerImage: {
-    height: "auto",
-    width: 100,
-  },
-  pageNumber: {
-    fontSize: 12,
-    color: "grey",
-  },
-  basicInfoContainer: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  infoField: {
-    display: "flex",
-    flexDirection: "column",
-    flexGrow: 1,
-    flexShrink: 1,
-    marginVertical: 10,
-  },
-  infoFieldLabel: {
-    fontWeight: "bold",
-    fontSize: 14,
-  },
-  infoFieldValue: {
-    fontSize: 12,
-  },
-  infoListValueContainer: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  infoListItemValue: {
-    fontSize: 12,
-  },
-  implementedActionsList: {},
-  implementedAction: {
-    display: "flex",
-    flexDirection: "column",
-    marginVertical: 10,
-  },
-  implementationInfo: {
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-  },
-  implementationExtraInfo: {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-  },
 });
 
 /**
@@ -231,7 +130,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         <View style={styles.infoField}>
           <Text style={styles.infoFieldLabel}>Opiskelijan vahvuudet:</Text>
           <Text style={styles.infoFieldValue}>
-            {formData.studentStrengths || "-"}
+            {formData?.studentStrengths || "-"}
           </Text>
         </View>
 

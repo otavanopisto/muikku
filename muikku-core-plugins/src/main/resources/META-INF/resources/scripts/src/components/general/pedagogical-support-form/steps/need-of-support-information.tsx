@@ -4,15 +4,15 @@ import "~/sass/elements/form.scss";
 import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
 import Select, { ActionMeta } from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
-import {
-  FormData,
-  SupportReason,
-  SupportAction,
-  SupportActionMatriculationExamination,
-  PedagogyForm,
-} from "../types/index";
 import AnimateHeight from "react-animate-height";
 import { PedagogyContext } from "..";
+import {
+  FormData,
+  PedagogyForm,
+  SupportAction,
+  SupportActionMatriculationExamination,
+  SupportReason,
+} from "~/@types/pedagogy-form";
 
 /**
  * BasicInformationProps

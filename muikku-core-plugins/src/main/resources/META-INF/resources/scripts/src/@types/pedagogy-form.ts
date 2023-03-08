@@ -192,7 +192,7 @@ export interface UserInfo {
    * must include the middle names if the student has one
    * @example "Matti Johannes"
    */
-  firstName: "Tipi";
+  firstName: string;
   /**
    * The last name of the student
    * @example "Meikäläinen"
@@ -205,31 +205,31 @@ export interface UserInfo {
   /**
    * Phone number of the student
    */
-  phoneNumber: string;
+  phoneNumber?: string | null;
   /**
    * The city where the student lives
    */
-  city: null;
+  city?: string | null;
   /**
    * The country where the student lives
    */
-  country: null;
+  country?: string | null;
   /**
    * Email of the student
    */
-  email: "tipi@fobar.com";
+  email?: string | null;
   /**
    * The street address of the student
    */
-  streetAddress: null;
+  streetAddress?: string | null;
   /**
    * The address of the student
    */
-  addressName: null;
+  addressName?: string | null;
   /**
    * The postal code of the student
    */
-  zipCode: null;
+  zipCode?: string | null;
 }
 
 /**

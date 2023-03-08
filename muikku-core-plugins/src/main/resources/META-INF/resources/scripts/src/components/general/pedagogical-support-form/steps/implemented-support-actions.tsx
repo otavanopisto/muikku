@@ -6,8 +6,12 @@ import {
   ImplementedActionsList,
   ImplementedActionsListItem,
 } from "../implemented-actions";
-import { FormData, PedagogyForm, SupportActionImplementation } from "../types";
 import { PedagogyContext } from "..";
+import {
+  FormData,
+  PedagogyForm,
+  SupportActionImplementation,
+} from "~/@types/pedagogy-form";
 
 /**
  * BasicInformationProps

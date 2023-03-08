@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { Visibility } from "../types";
+import { Visibility } from "~/@types/pedagogy-form";
 
 /**
  * BasicInformationProps

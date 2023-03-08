@@ -1,10 +1,10 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { FormData, PedagogyForm } from "../types";
 import CKEditor from "../../ckeditor";
 import { PedagogyContext } from "..";
 import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
+import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
 
 /**
  * BasicInformationProps

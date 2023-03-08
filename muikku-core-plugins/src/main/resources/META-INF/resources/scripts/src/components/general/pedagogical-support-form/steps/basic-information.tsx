@@ -2,10 +2,10 @@ import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import { TextField } from "../../hops-compulsory-education-wizard/text-field";
-import { PedagogyForm } from "../types";
 import * as moment from "moment";
 import { History, HistoryEntryItem } from "../history";
 import { StatusType } from "~/reducers/base/status";
+import { PedagogyForm } from "~/@types/pedagogy-form";
 
 /**
  * BasicInformationProps

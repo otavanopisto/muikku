@@ -7,7 +7,7 @@ import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
-import { Visibility } from "../types";
+import { Visibility } from "~/@types/pedagogy-form";
 
 /**
  * MatriculationExaminationWizardDialogProps

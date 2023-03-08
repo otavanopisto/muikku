@@ -4,11 +4,14 @@ import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
 import { Textarea } from "../hops-compulsory-education-wizard/text-area";
 import { IconButton } from "../button";
-import { SupportAction, SupportActionImplementation } from "./types";
 import { OptionDefault } from "../react-select/types";
 import Select from "react-select";
 import WorkspaceSelect from "./workspace-select";
 import { PedagogyContext } from ".";
+import {
+  SupportAction,
+  SupportActionImplementation,
+} from "~/@types/pedagogy-form";
 
 /**
  * ImplementedActionsListProps
