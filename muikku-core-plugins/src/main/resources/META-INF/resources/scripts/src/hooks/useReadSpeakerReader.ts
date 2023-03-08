@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
