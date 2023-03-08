@@ -4,14 +4,11 @@ import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
 import { Textarea } from "../hops-compulsory-education-wizard/text-area";
 import { IconButton } from "../button";
-import { OptionDefault } from "../react-select/types";
 import Select from "react-select";
 import WorkspaceSelect from "./workspace-select";
 import { PedagogyContext } from ".";
-import {
-  SupportAction,
-  SupportActionImplementation,
-} from "~/@types/pedagogy-form";
+import { SupportActionImplementation } from "~/@types/pedagogy-form";
+import { supportActionsOptions } from "./helpers";
 
 /**
  * ImplementedActionsListProps
@@ -50,33 +47,6 @@ export const ImplementedActionsListItem: React.FC<
   ImplementedActionsListItemProps
 > = (props) => {
   const { useCase, editIsActive } = React.useContext(PedagogyContext);
-
-  const supportActionsOptions: OptionDefault<SupportAction>[] = [
-    {
-      value: "remedialInstruction",
-      label: "Tukiopetus",
-    },
-    {
-      value: "specialEducation",
-      label: "Erityisopetus",
-    },
-    {
-      value: "extraTime",
-      label: "Lisäaika",
-    },
-    {
-      value: "scheduledStudies",
-      label: "Aikataulutetut opintojaksot",
-    },
-    {
-      value: "routedStudies",
-      label: "Polutetut opinnot",
-    },
-    {
-      value: "other",
-      label: "Muu tuki?",
-    },
-  ];
 
   const ownerOfEntry = true;
   const disabledFields =
