@@ -8,7 +8,7 @@ import {
   matriculationSupportActionsOptions,
   supportActionsOptions,
   supportReasonsOptions,
-} from "./steps/need-of-support-information";
+} from "./helpers";
 import { styles } from "./pedagogy-PDF-styles";
 import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
 

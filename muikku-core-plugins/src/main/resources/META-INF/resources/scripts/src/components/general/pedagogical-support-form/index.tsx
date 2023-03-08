@@ -470,21 +470,3 @@ const OverlayComponent: React.FC<OverlayComponentProsp> = (props) => (
     {props.children}
   </div>
 );
-
-export const formFieldsWithTranslation: { [key: string]: string } = {
-  authorOfDocument: "Asiakirjan laatija",
-  documentParticipants: "Asiakirjan laatimiseen osallistuneet",
-  cooperativePartners: "Yhteistyötahot",
-  studentStrengths: "Opiskelijan vahvuudet",
-  supportReasonsOptions: "Pedagogisen tuen perusteet",
-  supportReasonOther: "Pedagogisen tuen perusteet - Muu peruste?",
-  supportActions: "Suunniteltut tukitoimet",
-  supportActionOther: "Suunniteltut tukitoimet - Muu toimenpide?",
-  matriculationExaminationSupport:
-    "Ennakko suunnitelma ylioppilaskirjoituksiin",
-  matriculationExaminationSupportOther:
-    "Ennakko suunnitelma ylioppilaskirjoituksiin - Muu toimenpide?",
-  studentOpinionOfSupport: "Opiskelijan näkemys",
-  schoolOpinionOfSupport: "Lukion näkemys tuen vaikuttavuudesta",
-  supportActionsImplemented: "Toteutetut tukitoimet",
-};

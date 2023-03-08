@@ -13,6 +13,11 @@ import {
   SupportActionMatriculationExamination,
   SupportReason,
 } from "~/@types/pedagogy-form";
+import {
+  matriculationSupportActionsOptions,
+  supportActionsOptions,
+  supportReasonsOptions,
+} from "../helpers";
 
 /**
  * BasicInformationProps
@@ -299,97 +304,3 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 };
 
 export default NeedOfSupportInformation;
-
-export const supportReasonsOptions: OptionDefault<SupportReason>[] = [
-  {
-    value: "disease",
-    label: "Sairaus",
-  },
-  {
-    value: "disability",
-    label: "Vamma",
-  },
-  {
-    value: "lifeSituation",
-    label: "Erityisen vaikea elämäntilanne",
-  },
-  {
-    value: "readingAndWritingDifficulties",
-    label: "Lukemisen ja kirjoittamisen erityisvaikeus",
-  },
-  {
-    value: "foreignLanguageDifficulties",
-    label: "Vieraskielisyys",
-  },
-  {
-    value: "learningDifficulties",
-    label: "Oppimisvaikeus",
-  },
-  {
-    value: "other",
-    label: "Muu?",
-  },
-];
-
-export const supportActionsOptions: OptionDefault<SupportAction>[] = [
-  {
-    value: "remedialInstruction",
-    label: "Tukiopetus",
-  },
-  {
-    value: "specialEducation",
-    label: "Erityisopetus",
-  },
-  {
-    value: "extraTime",
-    label: "Lisäaika",
-  },
-  {
-    value: "scheduledStudies",
-    label: "Aikataulutetut opintojaksot",
-  },
-  {
-    value: "routedStudies",
-    label: "Polutetut opinnot",
-  },
-  {
-    value: "other",
-    label: "Muu tuki?",
-  },
-];
-
-export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatriculationExamination>[] =
-  [
-    {
-      value: "extraTime",
-      label: "Lisäaika",
-    },
-    {
-      value: "invidualSpace",
-      label: "erillinen yksilötila",
-    },
-    {
-      value: "smallGroupSpace",
-      label: "Erillinen pienryhmätila",
-    },
-    {
-      value: "restingPlace",
-      label: "Lepäämiseen tarkoitettu tila",
-    },
-    {
-      value: "assistant",
-      label: "Avustajan käyttö",
-    },
-    {
-      value: "assistedPrintAndScan",
-      label: "Avustettu tulostus ja skannaus",
-    },
-    {
-      value: "limitedAudioMaterial",
-      label: "Ääniaineistoltaan rajoitettu koe",
-    },
-    {
-      value: "other",
-      label: "Muu tuki?",
-    },
-  ];
