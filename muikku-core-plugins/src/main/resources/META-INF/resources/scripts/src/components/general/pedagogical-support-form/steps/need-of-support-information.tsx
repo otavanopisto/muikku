@@ -20,7 +20,7 @@ import {
 } from "../helpers";
 
 /**
- * BasicInformationProps
+ * NeedOfSupportInformationProps
  */
 interface NeedOfSupportInformationProps {
   pedagogyData?: PedagogyForm;
@@ -29,14 +29,15 @@ interface NeedOfSupportInformationProps {
 }
 
 /**
- * BasicInformation
+ * NeedOfSupportInformation
+ *
  * @param props props
  * @returns JSX.Element
  */
 const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
   props
 ) => {
-  const { formData } = props;
+  const { formData, onFormDataChange } = props;
   const { useCase, editIsActive } = React.useContext(PedagogyContext);
 
   /**
@@ -53,7 +54,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     updatedFormData[key] = value;
 
-    props.onFormDataChange(updatedFormData);
+    onFormDataChange(updatedFormData);
   };
 
   /**
@@ -76,7 +77,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.supportReasonOther = undefined;
     }
 
-    props.onFormDataChange(updatedFormData);
+    onFormDataChange(updatedFormData);
   };
 
   /**
@@ -99,7 +100,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.supportActionOther = undefined;
     }
 
-    props.onFormDataChange(updatedFormData);
+    onFormDataChange(updatedFormData);
   };
 
   /**
@@ -124,7 +125,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.matriculationExaminationSupportOther = undefined;
     }
 
-    props.onFormDataChange(updatedFormData);
+    onFormDataChange(updatedFormData);
   };
 
   return (

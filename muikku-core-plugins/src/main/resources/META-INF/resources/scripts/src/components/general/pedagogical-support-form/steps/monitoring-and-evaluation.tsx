@@ -7,7 +7,7 @@ import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
 
 /**
- * BasicInformationProps
+ * MonitoringAndEvaluationProps
  */
 interface MonitoringAndEvaluationProps {
   pedagogyData?: PedagogyForm;
@@ -16,7 +16,7 @@ interface MonitoringAndEvaluationProps {
 }
 
 /**
- * BasicInformation
+ * MonitoringAndEvaluation
  * @param props props
  * @returns JSX.Element
  */

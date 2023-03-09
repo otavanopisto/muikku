@@ -17,11 +17,12 @@ interface BasicInformationProps {
 
 /**
  * BasicInformation
+ *
  * @param props props
  * @returns JSX.Element
  */
 const BasicInformation: React.FC<BasicInformationProps> = (props) => {
-  const { pedagogyData } = props;
+  const { pedagogyData, status } = props;
 
   return (
     <section className="hops-container">
@@ -110,9 +111,9 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">Muokkaushistoria</legend>
         <div className="hops-container__info">
-          {props.pedagogyData?.history.length ? (
+          {pedagogyData?.history.length ? (
             <History>
-              {props.pedagogyData?.history.map((item, i) => (
+              {pedagogyData?.history.map((item, i) => (
                 <HistoryEntryItem
                   key={i}
                   showEdit={true}
@@ -121,7 +122,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
                     // eslint-disable-next-line no-console
                     console.log("history event clicked")
                   }
-                  status={props.status}
+                  status={status}
                 />
               ))}
             </History>

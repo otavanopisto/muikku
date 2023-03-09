@@ -47,6 +47,12 @@ export const ImplementedActionsListItem: React.FC<
   ImplementedActionsListItemProps
 > = (props) => {
   const { useCase, editIsActive } = React.useContext(PedagogyContext);
+  const {
+    index,
+    implemenetedSupportAction,
+    onDeleteActionClick,
+    onActionChange,
+  } = props;
 
   const ownerOfEntry = true;
   const disabledFields =
@@ -62,8 +68,8 @@ export const ImplementedActionsListItem: React.FC<
           <DatePicker
             id="graduationGoalMonth"
             dateFormat="MM/yyyy"
-            onChange={(e) => props.onActionChange(props.index, "date", e)}
-            selected={new Date(props.implemenetedSupportAction.date)}
+            onChange={(e) => onActionChange(index, "date", e)}
+            selected={new Date(implemenetedSupportAction.date)}
             className="hops__input"
             disabled={disabledFields}
           />
@@ -77,13 +83,10 @@ export const ImplementedActionsListItem: React.FC<
             className="react-select-override"
             classNamePrefix="react-select-override"
             value={supportActionsOptions.find(
-              (option) =>
-                option.value === props.implemenetedSupportAction.action
+              (option) => option.value === implemenetedSupportAction.action
             )}
             options={supportActionsOptions}
-            onChange={(option) =>
-              props.onActionChange(props.index, "action", option.value)
-            }
+            onChange={(option) => onActionChange(index, "action", option.value)}
             isSearchable={false}
             isDisabled={disabledFields}
           />
@@ -94,17 +97,13 @@ export const ImplementedActionsListItem: React.FC<
           </label>
           <WorkspaceSelect
             onChange={(option) => {
-              props.onActionChange(
-                props.index,
-                "course",
-                option?.value || undefined
-              );
+              onActionChange(index, "course", option?.value || undefined);
             }}
             selectedValue={
-              props.implemenetedSupportAction.course
+              implemenetedSupportAction.course
                 ? {
-                    value: props.implemenetedSupportAction.course,
-                    label: props.implemenetedSupportAction.course.name,
+                    value: implemenetedSupportAction.course,
+                    label: implemenetedSupportAction.course.name,
                   }
                 : undefined
             }
@@ -119,13 +118,9 @@ export const ImplementedActionsListItem: React.FC<
             label="Lisätietoa?"
             className="hops__input"
             onChange={(e) =>
-              props.onActionChange(
-                props.index,
-                "extraInfoDetails",
-                e.target.value
-              )
+              onActionChange(index, "extraInfoDetails", e.target.value)
             }
-            value={props.implemenetedSupportAction.extraInfoDetails}
+            value={implemenetedSupportAction.extraInfoDetails}
             disabled={disabledFields}
           />
         </div>
@@ -135,10 +130,10 @@ export const ImplementedActionsListItem: React.FC<
         className="hops-container__row"
         style={{ justifyContent: "flex-end" }}
       >
-        {props.index > 0 && (
+        {index > 0 && (
           <IconButton
             icon="trash"
-            onClick={(e) => props.onDeleteActionClick(props.index)}
+            onClick={(e) => onDeleteActionClick(index)}
           />
         )}
       </div>

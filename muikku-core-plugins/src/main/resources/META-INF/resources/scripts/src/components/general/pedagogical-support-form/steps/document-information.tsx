@@ -6,8 +6,9 @@ import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
 import DatePicker from "react-datepicker";
 import { PedagogyContext } from "..";
 import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
+
 /**
- * BasicInformationProps
+ * DocumentInformationProps
  */
 interface DocumentInformationProps {
   formData?: FormData;
@@ -16,12 +17,13 @@ interface DocumentInformationProps {
 }
 
 /**
- * BasicInformation
+ * DocumentInformation
+ *
  * @param props props
  * @returns JSX.Element
  */
 const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
-  const { pedagogyData, formData } = props;
+  const { pedagogyData, formData, onFormDataChange } = props;
   const { useCase, editIsActive } = React.useContext(PedagogyContext);
 
   /**
@@ -38,7 +40,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
 
     updatedFormData[key] = value;
 
-    props.onFormDataChange(updatedFormData);
+    onFormDataChange(updatedFormData);
   };
 
   const ownerNameWithPhone = pedagogyData

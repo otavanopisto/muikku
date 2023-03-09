@@ -4,7 +4,7 @@ import "~/sass/elements/form.scss";
 import { Visibility } from "~/@types/pedagogy-form";
 
 /**
- * BasicInformationProps
+ * PermissionsAndApprovalProps
  */
 interface PermissionsAndApprovalProps {
   formIsApproved: boolean;
@@ -12,7 +12,8 @@ interface PermissionsAndApprovalProps {
 }
 
 /**
- * BasicInformation
+ * PermissionsAndApproval
+ *
  * @param props props
  * @returns JSX.Element
  */

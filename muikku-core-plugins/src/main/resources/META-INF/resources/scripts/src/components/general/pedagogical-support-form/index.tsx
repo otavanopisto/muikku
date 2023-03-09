@@ -15,7 +15,6 @@ import VisibilityDialog from "./dialogs/visibility";
 import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
 import WarningDialog from "./dialogs/warning";
 // eslint-disable-next-line camelcase
-import { unstable_batchedUpdates } from "react-dom";
 import { PDFViewer } from "@react-pdf/renderer";
 import PedagogyPDF from "./pedagogy-PDF";
 import { FormData, Visibility } from "~/@types/pedagogy-form";
@@ -38,7 +37,8 @@ export const PedagogyContext = React.createContext<{
 }>({ useCase: "STUDENT", editIsActive: false });
 
 /**
- * UpperSecondaryPedagogicalSupportForm
+ * Creates a new UpperSecondaryPedagogicalSupportForm component.
+ *
  * @param props props
  * @returns JSX.Element
  */
@@ -52,41 +52,41 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
     visibility,
     formIsApproved,
     changedFields,
+    editIsActive,
     resetData,
-    setUpdatedFormData,
-    setVisibilityValue,
-    setFormApproveValue,
-    setExtraDetailsValue,
+    setFormDataAndUpdateChangedFields,
+    setVisibility,
+    setFormIsApproved,
+    setExtraDetails,
+    setEditIsActive,
     activateForm,
     sendToStudent,
     approveForm,
     updateFormData,
     updateVisibility,
   } = usePedagogy(props.studentId, props.displayNotification);
-  const [editIsActive, setEditIsActive] = React.useState(false);
+
   const [showPDF, setShowPDF] = React.useState(false);
 
   /**
-   * Handle PDF click
+   * Handle PDF click. Toggles showPDF state.
    */
   const handlePDFClick = () => {
     setShowPDF(!showPDF);
   };
 
   /**
-   * Handle edit click
+   * Handle edit click. Toggles editIsActive state.
    */
-  const handleEditClick = () => {
-    setEditIsActive(!editIsActive);
-  };
+  const handleEditClick = () => setEditIsActive(!editIsActive);
 
   /**
-   * Handle form data change
+   * Handle form data change. Updates form data and changed fields.
    *
    * @param updatedFormData updatedFormData
    */
   const handleFormDataChange = (updatedFormData: FormData) => {
-    setUpdatedFormData(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -96,7 +96,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
    */
   const handleApproveValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
-    setFormApproveValue(value);
+    setFormIsApproved(value);
   };
 
   /**
@@ -120,7 +120,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
       newVisibility.push(value);
     }
 
-    setVisibilityValue(newVisibility);
+    setVisibility(newVisibility);
   };
 
   /**
@@ -130,28 +130,17 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
    */
   const handleExtraDetailsChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const value = e.target.value;
-
-    setExtraDetailsValue(value);
-  };
+  ) => setExtraDetails(e.target.value);
 
   /**
-   * Handle update form data click
+   * Handle save with extra details click. Updates form data to server.
    */
-  const handleSaveWithExtraDetailsClick = () => {
-    unstable_batchedUpdates(() => {
-      setEditIsActive(false);
-      updateFormData();
-    });
-  };
+  const handleSaveWithExtraDetailsClick = () => updateFormData();
 
   /**
-   * Handle cancel save with extra details click
+   * Handle cancel save with extra details click. Resets extra details.
    */
-  const handleCancelSaveWithExtraDetailsClick = () => {
-    setExtraDetailsValue("");
-  };
+  const handleCancelSaveWithExtraDetailsClick = () => setExtraDetails("");
 
   /**
    * Default steps
@@ -215,7 +204,8 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
   }
 
   /**
-   * renderWizardToolbar
+   * Render wizard toolbar
+   *
    * @returns JSX.Element
    */
   const renderWizardToolbar = () => {
@@ -367,7 +357,12 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
   };
 
   return (
-    <PedagogyContext.Provider value={{ useCase: props.useCase, editIsActive }}>
+    <PedagogyContext.Provider
+      value={{
+        useCase: props.useCase,
+        editIsActive,
+      }}
+    >
       <div className="wizard">
         <div className="wizard_container" style={{ position: "relative" }}>
           {renderWizardToolbar()}

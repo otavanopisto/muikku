@@ -35,16 +35,16 @@ interface WorkspaceSelectProps {
  * @param props props
  */
 const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
-  const { workspaces, loadingWorkspaces, handleTextInput } = useWorkspaces(
-    props.displayNotification
-  );
+  const { selectedValue, onChange, disabled, displayNotification } = props;
+  const { workspaces, loadingWorkspaces, handleTextInput } =
+    useWorkspaces(displayNotification);
 
   /**
    * handleSelectChange
    * @param option option
    */
   const handleSelectChange = (option: OptionDefault<WorkspaceType>) => {
-    props.onChange(option);
+    onChange(option);
   };
 
   const options: OptionDefault<WorkspaceType>[] = workspaces.map(
@@ -59,12 +59,12 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
       isClearable
       placeholder="Search workspaces..."
       options={options}
-      value={props.selectedValue}
+      value={selectedValue}
       onChange={handleSelectChange}
       onInputChange={handleTextInput}
       noOptionsMessage={() => "No workspaces Found"}
       isLoading={loadingWorkspaces}
-      isDisabled={props.disabled}
+      isDisabled={disabled}
     />
   );
 };

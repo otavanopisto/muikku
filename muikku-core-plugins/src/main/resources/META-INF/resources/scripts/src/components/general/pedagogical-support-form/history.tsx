@@ -36,6 +36,7 @@ interface HistoryEntryItemProps {
  * @param props props
  */
 export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
+  const { status, historyEntry } = props;
   /**
    * handleEditClick
    */
@@ -43,11 +44,10 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
     props.onHistoryEventClick(props.hopsUpdate.id);
   }; */
 
-  const viewingOwnHistorEvent =
-    props.status.userId === props.historyEntry.modifierId;
+  const viewingOwnHistorEvent = status.userId === historyEntry.modifierId;
 
   const editedFields =
-    props.historyEntry?.editedFields?.map((field) => (
+    historyEntry?.editedFields?.map((field) => (
       <li key={field} style={{ display: "list-item" }}>
         <span>{formFieldsWithTranslation[field]}</span>
       </li>
@@ -62,7 +62,7 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
               Muokkasit pedagogisen tuen lomaketta
             </span>
             <span className="hops-container__history-event-date">
-              {moment(props.historyEntry.date).format("l")}
+              {moment(historyEntry.date).format("l")}
             </span>
             {/* {props.showEdit && (
               <span className="hops-container__history-event-action">
@@ -75,10 +75,10 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
             )} */}
           </div>
 
-          {props.historyEntry.details && (
+          {historyEntry.details && (
             <>
               <div className="hops-container__history-event-secondary">
-                <span>{props.historyEntry.details}</span>
+                <span>{historyEntry.details}</span>
               </div>
               {editedFields && (
                 <div className="hops-container__history-event-secondary">
@@ -96,27 +96,27 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
           <div className="hops-container__history-event-primary">
             <span className="hops-container__history-event-author">
               <Avatar
-                id={props.historyEntry.modifierId}
-                firstName={props.historyEntry.modifierName}
-                hasImage={props.historyEntry.modifierHasAvatar}
+                id={historyEntry.modifierId}
+                firstName={historyEntry.modifierName}
+                hasImage={historyEntry.modifierHasAvatar}
                 size="small"
               />
               <span className="hops-container__history-event-author-name">
-                {props.historyEntry.modifierName}
+                {historyEntry.modifierName}
               </span>
             </span>
             <span className="hops-container__history-event-text">
               muokkasi pedagogisen tuen lomaketta
             </span>
             <span className="hops-container__history-event-date">
-              {moment(props.historyEntry.date).format("l")}
+              {moment(historyEntry.date).format("l")}
             </span>
           </div>
 
-          {props.historyEntry.details && (
+          {historyEntry.details && (
             <>
               <div className="hops-container__history-event-secondary">
-                <span>{props.historyEntry.details}</span>
+                <span>{historyEntry.details}</span>
               </div>
               {editedFields && (
                 <div className="hops-container__history-event-secondary">

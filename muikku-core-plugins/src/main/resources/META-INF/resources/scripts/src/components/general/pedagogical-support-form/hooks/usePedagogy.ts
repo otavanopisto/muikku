@@ -31,6 +31,7 @@ export const usePedagogy = (
   const [formIsApproved, setFormIsApproved] = React.useState(false);
   const [changedFields, setChangedFields] = React.useState<string[]>([]);
   const [extraDetails, setExtraDetails] = React.useState<string>("");
+  const [editIsActive, setEditIsActive] = React.useState(false);
 
   const componentMounted = React.useRef(true);
 
@@ -77,9 +78,13 @@ export const usePedagogy = (
    * resetData
    */
   const resetData = () => {
-    setFormData({
-      ...defaultFormData,
-      ...(JSON.parse(data.formData) as FormData),
+    unstable_batchedUpdates(() => {
+      setEditIsActive(false);
+      setChangedFields([]);
+      setFormData({
+        ...defaultFormData,
+        ...(JSON.parse(data.formData) as FormData),
+      });
     });
   };
 
@@ -87,7 +92,7 @@ export const usePedagogy = (
    * setUpdatedFormData
    * @param updatedFormData updatedFormData
    */
-  const setUpdatedFormData = (updatedFormData: FormData) => {
+  const setFormDataAndUpdateChangedFields = (updatedFormData: FormData) => {
     // Get old values from data
     const oldDataForm = JSON.parse(data.formData) as FormData;
 
@@ -119,30 +124,6 @@ export const usePedagogy = (
         ...updatedFormData,
       }));
     });
-  };
-
-  /**
-   * setExtraDetailsValue
-   * @param updatedExtraDetails updatedExtraDetails
-   */
-  const setExtraDetailsValue = (updatedExtraDetails: string) => {
-    setExtraDetails(updatedExtraDetails);
-  };
-
-  /**
-   * setVisibilityValue
-   * @param updatedVisibility updatedVisibility
-   */
-  const setVisibilityValue = (updatedVisibility: Visibility[]) => {
-    setVisibility(updatedVisibility);
-  };
-
-  /**
-   * setFormApproveValue
-   * @param approved approved
-   */
-  const setFormApproveValue = (approved: boolean) => {
-    setFormIsApproved(approved);
   };
 
   /**
@@ -184,6 +165,7 @@ export const usePedagogy = (
           setData(updatedData);
           setFormIsApproved(updatedData.state === "APPROVED");
           setLoading(false);
+          setEditIsActive(false);
         });
       });
     } catch (err) {
@@ -325,16 +307,18 @@ export const usePedagogy = (
     visibility,
     formIsApproved,
     changedFields,
+    editIsActive,
     resetData,
     activateForm,
     sendToStudent,
     approveForm,
     updateFormData,
     updateVisibility,
-    setUpdatedFormData,
-    setVisibilityValue,
-    setFormApproveValue,
-    setExtraDetailsValue,
+    setFormDataAndUpdateChangedFields,
+    setVisibility,
+    setFormIsApproved,
+    setExtraDetails,
+    setEditIsActive,
   };
 };
 

@@ -14,7 +14,7 @@ import {
 } from "~/@types/pedagogy-form";
 
 /**
- * BasicInformationProps
+ * ImplementedSupportActionsProps
  */
 interface ImplementedSupportActionsProps {
   pedagogyData?: PedagogyForm;
@@ -23,7 +23,8 @@ interface ImplementedSupportActionsProps {
 }
 
 /**
- * BasicInformation
+ * ImplementedSupportActions
+ *
  * @param props props
  * @returns JSX.Element
  */
@@ -32,8 +33,9 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
 ) => {
   const { formData, onFormDataChange } = props;
   const { useCase, editIsActive } = React.useContext(PedagogyContext);
+
   /**
-   * handleAddNewSupportAction
+   * Handles support reason select change
    */
   const handleAddNewSupportAction = () => {
     const updatedFormData: FormData = {
@@ -50,7 +52,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   };
 
   /**
-   * handleDeleteSupportAction
+   * Handles support reason select change
    * @param index index
    */
   const handleDeleteSupportAction = (index: number) => {
@@ -61,7 +63,8 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   };
 
   /**
-   * handleSupportActionChange
+   * Handles support reason select change
+   *
    * @param index index
    * @param key key
    * @param value value
