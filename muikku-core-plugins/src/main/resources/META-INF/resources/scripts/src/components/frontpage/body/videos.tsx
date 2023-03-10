@@ -6,7 +6,7 @@ import { i18nType } from "~/reducers/base/i18nOLD";
 /**
  * FrontpageVideosProps
  */
-interface FrontpageVideosProps extends WithTranslation<["common"]> {
+interface FrontpageVideosProps extends WithTranslation {
   i18nOLD: i18nType;
 }
 
@@ -30,9 +30,7 @@ class FrontpageVideos extends React.Component<
       <section
         id="videos"
         className="screen-container__section"
-        aria-label={this.props.i18nOLD.text.get(
-          "plugin.wcag.frontPageSectionVideosLabel"
-        )}
+        aria-label={this.props.t("wcag.videos", { ns: "frontPage" })}
       >
         <Carousel
           naturalSlideHeight={720}

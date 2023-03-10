@@ -232,7 +232,7 @@ class OrganizationUser extends React.Component<
         </DialogRow>
         <DialogRow modifiers="new-user">
           {/* This is a mandatory field in creation, it's a very rigid validation and the backend does not provide it, so for no, it is commented from this dialog
-          <SSNFormElement value={this.} modifiers="new-user" label={this.props.i18nOLD.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} /> */}
+          <SSNFormElement value={this.} modifiers="new-user" label={this.props.i18n.t('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} /> */}
 
           {/* Removed for now as study programe change is more complex in Pyramus than this dropdown sets it to be.
           <SelectFormElement
@@ -241,7 +241,7 @@ class OrganizationUser extends React.Component<
             mandatory={true}
             name="studyProgrammeIdentifier"
             modifiers="new-user"
-            label={this.props.i18nOLD.text.get(
+            label={this.props.i18n.t(
               "plugin.organization.users.addUser.label.studyprogramme"
             )}
             updateField={this.updateField}

@@ -11,7 +11,7 @@ import ProfileProperty from "./components/profile-property";
 /**
  * GeneralInformationProps
  */
-interface GeneralInformationProps extends WithTranslation<["common"]> {
+interface GeneralInformationProps extends WithTranslation {
   i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
@@ -73,30 +73,26 @@ class GeneralInformation extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18nOLD.text.get(
-              "plugin.profile.titles.generalInformation"
-            )}
+            {this.props.t("labels.generalInfo", { ns: "users" })}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <ProfilePicture />
               </div>
-
               <ProfileProperty
                 modifier="study-start-date"
-                i18nOLD={this.props.i18nOLD}
                 condition={!!this.props.status.profile.studyStartDate}
-                label="plugin.profile.studyStartDateLabel"
+                label={this.props.t("labels.studyTimeStart", { ns: "users" })}
                 value={this.props.i18nOLD.time.format(
                   this.props.status.profile.studyStartDate
                 )}
               />
+
               <ProfileProperty
                 modifier="study-end-date"
-                i18nOLD={this.props.i18nOLD}
                 condition={!!this.props.status.profile.studyTimeEnd}
-                label="plugin.profile.studyTimeEndLabel"
+                label={this.props.t("labels.studyTimeEnd", { ns: "users" })}
                 value={studyTimeEndValues}
               />
             </div>

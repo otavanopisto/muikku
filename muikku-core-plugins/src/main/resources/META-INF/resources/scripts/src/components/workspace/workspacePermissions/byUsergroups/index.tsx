@@ -56,23 +56,18 @@ class PermissionsByUsergroups extends React.Component<
     return (
       <ContentPanel
         modifier="permissions-by-usergroup"
-        title={this.props.i18nOLD.text.get(
-          "plugin.workspace.permissions.viewTitle"
-        )}
+        title={this.props.t("labels.signUpRights", { ns: "workspace" })}
         ref="content-panel"
       >
         <div className="">
           <div>
-            <div>
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.permissions.usergroupsColumn.label"
-              )}
-            </div>
+            <div>{this.props.t("labels.userGroups", { ns: "users" })}</div>
             {PERMISSIONS_TO_EXTRACT.map((pte) => (
               <div key={pte}>
-                {this.props.i18nOLD.text.get(
-                  "plugin.workspace.permissions.label." + pte
-                )}
+                {this.props.t("labels.permission", {
+                  ns: "workspace",
+                  context: pte,
+                })}
               </div>
             ))}
           </div>

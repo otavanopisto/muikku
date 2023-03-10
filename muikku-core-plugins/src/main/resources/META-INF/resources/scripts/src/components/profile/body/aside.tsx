@@ -64,31 +64,31 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   render() {
     const sections = [
       {
-        name: this.props.i18nOLD.text.get("plugin.profile.category.general"),
+        name: this.props.t("labels.generalInfo", { ns: "profile" }),
         hash: "general",
       },
       {
-        name: this.props.i18nOLD.text.get("plugin.profile.category.contact"),
+        name: this.props.t("labels.contactInfo"),
         hash: "contact",
       },
       {
-        name: this.props.i18nOLD.text.get("plugin.profile.category.security"),
+        name: this.props.t("labels.signIn"),
         hash: "security",
       },
       {
-        name: this.props.i18nOLD.text.get("plugin.profile.category.vacation"),
+        name: this.props.t("labels.settings", { context: "vacation" }),
         hash: "vacation",
       },
       {
-        name: this.props.i18nOLD.text.get("plugin.profile.category.chat"),
+        name: this.props.t("labels.chatSettings", { ns: "profile" }),
         hash: "chat",
       },
       {
-        name: this.props.i18nOLD.text.get("plugin.profile.category.work"),
+        name: this.props.t("labels.worklist", { ns: "profile" }),
         hash: "work",
       },
       {
-        name: this.props.i18nOLD.text.get("plugin.profile.category.purchases"),
+        name: this.props.t("labels.orders", { ns: "orders" }),
         hash: "purchases",
       },
     ];
@@ -130,6 +130,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["profile"])(
   connect(mapStateToProps, mapDispatchToProps)(Navigation)
 );

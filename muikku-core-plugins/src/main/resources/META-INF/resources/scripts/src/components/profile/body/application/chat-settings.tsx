@@ -133,7 +133,7 @@ class ChatSettings extends React.Component<
       )
       .onAllSucceed(() => {
         this.props.displayNotification(
-          this.props.i18nOLD.text.get("plugin.profile.properties.saved"),
+          this.props.t("notifications.saveSuccess"),
           "success"
         );
 
@@ -141,7 +141,7 @@ class ChatSettings extends React.Component<
       })
       .onOneFails(() => {
         this.props.displayNotification(
-          this.props.i18nOLD.text.get("plugin.profile.properties.failed"),
+          this.props.t("notifications.saveError"),
           "error"
         );
 
@@ -185,16 +185,14 @@ class ChatSettings extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18nOLD.text.get("plugin.profile.titles.chatSettings")}
+            {this.props.t("labels.settings", { ns: "profile" })}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="chatVisibility">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.profile.chat.visibility"
-                    )}
+                    {this.props.t("labels.chatVisibility", { ns: "profile" })}
                   </label>
                   <select
                     id="chatVisibility"
@@ -207,14 +205,16 @@ class ChatSettings extends React.Component<
                     onChange={this.onChatVisibilityChange}
                   >
                     <option value="VISIBLE_TO_ALL">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.chat.visibleToAll"
-                      )}
+                      {this.props.t("labels.chatVisibility", {
+                        ns: "profile",
+                        context: "all",
+                      })}
                     </option>
                     <option value="DISABLED">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.chat.disabled"
-                      )}
+                      {this.props.t("labels.chatVisibility", {
+                        ns: "profile",
+                        context: "disabled",
+                      })}
                     </option>
                   </select>
                 </div>
@@ -222,7 +222,7 @@ class ChatSettings extends React.Component<
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="chatNickname">
-                    {this.props.i18nOLD.text.get("plugin.profile.chat.setNick")}
+                    {this.props.t("labels.nick", { ns: "profile" })}
                   </label>
                   <input
                     id="chatNickname"
@@ -238,9 +238,7 @@ class ChatSettings extends React.Component<
                 </div>
 
                 <div className="form-element__description">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.profile.chat.setNickDescription"
-                  )}
+                  {this.props.t("content.nick", { ns: "profile" })}
                 </div>
               </div>
 
@@ -250,7 +248,7 @@ class ChatSettings extends React.Component<
                   onClick={this.save}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18nOLD.text.get("plugin.profile.save.button")}
+                  {this.props.t("actions.save")}
                 </Button>
               </div>
             </div>
@@ -284,6 +282,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["profile"])(
   connect(mapStateToProps, mapDispatchToProps)(ChatSettings)
 );

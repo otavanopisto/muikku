@@ -288,9 +288,6 @@ class CommunicatorToolbar extends React.Component<
                 style={{ color: currentLocation.color }}
               />
               <span className="application-panel__mobile-current-folder-title">
-                {
-                  // TODO: simplify this and use i18next
-                }
                 {"  " + currentLocation.text}
               </span>
               {currentLocation.type === "label" ? (
@@ -326,9 +323,9 @@ class CommunicatorToolbar extends React.Component<
                     value={this.state.labelFilter}
                     onChange={this.updateLabelFilter}
                     type="text"
-                    // TODO: use i18next
-                    placeholder={this.props.i18nOLD.text.get(
-                      "plugin.communicator.label.create.textfield.placeholder"
+                    placeholder={this.props.i18n.t(
+                      "labels.createAndSearchLabels",
+                      { ns: "messaging" }
                     )}
                   />
                 </div>,
@@ -338,23 +335,17 @@ class CommunicatorToolbar extends React.Component<
                   className="link link--full link--new"
                   onClick={this.onCreateNewLabel}
                 >
-                  {
-                    // TODO: use i18next
-                  }
-                  {this.props.i18nOLD.text.get(
-                    "plugin.communicator.label.create"
-                  )}
+                  {this.props.i18n.t("actions.create", {
+                    ns: "messaging",
+                    context: "labels",
+                  })}
                 </Link>,
               ].concat(
                 this.props.messages.navigation
                   .filter(
                     (item) =>
                       item.type === "label" &&
-                      filterMatch(
-                        // TODO: simplify this and use i18next
-                        item.text,
-                        this.state.labelFilter
-                      )
+                      filterMatch(item.text, this.state.labelFilter)
                   )
                   .map((label) => {
                     const isSelected =
@@ -457,9 +448,6 @@ class CommunicatorToolbar extends React.Component<
             style={{ color: currentLocation.color }}
           />
           <span className="application-panel__mobile-current-folder-title">
-            {
-              // TODO: simplify and use i18next
-            }
             {"  " + currentLocation.text}
           </span>
           {currentLocation.type === "label" ? (
@@ -503,10 +491,9 @@ class CommunicatorToolbar extends React.Component<
                 value={this.state.labelFilter}
                 onChange={this.updateLabelFilter}
                 type="text"
-                // TODO: use i18next
-                placeholder={this.props.i18nOLD.text.get(
-                  "plugin.communicator.label.create.textfield.placeholder"
-                )}
+                placeholder={this.props.i18n.t("labels.createAndSearchLabels", {
+                  ns: "messaging",
+                })}
               />
             </div>,
             <Link
@@ -515,10 +502,10 @@ class CommunicatorToolbar extends React.Component<
               className="link link--full"
               onClick={this.onCreateNewLabel}
             >
-              {
-                // TODO: use i18next
-              }
-              {this.props.i18nOLD.text.get("plugin.communicator.label.create")}
+              {this.props.i18n.t("actions.create", {
+                ns: "messaging",
+                context: "label",
+              })}
             </Link>,
           ].concat(
             this.props.messages.navigation
@@ -600,9 +587,9 @@ class CommunicatorToolbar extends React.Component<
             onFocus={this.onInputFocus}
             onBlur={this.onInputBlur}
             // TODO: use i18next
-            placeholder={this.props.i18nOLD.text.get(
-              "plugin.communicator.search.placeholder"
-            )}
+            placeholder={this.props.i18n.t("labels.search", {
+              ns: "messaging",
+            })}
             value={this.state.searchquery}
           />
         </ApplicationPanelToolsContainer>
@@ -647,6 +634,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["messaging"])(
   connect(mapStateToProps, mapDispatchToProps)(CommunicatorToolbar)
 );

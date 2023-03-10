@@ -12,13 +12,14 @@ import {
   IChatOccupant,
   IChatRoomType,
 } from "./chat";
-import { ChatMessage } from "./chatMessage";
+import ChatMessage from "./chatMessage";
 import DeleteRoomDialog from "./deleteMUCDialog";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * IGroupChatProps
  */
-interface IGroupChatProps {
+interface IGroupChatProps extends WithTranslation {
   status: StatusType;
   chat: IAvailableChatRoomType;
   nick: string;
@@ -28,7 +29,6 @@ interface IGroupChatProps {
   requestExtraInfoAboutRoom: () => void;
   removeChatRoom: () => void;
   connection: Strophe.Connection;
-  i18nOLD: i18nType;
   presence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
   active?: boolean;
 }
@@ -76,10 +76,7 @@ interface IGroupChatState {
 /**
  * Groupchat
  */
-export class Groupchat extends React.Component<
-  IGroupChatProps,
-  IGroupChatState
-> {
+class Groupchat extends React.Component<IGroupChatProps, IGroupChatState> {
   private messagesListenerHandler: any = null;
   private presenceListenerHandler: any = null;
   private messagesEnd: React.RefObject<HTMLDivElement>;
@@ -996,9 +993,10 @@ export class Groupchat extends React.Component<
                   className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}
                 >
                   <div className="chat__subpanel-title">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.chat.room.settingsTitle"
-                    )}
+                    {this.props.i18n.t("labels.settings", {
+                      ns: "messaging",
+                      context: "rooms",
+                    })}
                   </div>
                   <div
                     onClick={this.toggleChatRoomSettings}
@@ -1014,7 +1012,7 @@ export class Groupchat extends React.Component<
                         }`}
                         className="chat__label"
                       >
-                        {this.props.i18nOLD.text.get("plugin.chat.room.name")}
+                        {this.props.i18n.t("labels.name")}
                       </label>
                       <input
                         id={`chatRoomName-${
@@ -1039,7 +1037,7 @@ export class Groupchat extends React.Component<
                         }`}
                         className="chat__label"
                       >
-                        {this.props.i18nOLD.text.get("plugin.chat.room.desc")}
+                        {this.props.i18n.t("labels.settings")}
                       </label>
                       <textarea
                         id={`chatRoomDesc-${
@@ -1059,18 +1057,16 @@ export class Groupchat extends React.Component<
                       <input
                         className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`}
                         type="submit"
-                        value={this.props.i18nOLD.text.get(
-                          "plugin.chat.button.save"
-                        )}
+                        value={this.props.i18n.t("actions.save")}
                       ></input>
                       {!this.props.chat.roomJID.startsWith("workspace-") && (
                         <button
                           className="chat__submit chat__submit--room-settings-delete"
                           onClick={this.toggleDeleteMUCDialog}
                         >
-                          {this.props.i18nOLD.text.get(
-                            "plugin.chat.button.deleteRoom"
-                          )}
+                          {this.props.i18n.t("labels.remove", {
+                            context: "room",
+                          })}
                         </button>
                       )}
                     </div>
@@ -1094,7 +1090,6 @@ export class Groupchat extends React.Component<
                     key={message.stanzaId}
                     canToggleInfo={!this.state.isStudent}
                     message={message}
-                    i18nOLD={this.props.i18nOLD}
                     editMessage={this.editMessage}
                     deleteMessage={this.deleteMessage}
                   />
@@ -1109,18 +1104,16 @@ export class Groupchat extends React.Component<
                   <div className="chat__occupants-staff">
                     {staffOccupants.length > 0 ? (
                       <div className="chat__occupants-title">
-                        {this.props.i18nOLD.text.get(
-                          "plugin.chat.occupants.staff"
-                        )}
+                        {this.props.i18n.t("labels.staff")}
                       </div>
                     ) : (
                       ""
                     )}
                     {staffOccupants.map((staffOccupant) => (
                       <div
-                        title={this.props.i18nOLD.text.get(
-                          "plugin.chat.state." + staffOccupant.occupant.precense
-                        )}
+                        title={this.props.i18n.t("labels.status", {
+                          context: staffOccupant.occupant.precense,
+                        })}
                         className="chat__occupants-item chat__occupants-item--has-access-to-pm"
                         onClick={this.props.joinPrivateChat.bind(
                           null,
@@ -1141,19 +1134,16 @@ export class Groupchat extends React.Component<
                   <div className="chat__occupants-student">
                     {studentOccupants.length > 0 ? (
                       <div className="chat__occupants-title">
-                        {this.props.i18nOLD.text.get(
-                          "plugin.chat.occupants.students"
-                        )}
+                        {this.props.i18n.t("labels.students")}
                       </div>
                     ) : (
                       ""
                     )}
                     {studentOccupants.map((studentOccupant) => (
                       <div
-                        title={this.props.i18nOLD.text.get(
-                          "plugin.chat.state." +
-                            studentOccupant.occupant.precense
-                        )}
+                        title={this.props.i18n.t("labels.status", {
+                          context: studentOccupant.occupant.precense,
+                        })}
                         className={`chat__occupants-item ${
                           !this.state.isStudent &&
                           "chat__occupants-item--has-access-to-pm"
@@ -1197,7 +1187,7 @@ export class Groupchat extends React.Component<
                 }`}
                 className="visually-hidden"
               >
-                {this.props.i18nOLD.text.get("plugin.wcag.sendMessage.label")}
+                {this.props.i18n.t("wcag.send", { ns: "messaging" })}
               </label>
               <textarea
                 id={`sendGroupChatMessage-${
@@ -1205,9 +1195,7 @@ export class Groupchat extends React.Component<
                 }`}
                 className="chat__memofield chat__memofield--muc-message"
                 onKeyDown={this.onEnterPress}
-                placeholder={this.props.i18nOLD.text.get(
-                  "plugin.chat.writemsg"
-                )}
+                placeholder={this.props.i18n.t("labels.write")}
                 onChange={this.setCurrentMessageToBeSent}
                 value={this.state.currentMessageToBeSent}
                 ref={(ref) =>
@@ -1238,3 +1226,5 @@ export class Groupchat extends React.Component<
     );
   }
 }
+
+export default withTranslation("messaging")(Groupchat);

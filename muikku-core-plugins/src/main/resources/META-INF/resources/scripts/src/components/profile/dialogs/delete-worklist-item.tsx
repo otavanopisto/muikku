@@ -69,11 +69,7 @@ class DeleteWorklistItemDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        <span>
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.worklist.delete.dialog.description"
-          )}
-        </span>
+        <span>{this.props.t("content.removing", { ns: "worklist" })}</span>
       </div>
     );
 
@@ -87,17 +83,13 @@ class DeleteWorklistItemDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.delete.bind(this, closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.worklist.delete.dialog.button.deleteLabel"
-          )}
+          {this.props.t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.worklist.delete.dialog.button.cancelLabel"
-          )}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -105,9 +97,7 @@ class DeleteWorklistItemDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
-        title={this.props.i18nOLD.text.get(
-          "plugin.profile.worklist.delete.dialog.title"
-        )}
+        title={this.props.t("labels.remove", { ns: "worklist" })}
         content={content}
         footer={footer}
         modifier="delete-worklist-item"

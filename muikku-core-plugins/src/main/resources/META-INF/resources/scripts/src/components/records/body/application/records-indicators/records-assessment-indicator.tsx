@@ -58,16 +58,14 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
       </Dropdown>
     );
   } else if (assessment.state === "incomplete") {
-    const status = i18nOLD.text.get(
+    const status =
       assessment.state === "incomplete"
         ? t("labels.incomplete", {
             ns: "workspace",
           })
         : t("labels.failed", {
             ns: "workspace",
-          })
-    );
-
+          });
     return (
       <Dropdown
         openByHover

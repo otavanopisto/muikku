@@ -313,9 +313,10 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
-              )}
+              {this.props.i18n.t("labels.answer", {
+                ns: "materials",
+                context: "example",
+              })}
             </span>
             <span className="material-page__field-answer-example">
               <StrMathJAX>{this.props.content.explanation}</StrMathJAX>

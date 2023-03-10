@@ -1,17 +1,15 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18nOLD";
-import { StateType } from "~/reducers";
-import { connect } from "react-redux";
-
 import "~/sass/elements/pager.scss";
 import "~/sass/elements/wcag.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 const PAGER_MAX_PAGES = 10;
 
 /**
  * PagerProps
  */
-interface PagerProps {
+interface PagerProps extends WithTranslation {
   onClick: (id: number) => any;
   current: number;
   pages: number;
@@ -72,7 +70,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
         className={`pager ${
           this.props.modifier ? "pager--" + this.props.modifier : ""
         }`}
-        aria-label={this.props.i18nOLD.text.get("plugin.wcag.pager.label")}
+        aria-label={this.props.t("wcag.pager", { ns: "paging" })}
       >
         <div className="pager__body">
           {isPagerLessVisible
@@ -82,18 +80,16 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   tabIndex={0}
                   className="pager__item pager__item--less icon-arrow-left"
                   onClick={this.props.onClick.bind(null, pagerLessNumber)}
-                  aria-label={this.props.i18nOLD.text.get(
-                    "plugin.wcag.pager.prev10.label"
-                  )}
+                  aria-label={this.props.t("wcag.prev10", { ns: "paging" })}
                 />,
                 <div
                   key="go-to-label"
                   tabIndex={0}
                   className="pager__item pager__item--first"
                   onClick={this.props.onClick.bind(null, 1)}
-                  aria-label={this.props.i18nOLD.text.get(
-                    "plugin.wcag.pager.goToPage.label"
-                  )}
+                  aria-label={this.props.t("wcag.goToPage", {
+                    ns: "paging",
+                  })}
                 >
                   1
                 </div>,
@@ -119,12 +115,8 @@ class Pager extends React.Component<PagerProps, PagerState> {
               onClick={this.props.onClick.bind(null, page)}
               arial-label={
                 page === this.props.current
-                  ? this.props.i18nOLD.text.get(
-                      "plugin.wcag.pager.current.label"
-                    )
-                  : this.props.i18nOLD.text.get(
-                      "plugin.wcag.pager.goToPage.label"
-                    )
+                  ? this.props.t("wcag.currentPage", { ns: "paging" })
+                  : this.props.t("wcag.goToPage", { ns: "paging" })
               }
             >
               {page}
@@ -144,9 +136,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   tabIndex={0}
                   className="pager__item pager__item--last"
                   onClick={this.props.onClick.bind(null, this.props.pages)}
-                  aria-label={this.props.i18nOLD.text.get(
-                    "plugin.wcag.pager.goToPage.label"
-                  )}
+                  aria-label={this.props.t("wcag.goToPage", { ns: "paging" })}
                 >
                   {this.props.pages}
                 </div>,
@@ -155,9 +145,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   tabIndex={0}
                   className="pager__item pager__item--more icon-arrow-right"
                   onClick={this.props.onClick.bind(null, pagerMoreNumber)}
-                  aria-label={this.props.i18nOLD.text.get(
-                    "plugin.wcag.pager.next10.label"
-                  )}
+                  aria-label={this.props.t("wcag.next10", { ns: "paging" })}
                 />,
               ]
             : null}
@@ -167,23 +155,4 @@ class Pager extends React.Component<PagerProps, PagerState> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @returns object
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Pager);
+export default withTranslation("paging")(Pager);

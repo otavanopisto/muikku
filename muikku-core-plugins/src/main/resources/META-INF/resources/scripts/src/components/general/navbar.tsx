@@ -82,16 +82,14 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             this.props.modifier ? "navbar--" + this.props.modifier : ""
           }`}
           id="stick"
-          aria-label={this.props.i18nOLD.text.get(
-            "plugin.wcag.mainNavigation.aria.label"
-          )}
+          aria-label={this.props.i18n.t("wcag.mainNavigation")}
         >
           <div className="navbar__wrapper">
             <div className="navbar__logo">
               <Dropdown
                 openByHover
                 key="frontpage"
-                content={this.props.i18nOLD.text.get("plugin.home.home")}
+                content={this.props.i18n.t("labels.home")}
               >
                 <a href="/" className="navbar__logo-link">
                   <img
@@ -101,9 +99,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
                         : "/gfx/oo-branded-site-logo-text-white.png"
                     }`}
                     width="175"
-                    alt={this.props.i18nOLD.text.get(
-                      "plugin.site.logo.linkBackToFrontPage"
-                    )}
+                    alt={this.props.i18n.t("content.home")}
                   />
                 </a>
               </Dropdown>
@@ -111,9 +107,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             <ul
               className="navbar__items"
               role="menubar"
-              aria-label={this.props.i18nOLD.text.get(
-                "plugin.wcag.mainNavigation.aria.label"
-              )}
+              aria-label={this.props.i18n.t("wcag.mainNavigation")}
             >
               <li
                 className={`navbar__item navbar__item--menu-button`}
@@ -155,9 +149,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             <ul
               className="navbar__default-options"
               role="menubar"
-              aria-label={this.props.i18nOLD.text.get(
-                "plugin.wcag.alternateNavigation.aria.label"
-              )}
+              aria-label={this.props.i18n.t("wcag.alternateNavigation")}
             >
               {this.props.defaultOptions}
               <li role="none" key="profile-item">

@@ -109,14 +109,6 @@ function copyPage(props: EditorButtonSetProps) {
   );
   localStorage.setItem("workspace-copied-id", props.workspace.id.toString(10));
 
-  /* props.displayNotification(
-    props.i18nOLD.text.get(
-      "plugin.workspace.materialsManagement.materialCopiedToClipboardMessage",
-      props.material.title
-    ),
-    "success"
-  ); */
-
   props.displayNotification(
     i18next.t("notifications.documentCopied", {
       ns: "materials",

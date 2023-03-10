@@ -205,7 +205,6 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           currentMonthDayLimit={currentMonthDayLimit}
           currentMonthsFirstDay={currentMonthsFirstDay}
           daysInCurrentMonth={daysInCurrentMonth}
-          i18nOLD={this.props.i18nOLD}
           isExpanded={this.state.openedSections.includes(
             section.summary.beginDate
           )}
@@ -220,17 +219,16 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       <section>
         <form onSubmit={this.onFormSubmit} className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18nOLD.text.get("plugin.profile.titles.worklist")}
+            {this.props.t("labels.title", { ns: "worklist" })}
           </h2>
           <div className="application-sub-panel application-sub-panel--worklist">
             <h3 className="application-sub-panel__header">
-              {this.props.i18nOLD.text.get(
-                "plugin.profile.worklist.addNewEntry"
-              )}
+              {this.props.t("labels.create", { ns: "worklist" })}
             </h3>
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <WorkListEditable
+                  i18nOLD={this.props.i18nOLD}
                   base={this.state.currentTemplate}
                   currentMonthDayLimit={currentMonthDayLimit}
                   onSubmit={this.insertNew}
@@ -259,9 +257,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           </div>
           <div className="application-sub-panel__panels-wrapper">
             <h3 className="application-sub-panel__header">
-              {this.props.i18nOLD.text.get(
-                "plugin.profile.worklist.addedEntries"
-              )}
+              {this.props.t("labels.entries", { ns: "worklist" })}
             </h3>
             {sections && sections.reverse()}
           </div>
@@ -294,6 +290,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["worklist"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkList)
 );

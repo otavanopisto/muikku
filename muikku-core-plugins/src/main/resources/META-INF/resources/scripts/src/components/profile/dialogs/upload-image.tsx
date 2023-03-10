@@ -28,7 +28,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * UploadImageDialogProps
  */
-interface UploadImageDialogProps extends WithTranslation<["common"]> {
+interface UploadImageDialogProps extends WithTranslation {
   i18nOLD: i18nType;
   displayNotification: DisplayNotificationTriggerType;
   uploadProfileImage: UploadProfileImageTriggerType;
@@ -120,9 +120,10 @@ class UploadImageDialog extends React.Component<
    */
   showLoadError() {
     this.props.displayNotification(
-      this.props.i18nOLD.text.get(
-        "plugin.profile.errormessage.profileImage.loadFailed"
-      ),
+      this.props.t("notifications.loadError", {
+        ns: "users",
+        context: "profilePicture",
+      }),
       "error"
     );
   }
@@ -187,27 +188,21 @@ class UploadImageDialog extends React.Component<
           onClick={this.upload.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.changeImage.dialog.saveButton.label"
-          )}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.changeImage.dialog.cancelButton.label"
-          )}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        title={this.props.i18nOLD.text.get(
-          "plugin.profile.changeImage.dialog.title"
-        )}
+        title={this.props.t("labels.profileImage")}
         content={content}
         footer={footer}
         modifier="upload-image"

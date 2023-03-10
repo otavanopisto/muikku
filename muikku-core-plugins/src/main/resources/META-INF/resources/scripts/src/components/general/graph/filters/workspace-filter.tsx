@@ -1,14 +1,12 @@
 import { i18nType } from "~/reducers/base/i18nOLD";
-import { connect } from "react-redux";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
-import { StateType } from "~/reducers";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceFilterProps
  */
-interface WorkspaceFilterProps {
-  i18nOLD: i18nType;
+interface WorkspaceFilterProps extends WithTranslation {
   workspaces: { id: number; name: string; isEmpty: boolean }[];
   filteredWorkspaces: number[];
   workspaceHandler: any;
@@ -38,7 +36,10 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
     items.push(
       <div className="filter-category" key="activeWorkspaces">
         <span className="filter-category__label">
-          {this.props.i18nOLD.text.get("plugin.guider.activeCoursesLabel")}
+          {this.props.t("labels.workspaces", {
+            ns: "workspace",
+            context: "active",
+          })}
         </span>
         <a
           className="filter-category__link"
@@ -47,12 +48,8 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
           }}
         >
           {this.props.filteredWorkspaces.length != 0
-            ? this.props.i18nOLD.text.get(
-                "plugin.guider.charts.filters.showAll"
-              )
-            : this.props.i18nOLD.text.get(
-                "plugin.guider.charts.filters.hideAll"
-              )}
+            ? this.props.t("actions.showAll")
+            : this.props.t("actions.hideAll")}
         </a>
       </div>
     );
@@ -90,7 +87,10 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
       items.push(
         <div className="filter-category" key="completedWorkspaces">
           <span className="filter-category__label">
-            {this.props.i18nOLD.text.get("plugin.guider.completedCoursesLabel")}
+            {this.props.t("labels.workspaces", {
+              ns: "workspace",
+              context: "completed",
+            })}
           </span>
           <a
             className="filter-category__link"
@@ -143,15 +143,4 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-export default connect(mapStateToProps)(WorkspaceFilter);
+export default withTranslation("guider")(WorkspaceFilter);

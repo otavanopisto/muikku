@@ -29,7 +29,7 @@ const dayOfCurrentMonth: number = moment(new Date()).date();
 /**
  * WorkListEditableProps
  */
-interface WorkListEditableProps extends WithTranslation<["common"]> {
+interface WorkListEditableProps extends WithTranslation {
   i18nOLD: i18nType;
   locales: LocaleState;
   onSubmit: (data: {
@@ -225,9 +225,7 @@ class WorkListEditable extends React.Component<
         {this.props.children ? (
           <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-template form-element">
             <label className="application-sub-panel__item-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.profile.worklist.template.label"
-              )}
+              {this.props.t("labels.template", { ns: "worklist" })}
             </label>
             <div className="application-sub-panel__item-data">
               {this.props.children}
@@ -237,9 +235,7 @@ class WorkListEditable extends React.Component<
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description form-element">
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.profile.worklist.description.label"
-              )}
+              {this.props.t("labels.description")}
             </label>
           )}
           <div className="application-sub-panel__item-data">
@@ -260,9 +256,7 @@ class WorkListEditable extends React.Component<
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date form-element">
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.profile.worklist.date.label"
-              )}
+              {this.props.t("labels.date")}
             </label>
           )}
           <div className="application-sub-panel__item-data">
@@ -294,9 +288,7 @@ class WorkListEditable extends React.Component<
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price form-element">
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.profile.worklist.price.label"
-              )}
+              {this.props.t("labels.price", { ns: "worklist" })}
             </label>
           )}
           <div className="application-sub-panel__item-data">
@@ -315,9 +307,7 @@ class WorkListEditable extends React.Component<
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor form-element">
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
-              {this.props.i18nOLD.text.get(
-                "plugin.profile.worklist.factor.label"
-              )}
+              {this.props.t("labels.factor", { ns: "worklist" })}
             </label>
           )}
           <div className="application-sub-panel__item-data">
@@ -377,7 +367,6 @@ class WorkListEditable extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     locales: state.locales,
-    i18nOLD: state.i18nOLD,
   };
 }
 
@@ -388,6 +377,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["worklist"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkListEditable)
 );

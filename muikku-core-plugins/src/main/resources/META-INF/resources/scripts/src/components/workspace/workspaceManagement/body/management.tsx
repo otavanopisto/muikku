@@ -1188,7 +1188,7 @@ class ManagementPanel extends React.Component<
                 Also input and label elements needs to have htmlFor and id attributes removed if there are more than one checkboxes
 
                   {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
-                  <div className="what" key={pte}>{this.props.i18nOLD.text.get("plugin.workspace.permissions.label." + pte)}</div>
+                  <div className="what" key={pte}>{this.props.t("plugin.workspace.permissions.label." + pte)}</div>
                   )}
                 */}
 

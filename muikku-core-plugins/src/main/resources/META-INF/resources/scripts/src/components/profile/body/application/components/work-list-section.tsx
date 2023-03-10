@@ -9,7 +9,7 @@ import {
 } from "~/reducers/main-function/profile";
 import WorkListRow from "./work-list-row";
 import SubmitWorklistItemsDialog from "../../../dialogs/submit-worklist-items";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { useTranslation } from "react-i18next";
 
 /**
  * sortBy
@@ -50,7 +50,6 @@ interface WorkListSectionProps {
   currentMonthDayLimit: number;
   currentMonthsFirstDay: string;
   onToggleSection: () => void;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -60,6 +59,7 @@ interface WorkListSectionProps {
 export function WorkListSection(props: WorkListSectionProps) {
   const [sortByProperty, setSortByProperty] = React.useState(null);
   const [sortByDirection, setSortByDirection] = React.useState("desc");
+  const { t } = useTranslation();
 
   const onClickOnPropertyToSort = React.useCallback(
     (property: string) => {
@@ -103,9 +103,7 @@ export function WorkListSection(props: WorkListSectionProps) {
   const sectionTotalRow = (
     <div className="application-sub-panel__item application-sub-panel__item--worklist-total">
       <div className="application-sub-panel__item-title application-sub-panel__item-title--worklist-total">
-        {props.i18nOLD.text.get(
-          "plugin.profile.worklist.worklistEntriesTotalValueLabel"
-        )}
+        {t("labels.total", { ns: "worklist" })}
       </div>
       <div className="application-sub-panel__item-data  application-sub-panel__item-data--worklist-total">
         {totalCostSummary}
@@ -136,9 +134,7 @@ export function WorkListSection(props: WorkListSectionProps) {
   const submitLastMonthButton = (
     <SubmitWorklistItemsDialog summary={props.section.summary}>
       <Link className="link link--submit-worklist-approval">
-        {props.i18nOLD.text.get(
-          "plugin.profile.worklist.submitWorklistForApproval"
-        )}
+        {t("actions.send", { ns: "worklist" })}
       </Link>
     </SubmitWorklistItemsDialog>
   );
@@ -182,9 +178,7 @@ export function WorkListSection(props: WorkListSectionProps) {
             className="link link--worklist-entries-sorting"
             onClick={onClickOnPropertyToSort.bind(null, "description")}
           >
-            {props.i18nOLD.text.get(
-              "plugin.profile.worklist.description.label"
-            )}
+            {t("labels.description")}
           </Link>
           <span
             className={`application-sub-panel__item-title-sort-indicator ${sortDescIcon}`}
@@ -197,7 +191,7 @@ export function WorkListSection(props: WorkListSectionProps) {
             className="link link--worklist-entries-sorting"
             onClick={onClickOnPropertyToSort.bind(null, "entryDate")}
           >
-            {props.i18nOLD.text.get("plugin.profile.worklist.date.label")}
+            {t("labels.date")}
           </Link>
           <span
             className={`application-sub-panel__item-title-sort-indicator ${sortEntryDateIcon}`}
@@ -206,12 +200,12 @@ export function WorkListSection(props: WorkListSectionProps) {
       </span>
       <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
-          {props.i18nOLD.text.get("plugin.profile.worklist.price.label")}
+          {t("labels.price", { ns: "orders" })}
         </label>
       </span>
       <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
-          {props.i18nOLD.text.get("plugin.profile.worklist.factor.label")}
+          {t("labels.factor", { ns: "worklist" })}
         </label>
       </span>
       <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-actions"></span>

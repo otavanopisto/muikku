@@ -213,7 +213,7 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
                 className="link link--evaluation-close-open"
                 onClick={handleCloseAllMaterialContentClick}
               >
-                {t("actions.hideAll", { ns: "evaluation" })}
+                {t("actions.hideAll")}
               </Link>
               <Link
                 className="link link--evaluation-close-open"

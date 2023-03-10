@@ -2,23 +2,23 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { CeeposState } from "~/reducers/main-function/ceepos";
 import {
   getErrorMessageContent,
   getErrorMessageTitle,
 } from "~/helper-functions/ceepos-error";
 import { getName } from "~/util/modifiers";
-
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-
 import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
+import { i18nType } from "~/reducers/base/i18nOLD";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
-interface CeeposPayProps {
+interface CeeposPayProps extends WithTranslation {
   i18nOLD: i18nType;
   ceepos: CeeposState;
   status: StatusType;
@@ -48,14 +48,12 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
           {this.props.status.isActiveUser ? (
             <div className="card__content card__content--ceepos">
               <div className="card__title card__title--ceepos">
-                {this.props.i18nOLD.text.get("plugin.ceepos.order.title")}
+                {this.props.i18n.t("labels.info", { ns: "orders" })}
               </div>
               <div className="card__text card__text--ceepos">
                 {this.props.ceepos.payStatusMessage
                   ? this.props.ceepos.payStatusMessage
-                  : this.props.i18nOLD.text.get(
-                      "plugin.ceepos.order.redirectToCeeposDescription"
-                    )}
+                  : this.props.i18n.t("content.redirect", { ns: "orders" })}
               </div>
               {this.props.ceepos.state === "ERROR" ? (
                 <div className="card__footer card__footer--ceepos">
@@ -64,9 +62,7 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                     buttonModifiers={["back-to-muikku", "info"]}
                     href="/"
                   >
-                    {this.props.i18nOLD.text.get(
-                      "plugin.ceepos.order.backToMuikkuButton.label"
-                    )}
+                    {this.props.i18n.t("actions.returnHome")}
                   </Button>
                   {this.props.ceepos.purchase ? (
                     <CommunicatorNewMessage
@@ -96,9 +92,7 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                         icon="envelope"
                         buttonModifiers={["send-message", "info"]}
                       >
-                        {this.props.i18nOLD.text.get(
-                          "plugin.ceepos.order.sendMessageButton.label"
-                        )}
+                        {this.props.i18n.t("actions.reportError")}
                       </Button>
                     </CommunicatorNewMessage>
                   ) : null}
@@ -108,16 +102,14 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
           ) : (
             <div className="card__content card__content--ceepos">
               <div className="card__title card__title--ceepos">
-                {this.props.i18nOLD.text.get(
-                  "plugin.ceepos.order.title.nonActiveUser"
-                )}
+                {this.props.i18n.t("labels.nonActiveUser", { ns: "orders" })}
               </div>
               <div className="card__text card__text--ceepos">
                 {this.props.ceepos.payStatusMessage
                   ? this.props.ceepos.payStatusMessage
-                  : this.props.i18nOLD.text.get(
-                      "plugin.ceepos.order.description.nonActiveUser"
-                    )}
+                  : this.props.i18n.t("content.nonActiveUser", {
+                      ns: "orders",
+                    })}
               </div>
             </div>
           )}
@@ -135,8 +127,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CeeposPay);
+export default withTranslation("orders")(
+  connect(mapStateToProps, mapDispatchToProps)(CeeposPay)
+);

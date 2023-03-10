@@ -33,7 +33,7 @@ const previousMonth = moment().subtract(1, "months");
 /**
  * WorkListRowProps
  */
-interface WorkListRowProps extends WithTranslation<["common"]> {
+interface WorkListRowProps extends WithTranslation {
   i18nOLD: i18nType;
   item: StoredWorklistItem;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
@@ -200,37 +200,42 @@ class WorkListRow extends React.Component<
     let entryStateClass;
     switch (this.props.item.state) {
       case "ENTERED":
-        entryStateText = this.props.i18nOLD.text.get(
-          "plugin.profile.worklist.states.ENTERED"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "ENTERED",
+        });
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
         break;
       case "PROPOSED":
-        entryStateText = this.props.i18nOLD.text.get(
-          "plugin.profile.worklist.states.PROPOSED"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "PROPOSED",
+        });
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-PROPOSED";
         break;
       case "APPROVED":
-        entryStateText = this.props.i18nOLD.text.get(
-          "plugin.profile.worklist.states.APPROVED"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "APPROVED",
+        });
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-APPROVED";
         break;
       case "PAID":
-        entryStateText = this.props.i18nOLD.text.get(
-          "plugin.profile.worklist.states.PAID"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "PAID",
+        });
         entryStateIcon = "icon-lock";
         entryStateClass = "state-PAID";
         break;
       default:
-        entryStateText = this.props.i18nOLD.text.get(
-          "plugin.profile.worklist.states.ENTERED"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "ENTERED",
+        });
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
         break;

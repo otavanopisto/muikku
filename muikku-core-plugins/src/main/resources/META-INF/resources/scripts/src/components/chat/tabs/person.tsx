@@ -70,11 +70,11 @@ class Person extends React.Component<IPersonProps, IPersonState> {
       : this.props.person.jid;
 
     // const buttons: PromptDialogButtons = {
-    //   execute: this.props.i18nOLD.text.get(
-    //     "plugin.chat.people.delete.prompt.execute"
+    //   execute: this.props.i18n.t(
+    //     "actions.remove"
     //   ),
-    //   cancel: this.props.i18nOLD.text.get(
-    //     "plugin.chat.people.delete.prompt.cancel"
+    //   cancel: this.props.i18n.t(
+    //     "actions.cancel"
     //   ),
     // };
     return (
@@ -89,12 +89,12 @@ class Person extends React.Component<IPersonProps, IPersonState> {
 
         {this.props.removable ? (
           <PromptDialog
-            title={this.props.i18nOLD.text.get(
-              "plugin.chat.people.delete.prompt.title",
+            title={this.props.i18n.t(
+              "labels.remove", {context: "roster"},
               name
             )}
-            content={this.props.i18nOLD.text.get(
-              "plugin.chat.people.delete.prompt.content"
+            content={this.props.i18n.t(
+              "labels.removing", {context: "person" }
             )}
             modifier="chat-control-box"
             onExecute={this.handleRemove}

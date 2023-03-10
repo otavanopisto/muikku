@@ -28,7 +28,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * VacationSettingsProps
  */
-interface VacationSettingsProps extends WithTranslation<["common"]> {
+interface VacationSettingsProps extends WithTranslation {
   i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
@@ -284,7 +284,7 @@ class VacationSettings extends React.Component<
       )
       .onAllSucceed(() => {
         this.props.displayNotification(
-          this.props.i18nOLD.text.get("plugin.profile.properties.saved"),
+          this.props.t("notifications.saveSuccess"),
           "success"
         );
 
@@ -294,7 +294,7 @@ class VacationSettings extends React.Component<
       })
       .onOneFails(() => {
         this.props.displayNotification(
-          this.props.i18nOLD.text.get("plugin.profile.properties.failed"),
+          this.props.t("notifications.saveError"),
           "error"
         );
 
@@ -317,18 +317,14 @@ class VacationSettings extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18nOLD.text.get(
-              "plugin.profile.titles.vacationSettings"
-            )}
+            {this.props.t("labels.settings", { context: "vacation" })}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileVacationStart">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.profile.awayStartDate.label"
-                    )}
+                    {this.props.t("labels.beginDate", { context: "vacation" })}
                   </label>
                   <DatePicker
                     id="profileVacationStart"
@@ -349,9 +345,7 @@ class VacationSettings extends React.Component<
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileVacationStart">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.profile.awayEndDate.label"
-                    )}
+                    {this.props.t("labels.endDate", { context: "vacation" })}{" "}
                   </label>
                   <DatePicker
                     id="profileVacationEnd"
@@ -392,15 +386,11 @@ class VacationSettings extends React.Component<
                       onChange={this.onVacationAutoReplyChange}
                     />
                     <label htmlFor="profileVacationAutoReply">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.vacationAutoReply.label"
-                      )}
+                      {this.props.t("labels.vacationAutoReply")}
                     </label>
                   </div>
                   <div className="form-element__description">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.profile.vacationAutoReply.description"
-                    )}
+                    {this.props.t("content.vacationAutoReply")}
                   </div>
                 </div>
               </div>
@@ -416,9 +406,9 @@ class VacationSettings extends React.Component<
                     } form-element`}
                   >
                     <label htmlFor="profileVacationAutoReplySubject">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.vacationAutoReplySubject.label"
-                      )}
+                      {this.props.t("labels.title", {
+                        context: "vacationMessage",
+                      })}
                     </label>
                     <input
                       className="form-element__input form-element__input--profile-auto-reply"
@@ -442,9 +432,9 @@ class VacationSettings extends React.Component<
                     } form-element`}
                   >
                     <label htmlFor="profileVacationAutoReplyMsg">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.vacationAutoReplyMsg.label"
-                      )}
+                      {this.props.t("labels.content", {
+                        context: "vacationMessage",
+                      })}
                     </label>
                     <div className="form-element__textarea-container">
                       <textarea
@@ -464,7 +454,7 @@ class VacationSettings extends React.Component<
                   onClick={this.save}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18nOLD.text.get("plugin.profile.save.button")}
+                  {this.props.t("actions.save")}
                 </Button>
               </div>
             </div>

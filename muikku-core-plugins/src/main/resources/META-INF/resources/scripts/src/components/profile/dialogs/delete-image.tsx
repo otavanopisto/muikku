@@ -64,11 +64,7 @@ class DeleteImageDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        <span>
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.deleteImage.dialog.description"
-          )}
-        </span>
+        <span>{this.props.t("content.removing", { ns: "profile" })}</span>
       </div>
     );
 
@@ -82,17 +78,13 @@ class DeleteImageDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.delete.bind(this, closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.deleteImage.dialog.button.deleteLabel"
-          )}
+          {this.props.t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.deleteImage.dialog.button.cancelLabel"
-          )}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -100,9 +92,7 @@ class DeleteImageDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
-        title={this.props.i18nOLD.text.get(
-          "plugin.profile.deleteImage.dialog.title"
-        )}
+        title={this.props.t("labels.remove", { ns: "profile" })}
         content={content}
         footer={footer}
         modifier="delete-image"
@@ -129,6 +119,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteProfileImage }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["profile"])(
   connect(mapStateToProps, mapDispatchToProps)(DeleteImageDialog)
 );

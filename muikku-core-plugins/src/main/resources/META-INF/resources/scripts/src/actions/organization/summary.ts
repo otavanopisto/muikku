@@ -8,6 +8,7 @@ import {
   OrganizationSummaryStudentsDataType,
   OrganizationSummaryContactDataType,
 } from "~/reducers/organization/summary";
+import i18n from "~/locales/i18n";
 
 /**
  * LoadSummaryTriggerType
@@ -99,7 +100,7 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18nOLD.text.get("todo"),
+            i18n.t("notifications.loadError", { ns: "organization" }),
             "error"
           )
         );

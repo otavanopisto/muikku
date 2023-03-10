@@ -206,7 +206,7 @@ class ContactInformation extends React.Component<
         this.setState({ locked: false });
 
         this.props.displayNotification(
-          this.props.i18nOLD.text.get("plugin.profile.properties.saved"),
+          this.props.t("notifications.saveSuccess"),
           "success"
         );
       })
@@ -214,7 +214,7 @@ class ContactInformation extends React.Component<
         this.setState({ locked: false });
 
         this.props.displayNotification(
-          this.props.i18nOLD.text.get("plugin.profile.properties.failed"),
+          this.props.t("notifications.saveError"),
           "error"
         );
       });
@@ -259,13 +259,13 @@ class ContactInformation extends React.Component<
       })
       .onAllSucceed(() => {
         this.props.displayNotification(
-          this.props.i18nOLD.text.get("plugin.profile.properties.saved"),
+          this.props.t("notifications.saveSuccess"),
           "success"
         );
       })
       .onOneFails(() => {
         this.props.displayNotification(
-          this.props.i18nOLD.text.get("plugin.profile.properties.failed"),
+          this.props.t("notifications.saveError"),
           "error"
         );
       });
@@ -288,14 +288,11 @@ class ContactInformation extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18nOLD.text.get(
-              "plugin.profile.titles.contactInformation"
-            )}
+            {this.props.t("labels.contactInfo")}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <ProfileProperty
-                i18nOLD={this.props.i18nOLD}
                 condition={!!this.props.status.profile.emails.length}
                 label="plugin.profile.emails.label"
                 value={this.props.status.profile.emails}
@@ -308,9 +305,9 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileStreetAddress">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.changeAddressMunicipality.dialog.streetField.label"
-                      )}
+                      {this.props.t("labels.streetAddress", {
+                        ns: "frontPage",
+                      })}
                     </label>
                     <input
                       id="profileStreetAddress"
@@ -330,9 +327,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profilePostalCode">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label"
-                      )}
+                      {this.props.t("labels.postalCode", { ns: "frontPage" })}
                     </label>
                     <input
                       id="profilePostalCode"
@@ -352,9 +347,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileCity">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.changeAddressMunicipality.dialog.cityField.label"
-                      )}
+                      {this.props.t("labels.city", { ns: "frontPage" })}
                     </label>
                     <input
                       id="profileCity"
@@ -372,9 +365,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileCountry">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.changeAddressMunicipality.dialog.countryField.label"
-                      )}
+                      {this.props.t("labels.country", { ns: "frontPage" })}
                     </label>
                     <input
                       id="profileCountry"
@@ -394,9 +385,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileMunicipality">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"
-                      )}
+                      {this.props.t("labels.municipality", { ns: "frontPage" })}
                     </label>
                     <input
                       id="profileMunicipality"
@@ -413,7 +402,6 @@ class ContactInformation extends React.Component<
               )}
 
               <ProfileProperty
-                i18nOLD={this.props.i18nOLD}
                 condition={!!this.props.status.profile.phoneNumbers.length}
                 label="plugin.profile.phoneNumbers.label"
                 value={this.props.status.profile.phoneNumbers}
@@ -423,9 +411,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profilePhoneNumber">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.phoneNumber.label"
-                      )}
+                      {this.props.t("labels.phone")}
                     </label>
                     <input
                       id="profilePhoneNumber"
@@ -445,9 +431,9 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label>
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.whatsappIntegration.label"
-                      )}
+                      {this.props.t("labels.whatsAppintegration", {
+                        ns: "users",
+                      })}
                     </label>
                     <div className="form-element form-element--icon-with-label">
                       <IconButton
@@ -464,22 +450,24 @@ class ContactInformation extends React.Component<
                       {this.props.profile.properties["profile-whatsapp"] ===
                       "true" ? (
                         <span>
-                          {this.props.i18nOLD.text.get(
-                            "plugin.profile.whatsappIntegration.on.label"
-                          )}
+                          {this.props.t("labels.whatsAppintegration", {
+                            ns: "users",
+                            context: "on",
+                          })}
                         </span>
                       ) : (
                         <span>
-                          {this.props.i18nOLD.text.get(
-                            "plugin.profile.whatsappIntegration.off.label"
-                          )}
+                          {this.props.t("labels.whatsAppintegration", {
+                            ns: "users",
+                            context: "off",
+                          })}
                         </span>
                       )}
                     </div>
                     <div className="form-element__description">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.whatsappIntegration.description"
-                      )}
+                      {this.props.t("content.whatsAppIntegration", {
+                        ns: "profile",
+                      })}
                     </div>
                   </div>
                 </div>
@@ -489,16 +477,16 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element form-element--appointment-calendar">
                     <legend className="form__legend">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.appointmentCalendar.legend"
-                      )}
+                      {this.props.t("labels.appointmentCalendar", {
+                        ns: "profile",
+                      })}
                     </legend>
                     <fieldset className="form__fieldset">
                       <div className="form__fieldset-content form__fieldset-content--horizontal">
                         <label htmlFor="profileAppointmentCalendar">
-                          {this.props.i18nOLD.text.get(
-                            "plugin.profile.appointmentCalendar.label"
-                          )}
+                          {this.props.t("labels.appointmentCalendar", {
+                            ns: "profile",
+                          })}
                         </label>
                         <input
                           id="profileAppointmentCalendar"
@@ -519,16 +507,14 @@ class ContactInformation extends React.Component<
                           openInNewTab="_blank"
                           disabled={hasACalendar}
                         >
-                          {this.props.i18nOLD.text.get(
-                            "plugin.profile.appointmentCalendar.testButton"
-                          )}
+                          {this.props.t("actions.test", { ns: "profile" })}
                         </Button>
                       </div>
                     </fieldset>
                     <div className="form-element__description">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.appointmentCalendar.description"
-                      )}
+                      {this.props.t("content.appointmentCalendar", {
+                        ns: "profile",
+                      })}
                     </div>
                   </div>
                 </div>
@@ -538,9 +524,7 @@ class ContactInformation extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileExtraInfo">
-                      {this.props.i18nOLD.text.get(
-                        "plugin.profile.extraInfo.label"
-                      )}
+                      {this.props.t("labels.additionalInfo", { ns: "profile" })}
                     </label>
                     <div className="form-element__textarea-container">
                       <textarea
@@ -562,7 +546,7 @@ class ContactInformation extends React.Component<
                   onClick={this.save}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18nOLD.text.get("plugin.profile.save.button")}
+                  {this.props.t("actions.save")}
                 </Button>
               </div>
             </div>

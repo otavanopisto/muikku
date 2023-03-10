@@ -1,14 +1,13 @@
 import * as React from "react";
 import { IconButton } from "~/components/general/button";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "../../general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * ReadingRulerControllersProps
  */
 interface ReadingRulerControllersProps {
   tools: React.ReactNode;
-  i18nOLD: i18nType;
   /* presets: React.ReactNode; */
   onClose: () => void;
 }
@@ -20,9 +19,9 @@ export const ReadingRulerControllers = React.forwardRef<
   HTMLDivElement,
   ReadingRulerControllersProps
 >((props, ref) => {
-  const { tools, onClose, i18nOLD } = props;
-
+  const { tools, onClose } = props;
   const [toolsDrawerOpen, setToolsDrawerOpen] = React.useState(false);
+  const { t } = useTranslation();
 
   /**
    * handleShowToolsClick
@@ -40,17 +39,9 @@ export const ReadingRulerControllers = React.forwardRef<
         openByHover
         content={
           toolsDrawerOpen ? (
-            <div>
-              {i18nOLD.text.get(
-                "plugin.wcag.readingRuler.actions.closeRulersToolbar"
-              )}
-            </div>
+            <div>{t("wcag.closeRulersToolbar")}</div>
           ) : (
-            <div>
-              {i18nOLD.text.get(
-                "plugin.wcag.readingRuler.actions.openRulersToolbar"
-              )}
-            </div>
+            <div>{t("wcag.openRulersToolbar")}</div>
           )
         }
       >
@@ -70,14 +61,7 @@ export const ReadingRulerControllers = React.forwardRef<
         {tools}
       </div>
       {onClose && (
-        <Dropdown
-          openByHover
-          content={
-            <div>
-              {i18nOLD.text.get("plugin.wcag.readingRuler.actions.closeRuler")}
-            </div>
-          }
-        >
+        <Dropdown openByHover content={<div>{t("wcag.closeRuler")}</div>}>
           <IconButton
             icon="cross"
             onClick={onClose}

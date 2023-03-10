@@ -186,11 +186,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
         })
     ) : (
       <div className="empty">
-        <span>
-          {/* {i18nOLD.text.get("plugin.evaluation.evaluationModal.noJournals")} */}
-
-          {t("content.empty", { ns: "journal" })}
-        </span>
+        <span>{t("content.empty", { ns: "journal" })}</span>
       </div>
     );
 
@@ -198,8 +194,6 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
         <>
-          {/* {i18nOLD.text.get("plugin.evaluation.evaluationModal.journalTitle")} */}
-
           {t("labels.entries", { ns: "journal" })}
 
           {evaluation.evaluationDiaryEntries.state === "READY" ? (
@@ -208,14 +202,12 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventProps> = (
                 className="link link--evaluation-close-open"
                 onClick={handleCloseAllDiaryEntriesClick}
               >
-                {/* {t("evaluation:actions.closeAll")} */}
                 {t("actions.hideAll")}
               </Link>
               <Link
                 className="link link--evaluation-close-open"
                 onClick={handleOpenAllDiaryEntriesClick}
               >
-                {/* {t("evaluation:actions.openAll")} */}
                 {t("actions.openAll", { ns: "evaluation" })}
               </Link>
             </div>

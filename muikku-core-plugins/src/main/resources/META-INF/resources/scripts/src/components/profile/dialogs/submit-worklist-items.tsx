@@ -20,7 +20,7 @@ import { AnyActionType } from "~/actions";
 /**
  * SubmitWorklistItemsDialogProps
  */
-interface SubmitWorklistItemsDialogProps extends WithTranslation<["common"]> {
+interface SubmitWorklistItemsDialogProps extends WithTranslation {
   i18nOLD: i18nType;
   summary: WorklistItemsSummary;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,9 +74,7 @@ class SubmitWorklistItemsDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div>
         <span>
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.worklist.submitForApproval.dialog.description"
-          )}
+          {this.props.t("content.worklistApproval", { ns: "worklist" })}
         </span>
       </div>
     );
@@ -91,25 +89,19 @@ class SubmitWorklistItemsDialog extends React.Component<
           buttonModifiers={["success", "standard-ok"]}
           onClick={this.submit.bind(this, closeDialog)}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.worklist.submitForApproval.dialog.button.submitLabel"
-          )}
+          {this.props.t("actions.send", { ns: "worklist" })}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18nOLD.text.get(
-            "plugin.profile.worklist.submitForApproval.dialog.button.cancelLabel"
-          )}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
     return (
       <Dialog
-        title={this.props.i18nOLD.text.get(
-          "plugin.profile.worklist.submitForApproval.dialog.title"
-        )}
+        title={this.props.t("labels.send", { ns: "worklist" })}
         content={content}
         footer={footer}
         modifier="submit-worklist-item"
@@ -138,6 +130,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateProfileWorklistItemsState }, dispatch);
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["worklist"])(
   connect(mapStateToProps, mapDispatchToProps)(SubmitWorklistItemsDialog)
 );

@@ -52,36 +52,35 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         {/* Commented for later use
 
         <ApplicationSubPanel
-          i18nOLD={this.props.i18nOLD}
           modifier="organization-summary"
-          title={this.props.i18nOLD.text.get('plugin.organization.summary.billing.title')}>
+          title={this.props.i18n.t('plugin.organization.summary.billing.title')}>
 
           <ApplicationSubPanelItem
             modifier="organization-summary"
-            title={this.props.i18nOLD.text.get('plugin.organization.summary.billing.subtitle.activeBillingPeriod')}>
+            title={this.props.i18n.t('plugin.organization.summary.billing.subtitle.activeBillingPeriod')}>
             <ApplicationSubPanelItem.Content
               modifier="primary">
               DD.MM.YYYY - DD.MM.YYYY
             </ApplicationSubPanelItem.Content>
             <ApplicationSubPanelItem.Content
               modifier="organization-summary"
-              label={this.props.i18nOLD.text.get('plugin.organization.summary.billing.detail.nextBillingSeason')} >
+              label={this.props.i18n.t('plugin.organization.summary.billing.detail.nextBillingSeason')} >
               DD.MM.YYYY - DD.MM.YYYY
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
           <ApplicationSubPanelItem
             modifier="organization-summary"
-            title={this.props.i18nOLD.text.get('plugin.organization.summary.billing.subtitle.accumulatedBill')} >
+            title={this.props.i18n.t('plugin.organization.summary.billing.subtitle.accumulatedBill')} >
             <ApplicationSubPanelItem.Content
               modifier="primary">1000€</ApplicationSubPanelItem.Content>
             <ApplicationSubPanelItem.Content
               modifier="organization-summary">
-              {this.props.i18nOLD.text.get('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
+              {this.props.i18n.t('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
           <ApplicationSubPanelItem
             modifier="organization-previous-bills"
-            title={this.props.i18nOLD.text.get('plugin.organization.summary.billing.subtitle.previousBills')} >
+            title={this.props.i18n.t('plugin.organization.summary.billing.subtitle.previousBills')} >
             <ApplicationSubPanelItem.SubItem
               modifier="organization-previous-bills">
               <ApplicationSubPanelItem.Content>
@@ -91,7 +90,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 modifier="primary">1000€</ApplicationSubPanelItem.Content>
               <ApplicationSubPanelItem.Content
                 modifier="organization-summary">
-                {this.props.i18nOLD.text.get('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
+                {this.props.i18n.t('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
               </ApplicationSubPanelItem.Content>
             </ApplicationSubPanelItem.SubItem>
             <ApplicationSubPanelItem.SubItem
@@ -103,7 +102,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 modifier="primary">1000€</ApplicationSubPanelItem.Content>
               <ApplicationSubPanelItem.Content
                 modifier="organization-summary">
-                {this.props.i18nOLD.text.get('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
+                {this.props.i18n.t('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
               </ApplicationSubPanelItem.Content>
             </ApplicationSubPanelItem.SubItem>
           </ApplicationSubPanelItem>

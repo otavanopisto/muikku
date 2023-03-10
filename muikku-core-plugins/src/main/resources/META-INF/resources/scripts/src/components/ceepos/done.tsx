@@ -11,12 +11,13 @@ import {
   getErrorMessageTitle,
 } from "~/helper-functions/ceepos-error";
 import { getName } from "~/util/modifiers";
-
+import { AnyActionType } from "~/actions";
 import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
-interface CeeposDoneProps {
+interface CeeposDoneProps extends WithTranslation {
   i18nOLD: i18nType;
   pay?: boolean;
   done?: boolean;
@@ -44,17 +45,15 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
           <div className="card__text card__text--ceepos">
             <div className="card__text-row">
               <div className="card__subtitle">
-                {this.props.i18nOLD.text.get(
-                  "plugin.ceepos.order.product.title"
-                )}
+                {this.props.i18n.t("labels.product", {
+                  ns: "orders",
+                })}
               </div>
               <div>{this.props.ceepos.purchase.product.Description}</div>
             </div>
             <div className="card__text-row">
               <div className="card__subtitle">
-                {this.props.i18nOLD.text.get(
-                  "plugin.ceepos.order.product.price"
-                )}
+                {this.props.i18n.t("labels.price", { ns: "orders" })}
               </div>
               <div className="card__text-highlight card__text-highlight--ceepos">
                 {this.props.ceepos.purchase.product.Price / 100} €
@@ -62,9 +61,10 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
             </div>
             <div className="card__text-row">
               <div className="card__subtitle">
-                {this.props.i18nOLD.text.get(
-                  "plugin.ceepos.order.product.created"
-                )}
+                {this.props.i18n.t("labels.state", {
+                  context: "CREATED",
+                  ns: "orders",
+                })}
               </div>
               <div>
                 {this.props.i18nOLD.time.format(
@@ -76,9 +76,10 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
             this.props.ceepos.purchase.paid !== null ? (
               <div className="card__text-row">
                 <div className="card__subtitle">
-                  {this.props.i18nOLD.text.get(
-                    "plugin.ceepos.order.product.paid"
-                  )}
+                  {this.props.i18n.t("labels.state", {
+                    context: "PAID",
+                    ns: "orders",
+                  })}
                 </div>
                 <div>
                   {this.props.i18nOLD.time.format(
@@ -109,32 +110,34 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
       feedbackData = (
         <div className="card__content card__content--ceepos">
           <div className="card__title card__title--ceepos">
-            {this.props.i18nOLD.text.get("plugin.ceepos.order.title")}
+            {this.props.i18n.t("labels.info", { ns: "orders" })}
           </div>
           <div className="card__text card__text--ceepos">
             <div className="card__text-row card__text-row--ceepos-feedback">
               {paymentWasSuccessful
-                ? this.props.i18nOLD.text.get(
-                    "plugin.ceepos.order.done.successful"
-                  )
+                ? this.props.i18n.t("notifications.createSuccess", {
+                    ns: "orders",
+                  })
                 : null}
 
               {paymentWasCancelled
-                ? this.props.i18nOLD.text.get(
-                    "plugin.ceepos.order.done.cancelled"
-                  )
+                ? this.props.i18n.t("notifications.cancelSuccess", {
+                    ns: "orders",
+                  })
                 : null}
 
               {paymentWasErrored
-                ? this.props.i18nOLD.text.get(
-                    "plugin.ceepos.order.done.errored"
-                  )
+                ? this.props.i18n.t("notifications.createError", {
+                    ns: "orders",
+                    context: "payment",
+                  })
                 : null}
 
               {unknownError
-                ? this.props.i18nOLD.text.get(
-                    "plugin.ceepos.order.done.unknownError"
-                  )
+                ? this.props.i18n.t("notifications.createError", {
+                    ns: "orders",
+                    context: "payment",
+                  })
                 : null}
             </div>
           </div>
@@ -146,9 +149,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                 buttonModifiers={["back-to-muikku", "info"]}
                 href="/"
               >
-                {this.props.i18nOLD.text.get(
-                  "plugin.ceepos.order.backToMuikkuButton.label"
-                )}
+                {this.props.i18n.t("actions.returnHome")}
               </Button>
             ) : null}
 
@@ -159,9 +160,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                   buttonModifiers={["back-to-muikku", "info"]}
                   href="/"
                 >
-                  {this.props.i18nOLD.text.get(
-                    "plugin.ceepos.order.backToMuikkuButton.label"
-                  )}
+                  {this.props.i18n.t("actions.returnHome")}
                 </Button>
 
                 <CommunicatorNewMessage
@@ -188,9 +187,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                     icon="envelope"
                     buttonModifiers={["send-message", "info"]}
                   >
-                    {this.props.i18nOLD.text.get(
-                      "plugin.ceepos.order.sendMessageButton.label"
-                    )}
+                    {this.props.i18n.t("actions.reportError")}
                   </Button>
                 </CommunicatorNewMessage>
               </>
@@ -227,8 +224,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CeeposDone);
+export default withTranslation("orders")(
+  connect(mapStateToProps, mapDispatchToProps)(CeeposDone)
+);

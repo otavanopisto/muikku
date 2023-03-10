@@ -27,7 +27,7 @@ import { AnyActionType } from "~/actions";
 /**
  * IPurchasesProps
  */
-interface IPurchasesProps extends WithTranslation<["common"]> {
+interface IPurchasesProps extends WithTranslation {
   i18nOLD: i18nType;
   profile: ProfileType;
 }
@@ -95,12 +95,10 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
       return (
         <section>
           <h2 className="application-panel__content-header">
-            {this.props.i18nOLD.text.get("plugin.profile.titles.purchases")}
+            {this.props.t("labels.orders_other", { ns: "orders" })}
           </h2>
           <div className="empty">
-            <span>
-              {this.props.i18nOLD.text.get("plugin.profile.purchases.noOrders")}
-            </span>
+            <span>{this.props.t("content.empty", { ns: "orders" })}</span>
           </div>
         </section>
       );
@@ -109,13 +107,11 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     return (
       <section>
         <h2 className="application-panel__content-header">
-          {this.props.i18nOLD.text.get("plugin.profile.titles.purchases")}
+          {this.props.t("labels.orders_other", { ns: "orders" })}
         </h2>
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">
-            {this.props.i18nOLD.text.get(
-              "plugin.profile.purchases.activeOrder"
-            )}
+            {this.props.t("labels.open", { ns: "orders" })}
           </h3>
           <div className="application-sub-panel__body">
             {ongoingPuchases.length > 0 ? (
@@ -131,29 +127,24 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           <b>{p.product.Description}</b>
                         </span>
                         <span className="application-list__header-primary-description">
-                          {this.props.i18nOLD.text.get(
-                            "plugin.profile.purchases.description." + p.state
-                          )}
+                          {this.props.t("content.state", {
+                            context: p.state,
+                            ns: "orders",
+                          })}
                         </span>
                         <span className="application-list__header-primary-meta">
                           <span>
-                            {this.props.i18nOLD.text.get(
-                              "plugin.profile.purchases.orderId"
-                            )}
-                            : {p.id}
+                            {this.props.t("labels.id", { ns: "orders" })}:{" "}
+                            {p.id}
                           </span>
                           <span>
-                            {this.props.i18nOLD.text.get(
-                              "plugin.profile.purchases.date.created"
-                            )}
-                            : {this.props.i18nOLD.time.format(p.created)}
+                            {this.props.t("labels.created")}:{" "}
+                            {this.props.i18nOLD.time.format(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
-                              {this.props.i18nOLD.text.get(
-                                "plugin.profile.purchases.date.paid"
-                              )}
-                              : {this.props.i18nOLD.time.format(p.paid)}
+                              {this.props.t("labels.paid")} :{" "}
+                              {this.props.i18nOLD.time.format(p.paid)}
                             </span>
                           ) : null}
                         </span>
@@ -166,9 +157,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                               buttonModifiers={["pay-student-order", "execute"]}
                               onClick={this.performPayment}
                             >
-                              {this.props.i18nOLD.text.get(
-                                "plugin.profile.purchases.payButton.label"
-                              )}
+                              {this.props.t("actions.pay", { ns: "orders" })}
                             </Button>
                           </span>
                         ) : null}
@@ -192,19 +181,17 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                               initialMessage={getErrorMessageContent(
                                 this.props.i18nOLD,
                                 p,
-                                this.props.i18nOLD.text.get(
-                                  "plugin.profile.purchases.description." +
-                                    p.state
-                                )
+                                this.props.t("content.state", {
+                                  context: p.state,
+                                  ns: "orders",
+                                })
                               )}
                             >
                               <Button
                                 icon="envelope"
                                 buttonModifiers={["send-message", "info"]}
                               >
-                                {this.props.i18nOLD.text.get(
-                                  "plugin.profile.purchases.sendMessageButton.label"
-                                )}
+                                {this.props.t("actions.reportError")}
                               </Button>
                             </CommunicatorNewMessage>
                           </span>
@@ -217,11 +204,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
               </ApplicationList>
             ) : (
               <div className="empty">
-                <span>
-                  {this.props.i18nOLD.text.get(
-                    "plugin.profile.purchases.activeOrder.empty"
-                  )}
-                </span>
+                <span>{this.props.t("content.empty", { ns: "orders" })}</span>
               </div>
             )}
           </div>
@@ -229,9 +212,10 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
 
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">
-            {this.props.i18nOLD.text.get(
-              "plugin.profile.purchases.orderHistory"
-            )}
+            {this.props.t("content.empty", {
+              ns: "orders",
+              context: "history",
+            })}
           </h3>
           {completedPurchases.length > 0 ? (
             <div className="application-sub-panel__body">
@@ -247,29 +231,24 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           <b>{p.product.Description}</b>
                         </span>
                         <span className="application-list__header-primary-description">
-                          {this.props.i18nOLD.text.get(
-                            "plugin.profile.purchases.description." + p.state
-                          )}
+                          {this.props.t("content.state", {
+                            context: p.state,
+                            ns: "orders",
+                          })}
                         </span>
                         <span className="application-list__header-primary-meta">
                           <span>
-                            {this.props.i18nOLD.text.get(
-                              "plugin.profile.purchases.orderId"
-                            )}
-                            : {p.id}
+                            {this.props.t("labels.id", { ns: "orders" })}:{" "}
+                            {p.id}
                           </span>
                           <span>
-                            {this.props.i18nOLD.text.get(
-                              "plugin.profile.purchases.date.created"
-                            )}
-                            : {this.props.i18nOLD.time.format(p.created)}
+                            {this.props.t("labels.created")}:{" "}
+                            {this.props.i18nOLD.time.format(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
-                              {this.props.i18nOLD.text.get(
-                                "plugin.profile.purchases.date.paid"
-                              )}
-                              : {this.props.i18nOLD.time.format(p.paid)}
+                              {this.props.t("labels.paid")}:{" "}
+                              {this.props.i18nOLD.time.format(p.paid)}
                             </span>
                           ) : null}
                         </span>
@@ -283,9 +262,10 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
           ) : (
             <div className="empty">
               <span>
-                {this.props.i18nOLD.text.get(
-                  "plugin.profile.purchases.orderHistory.empty"
-                )}
+                {this.props.t("content.empty", {
+                  ns: "orders",
+                  context: "history",
+                })}
               </span>
             </div>
           )}

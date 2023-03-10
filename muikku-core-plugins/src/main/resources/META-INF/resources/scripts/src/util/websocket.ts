@@ -9,6 +9,7 @@ import { Store } from "react-redux";
 import $ from "~/lib/jquery";
 import { Action } from "redux";
 import { WebsocketStateType } from "~/reducers/util/websocket";
+import i18n from "~/locales/i18n";
 
 type ListenerType = {
   [name: string]: {
@@ -282,9 +283,7 @@ export default class MuikkuWebsocket {
             // TODO localization
             this.store.dispatch(
               actions.openNotificationDialog(
-                this.store
-                  .getState()
-                  .i18nOLD.text.get("plugin.server.unreachable.403")
+                i18n.t("notifications.403")
               ) as Action
             );
             this.ticket = null;
@@ -302,9 +301,7 @@ export default class MuikkuWebsocket {
             // TODO localization
             this.store.dispatch(
               actions.openNotificationDialog(
-                this.store
-                  .getState()
-                  .i18nOLD.text.get("plugin.server.unreachable.502")
+                i18n.t("notifications.502")
               ) as Action
             );
             this.ticket = null;
@@ -488,12 +485,9 @@ export default class MuikkuWebsocket {
           // one minute have passed, let's give up
           this.discarded = true;
           this.discardCurrentWebSocket(true);
-          // TODO localization
           this.store.dispatch(
             actions.openNotificationDialog(
-              this.store
-                .getState()
-                .i18nOLD.text.get("plugin.server.unreachable.reconnectFailed")
+              i18n.t("notifications.502")
             ) as Action
           );
         } else {

@@ -123,9 +123,7 @@ class ProfilePicture extends React.Component<
   render() {
     return (
       <div className="form-element">
-        <label>
-          {this.props.i18nOLD.text.get("plugin.profile.image.label")}
-        </label>
+        <label>{this.props.t("labels.profileImage")}</label>
         <div className="application-sub-panel__item-data form-element">
           {!this.props.status.hasImage ? (
             <div className="change-image">
@@ -156,9 +154,7 @@ class ProfilePicture extends React.Component<
                   className="visually-hidden"
                   htmlFor="profilePictureUpload"
                 >
-                  {this.props.i18nOLD.text.get(
-                    "plugin.wcag.profile.uploadPicture.label"
-                  )}
+                  {this.props.t("wcag.uploadPicture")}
                 </label>
                 <input
                   id="profilePictureUpload"
@@ -173,14 +169,14 @@ class ProfilePicture extends React.Component<
                     onClick={this.editCurrentImage}
                   >
                     <span className="icon icon-pencil" />
-                    {this.props.i18nOLD.text.get("plugin.profile.editImage")}
+                    {this.props.t("actions.edit")}
                   </Button>
                   <Button
                     buttonModifiers="change-image-delete"
                     onClick={this.deleteCurrentImage}
                   >
                     <span className="icon icon-trash" />
-                    {this.props.i18nOLD.text.get("plugin.profile.deleteImage")}
+                    {this.props.t("actions.remove")}
                   </Button>
                 </div>
               </div>

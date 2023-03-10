@@ -1,13 +1,12 @@
 import * as React from "react";
 import "~/sass/elements/credentials.scss";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * CredentialsContainerProps
  */
-interface CredentialsContainerProps {
+interface CredentialsContainerProps extends WithTranslation {
   modifier?: string;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -20,7 +19,7 @@ interface CredentialsContainerState {
 /**
  * CredentialsContainer
  */
-export default class CredentialsContainer extends React.Component<
+class CredentialsContainer extends React.Component<
   CredentialsContainerProps,
   CredentialsContainerState
 > {
@@ -39,12 +38,12 @@ export default class CredentialsContainer extends React.Component<
     return (
       <div className="credentials__container">
         <div className="credentials__header">
-          {this.props.i18nOLD.text.get(
-            "plugin.forgotpassword.changeCredentials.title"
-          )}
+          {this.props.i18n.t("labels.credentials")}
         </div>
         <div className="credentials__body">{this.props.children}</div>
       </div>
     );
   }
 }
+
+export default withTranslation()(CredentialsContainer);

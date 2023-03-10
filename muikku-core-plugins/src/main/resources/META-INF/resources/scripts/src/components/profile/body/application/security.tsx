@@ -88,8 +88,8 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
     if (newPassword1 && newPassword2 == "") {
       this.props.displayNotification(
-        this.props.i18nOLD.text.get(
-          "plugin.profile.changePassword.dialog.notif.emptypass"
+        this.props.t(
+          "validation.password"
         ),
         "error"
       );
@@ -98,8 +98,8 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(
-        this.props.i18nOLD.text.get(
-          "plugin.profile.changePassword.dialog.notif.failconfirm"
+        this.props.t(
+          "validation.password", {context: "match"}
         ),
         "error"
       );
@@ -127,16 +127,15 @@ class Security extends React.Component<SecurityProps, SecurityState> {
         if (err) {
           if (result.status === 403) {
             this.props.displayNotification(
-              this.props.i18nOLD.text.get(
-                "plugin.profile.changePassword.dialog.notif.unauthorized"
+              this.props.t(
+                "notifications.403", {context: "password"}
               ),
               "error"
             );
           } else if (result.status === 409) {
             this.props.displayNotification(
-              this.props.i18nOLD.text.get(
-                "plugin.profile.changePassword.dialog.notif.alreadyinuse"
-              ),
+              this.props.t(
+                "notifications.409", {context: "userName"}),
               "error"
             );
           } else {
@@ -145,15 +144,15 @@ class Security extends React.Component<SecurityProps, SecurityState> {
         } else {
           if (values.newPassword === "") {
             this.props.displayNotification(
-              this.props.i18nOLD.text.get(
-                "plugin.profile.changePassword.dialog.notif.username.successful"
+              this.props.t(
+                "notifications.updateSuccess", {context: "credentials"}
               ),
               "success"
             );
           } else {
             this.props.displayNotification(
-              this.props.i18nOLD.text.get(
-                "plugin.profile.changePassword.dialog.notif.successful"
+              this.props.t(
+                "notifications.updateSuccess", {context: "password"}
               ),
               "success"
             );
@@ -189,15 +188,15 @@ class Security extends React.Component<SecurityProps, SecurityState> {
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18nOLD.text.get("plugin.profile.titles.security")}
+            {this.props.t("labels.signIn")}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileUsername">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.profile.changePassword.dialog.usernameField.label"
+                    {this.props.t(
+                      "labels.userName"
                     )}
                   </label>
                   <input
@@ -212,8 +211,8 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileOldPassword">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.profile.changePassword.dialog.oldPasswordField.label"
+                    {this.props.t(
+                      "labels.oldPassword"
                     )}
                   </label>
                   <input
@@ -229,8 +228,8 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileNewPassword1">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.profile.changePassword.dialog.newPasswordField1.label"
+                    {this.props.t(
+                      "labels.newPassword1"
                     )}
                   </label>
                   <input
@@ -245,8 +244,8 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileNewPassword2">
-                    {this.props.i18nOLD.text.get(
-                      "plugin.profile.changePassword.dialog.newPasswordField2.label"
+                    {this.props.t(
+                      "labels.newPassword2"
                     )}
                   </label>
                   <input
@@ -269,7 +268,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                   onClick={this.update}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18nOLD.text.get("plugin.profile.save.button")}
+                  {this.props.t("actions.save")}
                 </Button>
               </div>
             </div>

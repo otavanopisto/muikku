@@ -8,6 +8,7 @@ import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/item-list.scss";
+import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -117,7 +118,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

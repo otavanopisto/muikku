@@ -287,7 +287,7 @@ class OrganizationManagementApplication extends React.Component<
     // Removed for the time being
     // {
     //   id: "REPORTS",
-    //   name: this.props.i18nOLD.text.get('plugin.organization.tab.title.reports'),
+    //   name: this.props.t('labels.reports', {ns: "organization"}),
     //   component: () => { return <ApplicationPanelBody modifier="tabs" children={<Reports />} /> }
     // }
   }

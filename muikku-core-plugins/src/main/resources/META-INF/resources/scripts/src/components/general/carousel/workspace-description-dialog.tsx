@@ -10,12 +10,12 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import { Suggestion } from "~/@types/shared";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceSignupDialogProps
  */
-interface WorkspaceDescriptionDialogProps {
-  i18nOLD: i18nType;
+interface WorkspaceDescriptionDialogProps extends WithTranslation {
   children?: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => void;
@@ -94,9 +94,7 @@ class WorkspaceDescriptionDialog extends React.Component<
     return (
       <Dialog
         modifier="course-description"
-        title={this.props.i18nOLD.text.get(
-          "plugin.records.descriptionDialog.title"
-        )}
+        title={this.props.t("labels.description", { ns: "workspace" })}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}
@@ -108,25 +106,4 @@ class WorkspaceDescriptionDialog extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceDescriptionDialog);
+export default withTranslation()(WorkspaceDescriptionDialog);

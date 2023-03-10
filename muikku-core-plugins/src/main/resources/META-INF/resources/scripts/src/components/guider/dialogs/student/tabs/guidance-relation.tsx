@@ -83,7 +83,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
         {basic && basic.email ? (
           <ApplicationSubPanel modifier="guidance-relation-contact-info">
             <ApplicationSubPanelItem
-              title={i18nOLD.text.get(
+              title={i18n.t(
                 "plugin.guider.user.details.contactInfo.student.label"
               )}
             >
@@ -94,16 +94,16 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
 
 
           <ApplicationSubPanelItem
-            title={i18nOLD.text.get(
+            title={i18n.t(
               "plugin.guider.user.details.contactInfo.guardian.label"
             )}
           >
             <ApplicationSubPanelItem.Content>
               <div>
-                {i18nOLD.text.get("plugin.guider.user.details.label.phoneNumber")}
+                {i18n.t("plugin.guider.user.details.label.phoneNumber")}
               </div>
               <div>
-                {i18nOLD.text.get("plugin.guider.user.details.label.email")}
+                {i18n.t("plugin.guider.user.details.label.email")}
               </div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>

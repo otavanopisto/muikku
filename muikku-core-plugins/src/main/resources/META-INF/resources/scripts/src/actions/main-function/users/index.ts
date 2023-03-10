@@ -25,6 +25,8 @@ import {
 } from "reducers/user-index";
 import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
+import i18n from "~/locales/i18n";
+
 export type SET_CURRENT_PAYLOAD = SpecificActionType<
   "SET_CURRENT_PAYLOAD",
   UserPayloadType
@@ -229,9 +231,7 @@ const createStudent: CreateStudentTriggerType = function createStudent(data) {
 
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.organization.create.student.success"
-          ),
+          i18n.t("notifications.createSuccess", { ns: "users" }),
           "success"
         )
       );
@@ -254,10 +254,10 @@ const createStudent: CreateStudentTriggerType = function createStudent(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.organization.create.student.error",
-            err as any as string
-          ),
+          i18n.t("notifications.createError", {
+            error: err,
+            ns: "users",
+          }),
           "error"
         )
       );
@@ -288,9 +288,7 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
 
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.organization.update.student.success"
-          ),
+          i18n.t("notifications.updateSuccess", { ns: "users" }),
           "success"
         )
       );
@@ -312,9 +310,7 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.organization.update.student.error"
-          ),
+          i18n.t("notifications.updateError", { ns: "users" }),
           "error"
         )
       );
@@ -342,9 +338,7 @@ const createStaffmember: CreateStaffmemberTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.organization.create.staff.success"
-            ),
+            i18n.t("notifications.createSuccess", { ns: "users" }),
             "success"
           )
         );
@@ -366,9 +360,7 @@ const createStaffmember: CreateStaffmemberTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.organization.create.staff.error"
-            ),
+            i18n.t("notifications.createError", { ns: "users" }),
             "error"
           )
         );
@@ -399,9 +391,10 @@ const updateStaffmember: UpdateStaffmemberTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.organization.update.staff.success"
-            ),
+            i18n.t("notifications.updateSuccess", {
+              ns: "users",
+              context: "staff",
+            }),
             "success"
           )
         );
@@ -423,9 +416,7 @@ const updateStaffmember: UpdateStaffmemberTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get(
-              "plugin.organization.update.staff.error"
-            ),
+            i18n.t("notifications.updateError", { ns: "users" }),
             "error"
           )
         );
@@ -471,18 +462,20 @@ const updateUsergroup: UpdateUsergroupTriggerType = function updateUsergroup(
       data.success && data.success();
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.organization.update.usergroup.success"
-          ),
+          i18n.t("notifications.updateSuccess", {
+            ns: "users",
+            context: "userGroup",
+          }),
           "success"
         )
       );
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.organization.update.usergroup.error"
-          ),
+          i18n.t("notifications.updateError", {
+            ns: "users",
+            context: "userGroup",
+          }),
           "error"
         )
       );
@@ -527,18 +520,20 @@ const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
       data.success && data.success();
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.organization.create.usergroup.success"
-          ),
+          i18n.t("notifications.createSuccess", {
+            ns: "users",
+            context: "userGroup",
+          }),
           "success"
         )
       );
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get(
-            "plugin.organization.create.usergroup.error"
-          ),
+          i18n.t("notifications.createError", {
+            ns: "users",
+            context: "userGroup",
+          }),
           "error"
         )
       );
@@ -577,7 +572,10 @@ const loadStudyprogrammes: LoadStudyprogrammesTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get("TODO: Error"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "studyProgrammes",
+            }),
             "error"
           )
         );
@@ -621,7 +619,11 @@ const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "students",
+            count: 0,
+          }),
           "error"
         )
       );
@@ -673,7 +675,7 @@ const loadStaff: LoadUsersTriggerType = function loadStaff(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
+          i18n.t("notifications.loadError", { ns: "users", context: "staff" }),
           "error"
         )
       );
@@ -753,7 +755,10 @@ const loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get("Load failed"),
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "userGroups",
+          }),
           "error"
         )
       );
@@ -814,7 +819,10 @@ const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get("Loadmore failed"),
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "userGroups",
+          }),
           "error"
         )
       );
@@ -835,7 +843,7 @@ const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
  * @param id id
  */
 const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
-  function loadCurrentUserGroup(id: number) {
+  function setCurrentUserGroup(id: number) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
@@ -862,7 +870,7 @@ const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get("TODO"),
+            i18n.t("notifications.setError", { ns: "users" }),
             "error"
           )
         );
@@ -909,7 +917,10 @@ const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "userGroupStaff",
+            }),
             "error"
           )
         );
@@ -956,7 +967,10 @@ const loadAllCurrentUserGroupStudents: LoadUsersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "userGroupStudents",
+            }),
             "error"
           )
         );
@@ -1020,7 +1034,7 @@ const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
+          i18n.t("notifications.loadError", { ns: "users" }),
           "error"
         )
       );
@@ -1082,7 +1096,11 @@ const loadSelectorStudents: LoadUsersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "students",
+              count: 0,
+            }),
             "error"
           )
         );
@@ -1145,7 +1163,7 @@ const loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
+          i18n.t("notifications.loadError", { ns: "users", context: "staff" }),
           "error"
         )
       );
@@ -1207,7 +1225,10 @@ const loadSelectorUserGroups: LoadUsersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18nOLD.text.get("plugin.guider.errormessage.user"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "userGroups",
+            }),
             "error"
           )
         );

@@ -5,7 +5,7 @@ import { i18nType } from "~/reducers/base/i18nOLD";
 /**
  * FrontpageInstagramProps
  */
-interface FrontpageInstagramProps extends WithTranslation<["common"]> {
+interface FrontpageInstagramProps extends WithTranslation {
   i18nOLD: i18nType;
 }
 
@@ -29,12 +29,10 @@ class FrontpageInstagram extends React.Component<
       <section
         id="instagram"
         className="screen-container__section"
-        aria-label={this.props.i18nOLD.text.get(
-          "plugin.wcag.frontPageSectionInstagramLabel"
-        )}
+        aria-label={this.props.t("wcag.instagram", { ns: "frontPage" })}
       >
         <h2 className="screen-container__header">
-          {this.props.i18nOLD.text.get("plugin.sectionTitle.instagram")}
+          {this.props.t("labels.instagram", { ns: "frontPage" })}
         </h2>
         <div className="ordered-container ordered-container--frontpage-instagram">
           <div className="ordered-container__item ordered-container__item--frontpage-instagram">
@@ -93,4 +91,4 @@ class FrontpageInstagram extends React.Component<
   }
 }
 
-export default withTranslation(["common"])(FrontpageInstagram);
+export default withTranslation(["frontPage"])(FrontpageInstagram);

@@ -11,7 +11,6 @@ import {
   RemoveWorkspaceEvent,
   removeWorkspaceEventFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { EvaluationEvent } from "~/@types/evaluation";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -19,7 +18,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * DeleteDialogProps
  */
 interface DeleteDialogProps extends WithTranslation {
-  i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
@@ -125,9 +123,7 @@ class DeleteDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
-        title={this.props.i18nOLD.text.get(
-          "plugin.evaluation.workspaceEvaluationDialog.removeDialog.title"
-        )}
+        title={this.props.t("labels.remove", { ns: "evaluation" })}
         content={content}
         footer={footer}
       >
@@ -250,7 +246,6 @@ export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     evaluations: state.evaluations,
   };
 }

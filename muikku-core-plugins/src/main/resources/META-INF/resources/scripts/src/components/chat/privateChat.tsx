@@ -2,16 +2,18 @@ import * as React from "react";
 import "~/sass/elements/chat.scss";
 import "~/sass/elements/wcag.scss";
 import { IBareMessageType } from "./chat";
-import { ChatMessage } from "./chatMessage";
+import ChatMessage from "./chatMessage";
 import { i18nType } from "~/reducers/base/i18nOLD";
 import { requestPrescense } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
 import { obtainNick } from "~/helper-functions/chat";
 import { StatusType } from "~/reducers/base/status";
+import { withTranslation, WithTranslation } from "react-i18next";
+
 /**
  * IPrivateChatProps
  */
-interface IPrivateChatProps {
+interface IPrivateChatProps extends WithTranslation {
   status: StatusType;
   initializingStanza: Element;
   setTabNotification: (NewTabTitle?: string) => void;
@@ -19,7 +21,6 @@ interface IPrivateChatProps {
   leaveChat: () => void;
   connection: Strophe.Connection;
   jid: string;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -41,7 +42,7 @@ interface IPrivateChatState {
 /**
  * PrivateChat
  */
-export class PrivateChat extends React.Component<
+class PrivateChat extends React.Component<
   IPrivateChatProps,
   IPrivateChatState
 > {
@@ -249,10 +250,7 @@ export class PrivateChat extends React.Component<
 
       const newMessagesList = [...this.state.messages, messageReceived];
       this.props.setTabNotification(
-        this.props.i18nOLD.text.get(
-          "plugin.chat.notification.newMessage",
-          this.state.nick
-        )
+        this.props.i18n.t("notifications.newMessage", { user: this.state.nick })
       );
 
       this.setState(
@@ -525,7 +523,6 @@ export class PrivateChat extends React.Component<
                     chatType="private"
                     canToggleInfo={!this.state.isStudent}
                     message={message}
-                    i18nOLD={this.props.i18nOLD}
                   />
                 ))}
                 <div
@@ -539,14 +536,12 @@ export class PrivateChat extends React.Component<
               onSubmit={this.sendMessage}
             >
               {/* Need wcag.scss from another WIP branch
-               <label htmlFor={`sendPrivateChatMessage-${this.props.jid.split("@")[0]}`} className="visually-hidden">{this.props.i18nOLD.text.get("plugin.wcag.sendMessage.label")}</label> */}
+               <label htmlFor={`sendPrivateChatMessage-${this.props.jid.split("@")[0]}`} className="visually-hidden">{this.props.t("plugin.wcag.sendMessage.label")}</label> */}
               <textarea
                 id={`sendPrivateChatMessage-${this.props.jid.split("@")[0]}`}
                 className="chat__memofield chat__memofield--muc-message"
                 onKeyDown={this.onEnterPress}
-                placeholder={this.props.i18nOLD.text.get(
-                  "plugin.chat.writemsg"
-                )}
+                placeholder={this.props.i18n.t("labels.write")}
                 value={this.state.currentMessageToBeSent}
                 onChange={this.setCurrentMessageToBeSent}
                 onFocus={this.onTextFieldFocus}
@@ -567,3 +562,5 @@ export class PrivateChat extends React.Component<
     );
   }
 }
+
+export default withTranslation("common")(PrivateChat);

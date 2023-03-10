@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { CredentialsType } from "~/reducers/base/credentials";
 import ReturnCredentials from "./body/return-credentials";
 import CredentialsContainer from "./body/credentials-container";
@@ -11,7 +10,6 @@ import { StateType } from "~/reducers";
  * CredentialsBodyProps
  */
 interface CredentialsBodyProps {
-  i18nOLD: i18nType;
   credentials: CredentialsType;
 }
 
@@ -33,8 +31,8 @@ class CredentialsBody extends React.Component<
   render() {
     return (
       <div className="credentials">
-        <CredentialsHero i18nOLD={this.props.i18nOLD} />
-        <CredentialsContainer i18nOLD={this.props.i18nOLD}>
+        <CredentialsHero />
+        <CredentialsContainer>
           <ReturnCredentials credentials={this.props.credentials} />
         </CredentialsContainer>
       </div>
@@ -48,7 +46,6 @@ class CredentialsBody extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     credentials: state.credentials,
   };
 }

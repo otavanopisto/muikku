@@ -1,27 +1,11 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Button, { ButtonSocial } from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
- * FrontpageOrganizationProps
- */
-interface FrontpageOrganizationProps extends WithTranslation {
-  i18nOLD: i18nType;
-}
-
-/**
- * FrontpageOrganizationState
- */
-interface FrontpageOrganizationState {}
-
-/**
  * FrontpageOrganization
  */
-class FrontpageOrganization extends React.Component<
-  FrontpageOrganizationProps,
-  FrontpageOrganizationState
-> {
+class FrontpageOrganization extends React.Component<WithTranslation> {
   /**
    * render
    */
@@ -30,9 +14,9 @@ class FrontpageOrganization extends React.Component<
       <section
         id="organization"
         className="screen-container__section"
-        aria-label={this.props.i18nOLD.text.get(
-          "plugin.wcag.frontPageSectionOrganizationLabel"
-        )}
+        aria-label={this.props.t("wcag.organizationDescription", {
+          ns: "frontPage",
+        })}
       >
         <div className="card card--frontpage-organization">
           <div className="ordered-container ordered-container--frontpage-organization-info">

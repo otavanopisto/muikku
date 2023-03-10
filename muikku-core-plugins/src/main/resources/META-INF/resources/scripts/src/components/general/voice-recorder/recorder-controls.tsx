@@ -1,11 +1,7 @@
 import * as React from "react";
 import { Recorder } from "~/@types/recorder";
 import Link from "~/components/general/link";
-import { StateType } from "~/reducers/index";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions/index";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { useTranslation } from "react-i18next";
 
 /**
  * RecorderControlsProps
@@ -17,26 +13,20 @@ export interface RecorderControlsProps {
     cancelRecording: () => void;
     saveRecording: () => void;
   };
-  i18nOLD: i18nType;
 }
 
 /**
  * RecorderControls
  * Component that renders recording controls, start/save buttons etc
- * @param param0.recorderState recorderState
- * @param param0.handlers handlers
- * @param param0.i18nOLD i18nOLD
+ * @param props component properties
  * @returns JSX.Element
  */
-function RecorderControls({
-  recorderState,
-  handlers,
-  i18nOLD,
-}: RecorderControlsProps) {
-  const { initRecording } = recorderState;
-  const { startRecording, saveRecording } = handlers;
+function RecorderControls(props: RecorderControlsProps) {
+  const { initRecording } = props.recorderState;
+  const { startRecording, saveRecording } = props.handlers;
+  const { t } = useTranslation("materials");
 
-  const disabled = recorderState.values.some((rItem) => rItem.uploading);
+  const disabled = props.recorderState.values.some((rItem) => rItem.uploading);
 
   return (
     <div className="voice-recorder__controls">
@@ -47,7 +37,7 @@ function RecorderControls({
           disabled={disabled}
         >
           <span className="voice-recorder__start-record-label">
-            {i18nOLD.text.get("plugin.workspace.audioField.startLink")}
+            {t("actions.record")}
           </span>
         </Link>
       ) : (
@@ -57,39 +47,21 @@ function RecorderControls({
           disabled={disabled}
         >
           <span className="voice-recorder__stop-record-label">
-            {i18nOLD.text.get("plugin.workspace.audioField.stopLink")}
+            {t("actions.record", { context: "stop" })}
           </span>
         </Link>
       )}
       {!initRecording ? (
         <span className="voice-recorder__description voice-recorder__description--start-recording">
-          {i18nOLD.text.get("plugin.workspace.audioField.startRecordingHint")}
+          {t("content.startRecording")}
         </span>
       ) : (
         <span className="voice-recorder__description voice-recorder__description--stop-recording">
-          {i18nOLD.text.get("plugin.workspace.audioField.stopRecordingHint")}
+          {t("content.stopRecording")}
         </span>
       )}
     </div>
   );
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RecorderControls);
+export default RecorderControls;

@@ -1,26 +1,10 @@
 import * as React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { i18nType } from "~/reducers/base/i18nOLD";
-
-/**
- * FrontpageFooterProps
- */
-interface FrontpageFooterProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
-}
-
-/**
- * FrontpageFooterState
- */
-interface FrontpageFooterState {}
 
 /**
  * FrontpageFooter
  */
-class FrontpageFooter extends React.Component<
-  FrontpageFooterProps,
-  FrontpageFooterState
-> {
+class FrontpageFooter extends React.Component<WithTranslation> {
   /**
    * render
    */
@@ -31,8 +15,6 @@ class FrontpageFooter extends React.Component<
           <div className="footer__item footer__item--contact">
             <h2 className="footer__header">
               {this.props.t("labels.contact", { ns: "frontPage" })}
-
-              {this.props.i18nOLD.text.get("plugin.footer.contact.title")}
             </h2>
             <p className="footer__subitem">
               <span className="glyph icon-location"></span>
@@ -41,10 +23,7 @@ class FrontpageFooter extends React.Component<
             </p>
             <p className="footer__subitem">
               <span className="glyph icon-phone"></span>
-              <b>
-                {this.props.t("labels.phone")}
-                {this.props.i18nOLD.text.get("plugin.footer.phoneNumber.label")}
-              </b>
+              <b>{this.props.t("labels.phone")}</b>
               <span>044 794 3552</span>
             </p>
             <p className="footer__subitem">
@@ -126,7 +105,6 @@ class FrontpageFooter extends React.Component<
             </a>
             <span className="footer__item--plagscan-text">
               {this.props.t("content.plagScan", { ns: "frontPage" })}
-              {this.props.i18nOLD.text.get("plugin.footer.plagscan.text")}
             </span>
             <a
               href="https://drive.google.com/file/d/1IDQWdh2N1EoaJe60uS1m9tyY5znaohzz/view?usp=sharing"
@@ -154,4 +132,4 @@ class FrontpageFooter extends React.Component<
   }
 }
 
-export default withTranslation(["common"])(FrontpageFooter);
+export default withTranslation(["frontPage"])(FrontpageFooter);

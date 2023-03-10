@@ -89,14 +89,8 @@ class DeleteJournalComment extends React.Component<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => (
-      <div>
-        {/* {this.props.i18nOLD.text.get(
-          "plugin.workspace.journal.deleteComment.dialog.description"
-        )} */}
-        {this.props.t("content.removing_comment")}
-      </div>
+      <div>{this.props.t("content.removing", { context: "comment" })}</div>
     );
-
     /**
      * footer
      * @param closeDialog closeDialog
@@ -108,18 +102,12 @@ class DeleteJournalComment extends React.Component<
           onClick={this.deleteJournalComment.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {/* {this.props.i18nOLD.text.get(
-            "plugin.workspace.journal.deleteComment.dialog.deleteButton"
-          )} */}
           {this.props.t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {/* {this.props.i18nOLD.text.get(
-            "plugin.workspace.journal.deleteComment.dialog.cancelButton"
-          )} */}
           {this.props.t("actions.cancel")}
         </Button>
       </div>

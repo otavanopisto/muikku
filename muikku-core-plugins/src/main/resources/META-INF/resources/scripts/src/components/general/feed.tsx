@@ -5,11 +5,13 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/feed.scss";
 import "~/sass/elements/wcag.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
+
 
 /**
  * FeedProps
  */
-interface FeedProps {
+interface FeedProps extends WithTranslation {
   entries: Array<{
     publicationDate: string;
     description: string;
@@ -79,15 +81,15 @@ class Feed extends React.Component<FeedProps, FeedState> {
                   rel="noreferrer"
                   className={`link link--feed-${entry.feed}`}
                 >
-                  {this.props.i18nOLD.text.get("plugin.feeds.readMore.label")} (
+                  {this.props.t("actions.readMore", {ns: "frontPage"})} (
                   {entry.feed === "nettilukio"
                     ? "nettilukio.fi"
                     : "nettiperuskoulu.fi"}
                   )
                   <span className="visually-hidden">
                     {entry.title}
-                    {this.props.i18nOLD.text.get(
-                      "plugin.wcag.externalLink.label"
+                    {this.props.t(
+                      "wcag.externalLink"
                     )}
                   </span>
                   <span
@@ -128,4 +130,4 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Feed);
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(Feed));

@@ -1,4 +1,6 @@
 import * as React from "react";
+import { connect } from "react-redux";
+import { StateType } from "~/reducers";
 import "~/sass/elements/chat.scss";
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
@@ -7,6 +9,7 @@ import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import DeleteMessageDialog from "./deleteMessageDialog";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * IChatUserInfoType
@@ -24,7 +27,7 @@ const USER_INFO_CACHE: {
 /**
  * IChatMessageProps
  */
-interface IChatMessageProps {
+interface IChatMessageProps extends WithTranslation {
   canToggleInfo: boolean;
   message: IBareMessageType;
   i18nOLD: i18nType;
@@ -51,7 +54,7 @@ interface IChatMessageState {
 /**
  * ChatMessage
  */
-export class ChatMessage extends React.Component<
+class ChatMessage extends React.Component<
   IChatMessageProps,
   IChatMessageState
 > {
@@ -166,12 +169,12 @@ export class ChatMessage extends React.Component<
     const messageModerationItemsOptions: Array<any> = [
       {
         icon: "trash",
-        text: "plugin.chat.messages.deleteMessage",
+        text: this.props.i18n.t("actions.remove"),
         onClick: this.toggleDeleteMessageDialog,
       },
       {
         icon: "pencil",
-        text: "plugin.chat.messages.editMessage",
+        text: this.props.i18n.t("actions.edit"),
         onClick: this.toggleMessageEditMode,
       },
     ];
@@ -319,7 +322,7 @@ export class ChatMessage extends React.Component<
                         }}
                       >
                         <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{this.props.i18nOLD.text.get(item.text)}</span>
+                        <span>{this.props.i18n.t(item.text)}</span>
                       </Link>
                     )
                 )}
@@ -345,22 +348,14 @@ export class ChatMessage extends React.Component<
                 className="chat__message-footer-action"
                 onClick={this.toggleMessageEditMode}
               >
-                {this.props.i18nOLD.text.get(
-                  "plugin.chat.messages.editMessage.cancelLink"
-                )}
+                {this.props.i18n.t("actions.cancel")}
               </span>
-              <span>
-                {this.props.i18nOLD.text.get(
-                  "plugin.chat.messages.editMessage.orText"
-                )}
-              </span>
+              <span>{this.props.i18n.t("content.or")}</span>
               <span
                 className="chat__message-footer-action"
                 onClick={this.onMessageEdited}
               >
-                {this.props.i18nOLD.text.get(
-                  "plugin.chat.messages.editMessage.saveLink"
-                )}
+                {this.props.i18n.t("actions.save")}
               </span>
             </div>
           </div>
@@ -368,17 +363,13 @@ export class ChatMessage extends React.Component<
           <div className="chat__message-content-container" key="nonEditable">
             <div className="chat__message-content">
               {this.props.message.deleted ? (
-                <i>
-                  {this.props.i18nOLD.text.get(
-                    "plugin.chat.messages.messageIsDeleted"
-                  )}
-                </i>
+                <i>{this.props.i18n.t("content.removed")}</i>
               ) : (
                 this.props.message.message
               )}
               {this.props.message.edited && (
                 <div className="chat__message-edited-info">
-                  {this.props.i18nOLD.text.get("plugin.chat.messages.edited")}{" "}
+                  {this.props.i18n.t("labels.edited")}{" "}
                   {this.props.i18nOLD.time.formatDaily(
                     this.props.message.edited.timestamp
                   )}
@@ -396,3 +387,22 @@ export class ChatMessage extends React.Component<
     );
   }
 }
+
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18nOLD: state.i18nOLD,
+  };
+}
+
+
+export default withTranslation("messaging")(
+  connect(mapStateToProps, {})(ChatMessage)
+);
+
+
+
