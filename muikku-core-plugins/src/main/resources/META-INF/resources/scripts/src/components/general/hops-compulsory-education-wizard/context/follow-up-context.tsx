@@ -1,11 +1,11 @@
 import * as React from "react";
-import { FollowUp } from "../../../../@types/shared";
-import { sleep } from "~/helper-functions/shared";
+import { FollowUp } from "~/@types/shared";
+import * as moment from "moment";
+import { WebsocketStateType } from "~/reducers/util/websocket";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
-import { WebsocketStateType } from "~/reducers/util/websocket";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import * as moment from "moment";
+import { sleep } from "~/helper-functions/shared";
 
 /**
  * UseFollowUpGoalsState
@@ -14,6 +14,13 @@ export interface UseFollowUpGoalsState {
   isLoading: boolean;
   followUp: FollowUp;
 }
+
+type CountProviderProps = {
+  children: React.ReactNode;
+  websocketState: WebsocketStateType;
+  studentId: string;
+  displayNotification: DisplayNotificationTriggerType;
+};
 
 /**
  * Intial state
@@ -31,51 +38,37 @@ const initialState: UseFollowUpGoalsState = {
   },
 };
 
+const FollowUpStateContext = React.createContext<
+  UseFollowUpGoalsState | undefined
+>(undefined);
+
 /**
- * Custom hook for follow up goal
- * @param studentId studentId
- * @param websocketState websocketState
- * @param displayNotification displayNotification
- * @returns follow up goal data
+ * Provider for FollowUpData
+ *
+ * @param providerProps providerProps
  */
-export const useFollowUpGoal = (
-  studentId: string,
-  websocketState: WebsocketStateType,
-  displayNotification: DisplayNotificationTriggerType
-) => {
+function FollowUpProvider(providerProps: CountProviderProps) {
+  const { children, websocketState, studentId, displayNotification } =
+    providerProps;
+
   const [followUpData, setFollowUpData] = React.useState(initialState);
 
-  /**
-   * State ref to containging studentActivity state data
-   * when ever student activity state changes, so does this ref
-   * This is because when websocket handler catches, it always have latest
-   * state changes to use
-   */
-  const ref = React.useRef(followUpData);
   const componentMounted = React.useRef(true);
 
   React.useEffect(() => {
-    ref.current = followUpData;
-  }, [followUpData]);
-
-  React.useEffect(() => {
     /**
-     * loadStudentActivityListData
      * Loads student activity data
+     *
      * @param studentId of student
      */
     const loadStudentFollowUpPlans = async (studentId: string) => {
       setFollowUpData((followUpData) => ({ ...followUpData, isLoading: true }));
 
       try {
-        /**
-         * Sleeper to delay data fetching if it happens faster than 1s
-         */
+        // Sleeper to delay data fetching if it happens faster than 1s
         const sleepPromise = await sleep(1000);
 
-        /**
-         * Loaded and filtered student activity
-         */
+        // Loaded and filtered student activity
         const [loadedFollowUp] = await Promise.all([
           (async () => {
             const followUp = (await promisify(
@@ -117,46 +110,41 @@ export const useFollowUpGoal = (
     };
 
     loadStudentFollowUpPlans(studentId);
-
-    return () => {
-      componentMounted.current = false;
-    };
-  }, [studentId, displayNotification]);
+  }, [displayNotification, studentId]);
 
   React.useEffect(() => {
     /**
-     * onAnswerSavedAtServer
+     * Handles changes when ever there has happened some changes with defined message
+     *
      * @param data FollowUp. As its plain json, it needs to be parsed
      */
     const onAnswerSavedAtServer = (data: unknown) => {
       if (typeof data === "string") {
         const followUp: FollowUp = JSON.parse(data);
 
-        setFollowUpData((followUpData) => ({
-          ...followUpData,
-          followUp: {
-            ...followUp,
-            graduationGoal: followUp.graduationGoal
-              ? moment(followUp.graduationGoal).toDate()
-              : null,
-          },
-        }));
+        if (componentMounted.current) {
+          setFollowUpData((followUpData) => ({
+            ...followUpData,
+            followUp: {
+              ...followUp,
+              graduationGoal: followUp.graduationGoal
+                ? moment(followUp.graduationGoal).toDate()
+                : null,
+            },
+          }));
+        }
       }
     };
 
-    /**
-     * Adding event callback to handle changes when ever
-     * there has happened some changes with that message
-     */
+    // Adding event callback to handle changes when ever
+    // there has happened some changes with that message
     websocketState.websocket.addEventCallback(
       "hops:hops-goals",
       onAnswerSavedAtServer
     );
 
     return () => {
-      /**
-       * Remove callback when unmounting
-       */
+      // Remove callback when unmounting
       websocketState.websocket.removeEventCallback(
         "hops:hops-goals",
         onAnswerSavedAtServer
@@ -164,33 +152,45 @@ export const useFollowUpGoal = (
     };
   }, [websocketState.websocket]);
 
-  /**
-   * updateFollowUpData
-   * @param studentId studentId
-   * @param dataToUpdate dataToUpdate
-   */
-  const updateFollowUpData = async (
-    studentId: string,
-    dataToUpdate: FollowUp
-  ) => {
-    try {
-      await promisify(
-        mApi().hops.student.hopsGoals.create(studentId, dataToUpdate),
-        "callback"
-      )();
-    } catch (err) {
-      displayNotification(err.message, "error");
-    }
-  };
+  return (
+    <FollowUpStateContext.Provider value={followUpData}>
+      {children}
+    </FollowUpStateContext.Provider>
+  );
+}
 
-  return {
-    followUpData,
-    /**
-     * updateFollowUpData
-     * @param studentId studentId
-     * @param dataToUpdate dataToUpdate
-     */
-    updateFollowUpData: (studentId: string, dataToUpdate: FollowUp) =>
-      updateFollowUpData(studentId, dataToUpdate),
-  };
+/**
+ * Updates follow up data to server which is then updated to websocket
+ *
+ * @param studentId studentId
+ * @param dataToUpdate dataToUpdate
+ * @param displayNotification displayNotification
+ */
+const updateFollowUpData = async (
+  studentId: string,
+  dataToUpdate: FollowUp,
+  displayNotification: DisplayNotificationTriggerType
+) => {
+  try {
+    await promisify(
+      mApi().hops.student.hopsGoals.create(studentId, dataToUpdate),
+      "callback"
+    )();
+  } catch (err) {
+    displayNotification(err.message, "error");
+  }
 };
+
+/**
+ * Method to returns context of follow up.
+ * Check if context is defined and if not, throw an error
+ */
+function useFollowUp() {
+  const context = React.useContext(FollowUpStateContext);
+  if (context === undefined) {
+    throw new Error("useFollowUp must be used within a FollowUpProvider");
+  }
+  return context;
+}
+
+export { FollowUpProvider, useFollowUp, updateFollowUpData };
