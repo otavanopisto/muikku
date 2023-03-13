@@ -1081,8 +1081,6 @@ const loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFrom
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       dispatch({
         type: "EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
@@ -1109,10 +1107,11 @@ const loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFrom
       } catch (err) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
-              "plugin.evaluation.notifications.loadJournalFeedback.error",
-              err.message
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "feedback",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -1135,8 +1134,6 @@ const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFe
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       try {
         const journalFeedback = (await promisify(
           mApi().evaluation.workspaces.students.journalfeedback.create(
@@ -1156,9 +1153,10 @@ const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFe
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
-              "plugin.evaluation.notifications.savingJournalFeedback.success"
-            ),
+            i18n.t("notifications.saveSuccess", {
+              context: "feedback",
+              ns: "journal",
+            }),
             "success"
           )
         );
@@ -1167,10 +1165,11 @@ const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFe
       } catch (err) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
-              "plugin.evaluation.notifications.savingJournalFeedback.error",
-              err.message
-            ),
+            i18n.t("notifications.saveError", {
+              ns: "journal",
+              context: "feedback",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -1194,8 +1193,6 @@ const deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerTyp
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       try {
         await promisify(
           mApi().evaluation.workspaces.students.journalfeedback.del(
@@ -1215,19 +1212,21 @@ const deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerTyp
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
-              "plugin.evaluation.notifications.deletingJournalFeedback.success"
-            ),
+            i18n.t("notifications.removeSuccess", {
+              ns: "journal",
+              context: "feedback",
+            }),
             "success"
           )
         );
       } catch (err) {
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get(
-              "plugin.evaluation.notifications.deletingJournalFeedback.error",
-              err.message
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "journal",
+              context: "feedback",
+              error: err.message,
+            }),
             "error"
           )
         );

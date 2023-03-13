@@ -770,9 +770,7 @@ class ManagementPanel extends React.Component<
                   <div className="form__row">
                     <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
                       <label htmlFor="workspaceLanguage">
-                        {this.props.i18n.text.get(
-                          "plugin.workspace.management.title.basicInfo.localeCode"
-                        )}
+                        {t("labels.localeCode", { ns: "workspace" })}
                       </label>
                       <select
                         id="workspaceLanguage"

@@ -952,9 +952,10 @@ const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.feedback.notification.delete.error"
-            ),
+            i18n.t("notifications.loadError", {
+              context: "feedback",
+              error: err,
+            }),
             "error"
           )
         );

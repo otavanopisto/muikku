@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { connect, Dispatch } from "react-redux";
 import { JournalComment } from "~/@types/journal";
 import { AnyActionType } from "~/actions";
@@ -7,7 +8,7 @@ import {
   ApplicationListItemBody,
 } from "~/components/general/application-list";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
@@ -15,7 +16,7 @@ import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
  * JournalCommentProps
  */
 interface JournalCommentProps extends JournalComment {
-  i18n: i18nType;
+  i18nOLD: i18nType;
   status: StatusType;
 }
 
@@ -25,19 +26,26 @@ interface JournalCommentProps extends JournalComment {
  * @returns JSX.Element
  */
 const JournalComment: React.FC<JournalCommentProps> = (props) => {
-  const { comment, i18n, status, created, id, firstName, lastName, authorId } =
-    props;
-
+  const {
+    comment,
+    i18nOLD,
+    status,
+    created,
+    id,
+    firstName,
+    lastName,
+    authorId,
+  } = props;
   const creatorIsMe = status.userId === authorId;
-
+  const { t } = useTranslation();
   const creatorName = creatorIsMe
-    ? i18n.text.get("plugin.records.journal.comments.creator.me")
+    ? t("labels.self")
     : `${firstName} ${lastName}`;
 
-  const formatedDate = `${i18n.time.format(created, "l")} - ${i18n.time.format(
+  const formatedDate = `${i18nOLD.time.format(
     created,
-    "LT"
-  )}`;
+    "l"
+  )} - ${i18nOLD.time.format(created, "LT")}`;
 
   return (
     <ApplicationListItem key={id}>
@@ -59,7 +67,7 @@ const JournalComment: React.FC<JournalCommentProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

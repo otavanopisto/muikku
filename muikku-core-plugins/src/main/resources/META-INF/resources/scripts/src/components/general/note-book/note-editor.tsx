@@ -8,7 +8,6 @@ import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceType } from "~/reducers/workspaces";
 import {
@@ -19,12 +18,12 @@ import {
   UpdateEditNotebookEntry,
   updateEditedNotebookEntry,
 } from "../../../actions/notebook/notebook";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NoteBookProps
  */
-interface NoteEditorProps {
-  i18n: i18nType;
+interface NoteEditorProps extends WithTranslation {
   status: StatusType;
   /**
    * If used in workspace, this is the current workspace
@@ -295,9 +294,7 @@ class NoteEditor extends SessionStateComponent<
             <div className="form__row">
               <div className="form-element">
                 <label htmlFor="note-entry-title" className="">
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.journal.entry.title.label"
-                  )}
+                  {this.props.t("labels.title")}
                 </label>
 
                 <input
@@ -312,11 +309,7 @@ class NoteEditor extends SessionStateComponent<
 
             <div className="form__row">
               <div className="form-element">
-                <label>
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.journal.entry.content.label"
-                  )}
-                </label>
+                <label>{this.props.t("labels.content")}</label>
 
                 <CKEditor
                   onChange={this.handleCkeditorChange}
@@ -365,7 +358,6 @@ class NoteEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     note: state.notebook.noteInTheEditor,
     currentWorkspace: state.workspaces.currentWorkspace,
@@ -389,4 +381,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NoteEditor);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(NoteEditor)
+);
