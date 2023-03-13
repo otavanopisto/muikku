@@ -6,6 +6,7 @@ import * as moment from "moment";
 import { History, HistoryEntryItem } from "../history";
 import { StatusType } from "~/reducers/base/status";
 import { PedagogyForm } from "~/@types/pedagogy-form";
+import PagerV2 from "../../pagerV2";
 
 /**
  * BasicInformationProps
@@ -15,6 +16,8 @@ interface BasicInformationProps {
   status: StatusType;
 }
 
+const itemsPerPage = 5;
+
 /**
  * BasicInformation
  *
@@ -23,6 +26,76 @@ interface BasicInformationProps {
  */
 const BasicInformation: React.FC<BasicInformationProps> = (props) => {
   const { pedagogyData, status } = props;
+  const [currentPage, setCurrentPage] = React.useState<number>(0);
+
+  /**
+   * handleCurrentPageChange
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selectedItem.selected
+   */
+  const handleCurrentPageChange = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected);
+  };
+
+  /**
+   * renderHistory
+   * @returns JSX.Element
+   */
+  const renderHistory = () => {
+    if (!pedagogyData || pedagogyData.history.length === 0) {
+      return <p>Ei tapahtumia</p>;
+    }
+
+    const offset = currentPage * itemsPerPage;
+
+    const currentHistory = pedagogyData.history.slice(
+      offset,
+      offset + itemsPerPage
+    );
+
+    const pageCount = Math.ceil(pedagogyData.history.length / itemsPerPage);
+
+    if (pedagogyData.history.length > itemsPerPage) {
+      return (
+        <>
+          <History>
+            {currentHistory.map((item, i) => (
+              <HistoryEntryItem
+                key={i}
+                showEdit={true}
+                historyEntry={item}
+                status={status}
+              />
+            ))}
+          </History>
+          <PagerV2
+            previousLabel=""
+            nextLabel=""
+            breakLabel="..."
+            initialPage={currentPage}
+            forcePage={currentPage}
+            marginPagesDisplayed={1}
+            pageCount={pageCount}
+            pageRangeDisplayed={2}
+            onPageChange={handleCurrentPageChange}
+          />
+        </>
+      );
+    }
+
+    return (
+      <History>
+        {currentHistory.map((item, i) => (
+          <HistoryEntryItem
+            key={i}
+            showEdit={true}
+            historyEntry={item}
+            status={status}
+          />
+        ))}
+      </History>
+    );
+  };
 
   return (
     <section className="hops-container">
@@ -110,44 +183,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
       </fieldset>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">Muokkaushistoria</legend>
-        <div className="hops-container__info">
-          {pedagogyData?.history.length ? (
-            <History>
-              {pedagogyData?.history.map((item, i) => (
-                <HistoryEntryItem
-                  key={i}
-                  showEdit={true}
-                  historyEntry={item}
-                  onHistoryEventClick={() =>
-                    // eslint-disable-next-line no-console
-                    console.log("history event clicked")
-                  }
-                  status={status}
-                />
-              ))}
-            </History>
-          ) : (
-            <div className="hops-container__row">
-              <p className="hops-container__info-text">
-                Ei muokkaushistoriaa saatavilla
-              </p>
-            </div>
-          )}
-
-          {/* <div className="hops-container__row">
-              <Button
-                buttonModifiers={["load-all-hops-events"]}
-                onClick={this.props.onLoadMOreHistoryEventsClick}
-                disabled={
-                  this.props.allHistoryEventLoaded ||
-                  this.props.loadingHistoryEvents ||
-                  this.props.basicInformation.updates.length > 5
-                }
-              >
-                Lataa kaikki
-              </Button>
-            </div> */}
-        </div>
+        <div className="hops-container__info">{renderHistory()}</div>
       </fieldset>
     </section>
   );

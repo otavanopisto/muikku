@@ -91,5 +91,24 @@ export const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    borderBottom: "1px solid #b4b4b4",
+    paddingBottom: "10px",
+  },
+  opinionList: {},
+  opinion: {
+    display: "flex",
+    flexDirection: "column",
+    paddingVertical: 5,
+    borderBottom: "1px solid #b4b4b4",
+  },
+  opinionInfo: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+  },
+  opinionExtraInfo: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
   },
 });

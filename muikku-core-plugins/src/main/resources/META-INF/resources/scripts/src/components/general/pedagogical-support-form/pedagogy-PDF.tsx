@@ -10,7 +10,7 @@ import {
   supportReasonsOptions,
 } from "./helpers";
 import { styles } from "./pedagogy-PDF-styles";
-import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
+import { FormData, Opinion, PedagogyForm } from "~/@types/pedagogy-form";
 
 Font.register({
   family: "Oswald",
@@ -31,9 +31,6 @@ interface PedagogyPDFProps {
  */
 const PedagogyPDF = (props: PedagogyPDFProps) => {
   const formData = JSON.parse(props.data.formData) as FormData;
-
-  const studentOpinion = formData?.studentOpinionOfSupport || "";
-  const schoolOpinion = formData?.schoolOpinionOfSupport || "";
 
   const supportReasonTranslationByValue = supportReasonsOptions.reduce(
     (acc: { [key: string]: string }, option) => {
@@ -58,6 +55,76 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         return acc;
       },
       {}
+    );
+
+  const studentOpinion =
+    formData?.studentOpinionOfSupport.length > 0 ? (
+      formData.studentOpinionOfSupport.map((opinion: Opinion, i) => (
+        <View key={i} style={styles.opinion}>
+          <View style={styles.opinionInfo}>
+            <View style={styles.infoField}>
+              <Text style={styles.infoFieldLabel}>Merkitsijä:</Text>
+              <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
+            </View>
+
+            <View style={styles.infoField}>
+              <Text style={styles.infoFieldLabel}>Päivämäärä:</Text>
+              <Text style={styles.infoFieldValue}>
+                {opinion.updatedDate
+                  ? `${moment(opinion.creationDate).format(
+                      "DD.MM.YYYY"
+                    )} (Päivitetty ${moment(opinion.updatedDate).format(
+                      "DD.MM.YYYY"
+                    )})`
+                  : moment(opinion.creationDate).format("DD.MM.YYYY")}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.opinionExtraInfo}>
+            <Html>{opinion.opinion}</Html>
+          </View>
+        </View>
+      ))
+    ) : (
+      <View>
+        <Text>Ei mielipidettä asetettu</Text>
+      </View>
+    );
+
+  const schoolOpinion =
+    formData?.schoolOpinionOfSupport.length > 0 ? (
+      formData.schoolOpinionOfSupport.map((opinion: Opinion, i) => (
+        <View key={i} style={styles.opinion}>
+          <View style={styles.opinionInfo}>
+            <View style={styles.infoField}>
+              <Text style={styles.infoFieldLabel}>Merkitsijä:</Text>
+              <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
+            </View>
+
+            <View style={styles.infoField}>
+              <Text style={styles.infoFieldLabel}>Päivämäärä:</Text>
+              <Text style={styles.infoFieldValue}>
+                {opinion.updatedDate
+                  ? `${moment(opinion.creationDate).format(
+                      "DD.MM.YYYY"
+                    )} (Päivitetty ${moment(opinion.updatedDate).format(
+                      "DD.MM.YYYY"
+                    )})`
+                  : moment(opinion.creationDate).format("DD.MM.YYYY")}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.opinionExtraInfo}>
+            <Html>{opinion.opinion}</Html>
+          </View>
+        </View>
+      ))
+    ) : (
+      <View>
+        <Text>Ei mielipidettä asetettu</Text>
+      </View>
     );
 
   const pageHeader = (
@@ -260,15 +327,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           Tuen seuranta ja arviointi (Opiskelija näkemys)
         </Text>
 
-        <View style={styles.infoField}>
-          {studentOpinion === "" ? (
-            <Text style={styles.infoFieldValue}>
-              Opiskelijan näkemystä ei ole vielä asetettu
-            </Text>
-          ) : (
-            <Html>{studentOpinion}</Html>
-          )}
-        </View>
+        {studentOpinion}
         {pageFooter}
       </Page>
 
@@ -281,15 +340,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           Tuen seuranta ja arviointi (Koulun näkemys)
         </Text>
 
-        <View style={styles.infoField}>
-          {schoolOpinion === "" ? (
-            <Text style={styles.infoFieldValue}>
-              Lukion näkemystä ei ole vielä asetettu
-            </Text>
-          ) : (
-            <Html>{schoolOpinion}</Html>
-          )}
-        </View>
+        {schoolOpinion}
         {pageFooter}
       </Page>
     </Document>
