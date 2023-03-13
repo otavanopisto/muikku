@@ -3,7 +3,6 @@ import {
   EvaluationStateType,
   EvaluationGradeSystem,
   AssignmentEvaluationGradeRequest,
-  AssignmentEvaluationSupplementationRequest,
   WorkspaceEvaluationSaveReturn,
   EvaluationBasePriceById,
   EvaluationJournalCommentsByJournal,
@@ -15,7 +14,10 @@ import { MApiError } from "../../../lib/mApi";
 import notificationActions, {
   displayNotification,
 } from "~/actions/base/notifications";
-import { EvaluationAssigmentData } from "../../../@types/evaluation";
+import {
+  EvaluationAssigmentData,
+  EvaluationJournalFeedback,
+} from "../../../@types/evaluation";
 import { EvaluationEnum, BilledPriceRequest } from "../../../@types/evaluation";
 import {
   MaterialCompositeRepliesType,
@@ -186,6 +188,29 @@ export type EVALUATION_NEEDS_RELOAD_REQUESTS_UPDATE = SpecificActionType<
 >;
 
 // EVALUATION JOURNALS
+
+// EVALUATION JOURNALS FEEDBACK
+export type EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE = SpecificActionType<
+  "EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE",
+  EvaluationStateType
+>;
+
+export type EVALUATION_JOURNAL_FEEDBACK_LOAD = SpecificActionType<
+  "EVALUATION_JOURNAL_FEEDBACK_LOAD",
+  EvaluationJournalFeedback
+>;
+
+export type EVALUATION_JOURNAL_FEEDBACK_CREATE_OR_UPDATE = SpecificActionType<
+  "EVALUATION_JOURNAL_FEEDBACK_CREATE_OR_UPDATE",
+  EvaluationJournalFeedback
+>;
+
+export type EVALUATION_JOURNAL_FEEDBACK_DELETE = SpecificActionType<
+  "EVALUATION_JOURNAL_FEEDBACK_DELETE",
+  null
+>;
+
+// EVALUATION JOURNAL LIST
 export type EVALUATION_JOURNAL_STATE_UPDATE = SpecificActionType<
   "EVALUATION_JOURNAL_STATE_UPDATE",
   EvaluationStateType
@@ -424,21 +449,6 @@ export interface SaveEvaluationAssignmentGradeEvaluation {
 }
 
 /**
- * SaveEvaluationAssignmentSupplementation
- */
-export interface SaveEvaluationAssignmentSupplementation {
-  (data: {
-    workspaceEntityId: number;
-    userEntityId: number;
-    workspaceMaterialId: number;
-    dataToSave: AssignmentEvaluationSupplementationRequest;
-    materialId: number;
-    onSuccess?: () => void;
-    onFail?: () => void;
-  }): AnyActionType;
-}
-
-/**
  * DeleteAssessmentRequest
  */
 export interface DeleteAssessmentRequest {
@@ -529,6 +539,44 @@ export interface UpdateOpenedAssignmentEvaluationId {
  */
 export interface UpdateNeedsReloadEvaluationRequests {
   (data: { value: boolean }): AnyActionType;
+}
+
+/**
+ * LoadEvaluationJournalFeedbackFromServerTriggerType
+ */
+export interface LoadEvaluationJournalFeedbackFromServerTriggerType {
+  (data: {
+    userEntityId: number;
+    workspaceEntityId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * CreateOrUpdateEvaluationJournalFeedbackTriggerType
+ */
+export interface CreateOrUpdateEvaluationJournalFeedbackTriggerType {
+  (data: {
+    userEntityId: number;
+    workspaceEntityId: number;
+    feedback: string;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * DeleteEvaluationJournalFeedbackTriggerType
+ */
+export interface DeleteEvaluationJournalFeedbackTriggerType {
+  (data: {
+    userEntityId: number;
+    workspaceEntityId: number;
+    feedbackId: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
 }
 
 /**
@@ -1016,6 +1064,176 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
         );
         dispatch({
           type: "EVALUATION_ASSESSMENT_EVENTS_STATE_UPDATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * Loads evaluation journal feed
+ *
+ * @param data data
+ */
+const loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFromServerTriggerType =
+  function loadEvaluationJournalFeedbkackFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      dispatch({
+        type: "EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE",
+        payload: <EvaluationStateType>"LOADING",
+      });
+
+      try {
+        const journalFeedback = (await promisify(
+          mApi().evaluation.workspaces.students.journalfeedback.read(
+            data.workspaceEntityId,
+            data.userEntityId
+          ),
+          "callback"
+        )()) as EvaluationJournalFeedback | null;
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_FEEDBACK_LOAD",
+          payload: journalFeedback,
+        });
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE",
+          payload: <EvaluationStateType>"READY",
+        });
+      } catch (err) {
+        dispatch(
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.loadJournalFeedback.error",
+              err.message
+            ),
+            "error"
+          )
+        );
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * Creates or updates journal feedback
+ * @param data data
+ */
+const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFeedbackTriggerType =
+  function createEvaluationJournalFeedback(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        const journalFeedback = (await promisify(
+          mApi().evaluation.workspaces.students.journalfeedback.create(
+            data.workspaceEntityId,
+            data.userEntityId,
+            {
+              feedback: data.feedback,
+            }
+          ),
+          "callback"
+        )()) as EvaluationJournalFeedback;
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_FEEDBACK_CREATE_OR_UPDATE",
+          payload: journalFeedback,
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.savingJournalFeedback.success"
+            ),
+            "success"
+          )
+        );
+
+        data.success && data.success();
+      } catch (err) {
+        dispatch(
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.savingJournalFeedback.error",
+              err.message
+            ),
+            "error"
+          )
+        );
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * Deletes evaluation journal feedback
+ *
+ * @param data data
+ */
+const deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType =
+  function deleteEvaluationJournalFeedback(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        await promisify(
+          mApi().evaluation.workspaces.students.journalfeedback.del(
+            data.workspaceEntityId,
+            data.userEntityId,
+            data.feedbackId
+          ),
+          "callback"
+        )();
+
+        data.success && data.success();
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_FEEDBACK_DELETE",
+          payload: null,
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.deletingJournalFeedback.success"
+            ),
+            "success"
+          )
+        );
+      } catch (err) {
+        dispatch(
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.deletingJournalFeedback.error",
+              err.message
+            ),
+            "error"
+          )
+        );
+
+        dispatch({
+          type: "EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE",
           payload: <EvaluationStateType>"ERROR",
         });
       }
@@ -1663,7 +1881,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
                 "callback"
               )() || [];
 
-            const assignmentsExcercise =
+            const assignmentsExercise =
               <MaterialAssignmentType[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EXERCISE",
@@ -1682,7 +1900,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
             const assignments = [
               ...assignmentsInterim,
               ...assignmentsEvaluated,
-              ...assignmentsExcercise,
+              ...assignmentsExercise,
             ];
 
             return assignments;
@@ -2568,4 +2786,7 @@ export {
   createEvaluationJournalComment,
   updateEvaluationJournalComment,
   deleteEvaluationJournalComment,
+  loadEvaluationJournalFeedbackFromServer,
+  createOrUpdateEvaluationJournalFeedback,
+  deleteEvaluationJournalFeedback,
 };

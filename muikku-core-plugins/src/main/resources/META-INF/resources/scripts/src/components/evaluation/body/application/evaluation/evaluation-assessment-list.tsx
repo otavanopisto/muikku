@@ -210,13 +210,13 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
           evaluation.evaluationCompositeReplies.state === "READY" ? (
             <div className="evaluation-modal__content-actions">
               <Link
-                className="link link--evaluation-close-open"
+                className="link link--evaluation link--evaluation-open-close"
                 onClick={handleCloseAllMaterialContentClick}
               >
                 {t("actions.hideAll")}
               </Link>
               <Link
-                className="link link--evaluation-close-open"
+                className="link link--evaluation link--evaluation-open-close"
                 onClick={handleOpenAllMaterialContentClick}
               >
                 {t("actions.openAll", { ns: "evaluation" })}

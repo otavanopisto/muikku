@@ -235,7 +235,7 @@ class WorkspaceUsers extends React.Component<
     const data = {
       workspace: this.props.workspace,
       payload: {
-        q: "",
+        q: this.state.currentSearch,
         active: active,
         firstResult: (page - 1) * this.usersPerPage,
         maxResults: this.usersPerPage,
@@ -470,7 +470,6 @@ class WorkspaceUsers extends React.Component<
             />
             <MobileOnlyTabs
               onTabChange={this.onTabChange}
-              renderAllComponents
               activeTab={this.state.activeTab}
               tabs={[
                 {

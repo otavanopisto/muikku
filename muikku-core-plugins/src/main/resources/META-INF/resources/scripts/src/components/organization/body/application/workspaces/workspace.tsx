@@ -130,14 +130,16 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                   <label>{t("labels.student_count", { ns: "users" })}:</label>
                   <span>{this.props.workspace.studentCount}</span>
                 </div>
+                <div>
+                  <label>{t("labels.description")}</label>
+                  <article
+                    className="rich-text"
+                    dangerouslySetInnerHTML={{
+                      __html: this.props.workspace.description,
+                    }}
+                  ></article>
+                </div>
               </div>
-              <label>{t("labels.description")}:</label>
-              <article
-                className="rich-text"
-                dangerouslySetInnerHTML={{
-                  __html: this.props.workspace.description,
-                }}
-              ></article>
             </ApplicationListItemBody>
             <ApplicationListItemFooter className="application-list__item-footer--course">
               <Button

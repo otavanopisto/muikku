@@ -28,7 +28,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
-import ExcerciseEditor from "./editors/excercise-editor";
+import ExerciseEditor from "./editors/exercise-editor";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -56,7 +56,6 @@ interface EvaluationAssessmentAssignmentState {
   materialNode?: MaterialContentNodeType;
   isLoading: boolean;
   openAssignmentType?: "EVALUATED" | "EXERCISE";
-  showCloseEditorWarning: boolean;
   isRecording: boolean;
 }
 
@@ -81,7 +80,6 @@ class EvaluationAssessmentAssignment extends React.Component<
       openContent: false,
       isLoading: true,
       materialNode: undefined,
-      showCloseEditorWarning: false,
       isRecording: false,
     };
   }
@@ -248,7 +246,6 @@ class EvaluationAssessmentAssignment extends React.Component<
     this.setState({
       openDrawer: false,
       openAssignmentType: undefined,
-      showCloseEditorWarning: false,
     });
   };
 
@@ -292,15 +289,6 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
-   * handleAudioAssessmentChange
-   */
-  handleAudioAssessmentChange = () => {
-    this.setState({
-      showCloseEditorWarning: true,
-    });
-  };
-
-  /**
    * assignmentTypeClass
    * @returns string
    */
@@ -317,29 +305,23 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @returns Assignment function button class
    */
   assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) => {
-    if (
-      compositeReply &&
-      compositeReply.evaluationInfo &&
-      compositeReply.evaluationInfo.date
-    ) {
-      if (
-        (compositeReply.evaluationInfo &&
-          compositeReply.evaluationInfo.grade) ||
-        (compositeReply.evaluationInfo &&
-          this.props.assigment.assignmentType === "EXERCISE" &&
-          compositeReply.evaluationInfo.type === "PASSED")
-      ) {
-        // Evaluated if graded or if assignment type is excercise and info type returns PASSED
-        return "state-EVALUATED";
-      } else if (
-        compositeReply.state === "SUBMITTED" &&
-        compositeReply.evaluationInfo.type === "INCOMPLETE"
-      ) {
-        // Supplemented as in use to be incomplete but user has submitted it again
-        return "state-SUPPLEMENTED";
-      } else {
-        // Incomplete
-        return "state-INCOMPLETE";
+    if (compositeReply) {
+      const { evaluationInfo } = compositeReply;
+
+      if (evaluationInfo) {
+        switch (evaluationInfo.type) {
+          case "FAILED":
+            return "state-FAILED";
+
+          case "INCOMPLETE":
+            if (compositeReply.state === "SUBMITTED") {
+              return "state-SUPPLEMENTED";
+            }
+            return "state-INCOMPLETE";
+
+          default:
+            return "state-EVALUATED";
+        }
       }
     }
   };
@@ -353,16 +335,21 @@ class EvaluationAssessmentAssignment extends React.Component<
     if (compositeReply) {
       const { evaluationInfo } = compositeReply;
 
-      if (evaluationInfo && evaluationInfo.type !== "INCOMPLETE") {
-        return "state-EVALUATED";
-      } else if (
-        compositeReply.state === "SUBMITTED" &&
-        evaluationInfo &&
-        evaluationInfo.type === "INCOMPLETE"
-      ) {
-        return "state-SUPPLEMENTED";
+      if (evaluationInfo) {
+        switch (evaluationInfo.type) {
+          case "FAILED":
+            return "state-FAILED";
+
+          case "INCOMPLETE":
+            if (compositeReply.state === "SUBMITTED") {
+              return "state-SUPPLEMENTED";
+            }
+            return "state-INCOMPLETE";
+
+          default:
+            return "state-EVALUATED";
+        }
       }
-      return "state-INCOMPLETE";
     }
   };
 
@@ -529,7 +516,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     const materialPageType =
       this.props.assigment.assignmentType === "EVALUATED"
         ? "assignment"
-        : "excercise";
+        : "exercise";
 
     return (
       <div className={`evaluation-modal__item `}>
@@ -584,13 +571,12 @@ class EvaluationAssessmentAssignment extends React.Component<
           </div>
         </div>
         <SlideDrawer
-          showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
           closeIconModifiers={["evaluation"]}
           modifiers={
             this.props.assigment.assignmentType === "EVALUATED"
               ? ["assignment"]
-              : ["excercise"]
+              : ["exercise"]
           }
           show={
             this.state.openDrawer &&
@@ -606,10 +592,6 @@ class EvaluationAssessmentAssignment extends React.Component<
             this.props.assigment.assignmentType === "EVALUATED" ? (
               <AssignmentEditor
                 selectedAssessment={this.props.selectedAssessment}
-                onAudioAssessmentChange={this.handleAudioAssessmentChange}
-                showAudioAssessmentWarningOnClose={
-                  this.state.showCloseEditorWarning
-                }
                 editorLabel={t("labels.literalEvaluation", {
                   ns: "evaluation",
                 })}
@@ -622,12 +604,8 @@ class EvaluationAssessmentAssignment extends React.Component<
                 onClose={this.handleCloseSlideDrawer}
               />
             ) : (
-              <ExcerciseEditor
+              <ExerciseEditor
                 selectedAssessment={this.props.selectedAssessment}
-                onAudioAssessmentChange={this.handleAudioAssessmentChange}
-                showAudioAssessmentWarningOnClose={
-                  this.state.showCloseEditorWarning
-                }
                 editorLabel={t("labels.literalEvaluation", {
                   ns: "evaluation",
                 })}

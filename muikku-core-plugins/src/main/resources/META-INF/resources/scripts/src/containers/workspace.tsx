@@ -24,13 +24,14 @@ import { RouteComponentProps } from "react-router";
 import {
   setCurrentWorkspace,
   loadStaffMembersOfWorkspace,
-  updateLastWorkspace,
+  updateLastWorkspaces,
   loadStudentsOfWorkspace,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadCurrentWorkspaceUserGroupPermissions,
   loadWorkspaceChatStatus,
   setAvailableCurriculums,
+  loadLastWorkspacesFromServer,
 } from "~/actions/workspaces";
 import {
   loadAnnouncementsAsAClient,
@@ -298,8 +299,9 @@ export default class Workspace extends React.Component<
 
         if (state.workspaces.currentWorkspace.isCourseMember) {
           this.props.store.dispatch(
-            updateLastWorkspace({
+            updateLastWorkspaces({
               url: location.origin + location.pathname,
+              workspaceId: state.workspaces.currentWorkspace.id,
               workspaceName: state.workspaces.currentWorkspace.name,
               materialName:
                 state.workspaces.currentMaterials[0].children[0].title,
@@ -342,8 +344,9 @@ export default class Workspace extends React.Component<
         });
         if (indexFound !== -1) {
           this.props.store.dispatch(
-            updateLastWorkspace({
+            updateLastWorkspaces({
               url: location.origin + location.pathname + newHash,
+              workspaceId: state.workspaces.currentWorkspace.id,
               workspaceName: state.workspaces.currentWorkspace.name,
               materialName: materialChapter.children[indexFound].title,
             }) as Action
@@ -665,19 +668,29 @@ export default class Workspace extends React.Component<
     this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
 
     if (location.includes("subs")) {
-      const payload: DiscussionPatchType = {
-        current: state.discussion.current && undefined,
-        areaId: undefined,
-      };
+      if (location.length <= 2) {
+        const payload: DiscussionPatchType = {
+          current: state.discussion.current && undefined,
+          areaId: undefined,
+        };
 
-      this.props.store.dispatch({
-        type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
-        payload,
-      });
+        this.props.store.dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+          payload,
+        });
 
-      this.props.store.dispatch(
-        showOnlySubscribedThreads({ value: true }) as Action
-      );
+        this.props.store.dispatch(
+          showOnlySubscribedThreads({ value: true }) as Action
+        );
+      } else {
+        this.props.store.dispatch(
+          loadDiscussionThreadFromServer({
+            areaId: parseInt(location[1]),
+            threadId: parseInt(location[2]),
+            threadPage: parseInt(location[3]) || 1,
+          }) as Action
+        );
+      }
     } else {
       state.discussion.subscribedThreadOnly &&
         this.props.store.dispatch(
@@ -712,10 +725,9 @@ export default class Workspace extends React.Component<
         //and there can be a page as #1/2/3/4
         this.props.store.dispatch(
           loadDiscussionThreadFromServer({
-            areaId: parseInt(location[0]),
-            page: parseInt(location[1]),
-            threadId: parseInt(location[2]),
-            threadPage: parseInt(location[3]) || 1,
+            areaId: parseInt(location[2]),
+            threadId: parseInt(location[3]),
+            threadPage: parseInt(location[4]) || 1,
           }) as Action
         );
       }
@@ -872,6 +884,8 @@ export default class Workspace extends React.Component<
           state.status.currentWorkspaceId
         ) as Action
       );
+
+      this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
       this.props.store.dispatch(
         loadWholeWorkspaceMaterials(
           state.status.currentWorkspaceId,

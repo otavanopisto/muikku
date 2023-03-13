@@ -5,7 +5,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
@@ -20,7 +19,8 @@ import {
  * DeleteJournalProps
  */
 interface DeleteJournalCommentProps extends WithTranslation {
-  i18nOLD: i18nType;
+  userEntityId: number;
+  workspaceEntityId: number;
   journalComment: JournalComment;
   deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,6 +60,8 @@ class DeleteJournalComment extends React.Component<
    * @param closeDialog closeDialog
    */
   deleteJournalComment(closeDialog: () => void) {
+    const { journalComment, userEntityId, workspaceEntityId } = this.props;
+
     this.setState({ locked: true });
     this.props.deleteEvaluationJournalComment({
       deleteCommentPayload: {
@@ -67,9 +69,13 @@ class DeleteJournalComment extends React.Component<
         journalEntryId: this.props.journalComment.journalEntryId,
       },
       journalEntryId: this.props.journalComment.journalEntryId,
-      workspaceEntityId: 1,
+      workspaceEntityId: this.props.workspaceEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
+        localStorage.removeItem(
+          `diary-journalComment-edit.${userEntityId}-${workspaceEntityId}-${journalComment.journalEntryId}-${journalComment.id}.journalCommentText`
+        );
+
         this.setState({ locked: false });
         closeDialog();
       },
@@ -127,16 +133,6 @@ class DeleteJournalComment extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -145,5 +141,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default withTranslation(["evaluation"])(
-  connect(mapStateToProps, mapDispatchToProps)(DeleteJournalComment)
+  connect(null, mapDispatchToProps)(DeleteJournalComment)
 );

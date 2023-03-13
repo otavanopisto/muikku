@@ -131,7 +131,6 @@ public class UserEmailEntityController {
     if (emails != null) {
       for (String email : emails) {
         if (!existingEmails.contains(email)) {
-          logger.info(String.format("Adding email %s to identifier %s", email, userSchoolDataIdentifier.getIdentifier()));
           addUserEmail(userSchoolDataIdentifier, email);
         }
         
@@ -142,7 +141,6 @@ public class UserEmailEntityController {
     }
     
     for (String email : existingEmails) {
-      logger.info(String.format("Removing email %s from identifier %s", email, userSchoolDataIdentifier.getIdentifier()));
       removeUserEmail(userSchoolDataIdentifier, email);
     }
     

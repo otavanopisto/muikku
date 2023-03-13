@@ -49,7 +49,7 @@ export const useInterimEvaluationAssigments = (
     let isCancelled = false;
 
     /**
-     * loadExcercisenData
+     * loadExercisenData
      * Loads student activity data
      * @param workspaceId of student
      */

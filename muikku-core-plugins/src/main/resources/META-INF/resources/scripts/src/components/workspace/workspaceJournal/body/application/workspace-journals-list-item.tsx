@@ -21,7 +21,7 @@ import { bindActionCreators } from "redux";
 import {
   SetCurrentJournalTriggerType,
   setCurrentJournal,
-} from "../../../../../actions/workspaces/journals";
+} from "~/actions/workspaces/journals";
 import { AnyActionType } from "~/actions";
 import WorkspaceJournalCommentList from "./workspace-journal-comment-list";
 import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
@@ -112,10 +112,7 @@ class WorkspaceJournalsListItem extends React.Component<
 
     if (this.state.editing) {
       return (
-        <ApplicationListItem
-          className={"journal"}
-          modifiers={isMandatory && "mandatory"}
-        >
+        <ApplicationListItem className={"journal"}>
           <WorkspaceJournalEditor
             type="edit"
             journal={this.props.journal}
@@ -127,10 +124,7 @@ class WorkspaceJournalsListItem extends React.Component<
 
     return (
       <>
-        <ApplicationListItem
-          className="journal"
-          modifiers={isMandatory && "mandatory"}
-        >
+        <ApplicationListItem className="journal">
           <ApplicationListItemHeader
             onClick={this.handleSetJournalItemClick}
             className="application-list__item-header--journal-entry"
@@ -149,7 +143,13 @@ class WorkspaceJournalsListItem extends React.Component<
                 />
               ) : null
             ) : null}
-            <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+            <div
+              className={`application-list__item-header-main ${
+                this.props.journal.isMaterialField
+                  ? "application-list__item-header-main--journal-entry-mandatory"
+                  : "application-list__item-header-main--journal-entry"
+              }`}
+            >
               {!this.props.status.isStudent ? (
                 <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-creator">
                   {student ? getName(student, true) : this.props.journal.title}
@@ -159,7 +159,11 @@ class WorkspaceJournalsListItem extends React.Component<
                   {this.props.journal.title}
                 </span>
               )}
-              {isDraft && <span>{t("actions.draft")}</span>}
+              {isDraft && (
+                <span className="label label--draft">
+                  <span className="label__text">{t("actions.draft")}</span>
+                </span>
+              )}
             </div>
             <div className="application-list__item-header-aside">
               <span>
@@ -211,8 +215,12 @@ class WorkspaceJournalsListItem extends React.Component<
             )}
             {!this.props.asCurrent && (
               <div className="application-list__item-footer-content-aside">
-                <Link onClick={this.handleSetJournalItemClick}>
-                  {t("labels.comments")}({this.props.journal.commentCount}){" "}
+                <Link
+                  as="span"
+                  className="link link--application-list"
+                  onClick={this.handleSetJournalItemClick}
+                >
+                  {t("labels.comments")} ({this.props.journal.commentCount})
                 </Link>
               </div>
             )}

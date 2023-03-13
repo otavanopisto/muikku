@@ -26,7 +26,7 @@ import ItemList from "~/components/general/item-list";
 interface WorkspacesPanelProps extends WithTranslation {
   status: StatusType;
   workspaces: WorkspaceListType;
-  lastWorkspace: WorkspaceMaterialReferenceType;
+  lastWorkspaces: WorkspaceMaterialReferenceType[];
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -36,7 +36,7 @@ interface WorkspacesPanelProps extends WithTranslation {
  * @returns  JSX.element
  */
 const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
-  const { t, status, workspaces, lastWorkspace } = props;
+  const { t, status, workspaces, lastWorkspaces } = props;
 
   const { nextSuggestions } = useNextCourseSuggestions(
     props.status.userSchoolDataIdentifier,
@@ -50,26 +50,35 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       modifier="workspaces"
       header={t("labels.studying", { ns: "frontPage" })}
     >
-      {lastWorkspace ? (
+      {lastWorkspaces && lastWorkspaces.length > 0 ? (
         <>
           <Panel.BodyTitle>
             {t("labels.continue", { ns: "frontPage" })}
           </Panel.BodyTitle>
           <Panel.BodyContent>
-            <ItemList modifier="continue-studies">
-              <ItemList.Item icon="icon-forward" modifier="continue-studies">
-                {props.lastWorkspace.workspaceName}
-              </ItemList.Item>
-              <ItemList.ItemFooter modifier="continue-studies">
-                <span>{t("content.pointOfContinue", { ns: "frontPage" })}</span>
-                <Link
-                  className="link--index-text-link"
-                  href={props.lastWorkspace.url}
-                >
-                  {props.lastWorkspace.materialName}
-                </Link>
-              </ItemList.ItemFooter>
-            </ItemList>
+            {lastWorkspaces.map((lastWorkspace) => (
+              <ItemList
+                key={lastWorkspace.workspaceId}
+                modifier="continue-studies"
+              >
+                <ItemList.Item icon="icon-forward" modifier="continue-studies">
+                  {lastWorkspace.workspaceName}
+                </ItemList.Item>
+                <ItemList.ItemFooter modifier="continue-studies">
+                  <span>
+                    <span>
+                      {t("content.pointOfContinue", { ns: "frontPage" })}
+                    </span>
+                  </span>
+                  <Link
+                    className="link--index-text-link"
+                    href={lastWorkspace.url}
+                  >
+                    {lastWorkspace.materialName}
+                  </Link>
+                </ItemList.ItemFooter>
+              </ItemList>
+            ))}
           </Panel.BodyContent>
         </>
       ) : null}
@@ -193,7 +202,7 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     workspaces: state.workspaces.userWorkspaces,
-    lastWorkspace: state.workspaces.lastWorkspace,
+    lastWorkspaces: state.workspaces.lastWorkspaces,
   };
 }
 

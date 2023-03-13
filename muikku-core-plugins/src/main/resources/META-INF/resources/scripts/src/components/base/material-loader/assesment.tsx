@@ -16,17 +16,14 @@ type MaterialLoaderAssesmentProps = MaterialLoaderProps;
  */
 export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
   const { t } = useTranslation(["materials", "evaluation", "common"]);
+  const { evaluationInfo } = props.compositeReplies;
 
   const literalAssesment =
     (props.material.evaluation && props.material.evaluation.verbalAssessment) ||
-    (props.compositeReplies &&
-      props.compositeReplies.evaluationInfo &&
-      props.compositeReplies.evaluationInfo.text);
+    (evaluationInfo && evaluationInfo.text);
 
   const audioAssessments =
-    (props.compositeReplies &&
-      props.compositeReplies.evaluationInfo &&
-      props.compositeReplies.evaluationInfo.audioAssessments) ||
+    (evaluationInfo && evaluationInfo.audioAssessments) ||
     (props.material.evaluation && props.material.evaluation.audioAssessments);
 
   if (literalAssesment === undefined && audioAssessments === undefined) {

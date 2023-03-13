@@ -486,7 +486,7 @@ public class CalendarRESTService {
         restParticipant.setUserEntityId(participant.getUserEntityId());
         restParticipant.setAttendance(participant.getAttendance());
         UserEntity userEntity = userEntityController.findUserEntityById(participant.getUserEntityId());
-        restParticipant.setName(userEntityController.getName(userEntity).getDisplayNameWithLine());
+        restParticipant.setName(userEntityController.getName(userEntity, true).getDisplayNameWithLine());
         restEvent.addParticipant(restParticipant);
       }
     }

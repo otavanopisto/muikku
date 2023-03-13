@@ -1,12 +1,13 @@
-import { SetRecordings } from "~/@types/recorder";
+import { SetRecorder } from "~/@types/recorder";
 
 /**
  * deleteAudio
  * @param recordId recordId
  * @param setRecordings setRecordings
  */
-export function deleteAudio(recordId: string, setRecordings: SetRecordings) {
-  setRecordings((prevState) =>
-    prevState.filter((record) => record.id !== recordId)
-  );
+export function deleteAudio(recordId: string, setRecordings: SetRecorder) {
+  setRecordings((prevState) => ({
+    ...prevState,
+    values: prevState.values.filter((record) => record.id !== recordId),
+  }));
 }

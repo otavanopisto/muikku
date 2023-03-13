@@ -154,7 +154,7 @@ public class MeRESTService {
       
       boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
       SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
-      UserEntityName userEntityName = userEntityController.getName(userEntity);
+      UserEntityName userEntityName = userEntityController.getName(userEntity, true);
       String email = userEmailEntityController.getUserDefaultEmailAddress(schoolDataIdentifier, false);
 
       UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);

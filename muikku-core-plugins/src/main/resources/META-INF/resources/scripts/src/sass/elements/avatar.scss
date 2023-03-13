@@ -33,7 +33,7 @@
   border-radius: 100%;
   color: $color-default;
   display: flex;
-  font-family: $text-avatar-font-family;
+  font-family: $branded-font-family;
   height: $avatar-mobile-size;
   justify-content: center;
   width: $avatar-mobile-size;
@@ -42,6 +42,12 @@
     height: $avatar-desktop-size;
     width: $avatar-desktop-size;
   }
+}
+
+.avatar-container--discussion-area {
+  background: $color-default-generic-background;
+  color: $color-info;
+  font-size: 1.5rem;
 }
 
 .avatar-container--small {

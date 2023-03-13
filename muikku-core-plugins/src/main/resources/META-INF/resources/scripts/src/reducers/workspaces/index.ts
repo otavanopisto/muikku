@@ -7,7 +7,10 @@ import {
   WorkspaceStudentListType,
 } from "~/reducers/user-index";
 import { repairContentNodes } from "~/util/modifiers";
-import { AudioAssessment } from "../../@types/evaluation";
+import {
+  AssignmentEvaluationType,
+  AudioAssessment,
+} from "../../@types/evaluation";
 
 /**
  * OrganizationCourseTeacherType
@@ -197,6 +200,7 @@ export interface WorkspaceJournalType {
   content: string;
   title: string;
   created: string;
+  commentCount: number;
 }
 
 export type WorkspaceJournalListType = Array<WorkspaceJournalType>;
@@ -364,6 +368,17 @@ export interface TemplateWorkspaceType {
 }
 
 /**
+ * Language options for workspace
+ * used as lang attribute jsx
+ */
+export const languageOptions = ["fi", "en", "sw", "ge", "ru", "ja"] as const;
+
+/**
+ * Language
+ */
+export type Language = typeof languageOptions[number];
+
+/**
  * WorkspaceType
  */
 export interface WorkspaceType {
@@ -374,6 +389,7 @@ export interface WorkspaceType {
   id: number;
   lastVisit: string;
   materialDefaultLicense: string;
+  language: Language;
   name: string;
   nameExtension?: string | null;
   numVisits: number;
@@ -428,6 +444,7 @@ export type WorkspaceUpdateType = Partial<WorkspaceType>;
  */
 export interface WorkspaceMaterialReferenceType {
   workspaceName: string;
+  workspaceId: number;
   materialName: string;
   url: string;
 }
@@ -590,6 +607,13 @@ export interface WorkspaceMaterialEditorType {
   showUpdateLinkedMaterialsDialogForPublishCount: number;
 }
 
+/**
+ * WorkspaceMaterialExtraTools
+ */
+export interface WorkspaceMaterialExtraTools {
+  opened: boolean;
+}
+
 export type WorkspacesPatchType = Partial<WorkspacesType>;
 
 export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
@@ -638,6 +662,7 @@ export type AssignmentType =
  */
 export interface MaterialContentNodeType {
   title: string;
+  titleLanguage?: Language | null;
   license: string;
   viewRestrict: MaterialViewRestriction;
   html: string;
@@ -695,8 +720,9 @@ export type MaterialCompositeRepliesStateType =
 export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>;
   state: MaterialCompositeRepliesStateType;
-
-  //Available sometimes
+  /**
+   * evaluationInfo of the material assignments
+   */
   evaluationInfo?: MaterialEvaluationInfo;
 
   //Available when loaded specifically (eg. via records)
@@ -714,7 +740,9 @@ export interface MaterialCompositeRepliesType {
  * MaterialEvaluationInfo
  */
 export interface MaterialEvaluationInfo {
+  id: number;
   type: MaterialCompositeRepliesStateType;
+  evaluationType: AssignmentEvaluationType;
   text: string;
   grade: string;
   date: string;
@@ -753,7 +781,7 @@ export interface WorkspacesType {
   state: WorkspacesStateType;
   // Last workspace that was opened
   lastWorkspace?: WorkspaceMaterialReferenceType;
-
+  lastWorkspaces?: WorkspaceMaterialReferenceType[];
   // Following is data related to current workspace
   currentWorkspace?: WorkspaceType;
   currentHelp?: MaterialContentNodeListType;
@@ -781,6 +809,7 @@ export interface WorkspacesType {
   // Workspace material editor and boolean to indicate if edit mode is active
   editMode?: WorkspaceEditModeStateType;
   materialEditor?: WorkspaceMaterialEditorType;
+  materialExtraTools?: WorkspaceMaterialExtraTools;
 }
 
 /**
@@ -789,6 +818,7 @@ export interface WorkspacesType {
 const initialWorkspacesState: WorkspacesType = {
   state: "LOADING",
   lastWorkspace: null,
+  lastWorkspaces: [],
   currentWorkspace: null,
   currentHelp: null,
   currentMaterials: null,
@@ -821,6 +851,9 @@ const initialWorkspacesState: WorkspacesType = {
   },
   materialEditor: {
     currentNodeWorkspace: null,
+    currentNodeValue: null,
+    currentDraftNodeValue: null,
+    parentNodeValue: null,
     section: false,
     opened: false,
     canDelete: true,
@@ -843,6 +876,9 @@ const initialWorkspacesState: WorkspacesType = {
     showUpdateLinkedMaterialsDialogForPublishCount: 0,
     canSetTitle: true,
   },
+  materialExtraTools: {
+    opened: false,
+  },
 };
 
 /**
@@ -863,8 +899,8 @@ export const workspaces: Reducer<WorkspacesType> = (
     case "UPDATE_AVAILABLE_CURRICULUMS":
       return { ...state, availableCurriculums: action.payload };
 
-    case "UPDATE_LAST_WORKSPACE":
-      return { ...state, lastWorkspace: action.payload };
+    case "UPDATE_LAST_WORKSPACES":
+      return { ...state, lastWorkspaces: action.payload };
 
     case "SET_CURRENT_WORKSPACE":
       return { ...state, currentWorkspace: action.payload };
@@ -1023,7 +1059,7 @@ export const workspaces: Reducer<WorkspacesType> = (
       );
       if (!wasUpdated) {
         newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([
-          <MaterialCompositeRepliesType>action.payload,
+          <MaterialCompositeRepliesType>{ ...action.payload },
         ]);
       }
       return { ...state, currentMaterialsReplies: newCurrentMaterialsReplies };
@@ -1305,6 +1341,15 @@ export const workspaces: Reducer<WorkspacesType> = (
 
     case "UPDATE_WORKSPACES_EDIT_MODE_STATE":
       return { ...state, editMode: { ...state.editMode, ...action.payload } };
+
+    case "MATERIAL_UPDATE_SHOW_EXTRA_TOOLS":
+      return {
+        ...state,
+        materialExtraTools: {
+          ...state.materialExtraTools,
+          opened: !state.materialExtraTools.opened,
+        },
+      };
 
     default:
       return state;

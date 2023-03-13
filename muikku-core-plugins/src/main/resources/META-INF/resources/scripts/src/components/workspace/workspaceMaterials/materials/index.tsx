@@ -31,6 +31,8 @@ import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import {
+  materialShowOrHideExtraTools,
+  MaterialShowOrHideExtraToolsTriggerType,
   setWorkspaceMaterialEditorState,
   createWorkspaceMaterialContentNode,
   updateWorkspaceMaterialContentNode,
@@ -59,6 +61,7 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType;
 }
 
 /**
@@ -350,6 +353,13 @@ class WorkspaceMaterials extends React.Component<
       });
     });
   }
+
+  /**
+   * handleOpenMaterialExtraToolsDrawerClick
+   */
+  handleOpenMaterialExtraToolsDrawerClick = () => {
+    this.props.materialShowOrHideExtraTools();
+  };
 
   /**
    * onOpenNavigation
@@ -741,6 +751,7 @@ class WorkspaceMaterials extends React.Component<
               transform: "translateY(" + -this.state.defaultOffset + "px)",
             }}
           />
+
           {/*TOP OF THE CHAPTER*/}
           <h2
             className={`content-panel__chapter-title ${
@@ -777,7 +788,10 @@ class WorkspaceMaterials extends React.Component<
                 </Dropdown>
               </div>
             ) : null}
-            <div className="content-panel__chapter-title-text">
+            <div
+              className="content-panel__chapter-title-text"
+              lang={section.titleLanguage || this.props.workspace.language}
+            >
               {section.title}
             </div>
           </h2>
@@ -810,7 +824,7 @@ class WorkspaceMaterials extends React.Component<
       <ContentPanel
         aside={progressData}
         onOpenNavigation={this.onOpenNavigation}
-        modifier="materials"
+        modifier="workspace-materials"
         navigation={this.props.navigation}
         title={t("labels.materials", { ns: "materials" })}
         ref="content-panel"
@@ -848,6 +862,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       setWorkspaceMaterialEditorState,
       createWorkspaceMaterialContentNode,
       updateWorkspaceMaterialContentNode,
+      materialShowOrHideExtraTools,
     },
     dispatch
   );

@@ -1,15 +1,12 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/breadcrumb.scss";
 import "~/sass/elements/application-panel.scss";
-
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
-
-import { i18nType } from "~/reducers/base/i18nOLD";
+import "~/sass/elements/react-select-override.scss";
 import { DiscussionType } from "~/reducers/discussion";
 import NewArea from "../../dialogs/new-area";
 import ModifyArea from "../../dialogs/modify-area";
@@ -23,6 +20,7 @@ import {
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
+import Select from "react-select";
 import {
   SubscribeDiscussionArea,
   subscribeDiscussionArea,
@@ -34,6 +32,12 @@ import {
   showOnlySubscribedThreads,
 } from "~/actions/discussion/index";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { OptionWithExtraContent } from "~/components/general/react-select/types";
+import { OptionWithDescription } from "~/components/general/react-select/option";
+
+type DiscussionAreaOptionWithExtraContent = OptionWithExtraContent<
+  string | number
+>;
 
 /**
  * DiscussionToolbarProps
@@ -54,7 +58,7 @@ interface DiscussionToolbarState {}
 /**
  * CommunicatorToolbar
  */
-class CommunicatorToolbar extends React.Component<
+class DiscussionToolbar extends React.Component<
   DiscussionToolbarProps,
   DiscussionToolbarState
 > {
@@ -65,7 +69,6 @@ class CommunicatorToolbar extends React.Component<
   constructor(props: DiscussionToolbarProps) {
     super(props);
 
-    this.onSelectChange = this.onSelectChange.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
   }
 
@@ -92,35 +95,25 @@ class CommunicatorToolbar extends React.Component<
   };
 
   /**
-   * onSelectChange
-   * @param e e
+   * handleSelectChange
+   * @param selectedOptions selectedOptions
    */
-  onSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    window.location.hash = e.target.value;
-  }
+  handleSelectChange = (
+    selectedOptions: DiscussionAreaOptionWithExtraContent
+  ) => {
+    window.location.hash = selectedOptions.value as string;
+  };
 
   /**
    * onGoBackClick
    * @param e e
    */
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    //TODO this is a retarded way to do things if we ever update to a SPA
-    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
-    if (history.replaceState) {
-      const canGoBack =
-        (!document.referrer ||
-          document.referrer.indexOf(window.location.host) !== -1) &&
-        history.length;
-      if (canGoBack) {
-        history.back();
-      } else {
-        const splitted = location.hash.split("/");
-        history.replaceState("", "", splitted[0] + "/" + splitted[1]);
-        window.dispatchEvent(new HashChangeEvent("hashchange"));
-      }
+    const hash = window.location.hash.replace("#", "").split("/");
+    if (hash.includes("subs")) {
+      location.hash = "subs";
     } else {
-      const splitted = location.hash.split("/");
-      location.hash = splitted[0] + "/" + splitted[1];
+      location.hash = hash[0] + "/" + hash[1];
     }
   }
 
@@ -178,6 +171,46 @@ class CommunicatorToolbar extends React.Component<
         (sArea) => sArea.areaId === this.props.discussion.areaId
       ) !== -1;
 
+    const otherOptions: DiscussionAreaOptionWithExtraContent[] =
+      this.props.discussion.areas.map((area) => {
+        const subscribed =
+          this.props.discussion.subscribedAreas.findIndex(
+            (sArea) => sArea.areaId === area.id
+          ) !== -1;
+
+        let label = area.name;
+
+        if (subscribed) {
+          label = `${area.name} (${this.props.i18n.t("labels.subscribed", {
+            ns: "messaging",
+          })})`;
+        }
+
+        return {
+          value: area.id,
+          label,
+          extraContent: area.description,
+        } as DiscussionAreaOptionWithExtraContent;
+      });
+
+    const options: DiscussionAreaOptionWithExtraContent[] = [
+      {
+        value: "",
+        label: this.props.i18n.t("labels.allDiscussionAreas", {
+          ns: "messaging",
+        }),
+      },
+      {
+        value: "subs",
+        label: this.props.i18n.t("labels.subscriptions"),
+      },
+      ...otherOptions,
+    ];
+
+    const currentSelectValue = options.find(
+      (option) => option.value === this.selectValue()
+    );
+
     return (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
@@ -228,38 +261,15 @@ class CommunicatorToolbar extends React.Component<
             <label htmlFor="discussionAreaSelect" className="visually-hidden">
               {this.props.i18n.t("wcag.selectArea", { ns: "messaging" })}
             </label>
-            <select
-              id="discussionAreaSelect"
-              className="form-element__select form-element__select--toolbar-selector"
-              onChange={this.onSelectChange}
-              value={this.selectValue()}
-            >
-              <option value="">
-                {this.props.i18n.t("labels.allDiscussionAreas", {
-                  ns: "messaging",
-                })}
-              </option>
-              <option value="subs">
-                {this.props.i18n.t("labels.subscriptions")}
-              </option>
-              {this.props.discussion.areas.map((area) => {
-                const subscribed =
-                  this.props.discussion.subscribedAreas.findIndex(
-                    (sArea) => sArea.areaId === area.id
-                  ) !== -1;
-
-                return (
-                  // TODO: use i18next
-                  <option key={area.id} value={area.id}>
-                    {area.name}{" "}
-                    {subscribed &&
-                      `(${this.props.i18n.t("labels.subscribed", {
-                        ns: "messaging",
-                      })})`}
-                  </option>
-                );
-              })}
-            </select>
+            <Select<DiscussionAreaOptionWithExtraContent>
+              className="react-select-override"
+              classNamePrefix="react-select-override"
+              onChange={this.handleSelectChange}
+              value={currentSelectValue}
+              options={options}
+              components={{ Option: OptionWithDescription }}
+              isSearchable={false}
+            />
           </div>
         </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>
@@ -294,5 +304,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(CommunicatorToolbar)
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionToolbar)
 );

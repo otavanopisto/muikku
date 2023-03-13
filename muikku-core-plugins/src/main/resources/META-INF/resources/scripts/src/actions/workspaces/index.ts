@@ -56,9 +56,9 @@ export type UPDATE_USER_WORKSPACES = SpecificActionType<
   WorkspaceListType
 >;
 
-export type UPDATE_LAST_WORKSPACE = SpecificActionType<
-  "UPDATE_LAST_WORKSPACE",
-  WorkspaceMaterialReferenceType
+export type UPDATE_LAST_WORKSPACES = SpecificActionType<
+  "UPDATE_LAST_WORKSPACES",
+  WorkspaceMaterialReferenceType[]
 >;
 
 export type SET_CURRENT_WORKSPACE = SpecificActionType<
@@ -329,29 +329,29 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
   };
 
 /**
- * LoadLastWorkspaceFromServerTriggerType
+ * LoadLastWorkspacesFromServerTriggerType
  */
-export interface LoadLastWorkspaceFromServerTriggerType {
+export interface LoadLastWorkspacesFromServerTriggerType {
   (): AnyActionType;
 }
 
 /**
- * loadLastWorkspaceFromServer
+ * loadLastWorkspacesFromServer
  */
-const loadLastWorkspaceFromServer: LoadLastWorkspaceFromServerTriggerType =
-  function loadLastWorkspaceFromServer() {
+const loadLastWorkspacesFromServer: LoadLastWorkspacesFromServerTriggerType =
+  function loadLastWorkspacesFromServer() {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
         dispatch({
-          type: "UPDATE_LAST_WORKSPACE",
-          payload: <WorkspaceMaterialReferenceType>(
+          type: "UPDATE_LAST_WORKSPACES",
+          payload: <WorkspaceMaterialReferenceType[]>(
             JSON.parse(
               (
                 (await promisify(
-                  mApi().user.property.read("last-workspace"),
+                  mApi().user.property.read("last-workspaces"),
                   "callback"
                 )()) as any
               ).value
@@ -386,22 +386,47 @@ export interface UpdateLastWorkspaceTriggerType {
  * updateLastWorkspace
  * @param newReference newReference
  */
-const updateLastWorkspace: UpdateLastWorkspaceTriggerType =
+const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
   function updateLastWorkspace(newReference) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
     ) => {
       try {
+        // Make a deep copy of the current state of last workspaces
+        const lastWorkspaces = JSON.parse(
+          JSON.stringify(getState().workspaces.lastWorkspaces)
+        ) as WorkspaceMaterialReferenceType[];
+
+        // Location for the newReference according to workspaceId
+        const existingReferenceLocation = lastWorkspaces.findIndex(
+          (lw) => lw.workspaceId === newReference.workspaceId
+        );
+
+        // If there is a reference with the same workspaceId, we remove the old one
+        if (existingReferenceLocation !== -1) {
+          lastWorkspaces.splice(existingReferenceLocation, 1);
+        }
+
+        // If there still are 3 entries, we remove the last one
+        if (lastWorkspaces.length === 3) {
+          lastWorkspaces.pop();
+        }
+
+        // Place the new reference on the top of the array
+        lastWorkspaces.unshift(newReference);
+
         await promisify(
           mApi().user.property.create({
-            key: "last-workspace",
-            value: JSON.stringify(newReference),
+            key: "last-workspaces",
+            value: JSON.stringify(lastWorkspaces),
           }),
           "callback"
         )();
+
         dispatch({
-          type: "UPDATE_LAST_WORKSPACE",
-          payload: newReference,
+          type: "UPDATE_LAST_WORKSPACES",
+          payload: lastWorkspaces,
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -2596,7 +2621,7 @@ export {
   loadMoreWorkspacesFromServer,
   signupIntoWorkspace,
   loadUserWorkspacesFromServer,
-  loadLastWorkspaceFromServer,
+  loadLastWorkspacesFromServer,
   setCurrentWorkspace,
   requestAssessmentAtWorkspace,
   cancelAssessmentAtWorkspace,
@@ -2604,7 +2629,7 @@ export {
   loadStaffMembersOfWorkspace,
   loadWorkspaceChatStatus,
   updateAssignmentState,
-  updateLastWorkspace,
+  updateLastWorkspaces,
   loadStudentsOfWorkspace,
   toggleActiveStateOfStudentOfWorkspace,
   loadWorkspaceDetailsInCurrentWorkspace,

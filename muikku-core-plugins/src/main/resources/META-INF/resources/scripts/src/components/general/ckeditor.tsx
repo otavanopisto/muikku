@@ -92,7 +92,7 @@ const extraConfig = (props: CKEditorProps) => ({
    * This sanitation happen during pasting so custom div styles are unaffected.
    */
   disallowedContent:
-    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[on*]; *{font*}; *{margin*}; *{padding*}; *{list*}; *{line-height}; *{white-space}; *{vertical-*}; *{flex*};",
+    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[on*]; *{-*}; *{--*}; *{font*}; *{margin*}; *{padding*}; *{list*}; *{line-height}; *{white-space}; *{vertical-*}; *{flex*};",
 
   entities_latin: false,
   entities_greek: false,
@@ -223,6 +223,7 @@ export default class CKEditor extends React.Component<
       getCKEDITOR().instances[this.name].destroy();
       this.setupCKEditor(nextProps);
     } else if ((nextProps.children || "") !== this.currentData) {
+      this.currentData = nextProps.children || "";
       this.enableCancelChangeTrigger();
       getCKEDITOR().instances[this.name].setData(nextProps.children || "");
     }

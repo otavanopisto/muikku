@@ -8,9 +8,11 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * DeleteDialogProps
  */
 interface DeleteDialogProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
   onDeleteAudio: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
 }
 
@@ -28,7 +30,7 @@ class DeleteDialog extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: DeleteDialogProps) {
     super(props);
@@ -41,6 +43,7 @@ class DeleteDialog extends React.Component<
    * handleDeleteEventClick
    * @param closeDialog closeDialog
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleDeleteAudioFieldClick(closeDialog: () => any) {
     this.props.onDeleteAudio();
     closeDialog();
@@ -56,6 +59,7 @@ class DeleteDialog extends React.Component<
      * @param closeDialog closeDialog
      * @returns JSX.Element
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -78,6 +82,7 @@ class DeleteDialog extends React.Component<
      * @param closeDialog closeDialog
      * @returns JSX.Element
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const content = (closeDialog: () => any) => (
       <div>{this.props.t("content.removing", { ns: "evaluation" })}</div>
     );

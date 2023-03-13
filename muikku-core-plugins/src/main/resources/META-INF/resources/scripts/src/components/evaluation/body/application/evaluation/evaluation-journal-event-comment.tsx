@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as moment from "moment";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { JournalComment } from "~/@types/journal";
@@ -38,7 +37,15 @@ interface EvaluationDiaryEventCommentProps {
 const EvaluationJournalEventComment: React.FC<
   EvaluationDiaryEventCommentProps
 > = (props) => {
-  const { journalComment, status, onEditClick, canDelete } = props;
+  const {
+    i18n,
+    journalComment,
+    status,
+    onEditClick,
+    canDelete,
+    userEntityId,
+    workspaceEntityId,
+  } = props;
 
   const { comment, created, id, firstName, lastName, authorId } =
     journalComment;
@@ -65,10 +72,15 @@ const EvaluationJournalEventComment: React.FC<
   };
 
   const creatorIsMe = status.userId === authorId;
-  const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
-  const formatedDate = `${moment(created).format("l")} - ${moment(
-    created
-  ).format("LT")}`;
+  const creatorName = creatorIsMe
+    ? i18n.text.get(
+        "plugin.evaluation.evaluationModal.journalComments.creator.me"
+      )
+    : `${firstName} ${lastName}`;
+  const formatedDate = `${i18n.time.format(created, "l")} - ${i18n.time.format(
+    created,
+    "LT"
+  )}`;
 
   return (
     <div
@@ -82,17 +94,19 @@ const EvaluationJournalEventComment: React.FC<
       {creatorIsMe && (
         <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-comment">
           <Link
-            className="link link--evaluation-list"
+            className="link link--evaluation"
             onClick={handleEditCommentClick}
           >
-            {/* {t("common:actions.edit")} */}
             {t("actions.edit")}
           </Link>
 
           {canDelete && creatorIsMe && (
-            <DeleteJournalComment journalComment={journalComment}>
-              <Link className="link link--evaluation-list">
-                {/* {t("common:actions.remove")} */}
+            <DeleteJournalComment
+              journalComment={journalComment}
+              userEntityId={userEntityId}
+              workspaceEntityId={workspaceEntityId}
+            >
+              <Link className="link link--evaluation link--evaluation-delete">
                 {t("actions.remove")}
               </Link>
             </DeleteJournalComment>

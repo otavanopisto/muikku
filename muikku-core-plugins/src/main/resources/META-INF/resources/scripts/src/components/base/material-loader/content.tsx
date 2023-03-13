@@ -93,7 +93,15 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
 
   return (
     <>
-      <div className={className} onClick={stopPropagation}>
+      <div
+        className={className}
+        onClick={stopPropagation}
+        lang={
+          props.material.titleLanguage ||
+          (props.folder && props.folder.titleLanguage) ||
+          props.workspace.language
+        }
+      >
         {props.loadCompositeReplies &&
         typeof props.compositeReplies === "undefined" ? null : (
           <Base
@@ -123,6 +131,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
           />
         )}
       </div>
+
       {props.material.type === "binary" ? (
         <BinaryMaterialLoader
           material={props.material}

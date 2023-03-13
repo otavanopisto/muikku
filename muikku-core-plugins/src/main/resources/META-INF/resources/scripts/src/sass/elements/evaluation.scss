@@ -122,6 +122,10 @@
   padding: 5px 0;
 }
 
+.evaluation-modal__content-actions-sorters {
+  margin-left: 20px;
+}
+
 .evaluation-modal__content-actions-sorters,
 .evaluation-modal__content-actions-filters {
   display: flex;
@@ -343,11 +347,11 @@
   padding: 10px;
 }
 
-.evaluation-modal__event-buttonset {
+.evaluation-modal__event-actions {
   align-items: center;
   display: flex;
   justify-content: flex-end;
-  padding: 0 5px;
+  padding: 5px 10px;
 }
 
 // Evaluation item listing
@@ -356,8 +360,7 @@
   border: 1px solid $color-panel-border-color;
   border-radius: 2px;
   margin: 10px 0;
-  padding: 0 10px;
-  padding-bottom: 10px;
+  padding: 0 10px 10px;
 }
 
 .evaluation-modal__item-header {
@@ -365,6 +368,12 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
+
+  &.state-FAILED {
+    .button-pill--evaluate {
+      background: $color-failed;
+    }
+  }
 
   &.state-EVALUATED {
     .button-pill--evaluate {
@@ -418,6 +427,21 @@
 
 .evaluation-modal__item-header-title--active-dialog {
   cursor: default;
+}
+
+.evaluation-modal__item-header-title--journal-feedback {
+  border: 0;
+  font-size: 1rem;
+  padding: 0;
+}
+
+.title-container {
+  display: flex;
+  flex-flow: row wrap;
+
+  .title-text {
+    margin-right: 5px;
+  }
 }
 
 .evaluation-modal__item-hidden {
@@ -484,6 +508,12 @@
     border-radius: 2px;
     color: $color-default;
   }
+
+  &.state-FAILED {
+    background: $color-failed;
+    border-radius: 2px;
+    color: $color-default;
+  }
 }
 
 .evaluation-modal__item-functions {
@@ -504,12 +534,18 @@
   }
 }
 
+.evaluation-modal__item-journal-feedback {
+  margin: 10px 0;
+}
+
 .evaluation-modal__item-literal-assessment-label,
-.evaluation-modal__item-verbal-assessment-label {
+.evaluation-modal__item-verbal-assessment-label,
+.evaluation-modal__item-journal-feedback-label {
   font-weight: 600;
 }
 
-.evaluation-modal__item-literal-assessment-data {
+.evaluation-modal__item-literal-assessment-data,
+.evaluation-modal__item-journal-feedback-data {
   margin: 5px 0;
 }
 
@@ -522,8 +558,12 @@
 .evaluation-modal__item-actions {
   align-items: center;
   display: flex;
+  justify-content: flex-end;
+  padding: 5px 0;
+}
+
+.evaluation-modal__item-actions--journal-feedback {
   justify-content: flex-start;
-  padding: 5px 10px;
 }
 
 // Evaluation item's subheader
@@ -547,7 +587,7 @@
 }
 
 .evaluation-modal__item-body--journal-comment {
-  padding: 5px 10px;
+  padding: 5px 10px 0;
 }
 
 // Evaluation assessment drawer
@@ -572,14 +612,14 @@
   }
 
   &.state-OPEN {
-    box-shadow: 0 25px 25px;
+    box-shadow: 0 25px 20px $color-evaluation-drawer-shadow;
     opacity: 100%;
     transform: translateX(0);
   }
 }
 
 .evaluation-modal__evaluate-drawer--assignment,
-.evaluation-modal__evaluate-drawer--excercise,
+.evaluation-modal__evaluate-drawer--exercise,
 .evaluation-modal__evaluate-drawer--interim-evaluation {
   z-index: 211;
 }

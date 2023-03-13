@@ -8,13 +8,11 @@ import { AnyActionType } from "../../../actions/index";
 import { StateType } from "../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { StatusType } from "../../../reducers/base/status";
-import { i18nType } from "../../../reducers/base/i18nOLD";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
-import { AudioAssessment } from "../../../@types/evaluation";
-import useRecordingsList from "./hooks/user-recordings-list";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { RecordValue } from "~/@types/recorder";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
 
@@ -27,8 +25,8 @@ interface RecorderProps extends WithTranslation {
    * Handles changes is recording changes
    */
   onIsRecordingChange?: (isRecording: boolean) => void;
-  onChange?: (audioAssessments: AudioAssessment[]) => void;
-  values?: AudioAssessment[];
+  onChange?: (audioAssessments: RecordValue[]) => void;
+  values?: RecordValue[];
 }
 
 /**
@@ -37,59 +35,49 @@ interface RecorderProps extends WithTranslation {
  * @returns JSX.Element
  */
 function Recorder(props: RecorderProps) {
+  const { onIsRecordingChange, onChange, values } = props;
+
   const { recorderState, ...handlers }: UseRecorder = useRecorder({
     status: props.status,
     values: props.values,
   });
 
-  const { recordings, deleteAudio } = useRecordingsList(recorderState.values);
+  /* const { recordings, deleteAudio } = useRecordingsList(recorderState.values); */
 
-  /**
-   * Mutatable object to be changed on initial render
-   * it helps checks if initial render has happened or not
-   */
+  // Mutatable object to be changed on initial render
+  // it helps checks if initial render has happened or not
   const firstUpdate = React.useRef(true);
 
   React.useEffect(() => {
-    /**
-     * If onIsRecordingChange props is present, tell parent component
-     * whether recording is is or off
-     */
-    if (props.onIsRecordingChange) {
-      props.onIsRecordingChange(recorderState.initRecording);
+    // If onIsRecordingChange props is present, tell parent component
+    // whether recording is on or off
+    if (onIsRecordingChange) {
+      onIsRecordingChange(recorderState.initRecording);
     }
-  }, [recorderState.initRecording]);
+  }, [onIsRecordingChange, recorderState.initRecording]);
 
   React.useEffect(() => {
-    /**
-     * Check if intial render has happened, if not then changed mutatable object
-     */
+    // Check if intial render has happened, if not then changed mutatable object
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
     }
 
-    /**
-     * After initial render and if onChange method has been passed, and values have changed
-     */
+    const uploading = recorderState.values.some(
+      (recording) => recording.uploading
+    );
+
+    // After initial render and if onChange method has been passed, not uplaoding any values,
+    // and recording values compared to previous values are not equal, then call onChange method
     if (
-      props.onChange &&
-      JSON.stringify(props.values) !== JSON.stringify(recordings) &&
-      !firstUpdate.current
+      onChange &&
+      !uploading &&
+      JSON.stringify(values) !== JSON.stringify(recorderState.values)
     ) {
-      const audioAssessments = recordings.map((record) => {
-        const object: AudioAssessment = {
-          name: record.name,
-          id: record.id,
-          contentType: record.contentType,
-        };
-
-        return object;
-      });
-
-      props.onChange(audioAssessments);
+      onChange(recorderState.values);
     }
-  }, [recordings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onChange, recorderState.values]);
 
   const { seconds, initRecording } = recorderState;
 
@@ -137,7 +125,10 @@ function Recorder(props: RecorderProps) {
           />
         </span>
       </AnimateHeight>
-      <RecordingsList records={recordings} deleteAudio={deleteAudio} />
+      <RecordingsList
+        records={recorderState.values}
+        deleteAudio={handlers.deleteAudio}
+      />
     </div>
   );
 }

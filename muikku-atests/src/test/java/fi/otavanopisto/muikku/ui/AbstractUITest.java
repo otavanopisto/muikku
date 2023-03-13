@@ -773,6 +773,28 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
   
+  protected void waitAndClickAndConfirmVisible(String clickSelector, String elementToAppear, int timesToTry, int interval) {
+    List<WebElement> elements = new ArrayList<WebElement>();
+    int i = 0;
+    while(elements.isEmpty()) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
+      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
+      sleep(interval);
+      elements = findElements(elementToAppear);
+      if (elements.get(0).isDisplayed()) {
+        break;
+      }else {
+        elements.clear();
+      }
+    }
+    if(elements.isEmpty())
+      throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
+  }
+  
   /** 
    * Clicks on an selector and checks
    * if given element is not displayed after defined (ms) interval as a result, 
@@ -1827,9 +1849,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return ckeContent;
   }
   
-  protected String getCKEditorContentInMaterials() {
+  protected String getVisibleCKEditorContentInMaterials() {
     waitForPresent(".cke_wysiwyg_div p");
-    String ckeContent = getElementText(".cke_wysiwyg_div p");
+    List<WebElement> elements = findElements(".cke_wysiwyg_div p");
+    String ckeContent = "";
+    for (WebElement webElement : elements) {
+      if(webElement.isDisplayed()) {
+        ckeContent = webElement.getText();
+      }
+        
+    }
     return ckeContent;
   }
   
@@ -1896,7 +1925,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       sendKeys(".cke_wysiwyg_div", text);
     }
   }
-    
+
+  protected void addTextToCKEditor(String selector, String text) {
+    waitForVisible(selector + " .cke_contents");
+    waitAndClick(selector + " .cke_contents");
+    sendKeys(selector + " .cke_wysiwyg_div", text);
+  }
+
+  protected void clearCKEditor(String selector) {
+    waitForVisible(selector + " .cke_contents");
+    waitAndClick(selector + " .cke_contents");
+    selectAllAndClear(selector + " .cke_wysiwyg_div");
+  } 
+  
   protected void setTextAreaText(String selector, String value) {
     JavascriptExecutor js = (JavascriptExecutor) getWebDriver();
     String jsString = String.format("$('%s').html('%s');", selector, value );

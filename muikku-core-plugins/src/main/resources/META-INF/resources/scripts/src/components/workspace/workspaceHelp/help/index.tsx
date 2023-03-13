@@ -728,7 +728,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                 </Dropdown>
               </div>
             ) : null}
-            <div className="content-panel__chapter-title-text">
+            <div
+              className="content-panel__chapter-title-text"
+              lang={section.titleLanguage || this.props.workspace.language}
+            >
               {section.title}
             </div>
           </h2>
@@ -751,7 +754,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     return (
       <ContentPanel
         onOpenNavigation={this.onOpenNavigation}
-        modifier="materials"
+        modifier="workspace-instructions"
         navigation={this.props.navigation}
         title={t("labels.instructions", { ns: "workspace" })}
         ref="content-panel"

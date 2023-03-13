@@ -207,7 +207,8 @@ class Material extends React.Component<MaterialProps, MaterialState> {
                 const hasEvaluation =
                   props.compositeReplies &&
                   (props.compositeReplies.state === "PASSED" ||
-                    props.compositeReplies.state === "FAILED");
+                    props.compositeReplies.state === "FAILED" ||
+                    props.compositeReplies.state === "INCOMPLETE");
                 if (props.compositeReplies) {
                   switch (props.compositeReplies.state) {
                     case "INCOMPLETE":

@@ -546,20 +546,21 @@ class ContentComponent extends SessionStateComponent<
 
     return (
       <Toc
-        tocHeaderTitle={t("labels.tableOfContents", { ns: "materials" })}
+        modifier="workspace-materials"
+        // tocHeaderTitle={t("labels.tableOfContents", { ns: "materials" })}
         tocHeaderExtraContent={
           <div>
             <Dropdown openByHover content={<p>{t("actions.openAll")}</p>}>
               <IconButton
                 icon="arrow-down"
-                buttonModifiers={["toc-open-close-sections"]}
+                buttonModifiers={["toc-action"]}
                 onClick={this.handleToggleAllSectionsOpen("open")}
               />
             </Dropdown>
             <Dropdown openByHover content={<p>{t("actions.closeAll")}</p>}>
               <IconButton
                 icon="arrow-up"
-                buttonModifiers={["toc-open-close-sections"]}
+                buttonModifiers={["toc-action"]}
                 onClick={this.handleToggleAllSectionsOpen("close")}
               />
             </Dropdown>
@@ -664,8 +665,9 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="interim-evaluation-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.page_interimEvaluation", {
+                        {t("labels.page", {
                           ns: "materials",
+                          context: "interimEvaluation",
                         })}
                       </label>
                     </div>
@@ -673,7 +675,7 @@ class ContentComponent extends SessionStateComponent<
                 </>
               }
             >
-              <IconButton icon="filter" buttonModifiers={["toc-filter"]} />
+              <IconButton icon="filter" buttonModifiers={["toc-action"]} />
             </Dropdown>
           </div>
         }
@@ -737,193 +739,193 @@ class ContentComponent extends SessionStateComponent<
               modifiers={topicClassMods}
               iconAfter={iconTopic}
               iconAfterTitle={iconTitleTopic}
+              language={node.titleLanguage || this.props.workspace.language}
             >
               {!isTocTopicViewRestrictedFromUser &&
-                node.children
-                  .map((subnode) => {
-                    // Boolean if there is view Restriction for toc element
-                    const isTocElementViewRestricted =
-                      subnode.viewRestrict ===
-                        MaterialViewRestriction.LOGGED_IN ||
-                      subnode.viewRestrict ===
-                        MaterialViewRestriction.WORKSPACE_MEMBERS;
+                node.children.map((subnode) => {
+                  // Boolean if there is view Restriction for toc element
+                  const isTocElementViewRestricted =
+                    subnode.viewRestrict ===
+                      MaterialViewRestriction.LOGGED_IN ||
+                    subnode.viewRestrict ===
+                      MaterialViewRestriction.WORKSPACE_MEMBERS;
 
-                    const isAssignment = subnode.assignmentType === "EVALUATED";
-                    const isExercise = subnode.assignmentType === "EXERCISE";
-                    const isJournal = subnode.assignmentType === "JOURNAL";
-                    const isInterimEvaluation =
-                      subnode.assignmentType === "INTERIM_EVALUATION";
-                    const isTheory = subnode.assignmentType === null;
+                  const isAssignment = subnode.assignmentType === "EVALUATED";
+                  const isExercise = subnode.assignmentType === "EXERCISE";
+                  const isJournal = subnode.assignmentType === "JOURNAL";
+                  const isInterimEvaluation =
+                    subnode.assignmentType === "INTERIM_EVALUATION";
+                  const isTheory = subnode.assignmentType === null;
 
-                    // Boolean if toc element is filtered out
-                    // if there is filters, then only elements that match the filters are shown
-                    const filteredOut =
-                      !this.state.assignmentTypeFilters.includes(
-                        subnode.assignmentType || (isTheory && "THEORY")
-                      );
-
-                    //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
-                    const modifier = isAssignment
-                      ? "assignment"
-                      : isExercise
-                      ? "exercise"
-                      : isJournal
-                      ? "journal"
-                      : isInterimEvaluation
-                      ? "interim-evaluation"
-                      : null;
-
-                    let icon: string | null = null;
-                    let iconTitle: string | null = null;
-                    let className: string | null = null;
-
-                    const compositeReplies =
-                      this.props.materialReplies &&
-                      this.props.materialReplies.find(
-                        (reply) =>
-                          reply.workspaceMaterialId ===
-                          subnode.workspaceMaterialId
-                      );
-
-                    let showEvenIfHidden = false;
-
-                    if (subnode.hidden && compositeReplies) {
-                      showEvenIfHidden =
-                        compositeReplies && compositeReplies.submitted !== null;
-                    }
-
-                    if (compositeReplies) {
-                      switch (compositeReplies.state) {
-                        case "ANSWERED":
-                          icon = "check";
-                          className = "toc__item--answered";
-                          iconTitle = t("labels.assignment_done", {
-                            ns: "materials",
-                          });
-                          break;
-                        case "SUBMITTED":
-                          icon = "check";
-                          className = "toc__item--submitted";
-                          iconTitle = t("labels.assignment_returned", {
-                            ns: "materials",
-                          });
-                          break;
-                        case "WITHDRAWN":
-                          icon = "check";
-                          className = "toc__item--withdrawn";
-                          iconTitle = t("labels.assignment_cancelled", {
-                            ns: "materials",
-                          });
-                          break;
-                        case "INCOMPLETE":
-                          icon = "thumb-down";
-                          className = "toc__item--incomplete";
-                          iconTitle = t("labels.evaluated_incomplete", {
-                            ns: "materials",
-                          });
-                          break;
-                        case "FAILED":
-                          icon = "thumb-down";
-                          className = "toc__item--failed";
-                          iconTitle = t("labels.evaluated_failed", {
-                            ns: "materials",
-                          });
-                          break;
-                        case "PASSED":
-                          icon = "thumb-up";
-                          className = "toc__item--passed";
-                          iconTitle = t("labels.evaluated_passed", {
-                            ns: "materials",
-                          });
-                          break;
-                        case "UNANSWERED":
-                        default:
-                          break;
-                      }
-                    }
-
-                    if (
-                      isTocElementViewRestricted &&
-                      !this.props.status.isStudent &&
-                      this.props.status.loggedIn
-                    ) {
-                      icon = "restriction";
-                      className = this.buildViewRestrictionModifiers(
-                        subnode.viewRestrict,
-                        false
-                      );
-                      iconTitle = this.buildViewRestrictionLocaleString(
-                        subnode.viewRestrict
-                      );
-                    }
-
-                    const pageElement = (
-                      <TocElement
-                        modifier={modifier}
-                        ref={subnode.workspaceMaterialId + ""}
-                        key={subnode.workspaceMaterialId}
-                        isActive={
-                          this.props.activeNodeId ===
-                          subnode.workspaceMaterialId
-                        }
-                        className={className}
-                        isHidden={subnode.hidden || node.hidden}
-                        isFilteredOut={filteredOut}
-                        disableScroll
-                        iconAfter={icon}
-                        iconAfterTitle={iconTitle}
-                        hash={
-                          this.props.doNotSetHashes
-                            ? null
-                            : "p-" + subnode.workspaceMaterialId
-                        }
-                      >
-                        {subnode.title}
-                      </TocElement>
+                  // Boolean if toc element is filtered out
+                  // if there is filters, then only elements that match the filters are shown
+                  const filteredOut =
+                    !this.state.assignmentTypeFilters.includes(
+                      subnode.assignmentType || (isTheory && "THEORY")
                     );
 
-                    if (!isEditable) {
-                      if (subnode.hidden && !showEvenIfHidden) {
-                        return null;
-                      }
-                      return pageElement;
-                    } else {
-                      return (
-                        <Draggable
-                          interactionData={subnode}
-                          interactionGroup="TOC_SUBNODE"
-                          key={subnode.workspaceMaterialId}
-                          className="toc__item--drag-container"
-                          handleSelector=".toc__item--drag-handle"
-                          onInteractionWith={this.onInteractionBetweenSubnodes.bind(
-                            this,
-                            subnode
-                          )}
-                          onDropInto={this.onDropBetweenSubnodes.bind(
-                            this,
-                            subnode
-                          )}
-                          ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
-                          enableTouch={this.props.enableTouch}
-                        >
-                          <div className="toc__item--drag-handle icon-move"></div>
-                          {pageElement}
-                        </Draggable>
-                      );
+                  //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
+                  const modifier = isAssignment
+                    ? "assignment"
+                    : isExercise
+                    ? "exercise"
+                    : isJournal
+                    ? "journal"
+                    : isInterimEvaluation
+                    ? "interim-evaluation"
+                    : null;
+
+                  let icon: string | null = null;
+                  let iconTitle: string | null = null;
+                  let className: string | null = null;
+
+                  const compositeReplies =
+                    this.props.materialReplies &&
+                    this.props.materialReplies.find(
+                      (reply) =>
+                        reply.workspaceMaterialId ===
+                        subnode.workspaceMaterialId
+                    );
+
+                  let showEvenIfHidden = false;
+
+                  if (subnode.hidden && compositeReplies) {
+                    showEvenIfHidden =
+                      compositeReplies && compositeReplies.submitted !== null;
+                  }
+
+                  if (compositeReplies) {
+                    switch (compositeReplies.state) {
+                      case "ANSWERED":
+                        icon = "check";
+                        className = "toc__item--answered";
+                        iconTitle = t("labels.assignment_done", {
+                          ns: "materials",
+                        });
+                        break;
+                      case "SUBMITTED":
+                        icon = "check";
+                        className = "toc__item--submitted";
+                        iconTitle = t("labels.assignment_returned", {
+                          ns: "materials",
+                        });
+                        break;
+                      case "WITHDRAWN":
+                        icon = "check";
+                        className = "toc__item--withdrawn";
+                        iconTitle = t("labels.assignment_cancelled", {
+                          ns: "materials",
+                        });
+                        break;
+                      case "INCOMPLETE":
+                        icon = "thumb-down";
+                        className = "toc__item--incomplete";
+                        iconTitle = t("labels.evaluated_incomplete", {
+                          ns: "materials",
+                        });
+                        break;
+                      case "FAILED":
+                        icon = "thumb-down";
+                        className = "toc__item--failed";
+                        iconTitle = t("labels.evaluated_failed", {
+                          ns: "materials",
+                        });
+                        break;
+                      case "PASSED":
+                        icon = "thumb-up";
+                        className = "toc__item--passed";
+                        iconTitle = t("labels.evaluated_passed", {
+                          ns: "materials",
+                        });
+                        break;
+                      case "UNANSWERED":
+                      default:
+                        break;
                     }
-                  })
-                  .concat(
-                    isEditable ? (
-                      <Droppable
-                        key="LAST"
-                        interactionData={node.workspaceMaterialId}
+                  }
+
+                  if (
+                    isTocElementViewRestricted &&
+                    !this.props.status.isStudent &&
+                    this.props.status.loggedIn
+                  ) {
+                    icon = "restriction";
+                    className = this.buildViewRestrictionModifiers(
+                      subnode.viewRestrict,
+                      false
+                    );
+                    iconTitle = this.buildViewRestrictionLocaleString(
+                      subnode.viewRestrict
+                    );
+                  }
+
+                  const pageElement = (
+                    <TocElement
+                      modifier={modifier}
+                      ref={subnode.workspaceMaterialId + ""}
+                      key={subnode.workspaceMaterialId}
+                      isActive={
+                        this.props.activeNodeId === subnode.workspaceMaterialId
+                      }
+                      className={className}
+                      isHidden={subnode.hidden || node.hidden}
+                      isFilteredOut={filteredOut}
+                      disableScroll
+                      iconAfter={icon}
+                      iconAfterTitle={iconTitle}
+                      hash={
+                        this.props.doNotSetHashes
+                          ? null
+                          : "p-" + subnode.workspaceMaterialId
+                      }
+                      language={
+                        subnode.titleLanguage ||
+                        node.titleLanguage ||
+                        this.props.workspace.language
+                      }
+                    >
+                      {subnode.title}
+                    </TocElement>
+                  );
+
+                  if (!isEditable) {
+                    if (subnode.hidden && !showEvenIfHidden) {
+                      return null;
+                    }
+                    return pageElement;
+                  } else {
+                    return (
+                      <Draggable
+                        interactionData={subnode}
                         interactionGroup="TOC_SUBNODE"
-                        className="toc__element--drag-placeholder-container"
-                      ></Droppable>
-                    ) : (
-                      []
-                    )
-                  )}
+                        key={subnode.workspaceMaterialId}
+                        className="toc__item--drag-container"
+                        handleSelector=".toc__item--drag-handle"
+                        onInteractionWith={this.onInteractionBetweenSubnodes.bind(
+                          this,
+                          subnode
+                        )}
+                        onDropInto={this.onDropBetweenSubnodes.bind(
+                          this,
+                          subnode
+                        )}
+                        ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
+                        enableTouch={this.props.enableTouch}
+                      >
+                        <div className="toc__item--drag-handle icon-move"></div>
+                        {pageElement}
+                      </Draggable>
+                    );
+                  }
+                })}
+              {isEditable && node?.children.length === 0 ? (
+                <Droppable
+                  key="LAST"
+                  interactionData={node.workspaceMaterialId}
+                  interactionGroup="TOC_SUBNODE"
+                  className="toc__element--drag-placeholder-container"
+                ></Droppable>
+              ) : null}
             </TocTopic>
           );
 

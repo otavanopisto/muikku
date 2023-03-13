@@ -11,6 +11,8 @@ import {
   MaterialContentNodeType,
   MaterialViewRestriction,
   AssignmentType,
+  Language,
+  languageOptions,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -42,6 +44,7 @@ import {
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import i18n from "~/locales/i18n";
+import { langAttributeLocale } from "~/helper-functions/locale";
 
 /**
  * MaterialEditorProps
@@ -108,7 +111,7 @@ const CKEditorConfig = (
     "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
   disallowedContent:
-    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[on*]; *{white-space}; *{flex*};",
+    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[-*]; *[--*]; *[on*]; *{white-space}; *{flex*};",
   toolbar: [
     { name: "document", items: ["Source"] },
     {
@@ -273,6 +276,7 @@ class MaterialEditor extends React.Component<
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
+    this.updateTitleLanguage = this.updateTitleLanguage.bind(this);
     this.close = this.close.bind(this);
     this.publish = this.publish.bind(this);
     this.revert = this.revert.bind(this);
@@ -424,6 +428,24 @@ class MaterialEditor extends React.Component<
       material: this.props.editorState.currentDraftNodeValue,
       update: {
         title: e.target.value,
+      },
+      isDraft: true,
+    });
+  }
+
+  /**
+   * updateTitleLanguage
+   * @param e e
+   */
+  updateTitleLanguage(e: React.ChangeEvent<HTMLSelectElement>) {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        titleLanguage:
+          e.currentTarget.value !== ""
+            ? (e.currentTarget.value as Language)
+            : null,
       },
       isDraft: true,
     });
@@ -805,6 +827,7 @@ class MaterialEditor extends React.Component<
       "title",
       "type",
       "viewRestrict",
+      "titleLanguage",
     ];
 
     let canPublish = false;
@@ -1055,6 +1078,41 @@ class MaterialEditor extends React.Component<
                 </div>
               </div>
             ) : null}
+
+            {(this.props.editorState.section ||
+              this.props.locationPage === "Home") && (
+              <div className="material-editor__sub-section">
+                <h3 className="material-editor__sub-title">
+                  {this.props.i18n.t("labels.language")}
+                </h3>
+                <div className="material-editor__select-locale-container">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <select
+                        className="form-element__select form-element__select--material-editor"
+                        onChange={this.updateTitleLanguage}
+                        value={
+                          this.props.editorState.currentDraftNodeValue
+                            .titleLanguage || ""
+                        }
+                      >
+                        <option value="">
+                          {this.props.i18n.t("labels.inherited", {
+                            ns: "workspace",
+                          })}
+                        </option>
+                        {languageOptions.map((language) => (
+                          <option key={language} value={language}>
+                            {langAttributeLocale[language]}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {!this.props.editorState.section &&
             this.props.editorState.canEditContent &&
             this.props.editorState.opened ? (
@@ -1132,6 +1190,37 @@ class MaterialEditor extends React.Component<
                 </div>
               </div>
             ) : null}
+
+            <div className="material-editor__sub-section">
+              <h3 className="material-editor__sub-title">
+                {this.props.i18n.t("labels.language")}
+              </h3>
+              <div className="material-editor__select-locale-container">
+                <div className="form__row">
+                  <div className="form-element">
+                    <select
+                      className="form-element__select form-element__select--material-editor"
+                      onChange={this.updateTitleLanguage}
+                      value={
+                        this.props.editorState.currentDraftNodeValue
+                          .titleLanguage || ""
+                      }
+                    >
+                      <option value="">
+                        {this.props.i18n.t("labels.inherited", {
+                          ns: "workspace",
+                        })}
+                      </option>
+                      {languageOptions.map((language) => (
+                        <option key={language} value={language}>
+                          {langAttributeLocale[language]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         ),
       });

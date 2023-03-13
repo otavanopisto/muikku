@@ -62,7 +62,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourse(course2)
       .build();
     login();
-
+ 
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     MockCourseStudent mcs = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);

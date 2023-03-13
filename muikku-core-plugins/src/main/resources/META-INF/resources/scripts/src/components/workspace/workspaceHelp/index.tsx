@@ -64,7 +64,7 @@ export default class WorkspaceHelpBody extends React.Component<
         <Help
           onOpenNavigation={this.onOpenNavigation}
           navigation={navigationComponent}
-          ref="materials"
+          ref="guides"
           onActiveNodeIdChange={this.props.onActiveNodeIdChange}
         />
       </div>

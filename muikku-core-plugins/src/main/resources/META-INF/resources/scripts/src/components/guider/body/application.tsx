@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Students from "./application/students";
 import Toolbar from "./application/toolbar";
-import { StateType } from "~/reducers";
 import { withTranslation, WithTranslation } from "react-i18next";
+import Select from "react-select";
 
 /**
  * GuiderApplicationProps
@@ -46,22 +46,32 @@ class GuiderApplication extends React.Component<
   render() {
     const title = this.props.i18n.t("labels.guider");
     const toolbar = <Toolbar />;
+
+    const options = [
+      {
+        value: "all",
+        label: this.props.i18n.t("labels.all", { ns: "users" }),
+      },
+    ];
+
     const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectUsers" className="visually-hidden">
           {this.props.i18n.t("labels.workspaceTypeSelect", { ns: "workspace" })}
         </label>
-        <select
+        <Select
           id="selectUsers"
-          className="form-element__select form-element__select--main-action"
-          disabled
-        >
-          <option>
-            {this.props.i18n.t("labels.all", {
-              ns: "users",
-            })}
-          </option>
-        </select>
+          isDisabled={true}
+          options={options}
+          value={options[0]}
+          styles={{
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            container: (baseStyles, state) => ({
+              ...baseStyles,
+              width: "100%",
+            }),
+          }}
+        ></Select>
       </div>
     );
     return (

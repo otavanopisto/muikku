@@ -27,7 +27,16 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
   if (props.invisible) {
     return (
       <>
-        <h2 className="material-page__title">{props.material.title}</h2>
+        <h2
+          className="material-page__title"
+          lang={
+            props.material.titleLanguage ||
+            props.folder.titleLanguage ||
+            props.workspace.language
+          }
+        >
+          {props.material.title}
+        </h2>
       </>
     );
   }
@@ -64,6 +73,11 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
     <>
       <h2
         className={`material-page__title material-page__title--${materialPageType}`}
+        lang={
+          props.material.titleLanguage ||
+          props.folder.titleLanguage ||
+          props.workspace.language
+        }
       >
         {props.material.title}
       </h2>

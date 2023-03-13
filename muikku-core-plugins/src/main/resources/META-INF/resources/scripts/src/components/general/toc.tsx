@@ -16,6 +16,7 @@ import "~/sass/elements/toc.scss";
 interface TocProps {
   tocHeaderTitle?: string;
   tocHeaderExtraContent?: React.ReactNode;
+  modifier?: string;
 }
 
 /**
@@ -24,15 +25,18 @@ interface TocProps {
  * @returns JSX.Element
  */
 export const Toc: React.FC<TocProps> = (props) => (
-  <div className="toc">
-    <div className="toc-header">
+  <div className={`toc ${props.modifier ? "toc--" + props.modifier : ""}`}>
+    <div
+      className={`toc__header ${
+        props.modifier ? "toc__header--" + props.modifier : ""
+      }`}
+    >
       {props.tocHeaderTitle && (
         <h2 className="toc__title">{props.tocHeaderTitle}</h2>
       )}
       {props.tocHeaderExtraContent && props.tocHeaderExtraContent}
     </div>
-
-    {props.children}
+    <div className="toc__item-container">{props.children}</div>
   </div>
 );
 
@@ -53,6 +57,7 @@ interface TocTopicProps {
    * Toc topic class modifiers
    */
   modifiers?: string[];
+  language?: string;
   name?: string;
   icon?: string;
   className?: string;
@@ -100,8 +105,10 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
 
     /**
      * Handles toggle open and close clicks
+     * @param e e
      */
-    const handleToggleHeightClick = () => {
+    const handleToggleHeightClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
       toggleHeight();
     };
 
@@ -110,6 +117,7 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
      * @param e e
      */
     const handleLinkClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
       if (height === 0) {
         toggleHeight("open");
       }
@@ -126,6 +134,7 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
                 .join(" ")
             : ""
         }`}
+        lang={props.language}
       >
         {props.name ? (
           <div
@@ -192,6 +201,7 @@ interface TocElementProps {
   onScrollToSection?: () => any;
   scrollPadding?: number;
   disableScroll?: boolean;
+  language?: string;
 }
 
 /**
@@ -227,6 +237,7 @@ export class TocElement extends React.Component<
       onScrollToSection,
       scrollPadding,
       disableScroll,
+      language,
     } = this.props;
 
     return (
@@ -243,6 +254,7 @@ export class TocElement extends React.Component<
         to={href}
         onClick={onClick}
         ref="element"
+        lang={language}
       >
         <span className="toc__text-body">{children}</span>
         {iconAfter ? (

@@ -189,8 +189,8 @@ export interface CreateDiscussionThreadTriggerType {
     sticky: boolean;
     title: string;
     subscribe: boolean;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -204,8 +204,8 @@ export interface ModifyDiscussionThreadTriggerType {
     message: string;
     sticky: boolean;
     title: string;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -219,8 +219,8 @@ export interface LoadDiscussionThreadFromServerTriggerType {
     threadId: number;
     threadPage?: number;
     forceRefresh?: boolean;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -231,8 +231,8 @@ export interface ReplyToCurrentDiscussionThreadTriggerType {
   (data: {
     message: string;
     parentId?: number;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -240,7 +240,7 @@ export interface ReplyToCurrentDiscussionThreadTriggerType {
  * DeleteCurrentDiscussionThreadTriggerType
  */
 export interface DeleteCurrentDiscussionThreadTriggerType {
-  (data: { success?: () => any; fail?: () => any }): AnyActionType;
+  (data: { success?: () => void; fail?: () => void }): AnyActionType;
 }
 
 /**
@@ -249,8 +249,8 @@ export interface DeleteCurrentDiscussionThreadTriggerType {
 export interface DeleteDiscussionThreadReplyFromCurrentTriggerType {
   (data: {
     reply: DiscussionThreadReplyType;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -261,8 +261,8 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
   (data: {
     reply: DiscussionThreadReplyType;
     message: string;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -565,6 +565,7 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
       //Avoid loading if it's the same area
       if (
         !data.forceRefresh &&
+        discussion.threads.length > 0 &&
         discussion.areaId === data.areaId &&
         discussion.state === "READY" &&
         discussion.page === data.page
@@ -713,15 +714,16 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
           )()
         );
 
+        const hash = window.location.hash.replace("#", "").split("/");
+
+        const areaId = discussion.areaId ? discussion.areaId : 0;
+
+        const areaString = hash.includes("subs")
+          ? "subs"
+          : areaId + "/" + discussion.page;
+
         window.location.hash =
-          newThread.forumAreaId +
-          "/" +
-          (newThread.forumAreaId === discussion.areaId
-            ? discussion.page
-            : "1") +
-          "/" +
-          newThread.id +
-          "/1";
+          areaString + "/" + newThread.forumAreaId + "/" + newThread.id + "/1";
 
         // If user want to subscribe data when creating new
         if (data.subscribe) {
@@ -860,7 +862,6 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
       }
 
       const actualThreadPage = data.threadPage || discussion.currentPage;
-      const actualPage = data.page || discussion.page;
 
       dispatch({
         type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
@@ -933,18 +934,9 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
           current: newCurrentThread,
           currentReplies: replies,
           currentState: "READY",
-          page: actualPage,
           currentPage: actualThreadPage,
           threads: newThreads,
         };
-
-        //In a nutshell, if I go from all areas to a specific thread, then once going back it will cause it to load twice
-        //back as it will detect a change of area, from a specific area to all areas.
-        //this is only worth setting if the load happened in the specific area, that is the discussion threads state is not
-        //ready but the current one is
-        if (discussion.state !== "READY") {
-          newProps.areaId = data.areaId;
-        }
 
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
@@ -1098,7 +1090,7 @@ const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
 const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType =
   function deleteDiscussionThreadReplyFromCurrent(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1205,7 +1197,7 @@ const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
  * LoadDiscussionAreasFromServerTriggerType
  */
 export interface LoadDiscussionAreasFromServerTriggerType {
-  (callback?: () => any): AnyActionType;
+  (callback?: () => void): AnyActionType;
 }
 
 /**
@@ -1252,8 +1244,8 @@ export interface CreateDiscussionAreaTriggerType {
     name: string;
     description: string;
     subscribe: boolean;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -1329,8 +1321,8 @@ export interface UpdateDiscussionAreaTriggerType {
     id: number;
     name: string;
     description: string;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -1396,7 +1388,11 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
  * DeleteDiscussionAreaTriggerType
  */
 export interface DeleteDiscussionAreaTriggerType {
-  (data: { id: number; success?: () => any; fail?: () => any }): AnyActionType;
+  (data: {
+    id: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
 }
 
 /**

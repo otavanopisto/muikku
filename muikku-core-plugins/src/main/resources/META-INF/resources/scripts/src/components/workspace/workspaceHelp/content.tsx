@@ -415,7 +415,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     const isEditable = this.props.workspaceEditMode.active;
 
     return (
-      <Toc tocHeaderTitle={t("labels.tableOfContents", { ns: "materials" })}>
+      <Toc
+        modifier="workspace-instructions"
+        tocHeaderTitle={t("labels.tableOfContents", { ns: "materials" })}
+      >
         {this.state.materials.map((node, nodeIndex) => {
           // Boolean if there is view Restriction for toc topic
           const isTocTopicViewRestricted =
@@ -464,6 +467,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               modifiers={classModifier}
               iconAfter={icon}
               iconAfterTitle={iconTitle}
+              language={node.titleLanguage || this.props.workspace.language}
             >
               {!isTocTopicViewRestrictedFromUser &&
                 node.children
@@ -529,6 +533,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                           this.props.doNotSetHashes
                             ? null
                             : "p-" + subnode.workspaceMaterialId
+                        }
+                        language={
+                          subnode.titleLanguage ||
+                          node.titleLanguage ||
+                          this.props.workspace.language
                         }
                       >
                         {subnode.title}

@@ -347,10 +347,10 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         </AnimateHeight>
 
         {showModifyLink || showDeleteLink ? (
-          <div className="evaluation-modal__event-buttonset">
+          <div className="evaluation-modal__event-actions">
             {showModifyLink && (
               <Link
-                className="link link--evaluation-event-edit"
+                className="link link--evaluation"
                 onClick={onClickEdit(
                   identifier,
                   workspaceSubjectIdentifier,
@@ -363,7 +363,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
             {showDeleteLink && (
               <DeleteDialog eventData={event}>
-                <Link className="link link--evaluation-event-delete">
+                <Link className="link link--evaluation link--evaluation-delete">
                   {t("actions.remove")}
                 </Link>
               </DeleteDialog>

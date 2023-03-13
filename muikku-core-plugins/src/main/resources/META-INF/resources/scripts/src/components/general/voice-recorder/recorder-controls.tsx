@@ -22,10 +22,10 @@ export interface RecorderControlsProps {
  * @returns JSX.Element
  */
 function RecorderControls(props: RecorderControlsProps) {
-  const { initRecording } = props.recorderState;
-  const { startRecording, saveRecording } = props.handlers;
   const { t } = useTranslation("materials");
-
+  const { recorderState, handlers } = props;
+  const { initRecording } = recorderState;
+  const { startRecording, saveRecording } = handlers;
   const disabled = props.recorderState.values.some((rItem) => rItem.uploading);
 
   return (
