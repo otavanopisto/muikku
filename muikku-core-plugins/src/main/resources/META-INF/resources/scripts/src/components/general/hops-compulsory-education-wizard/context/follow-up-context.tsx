@@ -8,24 +8,27 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
 
 /**
- * UseFollowUpGoalsState
+ * FollowUpGoalsState
  */
-export interface UseFollowUpGoalsState {
+export interface FollowUpGoalsState {
   isLoading: boolean;
   followUp: FollowUp;
 }
 
-type CountProviderProps = {
+/**
+ * FollowUpProviderProps
+ */
+interface FollowUpProviderProps {
   children: React.ReactNode;
   websocketState: WebsocketStateType;
   studentId: string;
   displayNotification: DisplayNotificationTriggerType;
-};
+}
 
 /**
  * Intial state
  */
-const initialState: UseFollowUpGoalsState = {
+const initialState: FollowUpGoalsState = {
   isLoading: false,
   followUp: {
     graduationGoal: null,
@@ -39,7 +42,7 @@ const initialState: UseFollowUpGoalsState = {
 };
 
 const FollowUpStateContext = React.createContext<
-  UseFollowUpGoalsState | undefined
+  FollowUpGoalsState | undefined
 >(undefined);
 
 /**
@@ -47,7 +50,7 @@ const FollowUpStateContext = React.createContext<
  *
  * @param providerProps providerProps
  */
-function FollowUpProvider(providerProps: CountProviderProps) {
+function FollowUpProvider(providerProps: FollowUpProviderProps) {
   const { children, websocketState, studentId, displayNotification } =
     providerProps;
 
