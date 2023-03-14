@@ -52,6 +52,8 @@ export type SupportAction = typeof supportActions[number];
 export type SupportActionMatriculationExamination =
   typeof matriculationExaminationSupport[number];
 
+export type OpinionType = "studentOpinionOfSupport" | "schoolOpinionOfSupport";
+
 /**
  * The history of the updates made to the form
  */
@@ -87,9 +89,13 @@ export interface HistoryEntry {
  */
 export interface SupportActionImplementation {
   /**
-   * Name of the user who marked the action as implemented
+   * Name of the user who created the mark
    */
   creatorName: string;
+  /**
+   * Identifier of the user who created the mark
+   */
+  creatorIdentifier: string;
   /**
    * The action that has been implemented
    */
@@ -98,10 +104,6 @@ export interface SupportActionImplementation {
    * The details of the action
    */
   course?: WorkspaceType;
-  /**
-   * Boolean if the action has extra information
-   */
-  /* extraInfo: boolean; */
   /**
    * The extra information of the action
    */
@@ -113,19 +115,28 @@ export interface SupportActionImplementation {
 }
 
 /**
- * The opinion of the student and the school
- */
-export interface PedagogyOpinion {
-  studentOpinion?: Opinion;
-  schoolOpinion?: Opinion;
-}
-
-/**
  * Opinion
  */
 export interface Opinion {
-  opinion: string;
-  creationDate?: Date;
+  /**
+   * Name of the user who created the opinion mark
+   */
+  creatorName: string;
+  /**
+   * Identifier of the user who created the opinion mark
+   */
+  creatorIdentifier: string;
+  /**
+   * The opinion of the user
+   */
+  opinion?: string;
+  /**
+   * The date when the opinion was created
+   */
+  creationDate: Date;
+  /**
+   * The date when the opinion was last updated
+   */
   updatedDate?: Date;
 }
 
@@ -176,11 +187,11 @@ export interface FormData {
   /**
    * The student's opinion of the support
    */
-  studentOpinionOfSupport?: string;
+  studentOpinionOfSupport?: Opinion[];
   /**
    * School's opinion of the support
    */
-  schoolOpinionOfSupport?: string;
+  schoolOpinionOfSupport?: Opinion[];
 }
 
 /**

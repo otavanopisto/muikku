@@ -6,6 +6,7 @@ import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   FormData,
+  Opinion,
   PedagogyForm,
   SupportActionImplementation,
   Visibility,
@@ -94,7 +95,10 @@ export const usePedagogy = (
    */
   const setFormDataAndUpdateChangedFields = (updatedFormData: FormData) => {
     // Get old values from data
-    const oldDataForm = JSON.parse(data.formData) as FormData;
+    const oldDataForm = {
+      ...defaultFormData,
+      ...(JSON.parse(data.formData) as FormData),
+    };
 
     // Compare to old values and if value is different or is previosly undefined,
     // add it to changedValuesComparedToPrevious
@@ -108,13 +112,32 @@ export const usePedagogy = (
 
     // Check if supportActionsImplemented has changed
     // by length or in the object values
-    const somethingHasChanged = !arraysAreSame<SupportActionImplementation>(
-      updatedFormData.supportActionsImplemented,
-      oldDataForm.supportActionsImplemented
+    const somethingHasChangedInAction =
+      !arraysAreSame<SupportActionImplementation>(
+        updatedFormData.supportActionsImplemented,
+        oldDataForm.supportActionsImplemented
+      );
+
+    const studentOpinionHasChanged = !arraysAreSame<Opinion>(
+      updatedFormData.studentOpinionOfSupport,
+      oldDataForm.studentOpinionOfSupport
     );
 
-    if (somethingHasChanged) {
+    const schoolOpinionHasChanged = !arraysAreSame<Opinion>(
+      updatedFormData.schoolOpinionOfSupport,
+      oldDataForm.schoolOpinionOfSupport
+    );
+
+    if (somethingHasChangedInAction) {
       changedValuesComparedToPrevious.push("supportActionsImplemented");
+    }
+
+    if (studentOpinionHasChanged) {
+      changedValuesComparedToPrevious.push("studentOpinionOfSupport");
+    }
+
+    if (schoolOpinionHasChanged) {
+      changedValuesComparedToPrevious.push("schoolOpinionOfSupport");
     }
 
     unstable_batchedUpdates(() => {
@@ -246,6 +269,7 @@ export const usePedagogy = (
       );
 
       unstable_batchedUpdates(() => {
+        setEditIsActive(false);
         setData(updatedData);
         setFormData({
           ...defaultFormData,
@@ -267,15 +291,73 @@ export const usePedagogy = (
    * @param fields fields
    * @param details details
    */
-  const updateFormDataToServer = async (fields?: string[], details?: string) =>
-    (await promisify(
+  const updateFormDataToServer = async (
+    fields?: string[],
+    details?: string
+  ) => {
+    let dataToUpdate = {
+      ...formData,
+    };
+
+    const oldData = {
+      ...JSON.parse(data.formData),
+    } as FormData;
+
+    dataToUpdate = {
+      ...dataToUpdate,
+      studentOpinionOfSupport: dataToUpdate.studentOpinionOfSupport.map(
+        (opinion, index) => {
+          const oldOpinion = oldData.studentOpinionOfSupport[index];
+
+          if (oldOpinion) {
+            const opinionHasChanged = !objectsAreSame<Opinion>(
+              opinion,
+              oldOpinion
+            );
+
+            if (opinionHasChanged) {
+              return {
+                ...opinion,
+                updatedDate: new Date(),
+              };
+            }
+          }
+
+          return opinion;
+        }
+      ),
+      schoolOpinionOfSupport: dataToUpdate.schoolOpinionOfSupport.map(
+        (opinion, index) => {
+          const oldOpinion = oldData.schoolOpinionOfSupport[index];
+
+          if (oldOpinion) {
+            const opinionHasChanged = !objectsAreSame<Opinion>(
+              opinion,
+              oldOpinion
+            );
+
+            if (opinionHasChanged) {
+              return {
+                ...opinion,
+                updatedDate: new Date(),
+              };
+            }
+          }
+
+          return opinion;
+        }
+      ),
+    };
+
+    return (await promisify(
       mApi().pedagogy.form.formData.update(studentId, {
-        formData: JSON.stringify(formData),
+        formData: JSON.stringify(dataToUpdate),
         fields: fields || null,
         details: details || null,
       }),
       "callback"
     )()) as PedagogyForm;
+  };
 
   /**
    * updatevisibilityToServer
@@ -326,14 +408,9 @@ const defaultFormData: FormData = {
   supportReasons: [],
   supportActions: [],
   matriculationExaminationSupport: [],
-  supportActionsImplemented: [
-    {
-      creatorName: "",
-      action: "remedialInstruction",
-      extraInfoDetails: "",
-      date: new Date(),
-    },
-  ],
+  supportActionsImplemented: [],
+  studentOpinionOfSupport: [],
+  schoolOpinionOfSupport: [],
 };
 
 /**

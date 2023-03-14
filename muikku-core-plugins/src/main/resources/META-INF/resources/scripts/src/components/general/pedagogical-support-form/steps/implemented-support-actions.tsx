@@ -12,6 +12,7 @@ import {
   PedagogyForm,
   SupportActionImplementation,
 } from "~/@types/pedagogy-form";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * ImplementedSupportActionsProps
@@ -19,6 +20,7 @@ import {
 interface ImplementedSupportActionsProps {
   pedagogyData?: PedagogyForm;
   formData?: FormData;
+  status: StatusType;
   onFormDataChange: (updatedFormData: FormData) => void;
 }
 
@@ -31,7 +33,7 @@ interface ImplementedSupportActionsProps {
 const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   props
 ) => {
-  const { formData, onFormDataChange } = props;
+  const { formData, onFormDataChange, status } = props;
   const { useCase, editIsActive } = React.useContext(PedagogyContext);
 
   /**
@@ -43,7 +45,8 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
     };
 
     updatedFormData.supportActionsImplemented.push({
-      creatorName: "",
+      creatorIdentifier: status.userSchoolDataIdentifier,
+      creatorName: status.profile.displayName,
       action: "remedialInstruction",
       date: new Date(),
     });
@@ -86,6 +89,23 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
     onFormDataChange(updatedFormData);
   };
 
+  const implementedActions =
+    (formData?.supportActionsImplemented &&
+      formData?.supportActionsImplemented.length > 0 &&
+      formData?.supportActionsImplemented.map((iAction, index) => (
+        <ImplementedActionsListItem
+          implemenetedSupportAction={iAction}
+          key={index}
+          index={index}
+          ownerOfEntry={
+            status.userSchoolDataIdentifier === iAction.creatorIdentifier
+          }
+          onDeleteActionClick={handleDeleteSupportAction}
+          onActionChange={handleSupportActionChange}
+        />
+      ))) ||
+    "Ei toteutettuja tukitoimia";
+
   return (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
@@ -94,19 +114,13 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
         </legend>
 
         <ImplementedActionsList>
-          {formData?.supportActionsImplemented.map((iAction, index) => (
-            <ImplementedActionsListItem
-              implemenetedSupportAction={iAction}
-              key={index}
-              index={index}
-              onDeleteActionClick={handleDeleteSupportAction}
-              onActionChange={handleSupportActionChange}
+          {implementedActions}
+          {editIsActive && (
+            <AddNewActionsBox
+              onClick={handleAddNewSupportAction}
+              disabled={useCase === "STUDENT" || !editIsActive}
             />
-          ))}
-          <AddNewActionsBox
-            onClick={handleAddNewSupportAction}
-            disabled={useCase === "STUDENT" || !editIsActive}
-          />
+          )}
         </ImplementedActionsList>
       </fieldset>
     </section>

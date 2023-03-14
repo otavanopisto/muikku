@@ -27,7 +27,6 @@ export const History: React.FC<HistoryProps> = (props) => (
 interface HistoryEntryItemProps {
   historyEntry: HistoryEntry;
   showEdit: boolean;
-  onHistoryEventClick: (eventId: number) => void;
   status: StatusType;
 }
 
@@ -37,12 +36,6 @@ interface HistoryEntryItemProps {
  */
 export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
   const { status, historyEntry } = props;
-  /**
-   * handleEditClick
-   */
-  /* const handleEditClick = () => {
-    props.onHistoryEventClick(props.hopsUpdate.id);
-  }; */
 
   const viewingOwnHistorEvent = status.userId === historyEntry.modifierId;
 
@@ -64,15 +57,6 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
             <span className="hops-container__history-event-date">
               {moment(historyEntry.date).format("l")}
             </span>
-            {/* {props.showEdit && (
-              <span className="hops-container__history-event-action">
-                <IconButton
-                  buttonModifiers={["edit-hops-history-event-description"]}
-                  icon="pencil"
-                  onClick={handleEditClick}
-                />
-              </span>
-            )} */}
           </div>
 
           {historyEntry.details && (

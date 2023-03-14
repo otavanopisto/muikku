@@ -109,6 +109,12 @@ class StudiesApplication extends React.Component<
         });
         break;
 
+      case "pedagogy-form":
+        this.setState({
+          activeTab: "PEDAGOGY_FORM",
+        });
+        break;
+
       default:
         this.setState({
           activeTab: "SUMMARY",

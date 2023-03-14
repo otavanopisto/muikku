@@ -9,6 +9,7 @@ import WorkspaceSelect from "./workspace-select";
 import { PedagogyContext } from ".";
 import { SupportActionImplementation } from "~/@types/pedagogy-form";
 import { supportActionsOptions } from "./helpers";
+import { TextField } from "../hops-compulsory-education-wizard/text-field";
 
 /**
  * ImplementedActionsListProps
@@ -29,6 +30,7 @@ export const ImplementedActionsList: React.FC<ImplementedActionsListProps> = (
  */
 interface ImplementedActionsListItemProps {
   index: number;
+  ownerOfEntry: boolean;
   implemenetedSupportAction: SupportActionImplementation;
   onDeleteActionClick?: (index: number) => void;
   onActionChange?: <T extends keyof SupportActionImplementation>(
@@ -49,12 +51,12 @@ export const ImplementedActionsListItem: React.FC<
   const { useCase, editIsActive } = React.useContext(PedagogyContext);
   const {
     index,
+    ownerOfEntry,
     implemenetedSupportAction,
     onDeleteActionClick,
     onActionChange,
   } = props;
 
-  const ownerOfEntry = true;
   const disabledFields =
     useCase === "STUDENT" || !editIsActive || !ownerOfEntry;
 
@@ -62,12 +64,21 @@ export const ImplementedActionsListItem: React.FC<
     <div style={{ marginBottom: "10px", borderBottom: "1px solid #b4b4b4" }}>
       <div className="hops-container__row">
         <div className="hops__form-element-container">
+          <TextField
+            id="creatorName"
+            label="Merkitsijä"
+            value={implemenetedSupportAction.creatorName}
+            disabled
+          />
+        </div>
+
+        <div className="hops__form-element-container">
           <label htmlFor="graduationGoalMonth" className="hops__label">
             Päivämäärä
           </label>
           <DatePicker
             id="graduationGoalMonth"
-            dateFormat="MM/yyyy"
+            dateFormat="dd/MM/yyyy"
             onChange={(e) => onActionChange(index, "date", e)}
             selected={new Date(implemenetedSupportAction.date)}
             className="hops__input"
@@ -130,7 +141,7 @@ export const ImplementedActionsListItem: React.FC<
         className="hops-container__row"
         style={{ justifyContent: "flex-end" }}
       >
-        {index > 0 && (
+        {ownerOfEntry && editIsActive && (
           <IconButton
             icon="trash"
             onClick={(e) => onDeleteActionClick(index)}

@@ -1,10 +1,15 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import CKEditor from "../../ckeditor";
 import { PedagogyContext } from "..";
-import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
-import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
+import {
+  FormData,
+  Opinion,
+  OpinionType,
+  PedagogyForm,
+} from "~/@types/pedagogy-form";
+import { AddNewOpinionBox, OpinionItem, OpinionList } from "../opinions-list";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * MonitoringAndEvaluationProps
@@ -12,6 +17,7 @@ import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
 interface MonitoringAndEvaluationProps {
   pedagogyData?: PedagogyForm;
   formData?: FormData;
+  status: StatusType;
   onFormDataChange: (updatedFormData: FormData) => void;
 }
 
@@ -23,82 +29,128 @@ interface MonitoringAndEvaluationProps {
 const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
   props
 ) => {
-  const { formData, onFormDataChange } = props;
-  const { editIsActive } = React.useContext(PedagogyContext);
+  const { useCase, editIsActive } = React.useContext(PedagogyContext);
+  const { formData, onFormDataChange, status } = props;
 
   /**
-   * handleStudentOpinionChange
-   * @param value value
+   * Handles support reason select change
+   * @param type type
    */
-  const handleStudentOpinionChange = (value: string) => {
-    onFormDataChange({
+  const handleAddNewOpinion = (type: OpinionType) => () => {
+    const updatedFormData: FormData = {
       ...formData,
-      studentOpinionOfSupport: value,
+    };
+
+    updatedFormData[type].push({
+      creatorIdentifier: status.userSchoolDataIdentifier,
+      creatorName: status.profile.displayName,
+      creationDate: new Date(),
     });
+
+    onFormDataChange(updatedFormData);
   };
 
   /**
-   * handleSchoolOpinionChange
+   * Handles support reason select change
+   *
+   * @param index index
+   * @param key key
    * @param value value
+   * @param type type
    */
-  const handleSchoolOpinionChange = (value: string) => {
-    onFormDataChange({
-      ...formData,
-      schoolOpinionOfSupport: value,
-    });
+  const handleOpinionChange = <T extends keyof Opinion>(
+    index: number,
+    key: T,
+    value: Opinion[T],
+    type: OpinionType
+  ) => {
+    const updatedFormData: FormData = { ...formData };
+
+    updatedFormData[type][index] = {
+      ...updatedFormData[type][index],
+      [key]: value,
+    };
+
+    onFormDataChange(updatedFormData);
   };
 
-  const studentOpinion = formData?.studentOpinionOfSupport || "";
-  const schoolOpinion = formData?.schoolOpinionOfSupport || "";
+  /**
+   * Handles support reason select change
+   * @param index index
+   * @param type type
+   */
+  const handleDeleteOpinion = (index: number, type: OpinionType) => {
+    const updatedFormData: FormData = { ...formData };
+    updatedFormData[type].splice(index, 1);
+
+    onFormDataChange(updatedFormData);
+  };
+
+  const studentOpinionEntries =
+    (formData?.studentOpinionOfSupport &&
+      formData?.studentOpinionOfSupport.length > 0 &&
+      formData?.studentOpinionOfSupport.map((iOpinion, index) => (
+        <OpinionItem
+          key={index}
+          index={index}
+          type="studentOpinionOfSupport"
+          opinion={iOpinion}
+          ownerOfEntry={
+            status.userSchoolDataIdentifier === iOpinion.creatorIdentifier
+          }
+          onOpinionChange={handleOpinionChange}
+          onDeleteEntryClick={handleDeleteOpinion}
+        />
+      ))) ||
+    "Ei opiskelijan arvioita";
+
+  const schoolOpinionEntries =
+    (formData?.schoolOpinionOfSupport &&
+      formData?.schoolOpinionOfSupport.length > 0 &&
+      formData?.schoolOpinionOfSupport.map((iOpinion, index) => (
+        <OpinionItem
+          key={index}
+          index={index}
+          type="schoolOpinionOfSupport"
+          opinion={iOpinion}
+          ownerOfEntry={
+            status.userSchoolDataIdentifier === iOpinion.creatorIdentifier
+          }
+          onOpinionChange={handleOpinionChange}
+          onDeleteEntryClick={handleDeleteOpinion}
+        />
+      ))) ||
+    "Ei koulun arvioita";
 
   return (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          TUEN SEURANTA JA ARVIOINTI
+          TUEN SEURANTA JA ARVIOINTI (opiskelijan näkökulma)
         </legend>
-        <div className="hops-container__row">
-          {editIsActive ? (
-            <div className="hops__form-element-container">
-              <label className="hops__label">Opiskelijan näkemys</label>
-              <CKEditor onChange={handleStudentOpinionChange}>
-                {studentOpinion}
-              </CKEditor>
-            </div>
-          ) : (
-            <div className="hops__form-element-container">
-              <label className="hops__label">Opiskelijan näkemys</label>
-              {studentOpinion === "" ? (
-                <p>Opiskelijan näkemystä ei ole vielä asetettu</p>
-              ) : (
-                <CkeditorLoaderContent html={studentOpinion} />
-              )}
-            </div>
+        <OpinionList>
+          {studentOpinionEntries}
+          {editIsActive && (
+            <AddNewOpinionBox
+              onClick={handleAddNewOpinion("studentOpinionOfSupport")}
+              disabled={useCase === "STUDENT" || !editIsActive}
+            />
           )}
-        </div>
-        <div className="hops-container__row">
-          {editIsActive ? (
-            <div className="hops__form-element-container">
-              <label className="hops__label">
-                Lukion näkemys tuen vaikuttavuudesta
-              </label>
-              <CKEditor onChange={handleSchoolOpinionChange}>
-                {schoolOpinion}
-              </CKEditor>
-            </div>
-          ) : (
-            <div className="hops__form-element-container">
-              <label className="hops__label">
-                Lukion näkemys tuen vaikuttavuudesta
-              </label>
-              {schoolOpinion === "" ? (
-                <p>Lukion näkemystä ei ole vielä asetettu</p>
-              ) : (
-                <CkeditorLoaderContent html={schoolOpinion} />
-              )}
-            </div>
+        </OpinionList>
+      </fieldset>
+      <fieldset className="hops-container__fieldset">
+        <legend className="hops-container__subheader">
+          TUEN SEURANTA JA ARVIOINTI (Lukion näkökulma)
+        </legend>
+        <OpinionList>
+          {schoolOpinionEntries}
+          {editIsActive && (
+            <AddNewOpinionBox
+              onClick={handleAddNewOpinion("schoolOpinionOfSupport")}
+              disabled={useCase === "STUDENT" || !editIsActive}
+            />
           )}
-        </div>
+        </OpinionList>
       </fieldset>
     </section>
   );

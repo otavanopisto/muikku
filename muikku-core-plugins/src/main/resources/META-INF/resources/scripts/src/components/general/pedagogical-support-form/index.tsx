@@ -174,6 +174,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
       name: "Toteutetut tukitoimet",
       component: (
         <Step4
+          status={props.status}
           pedagogyData={data}
           formData={formData}
           onFormDataChange={handleFormDataChange}
@@ -184,6 +185,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
       name: "Tuen seuranta ja arviointi",
       component: (
         <Step5
+          status={props.status}
           pedagogyData={data}
           formData={formData}
           onFormDataChange={handleFormDataChange}
@@ -360,7 +362,7 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
     <PedagogyContext.Provider
       value={{
         useCase: props.useCase,
-        editIsActive,
+        editIsActive: (data && data.state === "ACTIVE") || editIsActive,
       }}
     >
       <div className="wizard">
