@@ -262,12 +262,6 @@
 
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
-        <artifactId>timed-notifications-plugin-persistence</artifactId>
-        <version>${muikku.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>openfire-rest-client</artifactId>
         <version>${muikku.version}</version>
       </dependency>
