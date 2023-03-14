@@ -6,7 +6,6 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
 import CkeditorContentLoader from "../../base/ckeditor-loader/content";
 import Button from "../button";
 import Dropdown from "~/components/general/dropdown";
@@ -15,7 +14,6 @@ import Dropdown from "~/components/general/dropdown";
  * NoteBookProps
  */
 interface NoteListProps {
-  i18n: i18nType;
   notebook: NoteBookState;
 }
 
@@ -36,7 +34,6 @@ export const NoteList: React.FC<NoteListProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     notebook: state.notebook,
   };
 }

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
 import Bubble from "~/components/general/bubble";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -7,9 +6,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * FrontpageHeroProps
  */
-interface FrontpageHeroProps extends WithTranslation<["frontPage"]> {
-  i18nOLD: i18nType;
-}
+interface FrontpageHeroProps extends WithTranslation<["frontPage"]> {}
 
 /**
  * FrontpageHeroState

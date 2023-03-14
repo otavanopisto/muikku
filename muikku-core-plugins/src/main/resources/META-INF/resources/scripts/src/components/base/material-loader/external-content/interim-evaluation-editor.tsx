@@ -303,8 +303,8 @@ class InterimEvaluationEditor extends React.Component<
             onClick={this.props.onToggleAnswersVisible}
           >
             {this.props.answersVisible
-              ? t("actions.hide_answers", { ns: "materials" })
-              : t("actions.show_anwers", { ns: "materials" })}
+              ? t("actions.hide", { ns: "materials" })
+              : t("actions.show", { ns: "materials" })}
           </Button>
         ) : null}
       </div>

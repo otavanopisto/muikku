@@ -73,7 +73,7 @@ class GeneralInformation extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.t("labels.generalInfo", { ns: "users" })}
+            {this.props.t("labels.generalInfo", { ns: "profile" })}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">

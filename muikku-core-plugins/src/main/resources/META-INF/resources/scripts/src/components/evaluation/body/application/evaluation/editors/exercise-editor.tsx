@@ -480,4 +480,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-connect(mapStateToProps, mapDispatchToProps)(ExerciseEditor);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(ExerciseEditor)
+);

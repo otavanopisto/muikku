@@ -95,7 +95,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
       return (
         <section>
           <h2 className="application-panel__content-header">
-            {this.props.t("labels.orders_other", { ns: "orders" })}
+            {this.props.t("labels.orders", { ns: "orders" })}
           </h2>
           <div className="empty">
             <span>{this.props.t("content.empty", { ns: "orders" })}</span>
@@ -107,7 +107,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     return (
       <section>
         <h2 className="application-panel__content-header">
-          {this.props.t("labels.orders_other", { ns: "orders" })}
+          {this.props.t("labels.orders", { ns: "orders" })}
         </h2>
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">

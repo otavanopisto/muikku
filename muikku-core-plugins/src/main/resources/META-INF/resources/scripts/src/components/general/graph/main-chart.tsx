@@ -666,4 +666,4 @@ class CurrentStudentStatistics extends React.Component<
   }
 }
 
-export default CurrentStudentStatistics;
+export default withTranslation("common")(CurrentStudentStatistics);

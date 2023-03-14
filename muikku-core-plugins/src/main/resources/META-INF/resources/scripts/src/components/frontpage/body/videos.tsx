@@ -1,14 +1,11 @@
 import * as React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import Carousel, { CarouselVideoItem } from "~/components/general/carousel";
-import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * FrontpageVideosProps
  */
-interface FrontpageVideosProps extends WithTranslation {
-  i18nOLD: i18nType;
-}
+interface FrontpageVideosProps extends WithTranslation {}
 
 /**
  * FrontpageVideosState

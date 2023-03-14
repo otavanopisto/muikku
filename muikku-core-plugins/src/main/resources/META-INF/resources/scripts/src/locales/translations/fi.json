@@ -63,8 +63,6 @@
       "coursepicker": "Kurssipoimuri",
       "create": "Luo uusi",
       "create_comment": "Uusi kommentti",
-      "create_password1": "Uusi salasana",
-      "create_password2": "Vahvista uusi salasana",
       "create_room": "Luo uusi huone",
       "created": "Luotu",
       "credentials": "Aseta tunnuksesi",
@@ -112,6 +110,7 @@
       "personalInfo": "Omat tiedot",
       "phone": "Puhelinnumero",
       "profileImage": "Profiilin kuva",
+      "readingRuler": "Lukiviivain",
       "reply": "Vastaa",
       "remove": "Poista",
       "remove_roster": "Poistetaan {0} listasta",
@@ -244,7 +243,6 @@
       "pinRuler": "Kiinnitä lukiviivain",
       "profileMenu": "Muikun käyttäjäprofiilin valikko",
       "uploadPicture": "Lisää profiilin kuva",
-      "readingRuler": "Lukiviivain",
       "preset1": "Esiasetettu teema 1",
       "preset2": "Esiasetettu teema 2",
       "preset3": "Esiasetettu teema 3"
@@ -725,7 +723,7 @@
       "search": "Hae viestejä",
       "search_recipients": "Hae vastaanottajia",
       "search_target": "Hae kohderyhmää",
-      "settings_room": "Huoneen asetukset",
+      "settings": "Huoneen asetukset",
       "signature": "Allekirjoitus",
       "subscribe": "Tilaa herätteet",
       "subscribed": "Tilattu",
@@ -1077,20 +1075,20 @@
 
   "materials": {
     "actions": {
-      "add_mathFormula": "Lisää kaava",
-      "add_image": "Lisää kuva",
-      "cancel_assignment": "Peruuta tehtävän palautus",
-      "evaluated_assignment": "Tehtävä on jo arvioitu",
-      "hide_answers": "Piilota oikeat vastaukset",
+      "add": "Lisää kuva",
+      "add_formula": "Lisää kaava",
+      "cancel": "Peruuta tehtävän palautus",
+      "evaluated": "Tehtävä on jo arvioitu",
+      "hide": "Piilota oikeat vastaukset",
       "notSignedUpWarning": "tästä",
-      "record": "Aloita nauhoitus",
-      "record_stop": "Lopeta nauhoitus",
+      "start": "Aloita nauhoitus",
+      "stop": "Lopeta nauhoitus",
       "revert": "Palaa edelliseen julkaistuun versioon",
       "save": "Tallenna muutokset",
-      "send_assignment": "Palauta tehtävä",
-      "sent_assignment": "Tehtävä palautettu",
-      "show_anwers": "Näytä oikeat vastaukset",
-      "update_assignment": "Palauta tehtävä uudelleen"
+      "send": "Palauta tehtävä",
+      "sent": "Tehtävä palautettu",
+      "show": "Näytä oikeat vastaukset",
+      "update": "Palauta tehtävä uudelleen"
     },
     "labels": {
       "allowCommercial": "Sallitaanko teoksen kaupallinen käyttö?",
@@ -1252,7 +1250,7 @@
   "workspace": {
     "actions": {
       "appointment": "Varaa aika",
-      "cancel_interimEvaluationRequest": "Peruuta välipalautepyyntö",
+      "cancel": "Peruuta välipalautepyyntö",
       "checkOut": "Tutustu",
       "continue": "Jatka",
       "copy": "Tee kopio",
@@ -1261,14 +1259,13 @@
       "create_journal": "Uusi merkintä",
       "edit": "Muokkaa kurssia",
       "edit_journal": "Muokkaa merkintää",
-      "hide_answers": "Piilota oikeat vastaukset",
+      "hide": "Piilota oikeat vastaukset",
       "hide_supplementationRequest": "Piilota täydennyspyyntö",
       "openInMuikku": "Avaa kurssi Muikussa",
       "openInPyramus": "Avaa kurssi Pyramuksessa",
       "readMore": "Lue lisää",
-      "save_journal": "Julkaise merkintä",
-      "send_interimEvaluationRequest": "Lähetä välipalautepyyntö",
-      "show_supplementationRequest": "Näytä täydennyspyyntö",
+      "send": "Lähetä välipalautepyyntö",
+      "show": "Näytä täydennyspyyntö",
       "signUp": "Ilmoittaudu"
     },
 
@@ -1503,6 +1500,9 @@
   },
 
   "journal": {
+    "actions": {
+      "save": "Julkaise merkintä"
+    },
     "labels": {
       "create_journalEntry": "Uusi päiväkirjamerkintä",
       "edit_journal": "Muokkaa päiväkirjamerkintää",

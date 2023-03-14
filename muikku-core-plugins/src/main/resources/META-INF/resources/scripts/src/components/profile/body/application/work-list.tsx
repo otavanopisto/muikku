@@ -219,7 +219,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       <section>
         <form onSubmit={this.onFormSubmit} className="form">
           <h2 className="application-panel__content-header">
-            {this.props.t("labels.title", { ns: "worklist" })}
+            {this.props.t("labels.create", { ns: "worklist" })}
           </h2>
           <div className="application-sub-panel application-sub-panel--worklist">
             <h3 className="application-sub-panel__header">

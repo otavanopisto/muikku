@@ -995,7 +995,6 @@ class Groupchat extends React.Component<IGroupChatProps, IGroupChatState> {
                   <div className="chat__subpanel-title">
                     {this.props.i18n.t("labels.settings", {
                       ns: "messaging",
-                      context: "rooms",
                     })}
                   </div>
                   <div

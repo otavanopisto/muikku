@@ -190,8 +190,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "WORKSPACE_VISIT",
         balloonText:
-          this.props.i18n.t("labels.visits", { ns: "guider" }) +
-          " <b>[[WORKSPACE_VISIT]]</b>",
+          this.props.i18n.t("labels.graph", {
+            ns: "guider",
+            context: "visits",
+          }) + " <b>[[WORKSPACE_VISIT]]</b>",
         fillAlphas: 0.7,
         lineAlpha: 0.2,
         lineColor: "#43cd80",

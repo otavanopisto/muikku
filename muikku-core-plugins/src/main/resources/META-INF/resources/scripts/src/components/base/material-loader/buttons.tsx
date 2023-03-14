@@ -53,8 +53,8 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
           onClick={props.onToggleAnswersVisible}
         >
           {props.answersVisible
-            ? t("actions.hide_answers", { ns: "materials" })
-            : t("actions.show_anwers", { ns: "materials" })}
+            ? t("actions.hide", { ns: "materials" })
+            : t("actions.show", { ns: "materials" })}
         </Button>
       ) : null}
     </div>

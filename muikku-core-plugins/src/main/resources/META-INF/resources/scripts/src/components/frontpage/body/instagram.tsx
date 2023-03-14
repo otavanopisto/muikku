@@ -1,13 +1,10 @@
 import * as React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * FrontpageInstagramProps
  */
-interface FrontpageInstagramProps extends WithTranslation {
-  i18nOLD: i18nType;
-}
+interface FrontpageInstagramProps extends WithTranslation {}
 
 /**
  * FrontpageInstagramState

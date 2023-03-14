@@ -5,7 +5,6 @@ import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   LoadNotebookEntries,
   loadNotebookEntries,
@@ -56,7 +55,6 @@ export const HTML5toTouch: MultiBackendOptions = {
  * NoteBookProps
  */
 interface NoteBookProps {
-  i18n: i18nType;
   status: StatusType;
   currentWorkspace: WorkspaceType;
   notebook: NoteBookState;
@@ -243,6 +241,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
       noteInTheEditor,
       openedItems,
       toggleNotebookEditor,
+      setOpenedItems,
     ]
   );
 
@@ -314,7 +313,6 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     notebook: state.notebook,
     status: state.status,
     currentWorkspace: state.workspaces.currentWorkspace,

@@ -74,7 +74,7 @@ class Synchronizer extends React.PureComponent<
     let message: string;
     let modifier: string;
     if (this.props.syncError) {
-      message = t("notifications.saveError_answer", {
+      message = t("notifications.saveError", {
         ns: "materials",
         error: this.props.syncError,
       });

@@ -1,14 +1,11 @@
 import * as React from "react";
 import FrontpageFeed from "./feed";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FrontpageNewsProps
  */
-interface FrontpageNewsProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
-}
+interface FrontpageNewsProps extends WithTranslation {}
 
 /**
  * FrontpageNewsState

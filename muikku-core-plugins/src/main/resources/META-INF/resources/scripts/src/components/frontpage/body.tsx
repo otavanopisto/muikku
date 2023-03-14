@@ -52,16 +52,16 @@ class FrontpageBody extends React.Component<
     return (
       <div>
         <FrontpageNavbar />
-        <FrontpageHero i18nOLD={this.props.i18nOLD} />
+        <FrontpageHero />
         <ScreenContainer viewModifiers="frontpage">
-          <FrontpageStudying i18nOLD={this.props.i18nOLD} />
-          <FrontpageVideos i18nOLD={this.props.i18nOLD} />
-          <FrontpageNews i18nOLD={this.props.i18nOLD} />
-          <FrontpageInstagram i18nOLD={this.props.i18nOLD} />
-          <FrontpageOrganization i18nOLD={this.props.i18nOLD} />
+          <FrontpageStudying />
+          <FrontpageVideos />
+          <FrontpageNews />
+          <FrontpageInstagram />
+          <FrontpageOrganization />
         </ScreenContainer>
 
-        <FrontpageFooter i18nOLD={this.props.i18nOLD} />
+        <FrontpageFooter />
       </div>
     );
   }

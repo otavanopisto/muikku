@@ -88,9 +88,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
     if (newPassword1 && newPassword2 == "") {
       this.props.displayNotification(
-        this.props.t(
-          "validation.password"
-        ),
+        this.props.t("validation.password"),
         "error"
       );
       return;
@@ -98,9 +96,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(
-        this.props.t(
-          "validation.password", {context: "match"}
-        ),
+        this.props.t("validation.password", { context: "match" }),
         "error"
       );
       return;
@@ -127,15 +123,12 @@ class Security extends React.Component<SecurityProps, SecurityState> {
         if (err) {
           if (result.status === 403) {
             this.props.displayNotification(
-              this.props.t(
-                "notifications.403", {context: "password"}
-              ),
+              this.props.t("notifications.403", { context: "password" }),
               "error"
             );
           } else if (result.status === 409) {
             this.props.displayNotification(
-              this.props.t(
-                "notifications.409", {context: "userName"}),
+              this.props.t("notifications.409", { context: "userName" }),
               "error"
             );
           } else {
@@ -144,16 +137,16 @@ class Security extends React.Component<SecurityProps, SecurityState> {
         } else {
           if (values.newPassword === "") {
             this.props.displayNotification(
-              this.props.t(
-                "notifications.updateSuccess", {context: "credentials"}
-              ),
+              this.props.t("notifications.updateSuccess", {
+                context: "credentials",
+              }),
               "success"
             );
           } else {
             this.props.displayNotification(
-              this.props.t(
-                "notifications.updateSuccess", {context: "password"}
-              ),
+              this.props.t("notifications.updateSuccess", {
+                context: "password",
+              }),
               "success"
             );
           }
@@ -195,9 +188,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileUsername">
-                    {this.props.t(
-                      "labels.userName"
-                    )}
+                    {this.props.t("labels.userName")}
                   </label>
                   <input
                     id="profileUsername"
@@ -211,9 +202,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileOldPassword">
-                    {this.props.t(
-                      "labels.oldPassword"
-                    )}
+                    {this.props.t("labels.oldPassword")}
                   </label>
                   <input
                     id="profileOldPassword"
@@ -228,9 +217,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileNewPassword1">
-                    {this.props.t(
-                      "labels.newPassword1"
-                    )}
+                    {this.props.t("labels.password1")}
                   </label>
                   <input
                     id="profileNewPassword1"
@@ -244,9 +231,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileNewPassword2">
-                    {this.props.t(
-                      "labels.newPassword2"
-                    )}
+                    {this.props.t("labels.password2")}
                   </label>
                   <input
                     id="profileNewPassword2"

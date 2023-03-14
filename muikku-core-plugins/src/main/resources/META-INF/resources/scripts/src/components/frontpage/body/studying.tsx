@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -7,9 +6,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface FrontpageStudyingProps {
  *
  */
-interface FrontpageStudyingProps extends WithTranslation {
-  i18nOLD: i18nType;
-}
+interface FrontpageStudyingProps extends WithTranslation {}
 
 /**
  * FrontpageStudyingState

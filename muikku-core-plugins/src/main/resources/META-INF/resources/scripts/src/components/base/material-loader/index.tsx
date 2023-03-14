@@ -63,7 +63,7 @@ const STATES = [
     "button-class": "muikku-submit-exercise",
 
     //This is what by default appears on the button
-    "button-text": i18n.t("actions.send_assignment", { ns: "materials" }),
+    "button-text": i18n.t("actions.send", { ns: "materials" }),
 
     //Buttons are not disabled
     "button-disabled": false,
@@ -82,7 +82,7 @@ const STATES = [
     "checks-answers": true,
     "displays-hide-show-answers-on-request-button-if-allowed": true,
     "button-class": "muikku-submit-exercise",
-    "button-text": i18n.t("actions.sent_assignment", { ns: "materials" }),
+    "button-text": i18n.t("actions.sent", { ns: "materials" }),
     "button-disabled": false,
 
     //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
@@ -92,7 +92,7 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-assignment",
-    "button-text": i18n.t("actions.send_assignment", { ns: "materials" }),
+    "button-text": i18n.t("actions.send", { ns: "materials" }),
     //Represents a message that will be shown once the state changes to the success state
     "success-text": i18n.t("notifications.assignmentSubmitted", {
       ns: "materials",
@@ -105,7 +105,7 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: "SUBMITTED",
     "button-class": "muikku-withdraw-assignment",
-    "button-text": i18n.t("actions.cancel_assignment", { ns: "materials" }),
+    "button-text": i18n.t("actions.cancel", { ns: "materials" }),
     "success-text": i18n.t("notifications.assignmentWithdrawn", {
       ns: "materials",
     }),
@@ -117,7 +117,7 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: ["FAILED", "INCOMPLETE"],
     "button-class": "muikku-withdraw-assignment",
-    "button-text": i18n.t("actions.cancel_assignment", { ns: "materials" }),
+    "button-text": i18n.t("actions.cancel", { ns: "materials" }),
     "success-text": i18n.t("notifications.assignmentWithdrawn", {
       ns: "materials",
     }),
@@ -129,7 +129,7 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: "WITHDRAWN",
     "button-class": "muikku-update-assignment",
-    "button-text": i18n.t("actions.update_assignment", { ns: "materials" }),
+    "button-text": i18n.t("actions.update", { ns: "materials" }),
     "success-text": i18n.t("notifications.assignmentUpdated", {
       ns: "materials",
     }),
@@ -141,7 +141,7 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: "PASSED",
     "button-class": "muikku-evaluated-assignment",
-    "button-text": i18n.t("actions.evaluated_assignment", { ns: "materials" }),
+    "button-text": i18n.t("actions.evaluated", { ns: "materials" }),
     "button-disabled": true,
     "fields-read-only": true,
   },
@@ -149,7 +149,7 @@ const STATES = [
     "assignment-type": "JOURNAL",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-journal",
-    "button-text": i18n.t("actions.save_journal", { ns: "workspace" }),
+    "button-text": i18n.t("actions.save", { ns: "journal" }),
     "success-state": "SUBMITTED",
     "button-disabled": false,
     "fields-read-only": false,
@@ -167,7 +167,7 @@ const STATES = [
     "assignment-type": "INTERIM_EVALUATION",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-interim-evaluation",
-    "button-text": i18n.t("actions.send_interimEvaluationRequest", {
+    "button-text": i18n.t("actions.send", {
       ns: "workspace",
     }),
     "success-state": "SUBMITTED",
@@ -178,7 +178,7 @@ const STATES = [
     "assignment-type": "INTERIM_EVALUATION",
     state: "SUBMITTED",
     "button-class": "muikku-submit-interim-evaluation",
-    "button-text": i18n.t("actions.cancel_interimEvaluationRequest", {
+    "button-text": i18n.t("actions.cancel", {
       ns: "workspace",
     }),
     "success-state": "ANSWERED",
@@ -189,7 +189,7 @@ const STATES = [
     "assignment-type": "INTERIM_EVALUATION",
     state: "PASSED",
     "button-class": "muikku-evaluated-assignment",
-    "button-text": i18n.t("actions.evaluated_assignment", { ns: "materials" }),
+    "button-text": i18n.t("actions.evaluated", { ns: "materials" }),
     "button-disabled": true,
     "fields-read-only": true,
   },

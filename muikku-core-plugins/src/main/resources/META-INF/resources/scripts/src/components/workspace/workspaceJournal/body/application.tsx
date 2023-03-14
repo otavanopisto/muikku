@@ -174,7 +174,6 @@ class WorkspaceJournalApplication extends React.Component<
 
           {this.props.journalsState.journalFeedback && (
             <WorkspaceJournalFeedback
-              i18n={this.props.i18n}
               journalFeedback={this.props.journalsState.journalFeedback}
             />
           )}

@@ -37,7 +37,7 @@ function RecorderControls(props: RecorderControlsProps) {
           disabled={disabled}
         >
           <span className="voice-recorder__start-record-label">
-            {t("actions.record")}
+            {t("actions.start")}
           </span>
         </Link>
       ) : (
@@ -47,7 +47,7 @@ function RecorderControls(props: RecorderControlsProps) {
           disabled={disabled}
         >
           <span className="voice-recorder__stop-record-label">
-            {t("actions.record", { context: "stop" })}
+            {t("actions.stop")}
           </span>
         </Link>
       )}

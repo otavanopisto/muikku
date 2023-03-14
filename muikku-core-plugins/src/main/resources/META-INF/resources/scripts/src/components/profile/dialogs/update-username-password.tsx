@@ -225,7 +225,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileNewPassword1">
-              {this.props.t("labels.newPassword1")}
+              {this.props.t("labels.password1")}
             </label>
             <input
               id="profileNewPassword1"
@@ -237,7 +237,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileNewPassword2">
-              {this.props.t("labels.newPassword2")}
+              {this.props.t("labels.password2")}
             </label>
             <input
               id="profileNewPassword2"

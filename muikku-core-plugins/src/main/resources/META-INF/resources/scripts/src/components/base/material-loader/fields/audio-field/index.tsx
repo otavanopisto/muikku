@@ -637,7 +637,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                   onClick={this.start}
                 >
                   <span className="material-page__audiofield-start-record-label">
-                    {t("actions.record", { ns: "materials" })}
+                    {t("actions.start", { ns: "materials" })}
                   </span>
                 </Link>
               ) : (
@@ -646,7 +646,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                   onClick={this.stop}
                 >
                   <span className="material-page__audiofield-stop-record-label">
-                    {t("actions.recordStop", { ns: "materials" })}
+                    {t("actions.start", { ns: "materials" })}
                   </span>
                 </Link>
               )}

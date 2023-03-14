@@ -185,7 +185,7 @@ class ChatSettings extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.t("labels.settings", { ns: "profile" })}
+            {this.props.t("labels.chatSettings", { ns: "profile" })}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">

@@ -153,9 +153,12 @@ class TextField extends React.Component<MathFieldProps, MathFieldState> {
               ns: "materials",
             }),
             setTheoryNotation: t("labels.setTheory", { ns: "materials" }),
-            mathFormulas: t("actions.add_mathFormula", { ns: "materials" }),
+            mathFormulas: t("actions.add", {
+              ns: "materials",
+              context: "formula",
+            }),
             operators: t("labels.operators", { ns: "materials" }),
-            image: t("actions.add_image", { ns: "materials" }),
+            image: t("actions.add", { ns: "materials" }),
           }}
           readOnly={this.props.readOnly}
           dontLoadACE={this.props.readOnly}

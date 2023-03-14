@@ -161,6 +161,7 @@ class WorkListRow extends React.Component<
     if (this.state.editMode) {
       return (
         <WorkListEditable
+          i18nOLD={this.props.i18nOLD}
           base={this.props.item}
           onSubmit={this.onEdit}
           onCancel={this.toggleEditMode}
