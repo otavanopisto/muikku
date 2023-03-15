@@ -32,14 +32,13 @@ public class PedagogyController {
     // Default values for a new form
 
     PedagogyFormState state = PedagogyFormState.ACTIVE;
-    Long ownerId = sessionController.getLoggedUserEntity().getId();
+    Long creator = sessionController.getLoggedUserEntity().getId();
     String visibility = null;
 
-    // Create form and a history entry about that having happened (doubles as the
-    // creation date of the form)
+    // Create form and a history entry about that having happened (doubles as the creator and creation date of the form)
 
-    PedagogyForm form = pedagogyFormDAO.create(studentIdentifier, formData, ownerId, state, visibility);
-    pedagogyFormHistoryDAO.create(form, "Lomake luotu", ownerId);
+    PedagogyForm form = pedagogyFormDAO.create(studentIdentifier, formData, state, visibility);
+    pedagogyFormHistoryDAO.create(form, "Lomake luotu", creator);
 
     return form;
   }

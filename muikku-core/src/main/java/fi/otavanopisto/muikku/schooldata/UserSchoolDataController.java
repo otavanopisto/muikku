@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -168,6 +169,10 @@ public class UserSchoolDataController {
   
   public UserContactInfo getUserContactInfo(String schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).getUserContactInfo(userIdentifier);
+  }
+  
+  public StudentGuidanceRelation getGuidanceRelation(String schoolDataSource, String studentIdentifier) {
+    return getUserBridge(schoolDataSource).getGuidanceRelation(studentIdentifier);
   }
   
   public User increaseStudyTime(SchoolDataIdentifier schoolDataIdentifier, Integer months) {

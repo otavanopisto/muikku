@@ -9,6 +9,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -59,6 +60,10 @@ public class UserController {
   
   public UserContactInfo getUserContactInfo(String schoolDataSource, String userIdentifier) {
     return userSchoolDataController.getUserContactInfo(schoolDataSource, userIdentifier);
+  }
+  
+  public StudentGuidanceRelation getGuidanceRelation(String schoolDataSource, String studentIdentifier) {
+    return userSchoolDataController.getGuidanceRelation(schoolDataSource, studentIdentifier);
   }
 
   public User findUserByIdentifier(SchoolDataIdentifier userIdentifier) {

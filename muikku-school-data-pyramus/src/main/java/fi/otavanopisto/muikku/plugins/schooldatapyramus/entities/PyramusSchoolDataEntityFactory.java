@@ -26,6 +26,7 @@ import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.Optionality;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -142,6 +143,13 @@ public class PyramusSchoolDataEntityFactory {
         userContactInfo.getCity(),
         userContactInfo.getCountry(),
         userContactInfo.getEmail());
+  }
+  
+  public StudentGuidanceRelation createEntity(fi.otavanopisto.pyramus.rest.model.StudentGuidanceRelation guidanceRelation) {
+    return new PyramusStudentGuidanceRelation(
+        guidanceRelation.isSpecEdTeacher(),
+        guidanceRelation.isGuidanceCounselor(),
+        guidanceRelation.isCourseTeacher());
   }
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,
