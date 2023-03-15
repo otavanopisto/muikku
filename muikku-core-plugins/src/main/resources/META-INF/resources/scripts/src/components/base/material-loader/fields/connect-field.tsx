@@ -7,6 +7,7 @@ import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * FieldType
@@ -572,6 +573,23 @@ export default class ConnectField extends React.Component<
           syncError={this.state.syncError}
           i18n={this.props.i18n}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+        />
+        <Instructions
+          modifier="instructions"
+          alignSelfVertically="top"
+          openByHover={false}
+          closeOnClick={true}
+          closeOnOutsideClick={false}
+          persistent
+          content={
+            <div
+              dangerouslySetInnerHTML={{
+                __html: this.props.i18n.text.get(
+                  "plugin.workspace.connectField.instructions"
+                ),
+              }}
+            />
+          }
         />
         <span
           className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}

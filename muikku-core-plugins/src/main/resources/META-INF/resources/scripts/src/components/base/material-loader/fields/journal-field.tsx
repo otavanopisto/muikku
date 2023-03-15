@@ -254,22 +254,22 @@ export default class JournalField extends React.Component<
                   "plugin.workspace.journalMemoField.label"
                 )}
                 <Instructions
-                    modifier="instructions"
-                    alignSelfVertically="top"
-                    openByHover={false}
-                    closeOnClick={true}
-                    closeOnOutsideClick={false}
-                    persistent
-                    content={
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.i18n.text.get(
-                            "plugin.workspace.journalMemoField.instructions"
-                          ),
-                        }}
-                      />
-                    }
-                  />
+                  modifier="instructions"
+                  alignSelfVertically="top"
+                  openByHover={false}
+                  closeOnClick={true}
+                  closeOnOutsideClick={false}
+                  persistent
+                  content={
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: this.props.i18n.text.get(
+                          "plugin.workspace.journalMemoField.instructions"
+                        ),
+                      }}
+                    />
+                  }
+                />
               </b>
             </label>
             <CKEditor

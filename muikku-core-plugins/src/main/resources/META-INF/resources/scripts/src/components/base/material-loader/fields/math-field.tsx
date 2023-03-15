@@ -12,6 +12,7 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * MathFieldProps
@@ -139,6 +140,23 @@ export default class TextField extends React.Component<
           syncError={this.state.syncError}
           i18n={this.props.i18n}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+        />
+        <Instructions
+          modifier="instructions"
+          alignSelfVertically="top"
+          openByHover={false}
+          closeOnClick={true}
+          closeOnOutsideClick={false}
+          persistent
+          content={
+            <div
+              dangerouslySetInnerHTML={{
+                __html: this.props.i18n.text.get(
+                  "plugin.workspace.mathField.instructions"
+                ),
+              }}
+            />
+          }
         />
         <MathField
           ref="base"
