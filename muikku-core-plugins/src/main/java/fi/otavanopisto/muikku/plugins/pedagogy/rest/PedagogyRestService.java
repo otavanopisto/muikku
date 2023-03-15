@@ -402,7 +402,7 @@ public class PedagogyRestService {
       EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
       boolean isAdmin = roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR; 
       accessible = isAdmin || specEdTeacher;
-      if (!accessible && form != null) {
+      if (!accessible && form != null && form.getVisibility() != null) {
         List<PedagogyFormVisibility> visibility = Stream.of(form.getVisibility().split(",")).map(v -> PedagogyFormVisibility.valueOf(v)).collect(Collectors.toList());
         accessible = visibility.contains(PedagogyFormVisibility.TEACHERS) && (relation.isGuidanceCounselor() || relation.isCourseTeacher());
       }
