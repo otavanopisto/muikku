@@ -41,14 +41,6 @@ public class PedagogyForm {
     this.formData = formData;
   }
 
-  public Long getOwner() {
-    return owner;
-  }
-
-  public void setOwner(Long owner) {
-    this.owner = owner;
-  }
-
   public PedagogyFormState getState() {
     return state;
   }
@@ -78,10 +70,6 @@ public class PedagogyForm {
   @NotNull
   @Column(nullable = false)
   private String formData;
-  
-  @NotNull
-  @Column(nullable = false)
-  private Long owner;
   
   @NotNull
   @Column(nullable = false)

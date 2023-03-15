@@ -48,6 +48,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -1699,6 +1700,18 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     return pyramusClient.get(String.format("/students/students/%d/amICounselor", studentId), Boolean.class);
 
+  }
+
+  @Override
+  public StudentGuidanceRelation getGuidanceRelation(String studentIdentifier) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      return null;
+    }
+    fi.otavanopisto.pyramus.rest.model.StudentGuidanceRelation relation = pyramusClient.get(
+        String.format("/students/students/%d/guidanceRelation", studentId),
+        fi.otavanopisto.pyramus.rest.model.StudentGuidanceRelation.class);
+    return relation == null ? null : entityFactory.createEntity(relation);
   }
 
 }

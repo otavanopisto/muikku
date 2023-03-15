@@ -9,6 +9,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -149,6 +150,15 @@ public interface UserSchoolDataBridge {
    * @return User's contact info
    */
   public UserContactInfo getUserContactInfo(String userIdentifier);
+  
+  /**
+   * Returns the current user's guidance relation to the given student.
+   * 
+   * @param studentIdentifier Student identifier
+   * 
+   * @return User's guidance relation to the given student
+   */
+  public StudentGuidanceRelation getGuidanceRelation(String studentIdentifier);
   
   /**
    * Increases student's study time end by given months.
