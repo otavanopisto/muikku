@@ -673,7 +673,6 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "gradeSystems",
-              defaultValue: "Grade systems could not be loaded",
             }),
             "error"
           )
@@ -748,7 +747,6 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "evaluationRequests",
-              defaultValue: "Evaluation requests could not be loaded",
             }),
             "error"
           )
@@ -810,7 +808,6 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "workspaces",
-              defaultValue: "Workspaces could not be loaded",
             }),
             "error"
           )
@@ -871,7 +868,6 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "importanceRatings",
-              defaultValue: "Importance ratings could not be loaded",
             }),
             "error"
           )
@@ -932,7 +928,6 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "importanceRatings",
-              defaultValue: "Importance ratings could not be loaded",
             }),
             "error"
           )
@@ -998,7 +993,6 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "sortCategories",
-              defaultValue: "Sort categories could not be loaded",
             }),
             "error"
           )
@@ -1057,7 +1051,6 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "evaluationEvents",
-              defaultValue: "Evaluation events could not be loaded",
             }),
             "error"
           )
@@ -1299,7 +1292,6 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
               ns: "journal",
               context: "events",
               error: err.message,
-              defaultValue: "Journal events could not be loaded",
             }),
             "error"
           )
@@ -1407,7 +1399,6 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
               ns: "evaluation",
               context: "assignmentData",
               error: err.message,
-              defaultValue: "Assignment data could not be loaded",
             }),
             "error"
           )
@@ -1468,7 +1459,6 @@ const updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction =
               ns: "evaluation",
               context: "sorting",
               error: err.message,
-              defaultValue: "Evaluation sorting could not be updated",
             }),
             "error"
           )
@@ -1550,7 +1540,6 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
               i18n.t("notifications.saveError", {
                 ns: "evaluation",
                 error: err.message,
-                defaultValue: "Evaluation could not be saved",
               }),
               "error"
             )
@@ -1593,7 +1582,6 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
               i18n.t("notifications.updateError", {
                 ns: "evaluation",
                 error: err.message,
-                defaultValue: "Evaluation could not be updated",
               }),
               "error"
             )
@@ -1659,7 +1647,6 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
                 ns: "evaluation",
                 context: "supplementationRequest",
                 error: error.message,
-                defaultValue: "Supplementation request could not be saved",
               }),
               "error"
             )
@@ -1694,7 +1681,6 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
                 ns: "evaluation",
                 context: "supplementationRequest",
                 error: error.message,
-                defaultValue: "Supplementation request could not be saved",
               }),
               "error"
             )
@@ -1782,7 +1768,6 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
               i18n.t("notifications.removeError", {
                 ns: "evaluation",
                 error: error.message,
-                defaultValue: "Workspace event could not be removed",
               }),
               "error"
             )
@@ -1835,7 +1820,6 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
                 ns: "evaluation",
                 context: "supplementationRequest",
                 error: error.message,
-                defaultValue: "Supplementation request could not be removed",
               }),
               "error"
             )
@@ -1925,7 +1909,6 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "assignmentData",
-              defaultValue: "Assignment data could not be loaded",
             }),
             "error"
           )
@@ -1994,7 +1977,6 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "assignmentData",
-              defaultValue: "Assignment data could not be loaded",
             }),
             "error"
           )
@@ -2077,7 +2059,6 @@ const updateBillingToServer: UpdateEvaluationEvent =
               ns: "evaluation",
               context: "pricing",
               error: error.message,
-              defaultValue: "Pricing could not be updated",
             }),
             "error"
           )
@@ -2190,7 +2171,6 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
       i18n.t("notifications.loadError", {
         ns: "evaluation",
         context: "gradeSystems",
-        defaultValue: "Grade systems could not be loaded",
       });
 
       dispatch(
@@ -2199,7 +2179,6 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
             ns: "evaluation",
             context: "sorting",
             error: err.message,
-            defaultValue: "Sorting could not be updated",
           }),
           "error"
         )
@@ -2252,7 +2231,6 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
         i18n.t("notifications.loadError", {
           ns: "evaluation",
           context: "gradeSystems",
-          defaultValue: "Grade systems could not be loaded",
         });
 
         dispatch(
@@ -2261,7 +2239,6 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
               ns: "evaluation",
               context: "evaluationRequest",
               error: error.message,
-              defaultValue: "Evaluation request could not be removed",
             }),
             "error"
           )
@@ -2302,7 +2279,6 @@ const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
               ns: "evaluation",
               context: "interimRequest",
               error: error.message,
-              defaultValue: "Interim evaluation request could not be removed",
             }),
             "error"
           )
@@ -2355,7 +2331,6 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
             ns: "evaluation",
             context: "student",
             error: error.message,
-            defaultValue: "Student could not be archived",
           }),
           "error"
         )
@@ -2478,7 +2453,6 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
                 ns: "journal",
                 context: "comments",
                 error: err.message,
-                defaultValue: "Journal comments could not be loaded",
               }),
               "error"
             )
@@ -2564,7 +2538,6 @@ const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType 
               ns: "journal",
               context: "comment",
               error: err.message,
-              defaultValue: "Journal comment could not be created",
             }),
             "error"
           )
@@ -2645,7 +2618,6 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
             i18n.t("notifications.updateError", {
               ns: "journal",
               context: "comment",
-              defaultValue: "Journal comment could not be updated",
             }),
             "error"
           )
@@ -2742,7 +2714,6 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
             i18n.t("notifications.removeError", {
               ns: "journal",
               context: "comment",
-              defaultValue: "Journal comment could not be removed",
             }),
             "error"
           )

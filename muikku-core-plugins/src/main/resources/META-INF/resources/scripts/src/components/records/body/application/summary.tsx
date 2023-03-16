@@ -172,7 +172,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                 <div className="item-list__user-vacation-period">
                                   {t("labels.status", {
                                     context: "xa",
-                                    defaultValue: "On vacation",
                                   })}
                                   &nbsp;
                                   {this.props.i18nOLD.time.format(
@@ -280,7 +279,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               {t("content.completedWorkspaces", {
                 ns: "studies",
                 context: "matriculation",
-                defaultValue: "need for abistatus",
               })}
             </div>
           </div>
@@ -299,7 +297,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               {t("content.completedWorkspaces", {
                 ns: "studies",
                 context: "lasMonth",
-                defaultValue: "courses during last month",
               })}
             </div>
           </div>

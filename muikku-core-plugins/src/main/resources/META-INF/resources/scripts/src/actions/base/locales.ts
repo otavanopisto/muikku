@@ -88,7 +88,6 @@ const loadLocale: LoadLocaleTriggerType = function loadLocale() {
         notificationActions.displayNotification(
           i18n.t("notifications.loadError", {
             context: "locales",
-            defaultValue: "Credentials updated successfully",
           }),
           "error"
         )

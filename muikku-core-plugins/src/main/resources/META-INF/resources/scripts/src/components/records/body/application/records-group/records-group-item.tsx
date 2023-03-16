@@ -244,7 +244,6 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       {t("labels.evaluation", {
                         ns: "evaluation",
                         context: "literal",
-                        defaultValue: "Literal evaluation",
                       })}
                       :
                     </div>

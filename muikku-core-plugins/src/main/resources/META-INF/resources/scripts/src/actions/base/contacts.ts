@@ -97,7 +97,6 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
           i18n.t("notifications.loadError", {
             ns: "studies",
             context: groupName,
-            defaultValue: "Contact group could not be loaded",
           }),
           "error"
         )

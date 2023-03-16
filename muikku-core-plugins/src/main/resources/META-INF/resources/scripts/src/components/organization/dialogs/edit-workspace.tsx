@@ -829,7 +829,6 @@ class OrganizationEditWorkspace extends React.Component<
                   ns: "users",
                   context: "workspaceStudents",
                   stepInfo: `${page}/${this.totalSteps}`,
-                  defaultValue: `Add workspace students - ${page}/${this.totalSteps}`,
                 })}
                 description={t("labels.search", {
                   ns: "users",
@@ -875,7 +874,6 @@ class OrganizationEditWorkspace extends React.Component<
                 description={t("content.searchToRemove", {
                   ns: "users",
                   context: "students",
-                  defaultValue: `Search and remove workspace students`,
                 })}
               />
             </DialogRow>
@@ -930,7 +928,6 @@ class OrganizationEditWorkspace extends React.Component<
                   ns: "users",
                   context: "workspaceTeachers",
                   stepInfo: `${page}/${this.totalSteps}`,
-                  defaultValue: `Add workspace teachers - ${page}/${this.totalSteps}`,
                 })}
                 description={t("labels.search", {
                   ns: "users",
@@ -976,7 +973,6 @@ class OrganizationEditWorkspace extends React.Component<
                 description={t("labels.searchToRemove", {
                   ns: "users",
                   context: "teachers",
-                  defaultValue: `Search and remove workspace teachers`,
                 })}
               />
             </DialogRow>
@@ -1128,7 +1124,6 @@ class OrganizationEditWorkspace extends React.Component<
                     {t("labels.noneSelected", {
                       ns: "users",
                       context: "teacher",
-                      defaultValue: "No selected teachers",
                     })}
                   </div>
                 )}
@@ -1192,7 +1187,6 @@ class OrganizationEditWorkspace extends React.Component<
                     {t("labels.noneSelected", {
                       ns: "users",
                       context: "teachers",
-                      defaultValue: "No selected teachers",
                     })}
                   </div>
                 )}
@@ -1242,7 +1236,6 @@ class OrganizationEditWorkspace extends React.Component<
           {t("labels.adding", {
             ns: "users",
             context: "students",
-            defaultValue: "Adding students",
           })}
         </div>
         <div
@@ -1253,7 +1246,6 @@ class OrganizationEditWorkspace extends React.Component<
           {t("labels.adding", {
             ns: "users",
             context: "teachers",
-            defaultValue: "Adding teachers",
           })}
         </div>
         <div
@@ -1264,7 +1256,6 @@ class OrganizationEditWorkspace extends React.Component<
           {t("labels.removing", {
             ns: "users",
             context: "students",
-            defaultValue: "Removing students",
           })}
         </div>
         <div
@@ -1275,7 +1266,6 @@ class OrganizationEditWorkspace extends React.Component<
           {t("labels.removing", {
             ns: "users",
             context: "teachers",
-            defaultValue: "Removing teachers",
           })}
         </div>
       </div>

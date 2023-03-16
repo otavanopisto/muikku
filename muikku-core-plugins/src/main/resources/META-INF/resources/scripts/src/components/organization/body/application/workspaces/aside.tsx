@@ -142,7 +142,6 @@ class WorkspacesAside extends React.Component<
           name={t("labels.published", {
             ns: "organization",
             context: "workspace",
-            defaultValue: "Published",
           })}
         >
           {this.props.workspaces.availableFilters.stateFilters.map(

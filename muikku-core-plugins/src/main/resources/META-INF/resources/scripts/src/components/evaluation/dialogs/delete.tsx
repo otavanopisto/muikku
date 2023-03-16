@@ -114,7 +114,6 @@ class DeleteDialog extends React.Component<
         {this.props.t("content.removing", {
           context: "evaluation",
           studentName: studentNameString,
-          defaultValue: `Default:Are you sure you want to remove ${studentNameString} from this workspace?`,
         })}
       </div>
     );

@@ -693,12 +693,10 @@ class OrganizationNewWorkspace extends React.Component<
                   ns: "users",
                   context: "workspaceStudents",
                   stepInfo: `${page}/${this.totalSteps}`,
-                  defaultValue: `Pick students - ${page}/${this.totalSteps}`,
                 })}
                 description={t("content.search", {
                   ns: "users",
                   context: "studentsAndGroups",
-                  defaultValue: "Search for students and groups",
                 })}
               />
             </DialogRow>
@@ -710,7 +708,6 @@ class OrganizationNewWorkspace extends React.Component<
                 placeholder={t("labels.search", {
                   ns: "users",
                   context: "students",
-                  defaultValue: "Search for students",
                 })}
                 selectedItems={this.state.selectedStudents}
                 searchItems={allItems}
@@ -739,12 +736,10 @@ class OrganizationNewWorkspace extends React.Component<
                   ns: "users",
                   context: "workspaceTeachers",
                   stepInfo: `${page}/${this.totalSteps}`,
-                  defaultValue: `Pick teachers - ${page}/${this.totalSteps}`,
                 })}
                 description={t("content.search", {
                   ns: "users",
                   context: "staff",
-                  defaultValue: "Search for staff",
                 })}
               />
             </DialogRow>
@@ -756,7 +751,6 @@ class OrganizationNewWorkspace extends React.Component<
                 placeholder={t("labels.search", {
                   ns: "users",
                   context: "teachers",
-                  defaultValue: "Search for teachers",
                 })}
                 selectedItems={this.state.selectedStaff}
                 searchItems={staffSearchItems}
@@ -965,7 +959,6 @@ class OrganizationNewWorkspace extends React.Component<
           {t("labels.adding", {
             ns: "users",
             context: "students",
-            defaultValue: "Adding students",
           })}
         </div>
         <div
@@ -976,7 +969,6 @@ class OrganizationNewWorkspace extends React.Component<
           {t("labels.adding", {
             ns: "users",
             context: "teachers",
-            defaultValue: "Adding teachers",
           })}
         </div>
       </div>

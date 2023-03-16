@@ -406,12 +406,10 @@ class OrganizationNewUserGroup extends React.Component<
                   ns: "users",
                   context: "userGroupStudents",
                   stepInfo: `${page}/${this.totalSteps}`,
-                  defaultValue: `Add students to user group - ${page}/${this.totalSteps}`,
                 })}
                 description={t("content.search", {
                   ns: "users",
                   context: "students",
-                  defaultValue: "Search for students to add to user group",
                 })}
               />
             </DialogRow>
@@ -447,12 +445,10 @@ class OrganizationNewUserGroup extends React.Component<
                   ns: "users",
                   context: "userGroupTeachers",
                   stepInfo: `${page}/${this.totalSteps}`,
-                  defaultValue: `Add teachers to user group - ${page}/${this.totalSteps}`,
                 })}
                 description={t("content.search", {
                   ns: "users",
                   context: "staff",
-                  defaultValue: "Search for teachers to add to user group",
                 })}
               />
               <AutofillSelector
@@ -533,7 +529,6 @@ class OrganizationNewUserGroup extends React.Component<
                     {t("content.noneSelected", {
                       ns: "users",
                       context: "students",
-                      defaultValue: "No students selected",
                     })}
                   </div>
                 )}
@@ -568,7 +563,6 @@ class OrganizationNewUserGroup extends React.Component<
                     {t("content.noneSelected", {
                       ns: "users",
                       context: "councelors",
-                      defaultValue: "No counselors selected",
                     })}
                   </div>
                 )}
@@ -606,7 +600,6 @@ class OrganizationNewUserGroup extends React.Component<
           {t("labels.creating", {
             ns: "users",
             context: "userGroup",
-            defaultValue: "Creating user group",
           })}
         </div>
         <div
@@ -619,7 +612,6 @@ class OrganizationNewUserGroup extends React.Component<
           {t("labels.adding", {
             ns: "users",
             context: "students",
-            defaultValue: "Adding students",
           })}
         </div>
         <div
@@ -632,7 +624,6 @@ class OrganizationNewUserGroup extends React.Component<
           {t("labels.removing", {
             ns: "users",
             context: "students",
-            defaultValue: "Removing students",
           })}
         </div>
         <div
@@ -643,7 +634,6 @@ class OrganizationNewUserGroup extends React.Component<
           {t("labels.adding", {
             ns: "users",
             context: "counselors",
-            defaultValue: "Adding counselors",
           })}
         </div>
         <div
@@ -656,7 +646,6 @@ class OrganizationNewUserGroup extends React.Component<
           {t("labels.removing", {
             ns: "users",
             context: "counselors",
-            defaultValue: "Removing counselors",
           })}
         </div>
       </div>

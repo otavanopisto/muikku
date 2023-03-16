@@ -510,7 +510,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
   if (((workspace[mainAttribute] as any)[conditionalAttribute] as number) > 0) {
     if (props.conditionalAttributeLocale) {
       const locale = t(props.conditionalAttributeLocale, {
-        defaultValue: "content.empty",
+        defaultValue: "Locale does not exist",
         value: (props.workspace[props.mainAttribute] as any)[
           props.conditionalAttribute
         ],
@@ -529,7 +529,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
 
       if (props.givenDateAttributeLocale) {
         output += t(props.givenDateAttributeLocale, {
-          defaultValue: "content.empty",
+          defaultValue: "Locale does not exist",
           value: props.i18nOLD.time.format(
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
@@ -549,7 +549,9 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
   return (
     <div className="application-sub-panel__item application-sub-panel__item--course-activity">
       <div className="application-sub-panel__item-title">
-        {t(props.labelTranslationString, { defaultValue: "muu" })}
+        {t(props.labelTranslationString, {
+          defaultValue: "Locale does not exist",
+        })}
       </div>
       <div className="application-sub-panel__item-data">
         <span className="application-sub-panel__single-entry">{output}</span>

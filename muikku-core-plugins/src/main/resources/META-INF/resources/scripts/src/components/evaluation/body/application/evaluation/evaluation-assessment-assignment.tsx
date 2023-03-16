@@ -542,7 +542,6 @@ class EvaluationAssessmentAssignment extends React.Component<
                 {t("notifications.hiddenError", {
                   ns: "evaluation",
                   context: materialPageType,
-                  defaultValue: "Hidden but answered",
                 })}
               </div>
             )}

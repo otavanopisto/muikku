@@ -652,7 +652,6 @@ export default class MainFunction extends React.Component<
           name: i18n.t("labels.workspace", {
             ns: "workspace",
             context: "unpublished",
-            defaultValue: "Unpublished",
           }),
         },
         {
@@ -660,7 +659,6 @@ export default class MainFunction extends React.Component<
           name: i18n.t("labels.published", {
             ns: "organization",
             context: "workspaces",
-            defaultValue: "Published",
           }),
         },
       ];

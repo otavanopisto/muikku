@@ -71,12 +71,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
       AI: t("content.finnish", {
         ns: "hops",
         context: "native",
-        defaultValue: "Native language",
       }),
       S2: t("content.finnish", {
         ns: "hops",
         context: "secondary",
-        defaultValue: "Native language",
       }),
       MAA: t("labels.longSyllabus", { ns: "hops" }),
       MAB: t("labels.shortSyllabus", { ns: "hops" }),

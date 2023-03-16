@@ -647,7 +647,6 @@ class OrganizationEditUsergroup extends React.Component<
                   ns: "users",
                   context: "userGroupStudents",
                   stepInfo: `${page}/${this.totalSteps}`,
-                  defaultValue: `Add students to user group - ${page}/${this.totalSteps}`,
                 })}
                 description={t("labels.search", {
                   ns: "users",
@@ -692,7 +691,6 @@ class OrganizationEditUsergroup extends React.Component<
                 description={t("content.searchToRemove", {
                   ns: "users",
                   context: "students",
-                  defaultValue: "Search and remove students from user group",
                 })}
               />
             </DialogRow>
@@ -738,7 +736,6 @@ class OrganizationEditUsergroup extends React.Component<
                   ns: "users",
                   context: "userGroupTeachers",
                   stepInfo: `${page}/${this.totalSteps}`,
-                  defaultValue: `Add teachers to user group - ${page}/${this.totalSteps}`,
                 })}
                 description={t("labels.search", {
                   ns: "users",
@@ -783,7 +780,6 @@ class OrganizationEditUsergroup extends React.Component<
                 description={t("content.searchToRemove", {
                   ns: "users",
                   context: "staff",
-                  defaultValue: "Search and remove staff from user group",
                 })}
               />
             </DialogRow>
@@ -867,7 +863,6 @@ class OrganizationEditUsergroup extends React.Component<
                     {t("labels.noneSelected", {
                       ns: "users",
                       context: "students",
-                      defaultValue: "No selected students",
                     })}
                   </div>
                 )}
@@ -900,7 +895,6 @@ class OrganizationEditUsergroup extends React.Component<
                     {t("labels.noneSelected", {
                       ns: "users",
                       context: "councelors",
-                      defaultValue: "No selected councelors",
                     })}
                   </div>
                 )}
@@ -933,7 +927,6 @@ class OrganizationEditUsergroup extends React.Component<
                     {t("labels.noneSelected", {
                       ns: "users",
                       context: "students",
-                      defaultValue: "No selected students",
                     })}
                   </div>
                 )}
@@ -966,7 +959,6 @@ class OrganizationEditUsergroup extends React.Component<
                     {t("labels.noneSelected", {
                       ns: "users",
                       context: "councelors",
-                      defaultValue: "No selected councelors",
                     })}
                   </div>
                 )}
@@ -1004,7 +996,6 @@ class OrganizationEditUsergroup extends React.Component<
           {t("labels.updating", {
             ns: "users",
             context: "userGroups",
-            defaultValue: "Updating user group",
           })}
         </div>
         <div
@@ -1017,7 +1008,6 @@ class OrganizationEditUsergroup extends React.Component<
           {t("labels.adding", {
             ns: "users",
             context: "students",
-            defaultValue: "Adding students",
           })}
         </div>
         <div
@@ -1030,7 +1020,6 @@ class OrganizationEditUsergroup extends React.Component<
           {t("labels.removing", {
             ns: "users",
             context: "students",
-            defaultValue: "Removing students",
           })}
         </div>
         <div
@@ -1041,7 +1030,6 @@ class OrganizationEditUsergroup extends React.Component<
           {t("labels.adding", {
             ns: "users",
             context: "counselors",
-            defaultValue: "Adding counselors",
           })}
         </div>
         <div
@@ -1054,7 +1042,6 @@ class OrganizationEditUsergroup extends React.Component<
           {t("labels.removing", {
             ns: "users",
             context: "counselors",
-            defaultValue: "Removing counselors",
           })}
         </div>
       </div>

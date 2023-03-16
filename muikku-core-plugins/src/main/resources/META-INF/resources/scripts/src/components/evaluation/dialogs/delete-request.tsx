@@ -134,7 +134,6 @@ class DeleteRequestDialog extends React.Component<
               : "evaluationRequest",
             student: studentNameString,
             workspace: workspaceNameString,
-            defaultValue: `Are you sure you want to delete the request for ${studentNameString} from ${workspaceNameString}?`,
           })
         )}
       />
@@ -150,7 +149,6 @@ class DeleteRequestDialog extends React.Component<
             : "evaluationRequest",
           student: studentNameString,
           workspace: workspaceNameString,
-          defaultValue: `Delete`,
         })}
         content={content}
         footer={footer}

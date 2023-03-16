@@ -52,7 +52,6 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
           {t("notifications.loadError", {
             ns: "users",
             context: "userGroups",
-            defaultValue: "Error loading user groups",
           })}
         </span>
       </div>
@@ -64,7 +63,6 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
           {t("notifications.notFound", {
             ns: "users",
             context: "userGroups",
-            defaultValue: "No user groups found",
           })}
         </span>
       </div>

@@ -99,7 +99,6 @@ const updateCredentials: UpdateCredentialsTriggerType =
           notificationActions.displayNotification(
             i18n.t("notifications.updateSuccess", {
               context: "credentials",
-              defaultValue: "Credentials updated successfully",
             }),
             "success"
           )

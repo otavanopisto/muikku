@@ -87,7 +87,6 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
           {t("hiddenButAnswered", {
             ns: "materials",
             context: materialPageType,
-            defaultValue: "Answered but hidden",
           })}
         </div>
       ) : null}
