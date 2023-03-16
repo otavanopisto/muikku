@@ -50,7 +50,6 @@
       "appointment": "Varaa aika",
       "archived": "Arkistoitu",
       "beginDate": "Alkupäivämäärä",
-      "beginDate_vacation": "Loma alkaa",
       "billing": "Laskutus",
       "changePassword": "Vaida salasana",
       "chat": "Chat",
@@ -75,9 +74,9 @@
       "edit": "Muokkaa",
       "edit_comment": "Muokkaa kommenttia",
       "edited": "Muokattu",
-      "email": "Sähköpostiosoite",
+      "email_one": "Sähköpostiosoite",
+      "email_other": "Sähköpostit",
       "endDate": "Loppupäivämäärä",
-      "endDate_vacation": "Loma loppuu",
       "evaluation": "Arviointi",
       "files": "Tiedostot",
       "folders_one": "Kansio",
@@ -109,7 +108,6 @@
       "people": "Ihmiset",
       "personalInfo": "Omat tiedot",
       "phone": "Puhelinnumero",
-      "profileImage": "Profiilin kuva",
       "readingRuler": "Lukiviivain",
       "reply": "Vastaa",
       "remove": "Poista",
@@ -141,7 +139,6 @@
       "type": "Tyyppi",
       "unreachable": "Voi ei!...",
       "userName": "Käyttäjätunnus",
-      "vacationAutoReply": "Lomaviesti käytössä",
       "whatsApp": "WhatsApp",
       "write": "Kirjoita viestisi...",
       "yes": "Kyllä"
@@ -159,8 +156,7 @@
       "removing": "Oletko varma poistosta?",
       "removing_comment": "Oletko varma, että haluat poistaa kommentin?",
       "removing_person": "Oletko varma, että haluat poistaa käyttäjän listasta?",
-      "removing_room": "Oletko aivan varma että haluat poistaa huoneen <b>{{room}}</b>? Tätä toimintoa ei voi peruuttaa.",
-      "vacationAutoReply": "Automaattinen lomaviesti on aktiivisena vain jos loma-ajan alku- ja loppupäivämäärät on asetettu. Samalle lähettäjälle lähetetään automaattinen vastausviesti maksimissaan neljän päivän välein."
+      "removing_room": "Oletko aivan varma että haluat poistaa huoneen <b>{{room}}</b>? Tätä toimintoa ei voi peruuttaa."
     },
 
     "validation": {
@@ -249,6 +245,46 @@
     }
   },
 
+  "profile": {
+    "actions": {
+      "test": "Testaa URL"
+    },
+    "labels": {
+      "additionalInfo": "Lisätietoa",
+      "appointmentCalendar": "Ajanvarauskalenteri",
+      "appointmentCalendar_url": "Ajanvarauskalenterin URL",
+      "beginDate_vacation": "Loma alkaa",
+      "changeAddressAndMunicipality": "Vaihda osoite ja kotikunta",
+      "chatSettings": "Chat-asetukset",
+      "chatVisibility": "Chatin näkyvyys",
+      "chatVisibility_all": "Chat käytössä",
+      "chatVisibility_disabled": "Chat ei käytössä",
+      "endDate_vacation": "Loma loppuu",
+      "generalInfo": "Yleiset tiedot",
+      "nick": "Chatin nimimerkki",
+      "profileImage": "Profiilin kuva",
+      "remove": "Poista profiilin kuva",
+      "vacationAutoReply": "Lomaviesti käytössä",
+      "whatsAppintegration": "WhatsApp-integraatio",
+      "whatsappIntegration_off": "WhatsApp-integraatio pois päältä",
+      "whatsappIntegration_on": "WhatsApp-integraatio päällä",
+      "worklist": "Työlista"
+    },
+    "content": {
+      "appointmentCalendar": "Voit laittaa tähän linkin mihin tahansa ajanvarauskalenteriin, joka näkyy sitten tietojesi yhteydessä kursseilla ja opiskelijan opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testausnappulasta.",
+      "changePassword": "Ole hyvä ja syötä alla olevat tiedot.",
+      "changeAddressMunicipality": "Syötä uusi osoite ja kotikunta",
+      "removing": "Oletko varma että haluat poistaa kuvan profiilistasi?",
+      "nick": "Henkilökunnan jäsen näkee oikean nimesi mutta muut opiskelijat eivät näe kuin asettamasi nimimerkin.",
+      "vacationAutoReply": "Automaattinen lomaviesti on aktiivisena vain jos loma-ajan alku- ja loppupäivämäärät on asetettu. Samalle lähettäjälle lähetetään automaattinen vastausviesti maksimissaan neljän päivän välein.",
+      "whatsAppIntegration": "Saat WhatsApp-integraation päälle ikonia klikkaamalla. Huomaa, että integraatio toimii ainoastaan, jos olet syöttänyt puhelinnumerosi maakoodin kanssa, esim. +358 40 123 4567. Yhteystietoihisi ilmestyy WhatsApp-painike, jota klikkaamalla WhatsApp Web -sovellus aukeaa."
+    },
+
+    "notifications": {
+      "loadError": "Profiilikuvan lataus epäonnistui"
+    }
+  },
+
   "worklist": {
     "actions": {
       "send": "Lähetä hyväksyttäväksi"
@@ -279,33 +315,6 @@
       "loadError_section": "Osa-alueen lataus epäonnistui",
       "removeError": "Merkinnän poistaminen epäonnistui",
       "updateError": "Merkinnän muokkaus epäonnistui"
-    }
-  },
-
-  "profile": {
-    "actions": {
-      "test": "Testaa URL"
-    },
-    "labels": {
-      "additionalInfo": "Lisätietoa",
-      "appointmentCalendar": "Ajanvarauskalenteri",
-      "changeAddressAndMunicipality": "Vaihda osoite ja kotikunta",
-      "chatSettings": "Chat-asetukset",
-      "chatVisibility": "Chatin näkyvyys",
-      "chatVisibility_all": "Chat käytössä",
-      "chatVisibility_disabled": "Chat ei käytössä",
-      "generalInfo": "Yleiset tiedot",
-      "nick": "Chatin nimimerkki",
-      "remove": "Poista profiilin kuva",
-      "worklist": "Työlista"
-    },
-    "content": {
-      "appointmentCalendar": "Voit laittaa tähän linkin mihin tahansa ajanvarauskalenteriin, joka näkyy sitten tietojesi yhteydessä kursseilla ja opiskelijan opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testausnappulasta.",
-      "changePassword": "Ole hyvä ja syötä alla olevat tiedot.",
-      "changeAddressMunicipality": "Syötä uusi osoite ja kotikunta",
-      "removing": "Oletko varma että haluat poistaa kuvan profiilistasi?",
-      "nick": "Henkilökunnan jäsen näkee oikean nimesi mutta muut opiskelijat eivät näe kuin asettamasi nimimerkin.",
-      "whatsAppIntegration": "Saat WhatsApp-integraation päälle ikonia klikkaamalla. Huomaa, että integraatio toimii ainoastaan, jos olet syöttänyt puhelinnumerosi maakoodin kanssa, esim. +358 40 123 4567. Yhteystietoihisi ilmestyy WhatsApp-painike, jota klikkaamalla WhatsApp Web -sovellus aukeaa."
     }
   },
 
@@ -947,7 +956,6 @@
       "removeFromWorkspace": "Poista opiskelijoita kurssilta - {stepInfo}",
       "removeFromWorkspace_teachers": "Poista opettajia kurssilta - {{stepInfo}}",
       "removing": "Poistetaan opiskelijoita",
-
       "removing_counselors": "Poistetaan ohjaajia",
       "removing_teachers": "Poistetaan opettajia",
       "search": "Hae käyttäjiä",
@@ -984,10 +992,7 @@
       "users": "Käyttäjät",
       "userGroups": "Käyttäjäryhmät",
       "userGroupStudents": "Käyttäjäryhmän opiskelijat",
-      "workspaceStudents": "Kurssin opiskelijat",
-      "whatsAppintegration": "WhatsApp-integraatio",
-      "whatsappIntegration_off": "WhatsApp-integraatio pois päältä",
-      "whatsappIntegration_on": "WhatsApp-integraatio päällä"
+      "workspaceStudents": "Kurssin opiskelijat"
     },
     "content": {
       "editDetails": "Nimi on pakollinen tieto. Voit merkitä käyttäjäryhmän halutessasi ohjausryhmäksi.",
@@ -1024,7 +1029,6 @@
       "loadError_userGroups": "Opiskelijaryhmien lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_userGroupStaff": "Opiskelijaryhmän henkilökunnan lataus epäonistui.",
       "loadError_userGroupStudents": "Opiskelijaryhmän henkilökunnan lataus epäonistui.",
-      "loadError_profilePicture": "Profiilikuvan lataus epäonnistui",
       "loadError_teachers": "Opettajien lataus epäonnistui",
       "noResults": "Ei opiskelijoita",
       "removeError": "Profiilikuvan poisto epäonnistui",

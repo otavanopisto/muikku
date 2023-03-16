@@ -432,7 +432,7 @@ class ContactInformation extends React.Component<
                   <div className="form-element">
                     <label>
                       {this.props.t("labels.whatsAppintegration", {
-                        ns: "users",
+                        ns: "profile",
                       })}
                     </label>
                     <div className="form-element form-element--icon-with-label">
@@ -451,14 +451,14 @@ class ContactInformation extends React.Component<
                       "true" ? (
                         <span>
                           {this.props.t("labels.whatsAppintegration", {
-                            ns: "users",
+                            ns: "profile",
                             context: "on",
                           })}
                         </span>
                       ) : (
                         <span>
                           {this.props.t("labels.whatsAppintegration", {
-                            ns: "users",
+                            ns: "profile",
                             context: "off",
                           })}
                         </span>
@@ -485,6 +485,7 @@ class ContactInformation extends React.Component<
                       <div className="form__fieldset-content form__fieldset-content--horizontal">
                         <label htmlFor="profileAppointmentCalendar">
                           {this.props.t("labels.appointmentCalendar", {
+                            context: "url",
                             ns: "profile",
                           })}
                         </label>
