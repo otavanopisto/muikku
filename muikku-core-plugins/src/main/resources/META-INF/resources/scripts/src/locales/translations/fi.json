@@ -1260,9 +1260,7 @@
       "copy": "Tee kopio",
       "copy_workspace": "Kopioi työtila",
       "create": "Luo kurssi",
-      "create_journal": "Uusi merkintä",
       "edit": "Muokkaa kurssia",
-      "edit_journal": "Muokkaa merkintää",
       "hide": "Piilota oikeat vastaukset",
       "hide_supplementationRequest": "Piilota täydennyspyyntö",
       "openInMuikku": "Avaa kurssi Muikussa",
@@ -1508,6 +1506,8 @@
 
   "journal": {
     "actions": {
+      "create": "Uusi merkintä",
+      "edit": "Muokkaa merkintää",
       "save": "Julkaise merkintä"
     },
     "labels": {
