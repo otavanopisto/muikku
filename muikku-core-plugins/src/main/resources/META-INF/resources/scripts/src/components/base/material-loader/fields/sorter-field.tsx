@@ -402,7 +402,7 @@ export default class SorterField extends React.Component<
     // we use that element and the class to create the field
     return (
       <span
-        className={`material-page__sorterfield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__sorterfield-wrapper material-page__sorterfield-wrapper--${elementClassName} ${fieldSavedStateClass}`}
       >
         <Synchronizer
           synced={this.state.synced}
@@ -410,23 +410,27 @@ export default class SorterField extends React.Component<
           i18n={this.props.i18n}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
-        <Instructions
-          modifier="instructions"
-          alignSelfVertically="top"
-          openByHover={false}
-          closeOnClick={true}
-          closeOnOutsideClick={false}
-          persistent
-          content={
-            <div
-              dangerouslySetInnerHTML={{
-                __html: this.props.i18n.text.get(
-                  "plugin.workspace.sorterField.instructions"
-                ),
-              }}
-            />
-          }
-        />
+        <span className="material-page__taskfield-header">
+          <span></span>
+          <Instructions
+            modifier="instructions"
+            alignSelfVertically="top"
+            openByHover={false}
+            closeOnClick={true}
+            closeOnOutsideClick={true}
+            persistent
+            content={
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: this.props.i18n.text.get(
+                    "plugin.workspace.sorterField.instructions"
+                  ),
+                }}
+              />
+            }
+          />
+        </span>
+
         <span
           className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
         >

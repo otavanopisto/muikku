@@ -506,23 +506,26 @@ export default class OrganizerField extends React.Component<
           i18n={this.props.i18n}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
-        <Instructions
-          modifier="instructions"
-          alignSelfVertically="top"
-          openByHover={false}
-          closeOnClick={true}
-          closeOnOutsideClick={false}
-          persistent
-          content={
-            <div
-              dangerouslySetInnerHTML={{
-                __html: this.props.i18n.text.get(
-                  "plugin.workspace.organizerField.instructions"
-                ),
-              }}
-            />
-          }
-        />
+        <span className="material-page__taskfield-header">
+          <span></span>
+          <Instructions
+            modifier="instructions"
+            alignSelfVertically="top"
+            openByHover={false}
+            closeOnClick={true}
+            closeOnOutsideClick={true}
+            persistent
+            content={
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: this.props.i18n.text.get(
+                    "plugin.workspace.organizerField.instructions"
+                  ),
+                }}
+              />
+            }
+          />
+        </span>
         <span
           className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
         >

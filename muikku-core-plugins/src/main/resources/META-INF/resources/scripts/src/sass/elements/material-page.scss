@@ -403,6 +403,17 @@
   }
 }
 
+// HEADER WRAPPER FOR TASKFIELDS THAT USES INSTRUCTIONS
+.material-page__taskfield-header {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.material-page__taskfield-title {
+  font-weight: 600;
+}
+
 // CORRECT ANSWERS COUNTER
 .material-page__correct-answers {
   align-items: center;
