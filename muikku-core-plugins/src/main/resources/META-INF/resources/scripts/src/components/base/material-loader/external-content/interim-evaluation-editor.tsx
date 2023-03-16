@@ -176,8 +176,9 @@ class InterimEvaluationEditor extends React.Component<
         )()) as WorkspaceInterimEvaluationRequest;
 
         this.props.displayNotification(
-          t("notifications.cancelSuccess_interimEvaluationRequests", {
+          t("notifications.cancelSuccess", {
             ns: "workspace",
+            context: "interimEvaluationRequests",
           }),
           "success"
         );
@@ -195,8 +196,9 @@ class InterimEvaluationEditor extends React.Component<
         );
       } catch (error) {
         this.props.displayNotification(
-          t("notifications.cancelError_interimEvaluationRequests", {
+          t("notifications.cancelError", {
             ns: "workspace",
+            context: "interimEvaluationRequests",
           }),
           "error"
         );
@@ -212,8 +214,9 @@ class InterimEvaluationEditor extends React.Component<
         )()) as WorkspaceInterimEvaluationRequest;
 
         this.props.displayNotification(
-          t("notifications.sendSuccess_interimEvaluationRequests", {
+          t("notifications.sendSuccess", {
             ns: "workspace",
+            context: "interimEvaluationRequests",
           }),
           "success"
         );

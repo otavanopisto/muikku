@@ -136,16 +136,15 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
    */
   render() {
     const { t } = this.props;
-
-    t("actions.edit_comment");
-
     const editorTitle = this.props.journalComment
-      ? t("actions.edit", {context: "comment"}) + " - " + t("labels.content")
-      : t("labels.create", {context: "comment"}) + " - " + t("labels.content");
+      ? t("actions.edit", { context: "comment" }) + " - " + t("labels.content")
+      : t("labels.create", { context: "comment" }) +
+        " - " +
+        t("labels.content");
 
     const commentHeaderTitle = this.props.journalComment
-      ? t("actions.edit", {context: "comment"})
-      : t("labels.create", {context: "comment"});
+      ? t("actions.edit", { context: "comment" })
+      : t("labels.create", { context: "comment" });
 
     return (
       <div className="form" role="form">
@@ -195,7 +194,7 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
                       disabled={this.props.locked}
                       onClick={this.handleDeleteEditorDraft}
                     >
-                      {t("actions.remove", {context: "draft"})}
+                      {t("actions.remove", { context: "draft" })}
                     </Button>
                   )}
                 </div>

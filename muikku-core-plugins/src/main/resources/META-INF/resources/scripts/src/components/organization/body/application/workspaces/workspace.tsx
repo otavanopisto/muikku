@@ -127,7 +127,9 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                   </span>
                 </div>
                 <div>
-                  <label>{t("labels.student_count", { ns: "users" })}:</label>
+                  <label>
+                    {t("labels.student", { ns: "users", context: "count" })}:
+                  </label>
                   <span>{this.props.workspace.studentCount}</span>
                 </div>
                 <div>

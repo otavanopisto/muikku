@@ -243,7 +243,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       answerExampleComponent = (
         <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
           <span className="material-page__field-answer-examples-title material-page__field-answer-examples-title--memofield">
-            {t("labels.answer_example", { ns: "materials" })}:
+            {t("labels.answer", {
+              ns: "materials",
+              context: "example",
+            })}
+            :
           </span>
           <span className="material-page__field-answer-example">
             <StrMathJAX html={true}>

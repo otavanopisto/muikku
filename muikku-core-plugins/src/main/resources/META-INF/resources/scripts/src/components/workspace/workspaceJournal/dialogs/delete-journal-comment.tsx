@@ -81,7 +81,7 @@ class DeleteJournalComment extends React.Component<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => (
-      <div>{t("content.removing_comment")}</div>
+      <div>{t("content.removing", { context: "comment" })}</div>
     );
 
     /**
@@ -109,7 +109,7 @@ class DeleteJournalComment extends React.Component<
     return (
       <Dialog
         modifier="delete-journal"
-        title={t("actions.remove_comment")}
+        title={t("actions.remove", { context: "comment" })}
         content={content}
         footer={footer}
       >

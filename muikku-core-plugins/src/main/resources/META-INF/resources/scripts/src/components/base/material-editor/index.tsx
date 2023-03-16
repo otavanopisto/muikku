@@ -229,27 +229,27 @@ const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
   {
     type: "EXERCISE",
     classNameMod: "material-editor-dropdown-exercise",
-    text: i18n.t("labels.page_exercise", { ns: "materials" }),
+    text: i18n.t("labels.exercises", { ns: "materials" }),
   },
   {
     type: "EVALUATED",
     classNameMod: "material-editor-dropdown-assignment",
-    text: i18n.t("labels.page_assignment", { ns: "materials" }),
+    text: i18n.t("labels.evaluables", { ns: "materials" }),
   },
   {
     type: "JOURNAL",
     classNameMod: "material-editor-dropdown-journal",
-    text: i18n.t("labels.page_journal", { ns: "materials" }),
+    text: i18n.t("labels.journalAssignments", { ns: "materials" }),
   },
   {
     type: "INTERIM_EVALUATION",
     classNameMod: "material-editor-dropdown-interim-evaluation",
-    text: i18n.t("labels.page_interimEvaluation", { ns: "materials" }),
+    text: i18n.t("labels.interimEvaluationPages", { ns: "materials" }),
   },
   {
     type: null,
     classNameMod: "material-editor-dropdown-theory",
-    text: i18n.t("labels.page_theory", { ns: "materials" }),
+    text: i18n.t("labels.theoryPages", { ns: "materials" }),
   },
 ];
 
@@ -587,20 +587,23 @@ class MaterialEditor extends React.Component<
       case "Help": {
         switch (viewRestriction) {
           case MaterialViewRestriction.NONE:
-            localeString = t("labels.restrict_materialVisibilityForMemebers", {
+            localeString = t("labels.restrict", {
               ns: "materials",
+              context: "materialVisibilityForMemebers",
             });
             break;
 
           case MaterialViewRestriction.WORKSPACE_MEMBERS:
-            localeString = t("labels.restrict_jnstructionVisibility", {
+            localeString = t("labels.restrict", {
               ns: "materials",
+              context: "jnstructionVisibility",
             });
             break;
 
           case MaterialViewRestriction.LOGGED_IN:
-            localeString = t("labels.remove_instructionVisibilityRestriction", {
+            localeString = t("labels.remove", {
               ns: "materials",
+              context: "instructionVisibilityRestriction",
             });
             break;
 
@@ -613,20 +616,23 @@ class MaterialEditor extends React.Component<
       case "Materials": {
         switch (viewRestriction) {
           case MaterialViewRestriction.NONE:
-            localeString = t("labels.restrict_materialVisibilityForMemebers", {
+            localeString = t("labels.restrict", {
               ns: "materials",
+              context: "materialVisibilityForMemebers",
             });
             break;
 
           case MaterialViewRestriction.WORKSPACE_MEMBERS:
-            localeString = t("labels.restrict_materialVisibilityForLoggedIn", {
+            localeString = t("labels.restrict", {
               ns: "materials",
+              context: "materialVisibilityForLoggedIn",
             });
             break;
 
           case MaterialViewRestriction.LOGGED_IN:
-            localeString = t("labels.remove_materialVisibilityRestriction", {
+            localeString = t("labels.remove", {
               ns: "materials",
+              context: "materialVisibilityRestriction",
             });
             break;
 
@@ -911,11 +917,11 @@ class MaterialEditor extends React.Component<
     const correctAnswersTooltips =
       !this.props.editorState.currentDraftNodeValue.correctAnswers ||
       this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
-        ? t("labels.showAnswers_always", { ns: "materials" })
+        ? t("labels.showAnswersAlways", { ns: "materials" })
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
           "ON_REQUEST"
-        ? t("labels.showAnswers_onRequest", { ns: "materials" })
-        : t("labels.showAnswers_never", { ns: "materials" });
+        ? t("labels.showAnswersOnRequest", { ns: "materials" })
+        : t("labels.showAnswersNever", { ns: "materials" });
 
     const canRestrictViewLocale = this.buildRestrictViewLocale(
       this.props.editorState.currentDraftNodeValue.viewRestrict
@@ -1030,7 +1036,7 @@ class MaterialEditor extends React.Component<
               <Dropdown
                 openByHover
                 modifier="material-management-tooltip"
-                content={t("labels.remove_page", { ns: "materials" })}
+                content={t("labels.remove", { ns: "materials" })}
               >
                 <ButtonPill
                   buttonModifiers={[
@@ -1253,7 +1259,7 @@ class MaterialEditor extends React.Component<
                 `/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/materials/${a.path}`
               }
               deleteDialogElement={ConfirmRemoveAttachment}
-              hintText={t("content.add_file", { ns: "materials" })}
+              hintText={t("content.add", { ns: "materials" })}
               deleteFileText={t("actions.remove")}
               downloadFileText={t("actions.download", { count: 1 })}
               showURL

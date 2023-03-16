@@ -235,12 +235,10 @@ class NewEditJournal extends SessionStateComponent<
     t("labels.content");
 
     const editorTitle = this.props.journal
-      ? t("labels.edit_journal", { ns: "journal" }) +
+      ? t("labels.edit", { ns: "journal" }) + " - " + t("labels.content")
+      : t("labels.create", { ns: "journal" }) +
         " - " +
-        t("labels.content")
-      : t("labels.create_journalEntry", { ns: "journal" }) +
-        " - " +
-        t("labels.edit_journal", { ns: "journal" });
+        t("labels.edit", { ns: "journal" });
 
     /**
      * content
@@ -299,7 +297,7 @@ class NewEditJournal extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {t("actions.remove_draft")}
+            {t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -311,8 +309,8 @@ class NewEditJournal extends SessionStateComponent<
         onOpen={this.checkAgainstStoredState}
         title={
           this.props.journal
-            ? t("labels.edit_journal", { ns: "journal" })
-            : t("labels.create_journalEntry", { ns: "journal" })
+            ? t("labels.edit", { ns: "journal" })
+            : t("labels.create", { ns: "journal" })
         }
         content={content}
         footer={footer}

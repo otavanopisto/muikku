@@ -69,7 +69,10 @@ class ProgressData extends React.Component<
                     {t("labels.evaluables", { ns: "materials", count: 0 })}
                   </div>
                   <div className="workspace-activity__menu-label">
-                    {t("labels.assigmments_returned", { ns: "materials" })}{" "}
+                    {t("labels.assignments", {
+                      ns: "materials",
+                      context: "returned",
+                    })}{" "}
                     <span className="workspace-activity__menu-data">
                       {evaluablesDone}
                     </span>
@@ -82,7 +85,10 @@ class ProgressData extends React.Component<
                   </div>
                   {this.props.activity.evaluablesTotal ? (
                     <div className="workspace-activity__menu-label">
-                      {t("labels.assigmments_passed", { ns: "materials" })}{" "}
+                      {t("labels.assignments", {
+                        ns: "materials",
+                        context: "passed",
+                      })}{" "}
                       <span className="workspace-activity__menu-data">
                         {this.props.activity.evaluablesPassed}
                       </span>
@@ -90,7 +96,10 @@ class ProgressData extends React.Component<
                   ) : null}
                   {this.props.activity.evaluablesSubmitted ? (
                     <div className="workspace-activity__menu-label">
-                      {t("labels.evaluables_unevaluated", { ns: "materials" })}{" "}
+                      {t("labels.evaluables", {
+                        ns: "materials",
+                        context: "unevaluated",
+                      })}{" "}
                       <span className="workspace-activity__menu-data">
                         {this.props.activity.evaluablesSubmitted}
                       </span>
@@ -98,7 +107,10 @@ class ProgressData extends React.Component<
                   ) : null}
                   {this.props.activity.evaluablesFailed ? (
                     <div className="workspace-activity__menu-label">
-                      {t("labels.evaluables_failed", { ns: "materials" })}{" "}
+                      {t("labels.evaluables", {
+                        ns: "materials",
+                        context: "failed",
+                      })}{" "}
                       <span className="workspace-activity__menu-data">
                         {this.props.activity.evaluablesFailed}
                       </span>
@@ -106,7 +118,10 @@ class ProgressData extends React.Component<
                   ) : null}
                   {this.props.activity.evaluablesIncomplete ? (
                     <div className="workspace-activity__menu-label">
-                      {t("labels.assigmments_incomplete", { ns: "materials" })}{" "}
+                      {t("labels.assignments", {
+                        ns: "materials",
+                        context: "incomplete",
+                      })}{" "}
                       <span className="workspace-activity__menu-data">
                         {this.props.activity.evaluablesIncomplete}
                       </span>
@@ -157,7 +172,10 @@ class ProgressData extends React.Component<
                     {t("labels.exercises", { ns: "materials", count: 0 })}
                   </div>
                   <div className="workspace-activity__menu-label">
-                    {t("labels.assignments_done", { ns: "materials" })}{" "}
+                    {t("labels.assignments", {
+                      ns: "materials",
+                      context: "done",
+                    })}{" "}
                     <span className="workspace-activity__menu-data">
                       {this.props.activity.exercisesAnswered}
                     </span>

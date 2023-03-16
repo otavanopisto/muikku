@@ -40,9 +40,6 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "evaluationRequest",
-              defaultValue: `Evaluation request sent on ${i18nOLD.time.format(
-                assessment.date
-              )}`,
               date: i18nOLD.time.format(assessment.date),
             })}
           </span>
@@ -60,9 +57,6 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "interimEvaluationRequest",
-              defaultValue: `Interim evaluation request sent on ${i18nOLD.time.format(
-                assessment.date
-              )}`,
               date: i18nOLD.time.format(assessment.date),
             })}
           </span>

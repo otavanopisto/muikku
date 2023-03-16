@@ -507,7 +507,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
               showAudioAssessmentWarningOnClose={
                 this.state.showCloseEditorWarning
               }
-              editorLabel={t("labels.interimEvaluation_literal", {
+              editorLabel={t("labels.interimEvaluation", {
                 ns: "evaluation",
               })}
               materialEvaluation={this.state.materialNode.evaluation}

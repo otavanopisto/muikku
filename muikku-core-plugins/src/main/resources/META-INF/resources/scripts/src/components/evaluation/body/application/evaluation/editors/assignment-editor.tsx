@@ -639,7 +639,7 @@ class AssignmentEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >
-              {t("actions.remove_draft")}
+              {t("actions.remove", { context: "draft" })}
             </Button>
           )}
         </div>

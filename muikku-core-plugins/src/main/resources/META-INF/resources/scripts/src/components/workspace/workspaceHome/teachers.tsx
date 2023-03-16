@@ -208,7 +208,7 @@ class WorkspaceTeachers extends React.Component<
           </div>
         ) : (
           <div className="panel__body panel__body--empty">
-            {t("content.empty_teachers", { ns: "workspace" })}
+            {t("content.empty", { ns: "workspace", context: "teachers" })}
           </div>
         )}
       </div>
@@ -267,7 +267,7 @@ export function getWorkspaceMessage(
     pretext = "<p></p>";
     text =
       '<p><i class="message-from-workspace">' +
-      i18n.t("labels.send_message", { ns: "workspace" }) +
+      i18n.t("labels.send", { ns: "workspace" }) +
       " " +
       '<a href="' +
       server +

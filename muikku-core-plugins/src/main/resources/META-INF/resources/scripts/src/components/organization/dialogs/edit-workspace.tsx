@@ -1096,8 +1096,6 @@ class OrganizationEditWorkspace extends React.Component<
                   <div>
                     {t("content.noneSelected", {
                       ns: "users",
-                      context: "students",
-                      defaultValue: "No selected students",
                     })}
                   </div>
                 )}
@@ -1162,8 +1160,6 @@ class OrganizationEditWorkspace extends React.Component<
                   <div>
                     {t("content.noneSelected", {
                       ns: "users",
-                      context: "students",
-                      defaultValue: "No selected students",
                     })}
                   </div>
                 )}

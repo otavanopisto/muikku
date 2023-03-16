@@ -514,7 +514,7 @@ class WorkspaceMaterials extends React.Component<
     const emptyMessage =
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
-          {t("content.empty_materials", { ns: "materials" })}
+          {t("content.empty", { ns: "materials", context: "materials" })}
         </div>
       ) : null;
 

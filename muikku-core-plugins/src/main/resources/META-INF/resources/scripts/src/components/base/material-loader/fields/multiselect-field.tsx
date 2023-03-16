@@ -280,7 +280,7 @@ class MultiSelectField extends React.Component<
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {t("labels.answer_correct", { ns: "materials" })}
+              {t("labels.answer", { ns: "materials", context: "correct" })}
             </span>
             {correctAnswersFound.map((answer, index) => (
               <span key={index} className="material-page__field-answer-example">
@@ -307,7 +307,7 @@ class MultiSelectField extends React.Component<
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {t("labels.answer_example", { ns: "materials" })}
+              {t("labels.answer", { ns: "materials", context: "example" })}
             </span>
             <span className="material-page__field-answer-example">
               <StrMathJAX>{this.props.content.explanation}</StrMathJAX>

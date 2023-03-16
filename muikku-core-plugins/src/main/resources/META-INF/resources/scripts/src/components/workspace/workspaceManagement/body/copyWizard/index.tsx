@@ -214,8 +214,9 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
             showSteps={false}
             preventEnterSubmission={true}
             prevBtnOnLastStep={true}
-            nextTextOnFinalActionStep={t("labels.copy_workspace", {
+            nextTextOnFinalActionStep={t("labels.copy", {
               ns: "workspace",
+              context: "workspace",
             })}
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"

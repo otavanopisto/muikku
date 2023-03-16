@@ -79,10 +79,9 @@ class OrganizationUsers extends React.Component<
           identifier={"staff"}
           onEmpty={t("content.noStaff", { ns: "users" })}
           searchString={this.props.users.staff.searchString}
-          title={t("content.staff", {
+          title={t("labels.staff", {
             ns: "users",
             context: "organization",
-            defaultValue: "Staff of organization",
           })}
           users={this.props.users.staff}
           pageChange={this.staffPanelPageChange}
@@ -92,14 +91,12 @@ class OrganizationUsers extends React.Component<
           onEmpty={t("content.notFound", {
             ns: "users",
             context: "students",
-            defaultValue: "Students not found",
           })}
           searchString={this.props.users.students.searchString}
-          title={t("content.student", {
+          title={t("labels.student", {
             ns: "users",
             context: "organization",
             count: 0,
-            defaultValue: "Students of organization",
           })}
           users={this.props.users.students}
           pageChange={this.studentPanelPageChange}

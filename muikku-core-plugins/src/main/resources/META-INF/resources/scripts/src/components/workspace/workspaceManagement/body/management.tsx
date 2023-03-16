@@ -557,7 +557,10 @@ class ManagementPanel extends React.Component<
        */
       success: () => {
         this.props.displayNotification(
-          t("notifications.saveSuccess_coverImage", { ns: "workspace" }),
+          t("notifications.saveSuccess", {
+            ns: "workspace",
+            context: "coverImage",
+          }),
           "success"
         );
       },
@@ -692,7 +695,7 @@ class ManagementPanel extends React.Component<
        */
       success: () => {
         this.props.displayNotification(
-          t("notifications.saveSuccess_data", { ns: "workspace" }),
+          t("notifications.saveSuccess", { ns: "workspace", context: "data" }),
           "success"
         );
         this.setState({
@@ -761,7 +764,10 @@ class ManagementPanel extends React.Component<
                         </Link>
                         <CopyWizardDialog>
                           <Link className="link link--workspace-management">
-                            {t("labels.copy_workspace", { ns: "workspace" })}
+                            {t("labels.copy", {
+                              ns: "workspace",
+                              context: "workspace",
+                            })}
                           </Link>
                         </CopyWizardDialog>
                       </div>
@@ -1213,7 +1219,10 @@ class ManagementPanel extends React.Component<
                   id="workspacePermissions"
                   modifiers="subpanel-search"
                   name="workspace-permissions"
-                  placeholder={t("labels.search_userGroups", { ns: "users" })}
+                  placeholder={t("labels.search", {
+                    ns: "users",
+                    context: "userGroups",
+                  })}
                   value={this.state.workspaceUsergroupNameFilter}
                   updateField={this.updateWorkspaceUsergroupNameFilter}
                 />

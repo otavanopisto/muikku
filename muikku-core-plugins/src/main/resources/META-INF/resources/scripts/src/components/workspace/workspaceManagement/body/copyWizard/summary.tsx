@@ -56,10 +56,12 @@ class Step extends React.Component<StepProps, StepState> {
         <h2>{t("labels.summary", { ns: "workspace" })}</h2>
 
         <div className="wizard__summary-row">
-          <label>{t("actions.copy_workspace", { ns: "workspace" })}</label>
+          <label>
+            {t("actions.copy", { ns: "workspace", context: "workspace" })}
+          </label>
           <p>
             {nameExtension
-              ? t("labels.nameWithExtension_copySummary", {
+              ? t("labels.nameWithExtension", {
                   ns: "workspace",
                   workspaceName: this.props.getStore().name,
                   workspaceNameExtension: nameExtension,

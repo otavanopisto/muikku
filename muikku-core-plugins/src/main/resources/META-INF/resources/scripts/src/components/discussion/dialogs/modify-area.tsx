@@ -232,14 +232,14 @@ class DiscussionModifyArea extends SessionStateComponent<
           onClick={this.modifyArea.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.save")}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -247,7 +247,7 @@ class DiscussionModifyArea extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.remove_draft")}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>

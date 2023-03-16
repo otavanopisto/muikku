@@ -120,7 +120,7 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div>
         <span>
-          {t("content.confirm_pagePublication", {
+          {t("content.confirm", {
             ns: "materials",
           })}
         </span>

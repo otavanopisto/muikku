@@ -466,7 +466,10 @@ class WorkspaceUsers extends React.Component<
               updateField={this.updateSearch}
               id="WorkspaceUserFilter"
               name="workspace-user-filter"
-              placeholder={t("labels.search_students", { ns: "users" })}
+              placeholder={t("labels.search", {
+                ns: "users",
+                context: "students",
+              })}
             />
             <MobileOnlyTabs
               onTabChange={this.onTabChange}
@@ -483,8 +486,9 @@ class WorkspaceUsers extends React.Component<
                           activeStudents
                         ) : (
                           <div className="loaded-empty">
-                            {t("content.empty_activeStudents", {
+                            {t("content.empty", {
                               ns: "workspace",
+                              context: "activeStudents",
                             })}
                           </div>
                         )
@@ -507,8 +511,9 @@ class WorkspaceUsers extends React.Component<
                           inactiveStudents
                         ) : (
                           <div className="loaded-empty">
-                            {t("content.empty_archivedStudent", {
+                            {t("content.empty", {
                               ns: "workspace",
+                              context: "archivedStudent",
                             })}
                           </div>
                         )

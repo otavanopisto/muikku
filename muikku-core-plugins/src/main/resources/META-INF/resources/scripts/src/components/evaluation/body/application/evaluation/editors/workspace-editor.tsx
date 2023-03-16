@@ -925,7 +925,7 @@ class WorkspaceEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >
-              {t("actions.remove_draft")}
+              {t("actions.remove", { context: "draft" })}
             </Button>
           )}
         </div>

@@ -66,7 +66,7 @@ class DeleteImageDialog extends React.Component<
        */
       success: () => {
         this.props.displayNotification(
-          t("notifications.removeSuccess_coverImage", { ns: "workspace" }),
+          t("notifications.removeSuccess", { ns: "workspace" }),
           "success"
         );
         this.props.onDelete();
@@ -85,7 +85,7 @@ class DeleteImageDialog extends React.Component<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => (
-      <div>{t("content.removing_image", { ns: "workspace" })}</div>
+      <div>{t("content.removing", { ns: "workspace", context: "image" })}</div>
     );
     /**
      * footer
@@ -110,7 +110,7 @@ class DeleteImageDialog extends React.Component<
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        title={t("labels.remove_image", { ns: "workspace" })}
+        title={t("labels.remove", { ns: "workspace", context: "image" })}
         content={content}
         footer={footer}
         modifier="delete-header-image"

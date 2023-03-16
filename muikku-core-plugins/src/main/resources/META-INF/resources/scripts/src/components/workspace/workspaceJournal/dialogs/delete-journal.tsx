@@ -88,7 +88,7 @@ class DeleteJournal extends React.Component<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => (
-      <div>{t("content.removing_journalEntry", { ns: "journal" })}</div>
+      <div>{t("content.removing", { ns: "journal" })}</div>
     );
 
     /**

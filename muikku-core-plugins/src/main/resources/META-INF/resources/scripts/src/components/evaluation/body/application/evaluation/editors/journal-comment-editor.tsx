@@ -171,7 +171,7 @@ class JournalCommentEditor extends SessionStateComponent<
               disabled={this.props.locked}
               onClick={this.handleDeleteEditorDraft}
             >
-              {t("actions.remove_draft")}
+              {t("actions.remove", { context: "draft" })}
             </Button>
           )}
         </div>

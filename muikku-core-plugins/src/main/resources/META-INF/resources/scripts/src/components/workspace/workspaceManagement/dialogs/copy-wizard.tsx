@@ -48,7 +48,7 @@ class CopyWizardDialog extends React.Component<
     return (
       <Dialog
         disableScroll={true}
-        title={t("actions.copy_workspace", { ns: "workspace" })}
+        title={t("actions.copy", { ns: "workspace", context: "workspace" })}
         content={content}
         modifier={["wizard", "copy-workspace"]}
       >

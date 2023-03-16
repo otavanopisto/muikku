@@ -253,7 +253,8 @@ const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizat
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.loadError_curriculumFilters", {
+            i18n.t("notifications.loadError", {
+              context: "curriculumFilters",
               ns: "workspace",
             }),
             "error"
@@ -310,7 +311,10 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.loadError_teachers", { ns: "users" }),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "teachers",
+            }),
             "error"
           )
         );
@@ -369,7 +373,10 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.loadError_students", { ns: "workspace" }),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "students",
+            }),
             "error"
           )
         );
@@ -516,7 +523,10 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.saveError_data", { ns: "workspace" }),
+            i18n.t("notifications.saveError", {
+              ns: "workspace",
+              context: "data",
+            }),
             "error"
           )
         );

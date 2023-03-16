@@ -75,7 +75,9 @@ class ConfirmRemoveDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        <span>{t("content.removing_file", { ns: "materials" })}</span>
+        <span>
+          {t("content.removing", { ns: "materials", context: "file" })}
+        </span>
       </div>
     );
 

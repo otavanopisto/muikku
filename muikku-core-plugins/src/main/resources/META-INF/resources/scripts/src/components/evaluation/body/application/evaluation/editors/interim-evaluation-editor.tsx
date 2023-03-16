@@ -363,7 +363,10 @@ class InterimEvaluationEditor extends SessionStateComponent<
               }
             >
               <label htmlFor="assignmentEvaluationGrade">
-                {t("labels.interimEvaluation_vocal", { ns: "evaluation" })}
+                {t("labels.interimEvaluation", {
+                  ns: "evaluation",
+                  context: "vocal",
+                })}
               </label>
               <Recorder
                 onIsRecordingChange={this.props.onIsRecordingChange}
@@ -407,7 +410,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >
-              {t("actions.remove_draft")}
+              {t("actions.remove", { context: "draft" })}
             </Button>
           )}
         </div>

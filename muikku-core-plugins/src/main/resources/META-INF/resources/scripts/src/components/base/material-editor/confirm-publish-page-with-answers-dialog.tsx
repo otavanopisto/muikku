@@ -109,7 +109,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        <span>{t("content.confirm_pagePublication", { ns: "materials" })}</span>
+        <span>{t("content.confirm", { ns: "materials" })}</span>
       </div>
     );
 

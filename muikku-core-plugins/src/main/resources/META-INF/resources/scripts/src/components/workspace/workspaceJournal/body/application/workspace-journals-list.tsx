@@ -88,7 +88,7 @@ class WorkspaceJournalsList extends BodyScrollLoader<
   render() {
     const { t } = this.props;
 
-    t("content.empty_you", { ns: "journal" });
+    t("content.empty", { ns: "journal", context: "you" });
 
     if (
       !this.props.workspace ||
@@ -110,8 +110,8 @@ class WorkspaceJournalsList extends BodyScrollLoader<
         <div className="empty">
           <span>
             {this.props.status.isStudent
-              ? t("content.empty_you", { ns: "journal" })
-              : t("content.empty_student", { ns: "journal" })}
+              ? t("content.empty", { ns: "journal", context: "you" })
+              : t("content.empty", { ns: "journal", context: "student" })}
           </span>
         </div>
       );

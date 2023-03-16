@@ -546,7 +546,10 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError_attachment", { ns: "materials" }),
+            i18n.t("notifications.loadError", {
+              ns: "materials",
+              context: "attachment",
+            }),
             "success"
           )
         );
@@ -1039,7 +1042,10 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.loadError_answers", { ns: "materials" }),
+            i18n.t("notifications.loadError", {
+              ns: "materials",
+              context: "answers",
+            }),
             "error"
           )
         );
@@ -1208,7 +1214,10 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.loadError_instructions", { ns: "workspace" }),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "instructions",
+            }),
             "error"
           )
         );

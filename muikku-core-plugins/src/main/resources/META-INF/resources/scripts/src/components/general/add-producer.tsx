@@ -125,7 +125,7 @@ class AddProducer extends React.Component<AddProducerProps, AddProducerState> {
                 className="visually-hidden"
                 htmlFor={this.props.wcagLabel && this.props.wcagLabel}
               >
-                {t("content.add_producers", { ns: "materials" })}
+                {t("content.add", { ns: "materials", context: "producers" })}
               </label>
               <input
                 id={this.props.wcagLabel && this.props.wcagLabel}
@@ -138,7 +138,10 @@ class AddProducer extends React.Component<AddProducerProps, AddProducerState> {
                 value={this.state.currentInputValue}
                 onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}
                 onChange={this.updateInputValue}
-                placeholder={t("content.add_producers", { ns: "materials" })}
+                placeholder={t("content.add", {
+                  ns: "materials",
+                  context: "producers",
+                })}
                 type="text"
               />
               <div

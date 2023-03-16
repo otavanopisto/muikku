@@ -402,14 +402,14 @@ class CommunicatorNewMessage extends SessionStateComponent<
           onClick={this.sendMessage.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.send")}
+          {this.props.t("actions.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.t("common:actions.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -417,7 +417,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.t("common:actions.remove_draft")}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>

@@ -198,15 +198,11 @@ class WorkspaceJournalEditor extends SessionStateComponent<
   render() {
     const { t } = this.props;
 
-    t("labels.edit_journal", { ns: "journal" });
+    t("labels.edit", { ns: "journal" });
 
     const editorTitle = this.props.journal
-      ? t("labels.edit_journal", { ns: "journal" }) +
-        " - " +
-        t("labels.content")
-      : t("labels.create_journalEntry", { ns: "journal" }) +
-        " - " +
-        t("labels.content");
+      ? t("labels.edit", { ns: "journal" }) + " - " + t("labels.content")
+      : t("labels.create", { ns: "journal" }) + " - " + t("labels.content");
 
     return (
       <div className="form" role="form">
@@ -214,7 +210,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
           <section className="env-dialog__wrapper">
             <div className="env-dialog__content">
               <header className="env-dialog__header">
-                {t("labels.edit_journal", { ns: "journal" })}
+                {t("labels.edit", { ns: "journal" })}
               </header>
               <section className="env-dialog__body">
                 <div
@@ -277,7 +273,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
                       disabled={this.state.locked}
                       onClick={this.handleDeleteEditorDraft}
                     >
-                      {t("actions.remove_draft")}
+                      {t("actions.remove", { context: "draft" })}
                     </Button>
                   )}
                 </div>

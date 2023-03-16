@@ -197,7 +197,9 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
       )
     ) : (
       <div className="empty">
-        <span>{t("content.empty_assignments", { ns: "evaluation" })}</span>
+        <span>
+          {t("content.empty", { ns: "evaluation", context: "assignments" })}
+        </span>
       </div>
     );
 

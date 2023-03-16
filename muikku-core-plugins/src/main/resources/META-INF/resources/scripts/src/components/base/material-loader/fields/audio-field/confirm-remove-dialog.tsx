@@ -69,7 +69,9 @@ class ConfirmRemoveDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        <span>{t("content.removing_audio", { ns: "materials" })}</span>
+        <span>
+          {t("content.removing", { ns: "materials", context: "audio" })}
+        </span>
       </div>
     );
 
@@ -99,7 +101,7 @@ class ConfirmRemoveDialog extends React.Component<
     return (
       <Dialog
         modifier="confirm-remove-answer-dialog"
-        title={t("labels.remove_recording", { ns: "materials" })}
+        title={t("labels.remove", { ns: "materials", context: "recording" })}
         content={content}
         footer={footer}
       >

@@ -122,7 +122,7 @@ class DeleteJournalComment extends React.Component<
     return (
       <Dialog
         modifier="delete-journal"
-        title={this.props.t("actions.remove_comment")}
+        title={this.props.t("actions.remove", { context: "comment" })}
         content={content}
         footer={footer}
       >

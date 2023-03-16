@@ -82,7 +82,7 @@ class WorkspaceAnnouncements extends React.Component<
             </div>
           ) : (
             <div className="panel__body panel__body--empty">
-              {t("content.empty_announcements", { ns: "messaging" })}
+              {t("content.empty", { ns: "messaging", context: "announcements" })}
             </div>
           )}
         </div>

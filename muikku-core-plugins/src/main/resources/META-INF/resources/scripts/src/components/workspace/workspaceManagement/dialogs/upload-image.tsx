@@ -91,7 +91,10 @@ class UploadImageDialog extends React.Component<
        */
       success: () => {
         this.props.displayNotification(
-          t("notifications.saveSuccess_coverImage", { ns: "workspace" }),
+          t("notifications.saveSuccess", {
+            ns: "workspace",
+            context: "coverImage",
+          }),
           "success"
         );
         this.props.onImageChange(
@@ -122,7 +125,7 @@ class UploadImageDialog extends React.Component<
     const { t } = this.props;
 
     this.props.displayNotification(
-      t("notifications.loadError_coverImage", { ns: "workspace" }),
+      t("notifications.loadError", { ns: "workspace", context: "coverImage" }),
       "error"
     );
   }

@@ -120,8 +120,8 @@ class DeactivateReactivateUserDialog extends React.Component<
         onClose={this.props.onClose}
         title={
           this.props.user.active
-            ? t("labels.archive_workspace", { ns: "users" })
-            : t("labels.unArchive_workspace", { ns: "users" })
+            ? t("labels.archive", { ns: "users" })
+            : t("labels.unArchive", { ns: "users" })
         }
         content={content}
         footer={footer}

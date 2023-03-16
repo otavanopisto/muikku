@@ -109,10 +109,13 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="amount-asc"
-          content={t("labels.ascending_date", { ns: "evaluation" })}
+          content={t("labels.ascending", { ns: "evaluation", context: "date" })}
         >
           <ButtonPill
-            aria-label={t("labels.ascending_date", { ns: "evaluation" })}
+            aria-label={t("labels.ascending", {
+              ns: "evaluation",
+              context: "date",
+            })}
             onClick={this.handleClickSorter("sort-amount-asc")}
             buttonModifiers={[
               "sorter",
@@ -141,10 +144,16 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="alpha-asc"
-          content={t("labels.ascending_lastName", { ns: "evaluation" })}
+          content={t("labels.ascending", {
+            ns: "evaluation",
+            context: "lastName",
+          })}
         >
           <ButtonPill
-            aria-label={t("labels.ascending_lastName", { ns: "evaluation" })}
+            aria-label={t("labels.ascending", {
+              ns: "evaluation",
+              context: "lastName",
+            })}
             onClick={this.handleClickSorter("sort-alpha-asc")}
             buttonModifiers={[
               "sorter",
@@ -175,10 +184,11 @@ class EvaluationSorters extends React.Component<
             <Dropdown
               openByHover
               key="workspace-alpha-asc"
-              content={t("labels.ascending_workspace", { ns: "evaluation" })}
+              content={t("labels.ascending", { ns: "evaluation" })}
             >
               <ButtonPill
-                aria-label={t("labels.ascending_workspace", {
+                aria-label={t("labels.ascending", {
+                  context: "workspace",
                   ns: "evaluation",
                 })}
                 onClick={this.handleClickSorter("sort-workspace-alpha-asc")}

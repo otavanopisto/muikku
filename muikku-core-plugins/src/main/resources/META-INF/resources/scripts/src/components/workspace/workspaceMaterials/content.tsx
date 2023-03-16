@@ -589,7 +589,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="theory-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.page_theory", { ns: "materials" })}
+                        {t("labels.theoryPages", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -608,7 +608,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="exercise-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.page_exercise", { ns: "materials" })}
+                        {t("labels.exercises", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -627,7 +627,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="assignment-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.page_assignment", { ns: "materials" })}
+                        {t("labels.evaluables", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -646,7 +646,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="journal-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.page_journal", { ns: "materials" })}
+                        {t("labels.journalAssignments", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -665,9 +665,8 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="interim-evaluation-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.page", {
+                        {t("labels.interimEvaluationPages", {
                           ns: "materials",
-                          context: "interimEvaluation",
                         })}
                       </label>
                     </div>
@@ -799,42 +798,48 @@ class ContentComponent extends SessionStateComponent<
                       case "ANSWERED":
                         icon = "check";
                         className = "toc__item--answered";
-                        iconTitle = t("labels.assignment_done", {
+                        iconTitle = t("labels.assignment", {
+                          context: "done",
                           ns: "materials",
                         });
                         break;
                       case "SUBMITTED":
                         icon = "check";
                         className = "toc__item--submitted";
-                        iconTitle = t("labels.assignment_returned", {
+                        iconTitle = t("labels.assignment", {
+                          context: "returned",
                           ns: "materials",
                         });
                         break;
                       case "WITHDRAWN":
                         icon = "check";
                         className = "toc__item--withdrawn";
-                        iconTitle = t("labels.assignment_cancelled", {
+                        iconTitle = t("labels.assignment", {
+                          context: "cancelled",
                           ns: "materials",
                         });
                         break;
                       case "INCOMPLETE":
                         icon = "thumb-down";
                         className = "toc__item--incomplete";
-                        iconTitle = t("labels.evaluated_incomplete", {
+                        iconTitle = t("labels.evaluated", {
+                          context: "incomplete",
                           ns: "materials",
                         });
                         break;
                       case "FAILED":
                         icon = "thumb-down";
                         className = "toc__item--failed";
-                        iconTitle = t("labels.evaluated_failed", {
+                        iconTitle = t("labels.evaluated", {
+                          context: "failed",
                           ns: "materials",
                         });
                         break;
                       case "PASSED":
                         icon = "thumb-up";
                         className = "toc__item--passed";
-                        iconTitle = t("labels.evaluated_passed", {
+                        iconTitle = t("labels.evaluated", {
+                          context: "passed",
                           ns: "materials",
                         });
                         break;

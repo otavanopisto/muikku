@@ -329,7 +329,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
       correctAnswersummaryComponent = (
         <span className="material-page__field-answer-examples material-page__field-answer-examples--sorterfield">
           <span className="material-page__field-answer-examples-title">
-            {t("labels.answer_correct", { ns: "materials" })}:{" "}
+            {t("labels.answer", { ns: "materials", context: "correct" })}:{" "}
           </span>
           {this.props.content.items.map((answer, index) => (
             <span

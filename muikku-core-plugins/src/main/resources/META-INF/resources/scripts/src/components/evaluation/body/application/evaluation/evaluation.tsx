@@ -606,7 +606,7 @@ export class Evaluation extends React.Component<
       ) : (
         <div className="empty">
           <span>
-            {t("content.empty_evaluationHistory", {
+            {t("content.empty", {
               ns: "evaluation",
             })}
           </span>

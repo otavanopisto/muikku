@@ -308,8 +308,9 @@ const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromSe
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.loadError_comments", {
+            i18n.t("notifications.loadError", {
               ns: "journal",
+              context: "comments",
               error: err.message,
             }),
             "error"
@@ -367,7 +368,7 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.createError_journal", {
+            i18n.t("notifications.createError", {
               ns: "journal",
             }),
             "error"
@@ -586,8 +587,9 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.loadError_comments", {
+            i18n.t("notifications.loadError", {
               ns: "journal",
+              context: "comments",
               error: err.message,
             }),
             "error"
@@ -703,7 +705,8 @@ const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.createError_comment", {
+            i18n.t("notifications.createError", {
+              context: "comment",
               ns: "journal",
               error: err.message,
             }),
@@ -800,7 +803,8 @@ const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.updateError_comment", {
+            i18n.t("notifications.updateError", {
+              context: "comment",
               ns: "journal",
             }),
             "error"
@@ -891,7 +895,8 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.updateError_comment", {
+            i18n.t("notifications.updateError", {
+              context: "comment",
               ns: "journal",
               error: err.message,
             }),

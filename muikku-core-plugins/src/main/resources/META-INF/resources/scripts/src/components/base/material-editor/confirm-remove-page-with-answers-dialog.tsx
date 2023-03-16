@@ -112,7 +112,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div>
         <span>
-          {t("content.confirm_pageRemoval", {
+          {t("content.confirm", {
             ns: "materials",
           })}
         </span>

@@ -256,11 +256,13 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         <ButtonPill
           aria-label={
             rest.interimEvaluationRequest
-              ? t("actions.remove_interimEvaluationRequest", {
+              ? t("actions.remove", {
                   ns: "evaluation",
+                  context: "interimEvaluationRequest",
                 })
-              : t("actions.remove_evaluationRequest", {
+              : t("actions.remove", {
                   ns: "evaluation",
+                  context: "evaluationRequest",
                 })
           }
           buttonModifiers="archive-request"
@@ -328,7 +330,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         </div>
         <div className="evaluation-card__content-row">
           <span className="evaluation-card__content-label">
-            {t("labels.assignments_done", { ns: "materials" })}
+            {t("labels.assignments", { ns: "materials", context: "done" })}
           </span>
           {renderTasksDone}
         </div>

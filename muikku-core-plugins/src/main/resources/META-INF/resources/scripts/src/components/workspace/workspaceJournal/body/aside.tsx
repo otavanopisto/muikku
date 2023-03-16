@@ -169,9 +169,7 @@ class NavigationAside extends React.Component<
 
     return (
       <Navigation key="journal-navigation-11">
-        <NavigationTopic
-          name={t("labels.type_journalEntry", { ns: "workspace" })}
-        >
+        <NavigationTopic name={t("labels.type", { ns: "journal" })}>
           <NavigationElement
             icon="book"
             isActive={filters.showMandatory}

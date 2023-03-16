@@ -449,7 +449,9 @@ export class EvaluationList extends React.Component<
             <span>
               {selectedWorkspaceId === undefined
                 ? t("content.evaluationRequestsHandled", { ns: "evaluation" })
-                : t("content.notFound_students", { ns: "evaluation" })}
+                : t("content.notFound", {
+                    ns: "evaluation",
+                  })}
             </span>
           </div>
         );

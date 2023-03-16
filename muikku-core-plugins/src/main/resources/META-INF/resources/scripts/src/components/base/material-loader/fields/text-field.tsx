@@ -266,8 +266,11 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
         <span className="material-page__field-answer-examples">
           <span className="material-page__field-answer-examples-title">
             {answersAreExample
-              ? t("labels.answer_example", { ns: "materials" })
-              : t("labels.answer_correct", { ns: "materials" })}
+              ? t("labels.answer", { ns: "materials", context: "example" })
+              : t("labels.answer", {
+                  ns: "materials",
+                  context: "correct",
+                })}
             :
           </span>
           {actuallyCorrectAnswers.map((answer, index) => (

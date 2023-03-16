@@ -103,10 +103,11 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
       <div>
         <span>
           {this.props.isSection
-            ? t("content.removing_section", {
+            ? t("content.removing", {
                 ns: "materials",
+                context: "section",
               })
-            : t("content.removing_page", {
+            : t("content.removing", {
                 ns: "materials",
               })}
         </span>
@@ -141,7 +142,8 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
         modifier="evaluation-cancel-dialog"
         title={
           this.props.isSection
-            ? t("labels.remove_section", {
+            ? t("labels.remove", {
+                context: "section",
                 ns: "materials",
               })
             : t("labels.pageRemoval", {

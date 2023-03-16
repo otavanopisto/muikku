@@ -131,7 +131,7 @@ class ConfirmRemoveAttachment extends React.Component<
     return (
       <Dialog
         modifier="confirm-remove-answer-dialog"
-        title={t("labels.remove_attachment", { ns: "guider" })}
+        title={t("labels.remove", { ns: "guider", context: "attachment" })}
         content={content}
         footer={footer}
       >
