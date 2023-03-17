@@ -970,7 +970,7 @@ class OrganizationEditWorkspace extends React.Component<
                   context: "workspaceTeachers",
                   stepInfo: `${page}/${this.totalSteps}`,
                 })}
-                description={t("labels.searchToRemove", {
+                description={t("content.searchToRemove", {
                   ns: "users",
                   context: "teachers",
                 })}
@@ -1121,7 +1121,7 @@ class OrganizationEditWorkspace extends React.Component<
                   })
                 ) : (
                   <div>
-                    {t("labels.noneSelected", {
+                    {t("content.noneSelected", {
                       ns: "users",
                       context: "teacher",
                     })}
@@ -1184,7 +1184,7 @@ class OrganizationEditWorkspace extends React.Component<
                   })
                 ) : (
                   <div>
-                    {t("labels.noneSelected", {
+                    {t("content.noneSelected", {
                       ns: "users",
                       context: "teachers",
                     })}

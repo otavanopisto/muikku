@@ -860,7 +860,7 @@ class OrganizationEditUsergroup extends React.Component<
                   })
                 ) : (
                   <div>
-                    {t("labels.noneSelected", {
+                    {t("content.noneSelected", {
                       ns: "users",
                       context: "students",
                     })}
@@ -892,7 +892,7 @@ class OrganizationEditUsergroup extends React.Component<
                   })
                 ) : (
                   <div>
-                    {t("labels.noneSelected", {
+                    {t("content.noneSelected", {
                       ns: "users",
                       context: "councelors",
                     })}
@@ -924,7 +924,7 @@ class OrganizationEditUsergroup extends React.Component<
                   })
                 ) : (
                   <div>
-                    {t("labels.noneSelected", {
+                    {t("content.noneSelected", {
                       ns: "users",
                       context: "students",
                     })}
@@ -956,7 +956,7 @@ class OrganizationEditUsergroup extends React.Component<
                   })
                 ) : (
                   <div>
-                    {t("labels.noneSelected", {
+                    {t("content.noneSelected", {
                       ns: "users",
                       context: "councelors",
                     })}
@@ -995,7 +995,6 @@ class OrganizationEditUsergroup extends React.Component<
         >
           {t("labels.updating", {
             ns: "users",
-            context: "userGroups",
           })}
         </div>
         <div

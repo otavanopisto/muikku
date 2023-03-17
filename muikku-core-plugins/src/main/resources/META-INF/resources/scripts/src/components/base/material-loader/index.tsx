@@ -158,7 +158,7 @@ const STATES = [
     "assignment-type": "JOURNAL",
     state: "SUBMITTED",
     "button-class": "muikku-submit-journal",
-    "button-text": i18n.t("actions.edit_journal", { ns: "workspace" }),
+    "button-text": i18n.t("actions.edit", { ns: "journal" }),
     "success-state": "ANSWERED",
     "button-disabled": false,
     "fields-read-only": true,

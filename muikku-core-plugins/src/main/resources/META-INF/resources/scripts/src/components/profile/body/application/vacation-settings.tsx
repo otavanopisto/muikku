@@ -386,11 +386,11 @@ class VacationSettings extends React.Component<
                       onChange={this.onVacationAutoReplyChange}
                     />
                     <label htmlFor="profileVacationAutoReply">
-                      {this.props.t("labels.vacationAutoReply")}
+                      {this.props.t("labels.vacationAutoReply", {ns: "profile"})}
                     </label>
                   </div>
                   <div className="form-element__description">
-                    {this.props.t("content.vacationAutoReply")}
+                    {this.props.t("content.vacationAutoReply", {ns: "profile"})}
                   </div>
                 </div>
               </div>

@@ -911,7 +911,7 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspacePublish">
-                            {t("labels.published", { ns: "workspace" })}
+                            {t("labels.workspaces", { ns: "workspace", context: "published" })}
                           </label>
                         </div>
                         <div className="form-element form-element--checkbox-radiobutton">

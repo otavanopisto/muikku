@@ -123,7 +123,7 @@ class ProfilePicture extends React.Component<
   render() {
     return (
       <div className="form-element">
-        <label>{this.props.t("labels.profileImage")}</label>
+        <label>{this.props.t("labels.profileImage", {ns: "profile"})}</label>
         <div className="application-sub-panel__item-data form-element">
           {!this.props.status.hasImage ? (
             <div className="change-image">

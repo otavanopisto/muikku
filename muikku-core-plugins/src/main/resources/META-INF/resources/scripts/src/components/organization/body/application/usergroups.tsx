@@ -60,7 +60,7 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
     return (
       <div className="empty">
         <span>
-          {t("notifications.notFound", {
+          {t("content.notFound", {
             ns: "users",
             context: "userGroups",
           })}

@@ -84,7 +84,7 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
       {hidden &&
       (materialPageType === "exercise" || materialPageType === "assignment") ? (
         <div className="material-page__title-meta">
-          {t("hiddenButAnswered", {
+          {t("content.hiddenButAnswered", {
             ns: "materials",
             context: materialPageType,
           })}

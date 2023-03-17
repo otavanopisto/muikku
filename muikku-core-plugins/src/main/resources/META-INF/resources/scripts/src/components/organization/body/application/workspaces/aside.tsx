@@ -139,9 +139,9 @@ class WorkspacesAside extends React.Component<
           )}
         </NavigationTopic>
         <NavigationTopic
-          name={t("labels.published", {
-            ns: "organization",
-            context: "workspace",
+          name={t("labels.workspaces", {
+            ns: "workspace",
+            context: "published",
           })}
         >
           {this.props.workspaces.availableFilters.stateFilters.map(

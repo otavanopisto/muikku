@@ -649,16 +649,16 @@ export default class MainFunction extends React.Component<
       const stateFilters = [
         {
           identifier: "UNPUBLISHED",
-          name: i18n.t("labels.workspace", {
+          name: i18n.t("labels.workspaces", {
             ns: "workspace",
             context: "unpublished",
           }),
         },
         {
           identifier: "PUBLISHED",
-          name: i18n.t("labels.published", {
-            ns: "organization",
-            context: "workspaces",
+          name: i18n.t("labels.workspaces", {
+            ns: "workspace",
+            context: "published",
           }),
         },
       ];

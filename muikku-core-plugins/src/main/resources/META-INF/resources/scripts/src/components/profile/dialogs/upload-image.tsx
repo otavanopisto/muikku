@@ -202,7 +202,7 @@ class UploadImageDialog extends React.Component<
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        title={this.props.t("labels.profileImage")}
+        title={this.props.t("labels.profileImage", {ns: "profile"})}
         content={content}
         footer={footer}
         modifier="upload-image"
