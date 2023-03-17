@@ -317,14 +317,14 @@ class VacationSettings extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.t("labels.settings", { context: "vacation" })}
+            {this.props.t("labels.vacationSettings", { ns: "profile" })}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileVacationStart">
-                    {this.props.t("labels.beginDate", { context: "vacation" })}
+                    {this.props.t("labels.beginDate", { ns: "profile" })}
                   </label>
                   <DatePicker
                     id="profileVacationStart"
@@ -345,7 +345,7 @@ class VacationSettings extends React.Component<
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileVacationStart">
-                    {this.props.t("labels.endDate", { context: "vacation" })}{" "}
+                    {this.props.t("labels.endDate", {ns: "profile" })}{" "}
                   </label>
                   <DatePicker
                     id="profileVacationEnd"
