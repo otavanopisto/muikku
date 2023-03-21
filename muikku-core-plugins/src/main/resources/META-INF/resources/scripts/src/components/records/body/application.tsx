@@ -24,7 +24,10 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
-import UpperSecondaryPedagogicalSupportForm from "~/components/general/pedagogical-support-form";
+import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
+import { FormState } from "~/@types/pedagogy-form";
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
 
 /**
  * StudiesApplicationProps
@@ -54,6 +57,8 @@ type StudiesTab =
  */
 interface StudiesApplicationState {
   activeTab: StudiesTab;
+  loading: boolean;
+  pedagogyFormState?: FormState;
 }
 
 /**
@@ -71,6 +76,7 @@ class StudiesApplication extends React.Component<
     super(props);
 
     this.state = {
+      loading: false,
       activeTab: "SUMMARY",
     };
   }
@@ -78,7 +84,12 @@ class StudiesApplication extends React.Component<
   /**
    * componentDidMount
    */
-  componentDidMount() {
+  async componentDidMount() {
+    this.setState({ loading: true });
+
+    const state = await this.loadPedagogyFormState();
+
+    this.setState({ loading: false, pedagogyFormState: state });
     /**
      * If page is refreshed, we need to check hash which
      * tab was opened and set that at the start to state as
@@ -124,6 +135,17 @@ class StudiesApplication extends React.Component<
   }
 
   /**
+   * loadPedagogyFormState
+   */
+  loadPedagogyFormState = async () =>
+    (await promisify(
+      mApi().pedagogy.form.state.read(
+        this.props.status.userSchoolDataIdentifier
+      ),
+      "callback"
+    )()) as FormState;
+
+  /**
    * Returns whether section with given hash should be visible or not
    *
    * @param id section id
@@ -149,6 +171,8 @@ class StudiesApplication extends React.Component<
           (this.props.hops.value.goalMatriculationExam === "yes" ||
             this.props.hops.value.goalMatriculationExam === "maybe")
         );
+      case "PEDAGOGY_FORM":
+        return this.state?.pedagogyFormState !== "INACTIVE";
     }
 
     return true;
@@ -239,8 +263,8 @@ class StudiesApplication extends React.Component<
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <UpperSecondaryPedagogicalSupportForm
-              useCase="STUDENT"
+            <UpperSecondaryPedagogicalSupportWizardForm
+              userRole="STUDENT"
               studentId={this.props.status.userSchoolDataIdentifier}
             />
           </ApplicationPanelBody>
@@ -255,7 +279,7 @@ class StudiesApplication extends React.Component<
     /**
      * Just because we need to have all tabs ready first before rendering Application panel
      */
-    const ready = this.props.hops.status === "READY";
+    const ready = this.props.hops.status === "READY" || !this.state.loading;
 
     return (
       <ApplicationPanel

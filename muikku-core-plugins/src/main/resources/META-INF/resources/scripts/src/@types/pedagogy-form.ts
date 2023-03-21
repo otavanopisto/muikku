@@ -4,6 +4,13 @@ const states = ["PENDING", "APPROVED", "ACTIVE", "INACTIVE"] as const;
 
 const users = ["TEACHERS", "GUARDIANS"] as const;
 
+const useRoles = [
+  "STUDENT",
+  "COURSE_TEACHER",
+  "GUIDANCE_COUNSELOR",
+  "SPECIAL_ED_TEACHER",
+] as const;
+
 const reasonsForSupport = [
   "disease",
   "disability",
@@ -34,10 +41,12 @@ const matriculationExaminationSupport = [
   "other",
 ] as const;
 
+export type UserRole = typeof useRoles[number];
+
 /**
  * The state of the form
  */
-type FormState = typeof states[number];
+export type FormState = typeof states[number];
 
 /**
  * The viewing rights of the form

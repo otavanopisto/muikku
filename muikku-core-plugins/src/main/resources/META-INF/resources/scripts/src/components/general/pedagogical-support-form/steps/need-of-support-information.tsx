@@ -5,10 +5,8 @@ import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
 import Select, { ActionMeta } from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import AnimateHeight from "react-animate-height";
-import { PedagogyContext } from "..";
 import {
   FormData,
-  PedagogyForm,
   SupportAction,
   SupportActionMatriculationExamination,
   SupportReason,
@@ -18,15 +16,12 @@ import {
   supportActionsOptions,
   supportReasonsOptions,
 } from "../helpers";
+import { usePedagogyContext } from "../context/pedagogy-context";
 
 /**
  * NeedOfSupportInformationProps
  */
-interface NeedOfSupportInformationProps {
-  pedagogyData?: PedagogyForm;
-  formData?: FormData;
-  onFormDataChange: (updatedFormData: FormData) => void;
-}
+interface NeedOfSupportInformationProps {}
 
 /**
  * NeedOfSupportInformation
@@ -37,8 +32,8 @@ interface NeedOfSupportInformationProps {
 const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
   props
 ) => {
-  const { formData, onFormDataChange } = props;
-  const { useCase, editIsActive } = React.useContext(PedagogyContext);
+  const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
+  const { userRole, editIsActive } = usePedagogyContext();
 
   /**
    * Handles different text area changes based on key
@@ -54,7 +49,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     updatedFormData[key] = value;
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -77,7 +72,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.supportReasonOther = undefined;
     }
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -100,7 +95,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.supportActionOther = undefined;
     }
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -125,14 +120,14 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.matriculationExaminationSupportOther = undefined;
     }
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   return (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          PERUSTEET JA OPISKELIJAN VAHVUUDET
+          OPISKELIJAN VAHVUUDET JA TUEN PERUSTEET
         </legend>
 
         <div className="hops-container__row">
@@ -145,7 +140,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                 handleTextAreaChange("studentStrengths", e.target.value)
               }
               value={formData?.studentStrengths || ""}
-              disabled={useCase === "STUDENT" || !editIsActive}
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
             />
           </div>
         </div>
@@ -169,7 +164,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               options={supportReasonsOptions}
               onChange={handleSupportReasonChange}
               isSearchable={false}
-              isDisabled={useCase === "STUDENT" || !editIsActive}
+              isDisabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
             />
           </div>
         </div>
@@ -190,7 +185,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   handleTextAreaChange("supportReasonOther", e.target.value)
                 }
                 value={formData?.supportReasonOther || ""}
-                disabled={useCase === "STUDENT" || !editIsActive}
+                disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
               />
             </div>
           </div>
@@ -219,7 +214,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               options={supportActionsOptions}
               onChange={handleSupportActionChange}
               isSearchable={false}
-              isDisabled={useCase === "STUDENT" || !editIsActive}
+              isDisabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
             />
           </div>
         </div>
@@ -240,7 +235,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   handleTextAreaChange("supportActionOther", e.target.value)
                 }
                 value={formData?.supportActionOther || ""}
-                disabled={useCase === "STUDENT" || !editIsActive}
+                disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
               />
             </div>
           </div>
@@ -267,7 +262,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               options={matriculationSupportActionsOptions}
               onChange={handleMatriculationSupportActionChange}
               isSearchable={false}
-              isDisabled={useCase === "STUDENT" || !editIsActive}
+              isDisabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
             />
           </div>
         </div>
@@ -294,7 +289,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   )
                 }
                 value={formData?.matriculationExaminationSupportOther || ""}
-                disabled={useCase === "STUDENT" || !editIsActive}
+                disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
               />
             </div>
           </div>

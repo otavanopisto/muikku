@@ -4,17 +4,13 @@ import "~/sass/elements/form.scss";
 import { TextField } from "../../hops-compulsory-education-wizard/text-field";
 import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
 import DatePicker from "react-datepicker";
-import { PedagogyContext } from "..";
-import { FormData, PedagogyForm } from "~/@types/pedagogy-form";
+import { FormData } from "~/@types/pedagogy-form";
+import { usePedagogyContext } from "../context/pedagogy-context";
 
 /**
  * DocumentInformationProps
  */
-interface DocumentInformationProps {
-  formData?: FormData;
-  pedagogyData?: PedagogyForm;
-  onFormDataChange: (updatedFormData: FormData) => void;
-}
+interface DocumentInformationProps {}
 
 /**
  * DocumentInformation
@@ -23,8 +19,13 @@ interface DocumentInformationProps {
  * @returns JSX.Element
  */
 const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
-  const { pedagogyData, formData, onFormDataChange } = props;
-  const { useCase, editIsActive } = React.useContext(PedagogyContext);
+  const {
+    userRole,
+    editIsActive,
+    formData,
+    data,
+    setFormDataAndUpdateChangedFields,
+  } = usePedagogyContext();
 
   /**
    * Handles different text area changes based on key
@@ -40,14 +41,12 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
 
     updatedFormData[key] = value;
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
-  const ownerNameWithPhone = pedagogyData
-    ? `${pedagogyData?.ownerInfo.firstName} ${pedagogyData?.ownerInfo.lastName}` +
-      (pedagogyData?.ownerInfo.phoneNumber
-        ? ` (${pedagogyData?.ownerInfo.phoneNumber})`
-        : "")
+  const ownerNameWithPhone = data
+    ? `${data?.ownerInfo.firstName} ${data?.ownerInfo.lastName}` +
+      (data?.ownerInfo.phoneNumber ? ` (${data?.ownerInfo.phoneNumber})` : "")
     : "-";
 
   return (
@@ -62,12 +61,10 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
             </label>
             <DatePicker
               id="graduationGoalMonth"
-              dateFormat="MM/yyyy"
-              // eslint-disable-next-line no-console
-              onChange={() => console.log("changed")}
+              dateFormat="dd/MM/yyyy"
+              onChange={undefined}
               selected={
-                (pedagogyData?.created && new Date(pedagogyData?.created)) ||
-                new Date()
+                (data?.created && new Date(data?.created)) || new Date()
               }
               className="hops__input"
               disabled
@@ -92,13 +89,13 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
             <Textarea
               id="documentParticipants"
               label="Asiakirjan laatimiseen osallistuneet"
-              placeholder="Asiakirjan laatimiseen osallistuneet"
               className="hops__input"
               onChange={(e) =>
                 handleTextAreaChange("documentParticipants", e.target.value)
               }
               value={formData?.documentParticipants || ""}
-              disabled={useCase === "STUDENT" || !editIsActive}
+              required
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
             />
           </div>
         </div>
@@ -112,7 +109,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
                 handleTextAreaChange("cooperativePartners", e.target.value)
               }
               value={formData?.cooperativePartners || ""}
-              disabled={useCase === "STUDENT" || !editIsActive}
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
             />
           </div>
         </div>

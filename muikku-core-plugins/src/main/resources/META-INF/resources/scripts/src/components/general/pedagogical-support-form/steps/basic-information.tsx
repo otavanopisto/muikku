@@ -5,14 +5,13 @@ import { TextField } from "../../hops-compulsory-education-wizard/text-field";
 import * as moment from "moment";
 import { History, HistoryEntryItem } from "../history";
 import { StatusType } from "~/reducers/base/status";
-import { PedagogyForm } from "~/@types/pedagogy-form";
 import PagerV2 from "../../pagerV2";
+import { usePedagogyContext } from "../context/pedagogy-context";
 
 /**
  * BasicInformationProps
  */
 interface BasicInformationProps {
-  pedagogyData?: PedagogyForm;
   status: StatusType;
 }
 
@@ -25,7 +24,8 @@ const itemsPerPage = 5;
  * @returns JSX.Element
  */
 const BasicInformation: React.FC<BasicInformationProps> = (props) => {
-  const { pedagogyData, status } = props;
+  const { status } = props;
+  const { data } = usePedagogyContext();
   const [currentPage, setCurrentPage] = React.useState<number>(0);
 
   /**
@@ -42,20 +42,17 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
    * @returns JSX.Element
    */
   const renderHistory = () => {
-    if (!pedagogyData || pedagogyData.history.length === 0) {
+    if (!data || data.history.length === 0) {
       return <p>Ei tapahtumia</p>;
     }
 
     const offset = currentPage * itemsPerPage;
 
-    const currentHistory = pedagogyData.history.slice(
-      offset,
-      offset + itemsPerPage
-    );
+    const currentHistory = data.history.slice(offset, offset + itemsPerPage);
 
-    const pageCount = Math.ceil(pedagogyData.history.length / itemsPerPage);
+    const pageCount = Math.ceil(data.history.length / itemsPerPage);
 
-    if (pedagogyData.history.length > itemsPerPage) {
+    if (data.history.length > itemsPerPage) {
       return (
         <>
           <History>
@@ -108,7 +105,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               id="studentName"
               label="Etunimet:"
               type="text"
-              value={pedagogyData?.studentInfo.firstName || ""}
+              value={data?.studentInfo.firstName || ""}
               disabled
               className="hops__input"
             />
@@ -120,7 +117,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               id="studentName"
               label="Sukunimi:"
               type="text"
-              value={pedagogyData?.studentInfo.lastName || ""}
+              value={data?.studentInfo.lastName || ""}
               disabled
               className="hops__input"
             />
@@ -133,10 +130,8 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               label="Syntymäaika:"
               type="text"
               value={
-                (pedagogyData?.studentInfo.dateOfBirth &&
-                  moment(pedagogyData?.studentInfo.dateOfBirth).format(
-                    "DD.MM.YYYY"
-                  )) ||
+                (data?.studentInfo.dateOfBirth &&
+                  moment(data?.studentInfo.dateOfBirth).format("DD.MM.YYYY")) ||
                 "-"
               }
               disabled
@@ -150,7 +145,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               id="phoneNumber"
               label="Puhelinnumero:"
               type="text"
-              value={pedagogyData?.studentInfo.phoneNumber || "-"}
+              value={data?.studentInfo.phoneNumber || "-"}
               disabled
               className="hops__input"
             />
@@ -162,7 +157,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               id="email"
               label="Sähköposti:"
               type="text"
-              value={pedagogyData?.studentInfo.email || "-"}
+              value={data?.studentInfo.email || "-"}
               disabled
               className="hops__input"
             />
@@ -174,7 +169,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               id="address"
               label="Osoite:"
               type="text"
-              value={pedagogyData?.studentInfo.addressName || "-"}
+              value={data?.studentInfo.streetAddress || "-"}
               disabled
               className="hops__input"
             />

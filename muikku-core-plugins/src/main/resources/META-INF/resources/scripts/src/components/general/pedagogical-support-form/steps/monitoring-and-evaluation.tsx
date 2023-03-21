@@ -1,24 +1,16 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { PedagogyContext } from "..";
-import {
-  FormData,
-  Opinion,
-  OpinionType,
-  PedagogyForm,
-} from "~/@types/pedagogy-form";
+import { FormData, Opinion, OpinionType } from "~/@types/pedagogy-form";
 import { AddNewOpinionBox, OpinionItem, OpinionList } from "../opinions-list";
 import { StatusType } from "~/reducers/base/status";
+import { usePedagogyContext } from "../context/pedagogy-context";
 
 /**
  * MonitoringAndEvaluationProps
  */
 interface MonitoringAndEvaluationProps {
-  pedagogyData?: PedagogyForm;
-  formData?: FormData;
   status: StatusType;
-  onFormDataChange: (updatedFormData: FormData) => void;
 }
 
 /**
@@ -29,8 +21,9 @@ interface MonitoringAndEvaluationProps {
 const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
   props
 ) => {
-  const { useCase, editIsActive } = React.useContext(PedagogyContext);
-  const { formData, onFormDataChange, status } = props;
+  const { status } = props;
+  const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
+  const { userRole, editIsActive } = usePedagogyContext();
 
   /**
    * Handles support reason select change
@@ -47,7 +40,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       creationDate: new Date(),
     });
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -71,7 +64,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       [key]: value,
     };
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -83,7 +76,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     const updatedFormData: FormData = { ...formData };
     updatedFormData[type].splice(index, 1);
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   const studentOpinionEntries =
@@ -95,9 +88,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
           index={index}
           type="studentOpinionOfSupport"
           opinion={iOpinion}
-          ownerOfEntry={
-            status.userSchoolDataIdentifier === iOpinion.creatorIdentifier
-          }
+          disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
           onOpinionChange={handleOpinionChange}
           onDeleteEntryClick={handleDeleteOpinion}
         />
@@ -107,19 +98,27 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
   const schoolOpinionEntries =
     (formData?.schoolOpinionOfSupport &&
       formData?.schoolOpinionOfSupport.length > 0 &&
-      formData?.schoolOpinionOfSupport.map((iOpinion, index) => (
-        <OpinionItem
-          key={index}
-          index={index}
-          type="schoolOpinionOfSupport"
-          opinion={iOpinion}
-          ownerOfEntry={
-            status.userSchoolDataIdentifier === iOpinion.creatorIdentifier
-          }
-          onOpinionChange={handleOpinionChange}
-          onDeleteEntryClick={handleDeleteOpinion}
-        />
-      ))) ||
+      formData?.schoolOpinionOfSupport.map((iOpinion, index) => {
+        const ownerOfEntry =
+          status.userSchoolDataIdentifier === iOpinion.creatorIdentifier;
+
+        return (
+          <OpinionItem
+            key={index}
+            index={index}
+            type="schoolOpinionOfSupport"
+            opinion={iOpinion}
+            disabled={
+              userRole === "STUDENT" ||
+              !editIsActive ||
+              !ownerOfEntry ||
+              !editIsActive
+            }
+            onOpinionChange={handleOpinionChange}
+            onDeleteEntryClick={handleDeleteOpinion}
+          />
+        );
+      })) ||
     "Ei koulun arvioita";
 
   return (
@@ -130,10 +129,10 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
         </legend>
         <OpinionList>
           {studentOpinionEntries}
-          {editIsActive && (
+          {userRole === "SPECIAL_ED_TEACHER" && (
             <AddNewOpinionBox
               onClick={handleAddNewOpinion("studentOpinionOfSupport")}
-              disabled={useCase === "STUDENT" || !editIsActive}
+              disabled={!editIsActive}
             />
           )}
         </OpinionList>
@@ -144,10 +143,10 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
         </legend>
         <OpinionList>
           {schoolOpinionEntries}
-          {editIsActive && (
+          {userRole !== "STUDENT" && (
             <AddNewOpinionBox
               onClick={handleAddNewOpinion("schoolOpinionOfSupport")}
-              disabled={useCase === "STUDENT" || !editIsActive}
+              disabled={!editIsActive}
             />
           )}
         </OpinionList>

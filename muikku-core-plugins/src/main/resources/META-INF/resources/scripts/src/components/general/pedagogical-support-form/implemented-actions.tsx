@@ -6,10 +6,10 @@ import { Textarea } from "../hops-compulsory-education-wizard/text-area";
 import { IconButton } from "../button";
 import Select from "react-select";
 import WorkspaceSelect from "./workspace-select";
-import { PedagogyContext } from ".";
 import { SupportActionImplementation } from "~/@types/pedagogy-form";
 import { supportActionsOptions } from "./helpers";
 import { TextField } from "../hops-compulsory-education-wizard/text-field";
+import { usePedagogyContext } from "./context/pedagogy-context";
 
 /**
  * ImplementedActionsListProps
@@ -48,7 +48,8 @@ interface ImplementedActionsListItemProps {
 export const ImplementedActionsListItem: React.FC<
   ImplementedActionsListItemProps
 > = (props) => {
-  const { useCase, editIsActive } = React.useContext(PedagogyContext);
+  const { userRole, editIsActive } = usePedagogyContext();
+
   const {
     index,
     ownerOfEntry,
@@ -58,7 +59,7 @@ export const ImplementedActionsListItem: React.FC<
   } = props;
 
   const disabledFields =
-    useCase === "STUDENT" || !editIsActive || !ownerOfEntry;
+    userRole === "STUDENT" || !editIsActive || !ownerOfEntry;
 
   return (
     <div style={{ marginBottom: "10px", borderBottom: "1px solid #b4b4b4" }}>
@@ -81,6 +82,7 @@ export const ImplementedActionsListItem: React.FC<
             dateFormat="dd/MM/yyyy"
             onChange={(e) => onActionChange(index, "date", e)}
             selected={new Date(implemenetedSupportAction.date)}
+            maxDate={new Date()}
             className="hops__input"
             disabled={disabledFields}
           />
@@ -114,7 +116,9 @@ export const ImplementedActionsListItem: React.FC<
               implemenetedSupportAction.course
                 ? {
                     value: implemenetedSupportAction.course,
-                    label: implemenetedSupportAction.course.name,
+                    label: implemenetedSupportAction.course.nameExtension
+                      ? `${implemenetedSupportAction.course.name} (${implemenetedSupportAction.course.nameExtension})`
+                      : implemenetedSupportAction.course.name,
                   }
                 : undefined
             }

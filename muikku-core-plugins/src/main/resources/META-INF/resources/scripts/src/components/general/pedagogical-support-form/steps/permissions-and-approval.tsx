@@ -1,15 +1,12 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { Visibility } from "~/@types/pedagogy-form";
+import { usePedagogyContext } from "../context/pedagogy-context";
 
 /**
  * PermissionsAndApprovalProps
  */
-interface PermissionsAndApprovalProps {
-  formIsApproved: boolean;
-  visibility: Visibility[];
-}
+interface PermissionsAndApprovalProps {}
 
 /**
  * PermissionsAndApproval
@@ -20,7 +17,7 @@ interface PermissionsAndApprovalProps {
 const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
   props
 ) => {
-  const { formIsApproved, visibility } = props;
+  const { formIsApproved, visibility } = usePedagogyContext();
 
   return (
     <section className="hops-container">

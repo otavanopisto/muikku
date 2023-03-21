@@ -30,6 +30,8 @@ interface PedagogyPDFProps {
  * @returns JSX.Element
  */
 const PedagogyPDF = (props: PedagogyPDFProps) => {
+  const { data } = props;
+
   const formData = JSON.parse(props.data.formData) as FormData;
 
   const supportReasonTranslationByValue = supportReasonsOptions.reduce(
@@ -157,6 +159,28 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
     </View>
   );
 
+  const studentName = `${data?.studentInfo?.firstName || ""} ${
+    data.studentInfo.lastName || ""
+  } ${
+    (data.studentInfo.dateOfBirth &&
+      `(syntymäaika ${moment(data.studentInfo.dateOfBirth).format(
+        "DD.MM.YYYY"
+      )})`) ||
+    ""
+  } `;
+
+  const studentEmail = `${data?.studentInfo?.email || ""}`;
+
+  const studentPhone = `${data?.studentInfo?.phoneNumber || ""}`;
+
+  const studentAddress = `${
+    data?.studentInfo?.streetAddress || "Ei osoitetietoa"
+  }`;
+
+  const studentZipCodeAndCity = `${data?.studentInfo?.zipCode || ""} ${
+    data.studentInfo.city || ""
+  }`;
+
   return (
     <Document>
       {
@@ -165,26 +189,31 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       <Page style={styles.body} size="A4">
         {pageHeader}
         <Text style={styles.pageTitle}>Perus-ja Asiakirjatiedot</Text>
-        <Text>
-          En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha
-          mucho tiempo que vivía un hidalgo de los de lanza en astillero, adarga
-          antigua, rocín flaco y galgo corredor. Una olla de algo más vaca que
-          carnero, salpicón las más noches, duelos y quebrantos los sábados,
-          lentejas los viernes, algún palomino de añadidura los domingos,
-          consumían las tres partes de su hacienda. El resto della concluían
-          sayo de velarte, calzas de velludo para las fiestas con sus pantuflos
-          de lo mismo, los días de entre semana se honraba con su vellori de lo
-          más fino. Tenía en su casa una ama que pasaba de los cuarenta, y una
-          sobrina que no llegaba a los veinte, y un mozo de campo y plaza, que
-          así ensillaba el rocín como tomaba la podadera. Frisaba la edad de
-          nuestro hidalgo con los cincuenta años, era de complexión recia, seco
-          de carnes, enjuto de rostro; gran madrugador y amigo de la caza.
-          Quieren decir que tenía el sobrenombre de Quijada o Quesada (que en
-          esto hay alguna diferencia en los autores que deste caso escriben),
-          aunque por conjeturas verosímiles se deja entender que se llama
-          Quijana; pero esto importa poco a nuestro cuento; basta que en la
-          narración dél no se salga un punto de la verdad
-        </Text>
+
+        <View style={styles.infoField}>
+          <Text style={styles.infoFieldLabel}>Opiskelija:</Text>
+          <Text style={styles.infoFieldValue}>{studentName}</Text>
+          <Text style={styles.infoFieldValue}>{studentPhone}</Text>
+          <Text style={styles.infoFieldValue}>{studentEmail}</Text>
+          <Text style={styles.infoFieldValue}>{studentAddress}</Text>
+          <Text style={styles.infoFieldValue}>{studentZipCodeAndCity}</Text>
+        </View>
+
+        <View style={styles.infoField}>
+          <Text style={styles.infoFieldLabel}>
+            Asiakirjan laatimiseen osallistuneet:
+          </Text>
+          <Text style={styles.infoFieldValue}>
+            {formData?.documentParticipants || "-"}
+          </Text>
+        </View>
+
+        <View style={styles.infoField}>
+          <Text style={styles.infoFieldLabel}>Yhteistyötahot:</Text>
+          <Text style={styles.infoFieldValue}>
+            {formData?.cooperativePartners || "-"}
+          </Text>
+        </View>
         {pageFooter}
       </Page>
 
@@ -193,7 +222,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       }
       <Page style={styles.body} size="A4">
         {pageHeader}
-        <Text style={styles.pageTitle}>Perusteet</Text>
+        <Text style={styles.pageTitle}>Tuen perusteet</Text>
         <View style={styles.infoField}>
           <Text style={styles.infoFieldLabel}>Opiskelijan vahvuudet:</Text>
           <Text style={styles.infoFieldValue}>

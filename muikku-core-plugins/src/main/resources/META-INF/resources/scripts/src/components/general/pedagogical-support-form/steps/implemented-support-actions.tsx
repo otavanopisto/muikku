@@ -6,22 +6,15 @@ import {
   ImplementedActionsList,
   ImplementedActionsListItem,
 } from "../implemented-actions";
-import { PedagogyContext } from "..";
-import {
-  FormData,
-  PedagogyForm,
-  SupportActionImplementation,
-} from "~/@types/pedagogy-form";
+import { FormData, SupportActionImplementation } from "~/@types/pedagogy-form";
 import { StatusType } from "~/reducers/base/status";
+import { usePedagogyContext } from "../context/pedagogy-context";
 
 /**
  * ImplementedSupportActionsProps
  */
 interface ImplementedSupportActionsProps {
-  pedagogyData?: PedagogyForm;
-  formData?: FormData;
   status: StatusType;
-  onFormDataChange: (updatedFormData: FormData) => void;
 }
 
 /**
@@ -33,8 +26,9 @@ interface ImplementedSupportActionsProps {
 const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   props
 ) => {
-  const { formData, onFormDataChange, status } = props;
-  const { useCase, editIsActive } = React.useContext(PedagogyContext);
+  const { status } = props;
+  const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
+  const { userRole, editIsActive } = usePedagogyContext();
 
   /**
    * Handles support reason select change
@@ -51,18 +45,19 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
       date: new Date(),
     });
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
    * Handles support reason select change
+   *
    * @param index index
    */
   const handleDeleteSupportAction = (index: number) => {
     const updatedFormData: FormData = { ...formData };
     updatedFormData.supportActionsImplemented.splice(index, 1);
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -86,7 +81,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
       [key]: value,
     };
 
-    onFormDataChange(updatedFormData);
+    setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   const implementedActions =
@@ -118,7 +113,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
           {editIsActive && (
             <AddNewActionsBox
               onClick={handleAddNewSupportAction}
-              disabled={useCase === "STUDENT" || !editIsActive}
+              disabled={userRole === "STUDENT" || !editIsActive}
             />
           )}
         </ImplementedActionsList>

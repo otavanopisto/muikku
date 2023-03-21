@@ -32,7 +32,7 @@ export const useWorkspaces = (
           mApi().coursepicker.workspaces.read({
             q: textInput,
             maxResults: 20,
-            myWorkspaces: false,
+            myWorkspaces: true,
           }),
           "callback"
         )()) as WorkspaceType[];

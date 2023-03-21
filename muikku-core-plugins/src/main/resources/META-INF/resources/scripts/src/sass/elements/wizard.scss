@@ -1,3 +1,5 @@
+/* stylelint-disable scale-unlimited/declaration-strict-value */
+/* stylelint-disable color-named */
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/vars";
@@ -99,6 +101,23 @@
         @include step-indicator;
 
         background-color: $color-wizard-done;
+        content: "";
+        line-height: normal;
+      }
+    }
+
+    .progtrckr-error {
+      border-bottom: 4px solid red;
+      color: red;
+
+      &:hover::before {
+        color: red;
+      }
+
+      &::before {
+        @include step-indicator;
+
+        background-color: red;
         content: "";
         line-height: normal;
       }

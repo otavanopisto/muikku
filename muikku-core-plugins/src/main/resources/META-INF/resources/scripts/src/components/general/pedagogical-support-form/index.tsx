@@ -10,31 +10,29 @@ import { AnyActionType } from "~/actions";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import VisibilityAndApprovalDialog from "./dialogs/visibility-and-approval";
-import VisibilityDialog from "./dialogs/visibility";
-import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
-import WarningDialog from "./dialogs/warning";
-// eslint-disable-next-line camelcase
 import { PDFViewer } from "@react-pdf/renderer";
 import PedagogyPDF from "./pedagogy-PDF";
-import { FormData, Visibility } from "~/@types/pedagogy-form";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const StepZilla = require("react-stepzilla").default;
+import AnimatedStep from "../wizard/AnimateStep";
+import Wizard, { WizardStep } from "../wizard";
+import { useWizard } from "../wizard/hooks/useWizard";
+import { AnimatePresence } from "framer-motion";
+import { WizardProvider } from "../wizard/context/wizard-context";
+import PedagogyFormWizardHeader from "./pedagogy-form-wizard-header";
+import PedagogyFormWizardFooter from "./pedagogy-form-wizard-footer";
+import { PedagogyProvider } from "./context/pedagogy-context";
+import "~/sass/elements/pedagogy.scss";
+import PedagogyToolbar from "./pedagogy-toolbar";
+import { UserRole } from "~/@types/pedagogy-form";
 
 /**
  * The props for the UpperSecondaryPedagogicalSupportForm component.
  */
-interface UpperSecondaryPedagogicalSupportFormProps {
-  useCase: "STUDENT" | "GUIDER";
+interface UpperSecondaryPedagogicalSupportWizardFormmProps {
+  userRole: UserRole;
   studentId: string;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
-
-export const PedagogyContext = React.createContext<{
-  useCase: "STUDENT" | "GUIDER";
-  editIsActive: boolean;
-}>({ useCase: "STUDENT", editIsActive: false });
 
 /**
  * Creates a new UpperSecondaryPedagogicalSupportForm component.
@@ -42,335 +40,100 @@ export const PedagogyContext = React.createContext<{
  * @param props props
  * @returns JSX.Element
  */
-const UpperSecondaryPedagogicalSupportForm: React.FC<
-  UpperSecondaryPedagogicalSupportFormProps
+const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
+  UpperSecondaryPedagogicalSupportWizardFormmProps
 > = (props) => {
-  const {
-    loading,
-    data,
-    formData,
-    visibility,
-    formIsApproved,
-    changedFields,
-    editIsActive,
-    resetData,
-    setFormDataAndUpdateChangedFields,
-    setVisibility,
-    setFormIsApproved,
-    setExtraDetails,
-    setEditIsActive,
-    activateForm,
-    sendToStudent,
-    approveForm,
-    updateFormData,
-    updateVisibility,
-  } = usePedagogy(props.studentId, props.displayNotification);
-
+  const usePedagogyValues = usePedagogy(
+    props.studentId,
+    props.displayNotification
+  );
+  const { loading, data, activateForm } = usePedagogyValues;
   const [showPDF, setShowPDF] = React.useState(false);
 
-  /**
-   * Handle PDF click. Toggles showPDF state.
-   */
-  const handlePDFClick = () => {
-    setShowPDF(!showPDF);
-  };
-
-  /**
-   * Handle edit click. Toggles editIsActive state.
-   */
-  const handleEditClick = () => setEditIsActive(!editIsActive);
-
-  /**
-   * Handle form data change. Updates form data and changed fields.
-   *
-   * @param updatedFormData updatedFormData
-   */
-  const handleFormDataChange = (updatedFormData: FormData) => {
-    setFormDataAndUpdateChangedFields(updatedFormData);
-  };
-
-  /**
-   * Handle form approve value change
-   *
-   * @param e e
-   */
-  const handleApproveValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.checked;
-    setFormIsApproved(value);
-  };
-
-  /**
-   * Handle visibility permissions change
-   *
-   * @param e e
-   */
-  const handleVisibilityPermissionChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newVisibility = [...visibility];
-
-    const value = e.target.value as Visibility;
-
-    if (newVisibility.includes(value)) {
-      const index = newVisibility.indexOf(value);
-      if (index > -1) {
-        newVisibility.splice(index, 1);
-      }
-    } else {
-      newVisibility.push(value);
-    }
-
-    setVisibility(newVisibility);
-  };
-
-  /**
-   * Handle extra details change
-   *
-   * @param e e
-   */
-  const handleExtraDetailsChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => setExtraDetails(e.target.value);
-
-  /**
-   * Handle save with extra details click. Updates form data to server.
-   */
-  const handleSaveWithExtraDetailsClick = () => updateFormData();
-
-  /**
-   * Handle cancel save with extra details click. Resets extra details.
-   */
-  const handleCancelSaveWithExtraDetailsClick = () => setExtraDetails("");
+  const previousStep = React.useRef<number>(0);
 
   /**
    * Default steps
    */
-  const steps = [
+  const listOfStepObjects: WizardStep[] = [
     {
+      index: 0,
       name: "Perustiedot",
-      component: <Step1 pedagogyData={data} status={props.status} />,
+      component: (
+        <AnimatedStep previousStep={previousStep}>
+          <Step1 status={props.status} />
+        </AnimatedStep>
+      ),
     },
     {
+      index: 1,
       name: "Asiakirja",
       component: (
-        <Step2
-          pedagogyData={data}
-          formData={formData}
-          onFormDataChange={handleFormDataChange}
-        />
+        <AnimatedStep previousStep={previousStep}>
+          <Step2 />
+        </AnimatedStep>
       ),
     },
     {
+      index: 2,
       name: "Pedagogisen tuen tarve",
       component: (
-        <Step3
-          pedagogyData={data}
-          formData={formData}
-          onFormDataChange={handleFormDataChange}
-        />
+        <AnimatedStep previousStep={previousStep}>
+          <Step3 />
+        </AnimatedStep>
       ),
     },
     {
+      index: 3,
       name: "Toteutetut tukitoimet",
       component: (
-        <Step4
-          status={props.status}
-          pedagogyData={data}
-          formData={formData}
-          onFormDataChange={handleFormDataChange}
-        />
+        <AnimatedStep previousStep={previousStep}>
+          <Step4 status={props.status} />
+        </AnimatedStep>
       ),
     },
     {
+      index: 4,
       name: "Tuen seuranta ja arviointi",
       component: (
-        <Step5
-          status={props.status}
-          pedagogyData={data}
-          formData={formData}
-          onFormDataChange={handleFormDataChange}
-        />
+        <AnimatedStep previousStep={previousStep}>
+          <Step5 status={props.status} />
+        </AnimatedStep>
       ),
     },
     {
+      index: 5,
       name: "Luvat ja hyväksyminen",
       component: (
-        <Step6 formIsApproved={formIsApproved} visibility={visibility} />
+        <AnimatedStep previousStep={previousStep}>
+          <Step6 />
+        </AnimatedStep>
       ),
     },
   ];
 
   // Remove last step if use case is student
-  if (props.useCase === "STUDENT") {
-    steps.pop();
+  if (props.userRole === "STUDENT") {
+    listOfStepObjects.pop();
   }
 
-  /**
-   * Render wizard toolbar
-   *
-   * @returns JSX.Element
-   */
-  const renderWizardToolbar = () => {
-    if (props.useCase === "GUIDER" && data) {
-      switch (data.state) {
-        case "ACTIVE":
-          return (
-            <div
-              className="wizard__toolbar"
-              style={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "10px 0",
-              }}
-            >
-              <Button buttonModifiers={["execute"]} onClick={sendToStudent}>
-                Lähetä
-              </Button>
-            </div>
-          );
-        case "PENDING":
-        case "APPROVED":
-          return (
-            <div
-              className="wizard__toolbar"
-              style={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "10px 0",
-              }}
-            >
-              <SaveWithExtraDetailsDialog
-                changedFields={changedFields}
-                onSaveClick={handleSaveWithExtraDetailsClick}
-                onCancelClick={handleCancelSaveWithExtraDetailsClick}
-                onExtraDetailsChange={handleExtraDetailsChange}
-              >
-                <Button
-                  buttonModifiers={["success"]}
-                  disabled={!editIsActive && changedFields.length === 0}
-                >
-                  Tallenna muokkaukset
-                </Button>
-              </SaveWithExtraDetailsDialog>
-
-              {editIsActive ? (
-                changedFields.length > 0 ? (
-                  <WarningDialog
-                    onApproveClick={resetData}
-                    title="Tallentamattomat muutokset"
-                    content={
-                      <p>
-                        Sinulla on tallentamattomia muutoksia. Haluatko varmasti
-                        peruuttaa muokkauksen
-                      </p>
-                    }
-                  >
-                    <Button buttonModifiers={["cancel"]}>Peruuta</Button>
-                  </WarningDialog>
-                ) : (
-                  <Button
-                    buttonModifiers={["cancel"]}
-                    onClick={handleEditClick}
-                  >
-                    Peruuta
-                  </Button>
-                )
-              ) : (
-                <Button
-                  buttonModifiers={["fatal", "standard-ok"]}
-                  onClick={handleEditClick}
-                >
-                  Muokkaa
-                </Button>
-              )}
-            </div>
-          );
-
-        default:
-          return null;
-      }
-    } else if (props.useCase === "STUDENT" && data) {
-      switch (data.state) {
-        case "PENDING":
-          return (
-            <div
-              className="wizard__toolbar"
-              style={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "10px 0",
-              }}
-            >
-              <VisibilityAndApprovalDialog
-                formIsApproved={formIsApproved}
-                visibility={visibility}
-                saveButtonDisabled={!formIsApproved}
-                onSaveClick={approveForm}
-                onApproveChange={handleApproveValueChange}
-                onVisibilityChange={handleVisibilityPermissionChange}
-              >
-                <Button buttonModifiers={["info"]}>Hyväksy lomake</Button>
-              </VisibilityAndApprovalDialog>
-            </div>
-          );
-        case "APPROVED":
-          return (
-            <div
-              className="wizard__toolbar"
-              style={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "10px 0",
-              }}
-            >
-              <VisibilityDialog
-                visibility={visibility}
-                onVisibilityChange={handleVisibilityPermissionChange}
-                onSaveClick={updateVisibility}
-              >
-                <Button buttonModifiers={["info"]} disabled={showPDF}>
-                  Muuta jako-oikeuksia
-                </Button>
-              </VisibilityDialog>
-
-              <Button
-                buttonModifiers={["cancel"]}
-                disabled={loading}
-                onClick={handlePDFClick}
-              >
-                {showPDF ? "Sulje PDF" : "PDF"}
-              </Button>
-            </div>
-          );
-
-        default:
-          return null;
-      }
-    }
-    return null;
-  };
+  const { ...useWizardValues } = useWizard({
+    preventNextIfInvalid: true,
+    steps: listOfStepObjects,
+  });
 
   return (
-    <PedagogyContext.Provider
+    <PedagogyProvider
       value={{
-        useCase: props.useCase,
-        editIsActive: (data && data.state === "ACTIVE") || editIsActive,
+        userRole: props.userRole,
+        ...usePedagogyValues,
       }}
     >
-      <div className="wizard">
-        <div className="wizard_container" style={{ position: "relative" }}>
-          {renderWizardToolbar()}
+      <WizardProvider value={useWizardValues}>
+        <div className="pedagogy-form">
           {loading ? (
             <OverlayComponent>
-              <div style={{ height: "fit-content" }}>
+              <div className="pedagogy-form__overlay-content">
                 <div className="loader-empty" />
               </div>
             </OverlayComponent>
@@ -378,40 +141,39 @@ const UpperSecondaryPedagogicalSupportForm: React.FC<
 
           {data && data.state === "INACTIVE" ? (
             <OverlayComponent>
-              <div style={{ height: "fit-content" }}>
-                {props.useCase === "STUDENT" ? (
+              <div className="pedagogy-form__overlay-content">
+                {props.userRole === "STUDENT" ? (
                   <p>
                     Tukilomaketta ei ole aktivoitu, ole yhteydessä
                     erityisopettajaasi
                   </p>
-                ) : (
-                  <Button onClick={activateForm}>Aktivoi</Button>
-                )}
+                ) : props.userRole === "SPECIAL_ED_TEACHER" ? (
+                  <Button buttonModifiers={["success"]} onClick={activateForm}>
+                    Aktivoi
+                  </Button>
+                ) : null}
               </div>
             </OverlayComponent>
           ) : null}
 
-          {showPDF ? (
-            <PDFViewer style={{ width: "100%", height: "calc(100vh - 200px)" }}>
-              <PedagogyPDF data={data} />
-            </PDFViewer>
-          ) : (
-            <StepZilla
-              steps={steps}
-              dontValidate={false}
-              preventEnterSubmission={true}
-              showNavigation={true}
-              showSteps={true}
-              prevBtnOnLastStep={true}
-              nextButtonCls="button button--wizard"
-              backButtonCls="button button--wizard"
-              nextButtonText="Seuraava"
-              backButtonText="Edellinen"
-            />
-          )}
+          <PedagogyToolbar showPDF={showPDF} setShowPDF={setShowPDF} />
+          <div className="pedagogy-form__container">
+            {showPDF ? (
+              <PDFViewer className="pedagogy-form__pdf">
+                <PedagogyPDF data={data} />
+              </PDFViewer>
+            ) : (
+              <Wizard
+                modifiers={["pedagogy-form"]}
+                header={<PedagogyFormWizardHeader />}
+                footer={<PedagogyFormWizardFooter />}
+                wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </PedagogyContext.Provider>
+      </WizardProvider>
+    </PedagogyProvider>
   );
 };
 
@@ -438,7 +200,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(UpperSecondaryPedagogicalSupportForm);
+)(UpperSecondaryPedagogicalSupportWizardForm);
 
 /**
  * OverlayComponentProsp
@@ -451,19 +213,5 @@ interface OverlayComponentProsp {}
  * @returns JSX.Element
  */
 const OverlayComponent: React.FC<OverlayComponentProsp> = (props) => (
-  <div
-    style={{
-      position: "absolute",
-      height: "100%",
-      top: 0,
-      backgroundColor: "#ffffffbd",
-      width: "100%",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 100,
-    }}
-  >
-    {props.children}
-  </div>
+  <div className="pedagogy-form__overlay">{props.children}</div>
 );

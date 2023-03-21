@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Opinion, OpinionType } from "~/@types/pedagogy-form";
 import { TextField } from "../hops-compulsory-education-wizard/text-field";
-import { PedagogyContext } from ".";
 import CKEditor from "../ckeditor";
 import { IconButton } from "../button";
 import CkeditorLoaderContent from "../../base/ckeditor-loader/content";
@@ -29,7 +28,7 @@ interface OpinionItemProps {
   index: number;
   type: OpinionType;
   opinion: Opinion;
-  ownerOfEntry: boolean;
+  disabled: boolean;
   onDeleteEntryClick?: (index: number, type: OpinionType) => void;
   onOpinionChange?: <T extends keyof Opinion>(
     index: number,
@@ -46,11 +45,10 @@ interface OpinionItemProps {
  * @returns JSX.Element
  */
 export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
-  const { editIsActive } = React.useContext(PedagogyContext);
   const {
     index,
     opinion,
-    ownerOfEntry,
+    disabled,
     onDeleteEntryClick,
     onOpinionChange,
     type,
@@ -91,7 +89,7 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
         </div>
       </div>
       <div className="hops-container__row">
-        {editIsActive ? (
+        {!disabled ? (
           <div className="hops__form-element-container">
             <label className="hops__label">Mielipide</label>
             <CKEditor
@@ -115,7 +113,7 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
         className="hops-container__row"
         style={{ justifyContent: "flex-end" }}
       >
-        {ownerOfEntry && editIsActive && (
+        {!disabled && (
           <IconButton
             icon="trash"
             onClick={(e) => onDeleteEntryClick(index, type)}

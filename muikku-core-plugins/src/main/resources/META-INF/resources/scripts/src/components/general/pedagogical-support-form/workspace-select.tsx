@@ -50,7 +50,9 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
   const options: OptionDefault<WorkspaceType>[] = workspaces.map(
     (workspace) => ({
       value: workspace,
-      label: workspace.name,
+      label: workspace.nameExtension
+        ? `${workspace.name} (${workspace.nameExtension}))`
+        : workspace.name,
     })
   );
 

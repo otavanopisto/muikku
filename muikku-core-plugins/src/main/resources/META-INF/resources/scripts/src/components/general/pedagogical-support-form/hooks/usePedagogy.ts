@@ -12,6 +12,8 @@ import {
   Visibility,
 } from "~/@types/pedagogy-form";
 
+export type UsePedagogyType = ReturnType<typeof usePedagogy>;
+
 /**
  * usePedagogy
  * @param studentId studentId
@@ -62,6 +64,7 @@ export const usePedagogy = (
             setFormIsApproved(pedagogyData.state === "APPROVED");
             setVisibility(pedagogyData.visibility);
             setLoading(false);
+            setEditIsActive(pedagogyData.state === "ACTIVE");
           });
         }
       } catch (err) {
