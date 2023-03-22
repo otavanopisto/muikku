@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>alter table CeeposProduct add column line varchar(255) not null;</sql>
+  <sql>update CeeposProduct set line='nettilukio';</sql>
+  
+  <!--
+  insert into CeeposProduct (code,description,price,type,line) values ('demo_001','Nettiperuskoulun opiskelumaksu 6 kk',10000,'STUDYTIME','nettipk'); 
+  insert into CeeposProduct (code,description,price,type,line) values ('demo_002','Nettiperuskoulun opiskelumaksu 12 kk',15000,'STUDYTIME','nettipk'); 
+   -->
+
+</update> 
