@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -1095,8 +1095,7 @@ public class CeeposRESTService {
   }
 
   private Set<String> getProductCodesForMonths(int months) {
-    String[] codes = pluginSettingsController.getPluginSetting("ceepos", String.format("%dMonthCode", months)).split(",");
-    return new HashSet<String>(Arrays.asList(codes));
+    return Arrays.stream(pluginSettingsController.getPluginSetting("ceepos", String.format("%dMonthCode", months)).split(",")).collect(Collectors.toSet());
   }
   
   private String getSetting(String setting) {
