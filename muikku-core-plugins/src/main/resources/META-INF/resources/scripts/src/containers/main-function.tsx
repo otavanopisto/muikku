@@ -942,9 +942,9 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
 
       // If user has LIST_USER_ORDERS permission then dispatchin is possible
-      if (this.props.store.getState().status.permissions.LIST_USER_ORDERS) {
-        this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
-      }
+      //if (this.props.store.getState().status.permissions.LIST_USER_ORDERS) {
+      //  this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
+      //}
 
       this.props.store.dispatch(updateUserGroupFilters() as Action);
 
