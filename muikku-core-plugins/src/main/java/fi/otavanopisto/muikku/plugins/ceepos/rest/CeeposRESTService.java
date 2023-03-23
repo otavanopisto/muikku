@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -884,13 +886,17 @@ public class CeeposRESTService {
     if (product != null && product.getType() == CeeposProductType.STUDYTIME) {
       int months = 0;
       String productCode = order.getProductCode();
-      if (StringUtils.equals(productCode, getProductCodeForMonths(6))) {
+      Set<String> codes = getProductCodesForMonths(6);
+      if (codes.contains(productCode)) {
         months = 6;
       }
-      else if (StringUtils.equals(productCode,  getProductCodeForMonths(12))) {
-        months = 12;
-      }
       else {
+        codes = getProductCodesForMonths(12);
+        if (codes.contains(productCode)) {
+          months = 12;
+        }
+      }
+      if (months == 0) {
         logger.severe(String.format("Ceepos order %d: Product code %s does not match configured monthly codes", order.getId(), productCode));
         order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
             order,
@@ -1088,8 +1094,9 @@ public class CeeposRESTService {
     return StringUtils.isEmpty(desc) ? defaultDescription : desc;
   }
 
-  private String getProductCodeForMonths(int months) {
-    return pluginSettingsController.getPluginSetting("ceepos", String.format("%dMonthCode", months));
+  private Set<String> getProductCodesForMonths(int months) {
+    String[] codes = pluginSettingsController.getPluginSetting("ceepos", String.format("%dMonthCode", months)).split(",");
+    return new HashSet<String>(Arrays.asList(codes));
   }
   
   private String getSetting(String setting) {
