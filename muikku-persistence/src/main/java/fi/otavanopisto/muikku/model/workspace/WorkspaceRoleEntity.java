@@ -26,7 +26,7 @@ public class WorkspaceRoleEntity extends RoleEntity {
     this.archetype = archetype;
   }
   
-  @Column (nullable = false)
+  @Column (unique = true)
   @Enumerated (EnumType.STRING)
   private WorkspaceRoleArchetype archetype;
 }

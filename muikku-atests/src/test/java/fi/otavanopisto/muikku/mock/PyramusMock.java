@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,6 @@ import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
-import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.CourseType;
 import fi.otavanopisto.pyramus.rest.model.EducationType;
@@ -868,29 +866,6 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockCourseStaffMemberRoles() throws JsonProcessingException {
-        
-        CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
-        CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
-        CourseStaffMemberRole respoRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
-        CourseStaffMemberRole[] cRoleArray = { teacherRole, tutorRole, respoRole };
-
-        stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(pmock.objectMapper.writeValueAsString(cRoleArray))
-            .withStatus(200)));
-        
-        for (CourseStaffMemberRole role : cRoleArray) {
-          stubFor(get(urlEqualTo(String.format("/1/courses/staffMemberRoles/%d", role.getId())))
-              .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(pmock.objectMapper.writeValueAsString(role))
-                .withStatus(200)));
-        }
-        return this;
-      }
-      
       public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
         List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
         
@@ -1487,7 +1462,6 @@ public class PyramusMock {
         mockCourseTypes();
         mockCourseStaffMembers();
         mockCourseStudents();
-        mockCourseStaffMemberRoles();
         
         mockGradesAndScales();
         mockEducationalTimeUnits();

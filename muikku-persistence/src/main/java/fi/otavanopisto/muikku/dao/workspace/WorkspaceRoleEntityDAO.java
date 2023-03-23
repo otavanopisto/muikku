@@ -1,20 +1,18 @@
 package fi.otavanopisto.muikku.dao.workspace;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity_;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity_;
 
 public class WorkspaceRoleEntityDAO extends CoreDAO<WorkspaceRoleEntity> {
 
-	private static final long serialVersionUID = 8213977150189134795L;
+  private static final long serialVersionUID = 8213977150189134795L;
 
   public WorkspaceRoleEntity create(WorkspaceRoleArchetype archetype, String name) {
     WorkspaceRoleEntity workspaceRoleEntity = new WorkspaceRoleEntity();
@@ -39,7 +37,7 @@ public class WorkspaceRoleEntityDAO extends CoreDAO<WorkspaceRoleEntity> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
-  public List<WorkspaceRoleEntity> listByArchetype(WorkspaceRoleArchetype archetype) {
+  public WorkspaceRoleEntity findByArchetype(WorkspaceRoleArchetype archetype) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -50,7 +48,7 @@ public class WorkspaceRoleEntityDAO extends CoreDAO<WorkspaceRoleEntity> {
       criteriaBuilder.equal(root.get(WorkspaceRoleEntity_.archetype), archetype)
     );
     
-    return entityManager.createQuery(criteria).getResultList();
+    return getSingleResult(entityManager.createQuery(criteria));
   }
   
 }
