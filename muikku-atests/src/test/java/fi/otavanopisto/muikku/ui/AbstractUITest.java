@@ -403,7 +403,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     ChromeOptions chromeOptions = new ChromeOptions();
     chromeOptions.addArguments("--headless");
     chromeOptions.addArguments("--disable-gpu");
-
+    chromeOptions.addArguments("--remote-allow-origins=*");
+    
     WebDriver driver = new ChromeDriver(chromeOptions);
     if(getBrowserDimensions() != null) {
       driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height"))));
