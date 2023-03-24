@@ -275,8 +275,7 @@ export default class MuikkuWebsocket {
         success: function (data: any) {
           if (data) {
             callback(this.ticket);
-          }
-          else {
+          } else {
             // Ticket no longer passes validation but we are still logged in, so try to renew the ticket
             this.createTicket((ticket: any) => {
               this.ticket = ticket;
