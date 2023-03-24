@@ -281,19 +281,34 @@ export default class ContentPanel extends React.Component<
 }
 
 /**
+ * ContentPanelProps
+ */
+interface ContentPanelItemProps {
+  id?: string;
+}
+
+/**
  * ContentPanelItem
  */
 export class ContentPanelItem extends React.Component<
-  Record<string, unknown>,
+  ContentPanelItemProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: ContentPanelItemProps) {
+    super(props);
+  }
+
   /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
     return (
-      <div ref="component" className="content-panel__item">
+      <div id={this.props.id} ref="component" className="content-panel__item">
         {this.props.children}
       </div>
     );

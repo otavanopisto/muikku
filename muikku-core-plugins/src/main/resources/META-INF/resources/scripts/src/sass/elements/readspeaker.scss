@@ -1,0 +1,15 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+.rsbtn {
+  /* stylelint-disable-next-line declaration-no-important */
+  display: flex !important;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.rsbtn .rsbtn_toolpanel.vertical {
+  /* stylelint-disable-next-line declaration-no-important */
+  position: absolute !important;
+}

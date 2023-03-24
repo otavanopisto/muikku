@@ -3,16 +3,18 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { useReadSpeakerReader } from "../../hooks/useReadSpeakerReader";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import "~/sass/elements/readspeaker.scss";
+import { useReadspeakerContext } from "../context/readspeaker-context";
 
 /**
  * ReadSpeakerReaderProps
  */
 interface ReadSpeakerReaderProps {
+  entityId?: number;
   /**
    * Read parameter type (readid or readclass)
    */
@@ -40,11 +42,9 @@ interface ReadSpeakerReaderProps {
  * @returns JSX.Element
  */
 const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
-  const { readParameterType, editMode } = props;
+  const { readParameterType, editMode, entityId } = props;
 
-  const { rspkr, rspkrLoaded } = useReadSpeakerReader(
-    props.displayNotification
-  );
+  const { rspkr, rspkrLoaded } = useReadspeakerContext();
 
   React.useEffect(() => {
     const rspkrValue = rspkrLoaded ? rspkr.current : undefined;
@@ -83,12 +83,14 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
   if (!rspkr.current || editMode) return null;
 
   return (
-    <div id="readspeaker_button1" className="rs_skip rsbtn rs_preserve">
+    <div
+      id={entityId ? `readspeaker_button${entityId}` : "readspeaker_button0"}
+      className="rs_skip rsbtn rs_preserve"
+    >
       <a
         rel="nofollow"
         className="rsbtn_play"
         accessKey="L"
-        title="Escucha esta p&aacute;gina utilizando ReadSpeaker webReader"
         href={`https://app-eu.readspeaker.com/cgi-bin/rsent?customerid=13624&lang=fi_fi&${readParameterType}=${readParameters}&url=${encodeURIComponent(
           document.location.href
         )}`}

@@ -2,6 +2,8 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
+export type UseReadspeakerReader = ReturnType<typeof useReadSpeakerReader>;
+
 /**
  * Custom hook to load ReadSpeaker reader
  *

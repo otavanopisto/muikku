@@ -35,7 +35,20 @@
       <ui:insert name="meta"></ui:insert>
 
       <script type="text/javascript">
-        window.rsConf = { general: { usePost: true, skipHiddenContent: true } };
+        window.rsConf = {
+          general: {
+            usePost: true,
+            enableSkipAlways: true,
+          },
+          ui: {
+            tools: {
+              translation: false,
+              dictionary: false,
+              pagemask: false,
+              download: false,
+            },
+          },
+        };
       </script>
 
       <script type="text/javascript">
@@ -144,8 +157,11 @@
 
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;display=swap" rel="stylesheet" />
-      
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;display=swap"
+        rel="stylesheet"
+      />
+
       <ui:insert name="styles"></ui:insert>
 
       <!-- Here goes what a page needs, usually their controllers -->
