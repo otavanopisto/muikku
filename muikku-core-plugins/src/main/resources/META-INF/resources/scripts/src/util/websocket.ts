@@ -272,7 +272,7 @@ export default class MuikkuWebsocket {
         /**
          * success
          */
-        success: function (data) {
+        success: function (data: any) {
           if (data) {
             callback(this.ticket);
           }
