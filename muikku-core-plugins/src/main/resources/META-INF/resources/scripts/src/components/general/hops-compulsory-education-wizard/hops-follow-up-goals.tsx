@@ -181,8 +181,10 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
         </AnimateHeight>
         <AnimateHeight
           height={
+            followUpData.followUp.followUpGoal ===
+              FollowUpGoal.POSTGRADUATE_STUDIES &&
             followUpData.followUp.followUpStudies ===
-            FollowUpStudies.VOCATIONAL_SCHOOL
+              FollowUpStudies.VOCATIONAL_SCHOOL
               ? "auto"
               : 0
           }
