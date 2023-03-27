@@ -13,6 +13,7 @@ import AutosizeInput from "react-input-autosize";
 import { UsedAs } from "~/@types/shared";
 import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * TextFieldProps
@@ -285,15 +286,18 @@ export default class TextField extends React.Component<
 
     if (this.props.invisible) {
       return (
-        <span
-          ref="base"
-          className="material-page__textfield-wrapper rs_skip_always"
-        >
-          <span className="material-page__textfield">
-            <input readOnly />
+        <>
+          <ReadspeakerMessage text="Tekstikenttä" />
+          <span
+            ref="base"
+            className="material-page__textfield-wrapper rs_skip_always"
+          >
+            <span className="material-page__textfield">
+              <input readOnly />
+            </span>
+            {correctAnswersummaryComponent}
           </span>
-          {correctAnswersummaryComponent}
-        </span>
+        </>
       );
     }
 
@@ -382,10 +386,13 @@ export default class TextField extends React.Component<
         </span>
       );
       return (
-        <span className="material-page__textfield-wrapper rs_skip_always">
-          {component}
-          {correctAnswersummaryComponent}
-        </span>
+        <>
+          <ReadspeakerMessage text="Tekstikenttä" />
+          <span className="material-page__textfield-wrapper rs_skip_always">
+            {component}
+            {correctAnswersummaryComponent}
+          </span>
+        </>
       );
     }
 
@@ -400,10 +407,13 @@ export default class TextField extends React.Component<
       );
 
       return (
-        <span className="material-page__textfield-wrapper rs_skip_always">
-          {component}
-          {correctAnswersummaryComponent}
-        </span>
+        <>
+          <ReadspeakerMessage text="Tekstikenttä" />
+          <span className="material-page__textfield-wrapper rs_skip_always">
+            {component}
+            {correctAnswersummaryComponent}
+          </span>
+        </>
       );
     }
 
@@ -427,20 +437,24 @@ export default class TextField extends React.Component<
       );
     } else {
       component = (
-        <span
-          className={`material-page__textfield ${fieldStateAfterCheck} rs_skip_always`}
-        >
-          <input
-            type="text"
-            value={this.state.value}
-            size={
-              this.props.content.columns && parseInt(this.props.content.columns)
-            }
-            placeholder={this.props.content.hint}
-            style={textfieldStyle}
-            onChange={this.onInputChange}
-          />
-        </span>
+        <>
+          <ReadspeakerMessage text="Tekstikenttä" />
+          <span
+            className={`material-page__textfield ${fieldStateAfterCheck} rs_skip_always`}
+          >
+            <input
+              type="text"
+              value={this.state.value}
+              size={
+                this.props.content.columns &&
+                parseInt(this.props.content.columns)
+              }
+              placeholder={this.props.content.hint}
+              style={textfieldStyle}
+              onChange={this.onInputChange}
+            />
+          </span>
+        </>
       );
     }
 
@@ -450,27 +464,30 @@ export default class TextField extends React.Component<
 
     // Standard modifiable version
     return (
-      <span
-        className={`material-page__textfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        {this.props.content.hint ? (
-          <Dropdown
-            modifier="material-page-field-hint"
-            content={this.props.content.hint}
-          >
-            {component}
-          </Dropdown>
-        ) : (
-          component
-        )}
-        {correctAnswersummaryComponent}
-      </span>
+      <>
+        <ReadspeakerMessage text="Tekstikenttä" />
+        <span
+          className={`material-page__textfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          {this.props.content.hint ? (
+            <Dropdown
+              modifier="material-page-field-hint"
+              content={this.props.content.hint}
+            >
+              {component}
+            </Dropdown>
+          ) : (
+            component
+          )}
+          {correctAnswersummaryComponent}
+        </span>
+      </>
     );
   }
 }

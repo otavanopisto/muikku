@@ -1,5 +1,6 @@
 import * as React from "react";
 import OutsideClickListener from "~/components/general/outside-click-listener";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { prepareH5POn } from "~/lib/h5p";
 import { i18nType } from "~/reducers/base/i18n";
 import {
@@ -194,21 +195,24 @@ export default class Iframe extends React.Component<IframeProps, IframeState> {
           }
 
           return (
-            <span className="material-page__iframe-wrapper rs_skip_always">
-              <OutsideClickListener
-                containerStyle={containerStyle}
-                onClickOutside={this.handleClickOutside}
-              >
-                {!this.state.active && (
-                  <div
-                    onClick={this.handleOverlayClick}
-                    className="material-page__iframe-wrapper-overlay"
-                  />
-                )}
+            <>
+              <ReadspeakerMessage text="Iframe upotus" />
+              <span className="material-page__iframe-wrapper rs_skip_always">
+                <OutsideClickListener
+                  containerStyle={containerStyle}
+                  onClickOutside={this.handleClickOutside}
+                >
+                  {!this.state.active && (
+                    <div
+                      onClick={this.handleOverlayClick}
+                      className="material-page__iframe-wrapper-overlay"
+                    />
+                  )}
 
-                <Tag {...iframeProps}>{children}</Tag>
-              </OutsideClickListener>
-            </span>
+                  <Tag {...iframeProps}>{children}</Tag>
+                </OutsideClickListener>
+              </span>
+            </>
           );
         },
       },

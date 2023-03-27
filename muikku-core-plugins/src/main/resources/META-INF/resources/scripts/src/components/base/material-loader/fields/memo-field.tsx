@@ -14,6 +14,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * MemoFieldProps
@@ -370,38 +371,43 @@ export default class MemoField extends React.Component<
 
     // and here the element itself
     return (
-      <span
-        className={`material-page__memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        {field}
-        <span className="material-page__counter-wrapper">
-          <span className="material-page__word-count-container">
-            <span className="material-page__word-count-title">
-              {this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}
+      <>
+        <ReadspeakerMessage text="Muistiokenttä" />
+        <span
+          className={`material-page__memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          {field}
+          <span className="material-page__counter-wrapper">
+            <span className="material-page__word-count-container">
+              <span className="material-page__word-count-title">
+                {this.props.i18n.text.get(
+                  "plugin.workspace.memoField.wordCount"
+                )}
+              </span>
+              <span className="material-page__word-count">
+                {this.state.words}
+              </span>
             </span>
-            <span className="material-page__word-count">
-              {this.state.words}
+            <span className="material-page__character-count-container">
+              <span className="material-page__character-count-title">
+                {this.props.i18n.text.get(
+                  "plugin.workspace.memoField.characterCount"
+                )}
+              </span>
+              <span className="material-page__character-count">
+                {this.state.characters}
+              </span>
             </span>
           </span>
-          <span className="material-page__character-count-container">
-            <span className="material-page__character-count-title">
-              {this.props.i18n.text.get(
-                "plugin.workspace.memoField.characterCount"
-              )}
-            </span>
-            <span className="material-page__character-count">
-              {this.state.characters}
-            </span>
-          </span>
+          {answerExampleComponent}
         </span>
-        {answerExampleComponent}
-      </span>
+      </>
     );
   }
 }

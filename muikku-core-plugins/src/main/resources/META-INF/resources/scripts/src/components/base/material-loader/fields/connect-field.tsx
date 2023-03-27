@@ -7,6 +7,7 @@ import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * FieldType
@@ -564,183 +565,192 @@ export default class ConnectField extends React.Component<
     );
 
     return (
-      <span
-        className={`material-page__connectfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
+      <>
+        <ReadspeakerMessage text="Yhdistelykenttä" />
         <span
-          className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+          className={`material-page__connectfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
-          <span className="material-page__connectfield-terms-container">
-            {this.state.fields.map((field, index) => {
-              // the item answer
-              const itemAnswer =
-                this.props.checkAnswers &&
-                this.state.answerState &&
-                this.state.answerState[index];
-              // the item class name only necessary if it was a fail and we are checking for rightness
-              const itemStateAfterCheck =
-                itemAnswer && this.props.displayCorrectAnswers
-                  ? itemAnswer === "FAIL"
-                    ? "incorrect-answer"
-                    : "correct-answer"
-                  : "";
-              // so now we get the fields here
-              // the fields cannot be dragged and they remain in order
-              // they are simple things
-              return (
-                <span
-                  key={field.name}
-                  onClick={
-                    this.props.readOnly
-                      ? null
-                      : this.pickField.bind(this, true, field, false, index)
-                  }
-                >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          <span
+            className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+          >
+            <span className="material-page__connectfield-terms-container">
+              {this.state.fields.map((field, index) => {
+                // the item answer
+                const itemAnswer =
+                  this.props.checkAnswers &&
+                  this.state.answerState &&
+                  this.state.answerState[index];
+                // the item class name only necessary if it was a fail and we are checking for rightness
+                const itemStateAfterCheck =
+                  itemAnswer && this.props.displayCorrectAnswers
+                    ? itemAnswer === "FAIL"
+                      ? "incorrect-answer"
+                      : "correct-answer"
+                    : "";
+                // so now we get the fields here
+                // the fields cannot be dragged and they remain in order
+                // they are simple things
+                return (
                   <span
-                    className={`material-page__connectfield-term ${
-                      this.state.selectedField &&
-                      this.state.selectedField.name === field.name
-                        ? "material-page__connectfield-term--selected"
-                        : ""
-                    } ${
-                      this.state.editedIds.has(field.name) && !itemAnswer
-                        ? "material-page__connectfield-term--edited"
-                        : ""
+                    key={field.name}
+                    onClick={
+                      this.props.readOnly
+                        ? null
+                        : this.pickField.bind(this, true, field, false, index)
                     }
-                  ${itemStateAfterCheck}`}
                   >
-                    <span className="material-page__connectfield-term-data-container">
-                      <span className="material-page__connectfield-term-number">
-                        {index + 1}
-                      </span>
-                      <span className="material-page__connectfield-term-label">
-                        <StrMathJAX>{field.text}</StrMathJAX>
+                    <span
+                      className={`material-page__connectfield-term ${
+                        this.state.selectedField &&
+                        this.state.selectedField.name === field.name
+                          ? "material-page__connectfield-term--selected"
+                          : ""
+                      } ${
+                        this.state.editedIds.has(field.name) && !itemAnswer
+                          ? "material-page__connectfield-term--edited"
+                          : ""
+                      }
+                ${itemStateAfterCheck}`}
+                    >
+                      <span className="material-page__connectfield-term-data-container">
+                        <span className="material-page__connectfield-term-number">
+                          {index + 1}
+                        </span>
+                        <span className="material-page__connectfield-term-label">
+                          <StrMathJAX>{field.text}</StrMathJAX>
+                        </span>
                       </span>
                     </span>
                   </span>
-                </span>
-              );
-            })}
-          </span>
-          <span className="material-page__connectfield-counterparts-container">
-            {this.state.counterparts.map((field, index) => {
-              if (!this.props.content) {
-                return null;
-              }
-              // the item answer
-              const itemAnswer =
-                this.props.checkAnswers &&
-                this.state.answerState &&
-                this.state.answerState[index];
-              // the classname state if necessary
-              const itemStateAfterCheck =
-                itemAnswer && this.props.displayCorrectAnswers
-                  ? itemAnswer === "FAIL"
-                    ? "incorrect-answer"
-                    : "correct-answer"
-                  : "";
+                );
+              })}
+            </span>
+            <span className="material-page__connectfield-counterparts-container">
+              {this.state.counterparts.map((field, index) => {
+                if (!this.props.content) {
+                  return null;
+                }
+                // the item answer
+                const itemAnswer =
+                  this.props.checkAnswers &&
+                  this.state.answerState &&
+                  this.state.answerState[index];
+                // the classname state if necessary
+                const itemStateAfterCheck =
+                  itemAnswer && this.props.displayCorrectAnswers
+                    ? itemAnswer === "FAIL"
+                      ? "incorrect-answer"
+                      : "correct-answer"
+                    : "";
 
-              // the basic class name
-              const className = `material-page__connectfield-counterpart ${
-                this.state.selectedField &&
-                this.state.selectedField.name === field.name
-                  ? "material-page__connectfield-counterpart--selected"
-                  : ""
-              } ${
-                this.state.editedIds.has(field.name) && !itemAnswer
-                  ? "material-page__connectfield-counterpart--edited"
-                  : ""
-              } ${itemStateAfterCheck}`;
+                // the basic class name
+                const className = `material-page__connectfield-counterpart ${
+                  this.state.selectedField &&
+                  this.state.selectedField.name === field.name
+                    ? "material-page__connectfield-counterpart--selected"
+                    : ""
+                } ${
+                  this.state.editedIds.has(field.name) && !itemAnswer
+                    ? "material-page__connectfield-counterpart--edited"
+                    : ""
+                } ${itemStateAfterCheck}`;
 
-              // if readonly we just add the classname in there
-              if (this.props.readOnly) {
+                // if readonly we just add the classname in there
+                if (this.props.readOnly) {
+                  return (
+                    <span className={className} key={field.name}>
+                      <span className="material-page__connectfield-counterpart-data-container">
+                        <span className="material-page__connectfield-counterpart-icon icon-move"></span>
+                        <span className="material-page__connectfield-counterpart-label">
+                          <StrMathJAX>{field.text}</StrMathJAX>
+                        </span>
+                      </span>
+                    </span>
+                  );
+                }
+
+                // if we are asked for correct answers
+                let itemCorrectAnswerComponent = null;
+                // we need to do this
+                if (
+                  this.props.displayCorrectAnswers &&
+                  !(this.props.checkAnswers && itemAnswer === "PASS")
+                ) {
+                  // this is just a component giving an overview, of which number was meant to be the right answer
+                  itemCorrectAnswerComponent = (
+                    <span className="material-page__connectfield-counterpart-number">
+                      {this.state.fields.findIndex(
+                        (f) =>
+                          f.name ===
+                          (
+                            this.props.content.connections.find(
+                              (c) => c.counterpart === field.name
+                            ) || { field: null }
+                          ).field
+                      ) + 1}
+                    </span>
+                  );
+                }
+
+                // ok so the counterpart is draggable
+                // the interaction data is the field, index, and whether is counterpart
+                // note how the inline function onDropInto handles this data
+                // so it can be swapped
+                // the interaction group there only for the counterparts
+                // on drag we cancel if the field had been picked before with the click event
+                // or any other field that had been selected before, and we pick this one
+                // on click we just handle it the same way as the standard click
+                // the parent container selector is the field on its own
                 return (
-                  <span className={className} key={field.name}>
+                  <Draggable
+                    as="span"
+                    interactionData={{ field, index, isCounterpart: true }}
+                    interactionGroup={
+                      this.props.content.name + "-counterparts-container"
+                    }
+                    onDrag={() => {
+                      this.cancelPreviousPick();
+                      this.pickField(false, field, true, index);
+                    }}
+                    onClick={this.pickField.bind(
+                      this,
+                      true,
+                      field,
+                      true,
+                      index
+                    )}
+                    parentContainerSelector=".material-page__connectfield"
+                    onDropInto={(data) =>
+                      this.pickField(
+                        true,
+                        data.field,
+                        data.isCounterpart,
+                        data.index
+                      )
+                    }
+                    className={className}
+                    key={field.name}
+                  >
                     <span className="material-page__connectfield-counterpart-data-container">
                       <span className="material-page__connectfield-counterpart-icon icon-move"></span>
                       <span className="material-page__connectfield-counterpart-label">
                         <StrMathJAX>{field.text}</StrMathJAX>
                       </span>
+                      {itemCorrectAnswerComponent}
                     </span>
-                  </span>
+                  </Draggable>
                 );
-              }
-
-              // if we are asked for correct answers
-              let itemCorrectAnswerComponent = null;
-              // we need to do this
-              if (
-                this.props.displayCorrectAnswers &&
-                !(this.props.checkAnswers && itemAnswer === "PASS")
-              ) {
-                // this is just a component giving an overview, of which number was meant to be the right answer
-                itemCorrectAnswerComponent = (
-                  <span className="material-page__connectfield-counterpart-number">
-                    {this.state.fields.findIndex(
-                      (f) =>
-                        f.name ===
-                        (
-                          this.props.content.connections.find(
-                            (c) => c.counterpart === field.name
-                          ) || { field: null }
-                        ).field
-                    ) + 1}
-                  </span>
-                );
-              }
-
-              // ok so the counterpart is draggable
-              // the interaction data is the field, index, and whether is counterpart
-              // note how the inline function onDropInto handles this data
-              // so it can be swapped
-              // the interaction group there only for the counterparts
-              // on drag we cancel if the field had been picked before with the click event
-              // or any other field that had been selected before, and we pick this one
-              // on click we just handle it the same way as the standard click
-              // the parent container selector is the field on its own
-              return (
-                <Draggable
-                  as="span"
-                  interactionData={{ field, index, isCounterpart: true }}
-                  interactionGroup={
-                    this.props.content.name + "-counterparts-container"
-                  }
-                  onDrag={() => {
-                    this.cancelPreviousPick();
-                    this.pickField(false, field, true, index);
-                  }}
-                  onClick={this.pickField.bind(this, true, field, true, index)}
-                  parentContainerSelector=".material-page__connectfield"
-                  onDropInto={(data) =>
-                    this.pickField(
-                      true,
-                      data.field,
-                      data.isCounterpart,
-                      data.index
-                    )
-                  }
-                  className={className}
-                  key={field.name}
-                >
-                  <span className="material-page__connectfield-counterpart-data-container">
-                    <span className="material-page__connectfield-counterpart-icon icon-move"></span>
-                    <span className="material-page__connectfield-counterpart-label">
-                      <StrMathJAX>{field.text}</StrMathJAX>
-                    </span>
-                    {itemCorrectAnswerComponent}
-                  </span>
-                </Draggable>
-              );
-            })}
+              })}
+            </span>
           </span>
         </span>
-      </span>
+      </>
     );
   }
 }

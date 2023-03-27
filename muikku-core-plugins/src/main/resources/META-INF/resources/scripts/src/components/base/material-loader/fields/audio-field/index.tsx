@@ -12,6 +12,7 @@ import Synchronizer from "../base/synchronizer";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 // so we use the media recorder
 // the media recorder is polyfilled
@@ -448,21 +449,24 @@ export default class AudioField extends React.Component<
         ));
       }
       return (
-        <span className="material-page__audiofield-wrapper rs_skip_always">
-          <span className="material-page__audiofield">
-            {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
-              <input type="file" />
-            ) : null}
-            {!this.props.readOnly && this.state.supportsMediaAPI() ? (
-              <span className="material-page__audiofield-controls" />
-            ) : null}
-            {this.state.values.length > 0 ? (
-              <span className="material-page__audiofield-files-container">
-                {emptyData}
-              </span>
-            ) : null}
+        <>
+          <ReadspeakerMessage text="Äänitystehtävä" />
+          <span className="material-page__audiofield-wrapper rs_skip_always">
+            <span className="material-page__audiofield">
+              {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
+                <input type="file" />
+              ) : null}
+              {!this.props.readOnly && this.state.supportsMediaAPI() ? (
+                <span className="material-page__audiofield-controls" />
+              ) : null}
+              {this.state.values.length > 0 ? (
+                <span className="material-page__audiofield-files-container">
+                  {emptyData}
+                </span>
+              ) : null}
+            </span>
           </span>
-        </span>
+        </>
       );
     }
     // rendering things here
@@ -625,77 +629,82 @@ export default class AudioField extends React.Component<
 
     // and this is the container
     return (
-      <span
-        className={`material-page__audiofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        <span className={`material-page__audiofield ${ElementDisabledState}`}>
-          {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
-            <input
-              type="file"
-              accept="audio/*"
-              onChange={this.onFileChanged}
-              multiple
-            />
-          ) : null}
-          {!this.props.readOnly && this.state.supportsMediaAPI() ? (
-            <span className="material-page__audiofield-controls">
-              {!this.state.recording ? (
-                <Link
-                  className="material-page__audiofield-start-record-button icon-record"
-                  onClick={this.start}
-                >
-                  <span className="material-page__audiofield-start-record-label">
+      <>
+        <ReadspeakerMessage text="Äänitystehtävä" />
+        <span
+          className={`material-page__audiofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          <span className={`material-page__audiofield ${ElementDisabledState}`}>
+            {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={this.onFileChanged}
+                multiple
+              />
+            ) : null}
+            {!this.props.readOnly && this.state.supportsMediaAPI() ? (
+              <span className="material-page__audiofield-controls">
+                {!this.state.recording ? (
+                  <Link
+                    className="material-page__audiofield-start-record-button icon-record"
+                    onClick={this.start}
+                  >
+                    <span className="material-page__audiofield-start-record-label">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.audioField.startLink"
+                      )}
+                    </span>
+                  </Link>
+                ) : (
+                  <Link
+                    className="material-page__audiofield-stop-record-button icon-stop"
+                    onClick={this.stop}
+                  >
+                    <span className="material-page__audiofield-stop-record-label">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.audioField.stopLink"
+                      )}
+                    </span>
+                  </Link>
+                )}
+                {!this.state.recording ? (
+                  <span className="material-page__audiofield-description material-page__audiofield-description--start-recording">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.audioField.startLink"
+                      "plugin.workspace.audioField.startRecordingHint"
                     )}
                   </span>
-                </Link>
-              ) : (
-                <Link
-                  className="material-page__audiofield-stop-record-button icon-stop"
-                  onClick={this.stop}
-                >
-                  <span className="material-page__audiofield-stop-record-label">
+                ) : (
+                  <span className="material-page__audiofield-description material-page__audiofield-description--stop-recording">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.audioField.stopLink"
+                      "plugin.workspace.audioField.stopRecordingHint"
                     )}
                   </span>
-                </Link>
-              )}
-              {!this.state.recording ? (
-                <span className="material-page__audiofield-description material-page__audiofield-description--start-recording">
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.audioField.startRecordingHint"
-                  )}
-                </span>
-              ) : (
-                <span className="material-page__audiofield-description material-page__audiofield-description--stop-recording">
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.audioField.stopRecordingHint"
-                  )}
-                </span>
-              )}
-            </span>
-          ) : null}
-          {this.state.values.length > 0 || this.state.recording ? (
-            <span className="material-page__audiofield-files-container">
-              {dataInContainer}
-              {recordingInContainer}
-            </span>
-          ) : null}
-          {this.props.readOnly && this.state.values.length == 0 ? (
-            <span className="material-page__audiofield-files-container material-page__audiofield-files-container--empty">
-              {this.props.i18n.text.get("plugin.workspace.audioField.noFiles")}
-            </span>
-          ) : null}
+                )}
+              </span>
+            ) : null}
+            {this.state.values.length > 0 || this.state.recording ? (
+              <span className="material-page__audiofield-files-container">
+                {dataInContainer}
+                {recordingInContainer}
+              </span>
+            ) : null}
+            {this.props.readOnly && this.state.values.length == 0 ? (
+              <span className="material-page__audiofield-files-container material-page__audiofield-files-container--empty">
+                {this.props.i18n.text.get(
+                  "plugin.workspace.audioField.noFiles"
+                )}
+              </span>
+            ) : null}
+          </span>
         </span>
-      </span>
+      </>
     );
   }
 }

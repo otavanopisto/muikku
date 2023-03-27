@@ -1,4 +1,5 @@
 import * as React from "react";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { MATHJAXSRC, MATHJAXCONFIG } from "~/lib/mathjax";
 import MathjaxReactLoader from "./mathjax-react-loader";
 
@@ -48,18 +49,24 @@ export default class MathJAX extends React.Component<
     //TODO remove the data-muikku-word-definition thing, it's basically used for styling alone
     if (this.props.invisible) {
       return (
-        <span className="math-tex rs_skip_always">{this.props.children}</span>
+        <>
+          <ReadspeakerMessage text="Matikkakaava" />
+          <span className="math-tex rs_skip_always">{this.props.children}</span>
+        </>
       );
     }
     return (
-      <span className="math-tex rs_skip_always">
-        <MathjaxReactLoader
-          script={MATHJAXSRC}
-          config={MATHJAXCONFIG}
-          math={this.props.children}
-          parentCollectorSelector=".material-page"
-        />
-      </span>
+      <>
+        <ReadspeakerMessage text="Matikkakaava" />
+        <span className="math-tex rs_skip_always">
+          <MathjaxReactLoader
+            script={MATHJAXSRC}
+            config={MATHJAXCONFIG}
+            math={this.props.children}
+            parentCollectorSelector=".material-page"
+          />
+        </span>
+      </>
     );
   }
 }

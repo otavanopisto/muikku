@@ -125,3 +125,23 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReadSpeakerReader);
+
+/**
+ * ReactCommentProps
+ */
+interface ReadspeakerMessageProps {
+  text: string;
+}
+
+/**
+ * ReadspeakerMessageProps
+ *
+ * @param props props
+ * @returns JSX.Element
+ */
+export const ReadspeakerMessage = (props: ReadspeakerMessageProps) => (
+  <div
+    className="rs_message"
+    dangerouslySetInnerHTML={{ __html: `<!-- ${props.text} -->` }}
+  />
+);

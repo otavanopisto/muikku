@@ -6,17 +6,17 @@ import {
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-
 import MaterialLoader from "~/components/base/material-loader";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
-import ReadSpeakerReader from "~/components/general/readspeaker";
+import ReadSpeakerReader, {
+  ReadspeakerMessage,
+} from "~/components/general/readspeaker";
 import { ReadspeakerProvider } from "~/components/context/readspeaker-context";
 import {
   displayNotification,
@@ -66,10 +66,12 @@ class DescriptionPanel extends React.Component<
             />
           </div>
 
-          <div className="panel__body readthis">
+          <div className="panel__body rs_skip_always">
             <span className="visually-hidden rs_message">
               Is hidden but readead by ReadSpeaker 1
             </span>
+
+            <ReadspeakerMessage text="Is hidden but readead by ReadSpeaker 1" />
 
             <span className="visually-hidden rs_message">
               {/* Is hidden but readead by ReadSpeaker 2 */}

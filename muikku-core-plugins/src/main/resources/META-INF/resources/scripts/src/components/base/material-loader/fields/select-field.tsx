@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * SelectFieldProps
@@ -226,47 +227,53 @@ export default class SelectField extends React.Component<
         this.props.content.listType === "list"
       ) {
         return (
-          <span className="material-page__selectfield-wrapper rs_skip_always">
-            <select
-              className="material-page__selectfield"
-              size={
-                this.props.content.listType === "list"
-                  ? this.props.content.options.length
-                  : null
-              }
-              disabled
-            />
-          </span>
+          <>
+            <ReadspeakerMessage text="Valintakenttä" />
+            <span className="material-page__selectfield-wrapper rs_skip_always">
+              <select
+                className="material-page__selectfield"
+                size={
+                  this.props.content.listType === "list"
+                    ? this.props.content.options.length
+                    : null
+                }
+                disabled
+              />
+            </span>
+          </>
         );
       }
 
       return (
-        <span
-          className="material-page__radiobutton-wrapper rs_skip_always"
-          ref="base"
-        >
-          {this.props.content.options.map((o) => (
-            <span
-              className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${
-                this.props.content.listType === "radio-horizontal"
-                  ? "horizontal"
-                  : "vertical"
-              }`}
-              key={o.name}
-            >
-              <span className="material-page__radiobutton-item-container">
-                <input
-                  className="material-page__radiobutton"
-                  type="radio"
-                  disabled
-                />
-                <label className="material-page__checkable-label">
-                  {o.text}
-                </label>
+        <>
+          <ReadspeakerMessage text="Valintakenttä" />
+          <span
+            className="material-page__radiobutton-wrapper rs_skip_always"
+            ref="base"
+          >
+            {this.props.content.options.map((o) => (
+              <span
+                className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${
+                  this.props.content.listType === "radio-horizontal"
+                    ? "horizontal"
+                    : "vertical"
+                }`}
+                key={o.name}
+              >
+                <span className="material-page__radiobutton-item-container">
+                  <input
+                    className="material-page__radiobutton"
+                    type="radio"
+                    disabled
+                  />
+                  <label className="material-page__checkable-label">
+                    {o.text}
+                  </label>
+                </span>
               </span>
-            </span>
-          ))}
-        </span>
+            ))}
+          </span>
+        </>
       );
     }
 
@@ -354,8 +361,53 @@ export default class SelectField extends React.Component<
       const selectFieldType =
         this.props.content.listType === "list" ? "list" : "dropdown";
       return (
+        <>
+          <ReadspeakerMessage text="Valintakenttä" />
+          <span
+            className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass} rs_skip_always`}
+          >
+            <Synchronizer
+              synced={this.state.synced}
+              syncError={this.state.syncError}
+              i18n={this.props.i18n}
+              onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+            />
+            <select
+              className={`material-page__selectfield ${fieldStateAfterCheck}`}
+              size={
+                this.props.content.listType === "list"
+                  ? this.props.content.options.length
+                  : null
+              }
+              value={this.state.value}
+              onChange={this.onSelectChange}
+              disabled={this.props.readOnly}
+            >
+              {this.props.content.listType === "dropdown" ? (
+                <option value="" />
+              ) : null}
+              {this.props.content.options.map((o) => (
+                <option
+                  className="material-page__selectfield-item-container"
+                  key={o.name}
+                  value={o.name}
+                >
+                  {o.text}
+                </option>
+              ))}
+            </select>
+            {correctAnswersummaryComponent}
+          </span>
+        </>
+      );
+    }
+
+    //this is for the standard
+    return (
+      <>
+        <ReadspeakerMessage text="Valintakenttä" />
         <span
-          className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass} rs_skip_always`}
+          className={`material-page__radiobutton-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
@@ -363,82 +415,43 @@ export default class SelectField extends React.Component<
             i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          <select
-            className={`material-page__selectfield ${fieldStateAfterCheck}`}
-            size={
-              this.props.content.listType === "list"
-                ? this.props.content.options.length
-                : null
-            }
-            value={this.state.value}
-            onChange={this.onSelectChange}
-            disabled={this.props.readOnly}
+          <span
+            className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${
+              this.props.content.listType === "radio-horizontal"
+                ? "horizontal"
+                : "vertical"
+            } ${fieldStateAfterCheck}`}
           >
-            {this.props.content.listType === "dropdown" ? (
-              <option value="" />
-            ) : null}
-            {this.props.content.options.map((o) => (
-              <option
-                className="material-page__selectfield-item-container"
-                key={o.name}
-                value={o.name}
-              >
-                {o.text}
-              </option>
-            ))}
-          </select>
+            {this.props.content.options.map((o) => {
+              // lets generate unique id for labels and radio buttons
+              const uniqueElementID = "rb-" + uuidv4();
+              return (
+                <span
+                  className="material-page__radiobutton-item-container"
+                  key={o.name}
+                >
+                  <input
+                    id={uniqueElementID}
+                    className="material-page__radiobutton"
+                    type="radio"
+                    value={o.name}
+                    checked={this.state.value === o.name}
+                    onChange={this.onSelectChange}
+                    disabled={this.props.readOnly}
+                  />
+                  <label
+                    htmlFor={uniqueElementID}
+                    className="material-page__checkable-label"
+                  >
+                    <StrMathJAX>{o.text}</StrMathJAX>
+                  </label>
+                </span>
+              );
+            })}
+          </span>
           {correctAnswersummaryComponent}
         </span>
-      );
-    }
-
-    //this is for the standard
-    return (
-      <span
-        className={`material-page__radiobutton-wrapper ${fieldSavedStateClass} rs_skip_always`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        <span
-          className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${
-            this.props.content.listType === "radio-horizontal"
-              ? "horizontal"
-              : "vertical"
-          } ${fieldStateAfterCheck}`}
-        >
-          {this.props.content.options.map((o) => {
-            // lets generate unique id for labels and radio buttons
-            const uniqueElementID = "rb-" + uuidv4();
-            return (
-              <span
-                className="material-page__radiobutton-item-container"
-                key={o.name}
-              >
-                <input
-                  id={uniqueElementID}
-                  className="material-page__radiobutton"
-                  type="radio"
-                  value={o.name}
-                  checked={this.state.value === o.name}
-                  onChange={this.onSelectChange}
-                  disabled={this.props.readOnly}
-                />
-                <label
-                  htmlFor={uniqueElementID}
-                  className="material-page__checkable-label"
-                >
-                  <StrMathJAX>{o.text}</StrMathJAX>
-                </label>
-              </span>
-            );
-          })}
-        </span>
-        {correctAnswersummaryComponent}
-      </span>
+      </>
     );
   }
 }
