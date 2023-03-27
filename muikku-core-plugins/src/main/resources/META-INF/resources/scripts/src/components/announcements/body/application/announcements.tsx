@@ -48,7 +48,12 @@ class Announcement extends React.Component<
   render() {
     if (!this.props.announcement) {
       return (
-        <div>{this.props.i18n.t("content.empty", { ns: "messaging" })}</div>
+        <div>
+          {this.props.i18n.t("content.empty", {
+            ns: "messaging",
+            context: "announcements",
+          })}
+        </div>
       );
     }
     return (

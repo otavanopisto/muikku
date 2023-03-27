@@ -100,7 +100,12 @@ class DeleteAnnouncementDialog extends React.Component<
      * @returns JSX.Element
      */
     const content = (closeDialog: () => any) => (
-      <div>{this.props.i18n.t("content.removing")}</div>
+      <div>
+        {this.props.i18n.t("content.removing", {
+          ns: "messaging",
+          context: "announcement",
+        })}
+      </div>
     );
 
     /**
@@ -129,7 +134,10 @@ class DeleteAnnouncementDialog extends React.Component<
     return (
       <Dialog
         modifier="delete-announcement"
-        title={this.props.i18n.t("labels.remove", { context: "announcement" })}
+        title={this.props.i18n.t("labels.remove", {
+          ns: "messaging",
+          context: "announcement",
+        })}
         content={content}
         footer={footer}
       >

@@ -442,7 +442,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          i18n.t("validation.caption", { ns: "messaging" }),
+          i18n.t("validation.caption", { ns: "messaging", context: "message" }),
           "error"
         )
       );
@@ -450,7 +450,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          i18n.t("validation.content", { ns: "messaging" }),
+          i18n.t("validation.content", { ns: "messaging", context: "message" }),
           "error"
         )
       );
@@ -915,7 +915,10 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
             }
             dispatch(
               displayNotification(
-                i18n.t("notifications.removeError", { ns: "messaging" }),
+                i18n.t("notifications.removeError", {
+                  ns: "messaging",
+                  context: "message",
+                }),
                 "error"
               )
             );
@@ -989,7 +992,10 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            i18n.t("notifications.removeError", { ns: "messaging" }),
+            i18n.t("notifications.removeError", {
+              ns: "messaging",
+              context: "message",
+            }),
             "error"
           )
         );
@@ -1372,7 +1378,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
       if (!name) {
         return dispatch(
           displayNotification(
-            i18n.t("validation.name", { context: "labels" }),
+            i18n.t("validation.name", { ns: "messaging", context: "labels" }),
             "error"
           )
         );
@@ -1433,7 +1439,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         return dispatch(
           displayNotification(
-            i18n.t("validation.name", { context: "labels" }),
+            i18n.t("validation.name", { ns: "messaging", context: "labels" }),
             "error"
           )
         );
@@ -1591,7 +1597,10 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
             }
             dispatch(
               displayNotification(
-                i18n.t("notifications.restoreError", { ns: "messaging" }),
+                i18n.t("notifications.restoreError", {
+                  ns: "messaging",
+                  context: "message",
+                }),
                 "error"
               )
             );
@@ -1667,7 +1676,10 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            i18n.t("notifications.restoreError", { context: "messageThread" }),
+            i18n.t("notifications.restoreError", {
+              ns: "messaging",
+              context: "messageThread",
+            }),
             "error"
           )
         );

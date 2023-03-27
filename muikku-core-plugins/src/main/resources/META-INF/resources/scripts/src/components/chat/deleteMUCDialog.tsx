@@ -65,6 +65,7 @@ class DeleteRoomDialog extends React.Component<
       this.props.displayNotification(
         this.props.i18n.t("notifications.removeSuccess", {
           ns: "messaging",
+          context: "room",
           room: this.props.chat.roomName,
         }),
         "success"

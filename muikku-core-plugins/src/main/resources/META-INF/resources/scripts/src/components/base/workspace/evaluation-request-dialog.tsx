@@ -156,7 +156,7 @@ class EvaluationRequestDialog extends React.Component<
     return (
       <Dialog
         modifier="evaluation-request-dialog"
-        title={t("labels.create_evaluationRequest", { ns: "workspace" })}
+        title={t("labels.requestEvaluation", { ns: "workspace" })}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}

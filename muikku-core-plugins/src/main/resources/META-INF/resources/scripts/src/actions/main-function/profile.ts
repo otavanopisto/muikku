@@ -984,7 +984,10 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "worklist" }),
+            i18n.t("notifications.loadError", {
+              ns: "worklist",
+              context: "templates",
+            }),
             "error"
           )
         );
@@ -1034,7 +1037,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
           actions.displayNotification(
             i18n.t("notifications.loadError", {
               ns: "worklist",
-              context: "sections",
+              context: "section",
             }),
             "error"
           )

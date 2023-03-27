@@ -208,7 +208,10 @@ class NewContactEvent extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const editorTitle = this.props.i18n.t("labels.create", { ns: "messaging" });
+    const editorTitle = this.props.i18n.t("labels.create", {
+      ns: "messaging",
+      context: "message",
+    });
 
     /**
      * content

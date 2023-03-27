@@ -180,6 +180,7 @@ const STATES = [
     "button-class": "muikku-submit-interim-evaluation",
     "button-text": i18n.t("actions.cancel", {
       ns: "workspace",
+      context: "interimEvaluationRequest",
     }),
     "success-state": "ANSWERED",
     "button-disabled": false,

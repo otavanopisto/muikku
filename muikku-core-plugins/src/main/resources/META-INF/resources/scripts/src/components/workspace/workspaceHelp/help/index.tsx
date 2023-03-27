@@ -703,7 +703,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                 <Dropdown
                   openByHover
                   modifier="material-management-tooltip"
-                  content={t("labels.edit_chapter", { ns: "materials" })}
+                  content={t("labels.edit", {
+                    ns: "materials",
+                    context: "chapter",
+                  })}
                 >
                   <ButtonPill
                     buttonModifiers="material-management-chapter"

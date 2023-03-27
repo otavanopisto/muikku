@@ -370,6 +370,7 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
           displayNotification(
             i18n.t("notifications.createError", {
               ns: "journal",
+              context: "entry",
             }),
             "error"
           )
@@ -435,6 +436,7 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
           displayNotification(
             i18n.t("notifications.updateError", {
               ns: "journal",
+              context: "entry",
             }),
             "error"
           )
@@ -491,6 +493,7 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
           displayNotification(
             i18n.t("notifications.removeError", {
               ns: "journal",
+              context: "entry",
               error: err.message,
             }),
             "error"

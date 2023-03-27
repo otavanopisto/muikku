@@ -62,13 +62,13 @@ class DeleteMessageDialog extends React.Component<
         closeDialog();
       }
       this.props.displayNotification(
-        this.props.i18n.t("notifications.removeSuccess", { ns: "messaging" }),
+        this.props.i18n.t("notifications.removeSuccess", { ns: "messaging", context: "message" }),
         "success"
       );
       this.props.onDelete();
     } catch {
       this.props.displayNotification(
-        this.props.i18n.t("notifications.removeError", { ns: "messaging" }),
+        this.props.i18n.t("notifications.removeError", { ns: "messaging", context: "message" }),
         "error"
       );
     }
@@ -86,7 +86,10 @@ class DeleteMessageDialog extends React.Component<
       <div>
         <span
           dangerouslySetInnerHTML={{
-            __html: this.props.i18n.t("content.removing", { ns: "messaging" }),
+            __html: this.props.i18n.t("content.removing", {
+              ns: "messaging",
+              context: "message",
+            }),
           }}
         ></span>
       </div>
@@ -100,7 +103,10 @@ class DeleteMessageDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.delete.bind(this, closeDialog)}
         >
-          {this.props.i18n.t("actions.remove", { ns: "messaging" })}
+          {this.props.i18n.t("actions.remove", {
+            ns: "messaging",
+            context: "message",
+          })}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
@@ -114,7 +120,10 @@ class DeleteMessageDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
-        title={this.props.i18n.t("labels.remove", { ns: "messaging" })}
+        title={this.props.i18n.t("labels.remove", {
+          ns: "messaging",
+          context: "message",
+        })}
         content={content}
         footer={footer}
         modifier="delete-room"

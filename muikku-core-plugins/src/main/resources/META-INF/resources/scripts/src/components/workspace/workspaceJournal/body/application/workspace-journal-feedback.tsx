@@ -30,7 +30,7 @@ const WorkspaceJournalFeedback: React.FC<WorkspaceJournalFeedbackProps> = (
       <div className="journal__meta">
         <div className="journal__meta-item">
           <div className="journal__meta-item-label">
-            {t("labels.feedback", { context: "date" })}:
+            {t("labels.feedbackDate")}:
           </div>
           <div className="journal__meta-item-data">
             {moment(journalFeedback.created).format("l")}
@@ -38,7 +38,7 @@ const WorkspaceJournalFeedback: React.FC<WorkspaceJournalFeedbackProps> = (
         </div>
         <div className="journal__meta-item">
           <div className="journal__meta-item-label">
-            {t("labels.feedback", { context: "author" })}:
+            {t("labels.feedbackAuthor")}:
           </div>
           <div className="journal__meta-item-data">
             {journalFeedback.creatorName}

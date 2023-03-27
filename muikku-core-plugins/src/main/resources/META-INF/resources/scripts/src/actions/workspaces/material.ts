@@ -953,7 +953,10 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         if (!showRemoveAnswersDialogForPublish) {
           dispatch(
             displayNotification(
-              i18n.t("notifications.updateError", { ns: "materials" }),
+              i18n.t("notifications.updateError", {
+                ns: "materials",
+                context: "page",
+              }),
               "error"
             )
           );
@@ -994,7 +997,10 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.loadError", { ns: "materials" }),
+            i18n.t("notifications.loadError", {
+              ns: "materials",
+              context: "materials",
+            }),
             "error"
           )
         );

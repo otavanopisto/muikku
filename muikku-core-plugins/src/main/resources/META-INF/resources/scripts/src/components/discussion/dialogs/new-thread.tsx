@@ -274,7 +274,10 @@ class DicussionNewThread extends SessionStateComponent<
       <div key="1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
-            {this.props.i18n.t("labels.title")}
+            {this.props.i18n.t("labels.title", {
+              ns: "messaging",
+              context: "message",
+            })}
           </label>
           <input
             id="messageTitle"

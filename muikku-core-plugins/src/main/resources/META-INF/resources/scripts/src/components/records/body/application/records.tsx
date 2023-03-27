@@ -60,10 +60,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   render() {
     const { t } = this.props;
 
-    t("labels.studies");
-
-    t("content.empty", { ns: "studies", context: "courses" });
-
     if (
       this.props.records.userDataStatus === "LOADING" ||
       this.props.records.userDataStatus === "WAIT"
@@ -117,7 +113,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                       <span>
                         {t("content.empty", {
                           ns: "studies",
-                          context: "courses",
+                          context: "workspaces",
                         })}
                       </span>
                     </div>
@@ -200,6 +196,6 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
-export default withTranslation(["studies", "files", "common"])(
+export default withTranslation(["studies"])(
   connect(mapStateToProps, mapDispatchToProps)(Records)
 );

@@ -161,7 +161,12 @@ class DDiscussionThreads extends React.Component<
     ) {
       return (
         <div className="empty">
-          <span>{this.props.i18n.t("content.empty", { ns: "messaging" })}</span>
+          <span>
+            {this.props.i18n.t("content.empty", {
+              ns: "messaging",
+              context: "message",
+            })}
+          </span>
         </div>
       );
     }

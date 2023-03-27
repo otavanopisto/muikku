@@ -295,7 +295,10 @@ class AnswerMessageDrawer extends SessionStateComponent<
         <div className="env-dialog__row" key="new-message-2">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">
-              {this.props.t("labels.title")}
+              {this.props.t("labels.title", {
+                ns: "messaging",
+                context: "message",
+              })}
             </label>
             <input
               id="messageTitle"

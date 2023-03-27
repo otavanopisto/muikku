@@ -686,9 +686,8 @@ class OrganizationEditWorkspace extends React.Component<
           <form>
             <DialogRow>
               <DialogRowHeader
-                title={t("labels.edit", {
+                title={t("labels.editInfo", {
                   ns: "workspace",
-                  context: "info",
                   stepInfo: `${page}/${this.totalSteps}`,
                 })}
                 description={t("content.mustBePublished", {
@@ -1280,7 +1279,7 @@ class OrganizationEditWorkspace extends React.Component<
         locked={this.state.locked}
         currentStep={this.state.currentStep}
         totalSteps={this.totalSteps}
-        executeLabel={t("labels.edit", { ns: "workspace" })}
+        executeLabel={t("actions.edit", { ns: "workspace" })}
         nextLabel={t("actions.next")}
         lastLabel={t("actions.previous")}
         cancelLabel={t("actions.cancel")}

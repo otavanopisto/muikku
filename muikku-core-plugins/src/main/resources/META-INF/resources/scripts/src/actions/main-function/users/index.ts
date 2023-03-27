@@ -255,8 +255,9 @@ const createStudent: CreateStudentTriggerType = function createStudent(data) {
       dispatch(
         notificationActions.displayNotification(
           i18n.t("notifications.createError", {
-            error: err,
             ns: "users",
+            error: err,
+            context: "student",
           }),
           "error"
         )
@@ -288,7 +289,10 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
 
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.updateSuccess", { ns: "users" }),
+          i18n.t("notifications.updateSuccess", {
+            ns: "users",
+            context: "student",
+          }),
           "success"
         )
       );
@@ -310,7 +314,10 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
       }
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.updateError", { ns: "users" }),
+          i18n.t("notifications.updateError", {
+            ns: "users",
+            context: "student",
+          }),
           "error"
         )
       );
@@ -338,7 +345,10 @@ const createStaffmember: CreateStaffmemberTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.createSuccess", { ns: "users" }),
+            i18n.t("notifications.createSuccess", {
+              ns: "users",
+              context: "student",
+            }),
             "success"
           )
         );
@@ -360,7 +370,10 @@ const createStaffmember: CreateStaffmemberTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.createError", { ns: "users" }),
+            i18n.t("notifications.createError", {
+              ns: "users",
+              context: "student",
+            }),
             "error"
           )
         );
@@ -416,7 +429,10 @@ const updateStaffmember: UpdateStaffmemberTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.updateError", { ns: "users" }),
+            i18n.t("notifications.updateError", {
+              ns: "users",
+              context: "student",
+            }),
             "error"
           )
         );

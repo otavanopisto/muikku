@@ -156,7 +156,7 @@ class Step extends React.Component<StepProps, StepState> {
               checked={this.props.getStore().copyMaterials === "CLONE"}
             />
             <label htmlFor="copyMaterialsAsClone">
-              {t("labels.copy_materials", { ns: "workspace" })}
+              {t("labels.copy", { ns: "workspace", context: "materials" })}
             </label>
           </div>
           <div className="form-element form-element--checkbox-radiobutton">

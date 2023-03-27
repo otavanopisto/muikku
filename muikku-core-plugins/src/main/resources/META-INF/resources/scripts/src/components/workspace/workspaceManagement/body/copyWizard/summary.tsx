@@ -79,7 +79,7 @@ class Step extends React.Component<StepProps, StepState> {
               ns: "workspace",
               beginDate: beginDate
                 ? this.props.i18nOLD.time.format(beginDate)
-                : t("labels.beginDateEmpty", { ns: "workspace" }),
+                : t("labels.noBeginDate", { ns: "workspace" }),
             })}
           </p>
           <p>
@@ -87,24 +87,37 @@ class Step extends React.Component<StepProps, StepState> {
               ns: "workspace",
               endDate: endDate
                 ? this.props.i18nOLD.time.format(endDate)
-                : t("labels.endDateEmpty", { ns: "workspace" }),
+                : t("labels.noEndDate", { ns: "workspace" }),
             })}
           </p>
         </div>
         <div className="wizard__summary-row">
           <ul>
             {this.props.getStore().copyDiscussionAreas ? (
-              <li>{t("labels.copy_discussionsAreas", { ns: "workspace" })}</li>
+              <li>
+                {t("labels.copy", {
+                  ns: "workspace",
+                  context: "discussionsAreas",
+                })}
+              </li>
             ) : null}
             {copyMaterials !== "NO" ? (
               <li>
                 {copyMaterials === "CLONE"
-                  ? t("labels.copy_materialsClone", { ns: "workspace" })
-                  : t("labels.copy_materialsLink", { ns: "workspace" })}
+                  ? t("labels.copy", {
+                      ns: "workspace",
+                      context: "materialsClone",
+                    })
+                  : t("labels.copy", {
+                      ns: "workspace",
+                      context: "materialsLink",
+                    })}
               </li>
             ) : null}
             {this.props.getStore().copyBackgroundPicture ? (
-              <li>{t("labels.copy_coverImage", { ns: "workspace" })}</li>
+              <li>
+                {t("labels.copy", { ns: "workspace", context: "coverImage" })}
+              </li>
             ) : null}
           </ul>
         </div>

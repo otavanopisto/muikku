@@ -103,7 +103,10 @@ class CommunicatorApplication extends React.Component<
     const primaryOption = (
       <NewMessage>
         <Button buttonModifiers="primary-function">
-          {this.props.t("labels.create", { ns: "messaging" })}
+          {this.props.t("actions.create", {
+            ns: "messaging",
+            context: "message",
+          })}
         </Button>
       </NewMessage>
     );

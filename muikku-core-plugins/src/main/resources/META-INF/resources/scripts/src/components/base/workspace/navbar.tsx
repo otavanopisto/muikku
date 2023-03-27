@@ -492,7 +492,7 @@ function getTextForAssessmentState(
     case "interim_evaluation":
     case "interim_evaluation_request":
     case "unassessed":
-      text = i18n.t("labels.create_evaluationRequest", { ns: "workspace" });
+      text = i18n.t("labels.requestEvaluation", { ns: "workspace" });
       break;
     case "pending":
     case "pending_pass":
@@ -500,13 +500,13 @@ function getTextForAssessmentState(
       if (canCancelRequest) {
         text = i18n.t("labels.cancel_evaluationRequest", { ns: "workspace" });
       } else {
-        text = i18n.t("labels.create_newEvaluationRequest", {
+        text = i18n.t("labels.requestNewEvaluation", {
           ns: "workspace",
         });
       }
       break;
     default:
-      text = i18n.t("labels.create_newEvaluationRequest", { ns: "workspace" });
+      text = i18n.t("labels.requestNewEvaluation", { ns: "workspace" });
       break;
   }
 

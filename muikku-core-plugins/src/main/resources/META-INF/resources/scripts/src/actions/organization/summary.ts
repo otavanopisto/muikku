@@ -100,7 +100,10 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "organization" }),
+            i18n.t("notifications.loadError", {
+              ns: "organization",
+              context: "summary",
+            }),
             "error"
           )
         );

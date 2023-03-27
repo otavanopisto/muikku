@@ -900,7 +900,10 @@ export class Evaluation extends React.Component<
                       ? t("actions.improveGrade", {
                           ns: "evaluation",
                         })
-                      : t("actions.grade", { ns: "evaluation" })}
+                      : t("actions.grade", {
+                          ns: "evaluation",
+                          context: "workspace",
+                        })}
                   </Button>
                   <Button
                     onClick={

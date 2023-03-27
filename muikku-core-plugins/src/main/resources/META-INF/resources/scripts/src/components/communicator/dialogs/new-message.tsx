@@ -310,7 +310,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.t("labels.create", { ns: "messaging" }) +
+      this.props.t("labels.create", { ns: "messaging", context: "message" }) +
       " - " +
       this.props.t("labels.content");
 
@@ -340,7 +340,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
       <div className="env-dialog__row" key="new-message-2">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
-            {this.props.t("labels.title")}
+            {this.props.t("labels.title", {
+              ns: "messaging",
+              context: "message",
+            })}
           </label>
           <input
             id="messageTitle"
@@ -426,7 +429,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-message"
-        title={this.props.t("labels.create", { ns: "messaging" })}
+        title={this.props.t("labels.create", {
+          ns: "messaging",
+          context: "message",
+        })}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}

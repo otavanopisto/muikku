@@ -11,7 +11,6 @@ import Groupchat from "./groupchat";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
 import PrivateChat from "./privateChat";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Link from "~/components/general/link";
 import Dropdown from "~/components/general/dropdown";
 import {

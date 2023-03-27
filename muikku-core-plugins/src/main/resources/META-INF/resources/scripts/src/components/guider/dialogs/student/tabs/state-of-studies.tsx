@@ -325,8 +325,8 @@ class StateOfStudies extends React.Component<
           Object.keys(this.props.guider.currentStudent.notifications).map(
             (notification: keyof GuiderNotificationStudentsDataType) => {
               <ApplicationSubPanelItem
-                title={this.props.i18n.t("labels.notification", {
-                  ns: "flags",
+                title={this.props.i18n.t("labels.studentNotification", {
+                  ns: "guider",
                   context: notification,
                 })}
                 modifier="notification"

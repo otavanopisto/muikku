@@ -136,7 +136,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
               {unknownError
                 ? this.props.i18n.t("notifications.createError", {
                     ns: "orders",
-                    context: "payment",
+                    context: "order",
                   })
                 : null}
             </div>

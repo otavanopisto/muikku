@@ -1815,7 +1815,8 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.updateError", {
+            i18n.t("notifications.archiveError", {
+              ns: "users",
               context: "student",
             }),
             "error"

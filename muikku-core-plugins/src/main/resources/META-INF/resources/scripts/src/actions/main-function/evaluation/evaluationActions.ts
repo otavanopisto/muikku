@@ -1539,6 +1539,7 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
             notificationActions.displayNotification(
               i18n.t("notifications.saveError", {
                 ns: "evaluation",
+                context: "evaluation",
                 error: err.message,
               }),
               "error"
@@ -1581,6 +1582,7 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
             notificationActions.displayNotification(
               i18n.t("notifications.updateError", {
                 ns: "evaluation",
+                context: "evaluation",
                 error: err.message,
               }),
               "error"
@@ -1767,6 +1769,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
             notificationActions.displayNotification(
               i18n.t("notifications.removeError", {
                 ns: "evaluation",
+                context: "evaluaton",
                 error: error.message,
               }),
               "error"

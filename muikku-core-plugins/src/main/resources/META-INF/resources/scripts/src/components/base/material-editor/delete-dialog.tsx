@@ -109,6 +109,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
               })
             : t("content.removing", {
                 ns: "materials",
+                context: "page",
               })}
         </span>
       </div>

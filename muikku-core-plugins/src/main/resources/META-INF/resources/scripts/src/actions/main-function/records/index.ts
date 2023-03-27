@@ -342,7 +342,10 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         }
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "studies" }),
+            i18n.t("notifications.loadError", {
+              ns: "studies",
+              context: "studies",
+            }),
             "error"
           )
         );

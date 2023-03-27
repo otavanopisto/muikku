@@ -217,9 +217,11 @@ class DiscussionThreadReply extends React.Component<
                   >
                     {parentHasHiddenSiblings
                       ? this.props.i18n.t("actions.show", {
+                          ns: "messaging",
                           context: "comments",
                         })
                       : this.props.i18n.t("actions.hide", {
+                          ns: "messaging",
                           context: "comments",
                         })}
                   </Link>

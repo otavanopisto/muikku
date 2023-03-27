@@ -157,7 +157,9 @@ export const WorkspaceJournalCommentList: React.FC<
           ) : currentJournal.comments &&
             currentJournal.comments.length === 0 ? (
             <div className="empty">
-              <span>{t("content.empty", { ns: "journal", context: "comments" })}</span>
+              <span>
+                {t("content.empty", { ns: "journal", context: "comments" })}
+              </span>
             </div>
           ) : (
             currentJournal.comments.length > 0 &&
@@ -179,7 +181,7 @@ export const WorkspaceJournalCommentList: React.FC<
                 onClick={handleCreateNewCommentClick}
                 className="link link--application-list"
               >
-                {t("labels.create", {context: "comment"})}
+                {t("labels.create", { context: "comment" })}
               </Link>
             </div>
           )}

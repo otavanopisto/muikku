@@ -604,14 +604,20 @@ class NewEditAnnouncement extends SessionStateComponent<
         onChange={this.setTargetItems}
         autofocus={!this.props.announcement}
         showFullNames={false}
-        placeholder={this.props.i18n.t("labels.search", { context: "target" })}
+        placeholder={this.props.i18n.t("labels.search", {
+          ns: "messaging",
+          context: "target",
+        })}
         label={this.props.i18n.t("labels.target", { ns: "messaging" })}
         required={this.props.status.role === Role.TEACHER}
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
           <label htmlFor="announcementTitle" className="env-dialog__label">
-            {this.props.i18n.t("labels.title", { context: "announcement" })}
+            {this.props.i18n.t("labels.title", {
+              ns: "messaging",
+              context: "announcement",
+            })}
           </label>
           <input
             id="announcementTitle"

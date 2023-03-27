@@ -24,7 +24,7 @@ const NotesItemListWithoutAnimation: React.FC<NotesItemListProps> = (props) => {
   if (React.Children.count(children) === 0) {
     return (
       <div className="empty">
-        <span>{t("content.empty")}</span>
+        <span>{t("content.empty", { context: "tasks" })}</span>
       </div>
     );
   }

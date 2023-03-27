@@ -352,7 +352,10 @@ export async function loadCurrentWorkspaceJournalsHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        i18n.t("notifications.loadError", { ns: "journal" }),
+        i18n.t("notifications.loadError", {
+          ns: "journal",
+          context: "entries",
+        }),
         "error"
       )
     );

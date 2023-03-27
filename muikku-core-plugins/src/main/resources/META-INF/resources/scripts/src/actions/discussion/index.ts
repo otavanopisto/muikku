@@ -678,7 +678,10 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            i18n.t("validation.caption", { ns: "messaging" }),
+            i18n.t("validation.caption", {
+              ns: "messaging",
+              context: "message",
+            }),
             "error"
           )
         );
@@ -774,7 +777,10 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            i18n.t("validation.caption", { ns: "messaging" }),
+            i18n.t("validation.caption", {
+              ns: "messaging",
+              context: "message",
+            }),
             "error"
           )
         );
@@ -1264,7 +1270,7 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            i18n.t("validation.name", { ns: "messaging" }),
+            i18n.t("validation.name", { ns: "messaging", context: "area" }),
             "error"
           )
         );
@@ -1341,7 +1347,7 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            i18n.t("validation.name", { ns: "messaging" }),
+            i18n.t("validation.name", { ns: "messaging", context: "area" }),
             "error"
           )
         );

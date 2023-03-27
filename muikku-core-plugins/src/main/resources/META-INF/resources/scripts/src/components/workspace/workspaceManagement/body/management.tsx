@@ -911,7 +911,10 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspacePublish">
-                            {t("labels.workspaces", { ns: "workspace", context: "published" })}
+                            {t("labels.workspaces", {
+                              ns: "workspace",
+                              context: "published",
+                            })}
                           </label>
                         </div>
                         <div className="form-element form-element--checkbox-radiobutton">
@@ -954,7 +957,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessMembers">
-                            {t("labels.access_members", { ns: "workspace" })}
+                            {t("labels.membersOnly", {
+                              ns: "workspace",
+                            })}
                           </label>
                         </div>
                         <div className="form-element form-element--checkbox-radiobutton">
@@ -969,7 +974,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessLoggedin">
-                            {t("labels.access_loggedIn", { ns: "workspace" })}
+                            {t("labels.loggedInUsers", {
+                              ns: "workspace",
+                            })}
                           </label>
                         </div>
                         <div className="form-element form-element--checkbox-radiobutton">
@@ -984,7 +991,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessAnyone">
-                            {t("labels.access_anyone", { ns: "workspace" })}
+                            {t("labels.anyone", {
+                              ns: "workspace",
+                            })}
                           </label>
                         </div>
                       </div>

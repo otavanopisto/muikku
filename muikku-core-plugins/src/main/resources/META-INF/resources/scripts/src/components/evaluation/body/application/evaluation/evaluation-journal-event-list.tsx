@@ -213,7 +213,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
         })
     ) : (
       <div className="empty">
-        <span>{t("content.empty", { ns: "journal" })}</span>
+        <span>{t("content.empty", { ns: "journal", context: "entries" })}</span>
       </div>
     );
 
@@ -243,7 +243,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
               <div className="evaluation-modal__item-meta">
                 <div className="evaluation-modal__item-meta-item">
                   <span className="evaluation-modal__item-meta-item-label">
-                    {t("labels.feedback", { ns: "journal", context: "date" })}:
+                    {t("labels.feedbackDate", { ns: "journal" })}:
                   </span>
                   <span className="evaluation-modal__item-meta-item-data">
                     {i18nOLD.time.format(journalFeedback.created, "l")}

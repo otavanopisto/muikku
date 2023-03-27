@@ -208,7 +208,10 @@ class ModifyThreadDrawer extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.t("labels.edit", { ns: "messaging" }) +
+      this.props.i18n.t("labels.edit", {
+        ns: "messaging",
+        context: "message",
+      }) +
       " - " +
       this.props.i18n.t("labels.content");
 
@@ -217,12 +220,18 @@ class ModifyThreadDrawer extends SessionStateComponent<
         <div key="1" className="env-dialog__row env-dialog__row--titles">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">
-              {this.props.i18n.t("labels.title")}
+              {this.props.i18n.t("labels.title", {
+                ns: "messaging",
+                context: "message",
+              })}
             </label>
             <input
               id="messageTitle"
               className="env-dialog__input env-dialog__input--new-discussion-thread-title"
-              placeholder={this.props.i18n.t("labels.title")}
+              placeholder={this.props.i18n.t("labels.title", {
+                ns: "messaging",
+                context: "message",
+              })}
               value={this.state.title}
               onChange={this.onTitleChange}
               autoFocus
@@ -317,7 +326,10 @@ class ModifyThreadDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.t("labels.edit", { ns: "messaging" })}
+              {this.props.i18n.t("labels.edit", {
+                ns: "messaging",
+                context: "message",
+              })}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>

@@ -416,7 +416,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
           notificationActions.displayNotification(
             i18n.t("notifications.updateError", {
               ns: "messaging",
-              context: "announcements",
+              context: "announcement",
             }),
             "error"
           )
@@ -486,7 +486,7 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
               notificationActions.displayNotification(
                 i18n.t("notifications.removeError", {
                   ns: "messaging",
-                  context: "announcements",
+                  context: "announcement",
                 }),
                 "error"
               )
@@ -544,7 +544,7 @@ const createAnnouncement: CreateAnnouncementTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.createError", { ns: "messaging" }),
+            i18n.t("notifications.createError", { ns: "messaging" , context: "announcement"}),
             "error"
           )
         );

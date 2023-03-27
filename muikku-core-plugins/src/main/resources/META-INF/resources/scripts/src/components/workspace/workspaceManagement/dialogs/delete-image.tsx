@@ -110,7 +110,9 @@ class DeleteImageDialog extends React.Component<
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        title={t("labels.remove", { ns: "workspace", context: "image" })}
+        title={t("labels.remove", {
+          context: "image",
+        })}
         content={content}
         footer={footer}
         modifier="delete-header-image"
@@ -139,6 +141,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["workspace", "common"])(
+export default withTranslation(["workspace"])(
   connect(mapStateToProps, mapDispatchToProps)(DeleteImageDialog)
 );

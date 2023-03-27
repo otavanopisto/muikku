@@ -456,7 +456,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             <div className="journal__meta">
               <div className="journal__meta-item">
                 <div className="journal__meta-item-label">
-                  {t("labels.feedback", { ns: "journal", context: "date" })}:
+                  {t("labels.feedbackDate", { ns: "journal" })}:
                 </div>
                 <div className="journal__meta-item-data">
                   {i18nOLD.time.format(
@@ -467,7 +467,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               </div>
               <div className="journal__meta-item">
                 <div className="journal__meta-item-label">
-                  {t("labels.feedback", { ns: "journal", context: "author" })}:
+                  {t("labels.feedbackAuthor", { ns: "journal" })}:
                 </div>
                 <div className="journal__meta-item-data">
                   {journalsData.journalFeedback.creatorName}

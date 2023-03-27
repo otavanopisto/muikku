@@ -98,7 +98,12 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
             {this.props.t("labels.orders", { ns: "orders" })}
           </h2>
           <div className="empty">
-            <span>{this.props.t("content.empty", { ns: "orders" })}</span>
+            <span>
+              {this.props.t("content.empty", {
+                ns: "orders",
+                context: "orders",
+              })}
+            </span>
           </div>
         </section>
       );

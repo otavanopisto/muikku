@@ -337,7 +337,7 @@ class CommunicatorToolbar extends React.Component<
                 >
                   {this.props.i18n.t("actions.create", {
                     ns: "messaging",
-                    context: "labels",
+                    context: "label",
                   })}
                 </Link>,
               ].concat(
@@ -589,6 +589,7 @@ class CommunicatorToolbar extends React.Component<
             // TODO: use i18next
             placeholder={this.props.i18n.t("labels.search", {
               ns: "messaging",
+              context: "message",
             })}
             value={this.state.searchquery}
           />
