@@ -110,7 +110,9 @@ class EvaluationApplication extends React.Component<
     const workspaceOptions = workspaces.map(
       (wItem, i) =>
         ({
-          label: wItem.name,
+          label: wItem.nameExtension
+            ? `${wItem.name} (${wItem.nameExtension})`
+            : wItem.name,
           value: wItem.id,
         } as OptionDefault<number>)
     );
