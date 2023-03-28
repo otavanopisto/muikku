@@ -414,6 +414,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
           curriculumIdentifiers.add(identifierMapper.getCurriculumIdentifier(curriculumId).toId());
         }
       }
+      activity.setCurriculumIdentifiers(curriculumIdentifiers);
       activity.setName(response[i].getCourseName());
       activity.setGrade(response[i].getGrade());
       activity.setGradeDate(response[i].getGradeDate());
@@ -623,7 +624,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       try {
         String[] gradingScaleIds = activeGradingScaleIds.split(",");
         for (int i = 0; i < gradingScaleIds.length; i++) {
-          gradingScaleFilter.add(new Long(gradingScaleIds[i]));
+          gradingScaleFilter.add(Long.valueOf(gradingScaleIds[i]));
         }
         
       }
