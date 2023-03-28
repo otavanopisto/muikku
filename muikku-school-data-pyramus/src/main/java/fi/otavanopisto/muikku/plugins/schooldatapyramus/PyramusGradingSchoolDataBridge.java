@@ -403,12 +403,12 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     
     // Convert Pyramus CourseActivity to Muikku WorkspaceActivity
     
-    List<String> curriculumIdentifiers = new ArrayList<>();
     List<WorkspaceActivity> activities = new ArrayList<>();
     for (int i = 0; i < response.length; i++) {
       WorkspaceActivity activity = new WorkspaceActivity();
       activity.setIdentifier(response[i].getCourseId() == null ? null : response[i].getCourseId().toString());
       activity.setWorkspaceSubjectIdentifier(response[i].getCourseModuleId() != null ? identifierMapper.getCourseModuleIdentifier(response[i].getCourseModuleId()).toId() : null);
+      List<String> curriculumIdentifiers = new ArrayList<>();
       if (response[i].getCurriculumIds() != null) {
         for (Long curriculumId : response[i].getCurriculumIds()) {
           curriculumIdentifiers.add(identifierMapper.getCurriculumIdentifier(curriculumId).toId());
