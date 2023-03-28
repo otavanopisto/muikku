@@ -2445,214 +2445,164 @@ audio {
   border-radius: 3px;
 }
 
-.material-visually-guided-listen1 {
-  background-color: #f1fcff;
-  background-position: 20px 20px;
-  background-repeat: no-repeat;
-  border-left: 2px solid #71e1ff;
+// VISUALY GUIDED STYLES
+.material-visually-guided-styles-combo-block {
+  border-left-style: solid;
+  border-left-width: 2px;
+  box-sizing: content-box;
   font-size: 1.25rem;
   line-height: 2rem;
+  margin: 20px 0;
   min-height: auto;
-  padding: 85px 20px 20px;
+  padding: 20px 20px 20px 157px;
   position: relative;
 
   &::before {
-    background-color: white;
-    background-image: url("/gfx/icons/64x64/listen.png");
+    background-color: $color-default;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 48px 48px;
-    border: 2px solid #71e1ff;
     border-radius: 100%;
     content: " ";
     height: 56px;
     left: 15px;
     position: absolute;
-    top: 15px;
+    top: calc(50% - 28px);
     width: 56px;
   }
 
   &::after {
-    background-image: url("/gfx/icons/64x64/speak.png");
+    background-color: $color-default;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 48px 48px;
-    border: 2px solid #71e1ff;
     border-radius: 100%;
     content: " ";
     height: 56px;
-    left: 85px;
+    left: 86px;
     position: absolute;
-    top: 15px;
+    top: calc(50% - 28px);
     width: 56px;
   }
 }
 
-.material-visually-guided-read1 {
-  background-color: #f1fcff;
-  background-position: 20px 20px;
-  background-repeat: no-repeat;
-  border-left: 2px solid #71e1ff;
+.material-visually-guided-styles-block {
+  border-left-style: solid;
+  border-left-width: 2px;
+  box-sizing: content-box;
   font-size: 1.25rem;
   line-height: 2rem;
+  margin: 20px 0;
   min-height: auto;
-  padding: 85px 20px 20px;
+  padding: 20px 20px 20px 86px;
   position: relative;
 
   &::before {
-    background-color: white;
+    background-color: $color-default;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 48px 48px;
+    border-radius: 100%;
+    content: " ";
+    height: 56px;
+    left: 15px;
+    position: absolute;
+    top: calc(50% - 28px);
+    width: 56px;
+  }
+}
+
+.material-visually-guided-styles-combo__listen-and-speak {
+  background-color: $color-material-visually-guided-styles-listen-background;
+  border-left-color: $color-material-visually-guided-styles-listen-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/listen.png");
+    border: 2px solid $color-material-visually-guided-styles-listen-border;
+  }
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/speak.png");
+    border: 2px solid $color-material-visually-guided-styles-speak-border;
+  }
+}
+
+.material-visually-guided-styles__listen {
+  background-color: $color-material-visually-guided-styles-listen-background;
+  border-left-color: $color-material-visually-guided-styles-listen-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/listen.png");
+    border: 2px solid $color-material-visually-guided-styles-listen-border;
+  }
+}
+
+.material-visually-guided-styles__speak {
+  background-color: $color-material-visually-guided-styles-speak-background;
+  border-left-color: $color-material-visually-guided-styles-speak-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/speak.png");
+    border: 2px solid $color-material-visually-guided-styles-speak-border;
+  }
+}
+
+.material-visually-guided-styles__read {
+  background-color: $color-material-visually-guided-styles-read-background;
+  border-left: 2px solid $color-material-visually-guided-styles-read-border;
+
+  &::before {
     background-image: url("/gfx/icons/64x64/read.png");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 48px 48px;
-    border: 2px solid #71e1ff;
-    border-radius: 100%;
-    content: " ";
-    height: 56px;
-    left: 15px;
-    position: absolute;
-    top: 15px;
-    width: 56px;
+    border: 2px solid $color-material-visually-guided-styles-read-border;
   }
 }
 
-.material-visually-guided-write1 {
-  background-color: #f1fcff;
-  background-position: 20px 20px;
-  background-repeat: no-repeat;
-  border-left: 2px solid #71e1ff;
-  font-size: 1.25rem;
-  line-height: 2rem;
-  min-height: auto;
-  padding: 85px 20px 20px;
-  position: relative;
+.material-visually-guided-styles__write {
+  background-color: $color-material-visually-guided-styles-write-background;
+  border-left: 2px solid $color-material-visually-guided-styles-write-border;
 
   &::before {
-    background-color: white;
     background-image: url("/gfx/icons/64x64/write.png");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 48px 48px;
-    border: 2px solid #71e1ff;
-    border-radius: 100%;
-    content: " ";
-    height: 56px;
-    left: 15px;
-    position: absolute;
-    top: 15px;
-    width: 56px;
+    border: 2px solid $color-material-visually-guided-styles-write-border;
   }
 }
 
-.material-visually-guided-speak1 {
-  background-color: #f1fcff;
-  background-position: 20px 20px;
-  background-repeat: no-repeat;
-  border-left: 2px solid #71e1ff;
-  font-size: 1.25rem;
-  line-height: 2rem;
-  min-height: auto;
-  padding: 85px 20px 20px;
-  position: relative;
+.material-visually-guided-styles__look {
+  background-color: $color-material-visually-guided-styles-look-background;
+  border-left: 2px solid $color-material-visually-guided-styles-look-border;
 
   &::before {
-    background-color: white;
-    background-image: url("/gfx/icons/64x64/speak.png");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 48px 48px;
-    border: 2px solid #71e1ff;
-    border-radius: 100%;
-    content: " ";
-    height: 56px;
-    left: 15px;
-    position: absolute;
-    top: 15px;
-    width: 56px;
-  }
-}
-
-.material-visually-guided-connect1 {
-  background-color: #f1fcff;
-  background-position: 20px 20px;
-  background-repeat: no-repeat;
-  border-left: 2px solid #71e1ff;
-  font-size: 1.25rem;
-  line-height: 2rem;
-  min-height: auto;
-  padding: 85px 20px 20px;
-  position: relative;
-
-  &::before {
-    background-color: white;
-    background-image: url("/gfx/icons/64x64/connect.png");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 48px 48px;
-    border: 2px solid #71e1ff;
-    border-radius: 100%;
-    content: " ";
-    height: 56px;
-    left: 15px;
-    position: absolute;
-    top: 15px;
-    width: 56px;
-  }
-}
-
-.material-visually-guided-record1 {
-  background-color: #f1fcff;
-  background-position: 20px 20px;
-  background-repeat: no-repeat;
-  border-left: 2px solid #71e1ff;
-  font-size: 1.25rem;
-  line-height: 2rem;
-  min-height: auto;
-  padding: 85px 20px 20px;
-  position: relative;
-
-  &::before {
-    background-color: white;
-    background-image: url("/gfx/icons/64x64/record.png");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 48px 48px;
-    border: 2px solid #71e1ff;
-    border-radius: 100%;
-    content: " ";
-    height: 56px;
-    left: 15px;
-    position: absolute;
-    top: 15px;
-    width: 56px;
-  }
-}
-
-.material-visually-guided-look1 {
-  background-color: #f1fcff;
-  background-position: 20px 20px;
-  background-repeat: no-repeat;
-  border-left: 2px solid #71e1ff;
-  font-size: 1.25rem;
-  line-height: 2rem;
-  min-height: auto;
-  padding: 85px 20px 20px;
-  position: relative;
-
-  &::before {
-    background-color: white;
     background-image: url("/gfx/icons/64x64/look.png");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 48px 48px;
-    border: 2px solid #71e1ff;
-    border-radius: 100%;
-    content: " ";
-    height: 56px;
-    left: 15px;
-    position: absolute;
-    top: 15px;
-    width: 56px;
+    border: 2px solid $color-material-visually-guided-styles-look-border;
   }
 }
 
+.material-visually-guided-styles__connect {
+  background-color: $color-material-visually-guided-styles-connect-background;
+  border-left: 2px solid $color-material-visually-guided-styles-connect-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/connect.png");
+    border: 2px solid $color-material-visually-guided-styles-connect-border;
+  }
+}
+
+.material-visually-guided-styles__record {
+  background-color: $color-material-visually-guided-styles-record-background;
+  border-left: 2px solid $color-material-visually-guided-styles-record-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/record.png");
+    border: 2px solid $color-material-visually-guided-styles-record-border;
+  }
+}
+
+.material-visually-guided-styles__search {
+  background-color: $color-material-visually-guided-styles-search-background;
+  border-left: 2px solid $color-material-visually-guided-styles-search-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/search.png");
+    border: 2px solid $color-material-visually-guided-styles-search-border;
+  }
+}
