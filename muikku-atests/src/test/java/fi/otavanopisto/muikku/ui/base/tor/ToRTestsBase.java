@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
+import fi.otavanopisto.pyramus.rest.model.CourseActivitySubject;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
@@ -54,7 +55,9 @@ public class ToRTestsBase extends AbstractUITest {
       
       CourseActivity ca = new CourseActivity();
       ca.setCourseId(course1.getId());
-      ca.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
+      CourseActivitySubject cas = new CourseActivitySubject();
+      cas.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
+      ca.setSubject(cas);
       ca.setCourseName(course1.getName());
       ca.setGrade("Excellent");
       ca.setPassingGrade(true);

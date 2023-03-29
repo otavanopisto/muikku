@@ -36,10 +36,13 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityState;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityCurriculum;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -407,14 +410,29 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     for (int i = 0; i < response.length; i++) {
       WorkspaceActivity activity = new WorkspaceActivity();
       activity.setIdentifier(response[i].getCourseId() == null ? null : response[i].getCourseId().toString());
-      activity.setWorkspaceSubjectIdentifier(response[i].getCourseModuleId() != null ? identifierMapper.getCourseModuleIdentifier(response[i].getCourseModuleId()).toId() : null);
-      List<String> curriculumIdentifiers = new ArrayList<>();
-      if (response[i].getCurriculumIds() != null) {
-        for (Long curriculumId : response[i].getCurriculumIds()) {
-          curriculumIdentifiers.add(identifierMapper.getCurriculumIdentifier(curriculumId).toId());
+      
+      if (response[i].getSubject() != null) {
+        WorkspaceActivitySubject subject = new WorkspaceActivitySubject();
+        if (response[i].getSubject().getCourseModuleId() != null) {
+          subject.setIdentifier(identifierMapper.getCourseModuleIdentifier(response[i].getSubject().getCourseModuleId()).toId());
         }
+        subject.setSubjectCode(response[i].getSubject().getSubjectCode());
+        subject.setCourseNumber(response[i].getSubject().getCourseNumber());
+        subject.setSubjectName(response[i].getSubject().getSubjectName());
+        subject.setCourseLength(response[i].getSubject().getCourseLength());
+        subject.setCourseLengthSymbol(response[i].getSubject().getCourseLengthSymbol());
+        activity.setSubject(subject);
       }
-      activity.setCurriculumIdentifiers(curriculumIdentifiers);
+      List<WorkspaceActivityCurriculum> curriculums = new ArrayList<>();
+      if (response[i].getCurriculums() != null) {
+        for (CourseActivityCurriculum c : response[i].getCurriculums()) {
+          WorkspaceActivityCurriculum curriculum = new WorkspaceActivityCurriculum();
+          curriculum.setIdentifier(identifierMapper.getCurriculumIdentifier(c.getId()).toId());
+          curriculum.setName(c.getName());
+          curriculums.add(curriculum);
+        }
+        activity.setCurriculums(curriculums);
+      }
       activity.setName(response[i].getCourseName());
       activity.setGrade(response[i].getGrade());
       activity.setGradeDate(response[i].getGradeDate());

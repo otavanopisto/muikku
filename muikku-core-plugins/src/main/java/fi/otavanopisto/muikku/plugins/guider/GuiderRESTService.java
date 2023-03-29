@@ -606,7 +606,6 @@ public class GuiderRESTService extends PluginRESTService {
     return Response.ok(workspaces).build();
   }
 
-
   @GET
   @Path("/users/{USERIDENTIFIER}/workspaceActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)

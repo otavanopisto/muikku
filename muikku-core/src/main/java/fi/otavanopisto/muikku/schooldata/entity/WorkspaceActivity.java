@@ -21,14 +21,6 @@ public class WorkspaceActivity {
     this.name = name;
   }
 
-  public List<String> getCurriculumIdentifiers() {
-    return curriculumIdentifiers;
-  }
-
-  public void setCurriculumIdentifiers(List<String> curriculumIdentifiers) {
-    this.curriculumIdentifiers = curriculumIdentifiers;
-  }
-
   public String getGrade() {
     return grade;
   }
@@ -117,19 +109,27 @@ public class WorkspaceActivity {
     this.gradeDate = gradeDate;
   }
 
-  public String getWorkspaceSubjectIdentifier() {
-    return workspaceSubjectIdentifier;
+  public WorkspaceActivitySubject getSubject() {
+    return subject;
   }
 
-  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
+  public void setSubject(WorkspaceActivitySubject subject) {
+    this.subject = subject;
+  }
+
+  public List<WorkspaceActivityCurriculum> getCurriculums() {
+    return curriculums;
+  }
+
+  public void setCurriculums(List<WorkspaceActivityCurriculum> curriculums) {
+    this.curriculums = curriculums;
   }
 
   private Long id;
   private String identifier;
-  private String workspaceSubjectIdentifier;
+  private WorkspaceActivitySubject subject; 
   private String name;
-  private List<String> curriculumIdentifiers;
+  private List<WorkspaceActivityCurriculum> curriculums;
   private String grade;
   private Boolean passingGrade;
   private Date gradeDate;
@@ -140,4 +140,5 @@ public class WorkspaceActivity {
   private Integer exercisesAnswered;
   private Integer evaluablesTotal;
   private Integer evaluablesAnswered;
+
 }

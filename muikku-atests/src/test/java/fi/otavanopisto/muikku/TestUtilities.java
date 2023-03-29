@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
+import fi.otavanopisto.pyramus.rest.model.CourseActivitySubject;
 import fi.otavanopisto.pyramus.rest.model.CourseLength;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -208,7 +209,9 @@ public class TestUtilities {
     List<CourseActivity> courseActivities = new ArrayList<>();
     CourseActivity ca = new CourseActivity();
     ca.setCourseId(course.getId());
-    ca.setCourseModuleId(course.getCourseModules().iterator().next().getId());
+    CourseActivitySubject cas = new CourseActivitySubject();
+    cas.setCourseModuleId(course.getCourseModules().iterator().next().getId());
+    ca.setSubject(cas);
     ca.setCourseName(course.getName());
     ca.setState(courseActivityState);
     ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));

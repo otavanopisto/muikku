@@ -192,7 +192,9 @@ public class EvaluationController {
         continue;
       }
 
-      SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(activity.getWorkspaceSubjectIdentifier());
+      SchoolDataIdentifier workspaceSubjectIdentifier = activity.getSubject() == null
+          ? null
+          : SchoolDataIdentifier.fromId(activity.getSubject().getIdentifier());
 
       // WorkspaceEntityId
 

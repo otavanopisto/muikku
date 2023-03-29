@@ -152,7 +152,7 @@ public class AssessmentRequestController {
     // TODO Refactor functionality using this method to just use WorkspaceActivity instead
 
     return new WorkspaceAssessmentState(
-        activity.getWorkspaceSubjectIdentifier(),
+        activity.getSubject() == null ? null : activity.getSubject().getIdentifier(),
         state,
         activity.getDate(),
         activity.getText(),
@@ -223,7 +223,7 @@ public class AssessmentRequestController {
       // TODO Refactor functionality using this method to just use WorkspaceActivity instead
 
       assessmentStates.add(new WorkspaceAssessmentState(
-          activity.getWorkspaceSubjectIdentifier(),
+          activity.getSubject() == null ? null : activity.getSubject().getIdentifier(),
           state,
           activity.getDate(),
           activity.getText(),
