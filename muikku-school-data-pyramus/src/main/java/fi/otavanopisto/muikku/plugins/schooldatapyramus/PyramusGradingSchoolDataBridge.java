@@ -37,12 +37,14 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityCurriculum;
+import fi.otavanopisto.pyramus.rest.model.CourseActivitySubject;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -410,19 +412,25 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     for (int i = 0; i < response.length; i++) {
       WorkspaceActivity activity = new WorkspaceActivity();
       activity.setIdentifier(response[i].getCourseId() == null ? null : response[i].getCourseId().toString());
+      activity.setName(response[i].getCourseName());
       
-      if (response[i].getSubject() != null) {
-        WorkspaceActivitySubject subject = new WorkspaceActivitySubject();
-        if (response[i].getSubject().getCourseModuleId() != null) {
-          subject.setIdentifier(identifierMapper.getCourseModuleIdentifier(response[i].getSubject().getCourseModuleId()).toId());
+      List<WorkspaceActivitySubject> subjects = new ArrayList<>();
+      if (response[i].getSubjects() != null) {
+        for (CourseActivitySubject cas : response[i].getSubjects()) {
+          WorkspaceActivitySubject subject = new WorkspaceActivitySubject();
+          subject.setCourseLength(cas.getCourseLength());
+          subject.setCourseLengthSymbol(cas.getCourseLengthSymbol());
+          subject.setCourseNumber(cas.getCourseNumber());
+          if (cas.getCourseModuleId() != null) {
+            subject.setIdentifier(identifierMapper.getCourseModuleIdentifier(cas.getCourseModuleId()).toId());
+          }
+          subject.setSubjectCode(cas.getSubjectCode());
+          subject.setSubjectName(cas.getSubjectName());
+          subjects.add(subject);
         }
-        subject.setSubjectCode(response[i].getSubject().getSubjectCode());
-        subject.setCourseNumber(response[i].getSubject().getCourseNumber());
-        subject.setSubjectName(response[i].getSubject().getSubjectName());
-        subject.setCourseLength(response[i].getSubject().getCourseLength());
-        subject.setCourseLengthSymbol(response[i].getSubject().getCourseLengthSymbol());
-        activity.setSubject(subject);
       }
+      activity.setSubjects(subjects);
+      
       List<WorkspaceActivityCurriculum> curriculums = new ArrayList<>();
       if (response[i].getCurriculums() != null) {
         for (CourseActivityCurriculum c : response[i].getCurriculums()) {
@@ -431,15 +439,27 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
           curriculum.setName(c.getName());
           curriculums.add(curriculum);
         }
-        activity.setCurriculums(curriculums);
       }
-      activity.setName(response[i].getCourseName());
-      activity.setGrade(response[i].getGrade());
-      activity.setGradeDate(response[i].getGradeDate());
-      activity.setPassingGrade(response[i].getPassingGrade());
-      activity.setState(WorkspaceActivityState.valueOf(response[i].getState().toString()));
-      activity.setDate(response[i].getActivityDate());
-      activity.setText(response[i].getText());
+      activity.setCurriculums(curriculums);
+
+      List<WorkspaceAssessmentState> assessments = new ArrayList<>();
+      if (response[i].getAssessments() != null) {
+        for (CourseActivityAssessment caa : response[i].getAssessments()) {
+          WorkspaceAssessmentState assessment = new WorkspaceAssessmentState();
+          assessment.setDate(caa.getDate());
+          assessment.setGrade(caa.getGrade());
+          assessment.setGradeDate(caa.getGradeDate());
+          if (caa.getCourseModuleId() != null) {
+            assessment.setWorkspaceSubjectIdentifier(identifierMapper.getCourseModuleIdentifier(caa.getCourseModuleId()).toId());
+          }
+          assessment.setPassingGrade(caa.getPassingGrade());
+          assessment.setState(caa.getState().toString());
+          assessment.setText(caa.getText());
+          assessments.add(assessment);
+        }
+      }
+      activity.setAssessmentStates(assessments);
+      
       activities.add(activity);
     }
     

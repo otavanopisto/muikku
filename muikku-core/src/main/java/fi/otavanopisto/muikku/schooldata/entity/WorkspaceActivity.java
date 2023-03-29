@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-import java.util.Date;
 import java.util.List;
 
 public class WorkspaceActivity {
@@ -19,38 +18,6 @@ public class WorkspaceActivity {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getGrade() {
-    return grade;
-  }
-
-  public void setGrade(String grade) {
-    this.grade = grade;
-  }
-
-  public Boolean getPassingGrade() {
-    return passingGrade;
-  }
-
-  public void setPassingGrade(Boolean passingGrade) {
-    this.passingGrade = passingGrade;
-  }
-
-  public Date getDate() {
-    return date;
-  }
-
-  public void setDate(Date date) {
-    this.date = date;
-  }
-
-  public WorkspaceActivityState getState() {
-    return state;
-  }
-
-  public void setState(WorkspaceActivityState state) {
-    this.state = state;
   }
 
   public String getIdentifier() {
@@ -93,30 +60,6 @@ public class WorkspaceActivity {
     this.evaluablesAnswered = evaluablesAnswered;
   }
 
-  public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
-  }
-
-  public Date getGradeDate() {
-    return gradeDate;
-  }
-
-  public void setGradeDate(Date gradeDate) {
-    this.gradeDate = gradeDate;
-  }
-
-  public WorkspaceActivitySubject getSubject() {
-    return subject;
-  }
-
-  public void setSubject(WorkspaceActivitySubject subject) {
-    this.subject = subject;
-  }
-
   public List<WorkspaceActivityCurriculum> getCurriculums() {
     return curriculums;
   }
@@ -125,17 +68,28 @@ public class WorkspaceActivity {
     this.curriculums = curriculums;
   }
 
+  public List<WorkspaceActivitySubject> getSubjects() {
+    return subjects;
+  }
+
+  public void setSubjects(List<WorkspaceActivitySubject> subjects) {
+    this.subjects = subjects;
+  }
+
+  public List<WorkspaceAssessmentState> getAssessmentStates() {
+    return assessmentStates;
+  }
+
+  public void setAssessmentStates(List<WorkspaceAssessmentState> assessmentStates) {
+    this.assessmentStates = assessmentStates;
+  }
+
   private Long id;
   private String identifier;
-  private WorkspaceActivitySubject subject; 
+  private List<WorkspaceActivitySubject> subjects;
+  private List<WorkspaceAssessmentState> assessmentStates;
   private String name;
   private List<WorkspaceActivityCurriculum> curriculums;
-  private String grade;
-  private Boolean passingGrade;
-  private Date gradeDate;
-  private Date date;
-  private String text;
-  private WorkspaceActivityState state;
   private Integer exercisesTotal;
   private Integer exercisesAnswered;
   private Integer evaluablesTotal;
