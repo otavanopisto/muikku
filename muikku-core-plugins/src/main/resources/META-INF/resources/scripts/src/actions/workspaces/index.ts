@@ -278,7 +278,10 @@ const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
 
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { context: "templates" }),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "templates",
+            }),
             "error"
           )
         );
@@ -320,7 +323,11 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
 
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { count: 0, ns: "workspace" }),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "workspaces",
+              count: 0,
+            }),
             "error"
           )
         );
@@ -366,6 +373,7 @@ const loadLastWorkspacesFromServer: LoadLastWorkspacesFromServerTriggerType =
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.loadError", {
+              ns: "workspace",
               context: "latest",
             }),
             "error"
@@ -725,7 +733,11 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
 
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { count: 0, ns: "workspace" }),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "workspaces",
+              count: 0,
+            }),
             "error"
           )
         );
@@ -761,6 +773,7 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.sendError", {
+              ns: "workspace",
               context: "evaluationRequests",
             }),
             "error"
@@ -813,6 +826,7 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
           dispatch(
             actions.displayNotification(
               i18n.t("notifications.loadError", {
+                ns: "workspace",
                 context: "activity",
               }),
               "error"
@@ -865,6 +879,7 @@ const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentR
           dispatch(
             actions.displayNotification(
               i18n.t("notifications.loadError", {
+                ns: "workspace",
                 context: "evaluationRequests",
               }),
               "error"
@@ -959,6 +974,7 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.sendSuccess", {
+              ns: "workspace",
               context: "evaluationRequests",
             }),
             "success"
@@ -973,6 +989,7 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.sendError", {
+              ns: "workspace",
               context: "evaluationRequests",
             }),
             "error"
@@ -1013,6 +1030,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
           dispatch(
             actions.displayNotification(
               i18n.t("notifications.cancelError", {
+                ns: "workspace",
                 context: "evaluationRequests",
               }),
               "error"
@@ -1059,6 +1077,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.sendSuccess", {
+              ns: "workspace",
               context: "evaluationRequestsCancel",
             }),
             "success"
@@ -1073,6 +1092,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.cancelError", {
+              ns: "workspace",
               context: "evaluationRequests",
             }),
             "error"
@@ -1287,8 +1307,8 @@ const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFil
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
-              context: "educationFilters",
               ns: "workspace",
+              context: "educationFilters",
             }),
             "error"
           )
@@ -1335,8 +1355,8 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
-              context: "curriculumFilters",
               ns: "workspace",
+              context: "curriculumFilters",
             }),
             "error"
           )
@@ -1373,7 +1393,10 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.sendError", { context: "signUp" }),
+            i18n.t("notifications.sendError", {
+              ns: "workspace",
+              context: "signUp",
+            }),
             "error"
           )
         );
@@ -1603,6 +1626,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       dispatch(
         displayNotification(
           i18n.t("notifications.updateError", {
+            ns: "workspace",
             context: "settings",
           }),
           "error"
@@ -1655,6 +1679,7 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
+              ns: "workspace",
               context: "teachers",
             }),
             "error"
@@ -1730,6 +1755,7 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
+              ns: "workspace",
               context: "students",
             }),
             "error"
@@ -1907,6 +1933,7 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.updateError", {
+              ns: "workspace",
               context: "answers",
             }),
             "error"
@@ -2047,6 +2074,7 @@ const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
+              ns: "workspace",
               context: "chatSettings",
             }),
             "error"
@@ -2094,7 +2122,8 @@ const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorks
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
-              complex: "nameDetails",
+              ns: "workspace",
+              context: "nameDetails",
             }),
             "error"
           )
@@ -2146,6 +2175,7 @@ const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurren
         dispatch(
           displayNotification(
             i18n.t("notifications.updateError", {
+              ns: "workspace",
               context: "nameDetails",
             }),
             "error"
@@ -2246,6 +2276,7 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
         dispatch(
           displayNotification(
             i18n.t("notifications.updateError", {
+              ns: "workspace",
               context: "producers",
             }),
             "error"
@@ -2284,6 +2315,7 @@ const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
+              ns: "workspace",
               context: "types",
             }),
             "error"
@@ -2341,6 +2373,7 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.removeError", {
+              ns: "workspace",
               context: "coverImage",
             }),
             "error"
@@ -2530,6 +2563,7 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
         dispatch(
           displayNotification(
             i18n.t("notifications.updateError", {
+              ns: "workspace",
               context: "coverImage",
             }),
             "error"
@@ -2579,6 +2613,7 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
+              ns: "workspace",
               context: "permissions",
             }),
             "error"

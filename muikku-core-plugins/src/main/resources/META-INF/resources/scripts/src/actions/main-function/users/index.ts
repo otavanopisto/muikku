@@ -372,6 +372,7 @@ const createStaffmember: CreateStaffmemberTriggerType =
           notificationActions.displayNotification(
             i18n.t("notifications.createError", {
               ns: "users",
+              error: err.message,
               context: "student",
             }),
             "error"

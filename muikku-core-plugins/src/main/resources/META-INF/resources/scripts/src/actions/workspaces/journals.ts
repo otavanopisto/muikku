@@ -961,6 +961,7 @@ const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
+              ns: "journal",
               context: "feedback",
               error: err,
             }),

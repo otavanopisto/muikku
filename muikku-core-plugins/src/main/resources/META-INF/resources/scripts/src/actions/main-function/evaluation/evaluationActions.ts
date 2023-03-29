@@ -1912,6 +1912,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "assignmentData",
+              error: err.message,
             }),
             "error"
           )
@@ -1980,6 +1981,7 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
             i18n.t("notifications.loadError", {
               ns: "evaluation",
               context: "assignmentData",
+              error: err.message,
             }),
             "error"
           )
@@ -2621,6 +2623,7 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
             i18n.t("notifications.updateError", {
               ns: "journal",
               context: "comment",
+              error: err.message,
             }),
             "error"
           )
@@ -2717,6 +2720,7 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
             i18n.t("notifications.removeError", {
               ns: "journal",
               context: "comment",
+              error: err.message,
             }),
             "error"
           )

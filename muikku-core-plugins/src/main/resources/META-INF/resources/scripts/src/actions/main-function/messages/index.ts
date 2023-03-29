@@ -188,6 +188,7 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
+              ns: "messaging",
               context: "unreadMessageCount",
             }),
             "error"
@@ -232,6 +233,7 @@ const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerTy
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
+              ns: "messaging",
               context: "latestMessage",
             }),
             "error"
@@ -1417,7 +1419,10 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
         }
         dispatch(
           displayNotification(
-            i18n.t("notifications.createError", { context: "label" }),
+            i18n.t("notifications.createError", {
+              ns: "messaging",
+              context: "label",
+            }),
             "error"
           )
         );
@@ -1487,7 +1492,10 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           displayNotification(
-            i18n.t("notifications.updateError", { context: "label" }),
+            i18n.t("notifications.updateError", {
+              ns: "messaging",
+              context: "label",
+            }),
             "error"
           )
         );
@@ -1537,7 +1545,10 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           displayNotification(
-            i18n.t("notifications.removeError", { context: "label" }),
+            i18n.t("notifications.removeError", {
+              ns: "messaging",
+              context: "label",
+            }),
             "error"
           )
         );

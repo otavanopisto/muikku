@@ -289,7 +289,10 @@ export async function setLabelStatusCurrentMessage(
       if (!messageLabel) {
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.doesNotExistError", { context: "label" }),
+            i18n.t("notifications.doesNotExistError", {
+              ns: "messaging",
+              context: "label",
+            }),
             "error"
           )
         );
@@ -313,7 +316,7 @@ export async function setLabelStatusCurrentMessage(
   } catch (err) {
     dispatch(
       notificationActions.displayNotification(
-        i18n.t("notifications.addError", { context: "label" }),
+        i18n.t("notifications.addError", { ns: "messaging", context: "label" }),
         "error"
       )
     );
@@ -365,7 +368,10 @@ export function setLabelStatusSelectedMessages(
           //TODO translate this
           dispatch(
             notificationActions.displayNotification(
-              i18n.t("notifications.doesNotExistError", { context: "label" }),
+              i18n.t("notifications.doesNotExistError", {
+                ns: "messaging",
+                context: "label",
+              }),
               "error"
             )
           );
@@ -389,7 +395,10 @@ export function setLabelStatusSelectedMessages(
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.addError", { context: "label" }),
+          i18n.t("notifications.addError", {
+            ns: "messaging",
+            context: "label",
+          }),
           "error"
         )
       );

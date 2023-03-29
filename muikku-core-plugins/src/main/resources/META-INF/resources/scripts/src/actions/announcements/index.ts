@@ -544,7 +544,10 @@ const createAnnouncement: CreateAnnouncementTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.createError", { ns: "messaging" , context: "announcement"}),
+            i18n.t("notifications.createError", {
+              ns: "messaging",
+              context: "announcement",
+            }),
             "error"
           )
         );

@@ -757,7 +757,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       }
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.loadError", { ns: "users", count: 1 }),
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "student",
+            count: 1,
+          }),
           "error"
         )
       );
@@ -899,7 +903,11 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
       }
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.loadError", { ns: "users", count: 1 }),
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "students",
+            count: 1,
+          }),
           "error"
         )
       );
@@ -985,7 +993,11 @@ const loadStudentContactLogs: LoadContactLogsTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "users", count: 1 }),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "students",
+              count: 1,
+            }),
             "error"
           )
         );
@@ -1336,7 +1348,10 @@ const createContactLogEventComment: CreateContactLogEventCommentTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.createError", { context: "comment" }),
+            i18n.t("notifications.createError", {
+              context: "comment",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -1511,7 +1526,10 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.updateError", { context: "comment" }),
+            i18n.t("notifications.updateError", {
+              context: "comment",
+              error: err.message,
+            }),
             "error"
           )
         );
