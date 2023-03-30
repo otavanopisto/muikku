@@ -49,13 +49,11 @@ public class PedagogyController {
 
     pedagogyFormDAO.updateFormData(form, formData);
 
-    // History entry about modify, if form is in an appropriate state
+    // History entry about modify
 
-    if (form.getState() == PedagogyFormState.PENDING || form.getState() == PedagogyFormState.APPROVED) {
-      String fieldStr = modifiedFields == null || modifiedFields.isEmpty() ? null
-          : String.join(",", modifiedFields.stream().map(Object::toString).collect(Collectors.toList()));
-      pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Suunnitelmaa muokattiin" : details, modifierId, fieldStr);
-    }
+    String fieldStr = modifiedFields == null || modifiedFields.isEmpty() ? null
+        : String.join(",", modifiedFields.stream().map(Object::toString).collect(Collectors.toList()));
+    pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Suunnitelmaa muokattiin" : details, modifierId, fieldStr);
 
     return form;
   }
