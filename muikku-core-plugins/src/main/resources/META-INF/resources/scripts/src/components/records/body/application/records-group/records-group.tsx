@@ -6,10 +6,9 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { StateType } from "~/reducers";
 import {
-  RecordGroupType,
-  TransferCreditType,
+  RecordGroupType2,
+  RecordWorkspaceActivity,
 } from "~/reducers/main-function/records";
-import { WorkspaceType } from "~/reducers/workspaces";
 import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
@@ -21,8 +20,7 @@ import { StoredCurriculum } from "../records";
  * RecordsListProps
  */
 interface RecordsGroupProps {
-  index: number;
-  recordGroup: RecordGroupType;
+  recordGroup: RecordGroupType2;
   storedCurriculumIndex: StoredCurriculum;
   i18n: i18nType;
 }
@@ -33,22 +31,21 @@ interface RecordsGroupProps {
  * @returns JSX.Element
  */
 export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
-  const { recordGroup, index, storedCurriculumIndex, i18n } = props;
+  const { recordGroup, storedCurriculumIndex, i18n } = props;
 
-  const [workspaceSortDirection, setWorkspaceSortDirection] = React.useState<
+  const [creditSortDirection, setWorkspaceSortDirection] = React.useState<
     "asc" | "desc"
   >("asc");
 
-  const [transferedSortDirection, setTransferedSortDirection] = React.useState<
-    "asc" | "desc"
-  >("asc");
+  const [transferCreditSortDirection, setTransferedSortDirection] =
+    React.useState<"asc" | "desc">("asc");
 
   /**
    * sortWorkspaces
    */
   const handleWorkspaceSortDirectionClick = () => {
-    setWorkspaceSortDirection(
-      workspaceSortDirection === "asc" ? "desc" : "asc"
+    setWorkspaceSortDirection((oldValue) =>
+      oldValue === "asc" ? "desc" : "asc"
     );
   };
 
@@ -56,25 +53,25 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
    * sortWorkspaces
    */
   const handleTransferedWorkspaceSortDirectionClick = () => {
-    setTransferedSortDirection(
-      transferedSortDirection === "asc" ? "desc" : "asc"
+    setTransferedSortDirection((oldValue) =>
+      oldValue === "asc" ? "desc" : "asc"
     );
   };
 
-  const sortedWorkspaces = sortByDirection<WorkspaceType>(
-    recordGroup.workspaces,
+  const sortedCredits = sortByDirection<RecordWorkspaceActivity>(
+    recordGroup.credits,
     "name",
-    workspaceSortDirection
+    creditSortDirection
   );
 
-  const sortedTransferedWorkspaces = sortByDirection<TransferCreditType>(
+  const sortedTransferCredits = sortByDirection<RecordWorkspaceActivity>(
     recordGroup.transferCredits,
-    "courseName",
-    transferedSortDirection
+    "name",
+    transferCreditSortDirection
   );
 
   return (
-    <ApplicationList key={recordGroup.groupCurriculumIdentifier || index}>
+    <ApplicationList>
       {recordGroup.groupCurriculumIdentifier ? (
         <div
           onClick={handleWorkspaceSortDirectionClick}
@@ -85,26 +82,22 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
               ? storedCurriculumIndex[recordGroup.groupCurriculumIdentifier]
               : ""}
           </h3>
-          <div
-            className={`icon-sort-alpha-${
-              workspaceSortDirection === "asc" ? "desc" : "asc"
-            }`}
-          ></div>
+          <div className={`icon-sort-alpha-${creditSortDirection}`}></div>
         </div>
       ) : null}
-      {sortedWorkspaces.map((workspace) => {
+      {sortedCredits.map((credit) => {
         // By default every workspace is not combination
         let isCombinationWorkspace = false;
 
-        if (workspace.subjects) {
+        if (credit.subjects) {
           // If assessmentState contains more than 1 items, then its is combination
-          isCombinationWorkspace = workspace.subjects.length > 1;
+          isCombinationWorkspace = credit.subjects.length > 1;
         }
 
         return (
           <RecordsGroupItem
-            key={workspace.id}
-            workspace={workspace}
+            key={`credit-${credit.id}`}
+            credit={credit}
             isCombinationWorkspace={isCombinationWorkspace}
           />
         );
@@ -121,24 +114,22 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
               : null}
           </h3>
           <div
-            className={`icon-sort-alpha-${
-              transferedSortDirection === "asc" ? "desc" : "asc"
-            }`}
+            className={`icon-sort-alpha-${transferCreditSortDirection}`}
           ></div>
         </div>
       ) : null}
-      {sortedTransferedWorkspaces.map((credit) => (
+      {sortedTransferCredits.map((tCredit, i) => (
         <ApplicationListItem
           className="course course--credits"
-          key={credit.identifier}
+          key={`tranfer-credit-${i}`}
         >
           <ApplicationListItemHeader modifiers="course">
             <span className="application-list__header-icon icon-books"></span>
             <span className="application-list__header-primary">
-              {credit.courseName}
+              {tCredit.name}
             </span>
             <div className="application-list__header-secondary">
-              <TransferedCreditIndicator transferCredit={credit} />
+              <TransferedCreditIndicator transferCredit={tCredit} />
             </div>
           </ApplicationListItemHeader>
         </ApplicationListItem>
@@ -160,7 +151,7 @@ const sortByDirection = <T,>(data: T[], key: keyof T, direction: string) =>
       return direction === "asc" ? -1 : 1;
     }
     if (a[key] > b[key]) {
-      return direction === "asc" ? 1 : -1;
+      return direction === "desc" ? 1 : -1;
     }
     return 0;
   });

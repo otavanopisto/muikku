@@ -101,7 +101,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   records.map((rG, i) => (
                     <RecordsGroup
                       key={rG.groupCurriculumIdentifier}
-                      index={i}
                       recordGroup={rG}
                       storedCurriculumIndex={storedCurriculumIndex}
                     />

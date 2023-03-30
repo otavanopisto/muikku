@@ -11,7 +11,8 @@ import Button from "~/components/general/button";
 import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
-import { Assessment, WorkspaceType } from "~/reducers/workspaces";
+import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
+import { Assessment } from "~/reducers/workspaces";
 import ActivityIndicator from "../records-indicators/activity-indicator";
 import AssessmentRequestIndicator from "../records-indicators/assessment-request-indicator";
 import RecordsAssessmentIndicator from "../records-indicators/records-assessment-indicator";
@@ -21,7 +22,7 @@ import RecordsAssessmentIndicator from "../records-indicators/records-assessment
  */
 interface RecordsGroupItemProps {
   i18n: i18nType;
-  workspace: WorkspaceType;
+  credit: RecordWorkspaceActivity;
   isCombinationWorkspace: boolean;
 }
 
@@ -31,7 +32,7 @@ interface RecordsGroupItemProps {
  * @returns JSX.Element
  */
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
-  const { workspace, isCombinationWorkspace } = props;
+  const { credit, isCombinationWorkspace } = props;
 
   const [showE, setShowE] = React.useState(false);
 
@@ -105,15 +106,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
    * @returns JSX.Element
    */
   const renderAssessmentsInformations = () => {
-    const { i18n, workspace } = props;
-
-    if (!workspace.activity) {
-      return null;
-    }
+    const { i18n, credit } = props;
 
     return (
       <>
-        {workspace.activity.assessmentState.map((a) => {
+        {credit.assessmentStates.map((a) => {
           const {
             evalStateClassName,
             evalStateIcon,
@@ -125,22 +122,20 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           } = getAssessmentData(a);
 
           // Find subject data, that contains basic information about that subject
-          const subjectData = workspace.subjects.find(
+          const subjectData = credit.subjects.find(
             (s) => s.identifier === a.workspaceSubjectIdentifier
           );
 
           // If not found, return nothing
           if (!subjectData) {
-            return;
+            return null;
           }
 
-          const subjectCodeString = subjectData.subject
-            ? `(${
-                subjectData.subject.name
-              }, ${subjectData.subject.code.toUpperCase()}${
-                subjectData.courseNumber ? subjectData.courseNumber : ""
-              })`
-            : undefined;
+          const subjectCodeString = `(${
+            subjectData.subjectName
+          }, ${subjectData.subjectCode.toUpperCase()}${
+            subjectData.courseNumber ? subjectData.courseNumber : ""
+          })`;
 
           // Interim assessments use same style as reqular assessment requests
           // Only changing factor is whether is it pending or not and its indicated by
@@ -199,13 +194,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                   <div
                     className={`workspace-assessment__icon ${evalStateIcon}`}
                   ></div>
-                  {subjectCodeString && (
-                    <div className="workspace-assessment__subject">
-                      <span className="workspace-assessment__subject-data">
-                        {subjectCodeString}
-                      </span>
-                    </div>
-                  )}
+                  <div className="workspace-assessment__subject">
+                    <span className="workspace-assessment__subject-data">
+                      {subjectCodeString}
+                    </span>
+                  </div>
 
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
@@ -301,24 +294,21 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const animateOpen = showE ? "auto" : 0;
 
   return (
-    <ApplicationListItem key={workspace.id} className="course course--studies">
+    <ApplicationListItem key={credit.id} className="course course--studies">
       <ApplicationListItemHeader
-        key={workspace.id}
+        key={credit.id}
         onClick={handleShowEvaluationClick}
         modifiers={
           isCombinationWorkspace ? ["course", "combination-course"] : ["course"]
         }
       >
         <span className="application-list__header-icon icon-books"></span>
-        <span className="application-list__header-primary">
-          {workspace.name}{" "}
-          {workspace.nameExtension ? `(${workspace.nameExtension})` : null}
-        </span>
+        <span className="application-list__header-primary">{credit.name}</span>
         <div className="application-list__header-secondary">
           <span>
             <WorkspaceAssignmentsAndDiaryDialog
-              workspaceId={workspace.id}
-              workspace={workspace}
+              workspaceId={credit.id}
+              credit={credit}
             >
               <Button buttonModifiers={["info", "assignments-and-exercieses"]}>
                 {props.i18n.text.get(
@@ -332,26 +322,26 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
             // So "legasy" case where there is only one module, render indicator etc next to workspace name
             <>
               <AssessmentRequestIndicator
-                assessment={workspace.activity.assessmentState[0]}
+                assessment={credit.assessmentStates[0]}
               />
               <RecordsAssessmentIndicator
-                assessment={workspace.activity.assessmentState[0]}
+                assessment={credit.assessmentStates[0]}
                 isCombinationWorkspace={isCombinationWorkspace}
               />
             </>
           ) : null}
-          <ActivityIndicator workspace={workspace} />
+          <ActivityIndicator credit={credit} />
         </div>
       </ApplicationListItemHeader>
 
       {isCombinationWorkspace ? (
         // If combinatin workspace render module assessments below workspace name
         <ApplicationListItemContentContainer modifiers="combination-course">
-          {workspace.activity.assessmentState.map((a) => {
+          {credit.assessmentStates.map((a) => {
             /**
              * Find subject data, that contains basic information about that subject
              */
-            const subjectData = workspace.subjects.find(
+            const subjectData = credit.subjects.find(
               (s) => s.identifier === a.workspaceSubjectIdentifier
             );
 
@@ -362,11 +352,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               return;
             }
 
-            const codeSubjectString = `${subjectData.subject.code.toUpperCase()}${
+            const codeSubjectString = `${subjectData.subjectCode.toUpperCase()}${
               subjectData.courseNumber ? subjectData.courseNumber : ""
             } (${subjectData.courseLength} ${
-              subjectData.courseLengthSymbol.symbol
-            }) - ${subjectData.subject.name}`;
+              subjectData.courseLengthSymbol
+            }) - ${subjectData.subjectName}`;
 
             return (
               <div

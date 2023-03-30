@@ -1,5 +1,5 @@
 import { UserWithSchoolDataType, UserFileType } from "~/reducers/user-index";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { Assessment, WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { Reducer } from "redux";
 import {
@@ -32,6 +32,45 @@ export interface TransferCreditType {
   verbalAssessment: string;
 }
 
+export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
+
+/**
+ * Subject data for record workspace activity
+ */
+export interface RecordWorkspaceActivitySubject {
+  identifier?: string | null;
+  subjectCode: string;
+  subjectName: string;
+  courseNumber?: number;
+  courseLength: number;
+  courseLengthSymbol: string;
+}
+
+/**
+ * Record workspace curriculum that includes
+ * curriculum identifier and curriculum name
+ */
+export interface RecordWorkspaceActivityCurriculum {
+  identifier: string;
+  name: string;
+}
+
+/**
+ * Record workspace with activity data
+ */
+export interface RecordWorkspaceActivity {
+  id: number;
+  identifier: string;
+  subjects: RecordWorkspaceActivitySubject[] | null;
+  assessmentStates: Assessment[];
+  name: string;
+  curriculums: RecordWorkspaceActivityCurriculum[] | null;
+  exercisesTotal?: number | null;
+  exercisesAnswered?: number | null;
+  evaluablesTotal?: number | null;
+  evaluablesAnswered?: number | null;
+}
+
 export type RecordGroupType = {
   groupCurriculumIdentifier?: string;
   workspaces: Array<WorkspaceType>;
@@ -44,6 +83,19 @@ export type AllStudentUsersDataType = Array<{
   user: UserWithSchoolDataType;
   records: RecordsOrderedType;
 }>;
+
+export type RecordGroupType2 = {
+  groupCurriculumIdentifier?: string;
+  credits: RecordWorkspaceActivity[];
+  transferCredits: RecordWorkspaceActivity[];
+};
+
+export type RecordsOrderedType2 = Array<RecordGroupType2>;
+
+export type AllStudentUsersDataType2 = {
+  user: UserWithSchoolDataType;
+  records: RecordsOrderedType2;
+};
 
 /**
  * GradingScaleInfoType
@@ -86,7 +138,7 @@ export type CurrentStudentUserAndWorkspaceStatusType =
  * RecordsType
  */
 export interface RecordsType {
-  userData: AllStudentUsersDataType;
+  userData: AllStudentUsersDataType2[];
   userDataStatus: AllStudentUsersDataStatusType;
   files: Array<UserFileType>;
   currentStatus: CurrentStudentUserAndWorkspaceStatusType;

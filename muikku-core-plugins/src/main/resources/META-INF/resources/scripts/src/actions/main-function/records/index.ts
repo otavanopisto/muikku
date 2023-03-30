@@ -11,6 +11,9 @@ import {
   CurrentRecordType,
   TransferCreditType,
   RecordGroupType,
+  RecordWorkspaceActivity,
+  AllStudentUsersDataType2,
+  RecordGroupType2,
 } from "~/reducers/main-function/records";
 import { UserFileType, UserWithSchoolDataType } from "~/reducers/user-index";
 import {
@@ -25,7 +28,7 @@ import {
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
-  AllStudentUsersDataType
+  AllStudentUsersDataType2[]
 >;
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
@@ -159,170 +162,108 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           return 0;
         });
 
-        //Now we get the workspaces that each one of those users was in, so that mean is an array of an array of workspaces for each
-        //user
-        let workspaces: Array<Array<WorkspaceType>> = (await Promise.all(
-          users.map((user) =>
-            promisify(
-              mApi().records.workspaces.read({
-                userIdentifier: user.id,
+        //////// NEW CODE
+
+        const workspaceWithActivity: {
+          user: UserWithSchoolDataType;
+          allCredits: RecordWorkspaceActivity[];
+        }[] = await Promise.all(
+          users.map(async (user) => {
+            const workspacesWithActivity = (await promisify(
+              mApi().records.users.workspaceActivity.read(user.id, {
+                includeTransferCredits: "true",
+                includeAssignmentStatistics: "true",
               }),
               "callback"
-            )()
-          )
-        )) as Array<Array<WorkspaceType>>;
-        //Now there's this weird thing that it won't give you an empty array if there are no workspaces found, it will instead
-        //Give a no response, so we check wheter there was a no response aka undefined and we replace that with an emtpy array
-        workspaces = workspaces.map((workspaceSet) =>
-          !workspaceSet ? [] : workspaceSet
-        );
+            )()) as RecordWorkspaceActivity[];
 
-        //the same way we get all the transfer credits for each user, which is an array of array of transfer credits
-        const transferCredits: Array<Array<TransferCreditType>> =
-          (await Promise.all(
-            users.map((user) =>
-              promisify(
-                mApi().user.students.transferCredits.read(user.id),
-                "callback"
-              )()
-            )
-          )) as Array<Array<TransferCreditType>>;
-
-        //now this is kinna funny here we need to get the workspace evaluation data, wheter it's the final or current data
-        //for that we need to look through each workspaceSet that means the workspaceSet is an array of workspaces for an specific user
-        //of the same index, this uses Promise.all which means it's completely async it loops all at once
-        await Promise.all(
-          workspaces.map(async (workspaceSet, index) => {
-            const user = users[index];
-
-            //Now we need to get into one by one workspace per that specific user
-            await Promise.all(
-              workspaceSet.map(async (workspace) => {
-                workspace.activity = <WorkspaceActivityType>(
-                  await promisify(
-                    mApi().evaluation.workspaces.students.activity.read(
-                      workspace.id,
-                      user.id
-                    ),
-                    "callback"
-                  )()
-                );
-              })
-            );
+            return {
+              user,
+              allCredits: workspacesWithActivity,
+            };
           })
         );
 
-        //so now we are here, we need to get the data and order it, this is the weird part
-        const resultingData: AllStudentUsersDataType = [];
+        const resultingDataNew: AllStudentUsersDataType2[] = [];
 
-        //ok so we loop for user
         users.forEach((user, index) => {
-          //we add that user to the resulting array, in such order
-          resultingData[index] = {
+          // Intiliaze list of data for each user
+          resultingDataNew[index] = {
             user,
             records: null,
           };
 
-          //we get the results we got from the serveh
-          const givenWorkspacesByServer = workspaces[index];
-          const givenTransferCreditsByServer = transferCredits[index];
-
-          //if the user does not have a curriculum identifier then the order is the workspaces is fairly irrelevant
-          //we will just display them as they came from the server and don't tag them to belong to any curriculum
+          // If user has no curriculum, just add all credits to the list
           if (!user.curriculumIdentifier) {
-            resultingData[index].records = [
+            resultingDataNew[index].records = [
               {
-                workspaces: givenWorkspacesByServer,
-                transferCredits: givenTransferCreditsByServer,
+                credits: workspaceWithActivity[index].allCredits.filter(
+                  (c) => c.assessmentStates[0].state !== "transferred"
+                ),
+                transferCredits: workspaceWithActivity[index].allCredits.filter(
+                  (c) => c.assessmentStates[0].state === "transferred"
+                ),
               },
             ];
-
-            //here we need that and we need to order and group them
           } else {
-            //we create this helper index variable
-            //of records
-            const recordById: { [key: string]: RecordGroupType } = {};
+            const creditById: { [key: string]: RecordGroupType2 } = {};
 
-            //and this will be the default group
-            const defaultRecords: RecordGroupType = {
-              workspaces: [],
+            const defaultCredits: RecordGroupType2 = {
+              credits: [],
               transferCredits: [],
             };
 
-            //so we start with the workspace, we need each id as ordered
-            const workspaceIdsOrdered = givenWorkspacesByServer.map(
-              (workspace) => {
-                //so we get the curriculum this workspace belongs to
-                const curriculumIdentifier: string =
-                  workspace.curriculumIdentifiers[0];
+            const creditIdsOrdered = workspaceWithActivity[
+              index
+            ].allCredits.map((c) => {
+              //so we get the curriculum this workspace belongs to
+              const curriculumIdentifier = c.curriculums[0].identifier;
 
-                //if there is none it goes to the default record one
-                if (!curriculumIdentifier) {
-                  defaultRecords.workspaces.push(workspace);
+              const isTransfer = c.assessmentStates[0].state === "transferred";
 
-                  //if we don't have it set in the record by id object then we need to create a new record group with that record
-                } else if (!recordById[curriculumIdentifier]) {
-                  recordById[curriculumIdentifier] = {
-                    groupCurriculumIdentifier: curriculumIdentifier,
-                    workspaces: [workspace],
-                    transferCredits: [],
-                  };
+              //if there is none it goes to the default record one
+              if (!curriculumIdentifier) {
+                isTransfer
+                  ? defaultCredits.transferCredits.push(c)
+                  : defaultCredits.credits.push(c);
 
-                  //otherwise we add that record to the record group
-                } else {
-                  recordById[curriculumIdentifier].workspaces.push(workspace);
-                }
+                //if we don't have it set in the record by id object then we need to create a new record group with that record
+              } else if (!creditById[curriculumIdentifier]) {
+                creditById[curriculumIdentifier] = {
+                  groupCurriculumIdentifier: curriculumIdentifier,
+                  credits: [],
+                  transferCredits: [],
+                };
 
-                //We fetch the given id
-                return curriculumIdentifier;
+                isTransfer
+                  ? creditById[curriculumIdentifier].transferCredits.push(c)
+                  : creditById[curriculumIdentifier].credits.push(c);
+
+                //otherwise we add that record to the record group
+              } else {
+                isTransfer
+                  ? creditById[curriculumIdentifier].transferCredits.push(c)
+                  : creditById[curriculumIdentifier].credits.push(c);
               }
-            );
 
-            //we do virtually the same for the transfer credits
-            const recordsIdsOrdered = givenTransferCreditsByServer.map(
-              (transferCredit) => {
-                const curriculumIdentifier: string =
-                  transferCredit.curriculumIdentifier;
-                if (!curriculumIdentifier) {
-                  defaultRecords.transferCredits.push(transferCredit);
-                } else if (!recordById[curriculumIdentifier]) {
-                  recordById[curriculumIdentifier] = {
-                    groupCurriculumIdentifier: curriculumIdentifier,
-                    workspaces: [],
-                    transferCredits: [transferCredit],
-                  };
-                } else {
-                  recordById[curriculumIdentifier].transferCredits.push(
-                    transferCredit
-                  );
-                }
-                return curriculumIdentifier;
-              }
-            );
+              //We fetch the given id
+              return curriculumIdentifier;
+            });
 
-            //now here we need to order, the curriculum identifier of the user always goes first
-            //then we add it by the ids given by the workspace and then by the transferred records
-            //we need to remove duplicates, this gives us a list of strings of ids of the order of that specific user
-            const workspaceOrder = [user.curriculumIdentifier]
-              .concat(workspaceIdsOrdered)
-              .concat(recordsIdsOrdered)
+            const creditsOrder = [user.curriculumIdentifier]
+              .concat(creditIdsOrdered)
               .filter((item, pos, self) => self.indexOf(item) == pos);
 
-            //now we need to apply this order for that user, we take the order and return each record group
-            //we concat it with the default records (at the end as they have no identifier), and then we need
-            //to filter, sometimes there might be no record at all eg, the user curriculum identifier has no workspace or
-            //transfer credit with that id; or it might be empty, eg, as the default record hold no records at all,
-            //we want to filter those cases out
-            resultingData[index].records = workspaceOrder
+            resultingDataNew[index].records = creditsOrder
               .map(
                 (curriculumIdentifier: string) =>
-                  recordById[curriculumIdentifier]
+                  creditById[curriculumIdentifier]
               )
-              .concat([defaultRecords])
+              .concat([defaultCredits])
               .filter(
-                (record: RecordGroupType) =>
+                (record: RecordGroupType2) =>
                   record &&
-                  record.workspaces.length + record.transferCredits.length
+                  record.credits.length + record.transferCredits.length
               );
           }
         });
@@ -330,7 +271,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         //and that should do it, it should give us the precious data we need in the order we need it to be
         dispatch({
           type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
-          payload: resultingData,
+          payload: resultingDataNew,
         });
         dispatch({
           type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
@@ -351,160 +292,6 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         dispatch({
           type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
           payload: <AllStudentUsersDataStatusType>"ERROR",
-        });
-      }
-    };
-  };
-
-/**
- * setCurrentStudentUserViewAndWorkspace
- * @param userEntityId userEntityId
- * @param userId userId
- * @param workspaceId workspaceId
- */
-const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspaceTriggerType =
-  function setCurrentStudentUserViewAndWorkspace(
-    userEntityId,
-    userId,
-    workspaceId
-  ) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
-      try {
-        dispatch({
-          type: "UPDATE_RECORDS_LOCATION",
-          payload: <TranscriptOfRecordLocationType>"records",
-        });
-        dispatch({
-          type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
-          payload: <CurrentStudentUserAndWorkspaceStatusType>"LOADING",
-        });
-
-        const userData: AllStudentUsersDataType = getState().records.userData;
-
-        const [workspace, journals, materials, compositeReplies] =
-          await Promise.all([
-            (async () => {
-              let workspace: WorkspaceType;
-              const wasFoundInMemory = userData.find(
-                (dataPoint) =>
-                  !!dataPoint.records.find(
-                    (record: RecordGroupType) =>
-                      !!record.workspaces.find(
-                        (workspaceSearch: WorkspaceType) => {
-                          if (workspaceSearch.id === workspaceId) {
-                            workspace = workspaceSearch;
-                            return true;
-                          }
-                          return false;
-                        }
-                      )
-                  )
-              );
-
-              if (!wasFoundInMemory) {
-                workspace = <WorkspaceType>(
-                  await promisify(
-                    mApi().records.workspaces.read(workspaceId),
-                    "callback"
-                  )()
-                );
-              }
-
-              return workspace;
-            })(),
-
-            (async () => {
-              const journals = <WorkspaceJournalListType>await promisify(
-                mApi().workspace.workspaces.journal.read(workspaceId, {
-                  userEntityId,
-                  firstResult: 0,
-                  maxResults: 512,
-                }),
-                "callback"
-              )();
-              return journals;
-            })(),
-
-            (async () => {
-              const assignments =
-                <Array<MaterialAssignmentType>>await promisify(
-                  mApi().workspace.workspaces.materials.read(workspaceId, {
-                    assignmentType: "EVALUATED",
-                  }),
-                  "callback"
-                )() || [];
-
-              const [materials] = await Promise.all([
-                Promise.all(
-                  assignments.map((assignment) =>
-                    promisify(
-                      mApi().materials.html.read(assignment.materialId),
-                      "callback"
-                    )().then(
-                      (assignments: MaterialContentNodeType) => assignments
-                    )
-                  )
-                ),
-              ]);
-
-              return materials.map(
-                (material, index) => <MaterialContentNodeType>Object.assign(
-                    material,
-                    {
-                      assignment: assignments[index],
-                      path: assignments[index].path,
-                    }
-                  )
-              );
-            })(),
-
-            (async () => {
-              const compositeRepliesList =
-                <MaterialCompositeRepliesType[]>await promisify(
-                  mApi().workspace.workspaces.compositeReplies.read(
-                    workspaceId,
-                    {
-                      userEntityId,
-                    }
-                  ),
-                  "callback"
-                )() || [];
-
-              return compositeRepliesList;
-            })(),
-          ]);
-
-        dispatch({
-          type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE",
-          payload: {
-            workspace,
-            journals,
-            materials,
-            compositeReplies,
-          },
-        });
-        dispatch({
-          type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
-          payload: <CurrentStudentUserAndWorkspaceStatusType>"READY",
-        });
-      } catch (err) {
-        if (!(err instanceof MApiError)) {
-          throw err;
-        }
-        dispatch(
-          actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.records.errormessage.userWorkspaceLoadFailed"
-            ),
-            "error"
-          )
-        );
-        dispatch({
-          type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
-          payload: <CurrentStudentUserAndWorkspaceStatusType>"ERROR",
         });
       }
     };
@@ -603,7 +390,7 @@ const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType 
 
 export {
   updateAllStudentUsersAndSetViewToRecords,
-  setCurrentStudentUserViewAndWorkspace,
+  /* setCurrentStudentUserViewAndWorkspace, */
   setLocationToVopsInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToYoInTranscriptOfRecords,
