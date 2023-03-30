@@ -61,7 +61,7 @@ class DiscussionApplication extends React.Component<
           <Button buttonModifiers="primary-function">
             {this.props.i18n.t("actions.create", {
               ns: "messaging",
-              context: "messsage",
+              context: "message",
             })}
           </Button>
         </NewThread>

@@ -119,7 +119,10 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
             <div className="application-sub-panel__item application-sub-panel__item--counselors">
               <div className="application-sub-panel__item-title">
-                {t("labels.councelor", { ns: "users", context: "your" })}
+                {t("labels.counselors", {
+                  ns: "users",
+                  count: this.props.contacts.counselors.list.length,
+                })}
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-counselors">
                 <div className="item-list item-list--student-counselors">

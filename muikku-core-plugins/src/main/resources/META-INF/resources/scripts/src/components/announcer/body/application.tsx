@@ -47,7 +47,10 @@ class AnnouncerApplication extends React.Component<
     const primaryOption = (
       <NewEditAnnouncement>
         <Button buttonModifiers="primary-function">
-          {this.props.i18n.t("actions.create", { context: "announcement" })}
+          {this.props.i18n.t("actions.create", {
+            ns: "messaging",
+            context: "announcement",
+          })}
         </Button>
       </NewEditAnnouncement>
     );

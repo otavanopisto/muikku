@@ -679,6 +679,7 @@
   "messaging": {
     "actions": {
       "create": "$t(common:actions.create)",
+      "create_announcement": "Uusi tiedote",
       "create_message": "Uusi viesti",
       "create_label": "Uusi tunniste",
       "hide": "$t(common:actions.hide)",
@@ -957,7 +958,8 @@
       "archived": "Opiskelija on arkistoitu",
       "chosenStudents": "Valitut opiskelijat",
       "chosenTeachers": "Valitut opettajat",
-      "councelor": "Opinto-ohjaaja",
+      "counselors_one": "Opinto-ohjaaja",
+      "counselors_other": "Opinto-ohjaajat",
       "counselorsToAdd": "Lisättävät ohjaajat",
       "counselorsToRemove": "Poistettavat ohjaajat",
       "create": "Luo käyttäjä",
