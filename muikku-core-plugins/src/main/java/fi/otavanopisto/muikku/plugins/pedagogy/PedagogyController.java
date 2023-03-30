@@ -38,7 +38,7 @@ public class PedagogyController {
     // Create form and a history entry about that having happened (doubles as the creator and creation date of the form)
 
     PedagogyForm form = pedagogyFormDAO.create(studentIdentifier, formData, state, visibility);
-    pedagogyFormHistoryDAO.create(form, "Lomake luotu", creator);
+    pedagogyFormHistoryDAO.create(form, "Asiakirja luotiin", creator);
 
     return form;
   }
@@ -54,7 +54,7 @@ public class PedagogyController {
     if (form.getState() == PedagogyFormState.PENDING || form.getState() == PedagogyFormState.APPROVED) {
       String fieldStr = modifiedFields == null || modifiedFields.isEmpty() ? null
           : String.join(",", modifiedFields.stream().map(Object::toString).collect(Collectors.toList()));
-      pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Lomaketta muokattu" : details, modifierId, fieldStr);
+      pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Suunnitelmaa muokattu" : details, modifierId, fieldStr);
     }
 
     return form;
@@ -71,10 +71,10 @@ public class PedagogyController {
     String details = null;
     switch (state) {
     case PENDING:
-      details = "Lomake odottaa opiskelijan hyväksyntää";
+      details = "Suunnitelma odottaa opiskelijan hyväksyntää";
       break;
     case APPROVED:
-      details = "Opiskelija on hyväksynyt lomakkeen sisällön";
+      details = "Opiskelija hyväksyi suunnitelman";
       break;
      default:
        break;
@@ -94,7 +94,7 @@ public class PedagogyController {
 
     // History entry
 
-    pedagogyFormHistoryDAO.create(form, "Lomakkeen jako-oikeuksia muutettu", modifierId);
+    pedagogyFormHistoryDAO.create(form, "Suunnitelman jako-oikeuksia muutettiin", modifierId);
 
     return form;
   }
