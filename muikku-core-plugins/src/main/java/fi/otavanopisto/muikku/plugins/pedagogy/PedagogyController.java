@@ -54,7 +54,7 @@ public class PedagogyController {
     if (form.getState() == PedagogyFormState.PENDING || form.getState() == PedagogyFormState.APPROVED) {
       String fieldStr = modifiedFields == null || modifiedFields.isEmpty() ? null
           : String.join(",", modifiedFields.stream().map(Object::toString).collect(Collectors.toList()));
-      pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Suunnitelmaa muokattu" : details, modifierId, fieldStr);
+      pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Suunnitelmaa muokattiin" : details, modifierId, fieldStr);
     }
 
     return form;
