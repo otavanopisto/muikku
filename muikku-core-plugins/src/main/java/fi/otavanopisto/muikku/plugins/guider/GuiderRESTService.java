@@ -622,7 +622,9 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", userIdentifier)).build();
     }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.GET_WORKSPACE_ACTIVITY)) {
-      if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
+      Long userEntityId = sessionController.getLoggedUserEntity().getId();
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+      if (userEntity == null || !userEntity.getId().equals(userEntityId)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
