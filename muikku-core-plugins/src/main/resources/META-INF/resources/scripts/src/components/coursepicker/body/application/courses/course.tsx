@@ -241,10 +241,9 @@ class Course extends React.Component<CourseProps, CourseState> {
                 ]}
                 href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}
               >
-                {/* {this.props.workspace.isCourseMember
-                  ? this.props.t("workspaces:actions.continue")
-                  : this.props.t("workspaces:actions.checkOut")} */}{" "}
-                asd
+                {this.props.workspace.isCourseMember
+                  ? this.props.t("actions.continue", { ns: "workspace" })
+                  : this.props.t("actions.checkOut", { ns: "workspace" })}
               </Button>
               {this.state.canSignUp && this.props.status.loggedIn ? (
                 <WorkspaceSignupDialog

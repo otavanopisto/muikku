@@ -210,7 +210,12 @@ class CommunicatorMessages extends BodyScrollLoader<
     ) {
       return (
         <div className="empty">
-          <span>{this.props.t("content.empty")}</span>
+          <span>
+            {this.props.t("content.empty", {
+              ns: "messaging",
+              context: "messages",
+            })}
+          </span>
         </div>
       );
     }

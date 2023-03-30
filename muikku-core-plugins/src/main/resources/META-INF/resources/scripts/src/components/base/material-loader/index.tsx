@@ -105,7 +105,10 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: "SUBMITTED",
     "button-class": "muikku-withdraw-assignment",
-    "button-text": i18n.t("actions.cancel", { ns: "materials" }),
+    "button-text": i18n.t("actions.cancel", {
+      ns: "materials",
+      context: "assignment",
+    }),
     "success-text": i18n.t("notifications.assignmentWithdrawn", {
       ns: "materials",
     }),
@@ -117,7 +120,10 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: ["FAILED", "INCOMPLETE"],
     "button-class": "muikku-withdraw-assignment",
-    "button-text": i18n.t("actions.cancel", { ns: "materials" }),
+    "button-text": i18n.t("actions.cancel", {
+      ns: "materials",
+      context: "assignment",
+    }),
     "success-text": i18n.t("notifications.assignmentWithdrawn", {
       ns: "materials",
     }),

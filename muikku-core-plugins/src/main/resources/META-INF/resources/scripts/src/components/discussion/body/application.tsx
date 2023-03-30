@@ -59,7 +59,10 @@ class DiscussionApplication extends React.Component<
       this.props.discussion.areas.length > 0 ? (
         <NewThread>
           <Button buttonModifiers="primary-function">
-            {this.props.i18n.t("actions.create")}
+            {this.props.i18n.t("actions.create", {
+              ns: "messaging",
+              context: "messsage",
+            })}
           </Button>
         </NewThread>
       ) : null;

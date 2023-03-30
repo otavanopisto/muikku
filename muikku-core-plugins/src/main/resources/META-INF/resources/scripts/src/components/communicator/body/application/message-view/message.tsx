@@ -374,16 +374,6 @@ class Message extends React.Component<MessageProps, MessageState> {
               <Link
                 tabIndex={0}
                 className="link link--application-list"
-                onClick={this.handleOpenNewMessage("person")}
-              >
-                {this.props.t("actions.reply", { ns: "messaging" })}
-              </Link>
-            )}
-            {this.props.message.sender.studiesEnded ||
-            this.props.message.sender.archived ? null : (
-              <Link
-                tabIndex={0}
-                className="link link--application-list"
                 onClick={this.handleOpenNewMessage("all")}
               >
                 {this.props.t("actions.reply", { ns: "messaging" })}

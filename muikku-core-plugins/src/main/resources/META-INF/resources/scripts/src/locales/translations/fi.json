@@ -770,7 +770,7 @@
     },
     "content": {
       "empty": "$t(common:content.empty)",
-      "empty_message": "Ei viestejä",
+      "empty_messages": "Ei viestejä",
       "empty_announcements": "Ei tiedotteita.",
       "empty_contactLog": "Ei yhteydenottoja",
       "empty_discussions": "Ei keskusteluja käynnissä",
@@ -1119,6 +1119,7 @@
     "actions": {
       "add": "Lisää kuva",
       "add_formula": "Lisää kaava",
+      "cancel": "$t(common:actions.cancel)",
       "cancel_assignment": "Peruuta tehtävän palautus",
       "evaluated": "Tehtävä on jo arvioitu",
       "hide": "Piilota oikeat vastaukset",
