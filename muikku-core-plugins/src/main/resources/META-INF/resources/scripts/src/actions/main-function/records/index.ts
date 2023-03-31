@@ -4,31 +4,20 @@ import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
-  AllStudentUsersDataType,
   AllStudentUsersDataStatusType,
   TranscriptOfRecordLocationType,
   CurrentStudentUserAndWorkspaceStatusType,
   CurrentRecordType,
-  TransferCreditType,
-  RecordGroupType,
   RecordWorkspaceActivity,
-  AllStudentUsersDataType2,
-  RecordGroupType2,
+  AllStudentUsersDataType,
+  RecordGroupType,
 } from "~/reducers/main-function/records";
 import { UserFileType, UserWithSchoolDataType } from "~/reducers/user-index";
-import {
-  WorkspaceType,
-  WorkspaceJournalListType,
-  MaterialContentNodeType,
-  MaterialEvaluationType,
-  MaterialAssignmentType,
-  MaterialCompositeRepliesType,
-  WorkspaceActivityType,
-} from "~/reducers/workspaces";
+import { Dispatch } from "react-redux";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
-  AllStudentUsersDataType2[]
+  AllStudentUsersDataType[]
 >;
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
@@ -113,7 +102,7 @@ export interface UpdateTranscriptOfRecordsFilesTriggerType {
 const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
   function updateAllStudentUsersAndSetViewToRecords() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -181,7 +170,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           })
         );
 
-        const resultingDataNew: AllStudentUsersDataType2[] = [];
+        const resultingDataNew: AllStudentUsersDataType[] = [];
 
         users.forEach((user, index) => {
           // Intiliaze list of data for each user
@@ -203,9 +192,9 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
               },
             ];
           } else {
-            const creditById: { [key: string]: RecordGroupType2 } = {};
+            const creditById: { [key: string]: RecordGroupType } = {};
 
-            const defaultCredits: RecordGroupType2 = {
+            const defaultCredits: RecordGroupType = {
               credits: [],
               transferCredits: [],
             };
@@ -215,11 +204,12 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
             ].allCredits.map((c) => {
               //so we get the curriculum this workspace belongs to
               const curriculumIdentifier = c.curriculums[0]?.identifier;
+              const curriculumName = c.curriculums[0]?.name;
 
               const isTransfer = c.assessmentStates[0].state === "transferred";
 
               //if there is none it goes to the default record one
-              if (!curriculumIdentifier) {
+              if (!curriculumIdentifier || !curriculumName) {
                 isTransfer
                   ? defaultCredits.transferCredits.push(c)
                   : defaultCredits.credits.push(c);
@@ -227,6 +217,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
                 //if we don't have it set in the record by id object then we need to create a new record group with that record
               } else if (!creditById[curriculumIdentifier]) {
                 creditById[curriculumIdentifier] = {
+                  groupCurriculumName: curriculumName,
                   groupCurriculumIdentifier: curriculumIdentifier,
                   credits: [],
                   transferCredits: [],
@@ -247,18 +238,39 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
               return curriculumIdentifier;
             });
 
+            //now here we need to order, the curriculum identifier of the user always goes first
+            //then we add it by the ids given by the workspace and then by the transferred records
+            //we need to remove duplicates, this gives us a list of strings of ids of the order of that specific user
             const creditsOrder = [user.curriculumIdentifier]
               .concat(creditIdsOrdered)
-              .filter((item, pos, self) => self.indexOf(item) == pos);
+              .filter((item, pos, self) => item && self.indexOf(item) == pos);
 
+            //now we need to apply this order for that user, we take the order and return each record group
+            //we also need to sort the records by curriculum name
+            //we concat it with the default records (at the end as they have no identifier), and then we need
+            //to filter, sometimes there might be no record at all eg, the user curriculum identifier has no workspace or
+            //transfer credit with that id; or it might be empty, eg, as the default record hold no records at all,
+            //we want to filter those cases out
             resultingDataNew[index].records = creditsOrder
               .map(
                 (curriculumIdentifier: string) =>
                   creditById[curriculumIdentifier]
               )
+              .sort((a, b) => {
+                const aName = a.groupCurriculumName.toLowerCase();
+                const bName = b.groupCurriculumName.toLowerCase();
+
+                if (aName < bName) {
+                  return -1;
+                }
+                if (aName > bName) {
+                  return 1;
+                }
+                return 0;
+              })
               .concat([defaultCredits])
               .filter(
-                (record: RecordGroupType2) =>
+                (record: RecordGroupType) =>
                   record &&
                   record.credits.length + record.transferCredits.length
               );
@@ -366,7 +378,7 @@ const setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRec
 const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
   function updateTranscriptOfRecordsFiles() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const files: Array<UserFileType> = <Array<UserFileType>>(
@@ -387,7 +399,6 @@ const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType 
 
 export {
   updateAllStudentUsersAndSetViewToRecords,
-  /* setCurrentStudentUserViewAndWorkspace, */
   setLocationToVopsInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToYoInTranscriptOfRecords,

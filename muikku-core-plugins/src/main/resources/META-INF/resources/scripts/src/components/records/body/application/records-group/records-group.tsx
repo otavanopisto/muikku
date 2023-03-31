@@ -6,7 +6,7 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { StateType } from "~/reducers";
 import {
-  RecordGroupType2,
+  RecordGroupType,
   RecordWorkspaceActivity,
 } from "~/reducers/main-function/records";
 import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
@@ -20,7 +20,7 @@ import { StoredCurriculum } from "../records";
  * RecordsListProps
  */
 interface RecordsGroupProps {
-  recordGroup: RecordGroupType2;
+  recordGroup: RecordGroupType;
   storedCurriculumIndex: StoredCurriculum;
   i18n: i18nType;
 }
@@ -147,10 +147,13 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
  */
 const sortByDirection = <T,>(data: T[], key: keyof T, direction: string) =>
   data.sort((a: T, b: T) => {
-    if (a[key] < b[key]) {
+    const aString = (a[key] as unknown as string).toLowerCase();
+    const bString = (b[key] as unknown as string).toLowerCase();
+
+    if (aString < bString) {
       return direction === "asc" ? -1 : 1;
     }
-    if (a[key] > b[key]) {
+    if (aString > bString) {
       return direction === "desc" ? 1 : -1;
     }
     return 0;
