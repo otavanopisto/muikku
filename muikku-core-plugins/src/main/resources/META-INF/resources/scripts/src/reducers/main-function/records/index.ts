@@ -71,17 +71,23 @@ export interface RecordWorkspaceActivity {
   evaluablesAnswered?: number | null;
 }
 
-export type RecordGroupType = {
+/**
+ * RecordGroupType
+ */
+export interface RecordGroupType {
   groupCurriculumName?: string;
   groupCurriculumIdentifier?: string;
   credits: RecordWorkspaceActivity[];
   transferCredits: RecordWorkspaceActivity[];
-};
+}
 
-export type AllStudentUsersDataType = {
+/**
+ * AllStudentUsersDataType
+ */
+export interface AllStudentUsersDataType {
   user: UserWithSchoolDataType;
   records: RecordGroupType[];
-};
+}
 
 /**
  * GradingScaleInfoType
