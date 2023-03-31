@@ -153,13 +153,10 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want
         //The bigger number to be first
         users = users.sort((a, b) => {
-          if (a.id < b.id) {
-            return 1;
-          }
-          if (a.id > b.id) {
-            return -1;
-          }
-          return 0;
+          const aId = a.id.split("-")[2];
+          const bId = b.id.split("-")[2];
+
+          return parseInt(bId) - parseInt(aId);
         });
 
         //////// NEW CODE
@@ -217,7 +214,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
               index
             ].allCredits.map((c) => {
               //so we get the curriculum this workspace belongs to
-              const curriculumIdentifier = c.curriculums[0].identifier;
+              const curriculumIdentifier = c.curriculums[0]?.identifier;
 
               const isTransfer = c.assessmentStates[0].state === "transferred";
 
