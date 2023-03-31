@@ -38,11 +38,11 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     setFormIsApproved,
     setExtraDetails,
     setEditIsActive,
-    sendToStudent,
     approveForm,
     updateFormData,
     updateVisibility,
     userRole,
+    activateForm,
   } = usePedagogyValues;
 
   if (!data) {
@@ -116,20 +116,37 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
 
   if (userRole !== "STUDENT") {
     switch (data.state) {
+      case "INACTIVE":
+        return userRole === "SPECIAL_ED_TEACHER" ? (
+          <div className="pedagogy-form__toolbar">
+            <Button buttonModifiers={["success"]} onClick={activateForm}>
+              Aktivoi
+            </Button>
+          </div>
+        ) : null;
       case "ACTIVE":
-        return (
-          userRole === "SPECIAL_ED_TEACHER" && (
-            <div className="pedagogy-form__toolbar">
-              <Button buttonModifiers={["execute"]} onClick={sendToStudent}>
-                Lähetä
-              </Button>
-            </div>
-          )
-        );
       case "PENDING":
       case "APPROVED":
         return (
           <div className="pedagogy-form__toolbar">
+            {userRole === "SPECIAL_ED_TEACHER" ? (
+              <Button
+                buttonModifiers={["cancel"]}
+                disabled={loading}
+                onClick={handlePDFClick}
+              >
+                {showPDF ? "Sulje PDF" : "PDF"}
+              </Button>
+            ) : null}
+
+            <div
+              style={{
+                borderLeft: "2px solid #00000038",
+                height: "25px",
+                margin: "0 5px",
+              }}
+            />
+
             <SaveWithExtraDetailsDialog
               changedFields={changedFields}
               onSaveClick={handleSaveWithExtraDetailsClick}
@@ -140,7 +157,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
                 buttonModifiers={["success"]}
                 disabled={!editIsActive && changedFields.length === 0}
               >
-                Tallenna muokkaukset
+                Tallenna
               </Button>
             </SaveWithExtraDetailsDialog>
 
@@ -198,6 +215,22 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     case "APPROVED":
       return (
         <div className="pedagogy-form__toolbar">
+          <Button
+            buttonModifiers={["cancel"]}
+            disabled={loading}
+            onClick={handlePDFClick}
+          >
+            {showPDF ? "Sulje PDF" : "PDF"}
+          </Button>
+
+          <div
+            style={{
+              borderLeft: "2px solid #00000038",
+              height: "25px",
+              margin: "0 5px",
+            }}
+          />
+
           <VisibilityDialog
             visibility={visibility}
             onVisibilityChange={handleVisibilityPermissionChange}
@@ -207,14 +240,6 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
               Muuta jako-oikeuksia
             </Button>
           </VisibilityDialog>
-
-          <Button
-            buttonModifiers={["cancel"]}
-            disabled={loading}
-            onClick={handlePDFClick}
-          >
-            {showPDF ? "Sulje PDF" : "PDF"}
-          </Button>
         </div>
       );
 

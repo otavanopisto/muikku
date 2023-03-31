@@ -52,7 +52,7 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
         <div className="hops-container__history-event hops-container__history-event--created-by-me">
           <div className="hops-container__history-event-primary">
             <span className="hops-container__history-event-text">
-              Muokkasit pedagogisen tuen lomaketta
+              Muokkasit pedagogisen tuen suunnitelmaa
             </span>
             <span className="hops-container__history-event-date">
               {moment(historyEntry.date).format("l")}
@@ -90,7 +90,7 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
               </span>
             </span>
             <span className="hops-container__history-event-text">
-              muokkasi pedagogisen tuen lomaketta
+              muokkasi pedagogisen tuen suunnitelmaa
             </span>
             <span className="hops-container__history-event-date">
               {moment(historyEntry.date).format("l")}

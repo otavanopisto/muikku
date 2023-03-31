@@ -64,7 +64,6 @@ export const usePedagogy = (
             setFormIsApproved(pedagogyData.state === "APPROVED");
             setVisibility(pedagogyData.visibility);
             setLoading(false);
-            setEditIsActive(pedagogyData.state === "ACTIVE");
           });
         }
       } catch (err) {
@@ -169,7 +168,6 @@ export const usePedagogy = (
           ...defaultFormData,
           ...(JSON.parse(pedagogyData.formData) as FormData),
         });
-        setFormIsApproved(pedagogyData.state === "APPROVED");
         setLoading(false);
       });
     } catch (err) {
@@ -184,15 +182,12 @@ export const usePedagogy = (
   const sendToStudent = async () => {
     setLoading(true);
     try {
-      updateFormData().then(async () => {
-        const updatedData = await updateStateToServer("PENDING");
+      const updatedData = await updateStateToServer("PENDING");
 
-        unstable_batchedUpdates(() => {
-          setData(updatedData);
-          setFormIsApproved(updatedData.state === "APPROVED");
-          setLoading(false);
-          setEditIsActive(false);
-        });
+      unstable_batchedUpdates(() => {
+        setData(updatedData);
+        setLoading(false);
+        setEditIsActive(false);
       });
     } catch (err) {
       setLoading(false);
@@ -227,7 +222,7 @@ export const usePedagogy = (
           ...defaultFormData,
           ...(JSON.parse(updatedData.formData) as FormData),
         });
-        setFormIsApproved(updatedData.state === "APPROVED");
+        setFormIsApproved(true);
         setLoading(false);
       });
     } catch (err) {

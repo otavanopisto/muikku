@@ -84,7 +84,7 @@ class VisibilityAndApprovalDialog extends React.Component<
               style={{ flexFlow: "unset" }}
             >
               <input
-                id="fromFamilyMember"
+                id="forGuardians"
                 type="checkbox"
                 name="forGuardians"
                 className="hops__input"
@@ -93,8 +93,8 @@ class VisibilityAndApprovalDialog extends React.Component<
                 onChange={onVisibilityChange}
               />
               <label htmlFor="fromFamilyMember" className="hops__label">
-                Lomakkeella olevat tiedot saa antaa alaikäisen opiskelijan
-                huoltajalle?
+                Olen alaikäinen. Pedagogisen tuen suunnitelman tietoja saa antaa
+                huoltajalleni.
               </label>
             </div>
             <div
@@ -102,7 +102,7 @@ class VisibilityAndApprovalDialog extends React.Component<
               style={{ flexFlow: "unset" }}
             >
               <input
-                id="fromFamilyMember"
+                id="forTeachers"
                 type="checkbox"
                 name="forTeachers"
                 className="hops__input"
@@ -110,9 +110,9 @@ class VisibilityAndApprovalDialog extends React.Component<
                 checked={visibility.includes("TEACHERS")}
                 onChange={onVisibilityChange}
               />
-              <label htmlFor="fromFamilyMember" className="hops__label">
-                Tietoja saa luovuttaa opiskelijaa opettavalle ja ohjaavalle
-                henkilökunnalle?
+              <label htmlFor="forTeachers" className="hops__label">
+                Pedagogisen tuen suunnitelman tietoja saa antaa minua
+                opettavalle ja ohjaavalle henkilökunnalle.
               </label>
             </div>
           </div>
@@ -125,15 +125,15 @@ class VisibilityAndApprovalDialog extends React.Component<
               style={{ flexFlow: "unset" }}
             >
               <input
-                id="fromFamilyMember"
+                id="approved"
                 type="checkbox"
                 name="approved"
                 className="hops__input"
                 checked={formIsApproved}
                 onChange={onApproveChange}
               ></input>
-              <label htmlFor="fromFamilyMember" className="hops__label">
-                Olen lukenut ja hyväksyn lomakkeen sisällön
+              <label htmlFor="approved" className="hops__label">
+                Olen lukenut suunnitelman ja hyväksyn sen sisällön.
               </label>
             </div>
           </div>
@@ -167,7 +167,7 @@ class VisibilityAndApprovalDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="Lomakkeen hyväksyminen"
+        title="Hyväksyminen ja luvat"
         content={content}
         footer={footer}
         closeOnOverlayClick={false}

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
-import Button from "../../button";
-import { useWizardContext } from "../context/wizard-context";
 
 /**
  * WizardStepperProps

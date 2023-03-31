@@ -258,7 +258,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "PEDAGOGY_FORM",
-        name: "Pedagoginen tuen lomake",
+        name: "Pedagogisen tuen suunnitelma",
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (

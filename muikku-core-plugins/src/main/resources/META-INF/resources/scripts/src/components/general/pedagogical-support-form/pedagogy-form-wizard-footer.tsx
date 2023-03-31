@@ -40,21 +40,25 @@ const PedagogyFormWizardFooter = (props: PedagogyFormWizardFooterProps) => {
         padding: "10px 0",
       }}
     >
-      <Button
-        buttonModifiers={["cancel"]}
-        onClick={handlePreviousStep}
-        disabled={isFirstStep}
-      >
-        Previous Step
-      </Button>
-      &nbsp;
-      <Button
-        onClick={handleNextStep}
-        buttonModifiers={["cancel"]}
-        disabled={isLastStep}
-      >
-        Next Step
-      </Button>
+      {!isFirstStep && (
+        <Button
+          buttonModifiers={["cancel"]}
+          onClick={handlePreviousStep}
+          disabled={isFirstStep}
+        >
+          Edellinen
+        </Button>
+      )}
+
+      {!isLastStep && (
+        <Button
+          onClick={handleNextStep}
+          buttonModifiers={["cancel"]}
+          disabled={isLastStep}
+        >
+          Seuraava
+        </Button>
+      )}
     </div>
   );
 };

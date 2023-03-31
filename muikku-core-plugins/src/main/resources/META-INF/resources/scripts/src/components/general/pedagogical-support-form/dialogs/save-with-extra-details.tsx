@@ -127,7 +127,7 @@ class SaveExtraDetailsDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="Lomakkeen hyväksyminen"
+        title="SUUNNITELMAN TALLENNUS"
         content={content}
         footer={footer}
         closeOnOverlayClick={false}

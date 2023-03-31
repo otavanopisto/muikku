@@ -133,7 +133,7 @@ class VisibilityDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="Lomakkeen hyväksyminen"
+        title="Näkyvyys oikeuksien muokkaaminen"
         content={content}
         footer={footer}
         closeOnOverlayClick={false}

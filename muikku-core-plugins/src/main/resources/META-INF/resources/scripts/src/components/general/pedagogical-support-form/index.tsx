@@ -1,5 +1,4 @@
 import * as React from "react";
-import Button from "../button";
 import { usePedagogy } from "./hooks/usePedagogy";
 import { Step1, Step2, Step3, Step4, Step5, Step6 } from "./steps";
 import {
@@ -47,7 +46,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     props.studentId,
     props.displayNotification
   );
-  const { loading, data, activateForm } = usePedagogyValues;
+  const { loading, data } = usePedagogyValues;
   const [showPDF, setShowPDF] = React.useState(false);
 
   const previousStep = React.useRef<number>(0);
@@ -139,25 +138,24 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
             </OverlayComponent>
           ) : null}
 
-          {data && data.state === "INACTIVE" ? (
-            <OverlayComponent>
-              <div className="pedagogy-form__overlay-content">
-                {props.userRole === "STUDENT" ? (
-                  <p>
-                    Tukilomaketta ei ole aktivoitu, ole yhteydessä
-                    erityisopettajaasi
-                  </p>
-                ) : props.userRole === "SPECIAL_ED_TEACHER" ? (
-                  <Button buttonModifiers={["success"]} onClick={activateForm}>
-                    Aktivoi
-                  </Button>
-                ) : null}
-              </div>
-            </OverlayComponent>
-          ) : null}
-
           <PedagogyToolbar showPDF={showPDF} setShowPDF={setShowPDF} />
+
           <div className="pedagogy-form__container">
+            {data && data.state === "INACTIVE" ? (
+              <OverlayComponent>
+                <div className="pedagogy-form__overlay-content">
+                  {props.userRole === "STUDENT" ? (
+                    <p>
+                      Pedagogisen tuen suunnitelmaa ei ole aktivoitu, ole
+                      yhteydessä erityisopettajaasi.
+                    </p>
+                  ) : (
+                    <p>Et ole aktivoinut pedagogisen tuen suunnitelmaa.</p>
+                  )}
+                </div>
+              </OverlayComponent>
+            ) : null}
+
             {showPDF ? (
               <PDFViewer className="pedagogy-form__pdf">
                 <PedagogyPDF data={data} />

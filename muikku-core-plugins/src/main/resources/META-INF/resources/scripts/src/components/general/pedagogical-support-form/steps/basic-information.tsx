@@ -7,6 +7,7 @@ import { History, HistoryEntryItem } from "../history";
 import { StatusType } from "~/reducers/base/status";
 import PagerV2 from "../../pagerV2";
 import { usePedagogyContext } from "../context/pedagogy-context";
+import { buildAddress } from "../helpers";
 
 /**
  * BasicInformationProps
@@ -103,34 +104,27 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="studentName"
-              label="Etunimet:"
+              label="Nimi"
               type="text"
-              value={data?.studentInfo.firstName || ""}
+              value={
+                data
+                  ? `${data.studentInfo.firstName} ${data.studentInfo.lastName}`
+                  : ""
+              }
               disabled
               className="hops__input"
             />
           </div>
         </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <TextField
-              id="studentName"
-              label="Sukunimi:"
-              type="text"
-              value={data?.studentInfo.lastName || ""}
-              disabled
-              className="hops__input"
-            />
-          </div>
-        </div>
+
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
               id="dateOfBirth"
-              label="Syntymäaika:"
+              label="Syntymäaika"
               type="text"
               value={
-                (data?.studentInfo.dateOfBirth &&
+                (data?.studentInfo?.dateOfBirth &&
                   moment(data?.studentInfo.dateOfBirth).format("DD.MM.YYYY")) ||
                 "-"
               }
@@ -143,9 +137,9 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="phoneNumber"
-              label="Puhelinnumero:"
+              label="Puhelinnumero"
               type="text"
-              value={data?.studentInfo.phoneNumber || "-"}
+              value={data?.studentInfo?.phoneNumber || "-"}
               disabled
               className="hops__input"
             />
@@ -155,9 +149,9 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="email"
-              label="Sähköposti:"
+              label="Sähköposti"
               type="text"
-              value={data?.studentInfo.email || "-"}
+              value={data?.studentInfo?.email || "-"}
               disabled
               className="hops__input"
             />
@@ -167,9 +161,9 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="address"
-              label="Osoite:"
+              label="Osoite"
               type="text"
-              value={data?.studentInfo.streetAddress || "-"}
+              value={data ? `${buildAddress(data.studentInfo)}` : "-"}
               disabled
               className="hops__input"
             />

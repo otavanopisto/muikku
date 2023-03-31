@@ -179,7 +179,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             <div className="hops__form-element-container">
               <Textarea
                 id="reasonOther"
-                label="Muu?"
+                label="Muu peruste"
                 className="hops__input"
                 onChange={(e) =>
                   handleTextAreaChange("supportReasonOther", e.target.value)
@@ -198,7 +198,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <label htmlFor="graduationGoalMonth" className="hops__label">
-              Suunniteltut tukitoimet
+              Suunnitellut tukitoimet
             </label>
             <Select
               className="react-select-override"
@@ -228,8 +228,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             <div className="hops__form-element-container">
               <Textarea
                 id="otherSupportMeasures"
-                label="Muu?"
-                placeholder="Yhteistyötahot"
+                label="Muu toimenpide"
                 className="hops__input"
                 onChange={(e) =>
                   handleTextAreaChange("supportActionOther", e.target.value)
@@ -244,7 +243,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <label htmlFor="graduationGoalMonth" className="hops__label">
-              Ennakko suunnitelma ylioppilaskirjoituksiin:
+              Ennakkosuunnitelma ylioppilaskirjoituksiin
             </label>
             <Select
               className="react-select-override"
@@ -280,7 +279,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             <div className="hops__form-element-container">
               <Textarea
                 id="matriculationSupportOther"
-                label="Muu?"
+                label="Muu toimenpide"
                 className="hops__input"
                 onChange={(e) =>
                   handleTextAreaChange(

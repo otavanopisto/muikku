@@ -2,9 +2,13 @@ import {
   SupportAction,
   SupportActionMatriculationExamination,
   SupportReason,
+  UserInfo,
 } from "~/@types/pedagogy-form";
 import { OptionDefault } from "../react-select/types";
 
+/**
+ * Is used to give correct translation for the list of edited fields
+ */
 export const formFieldsWithTranslation: { [key: string]: string } = {
   authorOfDocument: "Asiakirjan laatija",
   documentParticipants: "Asiakirjan laatimiseen osallistuneet",
@@ -12,14 +16,13 @@ export const formFieldsWithTranslation: { [key: string]: string } = {
   studentStrengths: "Opiskelijan vahvuudet",
   supportReasonsOptions: "Pedagogisen tuen perusteet",
   supportReasonOther: "Pedagogisen tuen perusteet - Muu peruste?",
-  supportActions: "Suunniteltut tukitoimet",
-  supportActionOther: "Suunniteltut tukitoimet - Muu toimenpide?",
-  matriculationExaminationSupport:
-    "Ennakko suunnitelma ylioppilaskirjoituksiin",
+  supportActions: "Suunnitellut tukitoimet",
+  supportActionOther: "Suunnitellut tukitoimet - Muu toimenpide?",
+  matriculationExaminationSupport: "Ennakkosuunnitelma ylioppilaskirjoituksiin",
   matriculationExaminationSupportOther:
-    "Ennakko suunnitelma ylioppilaskirjoituksiin - Muu toimenpide?",
-  studentOpinionOfSupport: "Opiskelijan näkemys",
-  schoolOpinionOfSupport: "Lukion näkemys tuen vaikuttavuudesta",
+    "Ennakkosuunnitelma ylioppilaskirjoituksiin - Muu toimenpide?",
+  studentOpinionOfSupport: "Opiskelijan näkemys tuen vaikuttavuudesta",
+  schoolOpinionOfSupport: "Oppilaitoksen näkemys tuen vaikuttavuudesta",
   supportActionsImplemented: "Toteutetut tukitoimet",
 };
 
@@ -77,7 +80,7 @@ export const supportActionsOptions: OptionDefault<SupportAction>[] = [
   },
   {
     value: "other",
-    label: "Muu tuki?",
+    label: "Muu toimenpide?",
   },
 ];
 
@@ -89,7 +92,7 @@ export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatr
     },
     {
       value: "invidualSpace",
-      label: "erillinen yksilötila",
+      label: "Erillinen yksilötila",
     },
     {
       value: "smallGroupSpace",
@@ -113,6 +116,33 @@ export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatr
     },
     {
       value: "other",
-      label: "Muu tuki?",
+      label: "Muu toimenpide?",
     },
   ];
+
+/**
+ * Build address string from student info from values
+ * that can be undefined
+ *
+ * @param studentInfo studentInfo
+ * @returns builded address string
+ */
+export const buildAddress = (studentInfo: UserInfo) => {
+  // Fields and order to build address string
+  const addressFields: (keyof UserInfo)[] = [
+    "streetAddress",
+    "zipCode",
+    "city",
+    "country",
+  ];
+
+  const addressValuesFound = [];
+
+  for (const field of addressFields) {
+    if (studentInfo[field]) {
+      addressValuesFound.push(studentInfo[field]);
+    }
+  }
+
+  return addressValuesFound.length > 0 ? addressValuesFound.join(", ") : "-";
+};

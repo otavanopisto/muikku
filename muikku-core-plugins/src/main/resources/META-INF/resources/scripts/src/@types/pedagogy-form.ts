@@ -221,7 +221,7 @@ export interface UserInfo {
   /**
    * Date of birth of the student
    */
-  dateOfBirth: Date;
+  dateOfBirth?: Date;
   /**
    * Phone number of the student
    */

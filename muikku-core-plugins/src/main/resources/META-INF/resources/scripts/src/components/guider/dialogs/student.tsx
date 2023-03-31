@@ -39,7 +39,9 @@ export type tabs =
   | "STUDIES"
   | "STUDY_PLAN"
   | "GUIDANCE_RELATIONS"
-  | "STUDY_HISTORY";
+  | "STUDY_HISTORY"
+  | "PEDAGOGICAL_SUPPORT"
+  | "HOPS";
 
 /**
  * StudentDialogProps
@@ -193,7 +195,7 @@ class StudentDialog extends React.Component<
     ) {
       tabs.splice(1, 0, {
         id: "PEDAGOGICAL_SUPPORT",
-        name: "Pedagoginen tuki",
+        name: "Pedagogisen tuen suunnitelma",
         type: "guider-student",
         component: (
           <UpperSecondaryPedagogicalSupportWizardForm
