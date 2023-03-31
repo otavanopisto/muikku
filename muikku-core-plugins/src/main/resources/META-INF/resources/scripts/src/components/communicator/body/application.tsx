@@ -9,8 +9,6 @@ import CommunicatorMessages from "./application/messages";
 import MessageView from "./application/message-view";
 import NewMessage from "../dialogs/new-message";
 import SignatureUpdateDialog from "../dialogs/signature-update";
-import { i18nType } from "~/reducers/base/i18nOLD";
-import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import Button, { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
@@ -19,10 +17,9 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * CommunicatorApplicationProps
  */
-interface CommunicatorApplicationProps extends WithTranslation<["common"]> {
+interface CommunicatorApplicationProps  {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -78,7 +75,6 @@ class CommunicatorApplication extends React.Component<
    * render
    */
   render() {
-    // TODO: use i18next
     const title = this.props.t("labels.communicator");
     const icon = (
       <Dropdown
@@ -137,15 +133,6 @@ class CommunicatorApplication extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
 
 /**
  * mapDispatchToProps
@@ -159,6 +146,6 @@ const componentWithTranslation = withTranslation(["messaging"], {
   withRef: true,
 })(CommunicatorApplication);
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {
+export default connect(null, mapDispatchToProps, null, {
   withRef: true,
-})(componentWithTranslation);
+})(CommunicatorApplication);

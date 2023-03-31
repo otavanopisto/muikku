@@ -1121,7 +1121,7 @@ class ManagementPanel extends React.Component<
                     htmlFor="workspaceEndDate"
                     className="application-sub-panel__item-header"
                   >
-                    {t("labels.begingDate", { ns: "workspace" })}
+                    {t("labels.endDate", { ns: "workspace" })}
                   </label>
                   <DatePicker
                     id="workspaceEndDate"
