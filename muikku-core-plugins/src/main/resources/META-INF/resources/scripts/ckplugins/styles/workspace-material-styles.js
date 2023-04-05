@@ -42,7 +42,10 @@ CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   { name: "Kirjoita", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__write'} },
   { name: "Katso", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__look'} },
   { name: "Yhdistä", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__connect'} },
-  { name: "Äänitä", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record'} },
+  { name: "Äänitä 1", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record'} },
+  { name: "Äänitä 2", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record2'} },
+  { name: "Äänitä 3", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record3'} },
+  { name: "Äänitä 4", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record4'} },
   { name: "Etsi", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__search'} },
 
   /* Inline Styles */
