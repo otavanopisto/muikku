@@ -46,6 +46,7 @@ CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   { name: "Äänitä 2", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record2'} },
   { name: "Äänitä 3", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record3'} },
   { name: "Äänitä 4", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record4'} },
+  { name: "Äänitä 5", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record5'} },
   { name: "Etsi", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__search'} },
 
   /* Inline Styles */
