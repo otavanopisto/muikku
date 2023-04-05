@@ -6,7 +6,7 @@
 
 ( function() {
 
-  var cdn = 'http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  var cdn = 'http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML';
 
   CKEDITOR.dialog.add( 'muikku-mathjax', function( editor ) {
 
@@ -550,7 +550,7 @@
  *
  *        config.mathJaxLib = 'http:\/\/example.com\/libs\/MathJax.js';
  *
- * @cfg {String} [mathJaxLib='http:\/\/cdn.mathjax.org\/mathjax\/2.2-latest\/MathJax.js?config=TeX-AMS_HTML']
+ * @cfg {String} [mathJaxLib='http:\/\/cdn.mathjax.org\/mathjax\/2.2-latest\/MathJax.js?config=TeX-MML-AM_CHTML']
  * @member CKEDITOR.config
  */
 

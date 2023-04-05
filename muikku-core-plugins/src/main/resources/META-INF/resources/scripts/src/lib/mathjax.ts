@@ -16,6 +16,7 @@ export function queueJax() {
 let queue: Array<Function> = [];
 
 export const MATHJAXCONFIG = {
+  /*
   jax: [
     "input/TeX",
     "input/MathML",
@@ -64,10 +65,11 @@ export const MATHJAXCONFIG = {
   showProcessingMessages: true,
   messageStyle: "normal",
   showMathMenu: true,
+  */
 };
 
 export const MATHJAXSRC =
-  "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG";
+  "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML";
 
 /**
  * loadMathJax
