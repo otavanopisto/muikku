@@ -16,34 +16,8 @@ export function queueJax() {
 let queue: Array<Function> = [];
 
 export const MATHJAXCONFIG = {
-  /*
-  jax: [
-    "input/TeX",
-    "input/MathML",
-    "input/AsciiMath",
-    "output/HTML-CSS",
-    "output/NativeMML",
-    "output/PreviewHTML",
-  ],
-  extensions: [
-    "toMathML.js",
-    "tex2jax.js",
-    "MathMenu.js",
-    "mml2jax.js",
-    "asciimath2jax.js",
-    "MathZoom.js",
-    "fast-preview.js",
-    "AssistiveMML.js",
-    "a11y/accessibility-menu.js",
-  ],
   TeX: {
-    extensions: [
-      "AMSmath.js",
-      "AMSsymbols.js",
-      "noErrors.js",
-      "noUndefined.js",
-      "mhchem.js",
-    ],
+    extensions: ["mhchem.js"],
   },
   SVG: {
     useFontCache: true,
@@ -55,21 +29,13 @@ export const MATHJAXCONFIG = {
     minScaleAdjust: "90",
     lineBreaks: { automatic: true },
   },
-  MathML: {
-    useMathMLspacing: true,
-  },
-  NativeMML: {
-    scale: 100,
-    matchFontHeight: true,
-  },
   showProcessingMessages: true,
   messageStyle: "normal",
   showMathMenu: true,
-  */
 };
 
 export const MATHJAXSRC =
-  "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML";
+  "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_SVG";
 
 /**
  * loadMathJax

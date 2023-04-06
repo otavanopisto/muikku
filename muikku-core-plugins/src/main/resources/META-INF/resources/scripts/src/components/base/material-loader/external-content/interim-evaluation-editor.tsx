@@ -6,6 +6,7 @@ import { AnyActionType } from "~/actions";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Button from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
+import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
@@ -24,8 +25,7 @@ import {
 /* eslint-disable camelcase */
 const ckEditorConfig = {
   autoGrow_onStartup: true,
-  mathJaxLib:
-    "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML",
+  mathJaxLib: MATHJAXSRC,
   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
   toolbar: [
     {
