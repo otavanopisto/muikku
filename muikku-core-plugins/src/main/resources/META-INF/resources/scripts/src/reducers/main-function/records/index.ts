@@ -71,31 +71,23 @@ export interface RecordWorkspaceActivity {
   evaluablesAnswered?: number | null;
 }
 
-export type RecordGroupType = {
-  groupCurriculumIdentifier?: string;
-  workspaces: Array<WorkspaceType>;
-  transferCredits: Array<TransferCreditType>;
-};
-
-export type RecordsOrderedType = Array<RecordGroupType>;
-
-export type AllStudentUsersDataType = Array<{
-  user: UserWithSchoolDataType;
-  records: RecordsOrderedType;
-}>;
-
-export type RecordGroupType2 = {
+/**
+ * RecordGroupType
+ */
+export interface RecordGroupType {
+  groupCurriculumName?: string;
   groupCurriculumIdentifier?: string;
   credits: RecordWorkspaceActivity[];
   transferCredits: RecordWorkspaceActivity[];
-};
+}
 
-export type RecordsOrderedType2 = Array<RecordGroupType2>;
-
-export type AllStudentUsersDataType2 = {
+/**
+ * AllStudentUsersDataType
+ */
+export interface AllStudentUsersDataType {
   user: UserWithSchoolDataType;
-  records: RecordsOrderedType2;
-};
+  records: RecordGroupType[];
+}
 
 /**
  * GradingScaleInfoType
@@ -138,7 +130,7 @@ export type CurrentStudentUserAndWorkspaceStatusType =
  * RecordsType
  */
 export interface RecordsType {
-  userData: AllStudentUsersDataType2[];
+  userData: AllStudentUsersDataType[];
   userDataStatus: AllStudentUsersDataStatusType;
   files: Array<UserFileType>;
   currentStatus: CurrentStudentUserAndWorkspaceStatusType;
