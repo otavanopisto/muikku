@@ -182,6 +182,9 @@ public class EvaluationController {
     finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
+    if (activityInfo == null) {
+      return null;
+    }
 
     // Complement the response with data available only in Muikku
 
