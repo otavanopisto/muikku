@@ -68,6 +68,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
@@ -160,7 +161,7 @@ public class EvaluationController {
 
   /* Workspace activity */
 
-  public List<WorkspaceActivity> listWorkspaceActivities(SchoolDataIdentifier studentIdentifier,
+  public WorkspaceActivityInfo listWorkspaceActivities(SchoolDataIdentifier studentIdentifier,
       SchoolDataIdentifier workspaceIdentifier,
       boolean includeTransferCredits,
       boolean includeAssignmentStatistics) {
@@ -169,10 +170,10 @@ public class EvaluationController {
 
     // Ask base information from Pyramus
 
-    List<WorkspaceActivity> activities = new ArrayList<>();
+    WorkspaceActivityInfo activityInfo = null;
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      activities = gradingController.listWorkspaceActivities(
+      activityInfo = gradingController.listWorkspaceActivities(
           dataSource,
           studentIdentifier.getIdentifier(),
           workspaceIdentifier == null ? null : workspaceIdentifier.getIdentifier(),
@@ -184,7 +185,7 @@ public class EvaluationController {
 
     // Complement the response with data available only in Muikku
 
-    for (WorkspaceActivity activity : activities) {
+    for (WorkspaceActivity activity : activityInfo.getActivities()) {
 
       // Skip activity items without a course (basically transfer credits)
 
@@ -302,7 +303,7 @@ public class EvaluationController {
         activity.setEvaluablesAnswered(evaluablesAnswered);
       }
     }
-    return activities;
+    return activityInfo;
   }
 
   public InterimEvaluationRequest findInterimEvaluationRequestById(Long interimEvaluationRequestId) {

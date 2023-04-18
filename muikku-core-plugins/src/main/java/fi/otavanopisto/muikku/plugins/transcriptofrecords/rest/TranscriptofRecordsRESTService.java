@@ -58,7 +58,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -163,12 +163,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     // Activity data
 
-    List<WorkspaceActivity> activities = evaluationController.listWorkspaceActivities(
+    WorkspaceActivityInfo activityInfo = evaluationController.listWorkspaceActivities(
         studentIdentifier,
         workspaceIdentifier,
         includeTransferCredits,
         includeAssignmentStatistics);
-    return Response.ok(activities).build();
+    return Response.ok(activityInfo).build();
   }
   
   @GET

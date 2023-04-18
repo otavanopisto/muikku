@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +18,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -99,19 +98,19 @@ public class AssessmentRequestController {
 
     // Ask activity with user + workspace combo
 
-    List<WorkspaceActivity> activities = evaluationController.listWorkspaceActivities(
+    WorkspaceActivityInfo activityInfo = evaluationController.listWorkspaceActivities(
         userIdentifier,          // for this user only
         workspaceIdentifier,     // for this workspace only
         false,                   // no interest in transfer credits
         false);                  // no interest for assignment statistics
-    if (activities.isEmpty()) {
+    if (activityInfo.getActivities().isEmpty()) {
       logger.warning(String.format("WorkspaceUserEntity %d not found in Pyramus", workspaceUserEntity.getId()));
       return Collections.emptyList();
     }
-    else if (activities.size() > 1) {
+    else if (activityInfo.getActivities().size() > 1) {
       logger.warning(String.format("Workspace %s resolves to multiple activity items", workspaceIdentifier));
     }
-    return activities.get(0).getAssessmentStates();
+    return activityInfo.getActivities().get(0).getAssessmentStates();
   }
 
   public void deleteWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, SchoolDataIdentifier assessmentRequestIdentifier) {
