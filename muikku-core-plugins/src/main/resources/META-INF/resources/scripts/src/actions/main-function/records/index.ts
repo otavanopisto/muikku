@@ -164,6 +164,31 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
             })
           );
 
+        // Get active category index
+        const activeCategoryIndex = workspaceWithActivity.findIndex(
+          (a) => a.defaultLine
+        );
+
+        // Filter out default line and sort by line category (alphabetically)
+        let sortedWorkspaceActivityData = workspaceWithActivity
+          .filter((a) => !a.defaultLine)
+          .sort((a, b) => {
+            if (a.lineCategory > b.lineCategory) {
+              return 1;
+            }
+            if (a.lineCategory < a.lineCategory) {
+              return -1;
+            }
+            return 0;
+          });
+
+        // Add default line to the beginning of the array
+        // and then sorted array of non default lines
+        sortedWorkspaceActivityData = [
+          workspaceWithActivity[activeCategoryIndex],
+          ...sortedWorkspaceActivityData,
+        ];
+
         // Helper object to hold category specific data
         const helperObject: {
           [category: string]: {
@@ -174,7 +199,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
 
         // Loop through workspaces and add them to helper object
         // by category
-        workspaceWithActivity.forEach((workspaceActivity) => {
+        sortedWorkspaceActivityData.forEach((workspaceActivity) => {
           const allCredits: RecordWorkspaceActivityByLine[] =
             workspaceActivity.activities.map((a) => ({
               lineName: workspaceActivity.lineName,

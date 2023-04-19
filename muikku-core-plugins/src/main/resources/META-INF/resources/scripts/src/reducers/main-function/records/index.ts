@@ -38,7 +38,7 @@ export interface RecordWorkspaceActivityCurriculum {
 export interface RecordWorkspaceActivityInfo {
   lineName: string;
   lineCategory: string;
-  isDefaultLine: boolean;
+  defaultLine: boolean;
   activities: RecordWorkspaceActivity[];
 }
 
