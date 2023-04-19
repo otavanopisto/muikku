@@ -352,18 +352,18 @@ const loadLastWorkspacesFromServer: LoadLastWorkspacesFromServerTriggerType =
       getState: () => StateType
     ) => {
       try {
+        const lastWorkspaces: WorkspaceMaterialReferenceType[] = JSON.parse(
+          (
+            (await promisify(
+              mApi().user.property.read("last-workspaces"),
+              "callback"
+            )()) as any
+          ).value
+        );
+        // lastWorkspaces can never be null, or the update functionality does not work
         dispatch({
           type: "UPDATE_LAST_WORKSPACES",
-          payload: <WorkspaceMaterialReferenceType[]>(
-            JSON.parse(
-              (
-                (await promisify(
-                  mApi().user.property.read("last-workspaces"),
-                  "callback"
-                )()) as any
-              ).value
-            )
-          ),
+          payload: lastWorkspaces ? lastWorkspaces : [],
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -406,7 +406,6 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
           JSON.stringify(getState().workspaces.lastWorkspaces)
         ) as WorkspaceMaterialReferenceType[];
 
-        // if (lastWorkspaces) {
         // Location for the newReference according to workspaceId
         const existingReferenceLocation = lastWorkspaces.findIndex(
           (lw) => lw.workspaceId === newReference.workspaceId
@@ -436,7 +435,6 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
           type: "UPDATE_LAST_WORKSPACES",
           payload: lastWorkspaces,
         });
-        // }
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
