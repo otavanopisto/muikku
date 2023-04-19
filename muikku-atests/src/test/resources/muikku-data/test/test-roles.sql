@@ -7,8 +7,6 @@ insert into RoleEntity (id, name) values
   (5, 'STUDENT'),
   (6, 'TRUSTED_SYSTEM'),
   (7, 'Opettaja'),
-  (8, 'Tutor'),
-  (9, 'Vastuuhenkilö'),
   (10, 'Course Student'),
   (11, 'EVERYONE'),
   (12, 'TEACHER'),
@@ -40,12 +38,10 @@ INSERT INTO RoleSchoolDataIdentifier (id, identifier, datasource_id, roleentity_
   (12, 'ENV-STUDY_GUIDER', 2, 13),
   (28, 'ENV-STUDY_PROGRAMME_LEADER', 2, 29),
   (36, 'WS-1', 2, 7),
-  (37, 'WS-2', 2, 8),
-  (38, 'WS-3', 2, 9),
   (39, 'ENV-CLOSED', 2, 30);
   
 insert into SystemRoleEntity (id, roleType) values (11, 'EVERYONE');
-insert into WorkspaceRoleEntity (id, archetype) values (7, 'TEACHER'), (8, 'CUSTOM'), (9, 'CUSTOM'), (10, 'STUDENT');
+insert into WorkspaceRoleEntity (id, archetype) values (7, 'TEACHER'), (10, 'STUDENT');
 
 
 
