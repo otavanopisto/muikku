@@ -30,20 +30,21 @@
       border-color: $color-form-element-border;
     }
 
+    // We nest this so react-select-override block's modifier definitions does not need to duplicate this disabled style
+    &.react-select-override__control--is-disabled {
+      border-color: lighten($color-disabled, 20%);
+      border-style: solid;
+      border-width: 2px;
+
+      &:hover {
+        border-color: lighten($color-disabled, 20%);
+      }
+    }
+
     @include breakpoint($breakpoint-pad) {
       font-size: $text-desktop-font-size;
       height: $select-height-desktop;
-      max-width: 250px;
-    }
-  }
-
-  .react-select-override__control--is-disabled {
-    border-color: lighten($color-disabled, 20%);
-    border-style: solid;
-    border-width: 2px;
-
-    &:hover {
-      border-color: lighten($color-disabled, 20%);
+      max-width: 300px;
     }
   }
 
@@ -103,5 +104,16 @@
     font-size: 0.8125rem;
     line-height: 1.125rem;
     margin: 5px 0 0;
+  }
+}
+
+// Used for HOPS and PEDAGOGY FORM
+.react-select-override--hops {
+  .react-select-override__control {
+    border-color: $color-hops-dialog-form-element-border;
+
+    &:hover {
+      border-color: $color-hops-dialog-form-element-border;
+    }
   }
 }

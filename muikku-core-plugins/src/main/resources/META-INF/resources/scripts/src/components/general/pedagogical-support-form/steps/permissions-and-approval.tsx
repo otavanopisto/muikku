@@ -51,7 +51,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
             </div>
           )}
 
-          <div style={{ width: "100%" }}>
+          <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
             <Button
               buttonModifiers={["execute"]}
               onClick={sendToStudent}
@@ -74,7 +74,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
             style={{ flexFlow: "unset" }}
           >
             <input
-              id="fromFamilyMember"
+              id="allowAccessToFamilyMember"
               type="checkbox"
               name="forGuardians"
               className="hops__input"
@@ -82,7 +82,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
               disabled
               defaultChecked={visibility.includes("GUARDIANS")}
             />
-            <label htmlFor="fromFamilyMember" className="hops__label">
+            <label htmlFor="allowAccessToFamilyMember" className="hops__label">
               Olen alaikäinen. Pedagogisen tuen suunnitelman tietoja saa antaa
               huoltajalleni.
             </label>
@@ -92,7 +92,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
             style={{ flexFlow: "unset" }}
           >
             <input
-              id="fromFamilyMember"
+              id="allowAccessToGuidanceCounselor"
               type="checkbox"
               name="forTeachers"
               className="hops__input"
@@ -100,7 +100,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
               disabled
               defaultChecked={visibility.includes("TEACHERS")}
             />
-            <label htmlFor="fromFamilyMember" className="hops__label">
+            <label htmlFor="allowAccessToGuidanceCounselor" className="hops__label">
               Pedagogisen tuen suunnitelman tietoja saa antaa minua opettavalle
               ja ohjaavalle henkilökunnalle.
             </label>

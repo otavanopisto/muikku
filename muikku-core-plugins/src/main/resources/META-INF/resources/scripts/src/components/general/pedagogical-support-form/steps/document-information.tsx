@@ -56,12 +56,12 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
-            <label htmlFor="graduationGoalMonth" className="hops__label">
+            <label htmlFor="documentCreationDate" className="hops__label">
               Asiakirjan laatimispäivä
             </label>
             <DatePicker
-              id="graduationGoalMonth"
-              dateFormat="dd/MM/yyyy"
+              id="documentCreationDate"
+              dateFormat="dd.MM.yyyy"
               onChange={undefined}
               selected={
                 (data?.created && new Date(data?.created)) || new Date()
@@ -89,7 +89,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
             <Textarea
               id="documentParticipants"
               label="Asiakirjan laatimiseen osallistuneet"
-              className="hops__input"
+              className="hops__textarea"
               onChange={(e) =>
                 handleTextAreaChange("documentParticipants", e.target.value)
               }
@@ -104,7 +104,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
             <Textarea
               id="cooperativePartners"
               label="Yhteistyötahot"
-              className="hops__input"
+              className="hops__textarea"
               onChange={(e) =>
                 handleTextAreaChange("cooperativePartners", e.target.value)
               }

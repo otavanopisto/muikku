@@ -27,6 +27,7 @@ interface WorkspaceSelectProps {
    * If select is disabled
    */
   disabled: boolean;
+  id: string;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -35,7 +36,7 @@ interface WorkspaceSelectProps {
  * @param props props
  */
 const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
-  const { selectedValue, onChange, disabled, displayNotification } = props;
+  const { selectedValue, id, onChange, disabled, displayNotification } = props;
   const { workspaces, loadingWorkspaces, handleTextInput } =
     useWorkspaces(displayNotification);
 
@@ -58,6 +59,9 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
 
   return (
     <Select
+      id={id}
+      className="react-select-override react-select-override--hops"
+      classNamePrefix="react-select-override"
       isClearable
       placeholder="Search workspaces..."
       options={options}

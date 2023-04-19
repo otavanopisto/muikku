@@ -249,11 +249,11 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           <span className="table__alignment-helper">-</span>
         ) : (
           <span className="table__alignment-helper">
-            <label id="removeLanguageRowLabel" className="visually-hidden">
-              Poista
-            </label>
+              <label id={`removeLanguageRowLabel${index}`} className="visually-hidden">
+                Poista
+              </label>
             <Button
-              aria-labelledby="removeLanguageRowLabel"
+              aria-labelledby={`removeLanguageRowLabel${index}`}
               buttonModifiers={["remove-hops-row"]}
               icon="trash"
               onClick={(e) => onDeleteRowClick(index)}

@@ -93,7 +93,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
           onDeleteEntryClick={handleDeleteOpinion}
         />
       ))) ||
-    "Ei opiskelijan arvioita";
+      <div className="empty"><span>Ei opiskelijan arvioita</span></div>;
 
   const schoolOpinionEntries =
     (formData?.schoolOpinionOfSupport &&
@@ -119,7 +119,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
           />
         );
       })) ||
-    "Ei koulun arvioita";
+      <div className="empty"><span>Ei koulun arvioita</span></div>;
 
   return (
     <section className="hops-container">

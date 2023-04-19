@@ -99,7 +99,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
           onActionChange={handleSupportActionChange}
         />
       ))) ||
-    "Ei toteutettuja tukitoimia";
+    <div className="empty"><span>Ei toteutettuja tukitoimia</span></div>;
 
   return (
     <section className="hops-container">
@@ -110,10 +110,10 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
 
         <ImplementedActionsList>
           {implementedActions}
-          {editIsActive && (
+          {userRole !== "STUDENT" && (
             <AddNewActionsBox
               onClick={handleAddNewSupportAction}
-              disabled={userRole === "STUDENT" || !editIsActive}
+              disabled={!editIsActive}
             />
           )}
         </ImplementedActionsList>
