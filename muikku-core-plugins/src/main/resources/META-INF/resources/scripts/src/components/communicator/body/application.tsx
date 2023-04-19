@@ -17,7 +17,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * CommunicatorApplicationProps
  */
-interface CommunicatorApplicationProps  {
+interface CommunicatorApplicationProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
 }
@@ -148,4 +148,4 @@ const componentWithTranslation = withTranslation(["messaging"], {
 
 export default connect(null, mapDispatchToProps, null, {
   withRef: true,
-})(CommunicatorApplication);
+})(componentWithTranslation);

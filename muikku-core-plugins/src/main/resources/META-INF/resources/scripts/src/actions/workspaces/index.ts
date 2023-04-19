@@ -406,11 +406,11 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
           JSON.stringify(getState().workspaces.lastWorkspaces)
         ) as WorkspaceMaterialReferenceType[];
 
+        // if (lastWorkspaces) {
         // Location for the newReference according to workspaceId
         const existingReferenceLocation = lastWorkspaces.findIndex(
           (lw) => lw.workspaceId === newReference.workspaceId
         );
-
         // If there is a reference with the same workspaceId, we remove the old one
         if (existingReferenceLocation !== -1) {
           lastWorkspaces.splice(existingReferenceLocation, 1);
@@ -436,6 +436,7 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
           type: "UPDATE_LAST_WORKSPACES",
           payload: lastWorkspaces,
         });
+        // }
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;

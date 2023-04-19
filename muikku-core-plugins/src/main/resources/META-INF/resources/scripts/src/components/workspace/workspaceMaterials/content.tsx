@@ -48,7 +48,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * ContentProps
  */
-interface ContentProps {
+interface ContentProps extends WithTranslation {
   status: StatusType;
   materials: MaterialContentNodeListType;
   materialReplies: MaterialCompositeRepliesListType;
@@ -497,18 +497,16 @@ class ContentComponent extends SessionStateComponent<
   buildViewRestrictionLocaleString = (
     viewRestrict: MaterialViewRestriction
   ) => {
-    // const { t } = this.props;
+    const { t } = this.props;
 
     switch (viewRestrict) {
       case MaterialViewRestriction.LOGGED_IN:
-        // return t("content.viewRestricted", { ns: "materials" });
-        return "materials";
+        return t("content.viewRestricted", { ns: "materials" });
 
       case MaterialViewRestriction.WORKSPACE_MEMBERS:
-        // return t("content.viewRestricted_workspaceMembers", {
-        //   ns: "materials",
-        // });
-        return "puterial";
+        return t("content.viewRestricted_workspaceMembers", {
+          ns: "materials",
+        });
 
       default:
         return null;
@@ -538,7 +536,7 @@ class ContentComponent extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    // const { t } = this.props;
+    const { t } = this.props;
 
     if (!this.props.materials || !this.props.materials.length) {
       return null;
@@ -560,8 +558,7 @@ class ContentComponent extends SessionStateComponent<
                 onClick={this.handleToggleAllSectionsOpen("open")}
               />
             </Dropdown>
-            {/* <Dropdown openByHover content={<p>{t("actions.closeAll")}</p>}> */}
-            <Dropdown openByHover content={<p>{"muu"}</p>}>
+            <Dropdown openByHover content={<p>{t("actions.closeAll")}</p>}>
               <IconButton
                 icon="arrow-up"
                 buttonModifiers={["toc-action"]}
@@ -574,7 +571,7 @@ class ContentComponent extends SessionStateComponent<
                   <div className="dropdown__container-item">
                     <div className="filter-category">
                       <div className="filter-category__label">
-                        {/* {t("labels.pagesShown", { ns: "materials" })} */}
+                        {t("labels.pagesShown", { ns: "materials" })}
                       </div>
                     </div>
                   </div>
@@ -593,7 +590,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="theory-page-filter"
                         className="filter-item__label"
                       >
-                        {/* {t("labels.theoryPages", { ns: "materials" })} */}
+                        {t("labels.theoryPages", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -612,7 +609,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="exercise-page-filter"
                         className="filter-item__label"
                       >
-                        {/* {t("labels.exercises", { ns: "materials" })} */}
+                        {t("labels.exercises", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -631,7 +628,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="assignment-page-filter"
                         className="filter-item__label"
                       >
-                        {/* {t("labels.evaluables", { ns: "materials" })} */}
+                        {t("labels.evaluables", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -650,7 +647,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="journal-page-filter"
                         className="filter-item__label"
                       >
-                        {/* {t("labels.journalAssignments", { ns: "materials" })} */}
+                        {t("labels.journalAssignments", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -669,9 +666,9 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="interim-evaluation-page-filter"
                         className="filter-item__label"
                       >
-                        {/* {t("labels.interimEvaluationPages", {
+                        {t("labels.interimEvaluationPages", {
                           ns: "materials",
-                        })} */}
+                        })}
                       </label>
                     </div>
                   </div>
@@ -802,60 +799,54 @@ class ContentComponent extends SessionStateComponent<
                       case "ANSWERED":
                         icon = "check";
                         className = "toc__item--answered";
-                        // iconTitle = t("labels.assignment", {
-                        //   context: "done",
-                        //   ns: "materials",
-                        // });
-                        iconTitle = "Tittel";
+                        iconTitle = t("labels.assignment", {
+                          context: "done",
+                          ns: "materials",
+                        });
                         break;
                       case "SUBMITTED":
                         icon = "check";
                         className = "toc__item--submitted";
-                        // iconTitle = t("labels.assignment", {
-                        //   context: "returned",
-                        //   ns: "materials",
-                        // });
-                        iconTitle = "Tittel";
+                        iconTitle = t("labels.assignment", {
+                          context: "returned",
+                          ns: "materials",
+                        });
                         break;
                       case "WITHDRAWN":
                         icon = "check";
                         className = "toc__item--withdrawn";
-                        // iconTitle = t("labels.assignment", {
-                        //   context: "cancelled",
-                        //   ns: "materials",
-                        // });
-                        iconTitle = "Tittel";
+                        iconTitle = t("labels.assignment", {
+                          context: "cancelled",
+                          ns: "materials",
+                        });
                         break;
 
                         break;
                       case "INCOMPLETE":
                         icon = "thumb-down";
                         className = "toc__item--incomplete";
-                        // iconTitle = t("labels.evaluated", {
-                        //   context: "incomplete",
-                        //   ns: "materials",
-                        // });
-
-                        iconTitle = "Tittel";
+                        iconTitle = t("labels.evaluated", {
+                          context: "incomplete",
+                          ns: "materials",
+                        });
                         break;
                         break;
                       case "FAILED":
                         icon = "thumb-down";
                         className = "toc__item--failed";
-                        // iconTitle = t("labels.evaluated", {
-                        //   context: "failed",
-                        //   ns: "materials",
-                        // });
+                        iconTitle = t("labels.evaluated", {
+                          context: "failed",
+                          ns: "materials",
+                        });
                         iconTitle = "Tittel";
                         break;
                       case "PASSED":
                         icon = "thumb-up";
                         className = "toc__item--passed";
-                        // iconTitle = t("labels.evaluated", {
-                        //   context: "passed",
-                        //   ns: "materials",
-                        // });
-                        iconTitle = "Tittel";
+                        iconTitle = t("labels.evaluated", {
+                          context: "passed",
+                          ns: "materials",
+                        });
                         break;
 
                       case "UNANSWERED":
@@ -1012,4 +1003,4 @@ const componentWithTranslation = withTranslation(["materials", "common"], {
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
-})(ContentComponent);
+})(componentWithTranslation);
