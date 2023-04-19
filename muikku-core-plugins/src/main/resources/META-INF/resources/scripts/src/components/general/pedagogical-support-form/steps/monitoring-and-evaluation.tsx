@@ -79,47 +79,51 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
-  const studentOpinionEntries =
-    (formData?.studentOpinionOfSupport &&
-      formData?.studentOpinionOfSupport.length > 0 &&
-      formData?.studentOpinionOfSupport.map((iOpinion, index) => (
+  const studentOpinionEntries = (formData?.studentOpinionOfSupport &&
+    formData?.studentOpinionOfSupport.length > 0 &&
+    formData?.studentOpinionOfSupport.map((iOpinion, index) => (
+      <OpinionItem
+        key={index}
+        index={index}
+        type="studentOpinionOfSupport"
+        opinion={iOpinion}
+        disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+        onOpinionChange={handleOpinionChange}
+        onDeleteEntryClick={handleDeleteOpinion}
+      />
+    ))) || (
+    <div className="empty">
+      <span>Ei opiskelijan arvioita</span>
+    </div>
+  );
+
+  const schoolOpinionEntries = (formData?.schoolOpinionOfSupport &&
+    formData?.schoolOpinionOfSupport.length > 0 &&
+    formData?.schoolOpinionOfSupport.map((iOpinion, index) => {
+      const ownerOfEntry =
+        status.userSchoolDataIdentifier === iOpinion.creatorIdentifier;
+
+      return (
         <OpinionItem
           key={index}
           index={index}
-          type="studentOpinionOfSupport"
+          type="schoolOpinionOfSupport"
           opinion={iOpinion}
-          disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+          disabled={
+            userRole === "STUDENT" ||
+            !editIsActive ||
+            !ownerOfEntry ||
+            !editIsActive
+          }
           onOpinionChange={handleOpinionChange}
           onDeleteEntryClick={handleDeleteOpinion}
         />
-      ))) ||
-      <div className="empty"><span>Ei opiskelijan arvioita</span></div>;
-
-  const schoolOpinionEntries =
-    (formData?.schoolOpinionOfSupport &&
-      formData?.schoolOpinionOfSupport.length > 0 &&
-      formData?.schoolOpinionOfSupport.map((iOpinion, index) => {
-        const ownerOfEntry =
-          status.userSchoolDataIdentifier === iOpinion.creatorIdentifier;
-
-        return (
-          <OpinionItem
-            key={index}
-            index={index}
-            type="schoolOpinionOfSupport"
-            opinion={iOpinion}
-            disabled={
-              userRole === "STUDENT" ||
-              !editIsActive ||
-              !ownerOfEntry ||
-              !editIsActive
-            }
-            onOpinionChange={handleOpinionChange}
-            onDeleteEntryClick={handleDeleteOpinion}
-          />
-        );
-      })) ||
-      <div className="empty"><span>Ei koulun arvioita</span></div>;
+      );
+    })) || (
+    <div className="empty">
+      <span>Ei koulun arvioita</span>
+    </div>
+  );
 
   return (
     <section className="hops-container">

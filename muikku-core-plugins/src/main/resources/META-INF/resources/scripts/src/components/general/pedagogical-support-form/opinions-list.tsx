@@ -107,12 +107,13 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
           </div>
         )}
       </div>
-      <div
-        className="hops-container__row hops-container__row--remove-row-action"
-      >
+      <div className="hops-container__row hops-container__row--remove-row-action">
         {!disabled && (
           <>
-            <label id={`removePedagogyRowLabel-${type}${index}`} className="visually-hidden">
+            <label
+              id={`removePedagogyRowLabel-${type}${index}`}
+              className="visually-hidden"
+            >
               Poista
             </label>
             <Button

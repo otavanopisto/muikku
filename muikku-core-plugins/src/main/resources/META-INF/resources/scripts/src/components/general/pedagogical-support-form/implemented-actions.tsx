@@ -152,12 +152,13 @@ export const ImplementedActionsListItem: React.FC<
         </div>
       </div>
 
-      <div
-        className="hops-container__row hops-container__row--remove-row-action"
-      >
+      <div className="hops-container__row hops-container__row--remove-row-action">
         {ownerOfEntry && editIsActive && (
           <>
-            <label id={`removePedagogyRowLabel${index}`}  className="visually-hidden">
+            <label
+              id={`removePedagogyRowLabel${index}`}
+              className="visually-hidden"
+            >
               Poista
             </label>
             <Button

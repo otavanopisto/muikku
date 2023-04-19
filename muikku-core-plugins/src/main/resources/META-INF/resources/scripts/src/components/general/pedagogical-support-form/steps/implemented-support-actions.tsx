@@ -84,22 +84,24 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
     setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
-  const implementedActions =
-    (formData?.supportActionsImplemented &&
-      formData?.supportActionsImplemented.length > 0 &&
-      formData?.supportActionsImplemented.map((iAction, index) => (
-        <ImplementedActionsListItem
-          implemenetedSupportAction={iAction}
-          key={index}
-          index={index}
-          ownerOfEntry={
-            status.userSchoolDataIdentifier === iAction.creatorIdentifier
-          }
-          onDeleteActionClick={handleDeleteSupportAction}
-          onActionChange={handleSupportActionChange}
-        />
-      ))) ||
-    <div className="empty"><span>Ei toteutettuja tukitoimia</span></div>;
+  const implementedActions = (formData?.supportActionsImplemented &&
+    formData?.supportActionsImplemented.length > 0 &&
+    formData?.supportActionsImplemented.map((iAction, index) => (
+      <ImplementedActionsListItem
+        implemenetedSupportAction={iAction}
+        key={index}
+        index={index}
+        ownerOfEntry={
+          status.userSchoolDataIdentifier === iAction.creatorIdentifier
+        }
+        onDeleteActionClick={handleDeleteSupportAction}
+        onActionChange={handleSupportActionChange}
+      />
+    ))) || (
+    <div className="empty">
+      <span>Ei toteutettuja tukitoimia</span>
+    </div>
+  );
 
   return (
     <section className="hops-container">

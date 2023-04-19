@@ -144,7 +144,10 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<
       {!readOnly && (
         <div className="matriculation__form-element-container matriculation__form-element-container--button">
           {index == 0 ? (
-            <label id="removeMatriculationRowLabelEnrolled" className="visually-hidden">
+            <label
+              id="removeMatriculationRowLabelEnrolled"
+              className="visually-hidden"
+            >
               Poista
             </label>
           ) : null}
@@ -290,7 +293,10 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
       {!readOnly && (
         <div className="matriculation__form-element-container matriculation__form-element-container--button">
           {index == 0 ? (
-            <label id="removeMatriculationRowLabelFinished" className="visually-hidden">
+            <label
+              id="removeMatriculationRowLabelFinished"
+              className="visually-hidden"
+            >
               Poista
             </label>
           ) : null}
@@ -393,7 +399,10 @@ export const MatriculationExaminationPlannedInputGroup: React.FC<
       {!readOnly && (
         <div className="matriculation__form-element-container matriculation__form-element-container--button">
           {index == 0 ? (
-            <label id="removeMatriculationRowLabelPlanned" className="visually-hidden">
+            <label
+              id="removeMatriculationRowLabelPlanned"
+              className="visually-hidden"
+            >
               Poista
             </label>
           ) : null}

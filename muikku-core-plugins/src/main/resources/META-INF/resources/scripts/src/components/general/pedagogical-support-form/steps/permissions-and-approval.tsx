@@ -100,7 +100,10 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
               disabled
               defaultChecked={visibility.includes("TEACHERS")}
             />
-            <label htmlFor="allowAccessToGuidanceCounselor" className="hops__label">
+            <label
+              htmlFor="allowAccessToGuidanceCounselor"
+              className="hops__label"
+            >
               Pedagogisen tuen suunnitelman tietoja saa antaa minua opettavalle
               ja ohjaavalle henkilökunnalle.
             </label>
