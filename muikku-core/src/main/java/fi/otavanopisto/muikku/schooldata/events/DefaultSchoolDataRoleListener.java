@@ -11,11 +11,8 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.users.EnvironmentRoleEntityController;
 import fi.otavanopisto.muikku.users.RoleSchoolDataIdentifierController;
-import fi.otavanopisto.muikku.users.WorkspaceRoleEntityController;
 
 public class DefaultSchoolDataRoleListener {
   
@@ -26,14 +23,10 @@ public class DefaultSchoolDataRoleListener {
   private EnvironmentRoleEntityController environmentRoleEntityController;
   
   @Inject
-  private WorkspaceRoleEntityController workspaceRoleEntityController;
-
-  @Inject
   private RoleSchoolDataIdentifierController roleSchoolDataIdentifierController;
   
   @PostConstruct
   public void init() {
-    discoveredWorkspaceRoles = new HashMap<>();
     discoveredEnvironmentRoles = new HashMap<>();
   }
   
@@ -62,31 +55,5 @@ public class DefaultSchoolDataRoleListener {
     }
   }
 
-  public void onSchoolDataWorkspaceRoleDiscoveredEvent(@Observes SchoolDataWorkspaceRoleDiscoveredEvent event) {
-    String discoverId = "WSR-" + event.getDataSource() + "/" + event.getIdentifier();
-    if (discoveredWorkspaceRoles.containsKey(discoverId)) {
-      event.setDiscoveredWorkspaceRoleEntityId(discoveredWorkspaceRoles.get(discoverId));
-      return;
-    }
-    
-    WorkspaceRoleEntity workspaceRoleEntity = workspaceRoleEntityController.findWorkspaceRoleEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (workspaceRoleEntity == null) {
-      WorkspaceRoleArchetype roleArchetype = WorkspaceRoleArchetype.valueOf(event.getArchetype().name());
-      workspaceRoleEntity = workspaceRoleEntityController.createWorkspaceRoleEntity(event.getDataSource(), event.getIdentifier(), roleArchetype, event.getName());
-      discoveredWorkspaceRoles.put(discoverId, workspaceRoleEntity.getId());
-      event.setDiscoveredWorkspaceRoleEntityId(workspaceRoleEntity.getId());
-    } else {
-      logger.warning("WorkspaceRoleEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
-    }
-  }
-  
-  public void onSchoolDataWorkspaceRoleRemoved(@Observes SchoolDataWorkspaceRoleRemovedEvent event) {
-    RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (roleSchoolDataIdentifier != null) {
-      roleSchoolDataIdentifierController.deleteRoleSchoolDataIdentifier(roleSchoolDataIdentifier);
-    }
-  }
-
   private Map<String, Long> discoveredEnvironmentRoles;
-  private Map<String, Long> discoveredWorkspaceRoles;
 }

@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.schooldata;
 import java.util.List;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
@@ -39,7 +40,7 @@ public interface WorkspaceSchoolDataBridge {
   
   /* Workspace Users */
 
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier);
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role);
   
   public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier);
   
