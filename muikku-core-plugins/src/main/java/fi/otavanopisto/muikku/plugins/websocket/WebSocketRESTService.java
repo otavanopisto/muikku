@@ -46,11 +46,11 @@ public class WebSocketRESTService extends PluginRESTService {
       UserEntity user = sessionController.getLoggedUserEntity(); 
       // Since we're logged in, the requested ticket really should belong to us but just in case it didn't,
       // we treat it as not found in order to get the logged in user to renew it properly
-      return user.getId().equals(sessionInfo.getUserEntityId()) ? Response.noContent().build() : Response.status(Response.Status.NOT_FOUND).build();
+      return user.getId().equals(sessionInfo.getUserEntityId()) ? Response.ok(true).build() : Response.ok(false).build();
     }
     else {
       // The entire ticket (and associated websocket) has disappeared from the server
-      return Response.status(Response.Status.NOT_FOUND).build();
+      return Response.ok(false).build();
     }
   }
   
