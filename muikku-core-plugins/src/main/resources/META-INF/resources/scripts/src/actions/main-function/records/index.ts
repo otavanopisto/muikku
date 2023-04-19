@@ -192,13 +192,15 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
 
           // If category exists in helper object, add credits to it
           if (helperObject[workspaceActivity.lineCategory]) {
-            helperObject[workspaceActivity.lineCategory].credits.concat(
-              credits
-            );
+            helperObject[workspaceActivity.lineCategory].credits =
+              helperObject[workspaceActivity.lineCategory].credits.concat(
+                credits
+              );
 
-            helperObject[
-              workspaceActivity.lineCategory
-            ].transferedCredits.concat(transferedCredits);
+            helperObject[workspaceActivity.lineCategory].transferedCredits =
+              helperObject[
+                workspaceActivity.lineCategory
+              ].transferedCredits.concat(transferedCredits);
           } else {
             // If category does not exist in helper object, create it
             helperObject[workspaceActivity.lineCategory] = {
