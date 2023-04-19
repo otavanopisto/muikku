@@ -236,6 +236,8 @@ export class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["disableScroll"];
     delete elementProps["as"];
     delete elementProps["disableSmoothScroll"];
+    delete elementProps["tReady"];
+    delete elementProps["t"];
 
     if (
       (elementProps.href == null &&
