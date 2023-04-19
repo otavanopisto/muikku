@@ -16,6 +16,7 @@ import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -155,12 +156,12 @@ public class WorkspaceSchoolDataController {
   
   /* Workspace Users */
 
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role) {
     WorkspaceEntity workspaceEntity = findWorkspaceEntity(workspace);
 
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
     if (workspaceBridge != null) {
-      return workspaceBridge.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier);
+      return workspaceBridge.createWorkspaceUser(workspace, user, role);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge not found: " + workspaceEntity.getDataSource());
     }
