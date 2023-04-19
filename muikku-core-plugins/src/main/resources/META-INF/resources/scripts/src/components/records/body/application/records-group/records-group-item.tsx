@@ -11,7 +11,7 @@ import Button from "~/components/general/button";
 import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
-import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
+import { RecordWorkspaceActivityByLine } from "~/reducers/main-function/records";
 import { Assessment } from "~/reducers/workspaces";
 import ActivityIndicator from "../records-indicators/activity-indicator";
 import AssessmentRequestIndicator from "../records-indicators/assessment-request-indicator";
@@ -22,7 +22,7 @@ import RecordsAssessmentIndicator from "../records-indicators/records-assessment
  */
 interface RecordsGroupItemProps {
   i18n: i18nType;
-  credit: RecordWorkspaceActivity;
+  credit: RecordWorkspaceActivityByLine;
   isCombinationWorkspace: boolean;
 }
 
@@ -110,7 +110,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
     return (
       <>
-        {credit.assessmentStates.map((a) => {
+        {credit.activity.assessmentStates.map((a) => {
           const {
             evalStateClassName,
             evalStateIcon,
@@ -122,7 +122,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           } = getAssessmentData(a);
 
           // Find subject data, that contains basic information about that subject
-          const subjectData = credit.subjects.find(
+          const subjectData = credit.activity.subjects.find(
             (s) => s.identifier === a.workspaceSubjectIdentifier
           );
 
@@ -294,21 +294,52 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const animateOpen = showE ? "auto" : 0;
 
   return (
-    <ApplicationListItem key={credit.id} className="course course--studies">
+    <ApplicationListItem
+      key={credit.activity.id}
+      className="course course--studies"
+    >
       <ApplicationListItemHeader
-        key={credit.id}
+        key={credit.activity.id}
         onClick={handleShowEvaluationClick}
         modifiers={
           isCombinationWorkspace ? ["course", "combination-course"] : ["course"]
         }
       >
         <span className="application-list__header-icon icon-books"></span>
-        <span className="application-list__header-primary">{credit.name}</span>
+        <span className="application-list__header-primary">
+          {credit.activity.name}
+
+          <div
+            style={{ display: "flex", flexBasis: "100%", fontSize: "0.8rem" }}
+          >
+            <div
+              style={{
+                padding: "2px 5px 0 0",
+                fontStyle: "italic",
+                fontWeight: "lighter",
+              }}
+            >
+              {credit.lineName}
+            </div>
+            {credit.activity.curriculums.map((curriculum) => (
+              <div
+                key={curriculum.identifier}
+                style={{
+                  padding: "2px 5px 0 0",
+                  fontStyle: "italic",
+                  fontWeight: "lighter",
+                }}
+              >
+                {curriculum.name}{" "}
+              </div>
+            ))}
+          </div>
+        </span>
         <div className="application-list__header-secondary">
           <span>
             <WorkspaceAssignmentsAndDiaryDialog
-              workspaceId={credit.id}
-              credit={credit}
+              workspaceId={credit.activity.id}
+              credit={credit.activity}
             >
               <Button buttonModifiers={["info", "assignments-and-exercieses"]}>
                 {props.i18n.text.get(
@@ -322,26 +353,26 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
             // So "legasy" case where there is only one module, render indicator etc next to workspace name
             <>
               <AssessmentRequestIndicator
-                assessment={credit.assessmentStates[0]}
+                assessment={credit.activity.assessmentStates[0]}
               />
               <RecordsAssessmentIndicator
-                assessment={credit.assessmentStates[0]}
+                assessment={credit.activity.assessmentStates[0]}
                 isCombinationWorkspace={isCombinationWorkspace}
               />
             </>
           ) : null}
-          <ActivityIndicator credit={credit} />
+          <ActivityIndicator credit={credit.activity} />
         </div>
       </ApplicationListItemHeader>
 
       {isCombinationWorkspace ? (
         // If combinatin workspace render module assessments below workspace name
         <ApplicationListItemContentContainer modifiers="combination-course">
-          {credit.assessmentStates.map((a) => {
+          {credit.activity.assessmentStates.map((a) => {
             /**
              * Find subject data, that contains basic information about that subject
              */
-            const subjectData = credit.subjects.find(
+            const subjectData = credit.activity.subjects.find(
               (s) => s.identifier === a.workspaceSubjectIdentifier
             );
 

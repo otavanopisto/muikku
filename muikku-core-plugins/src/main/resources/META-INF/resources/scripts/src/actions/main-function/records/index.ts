@@ -8,16 +8,16 @@ import {
   TranscriptOfRecordLocationType,
   CurrentStudentUserAndWorkspaceStatusType,
   CurrentRecordType,
-  RecordWorkspaceActivity,
-  AllStudentUsersDataType,
-  RecordGroupType,
+  RecordWorkspaceActivityInfo,
+  RecordWorkspaceActivityByLine,
+  RecordWorkspaceActivitiesWithLineCategory,
 } from "~/reducers/main-function/records";
 import { UserFileType, UserWithSchoolDataType } from "~/reducers/user-index";
 import { Dispatch } from "react-redux";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
-  AllStudentUsersDataType[]
+  RecordWorkspaceActivitiesWithLineCategory[]
 >;
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
@@ -148,139 +148,82 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           return parseInt(bId) - parseInt(aId);
         });
 
-        //////// NEW CODE
+        // Get workspaces aka activities with line and category
+        const workspaceWithActivity: RecordWorkspaceActivityInfo[] =
+          await Promise.all(
+            users.map(async (user) => {
+              const workspacesWithActivity = (await promisify(
+                mApi().records.users.workspaceActivity.read(user.id, {
+                  includeTransferCredits: "true",
+                  includeAssignmentStatistics: "true",
+                }),
+                "callback"
+              )()) as RecordWorkspaceActivityInfo;
 
-        const workspaceWithActivity: {
-          user: UserWithSchoolDataType;
-          allCredits: RecordWorkspaceActivity[];
-        }[] = await Promise.all(
-          users.map(async (user) => {
-            const workspacesWithActivity = (await promisify(
-              mApi().records.users.workspaceActivity.read(user.id, {
-                includeTransferCredits: "true",
-                includeAssignmentStatistics: "true",
-              }),
-              "callback"
-            )()) as RecordWorkspaceActivity[];
+              return workspacesWithActivity;
+            })
+          );
 
-            return {
-              user,
-              allCredits: workspacesWithActivity,
-            };
-          })
-        );
-
-        const resultingDataNew: AllStudentUsersDataType[] = [];
-
-        users.forEach((user, index) => {
-          // Intiliaze list of data for each user
-          resultingDataNew[index] = {
-            user,
-            records: null,
+        // Helper object to hold category specific data
+        const helperObject: {
+          [category: string]: {
+            credits: RecordWorkspaceActivityByLine[];
+            transferedCredits: RecordWorkspaceActivityByLine[];
           };
+        } = {};
 
-          // If user has no curriculum, just add all credits to the list
-          if (!user.curriculumIdentifier) {
-            resultingDataNew[index].records = [
-              {
-                credits: workspaceWithActivity[index].allCredits.filter(
-                  (c) => c.assessmentStates[0].state !== "transferred"
-                ),
-                transferCredits: workspaceWithActivity[index].allCredits.filter(
-                  (c) => c.assessmentStates[0].state === "transferred"
-                ),
-              },
-            ];
+        // Loop through workspaces and add them to helper object
+        // by category
+        workspaceWithActivity.forEach((workspaceActivity) => {
+          const allCredits: RecordWorkspaceActivityByLine[] =
+            workspaceActivity.activities.map((a) => ({
+              lineName: workspaceActivity.lineName,
+              activity: a,
+            }));
+
+          const credits: RecordWorkspaceActivityByLine[] = allCredits.filter(
+            (a) => a.activity.assessmentStates[0].state !== "transferred"
+          );
+
+          const transferedCredits: RecordWorkspaceActivityByLine[] =
+            allCredits.filter(
+              (a) => a.activity.assessmentStates[0].state === "transferred"
+            );
+
+          // If category exists in helper object, add credits to it
+          if (helperObject[workspaceActivity.lineCategory]) {
+            helperObject[workspaceActivity.lineCategory].credits.concat(
+              credits
+            );
+
+            helperObject[
+              workspaceActivity.lineCategory
+            ].transferedCredits.concat(transferedCredits);
           } else {
-            const creditById: { [key: string]: RecordGroupType } = {};
-
-            const defaultCredits: RecordGroupType = {
+            // If category does not exist in helper object, create it
+            helperObject[workspaceActivity.lineCategory] = {
               credits: [],
-              transferCredits: [],
+              transferedCredits: [],
             };
 
-            const creditIdsOrdered = workspaceWithActivity[
-              index
-            ].allCredits.map((c) => {
-              //so we get the curriculum this workspace belongs to
-              const curriculumIdentifier = c.curriculums[0]?.identifier;
-              const curriculumName = c.curriculums[0]?.name;
-
-              const isTransfer = c.assessmentStates[0].state === "transferred";
-
-              //if there is none it goes to the default record one
-              if (!curriculumIdentifier || !curriculumName) {
-                isTransfer
-                  ? defaultCredits.transferCredits.push(c)
-                  : defaultCredits.credits.push(c);
-
-                //if we don't have it set in the record by id object then we need to create a new record group with that record
-              } else if (!creditById[curriculumIdentifier]) {
-                creditById[curriculumIdentifier] = {
-                  groupCurriculumName: curriculumName,
-                  groupCurriculumIdentifier: curriculumIdentifier,
-                  credits: [],
-                  transferCredits: [],
-                };
-
-                isTransfer
-                  ? creditById[curriculumIdentifier].transferCredits.push(c)
-                  : creditById[curriculumIdentifier].credits.push(c);
-
-                //otherwise we add that record to the record group
-              } else {
-                isTransfer
-                  ? creditById[curriculumIdentifier].transferCredits.push(c)
-                  : creditById[curriculumIdentifier].credits.push(c);
-              }
-
-              //We fetch the given id
-              return curriculumIdentifier;
-            });
-
-            //now here we need to order, the curriculum identifier of the user always goes first
-            //then we add it by the ids given by the workspace and then by the transferred records
-            //we need to remove duplicates, this gives us a list of strings of ids of the order of that specific user
-            const creditsOrder = [user.curriculumIdentifier]
-              .concat(creditIdsOrdered)
-              .filter((item, pos, self) => item && self.indexOf(item) == pos);
-
-            //now we need to apply this order for that user, we take the order and return each record group
-            //we also need to sort the records by curriculum name
-            //we concat it with the default records (at the end as they have no identifier), and then we need
-            //to filter, sometimes there might be no record at all eg, the user curriculum identifier has no workspace or
-            //transfer credit with that id; or it might be empty, eg, as the default record hold no records at all,
-            //we want to filter those cases out
-            resultingDataNew[index].records = creditsOrder
-              .map(
-                (curriculumIdentifier: string) =>
-                  creditById[curriculumIdentifier]
-              )
-              .sort((a, b) => {
-                const aName = a.groupCurriculumName.toLowerCase();
-                const bName = b.groupCurriculumName.toLowerCase();
-
-                if (aName < bName) {
-                  return -1;
-                }
-                if (aName > bName) {
-                  return 1;
-                }
-                return 0;
-              })
-              .concat([defaultCredits])
-              .filter(
-                (record: RecordGroupType) =>
-                  record &&
-                  record.credits.length + record.transferCredits.length
-              );
+            helperObject[workspaceActivity.lineCategory].credits = credits;
+            helperObject[workspaceActivity.lineCategory].transferedCredits =
+              transferedCredits;
           }
         });
+
+        // Convert helper object to array of objects
+        const data: RecordWorkspaceActivitiesWithLineCategory[] =
+          Object.entries(helperObject).map((a) => ({
+            lineCategory: a[0],
+            credits: a[1].credits,
+            transferCredits: a[1].transferedCredits,
+          }));
 
         //and that should do it, it should give us the precious data we need in the order we need it to be
         dispatch({
           type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
-          payload: resultingDataNew,
+          payload: data,
         });
         dispatch({
           type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",

@@ -5,23 +5,18 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { StateType } from "~/reducers";
-import {
-  RecordGroupType,
-  RecordWorkspaceActivity,
-} from "~/reducers/main-function/records";
-import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
+import { RecordWorkspaceActivitiesWithLineCategory } from "~/reducers/main-function/records";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import RecordsGroupItem from "./records-group-item";
-import { StoredCurriculum } from "../records";
+import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
 
 /**
  * RecordsListProps
  */
 interface RecordsGroupProps {
-  recordGroup: RecordGroupType;
-  storedCurriculumIndex: StoredCurriculum;
+  recordGroup: RecordWorkspaceActivitiesWithLineCategory;
   i18n: i18nType;
 }
 
@@ -31,14 +26,11 @@ interface RecordsGroupProps {
  * @returns JSX.Element
  */
 export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
-  const { recordGroup, storedCurriculumIndex, i18n } = props;
+  const { recordGroup } = props;
 
   const [creditSortDirection, setWorkspaceSortDirection] = React.useState<
     "asc" | "desc"
   >("asc");
-
-  const [transferCreditSortDirection, setTransferedSortDirection] =
-    React.useState<"asc" | "desc">("asc");
 
   /**
    * sortWorkspaces
@@ -49,115 +41,125 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
     );
   };
 
-  /**
-   * sortWorkspaces
-   */
-  const handleTransferedWorkspaceSortDirectionClick = () => {
-    setTransferedSortDirection((oldValue) =>
-      oldValue === "asc" ? "desc" : "asc"
-    );
-  };
+  const sortedCredits = recordGroup.credits.sort((a, b) => {
+    const aString = a.activity.name.toLowerCase();
+    const bString = b.activity.name.toLowerCase();
 
-  const sortedCredits = sortByDirection<RecordWorkspaceActivity>(
-    recordGroup.credits,
-    "name",
-    creditSortDirection
-  );
-
-  const sortedTransferCredits = sortByDirection<RecordWorkspaceActivity>(
-    recordGroup.transferCredits,
-    "name",
-    transferCreditSortDirection
-  );
-
-  return (
-    <ApplicationList>
-      {recordGroup.groupCurriculumIdentifier ? (
-        <div
-          onClick={handleWorkspaceSortDirectionClick}
-          className="application-list__header-container application-list__header-container--sorter"
-        >
-          <h3 className="application-list__header application-list__header--sorter">
-            {recordGroup.groupCurriculumIdentifier
-              ? storedCurriculumIndex[recordGroup.groupCurriculumIdentifier]
-              : ""}
-          </h3>
-          <div className={`icon-sort-alpha-${creditSortDirection}`}></div>
-        </div>
-      ) : null}
-      {sortedCredits.map((credit) => {
-        // By default every workspace is not combination
-        let isCombinationWorkspace = false;
-
-        if (credit.subjects) {
-          // If assessmentState contains more than 1 items, then its is combination
-          isCombinationWorkspace = credit.subjects.length > 1;
-        }
-
-        return (
-          <RecordsGroupItem
-            key={`credit-${credit.id}`}
-            credit={credit}
-            isCombinationWorkspace={isCombinationWorkspace}
-          />
-        );
-      })}
-      {recordGroup.transferCredits.length ? (
-        <div
-          className="application-list__header-container application-list__header-container--sorter"
-          onClick={handleTransferedWorkspaceSortDirectionClick}
-        >
-          <h3 className="application-list__header application-list__header--sorter">
-            {i18n.text.get("plugin.records.transferCredits")}
-            {recordGroup.groupCurriculumIdentifier
-              ? storedCurriculumIndex[recordGroup.groupCurriculumIdentifier]
-              : null}
-          </h3>
-          <div
-            className={`icon-sort-alpha-${transferCreditSortDirection}`}
-          ></div>
-        </div>
-      ) : null}
-      {sortedTransferCredits.map((tCredit, i) => (
-        <ApplicationListItem
-          className="course course--credits"
-          key={`tranfer-credit-${i}`}
-        >
-          <ApplicationListItemHeader modifiers="course">
-            <span className="application-list__header-icon icon-books"></span>
-            <span className="application-list__header-primary">
-              {tCredit.name}
-            </span>
-            <div className="application-list__header-secondary">
-              <TransferedCreditIndicator transferCredit={tCredit} />
-            </div>
-          </ApplicationListItemHeader>
-        </ApplicationListItem>
-      ))}
-    </ApplicationList>
-  );
-};
-
-/**
- * Sorts by direction with given key or property
- *
- * @param data data
- * @param key key
- * @param direction direction
- */
-const sortByDirection = <T,>(data: T[], key: keyof T, direction: string) =>
-  data.sort((a: T, b: T) => {
-    const aString = (a[key] as unknown as string).toLowerCase();
-    const bString = (b[key] as unknown as string).toLowerCase();
-
-    if (aString < bString) {
-      return direction === "asc" ? -1 : 1;
-    }
     if (aString > bString) {
-      return direction === "desc" ? 1 : -1;
+      return creditSortDirection === "asc" ? 1 : -1;
+    }
+    if (aString < bString) {
+      return creditSortDirection === "asc" ? -1 : 1;
     }
     return 0;
   });
+
+  if (sortedCredits.length + recordGroup.transferCredits.length <= 0) {
+    return (
+      <ApplicationList>
+        <div className="application-list__header-container application-list__header-container--sorter">
+          <h3 className="application-list__header application-list__header--sorter">
+            {recordGroup.lineCategory}
+          </h3>
+        </div>
+        <div className="application-sub-panel__item">
+          <div className="empty">
+            <span>{props.i18n.text.get("plugin.records.courses.empty")}</span>
+          </div>
+        </div>
+      </ApplicationList>
+    );
+  }
+
+  return (
+    <ApplicationList>
+      <div
+        onClick={handleWorkspaceSortDirectionClick}
+        className="application-list__header-container application-list__header-container--sorter"
+      >
+        <h3 className="application-list__header application-list__header--sorter">
+          {recordGroup.lineCategory}
+        </h3>
+        <div className={`icon-sort-alpha-${creditSortDirection}`}></div>
+      </div>
+      {sortedCredits.length
+        ? sortedCredits.map((credit, i) => {
+            // By default every workspace is not combination
+            let isCombinationWorkspace = false;
+
+            if (credit.activity.subjects) {
+              // If assessmentState contains more than 1 items, then its is combination
+              isCombinationWorkspace = credit.activity.subjects.length > 1;
+            }
+
+            return (
+              <RecordsGroupItem
+                key={`credit-item-${i}`}
+                credit={credit}
+                isCombinationWorkspace={isCombinationWorkspace}
+              />
+            );
+          })
+        : null}
+
+      {recordGroup.transferCredits.length ? (
+        <>
+          <div className="application-list__header-container application-list__header-container--sorter">
+            <h3 className="application-list__header application-list__header--sorter">
+              Hyväksiluvut
+            </h3>
+          </div>
+          {recordGroup.transferCredits.map((credit, i) => (
+            <ApplicationListItem
+              className="course course--credits"
+              key={`tranfer-credit-${i}`}
+            >
+              <ApplicationListItemHeader modifiers="course">
+                <span className="application-list__header-icon icon-books"></span>
+                <span className="application-list__header-primary">
+                  {credit.activity.name}
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexBasis: "100%",
+                      fontSize: "0.8rem",
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "2px 5px 0 0",
+                        fontStyle: "italic",
+                        fontWeight: "lighter",
+                      }}
+                    >
+                      {credit.lineName}
+                    </div>
+                    {credit.activity.curriculums.map((curriculum) => (
+                      <div
+                        key={curriculum.identifier}
+                        style={{
+                          padding: "2px 5px 0 0",
+                          fontStyle: "italic",
+                          fontWeight: "lighter",
+                        }}
+                      >
+                        {curriculum.name}{" "}
+                      </div>
+                    ))}
+                  </div>
+                </span>
+                <div className="application-list__header-secondary">
+                  <TransferedCreditIndicator transferCredit={credit.activity} />
+                </div>
+              </ApplicationListItemHeader>
+            </ApplicationListItem>
+          ))}
+        </>
+      ) : null}
+    </ApplicationList>
+  );
+};
 
 /**
  * mapStateToProps

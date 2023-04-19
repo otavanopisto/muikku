@@ -1,4 +1,4 @@
-import { UserWithSchoolDataType, UserFileType } from "~/reducers/user-index";
+import { UserFileType } from "~/reducers/user-index";
 import { Assessment, WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { Reducer } from "redux";
@@ -8,29 +8,6 @@ import {
   MaterialContentNodeListType,
   MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
-
-/**
- * TransferCreditType
- */
-export interface TransferCreditType {
-  assessorIdentifier: string;
-  courseName: string;
-  courseNumber: number;
-  curriculumIdentifier: string;
-  date: string;
-  gradeIdentifier: string;
-  gradingScaleIdentifier: string;
-  grade: string;
-  gradingScale: string;
-  passed: boolean;
-  identifier: string;
-  length: number;
-  lengthUnitIdentifier: string;
-  schoolIdentifier: string;
-  studentIdentifier: string;
-  subjectIdentifier: string;
-  verbalAssessment: string;
-}
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
 
@@ -53,6 +30,33 @@ export interface RecordWorkspaceActivitySubject {
 export interface RecordWorkspaceActivityCurriculum {
   identifier: string;
   name: string;
+}
+
+/**
+ * Record workspace activity info with line and category, default line and activities
+ */
+export interface RecordWorkspaceActivityInfo {
+  lineName: string;
+  lineCategory: string;
+  isDefaultLine: boolean;
+  activities: RecordWorkspaceActivity[];
+}
+
+/**
+ * RecordWorkspaceByLineCategory
+ */
+export interface RecordWorkspaceActivitiesWithLineCategory {
+  lineCategory: string;
+  credits: RecordWorkspaceActivityByLine[];
+  transferCredits: RecordWorkspaceActivityByLine[];
+}
+
+/**
+ * Record workspace activity with line name
+ */
+export interface RecordWorkspaceActivityByLine {
+  lineName: string;
+  activity: RecordWorkspaceActivity;
 }
 
 /**
@@ -82,30 +86,6 @@ export interface RecordGroupType {
 }
 
 /**
- * AllStudentUsersDataType
- */
-export interface AllStudentUsersDataType {
-  user: UserWithSchoolDataType;
-  records: RecordGroupType[];
-}
-
-/**
- * GradingScaleInfoType
- */
-export interface GradingScaleInfoType {
-  scale: string;
-  grade: string;
-  passing: boolean;
-}
-
-/**
- * RecordsGradesType
- */
-export interface RecordsGradesType {
-  [key: string]: GradingScaleInfoType;
-}
-
-/**
  * CurrentRecordType
  */
 export interface CurrentRecordType {
@@ -130,7 +110,7 @@ export type CurrentStudentUserAndWorkspaceStatusType =
  * RecordsType
  */
 export interface RecordsType {
-  userData: AllStudentUsersDataType[];
+  userData: RecordWorkspaceActivitiesWithLineCategory[];
   userDataStatus: AllStudentUsersDataStatusType;
   files: Array<UserFileType>;
   currentStatus: CurrentStudentUserAndWorkspaceStatusType;
