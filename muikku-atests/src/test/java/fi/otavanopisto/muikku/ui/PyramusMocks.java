@@ -29,7 +29,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseLength;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
-import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.CourseType;
 import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
@@ -337,26 +337,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(staff3EmailJson)
         .withStatus(200)));
     
-    CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 8, "Opettaja");
-    CourseStaffMemberRole[] cRoleArray = { teacherRole };
-
-    String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
-    
-    stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(cRoleJson)
-        .withStatus(200)));
-    
-    for (CourseStaffMemberRole role : cRoleArray) {
-      stubFor(get(urlEqualTo(String.format("/1/courses/staffMemberRoles/%d", role.getId())))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(objectMapper.writeValueAsString(role))
-            .withStatus(200)));
-    }
-    
-    CourseStaffMember staffMember = new CourseStaffMember(1l, 1l, 4l, 1l);
+    CourseStaffMember staffMember = new CourseStaffMember(1l, 1l, 4l, CourseStaffMemberRoleEnum.COURSE_TEACHER);
     CourseStaffMember[] staffMembers = { staffMember };
 
     stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/staffMembers", 1l)))
@@ -460,7 +441,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(objectMapper.writeValueAsString(courseAssessment2))
         .withStatus(200)));
     
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, 4l, 7l);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, 4l, CourseStaffMemberRoleEnum.COURSE_TEACHER);
 
     CourseStaffMember[] coursestaffMembers = { courseStaffMember };
 
@@ -732,29 +713,6 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withHeader("Content-Type", "application/json")
         .withBody(staff3EmailJson)
         .withStatus(200)));
-    
-    
-    CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 8, "Opettaja");
-//    CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
-//    CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
-//    CourseStaffMemberRole studentRole = new CourseStaffMemberRole((long) 9, "Opiskelija");
-    CourseStaffMemberRole[] cRoleArray = { teacherRole };
-
-    String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
-    
-    stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(cRoleJson)
-        .withStatus(200)));
-    
-    for (CourseStaffMemberRole role : cRoleArray) {
-      stubFor(get(urlEqualTo(String.format("/1/courses/staffMemberRoles/%d", role.getId())))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(objectMapper.writeValueAsString(role))
-            .withStatus(200)));
-    }
     
     mockContactTypes();
 
