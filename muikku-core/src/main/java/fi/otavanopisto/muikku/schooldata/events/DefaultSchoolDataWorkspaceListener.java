@@ -115,7 +115,7 @@ public class DefaultSchoolDataWorkspaceListener {
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getWorkspaceDataSource(), event.getWorkspaceIdentifier());
     if (workspaceEntity != null) {
-      WorkspaceRoleEntity workspaceUserRole = workspaceController.findWorkspaceRoleEntityByDataSourceAndIdentifier(event.getRoleDataSource(), event.getRoleIdentifier());
+      WorkspaceRoleEntity workspaceUserRole = workspaceController.findWorkspaceRoleEntityByArchetype(event.getRole());
       if (workspaceUserRole != null) {
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
         if (userSchoolDataIdentifier != null) {
@@ -149,7 +149,7 @@ public class DefaultSchoolDataWorkspaceListener {
           logger.warning("could not add workspace user because userSchoolDataIdentifier #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");
         }
       } else {
-        logger.warning("could not init workspace user because workspace role #" + event.getRoleIdentifier() + '/' + event.getRoleDataSource() +  " could not be found");
+        logger.warning("could not init workspace user because workspace role " + event.getRole() +  " could not be found");
       }      
     } else {
       logger.warning("could not init workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found"); 
@@ -194,7 +194,7 @@ public class DefaultSchoolDataWorkspaceListener {
             }
           }
           else {
-            WorkspaceRoleEntity workspaceRoleEntity = workspaceController.findWorkspaceRoleEntityByDataSourceAndIdentifier(event.getRoleDataSource(), event.getRoleIdentifier());
+            WorkspaceRoleEntity workspaceRoleEntity = workspaceController.findWorkspaceRoleEntityByArchetype(event.getRole());
             if (workspaceRoleEntity != null && !workspaceRoleEntity.getId().equals(workspaceUserEntity.getWorkspaceUserRole().getId())) {
               workspaceUserEntity = workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceRoleEntity);
             }

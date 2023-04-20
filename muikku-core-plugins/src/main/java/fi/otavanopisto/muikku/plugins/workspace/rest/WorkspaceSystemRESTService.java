@@ -242,7 +242,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     }
     
     // Student role
-    WorkspaceRoleEntity workspaceStudentRole = roleController.findWorkspaceRoleEntityById(getWorkspaceStudentRoleId());
+    WorkspaceRoleEntity workspaceStudentRole = getWorkspaceStudentRole();
     
     // Workspace students in Muikku
     List<WorkspaceUserEntity> muikkuWorkspaceStudents = workspaceUserEntityController.listWorkspaceUserEntitiesByRole(workspaceEntity, workspaceStudentRole);
@@ -491,14 +491,8 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     }
   }
 
-  private Long getWorkspaceStudentRoleId() {
-    List<WorkspaceRoleEntity> workspaceStudentRoles = roleController.listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype.STUDENT);
-    if (workspaceStudentRoles.size() == 1) {
-      return workspaceStudentRoles.get(0).getId();
-    } else {
-      // TODO: How to choose correct workspace student role?
-      throw new RuntimeException("Multiple workspace student roles found.");
-    }
+  private WorkspaceRoleEntity getWorkspaceStudentRole() {
+    return roleController.getWorkspaceRoleByArchetype(WorkspaceRoleArchetype.STUDENT);
   }
   
   private Long getWorkspaceTeacherRoleId() {

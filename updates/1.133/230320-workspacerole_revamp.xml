@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>alter table WorkspaceRoleEntity modify archetype varchar(255) null;</sql>
+
+  <sql>update WorkspaceRoleEntity set archetype = null where archetype = 'CUSTOM';</sql>
+
+  <sql>alter table WorkspaceRoleEntity add constraint UK_8lv1idjqws1crxmwb0s2wh6km unique (archetype);</sql>
+
+</update> 
