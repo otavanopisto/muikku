@@ -306,35 +306,22 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         }
       >
         <span className="application-list__header-icon icon-books"></span>
-        <span className="application-list__header-primary">
-          {credit.activity.name}
+        <div className="application-list__header-primary">
+          <div className="application-list__header-primary-title">
+            {credit.activity.name}
+          </div>
 
-          <div
-            style={{ display: "flex", flexBasis: "100%", fontSize: "0.8rem" }}
-          >
-            <div
-              style={{
-                padding: "2px 5px 0 0",
-                fontStyle: "italic",
-                fontWeight: "lighter",
-              }}
-            >
-              {credit.lineName}
+          <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
+            <div className="label">
+              <div className="label__text">{credit.lineName}</div>
             </div>
             {credit.activity.curriculums.map((curriculum) => (
-              <div
-                key={curriculum.identifier}
-                style={{
-                  padding: "2px 5px 0 0",
-                  fontStyle: "italic",
-                  fontWeight: "lighter",
-                }}
-              >
-                {curriculum.name}{" "}
+              <div key={curriculum.identifier} className="label">
+                <div className="label__text">{curriculum.name} </div>
               </div>
             ))}
           </div>
-        </span>
+        </div>
         <div className="application-list__header-secondary">
           <span>
             <WorkspaceAssignmentsAndDiaryDialog

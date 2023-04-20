@@ -12,6 +12,8 @@ import { i18nType } from "~/reducers/base/i18n";
 import RecordsGroupItem from "./records-group-item";
 import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
 
+import "~/sass/elements/label.scss";
+
 /**
  * RecordsListProps
  */
@@ -104,10 +106,8 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
 
       {recordGroup.transferCredits.length ? (
         <>
-          <div className="application-list__header-container application-list__header-container--sorter">
-            <h3 className="application-list__header application-list__header--sorter">
-              Hyväksiluvut
-            </h3>
+          <div className="application-list__subheader-container">
+            <h3 className="application-list__subheader">Hyväksiluvut</h3>
           </div>
           {recordGroup.transferCredits.map((credit, i) => (
             <ApplicationListItem
@@ -116,39 +116,22 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
             >
               <ApplicationListItemHeader modifiers="course">
                 <span className="application-list__header-icon icon-books"></span>
-                <span className="application-list__header-primary">
-                  {credit.activity.name}
+                <div className="application-list__header-primary">
+                  <div className="application-list__header-primary-title">
+                    {credit.activity.name}
+                  </div>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      flexBasis: "100%",
-                      fontSize: "0.8rem",
-                    }}
-                  >
-                    <div
-                      style={{
-                        padding: "2px 5px 0 0",
-                        fontStyle: "italic",
-                        fontWeight: "lighter",
-                      }}
-                    >
-                      {credit.lineName}
+                  <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
+                    <div className="label">
+                      <div className="label__text">{credit.lineName}</div>
                     </div>
                     {credit.activity.curriculums.map((curriculum) => (
-                      <div
-                        key={curriculum.identifier}
-                        style={{
-                          padding: "2px 5px 0 0",
-                          fontStyle: "italic",
-                          fontWeight: "lighter",
-                        }}
-                      >
-                        {curriculum.name}{" "}
+                      <div key={curriculum.identifier} className="label">
+                        <div className="label__text">{curriculum.name} </div>
                       </div>
                     ))}
                   </div>
-                </span>
+                </div>
                 <div className="application-list__header-secondary">
                   <TransferedCreditIndicator transferCredit={credit.activity} />
                 </div>
