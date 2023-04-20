@@ -6,14 +6,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +27,7 @@ import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseLength;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
-import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.CourseType;
 import fi.otavanopisto.pyramus.rest.model.EducationType;
@@ -108,7 +108,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   public static void mockDefaults(List<String> payloads) throws JsonProcessingException {
     mockOrganizations(payloads);
     mockCommons();
-    mockRoles(payloads);
     mockStudyProgrammes(payloads);
     mockUsers(payloads);
     mockUserGroups(payloads);
@@ -177,29 +176,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     }
   }
 
-  public static void mockRoles(List<String> payloads) throws JsonProcessingException {
-    CourseStaffMemberRole[] roles = { 
-        new CourseStaffMemberRole(7l, "Opettaja"), 
-        new CourseStaffMemberRole(8l, "Tutor"), 
-        new CourseStaffMemberRole(9l, "Vastuuhenkilö"), 
-        new CourseStaffMemberRole(10l, "Opiskelija") 
-    };
-
-    stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
-        .willReturn(aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(objectMapper.writeValueAsString(roles))
-          .withStatus(200)));
-
-    for (CourseStaffMemberRole role : roles) {
-      stubFor(get(urlEqualTo(String.format("/1/courses/staffMemberRoles/%d", role.getId())))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(objectMapper.writeValueAsString(role))
-            .withStatus(200)));
-    }
-  }
-  
   public static void student1LoginMock() throws JsonProcessingException {
     stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
@@ -716,9 +692,8 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   
   public static void mockWorkspaceUsers(List<String> payloads) throws JsonProcessingException {
     Long courseId = 1l;
-    Long teacherRoleId = 7l;
     
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, 4l, teacherRoleId);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, 4l, CourseStaffMemberRoleEnum.COURSE_TEACHER);
     CourseStaffMember[] courseStaffMembers = { courseStaffMember };
 
     stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/staffMembers", courseId)))

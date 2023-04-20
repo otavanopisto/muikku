@@ -7,7 +7,9 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class PyramusIdentifierMapper {
@@ -19,7 +21,6 @@ public class PyramusIdentifierMapper {
   private static final String STAFF_PREFIX = "STAFF-";
   private static final String WORKSPACE_STUDENT_PREFIX = "STUDENT-";
   private static final String WORKSPACE_STAFF_PREFIX = "STAFF-";
-  private static final String WORKSPACE_STAFF_ROLE_PREFIX = "WS-";
   private static final String ENVIRONMENT_ROLE_PREFIX = "ENV-";
   private static final String STUDENTGROUP_PREFIX = "USERGROUP-";
   private static final String STUDENTGROUPSTUDENT_PREFIX = "USERGROUPSTUDENT-";
@@ -107,18 +108,6 @@ public class PyramusIdentifierMapper {
     return null;
   }
   
-  public String getWorkspaceStaffRoleIdentifier(Long id) {
-    return WORKSPACE_STAFF_ROLE_PREFIX + id;
-  }
-  
-  public String getPyramusCourseRoleId(String identifier) {
-    if (StringUtils.startsWith(identifier, WORKSPACE_STAFF_ROLE_PREFIX)) {
-      return StringUtils.substring(identifier, WORKSPACE_STAFF_ROLE_PREFIX.length());
-    }
-    
-    return null;
-  }
-  
   public String getEnvironmentRoleIdentifier(UserRole id) {
     return ENVIRONMENT_ROLE_PREFIX + id.name();
   }
@@ -129,10 +118,6 @@ public class PyramusIdentifierMapper {
     }
     
     return null;
-  }
-  
-  public String getWorkspaceStudentRoleIdentifier() {
-    return "WS-STUDENT";
   }
   
   public String getSubjectIdentifier(Long pyramusSubjectId) {
@@ -394,4 +379,29 @@ public class PyramusIdentifierMapper {
     return courseModuleId != null ? new SchoolDataIdentifier(String.format("%s%d", COURSEMODULE_PREFIX, courseModuleId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE) : null; 
   }
 
+  public WorkspaceRoleArchetype getWorkspaceRoleArchetype(CourseStaffMemberRoleEnum role) {
+    switch (role) {
+      case COURSE_TEACHER:
+        return WorkspaceRoleArchetype.TEACHER;
+        
+      // The following are not currently in use in Muikku
+      case COURSE_TUTOR:
+      case COURSE_ORGANIZER:
+        return null;
+    }
+    
+    return null;
+  }
+  
+  public CourseStaffMemberRoleEnum getCourseStaffMemberRole(WorkspaceRoleArchetype archetype) {
+    switch (archetype) {
+      case TEACHER:
+        return CourseStaffMemberRoleEnum.COURSE_TEACHER;
+      case STUDENT:
+        return null;
+    }
+    
+    return null;
+  }
+  
 }

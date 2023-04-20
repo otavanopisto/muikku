@@ -22,7 +22,6 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
-import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
@@ -320,36 +319,12 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).setUserProperty(user.getIdentifier(), key, value);
   }
 
-  /* Roles */
-
-  public Role findRole(SchoolDataSource schoolDataSource, String identifier) {
-    return getUserBridge(schoolDataSource).findRole(identifier);
-  }
-
-  public List<Role> listRoles() {
-    List<Role> result = new ArrayList<>();
-
-    for (UserSchoolDataBridge userBridge : getUserBridges()) {
-      result.addAll(userBridge.listRoles());
-    }
-
-    return result;
-  }
-  
   public List<StudyProgramme> listStudyProgrammes() {
     List<StudyProgramme> result = new ArrayList<>();
     for (UserSchoolDataBridge userBridge : getUserBridges()) {
       result.addAll(userBridge.listStudyProgrammes());
     }
     return result;
-  }
-
-  public Role findUserEnvironmentRole(User user) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource == null) {
-      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
-    }
-    return getUserBridge(schoolDataSource).findUserEnvironmentRole(user.getIdentifier());
   }
 
   /* UserGroups */
