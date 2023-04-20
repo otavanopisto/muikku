@@ -31,18 +31,10 @@ const PedagogyFormWizardFooter = (props: PedagogyFormWizardFooterProps) => {
   };
 
   return (
-    <div
-      className="wizard-footer"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "10px 0",
-      }}
-    >
+    <>
       {!isFirstStep && (
         <Button
-          buttonModifiers={["cancel"]}
+          buttonModifiers={["wizard"]}
           onClick={handlePreviousStep}
           disabled={isFirstStep}
         >
@@ -53,13 +45,13 @@ const PedagogyFormWizardFooter = (props: PedagogyFormWizardFooterProps) => {
       {!isLastStep && (
         <Button
           onClick={handleNextStep}
-          buttonModifiers={["cancel"]}
+          buttonModifiers={["wizard"]}
           disabled={isLastStep}
         >
           Seuraava
         </Button>
       )}
-    </div>
+    </>
   );
 };
 

@@ -135,7 +135,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             <Textarea
               id="studentStrengths"
               label="Opiskelijan vahvuudet"
-              className="hops__input"
+              className="hops__textarea"
               onChange={(e) =>
                 handleTextAreaChange("studentStrengths", e.target.value)
               }
@@ -147,11 +147,12 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
-            <label htmlFor="graduationGoalMonth" className="hops__label">
+            <label htmlFor="needOfPedagogySupport" className="hops__label">
               Pedagogisen tuen perusteet
             </label>
             <Select
-              className="react-select-override"
+              id="needOfPedagogySupport"
+              className="react-select-override react-select-override--hops"
               classNamePrefix="react-select-override"
               isMulti
               value={
@@ -172,15 +173,12 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
         <AnimateHeight
           height={formData?.supportReasons.includes("other") ? "auto" : 0}
         >
-          <div
-            className="hops-container__row"
-            style={{ margin: "0", padding: "10px 0" }}
-          >
+          <div className="hops-container__row">
             <div className="hops__form-element-container">
               <Textarea
                 id="reasonOther"
                 label="Muu peruste"
-                className="hops__input"
+                className="hops__textarea"
                 onChange={(e) =>
                   handleTextAreaChange("supportReasonOther", e.target.value)
                 }
@@ -197,11 +195,12 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
-            <label htmlFor="graduationGoalMonth" className="hops__label">
+            <label htmlFor="suggestedSupportActions" className="hops__label">
               Suunnitellut tukitoimet
             </label>
             <Select
-              className="react-select-override"
+              id="suggestedSupportActions"
+              className="react-select-override react-select-override--hops"
               classNamePrefix="react-select-override"
               isMulti
               value={
@@ -221,15 +220,12 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
         <AnimateHeight
           height={formData?.supportActions.includes("other") ? "auto" : 0}
         >
-          <div
-            className="hops-container__row"
-            style={{ margin: "0", padding: "10px 0" }}
-          >
+          <div className="hops-container__row">
             <div className="hops__form-element-container">
               <Textarea
                 id="otherSupportMeasures"
                 label="Muu toimenpide"
-                className="hops__input"
+                className="hops__textarea"
                 onChange={(e) =>
                   handleTextAreaChange("supportActionOther", e.target.value)
                 }
@@ -242,11 +238,15 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
-            <label htmlFor="graduationGoalMonth" className="hops__label">
+            <label
+              htmlFor="prePlansForMatriculationExam"
+              className="hops__label"
+            >
               Ennakkosuunnitelma ylioppilaskirjoituksiin
             </label>
             <Select
-              className="react-select-override"
+              id="prePlansForMatriculationExam"
+              className="react-select-override react-select-override--hops"
               classNamePrefix="react-select-override"
               isMulti
               value={
@@ -272,15 +272,12 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               : 0
           }
         >
-          <div
-            className="hops-container__row"
-            style={{ margin: "0", padding: "10px 0" }}
-          >
+          <div className="hops-container__row">
             <div className="hops__form-element-container">
               <Textarea
                 id="matriculationSupportOther"
                 label="Muu toimenpide"
-                className="hops__input"
+                className="hops__textarea"
                 onChange={(e) =>
                   handleTextAreaChange(
                     "matriculationExaminationSupportOther",

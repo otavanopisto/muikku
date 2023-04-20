@@ -20,6 +20,13 @@
     border: 2px solid $color-form-element-border;
   }
 
+  &.wizard--hops-form,
+  &.wizard--pedagogy-form {
+    .cke {
+      border: 2px solid $color-hops-dialog-form-element-border;
+    }
+  }
+
   // These override the stepzilla plugin styles
   ol.progtrckr {
     display: flex;
@@ -166,4 +173,14 @@
   li {
     display: block;
   }
+}
+
+.wizard__container {
+  min-height: 400px;
+}
+
+.wizard__footer {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }

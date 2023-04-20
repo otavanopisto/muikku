@@ -2,7 +2,7 @@ import * as React from "react";
 import { Opinion, OpinionType } from "~/@types/pedagogy-form";
 import { TextField } from "../hops-compulsory-education-wizard/text-field";
 import CKEditor from "../ckeditor";
-import { IconButton } from "../button";
+import Button from "../button";
 import CkeditorLoaderContent from "../../base/ckeditor-loader/content";
 import * as moment from "moment";
 
@@ -57,11 +57,11 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
   const opinionText = opinion.opinion || "";
 
   return (
-    <div style={{ marginBottom: "10px", borderBottom: "1px solid #b4b4b4" }}>
+    <div className="hops-container__section">
       <div className="hops-container__row">
         <div className="hops__form-element-container">
           <TextField
-            id="creatorName"
+            id="opinionCreatorName"
             label="Merkitsijä"
             value={opinion.creatorName}
             disabled
@@ -69,11 +69,11 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
         </div>
 
         <div className="hops__form-element-container">
-          <label htmlFor="graduationGoalMonth" className="hops__label">
+          <label htmlFor="createdDate" className="hops__label">
             Päivämäärä
           </label>
           <TextField
-            id="graduationGoalMonth"
+            id="CreatedDate"
             value={
               opinion.updatedDate
                 ? `${moment(opinion.creationDate).format(
@@ -107,15 +107,22 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
           </div>
         )}
       </div>
-      <div
-        className="hops-container__row"
-        style={{ justifyContent: "flex-end" }}
-      >
+      <div className="hops-container__row hops-container__row--remove-row-action">
         {!disabled && (
-          <IconButton
-            icon="trash"
-            onClick={(e) => onDeleteEntryClick(index, type)}
-          />
+          <>
+            <label
+              id={`removePedagogyRowLabel-${type}${index}`}
+              className="visually-hidden"
+            >
+              Poista
+            </label>
+            <Button
+              icon="trash"
+              aria-labelledby={`removePedagogyRowLabel-${type}${index}`}
+              buttonModifiers={"remove-pedagogy-row"}
+              onClick={(e) => onDeleteEntryClick(index, type)}
+            ></Button>
+          </>
         )}
       </div>
     </div>
@@ -136,17 +143,14 @@ interface AddNewActionsBoxProps {
  * @returns JSX.Element
  */
 export const AddNewOpinionBox: React.FC<AddNewActionsBoxProps> = (props) => (
-  <div
-    style={{
-      height: "33px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      border: "1px solid #000",
-      borderStyle: "dashed",
-      margin: "5px",
-    }}
-  >
-    <IconButton onClick={props.onClick} icon="plus" disabled={props.disabled} />
+  <div className="hops-container__row">
+    <Button
+      buttonModifiers={"add-pedagogy-row"}
+      onClick={props.onClick}
+      icon="plus"
+      disabled={props.disabled}
+    >
+      Lisää uusi rivi
+    </Button>
   </div>
 );

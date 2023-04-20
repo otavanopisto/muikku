@@ -4,7 +4,6 @@
 @import "../base/breakpoints";
 
 .pedagogy-form {
-  overflow: hidden;
   position: relative;
 }
 
@@ -27,6 +26,29 @@
   justify-content: center;
   margin: 10px 0;
   position: relative;
+}
+
+.pedagogy-form__toolbar-primary {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 10px 0 0;
+
+  > * {
+    margin: 0 0 0 10px;
+  }
+}
+
+.pedagogy-form__toolbar-secondary {
+  align-items: center;
+  border-left: 1px solid $color-default-separator-border;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 0 10px;
+
+  > * {
+    margin: 0 10px 0 0;
+  }
 }
 
 .pedagogy-form__pdf {

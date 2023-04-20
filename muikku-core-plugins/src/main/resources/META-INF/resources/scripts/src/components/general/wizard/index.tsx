@@ -86,15 +86,14 @@ const Wizard = (props: WizardProps) => {
         modifiers ? modifiers.map((m) => `wizard--${m}`).join(" ") : ""
       }`}
     >
-      {(props?.header && <div className="wizard-header">{props.header}</div>) ||
+      {(props?.header && (
+        <div className="wizard__header">{props.header}</div>
+      )) ||
         null}
-      <div
-        className="wizard-container"
-        style={{ overflow: "auto", overflowX: "hidden", height: 800 }}
-      >
-        {enhancedActiveStepContent}
-      </div>
-      {(props?.footer && <div className="wizard-footer">{props.footer}</div>) ||
+      <div className="wizard__container">{enhancedActiveStepContent}</div>
+      {(props?.footer && (
+        <div className="wizard__footer">{props.footer}</div>
+      )) ||
         null}
     </div>
   );

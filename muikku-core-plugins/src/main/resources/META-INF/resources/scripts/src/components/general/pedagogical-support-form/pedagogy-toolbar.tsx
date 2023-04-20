@@ -129,65 +129,66 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
       case "APPROVED":
         return (
           <div className="pedagogy-form__toolbar">
-            {userRole === "SPECIAL_ED_TEACHER" ? (
-              <Button
-                buttonModifiers={["cancel"]}
-                disabled={loading}
-                onClick={handlePDFClick}
-              >
-                {showPDF ? "Sulje PDF" : "PDF"}
-              </Button>
-            ) : null}
+            <div className="pedagogy-form__toolbar-primary">
+              {editIsActive ? (
+                <>
+                  {changedFields.length > 0 ? (
+                    <WarningDialog
+                      onApproveClick={resetData}
+                      title="Tallentamattomat muutokset"
+                      content={
+                        <p>
+                          Sinulla on tallentamattomia muutoksia. Haluatko
+                          varmasti peruuttaa muokkauksen
+                        </p>
+                      }
+                    >
+                      <Button buttonModifiers={["cancel"]}>Peruuta</Button>
+                    </WarningDialog>
+                  ) : (
+                    <Button
+                      buttonModifiers={["cancel"]}
+                      onClick={handleEditClick}
+                    >
+                      Peruuta
+                    </Button>
+                  )}
 
-            <div
-              style={{
-                borderLeft: "2px solid #00000038",
-                height: "25px",
-                margin: "0 5px",
-              }}
-            />
-
-            <SaveWithExtraDetailsDialog
-              changedFields={changedFields}
-              onSaveClick={handleSaveWithExtraDetailsClick}
-              onCancelClick={handleCancelSaveWithExtraDetailsClick}
-              onExtraDetailsChange={handleExtraDetailsChange}
-            >
-              <Button
-                buttonModifiers={["success"]}
-                disabled={!editIsActive && changedFields.length === 0}
-              >
-                Tallenna
-              </Button>
-            </SaveWithExtraDetailsDialog>
-
-            {editIsActive ? (
-              changedFields.length > 0 ? (
-                <WarningDialog
-                  onApproveClick={resetData}
-                  title="Tallentamattomat muutokset"
-                  content={
-                    <p>
-                      Sinulla on tallentamattomia muutoksia. Haluatko varmasti
-                      peruuttaa muokkauksen
-                    </p>
-                  }
-                >
-                  <Button buttonModifiers={["cancel"]}>Peruuta</Button>
-                </WarningDialog>
+                  <SaveWithExtraDetailsDialog
+                    changedFields={changedFields}
+                    onSaveClick={handleSaveWithExtraDetailsClick}
+                    onCancelClick={handleCancelSaveWithExtraDetailsClick}
+                    onExtraDetailsChange={handleExtraDetailsChange}
+                  >
+                    <Button
+                      buttonModifiers={["success"]}
+                      disabled={!editIsActive && changedFields.length === 0}
+                    >
+                      Tallenna
+                    </Button>
+                  </SaveWithExtraDetailsDialog>
+                </>
               ) : (
-                <Button buttonModifiers={["cancel"]} onClick={handleEditClick}>
-                  Peruuta
+                <Button
+                  buttonModifiers={["fatal", "standard-ok"]}
+                  onClick={handleEditClick}
+                >
+                  Muokkaa
                 </Button>
-              )
-            ) : (
-              <Button
-                buttonModifiers={["fatal", "standard-ok"]}
-                onClick={handleEditClick}
-              >
-                Muokkaa
-              </Button>
-            )}
+              )}
+            </div>
+
+            {userRole === "SPECIAL_ED_TEACHER" ? (
+              <div className="pedagogy-form__toolbar-secondary">
+                <Button
+                  buttonModifiers={["wizard"]}
+                  disabled={loading}
+                  onClick={handlePDFClick}
+                >
+                  {showPDF ? "Sulje PDF" : "PDF"}
+                </Button>
+              </div>
+            ) : null}
           </div>
         );
 

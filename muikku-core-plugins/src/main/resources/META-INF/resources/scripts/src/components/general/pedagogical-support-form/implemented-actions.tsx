@@ -3,7 +3,7 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
 import { Textarea } from "../hops-compulsory-education-wizard/text-area";
-import { IconButton } from "../button";
+import Button from "../button";
 import Select from "react-select";
 import WorkspaceSelect from "./workspace-select";
 import { SupportActionImplementation } from "~/@types/pedagogy-form";
@@ -23,7 +23,7 @@ interface ImplementedActionsListProps {}
  */
 export const ImplementedActionsList: React.FC<ImplementedActionsListProps> = (
   props
-) => <div>{props.children}</div>;
+) => <>{props.children}</>;
 
 /**
  * ImplementedActionsListItemProps
@@ -62,11 +62,11 @@ export const ImplementedActionsListItem: React.FC<
     userRole === "STUDENT" || !editIsActive || !ownerOfEntry;
 
   return (
-    <div style={{ marginBottom: "10px", borderBottom: "1px solid #b4b4b4" }}>
+    <div className="hops-container__section">
       <div className="hops-container__row">
         <div className="hops__form-element-container">
           <TextField
-            id="creatorName"
+            id="implemenetedSupportActionCreatorName"
             label="Merkitsijä"
             value={implemenetedSupportAction.creatorName}
             disabled
@@ -74,12 +74,15 @@ export const ImplementedActionsListItem: React.FC<
         </div>
 
         <div className="hops__form-element-container">
-          <label htmlFor="graduationGoalMonth" className="hops__label">
+          <label
+            htmlFor="implemenetedSupportActionDate"
+            className="hops__label"
+          >
             Päivämäärä
           </label>
           <DatePicker
-            id="graduationGoalMonth"
-            dateFormat="dd/MM/yyyy"
+            id="implemenetedSupportActionDate"
+            dateFormat="dd.MM.yyyy"
             onChange={(e) => onActionChange(index, "date", e)}
             selected={new Date(implemenetedSupportAction.date)}
             maxDate={new Date()}
@@ -89,11 +92,15 @@ export const ImplementedActionsListItem: React.FC<
         </div>
 
         <div className="hops__form-element-container">
-          <label htmlFor="graduationGoalMonth" className="hops__label">
+          <label
+            htmlFor="implemenetedSupportActionAction"
+            className="hops__label"
+          >
             Tukitoimi:
           </label>
           <Select
-            className="react-select-override"
+            id="implemenetedSupportActionAction"
+            className="react-select-override react-select-override--hops"
             classNamePrefix="react-select-override"
             value={supportActionsOptions.find(
               (option) => option.value === implemenetedSupportAction.action
@@ -105,10 +112,14 @@ export const ImplementedActionsListItem: React.FC<
           />
         </div>
         <div className="hops__form-element-container">
-          <label htmlFor="graduationGoalMonth" className="hops__label">
+          <label
+            htmlFor="implemenetedSupportActionCourse"
+            className="hops__label"
+          >
             Kurssi:
           </label>
           <WorkspaceSelect
+            id="implemenetedSupportActionCourse"
             onChange={(option) => {
               onActionChange(index, "course", option?.value || undefined);
             }}
@@ -129,9 +140,9 @@ export const ImplementedActionsListItem: React.FC<
       <div className="hops-container__row">
         <div className="hops__form-element-container">
           <Textarea
-            id="studentStrengths"
+            id="implemenetedSupportActionStudentStrengths"
             label="Lisätietoa?"
-            className="hops__input"
+            className="hops__textarea"
             onChange={(e) =>
               onActionChange(index, "extraInfoDetails", e.target.value)
             }
@@ -141,15 +152,22 @@ export const ImplementedActionsListItem: React.FC<
         </div>
       </div>
 
-      <div
-        className="hops-container__row"
-        style={{ justifyContent: "flex-end" }}
-      >
+      <div className="hops-container__row hops-container__row--remove-row-action">
         {ownerOfEntry && editIsActive && (
-          <IconButton
-            icon="trash"
-            onClick={(e) => onDeleteActionClick(index)}
-          />
+          <>
+            <label
+              id={`removePedagogyRowLabel${index}`}
+              className="visually-hidden"
+            >
+              Poista
+            </label>
+            <Button
+              icon="trash"
+              aria-labelledby={`removePedagogyRowLabel${index}`}
+              buttonModifiers={"remove-pedagogy-row"}
+              onClick={(e) => onDeleteActionClick(index)}
+            ></Button>
+          </>
         )}
       </div>
     </div>
@@ -170,17 +188,14 @@ interface AddNewActionsBoxProps {
  * @returns JSX.Element
  */
 export const AddNewActionsBox: React.FC<AddNewActionsBoxProps> = (props) => (
-  <div
-    style={{
-      height: "33px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      border: "1px solid #000",
-      borderStyle: "dashed",
-      margin: "5px",
-    }}
-  >
-    <IconButton onClick={props.onClick} icon="plus" disabled={props.disabled} />
+  <div className="hops-container__row">
+    <Button
+      buttonModifiers={"add-pedagogy-row"}
+      onClick={props.onClick}
+      icon="plus"
+      disabled={props.disabled}
+    >
+      Lisää uusi rivi
+    </Button>
   </div>
 );
