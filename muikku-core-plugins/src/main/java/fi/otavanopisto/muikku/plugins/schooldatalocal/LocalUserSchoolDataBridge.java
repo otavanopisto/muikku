@@ -11,15 +11,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.RoleEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalEnvironmentRoleImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserImageImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserPropertyImpl;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalWorkspaceRoleImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
@@ -32,10 +26,8 @@ import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
-import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
-import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
@@ -49,8 +41,6 @@ import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
@@ -416,56 +406,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return result;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<Role> listRoles() throws SchoolDataBridgeInternalException {
-    List<Role> result = new ArrayList<>();
-
-    List<RoleEntity> roleEntities = localUserSchoolDataController.listCoreRoleEntities();
-    for (RoleEntity roleEntity : roleEntities) {
-      result.add(toLocalRoleEntity(roleEntity));
-    }
-
-    return result;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Role findRole(String identifier) {
-    if (!StringUtils.isNumeric(identifier)) {
-      throw new SchoolDataBridgeInternalException("identifier is invalid");
-    }
-
-    RoleEntity roleEntity = localUserSchoolDataController.findCoreRoleEntityByIdentifier(identifier);
-    return toLocalRoleEntity(roleEntity);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public Role findUserEnvironmentRole(String userIdentifier) {
-    LocalUser user = localUserSchoolDataController.findUser(userIdentifier);
-    if (user == null) {
-      throw new SchoolDataBridgeInternalException("User not found");
-    }
-
-    Long roleId = user.getRoleId();
-    if (roleId != null) {
-      RoleEntity roleEntity = localUserSchoolDataController.findCoreRoleEntityById(roleId);
-      if (roleEntity == null) {
-        throw new SchoolDataBridgeInternalException("User role could not be found");
-      }
-
-      return toLocalRoleEntity(roleEntity);
-    }
-
-    return null;
-  };
-
   private User toLocalUserImpl(LocalUser localUser) {
     if (localUser != null) {
       return new LocalUserImpl(
@@ -511,23 +451,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     return null;
-  }
-
-  private Role toLocalRoleEntity(RoleEntity roleEntity) {
-    if (roleEntity instanceof EnvironmentRoleEntity) {
-      return toLocalEnvironmentRoleEntity((EnvironmentRoleEntity) roleEntity);
-    } else {
-      return toLocalWorkspaceRoleEntity((WorkspaceRoleEntity) roleEntity);
-    }
-  }
-
-  private WorkspaceRole toLocalWorkspaceRoleEntity(WorkspaceRoleEntity workspaceRoleEntity) {
-    return new LocalWorkspaceRoleImpl(workspaceRoleEntity.getId().toString(), workspaceRoleEntity.getName(), WorkspaceRoleArchetype.valueOf(workspaceRoleEntity.getArchetype().toString()));
-  }
-
-  private EnvironmentRole toLocalEnvironmentRoleEntity(EnvironmentRoleEntity environmentRoleEntity) {
-    EnvironmentRoleArchetype archetype = EnvironmentRoleArchetype.valueOf(environmentRoleEntity.getArchetype().name());
-    return new LocalEnvironmentRoleImpl(environmentRoleEntity.getId().toString(), archetype, environmentRoleEntity.getName());
   }
 
   @Override

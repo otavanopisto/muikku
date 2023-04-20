@@ -47,7 +47,6 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
-import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -77,7 +76,6 @@ import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.pyramus.rest.model.Address;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
-import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.Email;
 import fi.otavanopisto.pyramus.rest.model.Language;
 import fi.otavanopisto.pyramus.rest.model.Municipality;
@@ -93,7 +91,6 @@ import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
-import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.students.StudentStudyPeriod;
 import fi.otavanopisto.pyramus.rest.model.students.StudentStudyPeriodType;
 
@@ -698,36 +695,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public Role findRole(String identifier) {
-    UserRole pyramusUserRole = identifierMapper.getPyramusUserRole(identifier);
-    if (pyramusUserRole != null) {
-      return entityFactory.createEntity(pyramusUserRole);
-    }
-
-    String id = identifierMapper.getPyramusCourseRoleId(identifier);
-    if (StringUtils.isBlank(id)) {
-      throw new SchoolDataBridgeInternalException("Malformed role identifier");
-    }
-
-    if ("STUDENT".equals(id)) {
-      return entityFactory.createCourseStudentRoleEntity();
-    }
-
-    return entityFactory.createEntity(pyramusClient.get("/courses/staffMemberRoles/" + id, CourseStaffMemberRole.class));
-  }
-
-  @Override
-  public List<Role> listRoles() {
-    List<Role> result = new ArrayList<>();
-
-    result.addAll(entityFactory.createEntity(UserRole.values()));
-    result.addAll(entityFactory.createEntity(pyramusClient.get("/courses/staffMemberRoles", CourseStaffMemberRole[].class)));
-    result.add(entityFactory.createCourseStudentRoleEntity());
-
-    return result;
-  }
-
-  @Override
   public List<fi.otavanopisto.muikku.schooldata.entity.StudyProgramme> listStudyProgrammes() {
     List<fi.otavanopisto.muikku.schooldata.entity.StudyProgramme> studyProgrammeEntities = new ArrayList<fi.otavanopisto.muikku.schooldata.entity.StudyProgramme>();
     StudyProgramme[] studyProgrammes = pyramusClient.get("/students/studyProgrammes", StudyProgramme[].class);
@@ -737,27 +704,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
     }
     return studyProgrammeEntities;
-  }
-
-  @Override
-  public Role findUserEnvironmentRole(String userIdentifier) {
-    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
-    if (studentId != null) {
-      Student student = pyramusClient.get("/students/students/" + studentId,
-          Student.class);
-      return student != null ? entityFactory
-          .createStudentEnvironmentRoleEntity() : null;
-    }
-
-    Long staffId = identifierMapper.getPyramusStaffId(userIdentifier);
-    if (staffId != null) {
-      StaffMember staffMember = pyramusClient.get("/staff/members/" + staffId, StaffMember.class);
-      return staffMember != null ? entityFactory.createEntity(staffMember.getRole()) : null;
-    }
-    logger.warning(String.format("PyramusUserSchoolDataBridge.findUserEnvironmentRole malformed user identifier %s\n%s",
-        userIdentifier,
-        ExceptionUtils.getStackTrace(new Throwable())));
-    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
   @Override

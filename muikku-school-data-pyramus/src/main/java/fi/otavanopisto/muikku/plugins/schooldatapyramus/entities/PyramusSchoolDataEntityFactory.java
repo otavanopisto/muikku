@@ -14,7 +14,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -38,8 +37,6 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
@@ -52,7 +49,6 @@ import fi.otavanopisto.pyramus.rest.model.CourseLength;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseOptionality;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
-import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.CourseType;
 import fi.otavanopisto.pyramus.rest.model.CreditLinkCourseAssessment;
@@ -76,18 +72,10 @@ public class PyramusSchoolDataEntityFactory {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
-
+  
   @PostConstruct
   public void init() {
     pyramusHost = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusHost");
-    teacherRoleSetting = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "roles.workspace.TEACHER");
-
-  }
-  
-  public WorkspaceRole createCourseStudentRoleEntity() {
-    // TODO: Localize
-    return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStudentRoleIdentifier(), "Course Student",
-        WorkspaceRoleArchetype.STUDENT);
   }
   
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
@@ -225,26 +213,6 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public WorkspaceRole createEntity(CourseStaffMemberRole staffMemberRole) {
-    if (staffMemberRole == null) {
-      return null;
-    }
-
-    WorkspaceRoleArchetype archetype = getWorkspaceRoleArchetype(staffMemberRole.getId());
-    return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId()),
-        staffMemberRole.getName(), archetype);
-  }
-
-  public List<WorkspaceRole> createEntity(CourseStaffMemberRole[] staffMemberRoles) {
-    List<WorkspaceRole> result = new ArrayList<>();
-
-    for (fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
-      result.add(createEntity(staffMemberRole));
-    }
-
-    return result;
-  }
-
   public WorkspaceUser createEntity(CourseStaffMember staffMember) {
     if (staffMember == null) {
       return null;
@@ -253,13 +221,13 @@ public class PyramusSchoolDataEntityFactory {
     SchoolDataIdentifier identifier = toIdentifier(identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId()));
     SchoolDataIdentifier userIdentifier = identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId());
     SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId()));
-    SchoolDataIdentifier roleIdentifier = toIdentifier(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId()));
-    
+    fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype role = identifierMapper.getWorkspaceRoleArchetype(staffMember.getRole());
+
     return new PyramusWorkspaceUser(
       identifier, 
       userIdentifier, 
       workspaceIdentifier,
-      roleIdentifier,
+      role,
       null
     );
   }
@@ -288,13 +256,12 @@ public class PyramusSchoolDataEntityFactory {
     SchoolDataIdentifier identifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId()));
     SchoolDataIdentifier userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId());
     SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId()));
-    SchoolDataIdentifier roleIdentifier = toIdentifier(createCourseStudentRoleEntity().getIdentifier());
     
     return new PyramusWorkspaceUser(
       identifier, 
       userIdentifier, 
       workspaceIdentifier,
-      roleIdentifier,
+      fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype.STUDENT,
       courseStudent.getEnrolmentTime()
     );
   }
@@ -590,15 +557,6 @@ public class PyramusSchoolDataEntityFactory {
     }
   }
 
-  private WorkspaceRoleArchetype getWorkspaceRoleArchetype(Long staffMemberRoleId) {
-    if (StringUtils.isNumeric(teacherRoleSetting)) {
-      if (staffMemberRoleId.equals(NumberUtils.createLong(teacherRoleSetting))) {
-        return WorkspaceRoleArchetype.TEACHER;
-      }
-    }
-    return WorkspaceRoleArchetype.CUSTOM;
-  }
-
   public UserAddress createEntity(SchoolDataIdentifier userIdentifier, Address address, ContactType contactType) {
     return new PyramusUserAddress(
       identifierMapper.getAddressIdentifier(address.getId()),
@@ -688,5 +646,4 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   private String pyramusHost;
-  private String teacherRoleSetting;
 }

@@ -8,7 +8,6 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
-import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
@@ -286,14 +285,6 @@ public interface UserSchoolDataBridge {
    */
   public List<UserProperty> listUserPropertiesByUser(String userIdentifier);
   
-  /* Roles */
-  
-  public Role findRole(String identifier);
-
-  public List<Role> listRoles();
-  
-  public Role findUserEnvironmentRole(String userIdentifier);
-
   /* UserGroups */
   
   public BridgeResponse<StudentGroupPayload> createStudentGroup(StudentGroupPayload payload);

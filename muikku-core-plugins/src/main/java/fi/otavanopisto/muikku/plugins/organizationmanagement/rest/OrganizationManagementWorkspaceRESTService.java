@@ -36,7 +36,6 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.OrganizationManagementPermissions;
@@ -49,12 +48,10 @@ import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.RoleController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -116,9 +113,6 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
-  
-  @Inject
-  private RoleController roleController;
   
   @Inject
   private UserIndexer userIndexer;
@@ -356,8 +350,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
 
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     SchoolDataIdentifier workspaceOrganizationIdentifier = workspace.getOrganizationIdentifier();
-    WorkspaceRoleEntity workspaceRole = roleController.getWorkspaceStudentRole();
-    Role role = roleController.findRoleByDataSourceAndRoleEntity(workspaceEntity.getDataSource().getIdentifier(), workspaceRole);
+    WorkspaceRoleArchetype role = WorkspaceRoleArchetype.STUDENT;
     
     // Validate given student identifiers
     
@@ -451,19 +444,16 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
 
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
 
-      WorkspaceRoleEntity workspaceRole = roleController.getWorkspaceRoleByArchetype(WorkspaceRoleArchetype.TEACHER);
-      Role role = roleController.findRoleByDataSourceAndRoleEntity(workspaceEntity.getDataSource().getIdentifier(), workspaceRole);
-      
       for (SchoolDataIdentifier userIdentifier : collect) {
         User user = userController.findUserByIdentifier(userIdentifier);
-        addUserToWorkspace(user, workspaceEntity, workspace, role);
+        addUserToWorkspace(user, workspaceEntity, workspace, WorkspaceRoleArchetype.TEACHER);
       }
     }
     
     return Response.noContent().build();
   }
 
-  private StudentStatus addUserToWorkspace(User user, WorkspaceEntity workspaceEntity, Workspace workspace, Role role) {
+  private StudentStatus addUserToWorkspace(User user, WorkspaceEntity workspaceEntity, Workspace workspace, WorkspaceRoleArchetype role) {
     SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, userIdentifier);
