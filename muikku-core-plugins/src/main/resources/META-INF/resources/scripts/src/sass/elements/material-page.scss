@@ -2597,46 +2597,6 @@ audio {
   }
 }
 
-.material-visually-guided-styles__record2 {
-  background-color: $color-material-visually-guided-styles-record-background;
-  border-left: 2px solid $color-material-visually-guided-styles-record-border;
-
-  &::before {
-    background-image: url("/gfx/icons/64x64/record2.png");
-    border: 2px solid $color-material-visually-guided-styles-record-border;
-  }
-}
-
-.material-visually-guided-styles__record3 {
-  background-color: $color-material-visually-guided-styles-record-background;
-  border-left: 2px solid $color-material-visually-guided-styles-record-border;
-
-  &::before {
-    background-image: url("/gfx/icons/64x64/record3.png");
-    border: 2px solid $color-material-visually-guided-styles-record-border;
-  }
-}
-
-.material-visually-guided-styles__record4 {
-  background-color: $color-material-visually-guided-styles-record-background;
-  border-left: 2px solid $color-material-visually-guided-styles-record-border;
-
-  &::before {
-    background-image: url("/gfx/icons/64x64/record4.png");
-    border: 2px solid $color-material-visually-guided-styles-record-border;
-  }
-}
-
-.material-visually-guided-styles__record5 {
-  background-color: $color-material-visually-guided-styles-record-background;
-  border-left: 2px solid $color-material-visually-guided-styles-record-border;
-
-  &::before {
-    background-image: url("/gfx/icons/64x64/record5.png");
-    border: 2px solid $color-material-visually-guided-styles-record-border;
-  }
-}
-
 .material-visually-guided-styles__search {
   background-color: $color-material-visually-guided-styles-search-background;
   border-left: 2px solid $color-material-visually-guided-styles-search-border;
