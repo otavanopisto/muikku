@@ -121,8 +121,8 @@ public class PermissionsPluginController {
                 }
                 if (workspaceRoles != null) {
                   for (WorkspaceRoleArchetype workspaceRole : workspaceRoles) {
-                    List<WorkspaceRoleEntity> wsRoles = workspaceRoleEntityDAO.listByArchetype(workspaceRole);
-                    currentRoles.addAll(wsRoles);
+                    WorkspaceRoleEntity wsRole = workspaceRoleEntityDAO.findByArchetype(workspaceRole);
+                    currentRoles.add(wsRole);
                   }
                 }
                 
@@ -233,6 +233,15 @@ public class PermissionsPluginController {
         systemRoleEntityDAO.create(systemRoleType.name(), systemRoleType);
     }
     
+    // Ensure the workspace roles exist
+    
+    for (WorkspaceRoleArchetype workspaceRoleArchetype : WorkspaceRoleArchetype.values()) {
+      if (workspaceRoleEntityDAO.findByArchetype(workspaceRoleArchetype) == null) {
+        String name = StringUtils.capitalize(StringUtils.lowerCase(workspaceRoleArchetype.name()));
+        workspaceRoleEntityDAO.create(workspaceRoleArchetype, name);
+      }
+    }
+    
     // Process permissions
     
     for (MuikkuPermissionCollection collection : permissionCollections) {
@@ -277,8 +286,8 @@ public class PermissionsPluginController {
   
                 if (workspaceRoles != null) {
                   for (WorkspaceRoleArchetype arc : workspaceRoles) {
-                    List<WorkspaceRoleEntity> wsRoles = workspaceRoleEntityDAO.listByArchetype(arc);
-                    roles.addAll(wsRoles);
+                    WorkspaceRoleEntity wsRole = workspaceRoleEntityDAO.findByArchetype(arc);
+                    roles.add(wsRole);
                   }
                 }
                 
