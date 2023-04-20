@@ -46,7 +46,23 @@ export type NOTEBOOK_DELETE_ENTRY = SpecificActionType<
 
 export type NOTEBOOK_TOGGLE_EDITOR = SpecificActionType<
   "NOTEBOOK_TOGGLE_EDITOR",
-  { open?: boolean; note?: WorkspaceNote; cutContent?: string } | null
+  {
+    open?: boolean;
+    note?: WorkspaceNote;
+    cutContent?: string;
+    notePosition?: number | "first" | "last";
+    noteEditorSelectPosition?: boolean;
+  } | null
+>;
+
+export type NOTEBOOK_TOGGLE_SELECT_POSITION = SpecificActionType<
+  "NOTEBOOK_TOGGLE_SELECT_POSITION",
+  boolean
+>;
+
+export type NOTEBOOK_UPDATE_SELECTED_POSITION = SpecificActionType<
+  "NOTEBOOK_UPDATE_SELECTED_POSITION",
+  number | "first" | "last"
 >;
 
 export type NOTEBOOK_SET_CUT_CONTENT = SpecificActionType<
@@ -112,7 +128,16 @@ export interface ToggleNotebookEditor {
     open?: boolean;
     note?: WorkspaceNote;
     cutContent?: string;
+    notePosition?: number | "first" | "last";
+    noteEditorSelectPosition?: boolean;
   }): AnyActionType;
+}
+
+/**
+ * ToggleNotebookSelectPosition
+ */
+export interface ToggleNotebookSelectPosition {
+  (data: boolean): AnyActionType;
 }
 
 /**
@@ -124,6 +149,13 @@ export interface CreateNewFromScratch {
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
+}
+
+/**
+ * UpdateSelectedPosition
+ */
+export interface UpdateSelectedNotePosition {
+  (data: number | "first" | "last"): AnyActionType;
 }
 
 /**
@@ -474,6 +506,42 @@ const toggleNotebookEditor: ToggleNotebookEditor =
   };
 
 /**
+ * Toggles notebook editor open and closed
+ *
+ * @param data data
+ */
+const toggleNotebookSelectPosition: ToggleNotebookSelectPosition =
+  function toggleNotebookSelectPosition(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "NOTEBOOK_TOGGLE_SELECT_POSITION",
+        payload: data,
+      });
+    };
+  };
+
+/**
+ * Updates selected note position in editor when creating new or editing existing
+ *
+ * @param data data
+ */
+const updateSelectedNotePosition: UpdateSelectedNotePosition =
+  function updateSelectedNotePosition(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "NOTEBOOK_UPDATE_SELECTED_POSITION",
+        payload: data,
+      });
+    };
+  };
+
+/**
  * Sets editor open with given cut content
  *
  * @param data data
@@ -504,4 +572,6 @@ export {
   deleteNotebookEntry,
   toggleNotebookEditor,
   createNewFromCutContent,
+  updateSelectedNotePosition,
+  toggleNotebookSelectPosition,
 };

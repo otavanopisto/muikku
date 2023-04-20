@@ -40,7 +40,9 @@ export interface WorkspaceNoteCreatePayload {
 export interface NoteBookState {
   notes?: WorkspaceNote[] | null;
   noteEditorOpen: boolean;
+  noteEditorSelectPosition: boolean;
   noteEditorCutContent: string;
+  noteEditedPosition?: number | "first" | "last";
   noteInTheEditor?: WorkspaceNote | null;
   state: ReducerStateType;
 }
@@ -50,6 +52,8 @@ const initialJournalsState: NoteBookState = {
   noteEditorOpen: false,
   noteEditorCutContent: null,
   noteInTheEditor: null,
+  noteEditorSelectPosition: false,
+  noteEditedPosition: null,
   state: "READY",
 };
 
@@ -106,12 +110,27 @@ export const notebook: Reducer<NoteBookState> = (
         noteEditorOpen: action.payload.open,
         noteInTheEditor: action.payload.note,
         noteEditorCutContent: action.payload.cutContent,
+        noteEditedPosition: action.payload.notePosition,
+        noteEditorSelectPosition: action.payload.noteEditorSelectPosition,
       };
 
     case "NOTEBOOK_SET_CUT_CONTENT":
       return {
         ...state,
         noteEditorCutContent: action.payload,
+      };
+
+    case "NOTEBOOK_UPDATE_SELECTED_POSITION":
+      return {
+        ...state,
+        noteEditedPosition: action.payload,
+      };
+
+    case "NOTEBOOK_TOGGLE_SELECT_POSITION":
+      return {
+        ...state,
+        noteEditorSelectPosition: action.payload,
+        noteEditedPosition: !action.payload ? null : state.noteEditedPosition,
       };
 
     default:

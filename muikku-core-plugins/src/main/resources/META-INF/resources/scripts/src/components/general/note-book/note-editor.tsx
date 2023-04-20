@@ -18,6 +18,8 @@ import {
   toggleNotebookEditor,
   UpdateEditNotebookEntry,
   updateEditedNotebookEntry,
+  ToggleNotebookSelectPosition,
+  toggleNotebookSelectPosition,
 } from "../../../actions/notebook/notebook";
 
 /**
@@ -43,9 +45,12 @@ interface NoteEditorProps {
    * Default content for new note
    */
   cutContent: string;
+  noteEditorSelectPosition: boolean;
+  noteEditedPosition: number | "first" | "last";
   saveNewNotebookEntry: SaveNewNotebookEntry;
   updateEditedNotebookEntry: UpdateEditNotebookEntry;
   toggleNotebookEditor: ToggleNotebookEditor;
+  toggleNotebookSelectPosition: ToggleNotebookSelectPosition;
 }
 
 /**
@@ -209,6 +214,15 @@ class NoteEditor extends SessionStateComponent<
   };
 
   /**
+   * Handles toggling notebook editor
+   */
+  handleToggleNotebookSelectPositionClick = () => {
+    this.props.toggleNotebookSelectPosition(
+      !this.props.noteEditorSelectPosition
+    );
+  };
+
+  /**
    * Handles deleting note draft
    *
    */
@@ -278,7 +292,11 @@ class NoteEditor extends SessionStateComponent<
    * Handles cancel click
    */
   handleCancelClick = () => {
-    this.props.toggleNotebookEditor({ open: false });
+    this.props.toggleNotebookEditor({
+      open: false,
+      notePosition: null,
+      noteEditorSelectPosition: false,
+    });
     this.focusIsUsed = false;
   };
 
@@ -327,6 +345,36 @@ class NoteEditor extends SessionStateComponent<
                 </CKEditor>
               </div>
             </div>
+
+            <div className="form__row">
+              <div className="form-element">
+                <label>Sijainti</label>
+
+                <p className="notebook__select-position-info">
+                  Oletuksena uusi muistiinpano luodaan listan viimeiseksi.
+                  Valitse sijainti -nappia painamalla voit itse valita listasta
+                  halutun sijainnin
+                </p>
+
+                <button
+                  style={{
+                    width: "100%",
+                    height: "40px",
+                    color: "white",
+                    backgroundColor: this.props.noteEditorSelectPosition
+                      ? "red"
+                      : "green",
+                    border: "none",
+                  }}
+                  onClick={this.handleToggleNotebookSelectPositionClick}
+                >
+                  {this.props.noteEditorSelectPosition
+                    ? "Peruuta valinta"
+                    : "Valitse sijainti"}
+                </button>
+              </div>
+            </div>
+
             <div className="form__buttons form__buttons--notebook">
               <Button
                 className="button button--dialog-execute"
@@ -368,6 +416,8 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     note: state.notebook.noteInTheEditor,
+    noteEditorSelectPosition: state.notebook.noteEditorSelectPosition,
+    noteEditedPosition: state.notebook.noteEditedPosition,
     currentWorkspace: state.workspaces.currentWorkspace,
     editorOpen: state.notebook.noteEditorOpen,
     cutContent: state.notebook.noteEditorCutContent,
@@ -384,6 +434,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       saveNewNotebookEntry,
       updateEditedNotebookEntry,
       toggleNotebookEditor,
+      toggleNotebookSelectPosition,
     },
     dispatch
   );

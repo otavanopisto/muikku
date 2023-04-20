@@ -15,6 +15,8 @@ import {
   toggleNotebookEditor,
   DeleteNotebookEntry,
   deleteNotebookEntry,
+  UpdateSelectedNotePosition,
+  updateSelectedNotePosition,
 } from "../../../actions/notebook/notebook";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceType } from "~/reducers/workspaces/index";
@@ -34,6 +36,7 @@ import { useScroll } from "./hooks/useScroll";
 import { useDragDropManager } from "react-dnd";
 import Dropdown from "~/components/general/dropdown";
 import { useLocalStorage } from "usehooks-ts";
+import AnimateHeight from "react-animate-height";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -64,6 +67,7 @@ interface NoteBookProps {
   updateNotebookEntriesOrder: UpdateNotebookEntriesOrder;
   toggleNotebookEditor: ToggleNotebookEditor;
   deleteNotebookEntry: DeleteNotebookEntry;
+  updateSelectedNotePosition: UpdateSelectedNotePosition;
 }
 
 /**
@@ -78,6 +82,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
     updateNotebookEntriesOrder,
     toggleNotebookEditor,
     deleteNotebookEntry,
+    updateSelectedNotePosition,
   } = props;
   const { notes, noteInTheEditor } = notebook;
 
@@ -172,6 +177,14 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
   );
 
   /**
+   * handleChoosePositionClick
+   * @param position position
+   */
+  const handleChooseStartOrEndPositionClick = (position: "first" | "last") => {
+    updateSelectedNotePosition(position);
+  };
+
+  /**
    * Renders note item.
    * If ordering is active note is wrapped with DraggableElement
    *
@@ -214,25 +227,50 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         deleteNotebookEntry({ workspaceNoteId: noteId });
       };
 
+      /**
+       * handleChoosePositionClick
+       *
+       * @param index index
+       */
+      const handleChoosePositionClick = (index: number) => {
+        updateSelectedNotePosition(index);
+      };
+
       return (
-        <DraggableElement
-          key={note.id}
-          id={note.id}
-          index={index}
-          active={editOrder}
-          onElementDrag={handleElementDrag}
-          onElementDrop={handleElementDrop}
-        >
-          <NoteListItem
+        <>
+          {notebook.noteEditorOpen && index > 0 && (
+            <AnimateHeight
+              height={notebook.noteEditorSelectPosition ? "auto" : 0}
+              contentClassName={
+                notebook.noteEditedPosition === index
+                  ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
+                  : "notebook__add-note-here-button"
+              }
+              onClick={() => handleChoosePositionClick(index)}
+            >
+              <p>Luo uusi muistiinpano tähän kohtaan</p>
+            </AnimateHeight>
+          )}
+
+          <DraggableElement
             key={note.id}
-            note={note}
-            open={openedItems.includes(note.id)}
-            onOpenClick={handleOpenNoteClick}
-            isEdited={noteInTheEditor && noteInTheEditor.id === note.id}
-            onEditClick={handleEditNoteClick}
-            onDeleteClick={handleDeleteNoteClick}
-          />
-        </DraggableElement>
+            id={note.id}
+            index={index}
+            active={editOrder}
+            onElementDrag={handleElementDrag}
+            onElementDrop={handleElementDrop}
+          >
+            <NoteListItem
+              key={note.id}
+              note={note}
+              open={openedItems.includes(note.id)}
+              onOpenClick={handleOpenNoteClick}
+              isEdited={noteInTheEditor && noteInTheEditor.id === note.id}
+              onEditClick={handleEditNoteClick}
+              onDeleteClick={handleDeleteNoteClick}
+            />
+          </DraggableElement>
+        </>
       );
     },
     [
@@ -241,8 +279,13 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
       handleElementDrag,
       handleElementDrop,
       noteInTheEditor,
+      notebook.noteEditedPosition,
+      notebook.noteEditorOpen,
+      notebook.noteEditorSelectPosition,
       openedItems,
+      setOpenedItems,
       toggleNotebookEditor,
+      updateSelectedNotePosition,
     ]
   );
 
@@ -296,7 +339,35 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
           {notebook.state === "LOADING" ? (
             <div className="empty-loader" />
           ) : notes ? (
-            notes.map((note, index) => renderNote(note, index))
+            <>
+              {notebook.noteEditorOpen && (
+                <AnimateHeight
+                  height={notebook.noteEditorSelectPosition ? "auto" : 0}
+                  onClick={() => handleChooseStartOrEndPositionClick("first")}
+                  contentClassName={
+                    notebook.noteEditedPosition === "first"
+                      ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
+                      : "notebook__add-note-here-button"
+                  }
+                >
+                  <p>Luo uusi muistiinpano tähän kohtaan</p>
+                </AnimateHeight>
+              )}
+              {notes.map((note, index) => renderNote(note, index))}
+              {notebook.noteEditorOpen && (
+                <AnimateHeight
+                  height={notebook.noteEditorSelectPosition ? "auto" : 0}
+                  onClick={() => handleChooseStartOrEndPositionClick("last")}
+                  contentClassName={
+                    notebook.noteEditedPosition === "last"
+                      ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
+                      : "notebook__add-note-here-button"
+                  }
+                >
+                  <p>Luo uusi muistiinpano tähän kohtaan</p>
+                </AnimateHeight>
+              )}
+            </>
           ) : (
             <div className="empty">
               <span>Ei muistiinpanoja</span>
@@ -332,6 +403,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       updateNotebookEntriesOrder,
       toggleNotebookEditor,
       deleteNotebookEntry,
+      updateSelectedNotePosition,
     },
     dispatch
   );
