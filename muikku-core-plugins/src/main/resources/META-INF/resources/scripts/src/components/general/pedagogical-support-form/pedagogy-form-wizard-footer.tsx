@@ -34,7 +34,7 @@ const PedagogyFormWizardFooter = (props: PedagogyFormWizardFooterProps) => {
     <>
       {!isFirstStep && (
         <Button
-          buttonModifiers={["wizard"]}
+          buttonModifiers={["info"]}
           onClick={handlePreviousStep}
           disabled={isFirstStep}
         >
@@ -45,7 +45,7 @@ const PedagogyFormWizardFooter = (props: PedagogyFormWizardFooterProps) => {
       {!isLastStep && (
         <Button
           onClick={handleNextStep}
-          buttonModifiers={["wizard"]}
+          buttonModifiers={["info"]}
           disabled={isLastStep}
         >
           Seuraava

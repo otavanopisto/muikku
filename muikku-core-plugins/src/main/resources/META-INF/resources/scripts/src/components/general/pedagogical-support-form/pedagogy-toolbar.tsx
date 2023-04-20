@@ -181,7 +181,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
             {userRole === "SPECIAL_ED_TEACHER" ? (
               <div className="pedagogy-form__toolbar-secondary">
                 <Button
-                  buttonModifiers={["wizard"]}
+                  buttonModifiers={["info"]}
                   disabled={loading}
                   onClick={handlePDFClick}
                 >
@@ -216,31 +216,27 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     case "APPROVED":
       return (
         <div className="pedagogy-form__toolbar">
-          <Button
-            buttonModifiers={["cancel"]}
-            disabled={loading}
-            onClick={handlePDFClick}
-          >
-            {showPDF ? "Sulje PDF" : "PDF"}
-          </Button>
+          <div className="pedagogy-form__toolbar-primary">
+            <VisibilityDialog
+              visibility={visibility}
+              onVisibilityChange={handleVisibilityPermissionChange}
+              onSaveClick={updateVisibility}
+            >
+              <Button buttonModifiers={["info"]} disabled={showPDF}>
+                Muuta jako-oikeuksia
+              </Button>
+            </VisibilityDialog>
+          </div>
 
-          <div
-            style={{
-              borderLeft: "2px solid #00000038",
-              height: "25px",
-              margin: "0 5px",
-            }}
-          />
-
-          <VisibilityDialog
-            visibility={visibility}
-            onVisibilityChange={handleVisibilityPermissionChange}
-            onSaveClick={updateVisibility}
-          >
-            <Button buttonModifiers={["info"]} disabled={showPDF}>
-              Muuta jako-oikeuksia
+          <div className="pedagogy-form__toolbar-secondary">
+            <Button
+              buttonModifiers={["info"]}
+              disabled={loading}
+              onClick={handlePDFClick}
+            >
+              {showPDF ? "Sulje PDF" : "PDF"}
             </Button>
-          </VisibilityDialog>
+          </div>
         </div>
       );
 

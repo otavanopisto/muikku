@@ -148,7 +148,7 @@ class VisibilityAndApprovalDialog extends React.Component<
     const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
-          buttonModifiers={["standard-ok", "fatal"]}
+          buttonModifiers={["standard-ok", "execute"]}
           onClick={this.handleSaveClick.bind(this, closeDialog)}
           disabled={this.props.saveButtonDisabled}
         >
