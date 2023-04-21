@@ -155,6 +155,9 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               className="react-select-override react-select-override--hops"
               classNamePrefix="react-select-override"
               isMulti
+              menuPortalTarget={document.body}
+              menuPosition={"fixed"}
+              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
                   supportReasonsOptions.filter((option) =>
@@ -203,6 +206,9 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               className="react-select-override react-select-override--hops"
               classNamePrefix="react-select-override"
               isMulti
+              menuPortalTarget={document.body}
+              menuPosition={"fixed"}
+              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
                   supportActionsOptions.filter((option) =>
@@ -249,6 +255,9 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               className="react-select-override react-select-override--hops"
               classNamePrefix="react-select-override"
               isMulti
+              menuPortalTarget={document.body}
+              menuPosition={"fixed"}
+              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
                   matriculationSupportActionsOptions.filter((option) =>

@@ -55,6 +55,7 @@
     max-width: 300px;
     min-width: 100px;
     top: unset;
+    z-index: 999;
 
     @include breakpoint($breakpoint-pad) {
       max-width: 400px;
@@ -107,10 +108,16 @@
   }
 }
 
+// This definition is to allow react-select koponent to be rendered outside of dialogs when using props to place it under <body> directly
+.react-select-override__menu-portal {
+  @include text;
+}
+
 // Used for HOPS and PEDAGOGY FORM
 .react-select-override--hops {
   .react-select-override__control {
     border-color: $color-hops-dialog-form-element-border;
+    height: auto;
 
     &:hover {
       border-color: $color-hops-dialog-form-element-border;
