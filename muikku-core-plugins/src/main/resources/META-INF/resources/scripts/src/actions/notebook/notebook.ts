@@ -3,6 +3,7 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import {
+  NoteDefaultLocation,
   ReducerStateType,
   WorkspaceNote,
   WorkspaceNoteCreatePayload,
@@ -50,24 +51,29 @@ export type NOTEBOOK_TOGGLE_EDITOR = SpecificActionType<
     open?: boolean;
     note?: WorkspaceNote;
     cutContent?: string;
-    notePosition?: number | "first" | "last";
+    notePosition?: number;
     noteEditorSelectPosition?: boolean;
   } | null
 >;
 
-export type NOTEBOOK_TOGGLE_SELECT_POSITION = SpecificActionType<
-  "NOTEBOOK_TOGGLE_SELECT_POSITION",
-  boolean
->;
-
 export type NOTEBOOK_UPDATE_SELECTED_POSITION = SpecificActionType<
   "NOTEBOOK_UPDATE_SELECTED_POSITION",
-  number | "first" | "last"
+  number
 >;
 
 export type NOTEBOOK_SET_CUT_CONTENT = SpecificActionType<
   "NOTEBOOK_SET_CUT_CONTENT",
   string
+>;
+
+export type NOTEBOOK_LOAD_DEFAULT_POSITION = SpecificActionType<
+  "NOTEBOOK_LOAD_DEFAULT_POSITION",
+  NoteDefaultLocation
+>;
+
+export type NOTEBOOK_UPDATE_DEFAULT_POSITION = SpecificActionType<
+  "NOTEBOOK_UPDATE_DEFAULT_POSITION",
+  NoteDefaultLocation
 >;
 
 // Notebook trigger types
@@ -93,6 +99,7 @@ export interface SaveNewNotebookEntry {
   (data: {
     workspaceEntityId?: number;
     newEntry: WorkspaceNoteCreatePayload;
+    defaultPosition?: NoteDefaultLocation;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -128,16 +135,9 @@ export interface ToggleNotebookEditor {
     open?: boolean;
     note?: WorkspaceNote;
     cutContent?: string;
-    notePosition?: number | "first" | "last";
+    notePosition?: number;
     noteEditorSelectPosition?: boolean;
   }): AnyActionType;
-}
-
-/**
- * ToggleNotebookSelectPosition
- */
-export interface ToggleNotebookSelectPosition {
-  (data: boolean): AnyActionType;
 }
 
 /**
@@ -155,7 +155,7 @@ export interface CreateNewFromScratch {
  * UpdateSelectedPosition
  */
 export interface UpdateSelectedNotePosition {
-  (data: number | "first" | "last"): AnyActionType;
+  (data: number): AnyActionType;
 }
 
 /**
@@ -163,6 +163,13 @@ export interface UpdateSelectedNotePosition {
  */
 export interface CreateNewFromCutContent {
   (data: { cutContent: string }): AnyActionType;
+}
+
+/**
+ * LoadNotebookDefaultPosition
+ */
+export interface LoadNotebookDefaultPosition {
+  (): AnyActionType;
 }
 
 /**
@@ -184,6 +191,10 @@ const loadNotebookEntries: LoadNotebookEntries =
         type: "NOTEBOOK_UPDATE_STATE",
         payload: "LOADING",
       });
+
+      if (state.notebook.noteDefaultLocation === null) {
+        dispatch(loadNotebookDefaultPosition());
+      }
 
       // Load workspace specific entries for user
       if (workspaces.currentWorkspace) {
@@ -347,14 +358,73 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
       const state = getState();
 
       try {
+        const dataToSave = {
+          ...data.newEntry,
+        };
+
+        // If user has set default position for new notes
+        if (data.defaultPosition === "TOP") {
+          dataToSave.nextSiblingId = state.notebook.notes[0]?.id || null;
+        } else {
+          dataToSave.nextSiblingId =
+            state.notebook.notes[state.notebook.notes.length - 1]?.id || null;
+        }
+
+        // If user has selected position for new note from the list
+        // Because index can be 0, we need to check if it is not null as 0 is falsy value
+        if (
+          state.notebook.noteEditedPosition &&
+          state.notebook.noteEditedPosition !== null
+        ) {
+          dataToSave.nextSiblingId =
+            state.notebook.notes[state.notebook.noteEditedPosition].id || null;
+        }
+
+        // If user changes default position when creating new note
+        // we need to update default position to server
+        // Selected new default value is updated anyways even if user has selected position from the list
+        if (state.notebook.noteDefaultLocation !== data.defaultPosition) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const properties: any = await promisify(
+            mApi().user.property.create({
+              key: "note-default-position",
+              value: data.defaultPosition,
+              userEntityId: state.status.userId,
+            }),
+            "callback"
+          )();
+
+          dispatch({
+            type: "NOTEBOOK_UPDATE_DEFAULT_POSITION",
+            payload: properties.value || null,
+          });
+        }
+
         const entry = (await promisify(
-          mApi().workspacenotes.workspacenote.create(data.newEntry),
+          mApi().workspacenotes.workspacenote.create(dataToSave),
           "callback"
         )()) as WorkspaceNote;
 
         let updatedList = [...state.notebook.notes];
 
-        updatedList.push(entry);
+        // Then we need to update notebook entries
+        // If note position is null, note is added to the end of the list
+        if (
+          state.notebook.noteEditedPosition &&
+          state.notebook.noteEditedPosition !== null
+        ) {
+          // If note position is not null, note is added to the list
+          // to the given position
+          updatedList.splice(state.notebook.noteEditedPosition, 0, entry);
+        } else {
+          // If previous conditions are not met, note is added to the top or bottom
+          // of the list depending on user's default position
+          if (data.defaultPosition === "TOP") {
+            updatedList.unshift(entry);
+          } else {
+            updatedList.push(entry);
+          }
+        }
 
         // repair updated orders entries nextSiblingIds
         // with correct values. Last entry will have nextSiblingId null.
@@ -390,6 +460,11 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
     };
   };
 
+/**
+ * Saves edited notebook entry and updates the state
+ *
+ * @param data data
+ */
 /**
  * Saves edited notebook entry and updates the state
  *
@@ -506,24 +581,6 @@ const toggleNotebookEditor: ToggleNotebookEditor =
   };
 
 /**
- * Toggles notebook editor open and closed
- *
- * @param data data
- */
-const toggleNotebookSelectPosition: ToggleNotebookSelectPosition =
-  function toggleNotebookSelectPosition(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      dispatch({
-        type: "NOTEBOOK_TOGGLE_SELECT_POSITION",
-        payload: data,
-      });
-    };
-  };
-
-/**
  * Updates selected note position in editor when creating new or editing existing
  *
  * @param data data
@@ -564,6 +621,38 @@ const createNewFromCutContent: CreateNewFromCutContent =
     };
   };
 
+/**
+ * Loads default position for creating new notes
+ */
+const loadNotebookDefaultPosition: LoadNotebookDefaultPosition =
+  function loadNotebookDefaultPosition() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const properties: any = await promisify(
+          mApi().user.properties.read(state.status.userId, {
+            properties: "note-default-position",
+          }),
+          "callback"
+        )();
+
+        dispatch({
+          type: "NOTEBOOK_LOAD_DEFAULT_POSITION",
+          payload: properties[0].value || null,
+        });
+      } catch (error) {
+        dispatch(
+          displayNotification("Virhe ladattaessa oletus sijaintia", "error")
+        );
+      }
+    };
+  };
+
 export {
   loadNotebookEntries,
   updateNotebookEntriesOrder,
@@ -573,5 +662,4 @@ export {
   toggleNotebookEditor,
   createNewFromCutContent,
   updateSelectedNotePosition,
-  toggleNotebookSelectPosition,
 };

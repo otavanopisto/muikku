@@ -177,14 +177,6 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
   );
 
   /**
-   * handleChoosePositionClick
-   * @param position position
-   */
-  const handleChooseStartOrEndPositionClick = (position: "first" | "last") => {
-    updateSelectedNotePosition(position);
-  };
-
-  /**
    * Renders note item.
    * If ordering is active note is wrapped with DraggableElement
    *
@@ -193,7 +185,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
    * @returns note item
    */
   const renderNote = React.useCallback(
-    (note: WorkspaceNote, index: number) => {
+    (note: WorkspaceNote, index: number, isLast: boolean) => {
       /**
        * Handles opening/closing note specific note
        *
@@ -230,23 +222,25 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
       /**
        * handleChoosePositionClick
        *
-       * @param index index
+       * @param index of the following note
        */
-      const handleChoosePositionClick = (index: number) => {
-        updateSelectedNotePosition(index);
-      };
+      const handleChoosePositionClick =
+        (index: number) =>
+        (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          updateSelectedNotePosition(index);
+        };
 
       return (
-        <>
-          {notebook.noteEditorOpen && index > 0 && (
+        <div key={note.id}>
+          {notebook.noteEditorOpen && index === 0 && (
             <AnimateHeight
-              height={notebook.noteEditorSelectPosition ? "auto" : 0}
+              height={!notebook.noteInTheEditor ? "auto" : 0}
               contentClassName={
-                notebook.noteEditedPosition === index
+                notebook.noteEditedPosition === 0
                   ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
                   : "notebook__add-note-here-button"
               }
-              onClick={() => handleChoosePositionClick(index)}
+              onClick={handleChoosePositionClick(0)}
             >
               <p>Luo uusi muistiinpano tähän kohtaan</p>
             </AnimateHeight>
@@ -270,7 +264,35 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
               onDeleteClick={handleDeleteNoteClick}
             />
           </DraggableElement>
-        </>
+
+          {notebook.noteEditorOpen ? (
+            isLast ? (
+              <AnimateHeight
+                height={!notebook.noteInTheEditor ? "auto" : 0}
+                contentClassName={
+                  isLast && notebook.noteEditedPosition === null
+                    ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
+                    : "notebook__add-note-here-button"
+                }
+                onClick={handleChoosePositionClick(null)}
+              >
+                <p>Luo uusi muistiinpano tähän kohtaan</p>
+              </AnimateHeight>
+            ) : (
+              <AnimateHeight
+                height={!notebook.noteInTheEditor ? "auto" : 0}
+                contentClassName={
+                  notebook.noteEditedPosition === index + 1
+                    ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
+                    : "notebook__add-note-here-button"
+                }
+                onClick={handleChoosePositionClick(index + 1)}
+              >
+                <p>Luo uusi muistiinpano tähän kohtaan</p>
+              </AnimateHeight>
+            )
+          ) : null}
+        </div>
       );
     },
     [
@@ -281,7 +303,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
       noteInTheEditor,
       notebook.noteEditedPosition,
       notebook.noteEditorOpen,
-      notebook.noteEditorSelectPosition,
+      notebook.noteInTheEditor,
       openedItems,
       setOpenedItems,
       toggleNotebookEditor,
@@ -339,35 +361,9 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
           {notebook.state === "LOADING" ? (
             <div className="empty-loader" />
           ) : notes ? (
-            <>
-              {notebook.noteEditorOpen && (
-                <AnimateHeight
-                  height={notebook.noteEditorSelectPosition ? "auto" : 0}
-                  onClick={() => handleChooseStartOrEndPositionClick("first")}
-                  contentClassName={
-                    notebook.noteEditedPosition === "first"
-                      ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
-                      : "notebook__add-note-here-button"
-                  }
-                >
-                  <p>Luo uusi muistiinpano tähän kohtaan</p>
-                </AnimateHeight>
-              )}
-              {notes.map((note, index) => renderNote(note, index))}
-              {notebook.noteEditorOpen && (
-                <AnimateHeight
-                  height={notebook.noteEditorSelectPosition ? "auto" : 0}
-                  onClick={() => handleChooseStartOrEndPositionClick("last")}
-                  contentClassName={
-                    notebook.noteEditedPosition === "last"
-                      ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
-                      : "notebook__add-note-here-button"
-                  }
-                >
-                  <p>Luo uusi muistiinpano tähän kohtaan</p>
-                </AnimateHeight>
-              )}
-            </>
+            notes.map((note, index, array) =>
+              renderNote(note, index, array.length - 1 === index)
+            )
           ) : (
             <div className="empty">
               <span>Ei muistiinpanoja</span>

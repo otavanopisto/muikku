@@ -32,7 +32,14 @@ export interface WorkspaceNoteCreatePayload {
   title: string;
   workspaceNote: string;
   workspaceEntityId: number;
+  /**
+   * Optional given to determine place in the list
+   * if not given, the note is added to the end of the list
+   */
+  nextSiblingId?: number | null;
 }
+
+export type NoteDefaultLocation = "TOP" | "BOTTOM";
 
 /**
  * WorkspaceJournalsType
@@ -40,10 +47,10 @@ export interface WorkspaceNoteCreatePayload {
 export interface NoteBookState {
   notes?: WorkspaceNote[] | null;
   noteEditorOpen: boolean;
-  noteEditorSelectPosition: boolean;
   noteEditorCutContent: string;
-  noteEditedPosition?: number | "first" | "last";
+  noteEditedPosition?: number;
   noteInTheEditor?: WorkspaceNote | null;
+  noteDefaultLocation: NoteDefaultLocation;
   state: ReducerStateType;
 }
 
@@ -52,8 +59,8 @@ const initialJournalsState: NoteBookState = {
   noteEditorOpen: false,
   noteEditorCutContent: null,
   noteInTheEditor: null,
-  noteEditorSelectPosition: false,
   noteEditedPosition: null,
+  noteDefaultLocation: null,
   state: "READY",
 };
 
@@ -120,17 +127,23 @@ export const notebook: Reducer<NoteBookState> = (
         noteEditorCutContent: action.payload,
       };
 
+    case "NOTEBOOK_LOAD_DEFAULT_POSITION":
+      return {
+        ...state,
+        noteDefaultLocation: action.payload ? action.payload : "BOTTOM",
+      };
+
+    case "NOTEBOOK_UPDATE_DEFAULT_POSITION":
+      return {
+        ...state,
+        noteDefaultLocation: action.payload ? action.payload : "BOTTOM",
+      };
+
     case "NOTEBOOK_UPDATE_SELECTED_POSITION":
       return {
         ...state,
-        noteEditedPosition: action.payload,
-      };
-
-    case "NOTEBOOK_TOGGLE_SELECT_POSITION":
-      return {
-        ...state,
-        noteEditorSelectPosition: action.payload,
-        noteEditedPosition: !action.payload ? null : state.noteEditedPosition,
+        noteEditedPosition:
+          action.payload === state.noteEditedPosition ? null : action.payload,
       };
 
     default:

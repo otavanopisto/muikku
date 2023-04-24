@@ -1,6 +1,9 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
-import { WorkspaceNote } from "~/reducers/notebook/notebook";
+import {
+  NoteDefaultLocation,
+  WorkspaceNote,
+} from "~/reducers/notebook/notebook";
 import CKEditor from "../ckeditor";
 import SessionStateComponent from "../session-state-component";
 import Button from "../button";
@@ -11,6 +14,8 @@ import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceType } from "~/reducers/workspaces";
+import Select from "react-select";
+import { OptionDefault } from "~/components/general/react-select/types";
 import {
   SaveNewNotebookEntry,
   saveNewNotebookEntry,
@@ -18,8 +23,6 @@ import {
   toggleNotebookEditor,
   UpdateEditNotebookEntry,
   updateEditedNotebookEntry,
-  ToggleNotebookSelectPosition,
-  toggleNotebookSelectPosition,
 } from "../../../actions/notebook/notebook";
 
 /**
@@ -45,12 +48,14 @@ interface NoteEditorProps {
    * Default content for new note
    */
   cutContent: string;
-  noteEditorSelectPosition: boolean;
-  noteEditedPosition: number | "first" | "last";
+  /**
+   * Default location for new note
+   */
+  defaultLocation: NoteDefaultLocation;
+  noteEditedPosition: number;
   saveNewNotebookEntry: SaveNewNotebookEntry;
   updateEditedNotebookEntry: UpdateEditNotebookEntry;
   toggleNotebookEditor: ToggleNotebookEditor;
-  toggleNotebookSelectPosition: ToggleNotebookSelectPosition;
 }
 
 /**
@@ -61,7 +66,19 @@ interface NoteEditorState {
   noteContent: string;
   draftId: string;
   locked: boolean;
+  defaultLocation: NoteDefaultLocation;
 }
+
+const options: OptionDefault<NoteDefaultLocation>[] = [
+  {
+    value: "BOTTOM",
+    label: "Viimeinen",
+  },
+  {
+    value: "TOP",
+    label: "Ensimmäinen",
+  },
+];
 
 /* eslint-disable camelcase */
 const ckEditorConfig = {
@@ -135,6 +152,7 @@ class NoteEditor extends SessionStateComponent<
       }),
       locked: false,
       draftId,
+      defaultLocation: props.defaultLocation,
     };
   }
 
@@ -144,16 +162,16 @@ class NoteEditor extends SessionStateComponent<
   componentDidMount() {
     this.inputRef.current.focus();
 
-    this.setState(
-      this.getRecoverStoredState(
+    this.setState({
+      ...this.getRecoverStoredState(
         {
           noteTitle: this.props.note?.title || "",
           noteContent:
             this.props.note?.workspaceNote || this.props?.cutContent || "",
         },
         this.state.draftId
-      )
-    );
+      ),
+    });
   }
 
   /**
@@ -170,6 +188,14 @@ class NoteEditor extends SessionStateComponent<
     if (this.props.editorOpen && !this.focusIsUsed) {
       this.inputRef.current.focus();
       this.focusIsUsed = true;
+    }
+
+    // Because editor is already mounted and only hidden,
+    // when editor is opened we need to set default location redux value to state
+    if (this.props.editorOpen && !this.state.defaultLocation) {
+      this.setState({
+        defaultLocation: this.props.defaultLocation,
+      });
     }
 
     if (prevProps.note?.id !== this.props.note?.id) {
@@ -211,15 +237,6 @@ class NoteEditor extends SessionStateComponent<
    */
   handleCkeditorChange = (e: string) => {
     this.setStateAndStore({ noteContent: e }, this.state.draftId);
-  };
-
-  /**
-   * Handles toggling notebook editor
-   */
-  handleToggleNotebookSelectPositionClick = () => {
-    this.props.toggleNotebookSelectPosition(
-      !this.props.noteEditorSelectPosition
-    );
   };
 
   /**
@@ -271,6 +288,7 @@ class NoteEditor extends SessionStateComponent<
           workspaceNote: this.state.noteContent,
           workspaceEntityId: this.props.currentWorkspace.id,
         },
+        defaultPosition: this.state.defaultLocation,
         // eslint-disable-next-line jsdoc/require-jsdoc
         success: () => {
           this.setStateAndClear(
@@ -298,6 +316,19 @@ class NoteEditor extends SessionStateComponent<
       noteEditorSelectPosition: false,
     });
     this.focusIsUsed = false;
+  };
+
+  /**
+   * Handles default position select change
+   *
+   * @param e e
+   */
+  handleDefaultPositionSelectChange = (
+    e: OptionDefault<NoteDefaultLocation>
+  ) => {
+    this.setState({
+      defaultLocation: e.value,
+    });
   };
 
   /**
@@ -346,34 +377,47 @@ class NoteEditor extends SessionStateComponent<
               </div>
             </div>
 
-            <div className="form__row">
-              <div className="form-element">
-                <label>Sijainti</label>
+            {!this.props.note && (
+              <div className="form__row">
+                <div className="form-element">
+                  <label>Oletus sijainti</label>
 
-                <p className="notebook__select-position-info">
-                  Oletuksena uusi muistiinpano luodaan listan viimeiseksi.
-                  Valitse sijainti -nappia painamalla voit itse valita listasta
-                  halutun sijainnin
-                </p>
+                  <Select
+                    className="react-select-override"
+                    classNamePrefix="react-select-override"
+                    id="selectUsers"
+                    options={options}
+                    value={options.find(
+                      (o) => o.value === this.state.defaultLocation
+                    )}
+                    onChange={this.handleDefaultPositionSelectChange}
+                    styles={{
+                      // eslint-disable-next-line jsdoc/require-jsdoc
+                      container: (baseStyles, state) => ({
+                        ...baseStyles,
+                        width: "fit-content",
+                      }),
+                    }}
+                  />
 
-                <button
-                  style={{
-                    width: "100%",
-                    height: "40px",
-                    color: "white",
-                    backgroundColor: this.props.noteEditorSelectPosition
-                      ? "red"
-                      : "green",
-                    border: "none",
-                  }}
-                  onClick={this.handleToggleNotebookSelectPositionClick}
-                >
-                  {this.props.noteEditorSelectPosition
-                    ? "Peruuta valinta"
-                    : "Valitse sijainti"}
-                </button>
+                  <div className="notebook__select-position-info">
+                    {this.state.defaultLocation === "BOTTOM" ? (
+                      <p>
+                        Oletuksena uusi muistiinpano luodaan listan viimeiseksi.
+                        Voit myös valita sijainnin listasta. Valintalaatikon
+                        valinta tallentuu muistiin
+                      </p>
+                    ) : (
+                      <p>
+                        Oletuksena uusi muistiinpano luodaan listan
+                        ensimmäiseksi. Voit myös valita sijainnin listasta.
+                        Valintalaatikon valinta tallennetaan muistiin.
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="form__buttons form__buttons--notebook">
               <Button
@@ -416,7 +460,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     note: state.notebook.noteInTheEditor,
-    noteEditorSelectPosition: state.notebook.noteEditorSelectPosition,
+    defaultLocation: state.notebook.noteDefaultLocation,
     noteEditedPosition: state.notebook.noteEditedPosition,
     currentWorkspace: state.workspaces.currentWorkspace,
     editorOpen: state.notebook.noteEditorOpen,
@@ -434,7 +478,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       saveNewNotebookEntry,
       updateEditedNotebookEntry,
       toggleNotebookEditor,
-      toggleNotebookSelectPosition,
     },
     dispatch
   );
