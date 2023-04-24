@@ -90,7 +90,7 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
       </div>
       <div className="hops-container__row">
         {!disabled ? (
-          <div className="hops__form-element-container">
+          <div className="hops__form-element-container rich-text">
             <CKEditor
               onChange={(v) => onOpinionChange(index, "opinion", v, type)}
             >
@@ -98,7 +98,7 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
             </CKEditor>
           </div>
         ) : (
-          <div className="hops__form-element-container">
+          <div className="hops__form-element-container rich-text">
             {opinionText === "" ? (
               <p>Lukion näkemystä ei ole vielä asetettu</p>
             ) : (
