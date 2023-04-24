@@ -1,9 +1,11 @@
 package fi.otavanopisto.muikku.schooldata.events;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+
 public class SchoolDataWorkspaceUserUpdatedEvent {
 
   public SchoolDataWorkspaceUserUpdatedEvent(String dataSource, String identifier, String workspaceDataSource, String workspaceIdentifier,
-      String userDataSource, String userIdentifier, String roleDataSource, String roleIdentifier, Boolean isActive) {
+      String userDataSource, String userIdentifier, WorkspaceRoleArchetype role, Boolean isActive) {
     super();
     this.dataSource = dataSource;
     this.identifier = identifier;
@@ -11,8 +13,7 @@ public class SchoolDataWorkspaceUserUpdatedEvent {
     this.workspaceIdentifier = workspaceIdentifier;
     this.userDataSource = userDataSource;
     this.userIdentifier = userIdentifier;
-    this.roleDataSource = roleDataSource;
-    this.roleIdentifier = roleIdentifier;
+    this.role = role;
     this.isActive = isActive;
   }
 
@@ -40,25 +41,20 @@ public class SchoolDataWorkspaceUserUpdatedEvent {
     return userIdentifier;
   }
 
-  public String getRoleDataSource() {
-    return roleDataSource;
-  }
-  
-  public String getRoleIdentifier() {
-    return roleIdentifier;
-  }
-
   public Boolean getIsActive() {
     return isActive;
   }
   
-  private String dataSource;
-  private String identifier;
-  private String workspaceDataSource;
-  private String workspaceIdentifier;
-  private String userDataSource;
-  private String userIdentifier;
-  private String roleDataSource;
-  private String roleIdentifier;
-  private Boolean isActive;
+  public WorkspaceRoleArchetype getRole() {
+    return role;
+  }
+
+  private final String dataSource;
+  private final String identifier;
+  private final String workspaceDataSource;
+  private final String workspaceIdentifier;
+  private final String userDataSource;
+  private final String userIdentifier;
+  private final WorkspaceRoleArchetype role;
+  private final Boolean isActive;
 }
