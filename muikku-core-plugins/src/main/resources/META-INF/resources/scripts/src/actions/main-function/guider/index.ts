@@ -589,6 +589,14 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               payload: { property: "basic", value: basic },
             });
 
+            // If user has LIST_USER_ORDERS permission AND student has ceeposLine set then dispatchin is possible
+            if (
+              getState().status.permissions.LIST_USER_ORDERS &&
+              getState().guider.currentStudent.basic.ceeposLine !== null
+            ) {
+              dispatch(updateAvailablePurchaseProducts());
+            }
+
             // After basic data is loaded, check if current user of guider has permissions
             // to see/use current student hops
             promisify(mApi().hops.isHopsAvailable.read(id), "callback")().then(
@@ -2060,8 +2068,11 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
       getState: () => StateType
     ) => {
       try {
+        const state = getState();
         const value: PurchaseProductType[] = (await promisify(
-          mApi().ceepos.products.read(),
+          mApi().ceepos.products.read({
+            line: state.guider.currentStudent.basic.ceeposLine,
+          }),
           "callback"
         )()) as PurchaseProductType[];
         dispatch({

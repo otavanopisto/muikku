@@ -29,6 +29,9 @@ public class HtmlMaterialChangeListener {
   private Event<HtmlMaterialFieldDeleteEvent> htmlMaterialFieldDeleteEvent;
   
   @Inject
+  private QueryFieldController queryFieldController;
+
+  @Inject
   private QuerySelectFieldController querySelectFieldController;
 
   @Inject
@@ -50,6 +53,19 @@ public class HtmlMaterialChangeListener {
   public void onHtmlMaterialUpdate(@Observes HtmlMaterialUpdateEvent event) {
     MaterialFieldCollection oldFieldCollection = new MaterialFieldCollection(event.getOldHtml());
     MaterialFieldCollection newFieldCollection = new MaterialFieldCollection(event.getNewHtml());
+    
+    // #6539: If database contains fields that are not present in oldFieldCollection, they have to be removed
+    // in order for the new fields to be processed correctly. This only happens if the material html has been
+    // directly updated to the database in a way that has removed fields that were originally present
+    
+    List<QueryField> oldFieldsInDb = queryFieldController.listQueryFieldsByMaterial(event.getMaterial());
+    for (QueryField oldFieldInDb : oldFieldsInDb) {
+      if (!oldFieldCollection.hasField(oldFieldInDb.getName())) {
+        MaterialField materialField = new MaterialField(oldFieldInDb.getName(), oldFieldInDb.getType(), null);
+        HtmlMaterialFieldDeleteEvent deleteEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), materialField, event.getRemoveAnswers());
+        htmlMaterialFieldDeleteEvent.fire(deleteEvent);
+      }
+    }
 
     // TODO Logic for determining whether answers may be removed for deleted and (heavily) modified fields
     
