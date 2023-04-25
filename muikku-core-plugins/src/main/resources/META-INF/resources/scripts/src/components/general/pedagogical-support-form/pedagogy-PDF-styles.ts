@@ -67,14 +67,14 @@ export const styles = StyleSheet.create({
     fontSize: 14,
   },
   infoFieldValue: {
-    fontSize: 12,
+    fontSize: 10,
   },
   infoListValueContainer: {
     display: "flex",
     flexDirection: "column",
   },
   infoListItemValue: {
-    fontSize: 12,
+    fontSize: 10,
   },
   implementedActionsList: {},
   implementedAction: {
