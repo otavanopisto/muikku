@@ -45,10 +45,6 @@ interface NoteEditorProps {
    */
   note: WorkspaceNote;
   /**
-   * Default content for new note
-   */
-  cutContent: string;
-  /**
    * Default location for new note
    */
   defaultLocation: NoteDefaultLocation;
@@ -148,7 +144,7 @@ class NoteEditor extends SessionStateComponent<
     this.state = {
       ...this.getRecoverStoredState({
         noteTitle: props.note?.title || "",
-        noteContent: props.note?.workspaceNote || props?.cutContent || "",
+        noteContent: props.note?.workspaceNote || "",
       }),
       locked: false,
       draftId,
@@ -166,8 +162,7 @@ class NoteEditor extends SessionStateComponent<
       ...this.getRecoverStoredState(
         {
           noteTitle: this.props.note?.title || "",
-          noteContent:
-            this.props.note?.workspaceNote || this.props?.cutContent || "",
+          noteContent: this.props.note?.workspaceNote || "",
         },
         this.state.draftId
       ),
@@ -211,8 +206,7 @@ class NoteEditor extends SessionStateComponent<
         this.getRecoverStoredState(
           {
             noteTitle: this.props.note?.title || "",
-            noteContent:
-              this.props.note?.workspaceNote || this.props?.cutContent || "",
+            noteContent: this.props.note?.workspaceNote || "",
             draftId,
           },
           draftId
@@ -247,8 +241,7 @@ class NoteEditor extends SessionStateComponent<
     this.setStateAndClear(
       {
         noteTitle: this.props.note?.title || "",
-        noteContent:
-          this.props.note?.workspaceNote || this.props?.cutContent || "",
+        noteContent: this.props.note?.workspaceNote || "",
       },
       this.state.draftId
     );
@@ -464,7 +457,6 @@ function mapStateToProps(state: StateType) {
     noteEditedPosition: state.notebook.noteEditedPosition,
     currentWorkspace: state.workspaces.currentWorkspace,
     editorOpen: state.notebook.noteEditorOpen,
-    cutContent: state.notebook.noteEditorCutContent,
   };
 }
 
