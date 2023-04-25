@@ -628,7 +628,10 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action
       );
-      this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
+
+      this.props.store.getState().status.loggedIn &&
+        this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
+
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
       this.props.store.dispatch(
