@@ -62,8 +62,11 @@ public class ForumSubscriptionNotifier {
       areaSubscriptions = forumAreaSubsciptionController.listByArea(forumArea);
     }
     
-
-    ForumThreadReply forumThreadReply = forumController.getForumThreadReply(event.getReplyId());
+    ForumThreadReply forumThreadReply = null;
+    
+    if (event.getReplyId() != null) {
+      forumThreadReply = forumController.getForumThreadReply(event.getReplyId());
+    }
     
     ForumThread forumThread = forumController.getForumThread(event.getThreadId());
     UserEntity poster = userEntityController.findUserEntityById(event.getPosterUserEntityId());
