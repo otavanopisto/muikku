@@ -133,7 +133,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
           const subjectCodeString = `(${
             subjectData.subjectName
-          }, ${subjectData.subjectCode.toUpperCase()}${
+          }, ${subjectData.subjectCode ? subjectData.subjectCode : ""}${
             subjectData.courseNumber ? subjectData.courseNumber : ""
           })`;
 
