@@ -213,8 +213,13 @@ public class TestUtilities {
     ca.setCourseId(course.getId());
     CourseActivitySubject cas = new CourseActivitySubject();
     cas.setCourseModuleId(course.getCourseModules().iterator().next().getId());
+    cas.setSubjectName("Test course");
+    cas.setSubjectCode("tc_11");
+    cas.setCourseLength(course.getLocalTeachingDays());
+    cas.setCourseLengthSymbol("ov");
     ca.setSubjects(Arrays.asList(cas));
     ca.setCourseName(course.getName());
+    
     CourseActivityAssessment caa = new CourseActivityAssessment();
     caa.setCourseModuleId(cas.getCourseModuleId());
     caa.setState(courseActivityState);
