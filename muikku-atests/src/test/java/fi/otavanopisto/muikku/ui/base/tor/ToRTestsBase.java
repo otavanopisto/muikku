@@ -63,6 +63,7 @@ public class ToRTestsBase extends AbstractUITest {
       ca.setSubjects(Arrays.asList(cas));
       ca.setCourseName(course1.getName());
       CourseActivityAssessment caa = new CourseActivityAssessment();
+      caa.setCourseModuleId(cas.getCourseModuleId());
       caa.setGrade("Excellent");
       caa.setPassingGrade(true);
       caa.setDate(TestUtilities.toDate(TestUtilities.getLastWeek()));

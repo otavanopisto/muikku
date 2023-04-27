@@ -216,6 +216,7 @@ public class TestUtilities {
     ca.setSubjects(Arrays.asList(cas));
     ca.setCourseName(course.getName());
     CourseActivityAssessment caa = new CourseActivityAssessment();
+    caa.setCourseModuleId(cas.getCourseModuleId());
     caa.setState(courseActivityState);
     caa.setDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
     caa.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
