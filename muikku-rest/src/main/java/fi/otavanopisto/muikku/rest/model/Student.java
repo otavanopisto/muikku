@@ -3,7 +3,7 @@ package fi.otavanopisto.muikku.rest.model;
 import java.util.Date;
 import java.util.List;
 
-import fi.otavanopisto.muikku.rest.model.StudentFlag;
+import org.apache.commons.lang3.StringUtils;
 
 public class Student {
 
@@ -37,6 +37,15 @@ public class Student {
     this.userEntityId = userEntityId;
     this.setFlags(flags);
     this.organization = organization;
+    
+    // #6472: Hard-coded lines to determine whether student is eligible for Ceepos study time orders :|
+    
+    if (StringUtils.equalsIgnoreCase(studyProgrammeName, "Nettilukio/yksityisopiskelu (aineopintoina)") || StringUtils.equalsIgnoreCase(studyProgrammeName, "Aineopiskelu/yo-tutkinto")) {
+      this.ceeposLine = "nettilukio";
+    }
+    else if (StringUtils.equalsIgnoreCase(studyProgrammeName, "Nettiperuskoulu/yksityisopiskelu")) {
+      this.ceeposLine = "nettipk";
+    }
   }
 
   public String getId() {
@@ -207,6 +216,14 @@ public class Student {
     this.lastLogin = lastLogin;
   }
 
+  public String getCeeposLine() {
+    return ceeposLine;
+  }
+
+  public void setCeeposLine(String ceeposLine) {
+    this.ceeposLine = ceeposLine;
+  }
+
   private String id;
   private String firstName;
   private String lastName;
@@ -228,4 +245,5 @@ public class Student {
   private Long userEntityId;
   private List<StudentFlag> flags;
   private OrganizationRESTModel organization;
+  private String ceeposLine;
 }

@@ -619,7 +619,10 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action
       );
-      this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
+
+      this.props.store.getState().status.loggedIn &&
+        this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
+
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
       this.props.store.dispatch(
@@ -931,11 +934,6 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
-
-      // If user has LIST_USER_ORDERS permission then dispatchin is possible
-      if (this.props.store.getState().status.permissions.LIST_USER_ORDERS) {
-        this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
-      }
 
       this.props.store.dispatch(updateUserGroupFilters() as Action);
 

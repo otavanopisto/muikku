@@ -86,6 +86,7 @@ export interface UserWithSchoolDataType {
   updatedByStudent: boolean;
   userEntityId: number;
   matriculationEligibility: boolean;
+  ceeposLine: string | null;
 }
 
 /**
