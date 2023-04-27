@@ -60,6 +60,10 @@ public class ToRTestsBase extends AbstractUITest {
       ca.setCourseId(course1.getId());
       CourseActivitySubject cas = new CourseActivitySubject();
       cas.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
+      cas.setSubjectName("Test subject");
+      cas.setSubjectCode("tc_12");
+      cas.setCourseLength((double) 3);
+      cas.setCourseLengthSymbol("ov");
       ca.setSubjects(Arrays.asList(cas));
       ca.setCourseName(course1.getName());
       CourseActivityAssessment caa = new CourseActivityAssessment();
@@ -107,7 +111,8 @@ public class ToRTestsBase extends AbstractUITest {
         
         navigate("/records#records", false);
         waitForPresent(".application-list__item-header--course .application-list__header-primary");
-        assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
+        assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-title", "testcourses");
+        assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-meta--records .label__text", "Nettilukio");
         
         waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
         assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
