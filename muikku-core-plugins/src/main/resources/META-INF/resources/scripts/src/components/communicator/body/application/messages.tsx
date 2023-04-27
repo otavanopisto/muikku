@@ -38,6 +38,7 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
+import InfoPopover from "~/components/general/info-popover";
 
 /**
  * CommunicatorMessagesProps
@@ -123,9 +124,23 @@ class CommunicatorMessages extends BodyScrollLoader<
       }
 
       if (thread.sender.studiesEnded === true) {
-        return <span className="message__user-studies-ended">{name}</span>;
+        return (
+          <InfoPopover
+            communicatorId={thread.communicatorMessageId}
+            userId={thread.sender.userEntityId}
+          >
+            <span className="message__user-studies-ended">{name}</span>
+          </InfoPopover>
+        );
       }
-      return <span>{name}</span>;
+      return (
+        <InfoPopover
+          communicatorId={thread.communicatorMessageId}
+          userId={thread.sender.userEntityId}
+        >
+          <span>{name}</span>
+        </InfoPopover>
+      );
     }
 
     const messageRecipientsList = thread.recipients.map((recipient) => {
@@ -145,18 +160,30 @@ class CommunicatorMessages extends BodyScrollLoader<
       }
       if (recipient.studiesEnded === true) {
         return (
-          <span
+          <InfoPopover
+            communicatorId={thread.communicatorMessageId}
             key={recipient.recipientId}
-            className="message__user-studies-ended"
+            userId={recipient.recipientId}
           >
-            {getName(recipient as any, !this.props.status.isStudent)}
-          </span>
+            <span
+              className="message__user-studies-ended"
+              key={recipient.recipientId}
+            >
+              {getName(recipient as any, !this.props.status.isStudent)}
+            </span>
+          </InfoPopover>
         );
       }
       return (
-        <span key={recipient.recipientId}>
-          {getName(recipient as any, !this.props.status.isStudent)}
-        </span>
+        <InfoPopover
+          communicatorId={thread.communicatorMessageId}
+          key={recipient.recipientId}
+          userId={recipient.recipientId}
+        >
+          <span key={recipient.recipientId}>
+            {getName(recipient as any, !this.props.status.isStudent)}
+          </span>
+        </InfoPopover>
       );
     });
 
