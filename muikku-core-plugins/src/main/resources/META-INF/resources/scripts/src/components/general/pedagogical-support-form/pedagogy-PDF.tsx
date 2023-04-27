@@ -9,13 +9,8 @@ import {
   supportActionsOptions,
   supportReasonsOptions,
 } from "./helpers";
-import { styles } from "./pedagogy-PDF-styles";
+import { styles, htmlStyles } from "./pedagogy-PDF-styles";
 import { FormData, Opinion, PedagogyForm } from "~/@types/pedagogy-form";
-
-Font.register({
-  family: "Oswald",
-  src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
-});
 
 /**
  * PedagogyPDFProps
@@ -84,7 +79,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           </View>
 
           <View style={styles.opinionExtraInfo}>
-            <Html>{opinion.opinion}</Html>
+            <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
           </View>
         </View>
       ))
@@ -119,7 +114,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           </View>
 
           <View style={styles.opinionExtraInfo}>
-            <Html>{opinion.opinion}</Html>
+            <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
           </View>
         </View>
       ))
@@ -138,26 +133,26 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         />
       </View>
       <View style={styles.headerInfoContainer}>
-        <Text style={styles.title}>PEDAGOGISEN TUEN SUUNNITELMA</Text>
+        <Text style={styles.title}>Pedagogisen tuen suunnitelma</Text>
         <Text style={styles.subtitle}>Salassa pidettävä</Text>
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
-            `Sivu ${pageNumber} / ${totalPages}`
+            `${pageNumber} (${totalPages})`
           }
         />
       </View>
     </View>
   );
 
-  const pageFooter = (
-    <View style={styles.footer} fixed>
-      <Image
-        style={styles.footerImage}
-        src="/gfx/pedagogy_form_logo_footer.png"
-      />
-    </View>
-  );
+  // const pageFooter = (
+  //   <View style={styles.footer} fixed>
+  //     <Image
+  //       style={styles.footerImage}
+  //       src="/gfx/pedagogy_form_logo_footer.png"
+  //     />
+  //   </View>
+  // );
 
   const studentName = `${data?.studentInfo?.firstName || ""} ${
     data.studentInfo.lastName || ""
@@ -214,7 +209,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
             {formData?.cooperativePartners || "-"}
           </Text>
         </View>
-        {pageFooter}
+        {/* {pageFooter} */}
       </Page>
 
       {
@@ -299,7 +294,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
             </Text>
           </View>
         ) : null}
-        {pageFooter}
+        {/* {pageFooter} */}
       </Page>
 
       {
@@ -344,7 +339,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
               ))
             : "Ei toteutettuja tukitoimia"}
         </View>
-        {pageFooter}
+        {/* {pageFooter} */}
       </Page>
 
       {
@@ -357,7 +352,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         </Text>
 
         {studentOpinion}
-        {pageFooter}
+        {/* {pageFooter} */}
       </Page>
 
       {
@@ -370,7 +365,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         </Text>
 
         {schoolOpinion}
-        {pageFooter}
+        {/* {pageFooter} */}
       </Page>
     </Document>
   );

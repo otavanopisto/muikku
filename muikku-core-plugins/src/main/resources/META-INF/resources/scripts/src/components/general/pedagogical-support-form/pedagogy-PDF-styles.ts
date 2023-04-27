@@ -2,54 +2,65 @@ import { StyleSheet } from "@react-pdf/renderer";
 
 export const styles = StyleSheet.create({
   body: {
-    paddingTop: 35,
-    paddingBottom: 65,
+    paddingTop: 20,
+    paddingBottom: 20,
     paddingHorizontal: 35,
   },
-  title: {
-    fontSize: 24,
-    fontFamily: "Oswald",
-  },
-  subtitle: {
-    fontSize: 18,
-    fontFamily: "Oswald",
-  },
-  pageTitle: {
-    fontSize: 18,
-    fontFamily: "Oswald",
-    textTransform: "uppercase",
-  },
   header: {
-    color: "grey",
+    color: "#000000",
     display: "flex",
     flexDirection: "row",
-    marginBottom: 20,
+    flexWrap: "nowrap",
+    marginBottom: 30,
     height: "auto",
   },
-  headerInfoContainer: {
-    width: "60%",
-  },
   headerImageContainer: {
-    width: "40%",
+    flexBasis: 50,
+    marginRight: 20,
+    flexShrink: 0,
+    flexGrow: 0,
   },
   headerImage: {
     height: "auto",
-    width: 100,
+    width: 50,
   },
-  footer: {
-    position: "absolute",
-    bottom: 30,
-    right: 0,
-    marginTop: 20,
-    paddingHorizontal: 35,
+  headerInfoContainer: {
+    alignItems: "center",
+    flexBasis: "auto",
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    justifyContent: "flex-start",
+    flexShrink: 1,
+    flexGrow: 1,
   },
-  footerImage: {
-    height: "auto",
-    width: 100,
+  title: {
+    fontSize: 14,
+    fontFamily: "Times-Roman",
+    fontWeight: "bold",
+    flexBasis: "auto",
+    flexShrink: 1,
+    flexGrow: 1,
+  },
+  subtitle: {
+    fontSize: 10,
+    fontFamily: "Times-Roman",
+    marginLeft: 5,
+    flexBasis: "100",
+    flexShrink: 0,
+    textAlign: "right",
   },
   pageNumber: {
-    fontSize: 12,
-    color: "grey",
+    fontSize: 10,
+    fontFamily: "Times-Roman",
+    marginLeft: 5,
+    flexBasis: "50",
+    flexShrink: 0,
+    textAlign: "right",
+  },
+  pageTitle: {
+    fontSize: 14,
+    fontFamily: "Times-Roman",
   },
   basicInfoContainer: {
     display: "flex",
@@ -61,20 +72,26 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     marginVertical: 10,
+    backgroundColor: "red",
   },
   infoFieldLabel: {
-    fontWeight: "bold",
-    fontSize: 14,
+    fontSize: 11,
+    fontFamily: "Times-Roman",
+    marginBottom: 10,
   },
   infoFieldValue: {
-    fontSize: 10,
+    fontSize: 11,
+    fontFamily: "Times-Roman",
+    marginLeft: 70,
   },
   infoListValueContainer: {
     display: "flex",
     flexDirection: "column",
+    marginLeft: 70,
   },
   infoListItemValue: {
-    fontSize: 10,
+    fontSize: 11,
+    fontFamily: "Times-Roman",
   },
   implementedActionsList: {},
   implementedAction: {
@@ -84,7 +101,7 @@ export const styles = StyleSheet.create({
   },
   implementationInfo: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     width: "100%",
   },
   implementationExtraInfo: {
@@ -100,6 +117,8 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     paddingVertical: 5,
     borderBottom: "1px solid #b4b4b4",
+    fontSize: 11,
+    fontFamily: "Times-Roman",
   },
   opinionInfo: {
     display: "flex",
@@ -110,5 +129,37 @@ export const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    fontSize: 11,
+  },
+  footer: {
+    position: "absolute",
+    bottom: 30,
+    right: 0,
+    marginTop: 20,
+    paddingHorizontal: 35,
+  },
+  footerImage: {
+    height: "auto",
+    width: 100,
   },
 });
+
+export const htmlStyles = {
+  p: {
+    fontSize: 10,
+    fontFamily: "Times-Roman",
+    marginVertical: 5,
+  },
+  h3: {
+    fontSize: 12,
+    fontFamily: "Times-Roman",
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  h4: {
+    fontSize: 11,
+    fontFamily: "Times-Roman",
+    marginTop: 10,
+    marginBottom: 5,
+  },
+};
