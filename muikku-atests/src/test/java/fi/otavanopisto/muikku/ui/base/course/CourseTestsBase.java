@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -338,7 +339,7 @@ public class CourseTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       mockBuilder
