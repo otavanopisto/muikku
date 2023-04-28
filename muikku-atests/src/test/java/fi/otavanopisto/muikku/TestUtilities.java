@@ -174,7 +174,7 @@ public class TestUtilities {
   }
 
   public static CourseStudent courseStudentFromMockCourseStudent(MockCourseStudent mockCourseStudent) {
-    CourseStudent courseStudent = new CourseStudent(mockCourseStudent.getId(), mockCourseStudent.getCourseId(), mockCourseStudent.getStudentId(),
+    CourseStudent courseStudent = new CourseStudent(mockCourseStudent.getId(), mockCourseStudent.getCourse().getId(), mockCourseStudent.getStudentId(),
       OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), false, null, null, null, null, null);
     return courseStudent;
   }
