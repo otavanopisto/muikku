@@ -78,7 +78,6 @@ import RecordsBody from "../components/records/body";
 import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
-  setCurrentStudentUserViewAndWorkspace,
   setLocationToHopsInTranscriptOfRecords,
   setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
@@ -308,14 +307,6 @@ export default class MainFunction extends React.Component<
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateSummary() as Action);
-    } else if (!givenLocation) {
-      this.props.store.dispatch(
-        setCurrentStudentUserViewAndWorkspace(
-          parseInt(originalData.u),
-          originalData.i,
-          parseInt(originalData.w)
-        ) as Action
-      );
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords() as Action

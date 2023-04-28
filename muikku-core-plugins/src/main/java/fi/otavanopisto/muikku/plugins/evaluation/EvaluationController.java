@@ -68,9 +68,10 @@ import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityState;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -160,7 +161,7 @@ public class EvaluationController {
 
   /* Workspace activity */
 
-  public List<WorkspaceActivity> listWorkspaceActivities(SchoolDataIdentifier studentIdentifier,
+  public WorkspaceActivityInfo listWorkspaceActivities(SchoolDataIdentifier studentIdentifier,
       SchoolDataIdentifier workspaceIdentifier,
       boolean includeTransferCredits,
       boolean includeAssignmentStatistics) {
@@ -169,10 +170,10 @@ public class EvaluationController {
 
     // Ask base information from Pyramus
 
-    List<WorkspaceActivity> activities = new ArrayList<>();
+    WorkspaceActivityInfo activityInfo = null;
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      activities = gradingController.listWorkspaceActivities(
+      activityInfo = gradingController.listWorkspaceActivities(
           dataSource,
           studentIdentifier.getIdentifier(),
           workspaceIdentifier == null ? null : workspaceIdentifier.getIdentifier(),
@@ -181,18 +182,19 @@ public class EvaluationController {
     finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
+    if (activityInfo == null) {
+      return null;
+    }
 
     // Complement the response with data available only in Muikku
 
-    for (WorkspaceActivity activity : activities) {
+    for (WorkspaceActivity activity : activityInfo.getActivities()) {
 
       // Skip activity items without a course (basically transfer credits)
 
       if (activity.getIdentifier() == null) {
         continue;
       }
-
-      SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(activity.getWorkspaceSubjectIdentifier());
 
       // WorkspaceEntityId
 
@@ -205,21 +207,28 @@ public class EvaluationController {
 
       // Supplementation request, if one exists and is newer than activity date so far
 
-      SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
-          userEntity.getId(), workspaceEntity.getId(), workspaceSubjectIdentifier, Boolean.FALSE);
-      if (supplementationRequest != null && supplementationRequest.getRequestDate().after(activity.getDate())) {
-        activity.setText(supplementationRequest.getRequestText());
-        activity.setDate(supplementationRequest.getRequestDate());
-        activity.setState(WorkspaceActivityState.SUPPLEMENTATION_REQUESTED);
+      for (WorkspaceAssessmentState assessment : activity.getAssessmentStates()) {
+        SchoolDataIdentifier workspaceSubjectIdentifier = assessment.getWorkspaceSubjectIdentifier() == null
+            ? null
+            : SchoolDataIdentifier.fromId(assessment.getWorkspaceSubjectIdentifier());
+        SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+            userEntity.getId(), workspaceEntity.getId(), workspaceSubjectIdentifier, Boolean.FALSE);
+        if (supplementationRequest != null && supplementationRequest.getRequestDate().after(assessment.getDate())) {
+          assessment.setText(supplementationRequest.getRequestText());
+          assessment.setDate(supplementationRequest.getRequestDate());
+          assessment.setState(WorkspaceAssessmentState.INCOMPLETE);
+        }
       }
 
       // Interim evaluation request, if one exists and is newer than activity date so far
 
       InterimEvaluationRequest interimEvaluationRequest = findLatestInterimEvaluationRequest(userEntity, workspaceEntity, Boolean.FALSE);
-      if (interimEvaluationRequest != null && interimEvaluationRequest.getRequestDate().after(activity.getDate())) {
-        activity.setText(interimEvaluationRequest.getRequestText());
-        activity.setDate(interimEvaluationRequest.getRequestDate());
-        activity.setState(WorkspaceActivityState.INTERIM_EVALUATION_REQUESTED);
+      for (WorkspaceAssessmentState assessment : activity.getAssessmentStates()) {
+        if (interimEvaluationRequest != null && interimEvaluationRequest.getRequestDate().after(assessment.getDate())) {
+          assessment.setText(interimEvaluationRequest.getRequestText());
+          assessment.setDate(interimEvaluationRequest.getRequestDate());
+          assessment.setState(WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST);
+        }
       }
 
       // Interim evaluation, if one exists and is newer than activity date so far
@@ -230,10 +239,12 @@ public class EvaluationController {
           BooleanPredicate.IGNORE);
       for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
         WorkspaceMaterialEvaluation evaluation = findLatestUnarchivedWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-        if (evaluation != null && evaluation.getEvaluated().after(activity.getDate())) {
-          activity.setText(evaluation.getVerbalAssessment());
-          activity.setDate(evaluation.getEvaluated());
-          activity.setState(WorkspaceActivityState.INTERIM_EVALUATION);
+        for (WorkspaceAssessmentState assessment : activity.getAssessmentStates()) {
+          if (evaluation != null && evaluation.getEvaluated().after(assessment.getDate())) {
+            assessment.setText(evaluation.getVerbalAssessment());
+            assessment.setDate(evaluation.getEvaluated());
+            assessment.setState(WorkspaceAssessmentState.INTERIM_EVALUATION);
+          }
         }
       }
 
@@ -295,7 +306,7 @@ public class EvaluationController {
         activity.setEvaluablesAnswered(evaluablesAnswered);
       }
     }
-    return activities;
+    return activityInfo;
   }
 
   public InterimEvaluationRequest findInterimEvaluationRequestById(Long interimEvaluationRequestId) {

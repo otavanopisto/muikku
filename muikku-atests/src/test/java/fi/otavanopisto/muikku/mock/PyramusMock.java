@@ -48,7 +48,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
-import fi.otavanopisto.pyramus.rest.model.CourseActivity;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityInfo;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
@@ -1387,20 +1387,25 @@ public class PyramusMock {
       
       public Builder mockCourseActivities() throws JsonProcessingException {
         for (MockCourseStudent mcs : pmock.mockCourseStudents) {
-          List<CourseActivity> courseActivities = mcs.getCourseActivities();
+          // TODO Hardcoded courseActivityInfo fields
+          CourseActivityInfo courseActivityInfo = new CourseActivityInfo();
+          courseActivityInfo.setLineName("Nettilukio");
+          courseActivityInfo.setLineCategory("Lukio");
+          courseActivityInfo.setDefaultLine(true);
+          courseActivityInfo.setActivities(mcs.getCourseActivities());
 
           stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/courseActivity", mcs.getStudentId())))
               .withQueryParam("courseIds", matching(".*"))
               .withQueryParam("includeTransferCredits", matching(".*"))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
-              .withBody(pmock.objectMapper.writeValueAsString(courseActivities))
+              .withBody(pmock.objectMapper.writeValueAsString(courseActivityInfo))
               .withStatus(200)));
           
           stubFor(get(urlMatching(String.format("/1/students/students/%d/courseActivity", mcs.getStudentId())))
               .willReturn(aResponse()
                   .withHeader("Content-Type", "application/json")
-                  .withBody(pmock.objectMapper.writeValueAsString(courseActivities))
+                  .withBody(pmock.objectMapper.writeValueAsString(courseActivityInfo))
                   .withStatus(200)));
         }
         return this;

@@ -5,6 +5,7 @@ import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -23,7 +24,9 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
+import fi.otavanopisto.pyramus.rest.model.CourseActivitySubject;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
@@ -55,14 +58,23 @@ public class ToRTestsBase extends AbstractUITest {
       
       CourseActivity ca = new CourseActivity();
       ca.setCourseId(course1.getId());
-      ca.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
+      CourseActivitySubject cas = new CourseActivitySubject();
+      cas.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
+      cas.setSubjectName("Test subject");
+      cas.setSubjectCode("tc_12");
+      cas.setCourseLength((double) 3);
+      cas.setCourseLengthSymbol("ov");
+      ca.setSubjects(Arrays.asList(cas));
       ca.setCourseName(course1.getName());
-      ca.setGrade("Excellent");
-      ca.setPassingGrade(true);
-      ca.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
-      ca.setText("Test evaluation.");
-      ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
-      ca.setState(CourseActivityState.GRADED);
+      CourseActivityAssessment caa = new CourseActivityAssessment();
+      caa.setCourseModuleId(cas.getCourseModuleId());
+      caa.setGrade("Excellent");
+      caa.setPassingGrade(true);
+      caa.setDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+      caa.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+      caa.setText("Test evaluation.");
+      caa.setState(CourseActivityState.GRADED_PASS);
+      ca.setAssessments(Arrays.asList(caa));
       
       List<CourseActivity> courseActivities = new ArrayList<>();
       courseActivities.add(ca);
@@ -99,7 +111,8 @@ public class ToRTestsBase extends AbstractUITest {
         
         navigate("/records#records", false);
         waitForPresent(".application-list__item-header--course .application-list__header-primary");
-        assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
+        assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-title", "testcourses");
+        assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-meta--records .label__text", "Nettilukio");
         
         waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
         assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");

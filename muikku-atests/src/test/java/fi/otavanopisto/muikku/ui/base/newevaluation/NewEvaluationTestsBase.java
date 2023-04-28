@@ -97,7 +97,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".link--workspace-assessment");
       waitForVisible(".dialog .dialog__content");
 
-      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
+      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
       mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
         .mockCompositeGradingScales()
@@ -128,7 +128,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".link--workspace-assessment");
       waitForVisible(".dialog .dialog__content");
 
-      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
+      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
       mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
         .addCourseStudent(course1.getId(), courseStudent)
@@ -172,7 +172,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, dateNow);
       
       mockBuilder.removeMockCourseStudent(courseStudent);
-      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED));
+      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED_PASS));
       mockBuilder
         .mockCourseAssessments(course1, courseStudent, admin)
         .mockWorkspaceBilledPrice(String.valueOf(price/2))
@@ -504,7 +504,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
         
         mockBuilder.removeMockCourseStudent(courseStudent);
-        courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
+        courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
         
         mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)

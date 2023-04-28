@@ -3,14 +3,14 @@ import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { WorkspaceType } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
+import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 
 /**
  * ActivityIndicatorProps
  */
 interface ActivityIndicatorProps {
-  workspace: WorkspaceType;
+  credit: RecordWorkspaceActivity;
   i18n: i18nType;
 }
 
@@ -21,27 +21,22 @@ interface ActivityIndicatorProps {
  * @returns JSX.Element
  */
 const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
-  const { workspace, i18n } = props;
+  const { credit, i18n } = props;
 
-  if (!workspace.activity) {
-    return null;
-  } else if (
-    workspace.activity.exercisesTotal + workspace.activity.evaluablesTotal ===
-    0
-  ) {
+  if (credit.exercisesTotal + credit.evaluablesTotal === 0) {
     return null;
   }
 
   return (
     <div className="activity-badge">
-      {workspace.activity.evaluablesTotal ? (
+      {credit.evaluablesTotal ? (
         <Dropdown
           openByHover
           content={
             <span>
               {i18n.text.get(
                 "plugin.records.workspace.activity.assignment.title",
-                workspace.activity.evaluablesDonePercent
+                (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
               )}
             </span>
           }
@@ -50,7 +45,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
-                workspace.activity.evaluablesDonePercent
+                (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
               }
             ></div>
           </div>
@@ -58,14 +53,14 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
       ) : (
         <div className="activity-badge__item activity-badge__item--empty"></div>
       )}
-      {workspace.activity.exercisesTotal ? (
+      {credit.exercisesTotal ? (
         <Dropdown
           openByHover
           content={
             <span>
               {i18n.text.get(
                 "plugin.records.workspace.activity.exercise.title",
-                workspace.activity.exercisesDonePercent
+                (credit.exercisesAnswered / credit.exercisesTotal) * 100
               )}
             </span>
           }
@@ -74,7 +69,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
-                workspace.activity.exercisesDonePercent
+                (credit.exercisesAnswered / credit.exercisesTotal) * 100
               }
             ></div>
           </div>
