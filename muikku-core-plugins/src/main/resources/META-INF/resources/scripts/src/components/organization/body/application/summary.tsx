@@ -75,7 +75,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               modifier="primary">1000€</ApplicationSubPanelItem.Content>
             <ApplicationSubPanelItem.Content
               modifier="organization-summary">
-              {this.props.i18n.t('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
+              {this.props.i18n.t('content.accumulated', 10, 5, 3)}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
           <ApplicationSubPanelItem
@@ -90,7 +90,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 modifier="primary">1000€</ApplicationSubPanelItem.Content>
               <ApplicationSubPanelItem.Content
                 modifier="organization-summary">
-                {this.props.i18n.t('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
+                {this.props.i18n.t('content.accumulated', 10, 5, 3)}
               </ApplicationSubPanelItem.Content>
             </ApplicationSubPanelItem.SubItem>
             <ApplicationSubPanelItem.SubItem
@@ -102,7 +102,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 modifier="primary">1000€</ApplicationSubPanelItem.Content>
               <ApplicationSubPanelItem.Content
                 modifier="organization-summary">
-                {this.props.i18n.t('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
+                {this.props.i18n.t('content.accumulated', 10, 5, 3)}
               </ApplicationSubPanelItem.Content>
             </ApplicationSubPanelItem.SubItem>
           </ApplicationSubPanelItem>

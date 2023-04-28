@@ -1042,7 +1042,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
                       <input
                         className="chat__submit chat__submit--new-room"
                         type="submit"
-                        value={this.props.i18n.t("actions.add")}
+                        value={this.props.i18n.t("actions.add", {
+                          context: "room",
+                        })}
                       />
                       <div className="chat__subpanel-row chat__subpanel-row--mandatory">
                         *-
@@ -1072,7 +1074,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               {this.props.status.isStudent ? (
                 <>
                   <div className="chat__controlbox-private-chat-heading">
-                    {this.props.i18n.t("labels.myCouncelors")}
+                    {this.props.i18n.t("labels.myCounselors")}
                   </div>
                   <div className="chat__controlbox-people-listing">
                     {this.props.contacts.counselors.list.length > 0 ? (

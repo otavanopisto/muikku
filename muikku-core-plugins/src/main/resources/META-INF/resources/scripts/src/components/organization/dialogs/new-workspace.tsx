@@ -798,7 +798,7 @@ class OrganizationNewWorkspace extends React.Component<
             <DialogRow>
               <DialogRowHeader
                 modifiers="new-workspace"
-                title={t("labels.nameOfNewCourse", {
+                title={t("labels.nameOfNewWorkspace", {
                   ns: "workspace",
                 })}
               />

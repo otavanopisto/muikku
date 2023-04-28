@@ -393,10 +393,10 @@ class Message extends React.Component<MessageProps, MessageState> {
                 replyThreadId={this.props.message.communicatorMessageId}
                 messageId={this.props.message.id}
                 initialSelectedItems={replyTarget}
-                initialSubject={this.props.t(
-                  "plugin.communicator.createmessage.title.replySubject",
-                  this.props.message.caption
-                )}
+                initialSubject={this.props.t("labels.replySubject", {
+                  ns: "messaging",
+                  topic: this.props.message.caption,
+                })}
               />
             ) : null}
 
@@ -408,10 +408,10 @@ class Message extends React.Component<MessageProps, MessageState> {
                 messageId={this.props.message.id}
                 initialSelectedItems={replyAllTarget}
                 replyToAll
-                initialSubject={this.props.t(
-                  "plugin.communicator.createmessage.title.replySubject",
-                  this.props.message.caption
-                )}
+                initialSubject={this.props.t("labels.replySubject", {
+                  ns: "messaging",
+                  topic: this.props.message.caption,
+                })}
               />
             ) : null}
           </div>

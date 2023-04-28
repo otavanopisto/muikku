@@ -223,7 +223,7 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
             onFileSuccess={(file: File, data: any) => {
               this.onFileAdded(file, data);
             }}
-            hintText={t("content.add", { ns: "materials" })}
+            hintText={t("content.add", { ns: "materials", context: "file" })}
             fileTooLargeErrorText={t("notifications.sizeTooLarge", {
               ns: "files",
             })}

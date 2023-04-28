@@ -1259,7 +1259,7 @@ class MaterialEditor extends React.Component<
                 `/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/materials/${a.path}`
               }
               deleteDialogElement={ConfirmRemoveAttachment}
-              hintText={t("content.add", { ns: "materials" })}
+              hintText={t("content.add", { ns: "materials", context: "file" })}
               deleteFileText={t("actions.remove")}
               downloadFileText={t("actions.download", { count: 1 })}
               showURL

@@ -504,7 +504,10 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
           return (
             <span className="material-page__audiofield-file-container">
               <span className="material-page__audiofield-file material-page__audiofield-file--FAILED-TO-UPLOAD">
-                {t("notifications.saveError_audio", { ns: "materials" })}
+                {t("notifications.saveError", {
+                  ns: "materials",
+                  context: "audio",
+                })}
               </span>
             </span>
           );

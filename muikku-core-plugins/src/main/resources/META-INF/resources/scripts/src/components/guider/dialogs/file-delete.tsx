@@ -88,7 +88,10 @@ class FileDeleteDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        {this.props.i18n.t("content.removing", { context: "attachment" })}
+        {this.props.i18n.t("content.removing", {
+          context: "attachment",
+          name: this.props.file.fileName,
+        })}
       </div>
     );
     return (

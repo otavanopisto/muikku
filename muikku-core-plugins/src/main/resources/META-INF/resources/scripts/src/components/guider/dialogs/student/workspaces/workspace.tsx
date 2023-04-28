@@ -432,7 +432,7 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceActivityType>
-                conditionalAttributeLocale="content.numberOfAssignments"
+                conditionalAttributeLocale="content.numberOfExercises"
                 givenDateAttributeLocale="content.lastAnswered"
                 labelTranslationString="labels.answered"
                 conditionalAttribute="exercisesAnswered"

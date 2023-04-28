@@ -90,8 +90,7 @@ class Person extends React.Component<IPersonProps, IPersonState> {
         {this.props.removable ? (
           <PromptDialog
             title={this.props.i18n.t(
-              "labels.remove", {context: "roster"},
-              name
+              "labels.remove", {context: "roster", name: name},
             )}
             content={this.props.i18n.t(
               "labels.removing", {context: "person" }

@@ -116,7 +116,7 @@ const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
                   htmlFor="notesFilterFromGuider"
                   className="filter-item__label"
                 >
-                  {t("labels.createdByCoucelors")}
+                  {t("labels.createdByCounselors")}
                 </label>
               </div>,
             ]}
