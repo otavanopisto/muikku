@@ -131,11 +131,9 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
             return null;
           }
 
-          const subjectCodeString = `(${
-            subjectData.subjectName
-          }, ${subjectData.subjectCode ? subjectData.subjectCode : ""}${
-            subjectData.courseNumber ? subjectData.courseNumber : ""
-          })`;
+          const subjectCodeString = `(${subjectData.subjectName}, ${
+            subjectData.subjectCode ? subjectData.subjectCode : ""
+          }${subjectData.courseNumber ? subjectData.courseNumber : ""})`;
 
           // Interim assessments use same style as reqular assessment requests
           // Only changing factor is whether is it pending or not and its indicated by
@@ -370,11 +368,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               return;
             }
 
-            const codeSubjectString = `${subjectData.subjectCode ? subjectData.subjectCode : ""}${
-              subjectData.courseNumber ? subjectData.courseNumber : ""
-            } (${subjectData.courseLength} ${
-              subjectData.courseLengthSymbol
-            }) - ${subjectData.subjectName}`;
+            const codeSubjectString = `${
+              subjectData.subjectCode ? subjectData.subjectCode : ""
+            }${subjectData.courseNumber ? subjectData.courseNumber : ""} (${
+              subjectData.courseLength
+            } ${subjectData.courseLengthSymbol}) - ${subjectData.subjectName}`;
 
             return (
               <div
