@@ -6,6 +6,7 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.UserContactInfoRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
@@ -29,6 +30,7 @@ import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
+
 
 public interface UserSchoolDataBridge {
     
@@ -138,6 +140,15 @@ public interface UserSchoolDataBridge {
    * @return User's default email address
    */
   public String getUserDefaultEmailAddress(String userIdentifier);
+  
+  /**
+   * Returns the contact info of the given user.
+   * 
+   * @param userIdentifier User identifier
+   * 
+   * @return User's contact info
+   */
+  public UserContactInfoRestModel getUserContactInfo(String userIdentifier);
   
   /**
    * Increases student's study time end by given months.
