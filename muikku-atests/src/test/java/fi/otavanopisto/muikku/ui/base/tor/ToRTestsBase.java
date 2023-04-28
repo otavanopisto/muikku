@@ -65,7 +65,8 @@ public class ToRTestsBase extends AbstractUITest {
       cas.setCourseLength((double) 3);
       cas.setCourseLengthSymbol("ov");
       ca.setSubjects(Arrays.asList(cas));
-      ca.setCourseName(course1.getName());
+      String courseName = String.format("%s (%s)", course1.getName(), course1.getNameExtension());
+      ca.setCourseName(courseName);
       CourseActivityAssessment caa = new CourseActivityAssessment();
       caa.setCourseModuleId(cas.getCourseModuleId());
       caa.setGrade("Excellent");
@@ -79,7 +80,7 @@ public class ToRTestsBase extends AbstractUITest {
       List<CourseActivity> courseActivities = new ArrayList<>();
       courseActivities.add(ca);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), courseActivities);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), courseActivities);
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -111,7 +112,7 @@ public class ToRTestsBase extends AbstractUITest {
         
         navigate("/records#records", false);
         waitForPresent(".application-list__item-header--course .application-list__header-primary");
-        assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-title", "testcourses");
+        assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-title", "testcourses (test extension)");
         assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-meta--records .label__text", "Nettilukio");
         
         waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
@@ -149,7 +150,7 @@ public class ToRTestsBase extends AbstractUITest {
       login();
       
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
