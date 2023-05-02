@@ -65,6 +65,7 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserInfo;
 import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -72,6 +73,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.rest.UserContactInfoRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMemberBasicInfo;
 import fi.otavanopisto.muikku.rest.model.Student;
@@ -293,6 +295,88 @@ public class UserRESTService extends AbstractRESTService {
       userEntityController.setUserEntityProperty(userEntity, payload.getKey(), payload.getValue());
       return Response.ok(payload).build();
     }
+  }
+  
+  @GET
+  @Path("/userInfo/{USERENTITYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getUserInfo(@PathParam("USERENTITYID") Long userEntityId, @QueryParam("data") Set<UserInfo> data) {
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    Map<String, String> result = new HashMap<String, String>();
+    UserContactInfoRestModel contactInfo = null;
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      contactInfo = userController.getUserContactInfo(userEntity.defaultSchoolDataIdentifier());
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
+
+    for (UserInfo d : data) {
+      
+      if (contactInfo != null) {
+        if (d.equals(UserInfo.EMAIL)) {
+          result.put("email", contactInfo.getEmail());
+        }
+        
+        if (d.equals(UserInfo.ADDRESS)) {
+          String street = contactInfo.getStreetAddress();
+          String zipCode = contactInfo.getZipCode();
+          String city = contactInfo.getCity();
+          String country = contactInfo.getCountry();
+          
+          if (street != null && zipCode != null && city != null && country != null) {
+            result.put("address", street + ", " + zipCode + " " + city + ", " + country);
+          }
+        }
+        
+        if (d.equals(UserInfo.PHONENUMBER)) {
+          if (contactInfo.getPhoneNumber() != null) {
+            result.put("phoneNumber", contactInfo.getPhoneNumber());
+          } else {
+            UserEntityProperty phoneNumber = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-phone");
+            if (phoneNumber != null) {
+              result.put("phoneNumber", phoneNumber.getValue());
+            }
+          }
+        } 
+      }
+      
+      if (d.equals(UserInfo.AVATAR)) {
+        Boolean hasAvatar = userEntityFileController.hasProfilePicture(userEntity);
+        result.put("hasAvatar", hasAvatar.toString());
+      }
+      
+      if (d.equals(UserInfo.WHATSAPP)) {
+        UserEntityProperty whatsapp = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-whatsapp");
+        if (whatsapp != null) {
+          result.put("whatsapp", whatsapp.getValue());
+        }
+      }
+      
+      if (d.equals(UserInfo.VACATIONS)) {
+        UserEntityProperty vacationStart = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-vacation-start");
+        UserEntityProperty vacationEnd = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-vacation-end");
+        
+        if (vacationStart != null) {
+          result.put("vacationStart", vacationStart.getValue());
+        }
+        
+        if (vacationEnd != null) {
+          result.put("vacationEnd", vacationEnd.getValue());
+        }
+      }
+    }
+
+    result.put("userId", userEntity.getId().toString());
+    result.put("schoolDataIdentifier", userEntity.defaultSchoolDataIdentifier().getDataSource() + "-" + userEntity.defaultSchoolDataIdentifier().getIdentifier());
+
+    return Response.ok(result).build();
   }
   
   @GET

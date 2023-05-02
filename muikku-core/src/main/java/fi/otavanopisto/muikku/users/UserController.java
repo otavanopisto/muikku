@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.rest.UserContactInfoRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -54,6 +55,10 @@ public class UserController {
 
   public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
     return userSchoolDataController.getUserDefaultEmailAddress(schoolDataSource, userIdentifier);
+  }
+  
+  public UserContactInfoRestModel getUserContactInfo(SchoolDataIdentifier schoolDataIdentifier) {
+    return userSchoolDataController.getUserContactInfo(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
   }
 
   public User findUserByIdentifier(SchoolDataIdentifier userIdentifier) {
