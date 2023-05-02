@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -19,8 +18,9 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @Dependent
@@ -90,77 +90,6 @@ public class AssessmentRequestController {
         false);
   }
 
-  public WorkspaceAssessmentState getWorkspaceAssessmentState(WorkspaceUserEntity workspaceUserEntity) {
-    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-
-    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-    SchoolDataIdentifier userIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier();
-
-    // Ask activity with user + workspace combo
-
-    List<WorkspaceActivity> activities = evaluationController.listWorkspaceActivities(
-        userIdentifier,          // for this user only
-        workspaceIdentifier,     // for this workspace only
-        false,                   // no interest in transfer credits
-        false);                  // no interest for assignment statistics
-    if (activities.isEmpty()) {
-      logger.warning(String.format("WorkspaceUserEntity %d not found in Pyramus", workspaceUserEntity.getId()));
-      return new WorkspaceAssessmentState(workspaceIdentifier.getIdentifier(),WorkspaceAssessmentState.UNASSESSED);
-    }
-    WorkspaceActivity activity = activities.get(0);
-
-    // Convert WorkspaceActivityState to WorkspaceAssessmentState
-
-    String state = null;
-    switch (activity.getState()) {
-    case ASSESSMENT_REQUESTED:
-      state = WorkspaceAssessmentState.PENDING;
-      if (activity.getGrade() != null) {
-        if (activity.getPassingGrade()) {
-          state = WorkspaceAssessmentState.PENDING_PASS;
-        }
-        else {
-          state = WorkspaceAssessmentState.PENDING_FAIL;
-        }
-      }
-      break;
-    case GRADED:
-      if (activity.getPassingGrade()) {
-        state = WorkspaceAssessmentState.PASS;
-      }
-      else {
-        state = WorkspaceAssessmentState.FAIL;
-      }
-      break;
-    case SUPPLEMENTATION_REQUESTED:
-      state = WorkspaceAssessmentState.INCOMPLETE;
-      break;
-    case INTERIM_EVALUATION_REQUESTED:
-      state = WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST;
-      break;
-    case INTERIM_EVALUATION:
-      state = WorkspaceAssessmentState.INTERIM_EVALUATION;
-      break;
-    case ONGOING:
-    case TRANSFERRED:
-    default:
-      state = WorkspaceAssessmentState.UNASSESSED;
-      break;
-    }
-
-    // Return the state
-    // TODO Refactor functionality using this method to just use WorkspaceActivity instead
-
-    return new WorkspaceAssessmentState(
-        activity.getWorkspaceSubjectIdentifier(),
-        state,
-        activity.getDate(),
-        activity.getText(),
-        activity.getGrade(),
-        activity.getGradeDate(),
-        activity.getPassingGrade());
-  }
-
   public List<WorkspaceAssessmentState> getAllWorkspaceAssessmentStates(WorkspaceUserEntity workspaceUserEntity) {
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
 
@@ -169,70 +98,19 @@ public class AssessmentRequestController {
 
     // Ask activity with user + workspace combo
 
-    List<WorkspaceActivity> activities = evaluationController.listWorkspaceActivities(
+    WorkspaceActivityInfo activityInfo = evaluationController.listWorkspaceActivities(
         userIdentifier,          // for this user only
         workspaceIdentifier,     // for this workspace only
         false,                   // no interest in transfer credits
         false);                  // no interest for assignment statistics
-    if (activities.isEmpty()) {
+    if (activityInfo.getActivities().isEmpty()) {
       logger.warning(String.format("WorkspaceUserEntity %d not found in Pyramus", workspaceUserEntity.getId()));
       return Collections.emptyList();
     }
-
-    List<WorkspaceAssessmentState> assessmentStates = new ArrayList<>();
-
-    for (WorkspaceActivity activity : activities) {
-      String state = null;
-      switch (activity.getState()) {
-      case ASSESSMENT_REQUESTED:
-        state = WorkspaceAssessmentState.PENDING;
-        if (activity.getGrade() != null) {
-          if (activity.getPassingGrade()) {
-            state = WorkspaceAssessmentState.PENDING_PASS;
-          }
-          else {
-            state = WorkspaceAssessmentState.PENDING_FAIL;
-          }
-        }
-        break;
-      case GRADED:
-        if (activity.getPassingGrade()) {
-          state = WorkspaceAssessmentState.PASS;
-        }
-        else {
-          state = WorkspaceAssessmentState.FAIL;
-        }
-        break;
-      case SUPPLEMENTATION_REQUESTED:
-        state = WorkspaceAssessmentState.INCOMPLETE;
-        break;
-      case INTERIM_EVALUATION_REQUESTED:
-        state = WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST;
-        break;
-      case INTERIM_EVALUATION:
-        state = WorkspaceAssessmentState.INTERIM_EVALUATION;
-        break;
-      case ONGOING:
-      case TRANSFERRED:
-      default:
-        state = WorkspaceAssessmentState.UNASSESSED;
-        break;
-      }
-
-      // Return the state
-      // TODO Refactor functionality using this method to just use WorkspaceActivity instead
-
-      assessmentStates.add(new WorkspaceAssessmentState(
-          activity.getWorkspaceSubjectIdentifier(),
-          state,
-          activity.getDate(),
-          activity.getText(),
-          activity.getGrade(),
-          activity.getGradeDate(),
-          activity.getPassingGrade()));
+    else if (activityInfo.getActivities().size() > 1) {
+      logger.warning(String.format("Workspace %s resolves to multiple activity items", workspaceIdentifier));
     }
-
-    return assessmentStates;
+    return activityInfo.getActivities().get(0).getAssessmentStates();
   }
 
   public void deleteWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, SchoolDataIdentifier assessmentRequestIdentifier) {

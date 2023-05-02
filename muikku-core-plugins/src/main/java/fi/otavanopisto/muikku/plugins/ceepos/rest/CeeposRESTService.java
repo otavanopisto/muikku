@@ -14,8 +14,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -29,6 +31,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -392,7 +395,7 @@ public class CeeposRESTService {
   /**
    * REQUEST:
    * 
-   * mApi().ceepos.products.read();
+   * mApi().ceepos.products.read({line: 'nettilukio'});
    * 
    * RESPONSE:
    * 
@@ -413,8 +416,8 @@ public class CeeposRESTService {
   @Path("/products")
   @GET
   @RESTPermit(CeeposPermissions.LIST_PRODUCTS)
-  public Response listProducts() {
-    List<CeeposProduct> products = ceeposController.listProducts();
+  public Response listProducts(@QueryParam("line") String line) {
+    List<CeeposProduct> products = ceeposController.listProducts(line);
     List<CeeposProductRestModel> restProducts = new ArrayList<>();
     for (CeeposProduct product : products) {
       restProducts.add(new CeeposProductRestModel(
@@ -810,7 +813,7 @@ public class CeeposRESTService {
     
     // Ensure our order exists (archived is semi-fine since this is a programmatic call)
     
-    CeeposOrder order = ceeposController.findOrderById(new Long(paymentConfirmation.getId()));
+    CeeposOrder order = ceeposController.findOrderById(Long.valueOf(paymentConfirmation.getId()));
     if (order == null) {
       logger.severe(String.format("Ceepos order %s: Not found", paymentConfirmation.getId()));
       return Response.status(Status.BAD_REQUEST).entity("Source system order not found").build();
@@ -883,13 +886,17 @@ public class CeeposRESTService {
     if (product != null && product.getType() == CeeposProductType.STUDYTIME) {
       int months = 0;
       String productCode = order.getProductCode();
-      if (StringUtils.equals(productCode, getProductCodeForMonths(6))) {
+      Set<String> codes = getProductCodesForMonths(6);
+      if (codes.contains(productCode)) {
         months = 6;
       }
-      else if (StringUtils.equals(productCode,  getProductCodeForMonths(12))) {
-        months = 12;
-      }
       else {
+        codes = getProductCodesForMonths(12);
+        if (codes.contains(productCode)) {
+          months = 12;
+        }
+      }
+      if (months == 0) {
         logger.severe(String.format("Ceepos order %d: Product code %s does not match configured monthly codes", order.getId(), productCode));
         order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
             order,
@@ -1087,8 +1094,8 @@ public class CeeposRESTService {
     return StringUtils.isEmpty(desc) ? defaultDescription : desc;
   }
 
-  private String getProductCodeForMonths(int months) {
-    return pluginSettingsController.getPluginSetting("ceepos", String.format("%dMonthCode", months));
+  private Set<String> getProductCodesForMonths(int months) {
+    return Arrays.stream(pluginSettingsController.getPluginSetting("ceepos", String.format("%dMonthCode", months)).split(",")).collect(Collectors.toSet());
   }
   
   private String getSetting(String setting) {

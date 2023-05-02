@@ -4,14 +4,14 @@ import { i18nType } from "~/reducers/base/i18n";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
-import { TransferCreditType } from "~/reducers/main-function/records";
+import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 import Dropdown from "~/components/general/dropdown";
 
 /**
  * TransfereCreditValueIndicatorProps
  */
 interface TransfereCreditIndicatorProps {
-  transferCredit: TransferCreditType;
+  transferCredit: RecordWorkspaceActivity;
   i18n: i18nType;
 }
 
@@ -30,6 +30,9 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
     return <div className="application-list__header-secondary" />;
   }
 
+  //Transfred credits have only one assessment to describe them
+  const assessment = transferCredit.assessmentStates[0];
+
   return (
     <Dropdown
       openByHover
@@ -37,17 +40,17 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
         <span>
           {i18n.text.get(
             "plugin.records.transferCreditsDate",
-            i18n.time.format(transferCredit.date)
-          ) + getShortenGradeExtension(transferCredit.grade)}
+            i18n.time.format(assessment.date)
+          ) + getShortenGradeExtension(assessment.grade)}
         </span>
       }
     >
       <span
         className={`application-list__indicator-badge application-list__indicator-badge-course ${
-          transferCredit.passed ? "state-PASSED" : "state-FAILED"
+          assessment.passingGrade ? "state-PASSED" : "state-FAILED"
         }`}
       >
-        {shortenGrade(transferCredit.grade)}
+        {shortenGrade(assessment.grade)}
       </span>
     </Dropdown>
   );

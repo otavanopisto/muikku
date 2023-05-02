@@ -142,6 +142,7 @@
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
+    min-height: 28px;
     padding: 4px 4px 4px 8px;
   }
 }
