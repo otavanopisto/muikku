@@ -76,7 +76,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="authorOfDocument"
-              label="Asiakirjan laatija:"
+              label="Asiakirjan laatija"
               type="text"
               className="hops__input"
               value={ownerNameWithPhone || "-"}

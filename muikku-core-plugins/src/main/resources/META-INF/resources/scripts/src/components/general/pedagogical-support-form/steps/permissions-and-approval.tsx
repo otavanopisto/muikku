@@ -30,41 +30,47 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
   return (
     <section className="hops-container">
       {data.state === "ACTIVE" && userRole === "SPECIAL_ED_TEACHER" ? (
-        <div className="hops-container__info">
-          <div className="hops-container__state state-INFO">
-            <div className="hops-container__state-icon icon-notification"></div>
-            <div className="hops-container__state-text">
-              Pedagogisen tuen suunnitelma tehdään yhteistyössä opiskelijan
-              kanssa. Suunnitelma jaetaan opiskelijan kanssa Lähetä-painiketta
-              klikkaamalla. Opiskelija voi hyväksyä suunnitelman ja valita,
-              ketkä erityisopettajan ja rehtorin lisäksi saavat nähdä
-              pedagogisen tuen suunnitelman.
-            </div>
-          </div>
-          {editIsActive && (
-            <div className="hops-container__state state-WARNING">
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">
+            Lähetä suunnitelma hyväksyttäväksi
+          </legend>
+          <div className="hops-container__info">
+            <div className="hops-container__state state-INFO">
               <div className="hops-container__state-icon icon-notification"></div>
               <div className="hops-container__state-text">
-                Sinulla on muokkaus aktiivisena. Tallenna tai peruuta muokkaus,
-                jonka jälkeen voit lähettää suunnitelman opiskelijalle
+                Pedagogisen tuen suunnitelma tehdään yhteistyössä opiskelijan
+                kanssa. Suunnitelma jaetaan opiskelijan kanssa Lähetä-painiketta
+                klikkaamalla. Opiskelija voi hyväksyä suunnitelman ja valita,
+                ketkä erityisopettajan ja rehtorin lisäksi saavat nähdä
+                pedagogisen tuen suunnitelman.
               </div>
             </div>
-          )}
+            {editIsActive && (
+              <div className="hops-container__state state-WARNING">
+                <div className="hops-container__state-icon icon-notification"></div>
+                <div className="hops-container__state-text">
+                  Sinulla on muokkaus aktiivisena. Tallenna tai peruuta
+                  muokkaus, jonka jälkeen voit lähettää suunnitelman
+                  opiskelijalle
+                </div>
+              </div>
+            )}
 
-          <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
-            <Button
-              buttonModifiers={["execute"]}
-              onClick={sendToStudent}
-              disabled={editIsActive}
-            >
-              Lähetä
-            </Button>
+            <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
+              <Button
+                buttonModifiers={["execute"]}
+                onClick={sendToStudent}
+                disabled={editIsActive}
+              >
+                Lähetä
+              </Button>
+            </div>
           </div>
-        </div>
+        </fieldset>
       ) : null}
 
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">LUVAT</legend>
+        <legend className="hops-container__subheader">Luvat</legend>
         <div
           className="hops-container__row"
           style={{ flexDirection: "column" }}
@@ -111,7 +117,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
         </div>
       </fieldset>
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">HYVÄKSYMINEN</legend>
+        <legend className="hops-container__subheader">Hyväksyminen</legend>
         <div className="hops-container__row">
           <div
             className="hops__form-element-container hops__form-element-container--single-row"
@@ -126,7 +132,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
               defaultChecked={formIsApproved}
             ></input>
             <label htmlFor="fromFamilyMember" className="hops__label">
-              Olen lukenut ja hyväksyn lomakkeen sisällön
+              Olen lukenut suunnitelman ja hyväksyn sen sisällön.
             </label>
           </div>
         </div>

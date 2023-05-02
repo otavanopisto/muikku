@@ -127,7 +127,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          OPISKELIJAN VAHVUUDET JA TUEN PERUSTEET
+          Opiskelijan vahvuudet ja tuen perusteet
         </legend>
 
         <div className="hops-container__row">
@@ -157,7 +157,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               isMulti
               menuPortalTarget={document.body}
               menuPosition={"fixed"}
-              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
                   supportReasonsOptions.filter((option) =>
@@ -208,7 +208,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               isMulti
               menuPortalTarget={document.body}
               menuPosition={"fixed"}
-              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
                   supportActionsOptions.filter((option) =>
@@ -257,7 +257,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               isMulti
               menuPortalTarget={document.body}
               menuPosition={"fixed"}
-              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
                   matriculationSupportActionsOptions.filter((option) =>

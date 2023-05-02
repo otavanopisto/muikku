@@ -96,7 +96,7 @@ export const ImplementedActionsListItem: React.FC<
             htmlFor="implemenetedSupportActionAction"
             className="hops__label"
           >
-            Tukitoimi:
+            Tukitoimi
           </label>
           <Select
             id="implemenetedSupportActionAction"
@@ -116,7 +116,7 @@ export const ImplementedActionsListItem: React.FC<
             htmlFor="implemenetedSupportActionCourse"
             className="hops__label"
           >
-            Kurssi:
+            Kurssi
           </label>
           <WorkspaceSelect
             id="implemenetedSupportActionCourse"
@@ -141,7 +141,7 @@ export const ImplementedActionsListItem: React.FC<
         <div className="hops__form-element-container">
           <Textarea
             id="implemenetedSupportActionStudentStrengths"
-            label="Lisätietoa?"
+            label="Lisätietoa"
             className="hops__textarea"
             onChange={(e) =>
               onActionChange(index, "extraInfoDetails", e.target.value)

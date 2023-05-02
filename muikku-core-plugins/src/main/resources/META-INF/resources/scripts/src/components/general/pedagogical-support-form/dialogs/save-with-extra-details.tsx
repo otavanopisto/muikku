@@ -94,7 +94,7 @@ class SaveExtraDetailsDialog extends React.Component<
         <div className="hops__form-element-container">
           <Textarea
             id="hopsUpdateDetailsExplanation"
-            label="Vapaa kuvaus tapahtuman muutoksista"
+            label="Kerro tarkemmin suunnitelman muutoksista"
             className="form-element__textarea form-element__textarea--resize__vertically"
             onChange={onExtraDetailsChange}
           />

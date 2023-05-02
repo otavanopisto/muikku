@@ -129,7 +129,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          OPISKELIJAN NÄKEMYS TUEN VAIKUTTAVUUDESTA
+          Opiskelijan näkemys tuen vaikuttavuudesta
         </legend>
         <OpinionList>
           {studentOpinionEntries}
@@ -143,7 +143,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       </fieldset>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          OPPILAITOKSEN NÄKEMYS TUEN VAIKUTTAVUUDESTA
+          Oppilaitoksen näkemys tuen vaikuttavuudesta
         </legend>
         <OpinionList>
           {schoolOpinionEntries}

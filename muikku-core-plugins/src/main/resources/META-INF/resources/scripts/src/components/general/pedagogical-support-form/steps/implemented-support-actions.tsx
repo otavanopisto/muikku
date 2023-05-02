@@ -107,7 +107,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          TOTEUTETUT TUKITOIMET
+          Toteutetut tukitoimet
         </legend>
 
         <ImplementedActionsList>

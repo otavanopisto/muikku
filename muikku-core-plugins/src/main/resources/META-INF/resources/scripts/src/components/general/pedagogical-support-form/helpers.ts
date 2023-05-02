@@ -15,12 +15,12 @@ export const formFieldsWithTranslation: { [key: string]: string } = {
   cooperativePartners: "Yhteistyötahot",
   studentStrengths: "Opiskelijan vahvuudet",
   supportReasonsOptions: "Pedagogisen tuen perusteet",
-  supportReasonOther: "Pedagogisen tuen perusteet - Muu peruste?",
+  supportReasonOther: "Pedagogisen tuen perusteet - Muu peruste",
   supportActions: "Suunnitellut tukitoimet",
-  supportActionOther: "Suunnitellut tukitoimet - Muu toimenpide?",
+  supportActionOther: "Suunnitellut tukitoimet - Muu toimenpide",
   matriculationExaminationSupport: "Ennakkosuunnitelma ylioppilaskirjoituksiin",
   matriculationExaminationSupportOther:
-    "Ennakkosuunnitelma ylioppilaskirjoituksiin - Muu toimenpide?",
+    "Ennakkosuunnitelma ylioppilaskirjoituksiin - Muu toimenpide",
   studentOpinionOfSupport: "Opiskelijan näkemys tuen vaikuttavuudesta",
   schoolOpinionOfSupport: "Oppilaitoksen näkemys tuen vaikuttavuudesta",
   supportActionsImplemented: "Toteutetut tukitoimet",
@@ -80,7 +80,7 @@ export const supportActionsOptions: OptionDefault<SupportAction>[] = [
   },
   {
     value: "other",
-    label: "Muu toimenpide?",
+    label: "Muu toimenpide",
   },
 ];
 
@@ -116,7 +116,7 @@ export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatr
     },
     {
       value: "other",
-      label: "Muu toimenpide?",
+      label: "Muu toimenpide",
     },
   ];
 
