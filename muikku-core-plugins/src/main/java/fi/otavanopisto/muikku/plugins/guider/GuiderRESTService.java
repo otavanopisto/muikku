@@ -62,10 +62,10 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFil
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
-import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -73,7 +73,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -606,7 +606,6 @@ public class GuiderRESTService extends PluginRESTService {
     return Response.ok(workspaces).build();
   }
 
-
   @GET
   @Path("/users/{USERIDENTIFIER}/workspaceActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -623,7 +622,9 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", userIdentifier)).build();
     }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.GET_WORKSPACE_ACTIVITY)) {
-      if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
+      Long userEntityId = sessionController.getLoggedUserEntity().getId();
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+      if (userEntity == null || !userEntity.getId().equals(userEntityId)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -637,12 +638,12 @@ public class GuiderRESTService extends PluginRESTService {
 
     // Activity data
 
-    List<WorkspaceActivity> activities = evaluationController.listWorkspaceActivities(
+    WorkspaceActivityInfo activityInfo = evaluationController.listWorkspaceActivities(
         studentIdentifier,
         workspaceIdentifier,
         includeTransferCredits,
         includeAssignmentStatistics);
-    return Response.ok(activities).build();
+    return Response.ok(activityInfo).build();
   }
 
   @GET

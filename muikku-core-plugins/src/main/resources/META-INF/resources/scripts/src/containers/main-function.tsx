@@ -78,7 +78,6 @@ import RecordsBody from "../components/records/body";
 import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
-  setCurrentStudentUserViewAndWorkspace,
   setLocationToHopsInTranscriptOfRecords,
   setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
@@ -119,6 +118,7 @@ import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/worksp
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 import { loadContactGroup } from "~/actions/base/contacts";
+import { InfoPopperProvider } from "~/components/general/info-popover/context";
 
 moment.locale("fi");
 
@@ -308,14 +308,6 @@ export default class MainFunction extends React.Component<
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateSummary() as Action);
-    } else if (!givenLocation) {
-      this.props.store.dispatch(
-        setCurrentStudentUserViewAndWorkspace(
-          parseInt(originalData.u),
-          originalData.i,
-          parseInt(originalData.w)
-        ) as Action
-      );
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords() as Action
@@ -628,7 +620,10 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action
       );
-      this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
+
+      this.props.store.getState().status.loggedIn &&
+        this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
+
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
       this.props.store.dispatch(
@@ -941,11 +936,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
 
-      // If user has LIST_USER_ORDERS permission then dispatchin is possible
-      if (this.props.store.getState().status.permissions.LIST_USER_ORDERS) {
-        this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
-      }
-
       this.props.store.dispatch(updateUserGroupFilters() as Action);
 
       this.loadGuiderData();
@@ -1131,26 +1121,31 @@ export default class MainFunction extends React.Component<
     return (
       <BrowserRouter>
         <div id="root">
-          <Notifications></Notifications>
-          <DisconnectedWarningDialog />
-          <EasyToUseFunctions />
-          <Route exact path="/" render={this.renderIndexBody} />
-          <Route
-            path="/organization"
-            render={this.renderOrganizationAdministrationBody}
-          />
-          <Route path="/coursepicker" render={this.renderCoursePickerBody} />
-          <Route path="/communicator" render={this.renderCommunicatorBody} />
-          <Route path="/discussion" render={this.renderDiscussionBody} />
-          <Route path="/announcements" render={this.renderAnnouncementsBody} />
-          <Route path="/announcer" render={this.renderAnnouncerBody} />
-          <Route path="/guider" render={this.renderGuiderBody} />
-          <Route path="/profile" render={this.renderProfileBody} />
-          <Route path="/records" render={this.renderRecordsBody} />
-          <Route path="/evaluation" render={this.renderEvaluationBody} />
-          <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
-          <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
-          <Chat />
+          <InfoPopperProvider>
+            <Notifications></Notifications>
+            <DisconnectedWarningDialog />
+            <EasyToUseFunctions />
+            <Route exact path="/" render={this.renderIndexBody} />
+            <Route
+              path="/organization"
+              render={this.renderOrganizationAdministrationBody}
+            />
+            <Route path="/coursepicker" render={this.renderCoursePickerBody} />
+            <Route path="/communicator" render={this.renderCommunicatorBody} />
+            <Route path="/discussion" render={this.renderDiscussionBody} />
+            <Route
+              path="/announcements"
+              render={this.renderAnnouncementsBody}
+            />
+            <Route path="/announcer" render={this.renderAnnouncerBody} />
+            <Route path="/guider" render={this.renderGuiderBody} />
+            <Route path="/profile" render={this.renderProfileBody} />
+            <Route path="/records" render={this.renderRecordsBody} />
+            <Route path="/evaluation" render={this.renderEvaluationBody} />
+            <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
+            <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
+            <Chat />
+          </InfoPopperProvider>
         </div>
       </BrowserRouter>
     );

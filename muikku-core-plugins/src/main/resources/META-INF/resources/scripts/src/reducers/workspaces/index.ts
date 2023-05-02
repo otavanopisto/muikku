@@ -35,6 +35,7 @@ export type LoadWorkspaceActionType =
   | "UPDATE_WORKSPACE"
   | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE";
 export type WorkspaceAssessementStateType =
+  | "transferred"
   | "unassessed"
   | "pending"
   | "pending_pass"
