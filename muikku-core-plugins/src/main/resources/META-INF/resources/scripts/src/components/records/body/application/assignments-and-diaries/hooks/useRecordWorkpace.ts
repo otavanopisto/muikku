@@ -3,7 +3,8 @@ import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import { useTranslation } from "react-i18next";
+import workspace from "~/reducers/workspace";
 
 /**
  * UseFollowUpGoalsState
@@ -25,7 +26,6 @@ export interface UseAssignmentsState {
 export const useRecordWorkspace = (
   userEntityId: string,
   workspaceId: number,
-  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [recordWorkspace, setRecordWorkspace] =
@@ -36,7 +36,7 @@ export const useRecordWorkspace = (
 
   React.useEffect(() => {
     let isCancelled = false;
-
+    const { t } = useTranslation("studies");
     /**
      * loadStudentActivityListData
      * Loads student activity data
@@ -71,9 +71,10 @@ export const useRecordWorkspace = (
       } catch (err) {
         if (!isCancelled) {
           displayNotification(
-            `${i18n.text.get(
-              "plugin.records.errormessage.workspaceAssignmentsEvaluatedLoadFailed"
-            )}, ${err.message}`,
+            t("notifications.loadError", {
+              context: "workspaceAssignments",
+              error: err.message,
+            }),
             "error"
           );
           setRecordWorkspace((recordWorkspaceData) => ({
@@ -89,7 +90,7 @@ export const useRecordWorkspace = (
     return () => {
       isCancelled = true;
     };
-  }, [workspaceId, displayNotification, i18n, userEntityId]);
+  }, [workspaceId, displayNotification, userEntityId]);
 
   return recordWorkspace;
 };
