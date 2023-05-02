@@ -60,12 +60,12 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         <View key={i} style={styles.opinionContainer}>
           <View style={styles.opinionInfo} wrap={false}>
             <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Merkitsijä:</Text>
+              <Text style={styles.infoFieldLabel}>Merkitsijä</Text>
               <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
             </View>
 
             <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Päivämäärä:</Text>
+              <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
               <Text style={styles.infoFieldValue}>
                 {opinion.updatedDate
                   ? `${moment(opinion.creationDate).format(
@@ -78,7 +78,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
             </View>
 
             <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Merkintä:</Text>
+              <Text style={styles.infoFieldLabel}>Merkintä</Text>
               <View style={styles.infoFieldValue}>
                 <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
               </View>
@@ -98,12 +98,12 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         <View key={i} style={styles.opinionContainer}>
           <View style={styles.opinionInfo} wrap={false}>
             <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Merkitsijä:</Text>
+              <Text style={styles.infoFieldLabel}>Merkitsijä</Text>
               <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
             </View>
 
             <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Päivämäärä:</Text>
+              <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
               <Text style={styles.infoFieldValue}>
                 {opinion.updatedDate
                   ? `${moment(opinion.creationDate).format(
@@ -116,7 +116,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
             </View>
 
             <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Merkintä:</Text>
+              <Text style={styles.infoFieldLabel}>Merkintä</Text>
               <View style={styles.infoFieldValue}>
                 <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
               </View>
@@ -279,7 +279,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         ) : null}
 
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>:</Text>
+          <Text style={styles.infoFieldLabel}>
+            Ennakko suunnitelma ylioppilaskirjoituksiin
+          </Text>
           {formData?.matriculationExaminationSupport &&
           formData?.matriculationExaminationSupport.length > 0
             ? formData?.matriculationExaminationSupport.map((value, i) => (
