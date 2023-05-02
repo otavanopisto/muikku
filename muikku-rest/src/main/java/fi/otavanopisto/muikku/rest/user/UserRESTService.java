@@ -320,6 +320,10 @@ public class UserRESTService extends AbstractRESTService {
     for (UserInfo d : data) {
       
       if (contactInfo != null) {
+        
+        result.put("firstName",contactInfo.getFirstName());
+        result.put("lastName", contactInfo.getLastName());
+        
         if (d.equals(UserInfo.EMAIL)) {
           result.put("email", contactInfo.getEmail());
         }
@@ -372,7 +376,8 @@ public class UserRESTService extends AbstractRESTService {
         }
       }
     }
-
+    Boolean isStudent = userEntityController.isStudent(userEntity);
+    result.put("isStudent", isStudent.toString());
     result.put("userId", userEntity.getId().toString());
     result.put("schoolDataIdentifier", userEntity.defaultSchoolDataIdentifier().getDataSource() + "-" + userEntity.defaultSchoolDataIdentifier().getIdentifier());
 
