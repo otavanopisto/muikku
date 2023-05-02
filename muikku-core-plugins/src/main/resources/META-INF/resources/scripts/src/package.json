@@ -7,8 +7,8 @@
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint . --ext .ts,.tsx",
-    "stylelint": "stylelint '**/*.scss'",
-    "prettier-format": "prettier --config .prettierrc.json '**/*.{ts,tsx}' --write"
+    "stylelint": "stylelint \"**/*.scss\"",
+    "prettier-format": "prettier --config .prettierrc.json \"**/*.{ts,tsx}\" --write"
   },
   "author": "",
   "license": "MIT",

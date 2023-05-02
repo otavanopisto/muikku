@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.assessmentrequest;
+package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
@@ -13,6 +13,7 @@ public class WorkspaceAssessmentState {
   public static final String INCOMPLETE = "incomplete";                                   // teacher has requested changes
   public static final String INTERIM_EVALUATION_REQUEST = "interim_evaluation_request";   // interim evaluation request
   public static final String INTERIM_EVALUATION = "interim_evaluation";                   // interim evaluation
+  public static final String TRANSFERRED = "transferred";                                 // transfer credit
 
   public WorkspaceAssessmentState() {
   }

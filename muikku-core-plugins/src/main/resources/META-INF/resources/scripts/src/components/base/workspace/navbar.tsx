@@ -280,6 +280,7 @@ class WorkspaceNavbar extends React.Component<
                   )} link--workspace-navbar icon-assessment-${getIconForAssessmentState(
                     assessmentState.state
                   )}`}
+                  role="menuitem"
                 ></Link>
               </Dropdown>
             ),

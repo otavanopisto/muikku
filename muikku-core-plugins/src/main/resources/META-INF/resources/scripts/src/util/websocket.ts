@@ -273,14 +273,20 @@ export default class MuikkuWebsocket {
         /**
          * success
          */
-        success: function () {
-          callback(this.ticket);
+        success: function (data: any) {
+          if (data) {
+            callback(this.ticket);
+          } else {
+            // Ticket no longer passes validation but we are still logged in, so try to renew the ticket
+            this.createTicket((ticket: any) => {
+              this.ticket = ticket;
+              callback(ticket);
+            });
+          }
         },
         error: $.proxy(function (jqXHR: any) {
           if (jqXHR.status == 403) {
             // According to server, we are no longer logged in. Stop everything, user needs to login again
-            this.discarded = true;
-            this.ticket = null;
             this.discardCurrentWebSocket(true);
             this.store.dispatch(
               actions.openNotificationDialog(
@@ -288,16 +294,8 @@ export default class MuikkuWebsocket {
               ) as Action
             );
             callback();
-          } else if (jqXHR.status == 404) {
-            // Ticket no longer passes validation but we are still logged in, so try to renew the ticket
-            this.createTicket((ticket: any) => {
-              this.ticket = ticket;
-              callback(ticket);
-            });
           } else if (jqXHR.status == 502) {
             // Server is down. Stop everything, user needs to reload page
-            this.discarded = true;
-            this.ticket = null;
             this.discardCurrentWebSocket(true);
             this.store.dispatch(
               actions.openNotificationDialog(
@@ -481,7 +479,6 @@ export default class MuikkuWebsocket {
         this.reconnectRetries++;
         if (this.reconnectRetries == 6) {
           // one minute has passed, let's give up
-          this.discarded = true;
           this.discardCurrentWebSocket(true);
           this.store.dispatch(
             actions.openNotificationDialog(
@@ -506,6 +503,8 @@ export default class MuikkuWebsocket {
     // Inform everyone we're no longer open for business...
     const wasOpen = this.socketOpen;
     this.socketOpen = false;
+    this.discarded = resetReconnectionParams;
+    this.ticket = null;
 
     // ...and stop pinging...
     if (this.pingHandler) {
@@ -558,7 +557,6 @@ export default class MuikkuWebsocket {
    * onBeforeWindowUnload
    */
   onBeforeWindowUnload() {
-    this.discarded = true;
     this.discardCurrentWebSocket(true);
   }
 }

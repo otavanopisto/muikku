@@ -1,13 +1,16 @@
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { StateType } from "~/reducers";
+import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "~/actions";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
+import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 
 /**
  * ActivityIndicatorProps
  */
 interface ActivityIndicatorProps {
-  workspace: WorkspaceType;
+  credit: RecordWorkspaceActivity;
 }
 
 /**
@@ -17,29 +20,24 @@ interface ActivityIndicatorProps {
  * @returns JSX.Element
  */
 const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
-  const { workspace } = props;
-
+  const { credit } = props;
   const { t } = useTranslation(["studies", "common"]);
 
-  if (!workspace.activity) {
-    return null;
-  } else if (
-    workspace.activity.exercisesTotal + workspace.activity.evaluablesTotal ===
-    0
-  ) {
+  if (credit.exercisesTotal + credit.evaluablesTotal === 0) {
     return null;
   }
 
   return (
     <div className="activity-badge">
-      {workspace.activity.evaluablesTotal ? (
+      {credit.evaluablesTotal ? (
         <Dropdown
           openByHover
           content={
             <span>
               {t("labels.evaluablesDone", {
                 ns: "studies",
-                percent: workspace.activity.evaluablesDonePercent,
+                percent:
+                  (credit.evaluablesAnswered / credit.evaluablesTotal) * 100,
               })}
             </span>
           }
@@ -48,7 +46,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
-                workspace.activity.evaluablesDonePercent
+                (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
               }
             ></div>
           </div>
@@ -56,14 +54,15 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
       ) : (
         <div className="activity-badge__item activity-badge__item--empty"></div>
       )}
-      {workspace.activity.exercisesTotal ? (
+      {credit.exercisesTotal ? (
         <Dropdown
           openByHover
           content={
             <span>
               {t("labels.exercisesDone", {
                 ns: "studies",
-                percent: workspace.activity.exercisesDonePercent,
+                percent:
+                  (credit.exercisesAnswered / credit.exercisesTotal) * 100,
               })}
             </span>
           }
@@ -72,7 +71,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
-                workspace.activity.exercisesDonePercent
+                (credit.exercisesAnswered / credit.exercisesTotal) * 100
               }
             ></div>
           </div>

@@ -6,6 +6,7 @@
 
 import * as React from "react";
 import CKEditor from "~/components/general/ckeditor";
+import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
@@ -64,8 +65,7 @@ interface MemoFieldState {
 /* eslint-disable camelcase */
 const ckEditorConfig = {
   autoGrow_onStartup: true,
-  mathJaxLib:
-    "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML",
+  mathJaxLib: MATHJAXSRC,
   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
   toolbar: [
     {

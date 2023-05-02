@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.ceepos.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -25,6 +27,20 @@ public class CeeposProductDAO extends CorePluginsDAO<CeeposProduct> {
     );
    
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public List<CeeposProduct> listByLine(String line) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CeeposProduct> criteria = criteriaBuilder.createQuery(CeeposProduct.class);
+    Root<CeeposProduct> root = criteria.from(CeeposProduct.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(CeeposProduct_.line), line)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
   }
 
 }

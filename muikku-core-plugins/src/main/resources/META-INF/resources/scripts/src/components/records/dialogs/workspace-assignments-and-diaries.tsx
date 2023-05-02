@@ -3,14 +3,14 @@ import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import AssignmentsAndDiaries from "../body/application/assignments-and-diaries/assignments-and-diaries";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 
 /**
  * MatriculationExaminationWizardDialogProps
  */
 interface WorkspaceAssignmentsAndDiaryDialogProps {
-  workspace: WorkspaceType;
   workspaceId: number;
+  credit: RecordWorkspaceActivity;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
 }
@@ -40,22 +40,13 @@ class WorkspaceAssignmentsAndDiaryDialog extends React.Component<
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const content = (closeDialog: () => any) => (
-      <AssignmentsAndDiaries
-        workspaceId={this.props.workspaceId}
-        workspace={this.props.workspace}
-      />
+      <AssignmentsAndDiaries credit={this.props.credit} />
     );
-
-    let title = this.props.workspace.name;
-
-    if (this.props.workspace.nameExtension) {
-      title = `${this.props.workspace.name} (${this.props.workspace.nameExtension})`;
-    }
 
     return (
       <Dialog
         disableScroll={true}
-        title={title}
+        title={this.props.credit.name}
         content={content}
         modifier={["studies"]}
       >

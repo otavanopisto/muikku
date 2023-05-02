@@ -885,7 +885,8 @@ export default class Workspace extends React.Component<
         ) as Action
       );
 
-      this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
+      state.status.loggedIn &&
+        this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
       this.props.store.dispatch(
         loadWholeWorkspaceMaterials(
           state.status.currentWorkspaceId,

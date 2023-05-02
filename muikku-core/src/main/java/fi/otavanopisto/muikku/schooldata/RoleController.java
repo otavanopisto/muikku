@@ -19,7 +19,6 @@ import fi.otavanopisto.muikku.model.users.SystemRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 
 public class RoleController {
 
@@ -29,9 +28,6 @@ public class RoleController {
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
   
-  @Inject
-  private UserSchoolDataController userSchoolDataController;
-
   @Inject
   private RoleEntityDAO roleEntityDAO;
   
@@ -49,33 +45,6 @@ public class RoleController {
   
   /* Roles */
 
-  public Role findRole(SchoolDataSource dataSource, String identifier) {
-    return userSchoolDataController.findRole(dataSource,identifier);
-  }
-
-  public Role findRoleByDataSourceAndRoleEntity(String schoolDataSource, RoleEntity roleEntity) {
-    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-    if (dataSource == null) {
-      logger.severe("Could not find school data source " + schoolDataSource);
-      return null;
-    }
-      
-    RoleSchoolDataIdentifier schoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndRoleEntity(dataSource, roleEntity);
-    if (schoolDataIdentifier != null) {
-      return findRole(dataSource, schoolDataIdentifier.getIdentifier());
-    }
-
-    return null;
-  }
-  
-  public Role findUserEnvironmentRole(User user) {
-    return userSchoolDataController.findUserEnvironmentRole(user);
-  }
-
-  public List<Role> listRoles() {
-    return userSchoolDataController.listRoles();
-  }
-  
   public void setRoleEntity(String schoolDataSource, String identifier, RoleEntity roleEntity) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -158,25 +127,11 @@ public class RoleController {
     return null;
   }
   
-  public List<WorkspaceRoleEntity> listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype archetype) {
-    return workspaceRoleEntityDAO.listByArchetype(archetype);
-  }
-
   /**
-   * Returns a WorkspaceRoleEntity if and only if there is exactly one matching the given archetype.
+   * Returns a WorkspaceRoleEntity matching the given archetype.
    */
   public WorkspaceRoleEntity getWorkspaceRoleByArchetype(WorkspaceRoleArchetype archetype) {
-    List<WorkspaceRoleEntity> workspaceStudentRoles = listWorkspaceRoleEntitiesByArchetype(archetype);
-    if (workspaceStudentRoles.size() == 1) {
-      return workspaceStudentRoles.get(0);
-    } else {
-      // TODO: How to choose correct workspace role?
-      throw new RuntimeException("Multiple workspace roles found with given archetype.");
-    }
-  }
-  
-  public WorkspaceRoleEntity getWorkspaceStudentRole() {
-    return getWorkspaceRoleByArchetype(WorkspaceRoleArchetype.STUDENT);
+    return workspaceRoleEntityDAO.findByArchetype(archetype);
   }
   
 }

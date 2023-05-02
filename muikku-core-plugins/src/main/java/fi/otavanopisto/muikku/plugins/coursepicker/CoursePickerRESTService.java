@@ -48,7 +48,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
@@ -56,16 +55,15 @@ import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.RoleController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
-import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -112,9 +110,6 @@ public class CoursePickerRESTService extends PluginRESTService {
   @Inject
   private UserController userController;
 
-  @Inject
-  private RoleController roleController;
-  
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
@@ -561,9 +556,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
 
-    WorkspaceRoleEntity workspaceRole = roleController.getWorkspaceStudentRole();
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
     
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
     SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
@@ -579,7 +572,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
     if (workspaceUser == null) {
-      workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
+      workspaceUser = workspaceController.createWorkspaceUser(workspace, user, WorkspaceRoleArchetype.STUDENT);
       waitForWorkspaceUserEntity(workspaceEntity, userIdentifier);
     }
     else {

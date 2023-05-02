@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,11 +51,11 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityInfo;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
-import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.CourseType;
 import fi.otavanopisto.pyramus.rest.model.EducationType;
@@ -868,29 +869,6 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockCourseStaffMemberRoles() throws JsonProcessingException {
-        
-        CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
-        CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
-        CourseStaffMemberRole respoRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
-        CourseStaffMemberRole[] cRoleArray = { teacherRole, tutorRole, respoRole };
-
-        stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(pmock.objectMapper.writeValueAsString(cRoleArray))
-            .withStatus(200)));
-        
-        for (CourseStaffMemberRole role : cRoleArray) {
-          stubFor(get(urlEqualTo(String.format("/1/courses/staffMemberRoles/%d", role.getId())))
-              .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(pmock.objectMapper.writeValueAsString(role))
-                .withStatus(200)));
-        }
-        return this;
-      }
-      
       public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
         List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
         
@@ -1070,7 +1048,7 @@ public class PyramusMock {
         CourseModule courseModule = course.getCourseModules().iterator().next();
         CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), courseModule.getId(), 1l, 1l, staffMember.getId(), assessmentCreated, "Test evaluation.", Boolean.TRUE);
         
-        stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
+        stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourse().getId())))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(courseAssessment))
@@ -1078,19 +1056,19 @@ public class PyramusMock {
 
         List<CourseAssessment> courseAssessments = new ArrayList<CourseAssessment>();
         courseAssessments.add(courseAssessment);
-        stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
+        stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourse().getId())))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(courseAssessments))
             .withStatus(200)));
         
-        stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/%d", courseStudent.getStudentId(), courseStudent.getCourseId(), courseAssessment.getId())))
+        stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/%d", courseStudent.getStudentId(), courseStudent.getCourse().getId(), courseAssessment.getId())))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(courseAssessment))
             .withStatus(200)));
 
-        stubFor(put(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/%d", courseStudent.getStudentId(), courseStudent.getCourseId(), courseAssessment.getId())))
+        stubFor(put(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/%d", courseStudent.getStudentId(), courseStudent.getCourse().getId(), courseAssessment.getId())))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(courseAssessment))
@@ -1409,23 +1387,37 @@ public class PyramusMock {
                 .withStatus(200)));
         return this;
       }
-      
+
       public Builder mockCourseActivities() throws JsonProcessingException {
         for (MockCourseStudent mcs : pmock.mockCourseStudents) {
-          List<CourseActivity> courseActivities = mcs.getCourseActivities();
-
+          // TODO Hardcoded courseActivityInfo fields
+          CourseActivityInfo courseActivityInfo = new CourseActivityInfo();
+          courseActivityInfo.setLineName("Nettilukio");
+          courseActivityInfo.setLineCategory("Lukio");
+          courseActivityInfo.setDefaultLine(true);
+          courseActivityInfo.setActivities(mcs.getCourseActivities());
+          
+          for (CourseActivity ca : mcs.getCourseActivities()) {
+            Course course = mcs.getCourse();
+            String courseName = course.getName();
+            if (!StringUtils.isEmpty(course.getNameExtension())) {
+              courseName = String.format("%s (%s)", courseName, course.getNameExtension());
+            }
+            ca.setCourseName(courseName);  
+          }
+          
           stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/courseActivity", mcs.getStudentId())))
               .withQueryParam("courseIds", matching(".*"))
               .withQueryParam("includeTransferCredits", matching(".*"))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
-              .withBody(pmock.objectMapper.writeValueAsString(courseActivities))
+              .withBody(pmock.objectMapper.writeValueAsString(courseActivityInfo))
               .withStatus(200)));
           
           stubFor(get(urlMatching(String.format("/1/students/students/%d/courseActivity", mcs.getStudentId())))
               .willReturn(aResponse()
                   .withHeader("Content-Type", "application/json")
-                  .withBody(pmock.objectMapper.writeValueAsString(courseActivities))
+                  .withBody(pmock.objectMapper.writeValueAsString(courseActivityInfo))
                   .withStatus(200)));
         }
         return this;
@@ -1487,7 +1479,6 @@ public class PyramusMock {
         mockCourseTypes();
         mockCourseStaffMembers();
         mockCourseStudents();
-        mockCourseStaffMemberRoles();
         
         mockGradesAndScales();
         mockEducationalTimeUnits();

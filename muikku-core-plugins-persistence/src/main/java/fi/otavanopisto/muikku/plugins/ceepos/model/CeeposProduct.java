@@ -50,6 +50,14 @@ public class CeeposProduct {
     this.type = type;
   }
 
+  public String getLine() {
+    return line;
+  }
+
+  public void setLine(String line) {
+    this.line = line;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -72,6 +80,10 @@ public class CeeposProduct {
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private CeeposProductType type;
-
+  
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false)
+  private String line;
 
 }

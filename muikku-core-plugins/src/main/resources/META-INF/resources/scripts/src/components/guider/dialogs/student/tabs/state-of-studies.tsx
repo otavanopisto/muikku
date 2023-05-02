@@ -50,7 +50,6 @@ interface StateOfStudiesProps extends WithTranslation {
   i18nOLD: i18nType;
   guider: GuiderType;
   status: StatusType;
-
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -92,26 +91,11 @@ class StateOfStudies extends React.Component<
     if (this.props.guider.currentStudent === null) {
       return null;
     }
-    //Note that some properties are not available until later, that's because it does
-    //step by step loading, make sure to show this in the way this is represented, ensure to have
-    //a case where the property is not available
-    //You can use the cheat && after the property
-    //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
-
-    /**
-     * IsStudentPartOfProperStudyProgram
-     * @param studyProgramName the name of the study programme
-     * @returns true or false
-     */
-    const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
-      switch (studyProgramName) {
-        case "Nettilukio/yksityisopiskelu (aineopintoina)":
-        case "Aineopiskelu/yo-tutkinto":
-          return true;
-        default:
-          return false;
-      }
-    };
+    // Note that some properties are not available until later, that's because it does
+    // step by step loading, make sure to show this in the way this is represented, ensure to have
+    // a case where the property is not available
+    // You can use the cheat && after the property
+    // eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
 
     const defaultEmailAddress =
       this.props.guider.currentStudent.emails &&
@@ -144,9 +128,7 @@ class StateOfStudies extends React.Component<
         }
       >
         {this.props.guider.currentStudent.basic &&
-        IsStudentPartOfProperStudyProgram(
-          this.props.guider.currentStudent.basic.studyProgrammeName
-        ) ? (
+        this.props.guider.currentStudent.basic.ceeposLine !== null ? (
           <CeeposButton />
         ) : null}
         <NewMessage
@@ -375,9 +357,7 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanel>
               <ApplicationSubPanel modifier="student-data-secondary">
                 {this.props.guider.currentStudent.basic &&
-                IsStudentPartOfProperStudyProgram(
-                  this.props.guider.currentStudent.basic.studyProgrammeName
-                ) ? (
+                this.props.guider.currentStudent.basic.ceeposLine !== null ? (
                   <ApplicationSubPanel>
                     <ApplicationSubPanel.Header>
                       {this.props.i18n.t("labels.orders", {
@@ -482,7 +462,10 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { displayNotification, updateCurrentStudentHopsPhase },
+    {
+      displayNotification,
+      updateCurrentStudentHopsPhase,
+    },
     dispatch
   );
 }

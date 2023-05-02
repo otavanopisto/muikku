@@ -89,43 +89,31 @@ class Records extends React.Component<RecordsProps, RecordsState> {
      */
     const studentRecords = (
       <ApplicationSubPanel>
-        {this.props.records.userData.map((data) => {
-          const user = data.user;
-          const records = data.records;
-          return (
-            <React.Fragment key={data.user.id}>
-              <ApplicationSubPanel.Header>
-                {user.studyProgrammeName}
-              </ApplicationSubPanel.Header>
-              <ApplicationSubPanel.Body>
-                {records.length ? (
-                  records.map((rG, i) => (
-                    <RecordsGroup
-                      key={rG.groupCurriculumIdentifier}
-                      index={i}
-                      recordGroup={rG}
-                      storedCurriculumIndex={storedCurriculumIndex}
-                    />
-                  ))
-                ) : (
-                  <div className="application-sub-panel__item">
-                    <div className="empty">
-                      <span>
-                        {t("content.empty", {
-                          ns: "studies",
-                          context: "workspaces",
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </ApplicationSubPanel.Body>
-            </React.Fragment>
-          );
-        })}
+        {this.props.records.userData.map((lineCategoryData, i) => (
+          <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
+            {lineCategoryData.credits.length +
+              lineCategoryData.transferCredits.length >
+            0 ? (
+              <RecordsGroup
+                key={`credit-category-${i}`}
+                recordGroup={lineCategoryData}
+              />
+            ) : (
+              <div className="application-sub-panel__item">
+                <div className="empty">
+                  <span>
+                    {t("content.empty", {
+                      ns: "studies",
+                      context: "workspaces",
+                    })}
+                  </span>
+                </div>
+              </div>
+            )}
+          </ApplicationSubPanel.Body>
+        ))}
       </ApplicationSubPanel>
     );
-    // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
 
     return (
       <BodyScrollKeeper

@@ -10,7 +10,6 @@ import {
 } from "~/actions/base/notifications";
 import { i18nType } from "~/reducers/base/i18nOLD";
 import ApplicationList from "~/components/general/application-list";
-import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "../../../../../reducers/base/status";
 import Material from "../current-record/material";
 import Journal from "../current-record/journal";
@@ -25,6 +24,8 @@ import "~/sass/elements/application-sub-panel.scss";
 import { bindActionCreators } from "redux";
 import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
 import { useTranslation } from "react-i18next";
+import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
+import { useRecordWorkspace } from "./hooks/useRecordWorkpace";
 
 /**
  * AssignmentsAndDiariesProps
@@ -32,8 +33,7 @@ import { useTranslation } from "react-i18next";
 interface AssignmentsAndDiariesProps {
   i18nOLD: i18nType;
   status: StatusType;
-  workspace: WorkspaceType;
-  workspaceId: number;
+  credit: RecordWorkspaceActivity;
   userEntityId: number;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -49,14 +49,7 @@ export type AssignmentsTabType =
  * @returns JSX.Element
  */
 const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
-  const {
-    i18nOLD,
-    status,
-    workspace,
-    workspaceId,
-    userEntityId,
-    displayNotification,
-  } = props;
+  const { i18nOLD, status, credit, userEntityId, displayNotification } = props;
 
   const { t } = useTranslation([
     "studies",
@@ -74,33 +67,39 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const [evaluatedOpen, setEvaluatedOpen] = React.useState<number[]>([]);
   const [interimOpen, setInterimOpen] = React.useState<number[]>([]);
 
+  const recordWorkspace = useRecordWorkspace(
+    status.userSchoolDataIdentifier,
+    credit.id,
+    displayNotification
+  );
+
   const { evaluatedAssignmentsData } = useEvaluatedAssignments(
-    workspaceId,
+    credit.id,
     activeTab,
     displayNotification
   );
 
   const { exerciseAssignmentsData } = useExerciseAssignments(
-    workspaceId,
+    credit.id,
     activeTab,
     displayNotification
   );
 
   const { interimEvaluationeAssignmentsData } = useInterimEvaluationAssigments(
-    workspaceId,
+    credit.id,
     activeTab,
     displayNotification
   );
 
   const { compositeReplyData } = useCompositeReply(
     userEntityId,
-    workspaceId,
+    credit.id,
     displayNotification
   );
 
   const { journalsData } = useJournals(
     userEntityId,
-    workspaceId,
+    credit.id,
     displayNotification
   );
 
@@ -273,7 +272,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    */
   const renderAssignmentMaterialsList = (
     <ApplicationList>
-      {evaluatedAssignmentsData.evaluatedAssignments.length ? (
+      {recordWorkspace.workspace &&
+      evaluatedAssignmentsData.evaluatedAssignments.length ? (
         evaluatedAssignmentsData.evaluatedAssignments.map((m) => {
           let showHiddenAssignment = false;
 
@@ -297,7 +297,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               key={m.id}
               material={m}
               i18nOLD={i18nOLD}
-              workspace={workspace}
+              workspace={recordWorkspace.workspace}
               compositeReply={compositeReply}
               status={status}
               open={open}
@@ -321,7 +321,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    */
   const renderExerciseMaterialsList = (
     <ApplicationList>
-      {exerciseAssignmentsData.exerciseAssignments.length ? (
+      {recordWorkspace.workspace &&
+      exerciseAssignmentsData.exerciseAssignments.length ? (
         exerciseAssignmentsData.exerciseAssignments.map((m) => {
           let showHiddenAssignment = false;
 
@@ -345,7 +346,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               key={m.id}
               material={m}
               i18nOLD={i18nOLD}
-              workspace={workspace}
+              workspace={recordWorkspace.workspace}
               compositeReply={compositeReply}
               status={status}
               open={open}
@@ -369,7 +370,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    */
   const renderInterminEvaluationMaterialsList = (
     <ApplicationList>
-      {interimEvaluationeAssignmentsData.interimEvaluationAssignments.length ? (
+      {recordWorkspace.workspace &&
+      interimEvaluationeAssignmentsData.interimEvaluationAssignments.length ? (
         interimEvaluationeAssignmentsData.interimEvaluationAssignments.map(
           (m) => {
             let showHiddenAssignment = false;
@@ -394,7 +396,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 key={m.id}
                 material={m}
                 i18nOLD={i18nOLD}
-                workspace={workspace}
+                workspace={recordWorkspace.workspace}
                 compositeReply={compositeReply}
                 status={status}
                 open={open}
@@ -535,7 +537,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             </span>
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
-            {evaluatedAssignmentsData.isLoading ||
+            {recordWorkspace.isLoading ||
+            evaluatedAssignmentsData.isLoading ||
             compositeReplyData.isLoading ? (
               <div className="loader-empty" />
             ) : (
@@ -578,7 +581,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           </ApplicationSubPanel.Header>
 
           <ApplicationSubPanel.Body>
-            {exerciseAssignmentsData.isLoading ||
+            {recordWorkspace.isLoading ||
+            exerciseAssignmentsData.isLoading ||
             compositeReplyData.isLoading ? (
               <div className="loader-empty" />
             ) : (
@@ -627,7 +631,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           </ApplicationSubPanel.Header>
 
           <ApplicationSubPanel.Body>
-            {interimEvaluationeAssignmentsData.isLoading ||
+            {recordWorkspace.isLoading ||
+            interimEvaluationeAssignmentsData.isLoading ||
             compositeReplyData.isLoading ? (
               <div className="loader-empty" />
             ) : (
