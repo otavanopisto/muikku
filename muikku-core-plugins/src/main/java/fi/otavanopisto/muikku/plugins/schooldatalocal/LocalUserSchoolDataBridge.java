@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.UserContactInfoRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -691,6 +692,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public UserContactInfoRestModel getUserContactInfo(String userIdentifier) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
