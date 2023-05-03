@@ -66,7 +66,6 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         break;
       case "incomplete":
         evalStateClassName = "workspace-assessment--incomplete";
-        evalStateIcon = "";
         assessmentIsIncomplete = true;
         break;
 
