@@ -36,7 +36,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <span>
               {i18n.text.get(
                 "plugin.records.workspace.activity.assignment.title",
-                (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
+                Math.round((credit.evaluablesAnswered / credit.evaluablesTotal) * 100)
               )}
             </span>
           }
@@ -45,7 +45,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
-                (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
+                Math.round((credit.evaluablesAnswered / credit.evaluablesTotal) * 100)
               }
             ></div>
           </div>
@@ -60,7 +60,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <span>
               {i18n.text.get(
                 "plugin.records.workspace.activity.exercise.title",
-                (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                Math.round((credit.exercisesAnswered / credit.exercisesTotal) * 100)
               )}
             </span>
           }
@@ -69,7 +69,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
-                (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                Math.round((credit.exercisesAnswered / credit.exercisesTotal) * 100)
               }
             ></div>
           </div>
