@@ -44,6 +44,22 @@
       "signOut": "Sign out",
       "update": "Update"
     },
+    "content": {
+      "empty": "No content",
+      "empty_people": "No people",
+      "empty_rooms": "No rooms",
+      "helpdesk": "Trouble with Muikku? helpdesk(a)muikkuverkko.fi",
+      "home": "Muikku web-site logo, link to the front page",
+      "notFound": "Content not found",
+      "loginFromCredentials": "You can now log in with the credentials you set",
+      "missingFields": "Please fill in the missing mandatory fields!",
+      "or": "or",
+      "removed": "Message removed",
+      "removing": "Are you sure about the removal?",
+      "removing_comment": "Are you sure you want to remove the comment?",
+      "removing_person": "Are you sure you want to remove the person from the list?",
+      "removing_room": "Are you sure you want to remove the room <b>{{room}}</b>? This action cannot be undone."
+    },
     "labels": {
       "active": "Active",
       "address": "Address",
@@ -59,7 +75,7 @@
       "comments": "Comments",
       "contactInfo": "Contact info",
       "content": "Content",
-      "content_vacationMessage": "Vaction message content",
+      "content_vacationMessage": "Vacation message content",
       "copy": "Copy",
       "coursepicker": "Coursepicker",
       "create": "Create new",
@@ -143,38 +159,6 @@
       "write": "Write your message...",
       "yes": "Yes"
     },
-    "content": {
-      "empty": "No content",
-      "empty_people": "No people",
-      "empty_rooms": "No rooms",
-      "helpdesk": "Trouble with Muikku? helpdesk(a)muikkuverkko.fi",
-      "home": "Muikku web-site logo, link to the front page",
-      "notFound": "Content not found",
-      "loginFromCredentials": "You can now log in with the credentials you set",
-      "missingFields": "Please fill in the missing mandatory fields!",
-      "or": "or",
-      "removed": "Message removed",
-      "removing": "Are you sure about the removal?",
-      "removing_comment": "Are you sure you want to remove the comment?",
-      "removing_person": "Are you sure you want to remove the person from the list?",
-      "removing_room": "Are you sure you want to remove the room <b>{{room}}</b>? This action cannot be undone."
-    },
-
-    "validation": {
-      "beginDate": "Begin date is mandatory",
-      "caption": "Caption is mandatory",
-      "content": "Content is mandatory",
-      "email": "Email is mandatory",
-      "emailInvalid": "*Invalid email",
-      "endDate": "End date is mandatory",
-      "mandatoryFields": "Mandatory field",
-      "name": "Name is mandatory",
-      "target": "Target is mandatory",
-      "username": "Username is mandatory",
-      "password": "Password is mandatory",
-      "password_match": "Given passwords do not match"
-    },
-
     "notifications": {
       "403": "Muikku session has expired. If you are doing course's assignments/exercises please copy all unsaved answers to your computer and re-log to Muikku.",
       "403_password": "Please check your password to proceed with password change.",
@@ -222,6 +206,20 @@
       "updateSuccess_credentials": "Changing credentials was successful",
       "updateSuccess_password": "Password change was successful"
     },
+    "validation": {
+      "beginDate": "Begin date is mandatory",
+      "caption": "Caption is mandatory",
+      "content": "Content is mandatory",
+      "email": "Email is mandatory",
+      "emailInvalid": "*Invalid email",
+      "endDate": "End date is mandatory",
+      "mandatoryFields": "Mandatory field",
+      "name": "Name is mandatory",
+      "target": "Target is mandatory",
+      "username": "Username is mandatory",
+      "password": "Password is mandatory",
+      "password_match": "Given passwords do not match"
+    },
 
     "wcag": {
       "alternateNavigation": "Navigation for User Profile and Language selection of Muikku",
@@ -250,6 +248,15 @@
     "actions": {
       "test": "Test URL"
     },
+    "content": {
+      "appointmentCalendar": "You can place a link in a reservation calendar in here, which then will be shown together with your personal information on courses and student's studies. Before saving the link, it is adviceable to test it with the test-button.",
+      "changePassword": "Please enter the old and new password.",
+      "changeAddressMunicipality": "Please enter the new address and municipality.",
+      "removing": "Are you sure you want to delete your profile image?",
+      "nick": "Staff will see your real name but other students can only see your nickname.",
+      "vacationAutoReply": "Automatic reply is active only when vacation start and end dates are set. If a contact sends you several messages, this automated reply will be sent at most once every 4 days.",
+      "whatsAppIntegration": "You can turn the WhatsApp integration on by clicking the icon. Please note that the integration will work only if you have entered your phone number with the country code, e.g. +358 40 123 4567. When the integration is active, you will see a WhatsApp button in your contact information. Clicking the button will open the WhatsApp Web client."
+    },
     "labels": {
       "additionalInfo": "Additional information",
       "appointmentCalendar": "Appointment calendar",
@@ -272,15 +279,6 @@
       "whatsappIntegration_on": "WhatsApp integration off",
       "worklist": "Work list"
     },
-    "content": {
-      "appointmentCalendar": "You can place a link in a reservation calendar in here, which then will be shown together with your personal information on courses and student's studies. Before saving the link, it is adviceable to test it with the test-button.",
-      "changePassword": "Please enter the old and new password.",
-      "changeAddressMunicipality": "Please enter the new address and municipality.",
-      "removing": "Are you sure you want to delete your profile image?",
-      "nick": "Staff will see your real name but other students can only see your nickname.",
-      "vacationAutoReply": "Automatic reply is active only when vacation start and end dates are set. If a contact sends you several messages, this automated reply will be sent at most once every 4 days.",
-      "whatsAppIntegration": "You can turn the WhatsApp integration on by clicking the icon. Please note that the integration will work only if you have entered your phone number with the country code, e.g. +358 40 123 4567. When the integration is active, you will see a WhatsApp button in your contact information. Clicking the button will open the WhatsApp Web client."
-    },
     "notifications": {
       "loadError": "Could not load profile image"
     }
@@ -289,6 +287,10 @@
   "worklist": {
     "actions": {
       "send": "Send for approval"
+    },
+    "content": {
+      "removing": "Are you sure you want to delete the work list entry?",
+      "worklistApproval": "You can send worklist entries of previous month for approval before 11th day of this month."
     },
     "labels": {
       "create": "Add new entry",
@@ -305,10 +307,6 @@
       "template": "Category",
       "total": "Total"
     },
-    "content": {
-      "removing": "Are you sure you want to delete the work list entry?",
-      "worklistApproval": "You can send worklist entries of previous month for approval before 11th day of this month."
-    },
     "notifications": {
       "createError": "Entry creation failed",
       "loadError": "$t(common:notifications.loadError)",
@@ -320,6 +318,25 @@
   },
 
   "guider": {
+    "content": {
+      "addTaskInstruction": "Clicking on the plus icon will open the editor where you are able to give a new task to a student. You may schedule the task to start and/or finish at a specified time by setting the start date and/or finish date for the task. You may also leave the date fields empty. The dates will have no impact on the visibility of the task.</p><p>The student will see the task you have given them on the state of studies tab in the Studies view. Once the student has marked the task as done, its status changes to Waiting for approval. You can then approve or reject the task. Finally, you will have to archive the task (by clicking the Trashcan icon).",
+      "addAttachmentInstruction": "Add a file by clicking here or by dragging it into this box",
+      "empty": "-",
+      "lastVisit": "last visit: {{value}}",
+      "lastAnswered": "latest answer: {{value}}",
+      "lastMessage": "Latest message: {{value}}",
+      "lastEvaluationFailed": "latest nonpassing grade: {{value}}",
+      "lastEvaluationPassed": "latest nonpassing grade: {{value}}",
+      "lastJournalEntry": "latest entry: {{value}}",
+      "lastSubmittedAssignment": "latest assignment submission: {{value}}",
+      "notInWorkspaces": "Student has no courses",
+      "numberOfAssignments": "{{value}} assignments",
+      "numberOfExercises": "{{value}} exercises",
+      "numberOfJournalEntries": "{{value}} entries",
+      "numberOfMessages": "{{value} messages",
+      "numberOfVisits": " {{value}} visits",
+      "removing_attachment": "Are you sure you want to remove the attachment you have picked?"
+    },
     "labels": {
       "answered": "Answered",
       "evaluationState": "State of evaluation",
@@ -372,25 +389,6 @@
       "unanswered": "Unanswered",
       "workspaceVisits": "Workspace visits"
     },
-    "content": {
-      "addTaskInstruction": "Clicking on the plus icon will open the editor where you are able to give a new task to a student. You may schedule the task to start and/or finish at a specified time by setting the start date and/or finish date for the task. You may also leave the date fields empty. The dates will have no impact on the visibility of the task.</p><p>The student will see the task you have given them on the state of studies tab in the Studies view. Once the student has marked the task as done, its status changes to Waiting for approval. You can then approve or reject the task. Finally, you will have to archive the task (by clicking the Trashcan icon).",
-      "addAttachmentInstruction": "Add a file by clicking here or by dragging it into this box",
-      "empty": "-",
-      "lastVisit": "last visit: {{value}}",
-      "lastAnswered": "latest answer: {{value}}",
-      "lastMessage": "Latest message: {{value}}",
-      "lastEvaluationFailed": "latest nonpassing grade: {{value}}",
-      "lastEvaluationPassed": "latest nonpassing grade: {{value}}",
-      "lastJournalEntry": "latest entry: {{value}}",
-      "lastSubmittedAssignment": "latest assignment submission: {{value}}",
-      "notInWorkspaces": "Student has no courses",
-      "numberOfAssignments": "{{value}} assignments",
-      "numberOfExercises": "{{value}} exercises",
-      "numberOfJournalEntries": "{{value}} entries",
-      "numberOfMessages": "{{value} messages",
-      "numberOfVisits": " {{value}} visits",
-      "removing_attachment": "Are you sure you want to remove the attachment you have picked?"
-    },
     "wcag": {
       "select": "Select a subject",
       "selectYearCount": "Select a year",
@@ -405,28 +403,6 @@
       "alreadySignedUp": "Already signed up.",
       "assignments": "Assignments",
       "signUp": "Sign up for the matriculation exam due ({{dueDate}})"
-    },
-    "labels": {
-      "abiStatus": "Abi-status",
-      "activity": "Activitiy",
-      "evaluablesDone": "{{percent}}% of assignments done",
-      "completedWorkspaces": "You have completed",
-      "coursesForYou:": "Courses for you",
-      "endDate": " Studies end date",
-      "enrollmentDate": "Date of enrollment",
-      "exercisesDone": "{{percent}}% exercises done",
-      "hops": "HOPS",
-      "logins": "You have logged in",
-      "matriculationExams": "Matriculation exams",
-      "matriculationSignUp": "Matriculation exam sign up",
-      "notifications": "Notifications",
-      "records": "Studies",
-      "returnedAssignments": "You have returned",
-      "summary": "Study summary",
-      "studyInfo": "Study information",
-      "studyEvents": "Study events",
-      "transferCredits": "Transfer credits",
-      "workspacesDone": "Courses done"
     },
     "content": {
       "abiStatus": "You do not lack any courses from you Abi-status. You may sign up for the matriculation examination.",
@@ -451,6 +427,28 @@
       "sent_interimEvaluationRequest": "Interim evaluation request sent {{date}}",
       "transferCreditsDate": "Date {{date}}"
     },
+    "labels": {
+      "abiStatus": "Abi-status",
+      "activity": "Activitiy",
+      "evaluablesDone": "{{percent}}% of assignments done",
+      "completedWorkspaces": "You have completed",
+      "coursesForYou:": "Courses for you",
+      "endDate": " Studies end date",
+      "enrollmentDate": "Date of enrollment",
+      "exercisesDone": "{{percent}}% exercises done",
+      "hops": "HOPS",
+      "logins": "You have logged in",
+      "matriculationExams": "Matriculation exams",
+      "matriculationSignUp": "Matriculation exam sign up",
+      "notifications": "Notifications",
+      "records": "Studies",
+      "returnedAssignments": "You have returned",
+      "summary": "Study summary",
+      "studyInfo": "Study information",
+      "studyEvents": "Study events",
+      "transferCredits": "Transfer credits",
+      "workspacesDone": "Courses done"
+    },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
       "loadError_studies": "Loading records failed. Please try refreshing the page.",
@@ -471,6 +469,27 @@
   },
 
   "hops": {
+    "content": {
+      "completionEstimateYears1": "I estimate I will graduate Lukio in",
+      "completionEstimateYears2": "years",
+      "finnish": "Primary Finnish",
+      "finnish_secondary": "Secondary Finnish",
+      "finnishMandatority": "In Finnish and literacy you can choose secondary Finnish, if your native language is some other than Finnish. In Finnish and literacy I will study",
+      "hopsChangeable": "HOPS can be changed. You can update your choices as you progress.",
+      "hopsIntro": "<p><b>This form will help you to device a study plan (HOPS). Answert the questions based on your current thoughts, you can change your plan later. HOPS is primarly a contract between you: What, how and when will you study. If you fill the form individually, pay close attention to the instructions provided.</b></p><p><b>Return the HOPS to your counselor by saving it with the Save-button at the bottom of the page</b></p><p>You have 4 years for your lukio-studies at most. You can graduate in about 2-4 years based on how long your study rights and time usage are. The previous lukio-studies lessen the study right you are permitted.</p><p> At least 2,5-year vocational basic qualification (120 study weeks / 180 study points) will directly grant you right for matriculation examination. Having 2-year vocational qualification will need you to pass at least <b>2 mandatory</b> lukio-courses in subjects you wish to matriculate in.</p>",
+      "hopsNotActivatedByCouncelor": "HOPS has not been actived by the counselor",
+      "iHave": "I have",
+      "justTransferCredits": "years of previoous studies and want to be compensated for them",
+      "matriculationEligibility": "Course grades required for the matriculation sign up rights: <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
+      "matriculationSubjectsGoal": "I am going to write these subjects in the matriculation exam",
+      "mathSyllabus": "Studying math starts with MAY1. After than you can choose if you want to study the long or short syllabyus. I want to graduate",
+      "otherMandatoryLanguages": "In addition to primary Finnish, the adults will also study mandatory A-english and B-swedish.",
+      "targetUpperSecondary": "My target is Lukio graduation",
+      "targetMatriculationExam": "My target is the matriculation exam",
+      "studentsOnly": "HOPS-form is available for the students only",
+      "studyOptionalLanguages": "I want to pursue optional languages",
+      "vocationalYears": "year vocational qualification and wish only to graduate the matriculation exam"
+    },
     "labels": {
       "additionalInfo": "Additional information",
       "beliefSubjectIs": "My belief subjects are",
@@ -494,31 +513,6 @@
       "spanish": "Spanish",
       "physics": "Physics",
       "title": "Personal study plan (HOPS)"
-    },
-    "content": {
-      "completionEstimateYears1": "I estimate I will graduate Lukio in",
-      "completionEstimateYears2": "years",
-      "finnish": "Primary Finnish",
-      "finnish_secondary": "Secondary Finnish",
-      "finnishMandatority": "In Finnish and literacy you can choose secondary Finnish, if your native language is some other than Finnish. In Finnish and literacy I will study",
-      "hopsChangeable": "HOPS can be changed. You can update your choices as you progress.",
-      "hopsIntro": "<p><b>This form will help you to device a study plan (HOPS). Answert the questions based on your current thoughts, you can change your plan later. HOPS is primarly a contract between you: What, how and when will you study. If you fill the form individually, pay close attention to the instructions provided.</b></p><p><b>Return the HOPS to your counselor by saving it with the Save-button at the bottom of the page</b></p><p>You have 4 years for your lukio-studies at most. You can graduate in about 2-4 years based on how long your study rights and time usage are. The previous lukio-studies lessen the study right you are permitted.</p><p> At least 2,5-year vocational basic qualification (120 study weeks / 180 study points) will directly grant you right for matriculation examination. Having 2-year vocational qualification will need you to pass at least <b>2 mandatory</b> lukio-courses in subjects you wish to matriculate in.</p>",
-      "hopsNotActivatedByCouncelor": "HOPS has not been actived by the counselor",
-      "iHave": "I have",
-      "justTransferCredits": "years of previoous studies and want to be compensated for them",
-      "matriculationEligibility": "Course grades required for the matriculation sign up rights: <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
-      "matriculationSubjectsGoal": "I am going to write these subjects in the matriculation exam",
-      "mathSyllabus": "Studying math starts with MAY1. After than you can choose if you want to study the long or short syllabyus. I want to graduate",
-      "otherMandatoryLanguages": "In addition to primary Finnish, the adults will also study mandatory A-english and B-swedish.",
-      "targetUpperSecondary": "My target is Lukio graduation",
-      "targetMatriculationExam": "My target is the matriculation exam",
-      "studentsOnly": "HOPS-form is available for the students only",
-      "studyOptionalLanguages": "I want to pursue optional languages",
-      "vocationalYears": "year vocational qualification and wish only to graduate the matriculation exam"
-    },
-    "notifications": {
-      "loadError": "Loading the HOPS failed. Please try refreshing the page.",
-      "updateError": "Editing the HOPS failed. Please try refreshing the page."
     },
     "matriculationSubjects": {
       "A": "Primary Finnish",
@@ -553,10 +547,19 @@
       "GC": "Portugese, C-level",
       "LC": "Latin, C-level",
       "SMC": "Sami, C-level"
+    },
+    "notifications": {
+      "loadError": "Loading the HOPS failed. Please try refreshing the page.",
+      "updateError": "Editing the HOPS failed. Please try refreshing the page."
     }
   },
 
   "organization": {
+    "content": {
+      "activeInactive": " {{activeCount}} active students ({{archivedCount}} archived)",
+      "accumulated": "During the billing period {{studentCount}} students have signed up for {{signUpCount}} courses and a teacher has performed {{evaluationCount}} evaluations",
+      "publishedUnpublished": "{{publishedCount}} published courses ({{unpublishedCount}} unpublished)"
+    },
     "labels": {
       "activeBillingPeriod": "Active billing period",
       "accumulatedBill": "Accumulated bill",
@@ -573,17 +576,12 @@
       "summary": "Summary",
       "workspacesAndStudents": "Courses and students"
     },
-    "content": {
-      "activeInactive": " {{activeCount}} active students ({{archivedCount}} archived)",
-      "accumulated": "During the billing period {{studentCount}} students have signed up for {{signUpCount}} courses and a teacher has performed {{evaluationCount}} evaluations",
-      "publishedUnpublished": "{{publishedCount}} published courses ({{unpublishedCount}} unpublished)"
-    },
-    "wcag": {
-      "workspaceTemplateSelect": "Set template selected"
-    },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
       "loadError_summary": "Loading the summary failed, please refresh the view"
+    },
+    "wcag": {
+      "workspaceTemplateSelect": "Set template selected"
     }
   },
 
@@ -598,6 +596,31 @@
       "tourNettiperuskoulu": "Tour Nettiperuskoulu",
       "tourNettiperuskoulu_aineopiskelu": "Tour Nettiperuskoulu subject studies",
       "update": "Update information"
+    },
+    "content": {
+      "alwaysUp": "Studying in Online Comprehensive School and Online Upper Secondary School don't depend on a time or a place. People can study with the help of Muikkuverkko 24/7 anywhere in Finland as well as abroad.",
+      "aineopiskelu": "Single Adult Upper Secondary School Courses and Adult Secondary School Courses",
+      "checkContactInfo": "Is the following information correct?",
+      "educationWednesday": "People interested in learning and education get  together on Education Wednesdays once a month to hear inspiring introductions, share practical ideas and examples of best practices as well as discuss the latest developments in  the educational field.",
+      "forgotPassword": "Enter your email address to the field below, and we will send you a link you can use to reset your password.",
+      "immigrantEducation": "Programmes for students with immigrant backgrounds offer comprehensive education for adults. In our campus, the region of Savo joins hands with the whole world.",
+      "inactiveStudent": "Due to the expiration of your study right your access to Muikku is restricted and you can only enter your study register and view courses.</p><p>In case you have a problem, please contact <a href='mailto:helpdesk@muikkuverkko.fi'>helpdesk@muikkuverkko.fi</a>.</p>",
+      "pointOfContinue": "Your latest studies were",
+      "nettilukio": "Aim at Adult Upper Secondary School Certificate.",
+      "nettiperuskoulu": "Aim at Adult Secondary School Certificate.",
+      "newBeginning": "Otavan Opisto is the start of something new. It is a friendly and cozy campus full of life and amazing people.",
+      "noWorkspaces": "You have no courses.",
+      "noWorkspaces_pt1": "You are not studying in any of the courses. You can use",
+      "noWorkspaces_coursepicker": "course picker",
+      "noWorkspaces_pt2": "to find courses that interests you.",
+      "noUserByEmail": "Muikku has no user account corresponding to email address {{email}.",
+      "openMaterials": "Materials licensed by Creative Commons license. Registration is not required.",
+      "organization": "<p>Otavia is a municipal enterprise owned by the city of Mikkeli that specializes in digital education through Online Upper Secondary School for Adults and Online Comprehensive School for Adults. We also welcome students to enroll in on-campus courses as part of different study programmes for students with immigrant backgrounds. It is also possible to enroll in a number of liberal adult education courses. We provide and develop education locally, nationwide and globally. Exploring, trying out and testing new approaches is at the heart of what we do at Otavia.</p>",
+      "passwordChangeMailSent": "Lähetimme varmistusviestin osoitteeseen {{email}}. Pääset vaihtamaan salasanasi klikkaamalla viestissä olevaa linkkiä.",
+      "plagScan": "We are using online plagiarism checking system",
+      "selfImprovement": "Otavan Opisto's courses help you develop yourself and your skills. There's a wide selection of courses on learning, well-being, futurology and IT available to you.",
+      "site": "The digital learning platform of online upper secondary school Nettilukio and online comprehensive school Nettiperuskoulu",
+      "studentApplication": "Browse our Programmes and Fill out Online Application."
     },
     "labels": {
       "accessibilityStatement": "Accessibility Statement",
@@ -626,31 +649,6 @@
       "studying": "Studying",
       "wall": "Wall",
       "welcome": "Welcome to Muikku!"
-    },
-    "content": {
-      "alwaysUp": "Studying in Online Comprehensive School and Online Upper Secondary School don't depend on a time or a place. People can study with the help of Muikkuverkko 24/7 anywhere in Finland as well as abroad.",
-      "aineopiskelu": "Single Adult Upper Secondary School Courses and Adult Secondary School Courses",
-      "checkContactInfo": "Is the following information correct?",
-      "educationWednesday": "People interested in learning and education get  together on Education Wednesdays once a month to hear inspiring introductions, share practical ideas and examples of best practices as well as discuss the latest developments in  the educational field.",
-      "forgotPassword": "Enter your email address to the field below, and we will send you a link you can use to reset your password.",
-      "immigrantEducation": "Programmes for students with immigrant backgrounds offer comprehensive education for adults. In our campus, the region of Savo joins hands with the whole world.",
-      "inactiveStudent": "Due to the expiration of your study right your access to Muikku is restricted and you can only enter your study register and view courses.</p><p>In case you have a problem, please contact <a href='mailto:helpdesk@muikkuverkko.fi'>helpdesk@muikkuverkko.fi</a>.</p>",
-      "pointOfContinue": "Your latest studies were",
-      "nettilukio": "Aim at Adult Upper Secondary School Certificate.",
-      "nettiperuskoulu": "Aim at Adult Secondary School Certificate.",
-      "newBeginning": "Otavan Opisto is the start of something new. It is a friendly and cozy campus full of life and amazing people.",
-      "noWorkspaces": "You have no courses.",
-      "noWorkspaces_pt1": "You are not studying in any of the courses. You can use",
-      "noWorkspaces_coursepicker": "course picker",
-      "noWorkspaces_pt2": "to find courses that interests you.",
-      "noUserByEmail": "Muikku has no user account corresponding to email address {{email}.",
-      "openMaterials": "Materials licensed by Creative Commons license. Registration is not required.",
-      "organization": "<p>Otavia is a municipal enterprise owned by the city of Mikkeli that specializes in digital education through Online Upper Secondary School for Adults and Online Comprehensive School for Adults. We also welcome students to enroll in on-campus courses as part of different study programmes for students with immigrant backgrounds. It is also possible to enroll in a number of liberal adult education courses. We provide and develop education locally, nationwide and globally. Exploring, trying out and testing new approaches is at the heart of what we do at Otavia.</p>",
-      "passwordChangeMailSent": "Lähetimme varmistusviestin osoitteeseen {{email}}. Pääset vaihtamaan salasanasi klikkaamalla viestissä olevaa linkkiä.",
-      "plagScan": "We are using online plagiarism checking system",
-      "selfImprovement": "Otavan Opisto's courses help you develop yourself and your skills. There's a wide selection of courses on learning, well-being, futurology and IT available to you.",
-      "site": "The digital learning platform of online upper secondary school Nettilukio and online comprehensive school Nettiperuskoulu",
-      "studentApplication": "Browse our Programmes and Fill out Online Application."
     },
     "wcag": {
       "indexViewHeader": "Muikku frontpage",
@@ -689,6 +687,24 @@
       "replyAll": "Reply all",
       "show": "$t(common:actions.show)",
       "show_comments": "Show comments"
+    },
+    "content": {
+      "empty": "$t(common:content.empty)",
+      "empty_messages": "No messages",
+      "empty_announcements": "No announcements",
+      "empty_contactLog": "No contact events",
+      "empty_discussions": "No ongoing discussions",
+      "empty_subscriptions": "No subscribed discussions",
+      "notFound": "Given announcement wasn't found",
+      "removed": "Message removed",
+      "noneSelected_announcements": "No announcements selected",
+      "removing": "$t(common:content.removing)",
+      "removing_message": "Are you sure you wish to remove the messsage?",
+      "removing_announcement": "Are you sure you want to remove the announcement?",
+      "removing_contactEntry": "Are you sure you want to remove the contact event? If you remove it, any comment it has will also be removed",
+      "removing_discussionArea": "Attention! Removing the discussion area will also remove all the messages in it!",
+      "removing_reply": "The reply will be removed permanently, are you sure you wish to continue?",
+      "removing_thread": "The thread and all it's replies will be removed permanently. Are you sure you wish to continue?"
     },
     "labels": {
       "addSignature": "Add signature",
@@ -765,39 +781,6 @@
       "unread": "Unread",
       "unsubscribe": "Unsubscribe"
     },
-    "content": {
-      "empty": "$t(common:content.empty)",
-      "empty_messages": "No messages",
-      "empty_announcements": "No announcements",
-      "empty_contactLog": "No contact events",
-      "empty_discussions": "No ongoing discussions",
-      "empty_subscriptions": "No subscribed discussions",
-      "notFound": "Given announcement wasn't found",
-      "removed": "Message removed",
-      "noneSelected_announcements": "No announcements selected",
-      "removing": "$t(common:content.removing)",
-      "removing_message": "Are you sure you wish to remove the messsage?",
-      "removing_announcement": "Are you sure you want to remove the announcement?",
-      "removing_contactEntry": "Are you sure you want to remove the contact event? If you remove it, any comment it has will also be removed",
-      "removing_discussionArea": "Attention! Removing the discussion area will also remove all the messages in it!",
-      "removing_reply": "The reply will be removed permanently, are you sure you wish to continue?",
-      "removing_thread": "The thread and all it's replies will be removed permanently. Are you sure you wish to continue?"
-    },
-    "validation": {
-      "beginDate": "Announcement begin date is mandatory",
-      "caption": "$t(common:validation.caption)",
-      "caption_message": "Message caption is mandatory.",
-      "caption_announcements": "Announcement title is mandatory",
-      "content": "$t(common:validation.content)",
-      "content_message": "Message content is mandatory",
-      "content_announcements": "Announcement is mandatory",
-      "endDate": "Announcement end date is mandatory",
-      "name": "$t(common:validation.name)",
-      "name_area": "Area name is mandatory",
-      "name_labels": "Label name is mandatory",
-      "recipients": "Message recipient is mandatory",
-      "targetGroup": "Announcement target group is mandatory"
-    },
     "notifications": {
       "addError": "Setting the label failed",
       "alreadyExistsError": "There's an existing label with the given label",
@@ -858,6 +841,21 @@
       "updateSuccess_contactLog": "Updating the contact event failed. Please try again.",
       "workspacesRequiredError": "Message has no target courses"
     },
+    "validation": {
+      "beginDate": "Announcement begin date is mandatory",
+      "caption": "$t(common:validation.caption)",
+      "caption_message": "Message caption is mandatory.",
+      "caption_announcements": "Announcement title is mandatory",
+      "content": "$t(common:validation.content)",
+      "content_message": "Message content is mandatory",
+      "content_announcements": "Announcement is mandatory",
+      "endDate": "Announcement end date is mandatory",
+      "name": "$t(common:validation.name)",
+      "name_area": "Area name is mandatory",
+      "name_labels": "Label name is mandatory",
+      "recipients": "Message recipient is mandatory",
+      "targetGroup": "Announcement target group is mandatory"
+    },
     "wcag": {
       "content": "Message content",
       "content_truncated": "Truncated message content",
@@ -885,23 +883,13 @@
       "cancel": "Cancel approval request",
       "done": "Mark done",
       "incomplete": "Mark incomplete",
-
       "send": "Send for approval"
     },
-    "notifications": {
-      "archiveError": "Archiving the task failed, please try again. {{error}}",
-      "archiveSuccess": "Archiving the task was successful.",
-      "createError": "Creating tyhe task failed, please try again. {{error}}",
-      "createSuccess": "Task created successfully.",
-      "loadError": "Loading the tasks failed, try again by refreshing the page. {{error}}",
-      "pinError": "Pinning the task failed. {{error}}",
-      "unarchiveError": "Unarchiving the task failed, please try again. {{error}}",
-      "unarchiveSuccess": "Unarchiving the task was successful.",
-      "updateError": "Updating the task failed, please try again. {{error}}",
-      "updateError_state": "Updating the task state failed, please try again. {{error}}",
-      "updateSuccess": "Updating the the task was successful",
-      "updateSuccess_state": "Updating the task sate was successful.",
-      "ratingError": "Rating the task was unsuccessful, please try again. {{error}}"
+    "content": {
+      "empty": "$t(common:content.empty)",
+      "empty_tasks": "No tasks",
+      "empty_student": "There are no tasks given for you and you have created any. You can create new tasks in the studies view.",
+      "instructions": "<p>Plus icon will open an editor, which you can use to create a new task. If you wish, you can schedule a task to begin and end on a certain day. You can also set only one date or no date at all. The set dates will not affect the task visibility.</p><p>The task you wrote can only be seen by yourself. Your counselor can also assign tasks to you and then oversee them until they are done. When you have finished the task, you can assign it done. Tasks given by a counselor can be send for approval. When the counselor sets the task done, the sate will change to 'Done'. Tasks will not be archived automatically, but you need to do it yourself by clicking the trash can-icon.</p>"
     },
     "labels": {
       "active": "Active",
@@ -925,11 +913,20 @@
       "tasks_archived": "Archived tasks",
       "tasks_student": "Student's task"
     },
-    "content": {
-      "empty": "$t(common:content.empty)",
-      "empty_tasks": "No tasks",
-      "empty_student": "There are no tasks given for you and you have created any. You can create new tasks in the studies view.",
-      "instructions": "<p>Plus icon will open an editor, which you can use to create a new task. If you wish, you can schedule a task to begin and end on a certain day. You can also set only one date or no date at all. The set dates will not affect the task visibility.</p><p>The task you wrote can only be seen by yourself. Your counselor can also assign tasks to you and then oversee them until they are done. When you have finished the task, you can assign it done. Tasks given by a counselor can be send for approval. When the counselor sets the task done, the sate will change to 'Done'. Tasks will not be archived automatically, but you need to do it yourself by clicking the trash can-icon.</p>"
+    "notifications": {
+      "archiveError": "Archiving the task failed, please try again. {{error}}",
+      "archiveSuccess": "Archiving the task was successful.",
+      "createError": "Creating tyhe task failed, please try again. {{error}}",
+      "createSuccess": "Task created successfully.",
+      "loadError": "Loading the tasks failed, try again by refreshing the page. {{error}}",
+      "pinError": "Pinning the task failed. {{error}}",
+      "unarchiveError": "Unarchiving the task failed, please try again. {{error}}",
+      "unarchiveSuccess": "Unarchiving the task was successful.",
+      "updateError": "Updating the task failed, please try again. {{error}}",
+      "updateError_state": "Updating the task state failed, please try again. {{error}}",
+      "updateSuccess": "Updating the the task was successful",
+      "updateSuccess_state": "Updating the task sate was successful.",
+      "ratingError": "Rating the task was unsuccessful, please try again. {{error}}"
     }
   },
 
@@ -937,6 +934,29 @@
     "actions": {
       "create": "Create a user group",
       "edit": "Edit user group"
+    },
+    "content": {
+      "editDetails": "Name is mandatory. You can label user group to a guidance group if you wish.",
+      "empty": "No users",
+      "empty_studentGroups": "No student groups",
+      "empty_students": "No students",
+      "empty_teachers": "No teachers",
+      "noneSelected": "No selected users",
+      "noneSelected_councelors": "No selected counselors",
+      "noneSelected_students": "No selected students",
+      "noneSelected_teachers": "No selected teachers",
+      "noStaff": "No staff found with the given terms",
+      "notFound": "No users found with the given terms",
+      "notFound_students": "No students found with the given terms",
+      "notFound_userGroups": "Annetuilla ehdoilla ei löydy käyttäjäryhmiä",
+      "search": "Type in the search field to search from users",
+      "search_students": "Type in the search field to search from studernts",
+      "search_staff": "Type in the search field to search from the staff",
+      "search_studentsAndGroups": "Type in the search field to search from students and student groups",
+      "searchToRemove": "Search for users to remove them",
+      "searchToRemove_students": "Search for students to remove them from the course. Removing works by clicking the person's name. You can view the students to be removed on the second tab.",
+      "searchToRemove_staff": "Search for staff to remove them from the course. Removing works by clicking the person's name. You can view the staff to be removed on the second tab.",
+      "searchToRemove_teachers": "Search for teachers to remove them from the course. Removing works by clicking the person's name. You can view the teachers to be removed on the second tab."
     },
     "labels": {
       "add": "Add user",
@@ -1022,29 +1042,6 @@
       "userGroupStudents": "User group students",
       "workspaceStudents": "Course students"
     },
-    "content": {
-      "editDetails": "Name is mandatory. You can label user group to a guidance group if you wish.",
-      "empty": "No users",
-      "empty_studentGroups": "No student groups",
-      "empty_students": "No students",
-      "empty_teachers": "No teachers",
-      "noneSelected": "No selected users",
-      "noneSelected_councelors": "No selected counselors",
-      "noneSelected_students": "No selected students",
-      "noneSelected_teachers": "No selected teachers",
-      "noStaff": "No staff found with the given terms",
-      "notFound": "No users found with the given terms",
-      "notFound_students": "No students found with the given terms",
-      "notFound_userGroups": "Annetuilla ehdoilla ei löydy käyttäjäryhmiä",
-      "search": "Type in the search field to search from users",
-      "search_students": "Type in the search field to search from studernts",
-      "search_staff": "Type in the search field to search from the staff",
-      "search_studentsAndGroups": "Type in the search field to search from students and student groups",
-      "searchToRemove": "Search for users to remove them",
-      "searchToRemove_students": "Search for students to remove them from the course. Removing works by clicking the person's name. You can view the students to be removed on the second tab.",
-      "searchToRemove_staff": "Search for staff to remove them from the course. Removing works by clicking the person's name. You can view the staff to be removed on the second tab.",
-      "searchToRemove_teachers": "Search for teachers to remove them from the course. Removing works by clicking the person's name. You can view the teachers to be removed on the second tab."
-    },
     "notifications": {
       "archiveError": "$t(common:notifications.archiveError)",
       "archiveError_student": "Student archiving failed",
@@ -1096,9 +1093,6 @@
       "flags": "Flags",
       "share": "Share the flag {{flag}}"
     },
-    "validation": {
-      "caption": "Flage name is mandatory"
-    },
     "notifications": {
       "addError": "Error adding the flag. Please try again.",
       "createError": "Flag creation failed. Please try again.",
@@ -1106,6 +1100,9 @@
       "removeError": "Flag removal failed. Please try again.",
       "updateError": "Flag editing failed.  Please try again.",
       "warning": "To remove the flag, it must not be shared. Remove the sharing to remve the flag"
+    },
+    "validation": {
+      "caption": "Flage name is mandatory"
     }
   },
 
@@ -1127,6 +1124,48 @@
       "stop": "Stop recording",
       "revert": "Revert to published",
       "update": "Update assignment"
+    },
+    "content": {
+      "add": "Add",
+      "add_file": "Add a file by clicking here or by dragging it into this box. You can add one or more files. Allowed maximum file size is 10 Mt",
+      "add_audio": "Add an audio file by clicking the field below",
+      "add_producers": "Add a producer",
+      "audioFieldIsReadOnly": "New audio clips can not be added because field is currently read-only",
+      "confirm": "Publishing this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
+      "confirm_pageRemoval": "Deleting this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
+      "empty": "$t(common:content.empty)",
+      "empty_audio": "No audio files",
+      "empty_materials": "Course does not have any materials",
+      "hiddenButAnswered": "Hidden but answered",
+      "hiddenButAnswered_assignment": "This assignment is hidden and replaced by a newer one. You have already answered to this assignment and therefore teacher can see your answer and can evaluate it as usual.",
+      "hiddenButAnswered_exercise": "This exercise is hidden and replaced by a newer one. You have already answered to this assignment and therefore teacher can see your answer and can evaluate it as usual.",
+      "noRecordings": "No recordings",
+      "interimEvaluationDisclaimer": "Requesting interim evaluation is disabled as there is currently active course's evaluation request. Withdraw your course's evaluation request or wait until the active request is handled.",
+      "materialLinked": "Material has been linked into {{materialCount}} course materials. Please note that editing material here will affect all of them.",
+      "notSignedUpWarning": "You are not signed up to this course! You can answer assignments, but evaluation requires that you have signed up. You can sign up by clicking",
+      "publishing_page": " Are you sure you wish to publish this page?",
+      "removeDisabled": "Removing the Tiedoston poistaminen ei ole mahdollista",
+      "removeDisabled_audio": "Removing the recording failed",
+      "removing": "$t(common:content.removing)",
+      "removing_page": "Are you sure you wish to remove the page?",
+      "removing_attachment": "Are you sure you wish to remove the attachment:'{{name}}'?",
+      "removing_audio": "Are you sure you want to remove the attached recording?",
+      "removing_file": "Are you sure you want to remove the attached file?",
+      "removing_section": "Are you sure you want to remove the section?",
+      "sectionRemoveDenied": "Currently only empty sections can be removed",
+      "statusUploading": "Uploading to server {{progress}} %",
+      "startRecording": "Begin recording by clicking the button",
+      "stopRecording": "Stop recording by clicking the button",
+      "viewRestricted": "Viewing this material has been restricted to logged in users",
+      "viewRestricted_workspaceMembers": "Viewing this material has been restricted to members only",
+      "undoMaterialPage": "Are you sure you want to undo all the changes and return the page to it's published state?"
+    },
+    "instructions": {
+      "connectField": "Combine matching pairs by first selecting the text in the left-hand column and then selecting the text in the right-hand column.",
+      "journalMemoField": "Make a journal entry in this text box. The entry will be automatically saved in your journal. Once the entry is finished, click the \"Publish journal entry\" button. You can edit the entry by clicking \"Edit journal entry\" and then re-publishing it.",
+      "mathField": "Write mathematical equations by selecting characters from the menu or by using LaTeX. Don't use copy and paste, because copied characters may not work properly.",
+      "organizationField": "First, select the text you want to move. Then, select the box where you want to move the text into. If you are doing the exercise on a computer, you can also click and drag texts.",
+      "sorterField": "In order to arrange texts, you may click on two items to swap their places. If you are doing the exercise on a computer, you can also click and drag texts."
     },
     "labels": {
       "allowCommercial": "Allow commercial uses of your work?",
@@ -1230,41 +1269,6 @@
       "unanswered": "Unanswered",
       "wordCount": "Words"
     },
-    "content": {
-      "add": "Add",
-      "add_file": "Add a file by clicking here or by dragging it into this box. You can add one or more files. Allowed maximum file size is 10 Mt",
-      "add_audio": "Add an audio file by clicking the field below",
-      "add_producers": "Add a producer",
-      "audioFieldIsReadOnly": "New audio clips can not be added because field is currently read-only",
-      "confirm": "Publishing this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
-      "confirm_pageRemoval": "Deleting this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
-      "empty": "$t(common:content.empty)",
-      "empty_audio": "No audio files",
-      "empty_materials": "Course does not have any materials",
-      "hiddenButAnswered": "Hidden but answered",
-      "hiddenButAnswered_assignment": "This assignment is hidden and replaced by a newer one. You have already answered to this assignment and therefore teacher can see your answer and can evaluate it as usual.",
-      "hiddenButAnswered_exercise": "This exercise is hidden and replaced by a newer one. You have already answered to this assignment and therefore teacher can see your answer and can evaluate it as usual.",
-      "noRecordings": "No recordings",
-      "interimEvaluationDisclaimer": "Requesting interim evaluation is disabled as there is currently active course's evaluation request. Withdraw your course's evaluation request or wait until the active request is handled.",
-      "materialLinked": "Material has been linked into {{materialCount}} course materials. Please note that editing material here will affect all of them.",
-      "notSignedUpWarning": "You are not signed up to this course! You can answer assignments, but evaluation requires that you have signed up. You can sign up by clicking",
-      "publishing_page": " Are you sure you wish to publish this page?",
-      "removeDisabled": "Removing the Tiedoston poistaminen ei ole mahdollista",
-      "removeDisabled_audio": "Removing the recording failed",
-      "removing": "$t(common:content.removing)",
-      "removing_page": "Are you sure you wish to remove the page?",
-      "removing_attachment": "Are you sure you wish to remove the attachment:'{{name}}'?",
-      "removing_audio": "Are you sure you want to remove the attached recording?",
-      "removing_file": "Are you sure you want to remove the attached file?",
-      "removing_section": "Are you sure you want to remove the section?",
-      "sectionRemoveDenied": "Currently only empty sections can be removed",
-      "statusUploading": "Uploading to server {{progress}} %",
-      "startRecording": "Begin recording by clicking the button",
-      "stopRecording": "Stop recording by clicking the button",
-      "viewRestricted": "Viewing this material has been restricted to logged in users",
-      "viewRestricted_workspaceMembers": "Viewing this material has been restricted to members only",
-      "undoMaterialPage": "Are you sure you want to undo all the changes and return the page to it's published state?"
-    },
     "notifications": {
       "assignmentSubmitted": "Assignment returned",
       "assignmentUpdated": "Assignment updated",
@@ -1310,7 +1314,39 @@
       "show": "Show Supplementation Request",
       "signUp": "Sign up"
     },
-
+    "content": {
+      "addDetails": "Be aware that the course needs to be published before it will show in the Coursepicker - independent of the set start date. The dates are not mandatory.",
+      "archiveStudent": "Are you sure that you want to archive user {{studentName}} from workspace?",
+      "cancel_evaluationRequest": "Cancel your previously sent request for evaluation. Your tutor will be notified automatically.",
+      "cannotSignUpWarning": "You are checking out this workspace but cannot sign up to it. You can answer to assignments but cannot request a workspace evaluation. If you would like to sign up to this workspace, please contact your tutor.",
+      "changeImage": "Click image to change it",
+      "empty": "$t(common:content.empty)",
+      "empty_workspaces": "No workspaces",
+      "empty_activeStudents": "No active students in the course",
+      "empty_archivedStudent": "No archived students in the course",
+      "empty_announcements": "No announcements in the course",
+      "empty_evaluables": "There are no assignments in the course",
+      "empty_beginDate": "Begin date is not set",
+      "empty_teachers": "There are no teacher in the course",
+      "empty_endDate": "End date is not set",
+      "empty_exercises": "There are no exercises in the course",
+      "empty_intermin": " There are no interim evaluation assingments in the course",
+      "empty_journals": "There are no journal entries in the course",
+      "empty_instructions": "The course does not have instructions yet",
+      "evaluationHasFee": "Evaluation of this course has a fee, but the studying is free.",
+      "logInGuidingInformation": "Would you like to enroll to this workspace? See your options to do so on the front page of Muikku.",
+      "mustBePublished": "Be aware that the course needs to be published before it will show in the Coursepicker - independent of the set start date. The dates are not mandatory.",
+      "notFound_workspaces": "Selected filters and/or search did not return any results",
+      "notFound_templates": "There are no course templates with the given criteria",
+      "notNamed": "Course does not have a name",
+      "noneSelected": "No selected template",
+      "removing_image": "Are you sure that you want to delete workspace's front page image? By deleting the image default image will be placed back to the workspace's front page.",
+      "reviewSummary": "Check that all information is correct",
+      "requestEvaluation": "Send evaluation request to your tutor. Tutor will be notified automatically.",
+      "selectTemplate": "Select a template from which to create the course from.",
+      "signUp": "Sign up to {{name}} {{nameExtension}}",
+      "unArchiveStudent": "Are you sure that you want to unarchive user {{studentName}} from the course??"
+    },
     "labels": {
       "access": "Access",
       "anyone": "Anyone",
@@ -1323,7 +1359,7 @@
       "begingDate": "$t(common:labels.beginDate)",
       "begingDate_copySummary": "Begin date: {{beginDate}}",
       "beginAndEndDate": "Begin and end dates",
-      "cancel": "Peruuta arviointipyyntö",
+      "cancel": "Cancel evaluation request",
       "chatStatus": "Chat state",
       "chatEnabled": "Chat room in use",
       "chatDisabled": "Chat room not in use",
@@ -1443,41 +1479,6 @@
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
       "workspaceTypeSelect": "Type select"
     },
-
-    "content": {
-      "addDetails": "Be aware that the course needs to be published before it will show in the Coursepicker - independent of the set start date. The dates are not mandatory.",
-      "archiveStudent": "Are you sure that you want to archive user {{studentName}} from workspace?",
-      "cancel_evaluationRequest": "Cancel your previously sent request for evaluation. Your tutor will be notified automatically.",
-      "cannotSignUpWarning": "You are checking out this workspace but cannot sign up to it. You can answer to assignments but cannot request a workspace evaluation. If you would like to sign up to this workspace, please contact your tutor.",
-      "changeImage": "Click image to change it",
-      "empty": "$t(common:content.empty)",
-      "empty_workspaces": "No workspaces",
-      "empty_activeStudents": "No active students in the course",
-      "empty_archivedStudent": "No archived students in the course",
-      "empty_announcements": "No announcements in the course",
-      "empty_evaluables": "There are no assignments in the course",
-      "empty_beginDate": "Begin date is not set",
-      "empty_teachers": "There are no teacher in the course",
-      "empty_endDate": "End date is not set",
-      "empty_exercises": "There are no exercises in the course",
-      "empty_intermin": " There are no interim evaluation assingments in the course",
-      "empty_journals": "There are no journal entries in the course",
-      "empty_instructions": "The course does not have instructions yet",
-      "evaluationHasFee": "Evaluation of this course has a fee, but the studying is free.",
-      "logInGuidingInformation": "Would you like to enroll to this workspace? See your options to do so on the front page of Muikku.",
-      "mustBePublished": "Be aware that the course needs to be published before it will show in the Coursepicker - independent of the set start date. The dates are not mandatory.",
-      "notFound_workspaces": "Selected filters and/or search did not return any results",
-      "notFound_templates": "There are no course templates with the given criteria",
-      "notNamed": "Course does not have a name",
-      "noneSelected": "No selected template",
-      "removing_image": "Are you sure that you want to delete workspace's front page image? By deleting the image default image will be placed back to the workspace's front page.",
-      "reviewSummary": "Check that all information is correct",
-      "requestEvaluation": "Send evaluation request to your tutor. Tutor will be notified automatically.",
-      "selectTemplate": "Select a template from which to create the course from.",
-      "signUp": "Sign up to {{name}} {{nameExtension}}",
-      "unArchiveStudent": "Are you sure that you want to unarchive user {{studentName}} from the course??"
-    },
-
     "notifications": {
       "cancelError": "Cancelling failed",
       "cancelError_evaluationRequests": "Evaluation request cancellation failed",
@@ -1533,7 +1534,6 @@
       "updateError_student": "Updating course student failed",
       "updateError_userGroupPermissions": "Updating user group permissions failed"
     },
-
     "wcag": {
       "announcementSelect": "Select announcement",
       "editingMasterSwitch": "Master switch for editing",
@@ -1551,6 +1551,16 @@
       "edit": "*Edit entry",
       "save": "Save entry"
     },
+    "content": {
+      "empty": "$t(common:content.empty)",
+      "empty_entries": "No entries",
+      "empty_comments": "The entry has no comments",
+      "empty_evaluation": "Journal has not been evaluated",
+      "empty_student": "Student has no journal entries",
+      "empty_workspace": "Course has no journal entries",
+      "empty_you": "You have no journal entries",
+      "removing": "Are you sure you want to remove the journal entry?"
+    },
     "labels": {
       "create": "Create a journal entry",
       "edit": "Edit the journal entry",
@@ -1563,16 +1573,6 @@
       "others": "Others",
       "remove": "Remove the entry",
       "type": "Entry type"
-    },
-    "content": {
-      "empty": "$t(common:content.empty)",
-      "empty_entries": "No entries",
-      "empty_comments": "The entry has no comments",
-      "empty_evaluation": "Journal has not been evaluated",
-      "empty_student": "Student has no journal entries",
-      "empty_workspace": "Course has no journal entries",
-      "empty_you": "You have no journal entries",
-      "removing": "Are you sure you want to remove the journal entry?"
     },
     "notifications": {
       "createError": "$t(common:notifications.createError)",
@@ -1607,13 +1607,13 @@
       "add": "Add a file",
       "download": "Download the file"
     },
-    "labels": {
-      "remove": "Removing the file",
-      "zipFileName": "files.zip"
-    },
     "content": {
       "add": "Add a file by clicking or dragging the file here",
       "empty": "No files"
+    },
+    "labels": {
+      "remove": "Removing the file",
+      "zipFileName": "files.zip"
     },
     "notifications": {
       "sizeTooLarge": "File size is too large. Largest allowed file size is 10MB.",
@@ -1643,6 +1643,41 @@
       "remove_evaluation": "Remove evaluation",
       "remove_evaluationRequest": "Remove evaluation request",
       "remove_interimEvaluationRequest": "Remove interim evaluation request"
+    },
+    "content": {
+      "archive_student": "Do you wish to archive the student <b>{{studentName}}</b> from the workspace?",
+      "empty": "$t(common:content.empty)",
+      "empty_evaluationHistory": "The evaluation history is empty",
+      "empty_assignments": "No assigments",
+      "empty_students": "Course has no students!",
+      "empty_vocalEvaluations": "No vocal evaluations",
+      "evaluationRequest1": "left",
+      "evaluationRequest2": "evaluation request",
+      "evaluationRequestCancel1": "cancelled",
+      "evaluationRequestCancel2": "evaluation request",
+      "evaluationRequestsHandled": "Great! All evaluation requests handled!",
+      "gradeFail1": "evalueted course",
+      "gradeFail2": "as failed",
+      "gradePass1": "evalueted course",
+      "gradePass2": "as passed",
+      "gradeImproved1": "Grade evaluated",
+      "gradeImproved2": "as improved",
+      "interimEvaluation1": "gave",
+      "interimEvaluation2": "interim evaluation",
+      "interimEvaluationRequest1": "left",
+      "interimEvaluationRequest2": "interim evaluation request",
+      "interimEvaluationRequestCancel1": "cancelled",
+      "interimEvaluationRequestCancel2": "interim evaluation request",
+      "isRecording": "Recording. Press 'Stop recording' when you are ready.",
+      "notFound": "There is no students with the chosen filters",
+      "removing": "$t(common:content.removing)",
+      "removing_entry": "Are you sure you want to remove the entry from student: {{studentName}}?",
+      "removing_evaluationRequest": "Are you sure you want to remove the evaluation request for student <b>{{student}}</b> from the course <b>{{workspace}}</b>?",
+      "removing_interimRequest": "Are you sure you want to remove the interim evaluation request for student <b>{{student}}</b> from the course <b>{{workspace}}</b>?",
+      "removing_vocalEvaluation": "Are you sure you want to remove the vocal evaluation?",
+      "supplementationRequest1": "asked",
+      "supplementationRequest2": "for supplementation",
+      "unsavedVocalEvaluations": " Assignment's assessment contains unsaved verbal feedback recordings and they will be lost if assessment is not saved. Do you want to proceed and close assignment's assessment?"
     },
     "labels": {
       "evaluation": "Course literal evaluation",
@@ -1693,41 +1728,6 @@
       "workspaceEvaluation": "Course evaluation",
       "workspaceSupplementationRequest": "Course supplementation request",
       "written": "Written"
-    },
-    "content": {
-      "archive_student": "Do you wish to archive the student <b>{{studentName}}</b> from the workspace?",
-      "empty": "$t(common:content.empty)",
-      "empty_evaluationHistory": "The evaluation history is empty",
-      "empty_assignments": "No assigments",
-      "empty_students": "Course has no students!",
-      "empty_vocalEvaluations": "No vocal evaluations",
-      "evaluationRequest1": "left",
-      "evaluationRequest2": "evaluation request",
-      "evaluationRequestCancel1": "cancelled",
-      "evaluationRequestCancel2": "evaluation request",
-      "evaluationRequestsHandled": "Great! All evaluation requests handled!",
-      "gradeFail1": "evalueted course",
-      "gradeFail2": "as failed",
-      "gradePass1": "evalueted course",
-      "gradePass2": "as passed",
-      "gradeImproved1": "Grade evaluated",
-      "gradeImproved2": "as improved",
-      "interimEvaluation1": "gave",
-      "interimEvaluation2": "interim evaluation",
-      "interimEvaluationRequest1": "left",
-      "interimEvaluationRequest2": "interim evaluation request",
-      "interimEvaluationRequestCancel1": "cancelled",
-      "interimEvaluationRequestCancel2": "interim evaluation request",
-      "isRecording": "Recording. Press 'Stop recording' when you are ready.",
-      "notFound": "There is no students with the chosen filters",
-      "removing": "$t(common:content.removing)",
-      "removing_entry": "Are you sure you want to remove the entry from student: {{studentName}}?",
-      "removing_evaluationRequest": "Are you sure you want to remove the evaluation request for student <b>{{student}}</b> from the course <b>{{workspace}}</b>?",
-      "removing_interimRequest": "Are you sure you want to remove the interim evaluation request for student <b>{{student}}</b> from the course <b>{{workspace}}</b>?",
-      "removing_vocalEvaluation": "Are you sure you want to remove the vocal evaluation?",
-      "supplementationRequest1": "asked",
-      "supplementationRequest2": "for supplementation",
-      "unsavedVocalEvaluations": " Assignment's assessment contains unsaved verbal feedback recordings and they will be lost if assessment is not saved. Do you want to proceed and close assignment's assessment?"
     },
     "notifications": {
       "hiddenError": "Hidden",
@@ -1780,27 +1780,6 @@
       "pay": "Pay the order",
       "remove": "Remove the order"
     },
-    "labels": {
-      "complete": "Complete the order",
-      "confirm": "Comfirm the order",
-      "history": "Order history",
-      "id": "Order id",
-      "info": "'Order info'",
-      "nonActiveUser": "Your studies have",
-      "open": "Open orders",
-      "order": "Order",
-      "orders": "Orders",
-      "price": "Price",
-      "product": "Product",
-      "state": "State",
-      "state_CANCELLED": "Cancelled",
-      "state_COMPLETE": "Complete",
-      "state_CREATED": "Created",
-      "state_ERRORED": "Errored",
-      "state_ONGOING": "Ongoing",
-      "state_PAID": "Paide",
-      "remove": "Remove the selected order"
-    },
     "content": {
       "cancelled": "Student cancelled the order",
       "complete": "The order has been completed and the student has been granted an extension to their right to study.",
@@ -1828,6 +1807,27 @@
       "redirect": "You are being redirected to Mikkeli City's online store.",
       "removing": "Are you sure you wish to remove the student order?"
     },
+    "labels": {
+      "complete": "Complete the order",
+      "confirm": "Comfirm the order",
+      "history": "Order history",
+      "id": "Order id",
+      "info": "'Order info'",
+      "nonActiveUser": "Your studies have",
+      "open": "Open orders",
+      "order": "Order",
+      "orders": "Orders",
+      "price": "Price",
+      "product": "Product",
+      "state": "State",
+      "state_CANCELLED": "Cancelled",
+      "state_COMPLETE": "Complete",
+      "state_CREATED": "Created",
+      "state_ERRORED": "Errored",
+      "state_ONGOING": "Ongoing",
+      "state_PAID": "Paide",
+      "remove": "Remove the selected order"
+    },
     "notifications": {
       "cancelSuccess": "You cancelled the payment. Please contact your counselor.",
       "completionError": "Completing the student order failed",
@@ -1841,6 +1841,7 @@
       "updateError": "Updating the student order failed"
     }
   },
+
   "ops": {
     "mandatory": "Mandatory",
     "mandatory_lukioOPS2016": "Mandatory",

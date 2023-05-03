@@ -44,6 +44,24 @@
       "signOut": "Kirjaudu ulos",
       "update": "Päivitä"
     },
+
+    "content": {
+      "empty": "Ei sisältöä",
+      "empty_people": "Ei henkilöitä",
+      "empty_rooms": "Ei huoneita",
+      "helpdesk": "Ongelmia Muikussa? helpdesk(a)muikkuverkko.fi",
+      "home": "Muikku-oppimisympäristön logo, linkki etusivulle",
+      "notFound": "Sisältöä ei löydy",
+      "loginFromCredentials": "Voit nyt kirjautua sisään asettamillasi tunnuksilla",
+      "missingFields": "Täytä puuttuvat pakolliset kentät!",
+      "or": "tai",
+      "removed": "Viesti poistettu",
+      "removing": "Oletko varma poistosta?",
+      "removing_comment": "Oletko varma, että haluat poistaa kommentin?",
+      "removing_person": "Oletko varma, että haluat poistaa käyttäjän listasta?",
+      "removing_room": "Oletko aivan varma että haluat poistaa huoneen <b>{{room}}</b>? Tätä toimintoa ei voi peruuttaa."
+    },
+
     "labels": {
       "active": "Aktiivinen",
       "address": "Osoite",
@@ -143,37 +161,6 @@
       "write": "Kirjoita viestisi...",
       "yes": "Kyllä"
     },
-    "content": {
-      "empty": "Ei sisältöä",
-      "empty_people": "Ei henkilöitä",
-      "empty_rooms": "Ei huoneita",
-      "helpdesk": "Ongelmia Muikussa? helpdesk(a)muikkuverkko.fi",
-      "home": "Muikku-oppimisympäristön logo, linkki etusivulle",
-      "notFound": "Sisältöä ei löydy",
-      "loginFromCredentials": "Voit nyt kirjautua sisään asettamillasi tunnuksilla",
-      "missingFields": "Täytä puuttuvat pakolliset kentät!",
-      "or": "tai",
-      "removed": "Viesti poistettu",
-      "removing": "Oletko varma poistosta?",
-      "removing_comment": "Oletko varma, että haluat poistaa kommentin?",
-      "removing_person": "Oletko varma, että haluat poistaa käyttäjän listasta?",
-      "removing_room": "Oletko aivan varma että haluat poistaa huoneen <b>{{room}}</b>? Tätä toimintoa ei voi peruuttaa."
-    },
-
-    "validation": {
-      "beginDate": "Alkamispäivämäärä on pakollinen tieto",
-      "caption": "Otsikko on pakollinen tieto",
-      "content": "Sisältö on pakollinen tieto",
-      "email": "Sähköpostiosoite on pakollinen",
-      "emailInvalid": "Virheellinen sähköpostiosoite",
-      "endDate": "Loppumispäivämäärä on pakollinen tieto",
-      "mandatoryFields": "Pakollinen kenttä",
-      "name": "Nimi on pakollinen tieto",
-      "target": "Kohde on pakollinen tieto",
-      "username": "Käyttäjätunnus on pakollinen",
-      "password": "Salasanakenttä ei voi olla tyhjä",
-      "password_match": "Syötetyt salasanat eivät vastaa toisiaan"
-    },
 
     "notifications": {
       "403": "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
@@ -223,6 +210,21 @@
       "updateSuccess_password": "Salasana vaihdettu onnistuneesti"
     },
 
+    "validation": {
+      "beginDate": "Alkamispäivämäärä on pakollinen tieto",
+      "caption": "Otsikko on pakollinen tieto",
+      "content": "Sisältö on pakollinen tieto",
+      "email": "Sähköpostiosoite on pakollinen",
+      "emailInvalid": "Virheellinen sähköpostiosoite",
+      "endDate": "Loppumispäivämäärä on pakollinen tieto",
+      "mandatoryFields": "Pakollinen kenttä",
+      "name": "Nimi on pakollinen tieto",
+      "target": "Kohde on pakollinen tieto",
+      "username": "Käyttäjätunnus on pakollinen",
+      "password": "Salasanakenttä ei voi olla tyhjä",
+      "password_match": "Syötetyt salasanat eivät vastaa toisiaan"
+    },
+
     "wcag": {
       "alternateNavigation": "Muikun käyttäjäprofiilin ja kielivalinnan navigaatio",
       "chooseRulersColor": "Valitse lukiviivaimen taustaväri",
@@ -250,6 +252,15 @@
     "actions": {
       "test": "Testaa URL"
     },
+    "content": {
+      "appointmentCalendar": "Voit laittaa tähän linkin mihin tahansa ajanvarauskalenteriin, joka näkyy sitten tietojesi yhteydessä kursseilla ja opiskelijan opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testausnappulasta.",
+      "changePassword": "Ole hyvä ja syötä alla olevat tiedot.",
+      "changeAddressMunicipality": "Syötä uusi osoite ja kotikunta",
+      "removing": "Oletko varma että haluat poistaa kuvan profiilistasi?",
+      "nick": "Henkilökunnan jäsen näkee oikean nimesi mutta muut opiskelijat eivät näe kuin asettamasi nimimerkin.",
+      "vacationAutoReply": "Automaattinen lomaviesti on aktiivisena vain jos loma-ajan alku- ja loppupäivämäärät on asetettu. Samalle lähettäjälle lähetetään automaattinen vastausviesti maksimissaan neljän päivän välein.",
+      "whatsAppIntegration": "Saat WhatsApp-integraation päälle ikonia klikkaamalla. Huomaa, että integraatio toimii ainoastaan, jos olet syöttänyt puhelinnumerosi maakoodin kanssa, esim. +358 40 123 4567. Yhteystietoihisi ilmestyy WhatsApp-painike, jota klikkaamalla WhatsApp Web -sovellus aukeaa."
+    },
     "labels": {
       "additionalInfo": "Lisätietoa",
       "appointmentCalendar": "Ajanvarauskalenteri",
@@ -272,15 +283,6 @@
       "whatsappIntegration_on": "WhatsApp-integraatio päällä",
       "worklist": "Työlista"
     },
-    "content": {
-      "appointmentCalendar": "Voit laittaa tähän linkin mihin tahansa ajanvarauskalenteriin, joka näkyy sitten tietojesi yhteydessä kursseilla ja opiskelijan opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testausnappulasta.",
-      "changePassword": "Ole hyvä ja syötä alla olevat tiedot.",
-      "changeAddressMunicipality": "Syötä uusi osoite ja kotikunta",
-      "removing": "Oletko varma että haluat poistaa kuvan profiilistasi?",
-      "nick": "Henkilökunnan jäsen näkee oikean nimesi mutta muut opiskelijat eivät näe kuin asettamasi nimimerkin.",
-      "vacationAutoReply": "Automaattinen lomaviesti on aktiivisena vain jos loma-ajan alku- ja loppupäivämäärät on asetettu. Samalle lähettäjälle lähetetään automaattinen vastausviesti maksimissaan neljän päivän välein.",
-      "whatsAppIntegration": "Saat WhatsApp-integraation päälle ikonia klikkaamalla. Huomaa, että integraatio toimii ainoastaan, jos olet syöttänyt puhelinnumerosi maakoodin kanssa, esim. +358 40 123 4567. Yhteystietoihisi ilmestyy WhatsApp-painike, jota klikkaamalla WhatsApp Web -sovellus aukeaa."
-    },
     "notifications": {
       "loadError": "Profiilikuvan lataus epäonnistui"
     }
@@ -289,6 +291,10 @@
   "worklist": {
     "actions": {
       "send": "Lähetä hyväksyttäväksi"
+    },
+    "content": {
+      "removing": "Oletko varma että haluat poistaa työlistan merkinnän?",
+      "worklistApproval": "Voit lähettää edellisen kuukauden työlistan hyväksyttäväksi viimeistään 10. päivänä kuluvaa kuukautta."
     },
     "labels": {
       "create": "Lisää uusi merkintä",
@@ -305,10 +311,6 @@
       "template": "Aihe",
       "total": "Yhteensä"
     },
-    "content": {
-      "removing": "Oletko varma että haluat poistaa työlistan merkinnän?",
-      "worklistApproval": "Voit lähettää edellisen kuukauden työlistan hyväksyttäväksi viimeistään 10. päivänä kuluvaa kuukautta."
-    },
     "notifications": {
       "createError": "Merkinnän luominen epäonnistui",
       "loadError": "$t(common:notifications.loadError)",
@@ -320,6 +322,25 @@
   },
 
   "guider": {
+    "content": {
+      "addTaskInstruction": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Halutessasi voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee Odottaa käsittelyä. Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (Roskakori-kuvake).</p>",
+      "addAttachmentInstruction": "Lisää liitetiedosto klikkaamalla tästä tai raahamalla tiedosto tähän laatikkoon",
+      "empty": "-",
+      "lastVisit": "viimeisin: {{value}}",
+      "lastAnswered": "viimeisin vastaus: {{value}}",
+      "lastMessage": "Viimeisin viesti: {{value}}",
+      "lastEvaluationFailed": "viimeisin ei-läpäisevä arviointi: {{value}}",
+      "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {{value}}",
+      "lastJournalEntry": "viimeisin merkintä: {{value}}",
+      "lastSubmittedAssignment": "viimeisin palautus: {{value}}",
+      "notInWorkspaces": "Opiskelija ei ole missään kurssilla",
+      "numberOfAssignments": "{{value}} tehtävää",
+      "numberOfExercises": "{{value}} tehtävää",
+      "numberOfJournalEntries": "{{value}} merkintää",
+      "numberOfMessages": "{{value} viestiä",
+      "numberOfVisits": " {{value}} käyntiä",
+      "removing_attachment": "Oletko varma että haluat poistaa valitsemasi liitetiedoston?"
+    },
     "labels": {
       "answered": "Vastatut",
       "evaluationState": "Arvioinnin tila",
@@ -372,25 +393,6 @@
       "unanswered": "Aloittamattomat",
       "workspaceVisits": "Käynyt kurssilla"
     },
-    "content": {
-      "addTaskInstruction": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Halutessasi voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee Odottaa käsittelyä. Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (Roskakori-kuvake).</p>",
-      "addAttachmentInstruction": "Lisää liitetiedosto klikkaamalla tästä tai raahamalla tiedosto tähän laatikkoon",
-      "empty": "-",
-      "lastVisit": "viimeisin: {{value}}",
-      "lastAnswered": "viimeisin vastaus: {{value}}",
-      "lastMessage": "Viimeisin viesti: {{value}}",
-      "lastEvaluationFailed": "viimeisin ei-läpäisevä arviointi: {{value}}",
-      "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {{value}}",
-      "lastJournalEntry": "viimeisin merkintä: {{value}}",
-      "lastSubmittedAssignment": "viimeisin palautus: {{value}}",
-      "notInWorkspaces": "Opiskelija ei ole missään kurssilla",
-      "numberOfAssignments": "{{value}} tehtävää",
-      "numberOfExercises": "{{value}} tehtävää",
-      "numberOfJournalEntries": "{{value}} merkintää",
-      "numberOfMessages": "{{value} viestiä",
-      "numberOfVisits": " {{value}} käyntiä",
-      "removing_attachment": "Oletko varma että haluat poistaa valitsemasi liitetiedoston?"
-    },
     "wcag": {
       "select": "Valitse aine",
       "selectYearCount": "Valitse vuosilukumäärä",
@@ -405,28 +407,6 @@
       "alreadySignedUp": "Olet jo ilmoittautunut YO-kokeeseen.",
       "assignments": "Tehtävät",
       "signUp": " Ilmoittaudu YO-kokeeseen ({{dueDate}} asti)"
-    },
-    "labels": {
-      "abiStatus": "Abistatus",
-      "activity": "Aktiivisuus",
-      "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
-      "completedWorkspaces": "Olet suorittanut yhteensä",
-      "coursesForYou:": "Kursseja sinulle",
-      "endDate": " Opintojen loppumispäivä",
-      "enrollmentDate": "Ilmoittautumispäivämäärä:",
-      "exercisesDone": "{{percent}}% harjoitustehtävistä tehty",
-      "hops": "HOPS",
-      "logins": "Olet kirjautunut yhteensä",
-      "matriculationExams": "Ylioppilaskirjoitukset",
-      "matriculationSignUp": "YO-kirjoituksiin osallistuminen",
-      "notifications": "Ilmoitukset",
-      "records": "Suoritukset",
-      "returnedAssignments": "Olet palauttanut yhteensä",
-      "summary": "Opintojen yhteenveto",
-      "studyInfo": "Opintojen tiedot",
-      "studyEvents": "Opintotapahtumat",
-      "transferCredits": "Hyväksiluvut",
-      "workspacesDone": "Kurssisuoritukset"
     },
     "content": {
       "abiStatus": "Abistatuksestasi ei puutu kursseja. Voit nyt ilmoittautua YO-kokeeseen.",
@@ -451,6 +431,28 @@
       "sent_interimEvaluationRequest": "Välipalautepyyntö lähetetty {{date}}",
       "transferCreditsDate": "Päiväys {{date}}"
     },
+    "labels": {
+      "abiStatus": "Abistatus",
+      "activity": "Aktiivisuus",
+      "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
+      "completedWorkspaces": "Olet suorittanut yhteensä",
+      "coursesForYou:": "Kursseja sinulle",
+      "endDate": " Opintojen loppumispäivä",
+      "enrollmentDate": "Ilmoittautumispäivämäärä:",
+      "exercisesDone": "{{percent}}% harjoitustehtävistä tehty",
+      "hops": "HOPS",
+      "logins": "Olet kirjautunut yhteensä",
+      "matriculationExams": "Ylioppilaskirjoitukset",
+      "matriculationSignUp": "YO-kirjoituksiin osallistuminen",
+      "notifications": "Ilmoitukset",
+      "records": "Suoritukset",
+      "returnedAssignments": "Olet palauttanut yhteensä",
+      "summary": "Opintojen yhteenveto",
+      "studyInfo": "Opintojen tiedot",
+      "studyEvents": "Opintotapahtumat",
+      "transferCredits": "Hyväksiluvut",
+      "workspacesDone": "Kurssisuoritukset"
+    },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
       "loadError_studies": "Suoritusten lataus epäonnistui. Yritä ladata sivu uudelleen.",
@@ -471,6 +473,27 @@
   },
 
   "hops": {
+    "content": {
+      "completionEstimateYears1": "Arvioin suorittavani lukion",
+      "completionEstimateYears2": "vuodessa",
+      "finnish": "Suomi äidinkielenä",
+      "finnish_secondary": "Suomi toisena kielenä",
+      "finnishMandatority": "Äidinkielessä ja kirjallisuudessa voit valita suomi toisena kielenä -oppimäärän, jos äidinkielesi on jokin muu kuin suomi. Suoritan äidinkielessä oppimäärän",
+      "hopsChangeable": "HOPS on suunnitelma, jota voidaan muuttaa. Voit päivittää valintojasi myöhemmin opintojesi edistyessä.",
+      "hopsIntro": "<p><b>Tämä lomake auttaa sinua henkilökohtaisen opiskelusuunnitelman (HOPS) laatimisessa. Vastaa kysymyksiin tämän hetkisten ajatustesi pohjalta, voit muuttaa suunnitelmaasi myöhemmin. HOPS on ensijaisesti sopimus itsesi kanssa: mitä, miten ja milloin aiot opiskella. Jos täytät lomakkeen itsenäisesti, tutustu huolellisesti täyttöohjeisiin.</b></p><p><b>Palauta HOPS omalle ohjaajallesi tallentamalla lomakkeen tiedon näkymän alareunan Tallenna-painikkeesta.</b></p><p>Lukio-opintoihin saat opiskeluaikaa enintään neljä vuotta. Voit suorittaa opinnot noin 2-4 vuoden aikana riippuen opinto-oikeutesi kestosta ja ajankäytöstäsi. Aiemmat lukio-opinnot vähentävät sinulle myönnettyä opiskeluaikaa.</p><p>Vähintään 2,5-vuotinen ammatillinen perustutkinto (120 ov / 180 osp) antaa suoraan osallistumisoikeuden yo-kirjoituksiin. 2-vuotisen ammatillisen tutkinnon suorittaneelta vaaditaan vähintään kahden <b>pakollisen</b> lukiokurssin suorittamista niissä oppiaineissa, joiden yo-kokeisiin hän haluaa osallistua.</p>",
+      "hopsNotActivatedByCouncelor": "Hopsia ei ole aktivoitu ohjaajan toimesta!",
+      "iHave": "Minulla on",
+      "justTransferCredits": "vuotta aiempia lukio- tai ammatillisia opintoja ja haluan hyväksiluvut suorituksistani",
+      "matriculationEligibility": "Osallistumisoikeuteen vaaditut kurssisuoritukset <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
+      "matriculationSubjectsGoal": "Aion kirjoittaa yo-kirjoituksissa aineet",
+      "mathSyllabus": "Matematiikan opiskelu alkaa yhteisellä kurssilla MAY1. Kurssin jälkeen voit valita pitkän tai lyhyen matematiikan. Haluan suorittaa matematiikassa",
+      "otherMandatoryLanguages": "Äidinkielen lisäksi aikuislukiolaiset opiskelevat pakollisena A-englantia ja B-ruotsia.",
+      "targetUpperSecondary": "Tavoitteena lukion päättötodistus",
+      "targetMatriculationExam": "Aion suorittaa yo-kirjoitukset",
+      "studentsOnly": "HOPS-lomake on saatavana vain opiskelijoille",
+      "studyOptionalLanguages": "Haluan suorittaa valinnaiset kielet",
+      "vocationalYears": "vuoden laajuinen ammatillinen perustutkinto ja haluan suorittaa pelkät yo-kirjoitukset"
+    },
     "labels": {
       "additionalInfo": "Lisätietoa",
       "beliefSubjectIs": "Katsomusaineeni on",
@@ -494,31 +517,6 @@
       "spanish": "Espanja",
       "physics": "Fysiikka",
       "title": "Henkilökohtainen opiskelusuunnitelma (HOPS)"
-    },
-    "content": {
-      "completionEstimateYears1": "Arvioin suorittavani lukion",
-      "completionEstimateYears2": "vuodessa",
-      "finnish": "Suomi äidinkielenä",
-      "finnish_secondary": "Suomi toisena kielenä",
-      "finnishMandatority": "Äidinkielessä ja kirjallisuudessa voit valita suomi toisena kielenä -oppimäärän, jos äidinkielesi on jokin muu kuin suomi. Suoritan äidinkielessä oppimäärän",
-      "hopsChangeable": "HOPS on suunnitelma, jota voidaan muuttaa. Voit päivittää valintojasi myöhemmin opintojesi edistyessä.",
-      "hopsIntro": "<p><b>Tämä lomake auttaa sinua henkilökohtaisen opiskelusuunnitelman (HOPS) laatimisessa. Vastaa kysymyksiin tämän hetkisten ajatustesi pohjalta, voit muuttaa suunnitelmaasi myöhemmin. HOPS on ensijaisesti sopimus itsesi kanssa: mitä, miten ja milloin aiot opiskella. Jos täytät lomakkeen itsenäisesti, tutustu huolellisesti täyttöohjeisiin.</b></p><p><b>Palauta HOPS omalle ohjaajallesi tallentamalla lomakkeen tiedon näkymän alareunan Tallenna-painikkeesta.</b></p><p>Lukio-opintoihin saat opiskeluaikaa enintään neljä vuotta. Voit suorittaa opinnot noin 2-4 vuoden aikana riippuen opinto-oikeutesi kestosta ja ajankäytöstäsi. Aiemmat lukio-opinnot vähentävät sinulle myönnettyä opiskeluaikaa.</p><p>Vähintään 2,5-vuotinen ammatillinen perustutkinto (120 ov / 180 osp) antaa suoraan osallistumisoikeuden yo-kirjoituksiin. 2-vuotisen ammatillisen tutkinnon suorittaneelta vaaditaan vähintään kahden <b>pakollisen</b> lukiokurssin suorittamista niissä oppiaineissa, joiden yo-kokeisiin hän haluaa osallistua.</p>",
-      "hopsNotActivatedByCouncelor": "Hopsia ei ole aktivoitu ohjaajan toimesta!",
-      "iHave": "Minulla on",
-      "justTransferCredits": "vuotta aiempia lukio- tai ammatillisia opintoja ja haluan hyväksiluvut suorituksistani",
-      "matriculationEligibility": "Osallistumisoikeuteen vaaditut kurssisuoritukset <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
-      "matriculationSubjectsGoal": "Aion kirjoittaa yo-kirjoituksissa aineet",
-      "mathSyllabus": "Matematiikan opiskelu alkaa yhteisellä kurssilla MAY1. Kurssin jälkeen voit valita pitkän tai lyhyen matematiikan. Haluan suorittaa matematiikassa",
-      "otherMandatoryLanguages": "Äidinkielen lisäksi aikuislukiolaiset opiskelevat pakollisena A-englantia ja B-ruotsia.",
-      "targetUpperSecondary": "Tavoitteena lukion päättötodistus",
-      "targetMatriculationExam": "Aion suorittaa yo-kirjoitukset",
-      "studentsOnly": "HOPS-lomake on saatavana vain opiskelijoille",
-      "studyOptionalLanguages": "Haluan suorittaa valinnaiset kielet",
-      "vocationalYears": "vuoden laajuinen ammatillinen perustutkinto ja haluan suorittaa pelkät yo-kirjoitukset"
-    },
-    "notifications": {
-      "loadError": "HOPS-lataus epäonnistui. Yritä ladata sivu uudelleen.",
-      "updateError": "HOPS-päivitys epäonnistui. Yritä uudelleen."
     },
     "matriculationSubjects": {
       "A": "Äidinkieli",
@@ -553,10 +551,19 @@
       "GC": "Portugali, C-taso",
       "LC": "Latina, C-taso",
       "SMC": "Saame, C-taso"
+    },
+    "notifications": {
+      "loadError": "HOPS-lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "updateError": "HOPS-päivitys epäonnistui. Yritä uudelleen."
     }
   },
 
   "organization": {
+    "content": {
+      "activeInactive": " {{activeCount}} aktiivista opiskelijaa ({{archivedCount}} arkistoitua)",
+      "accumulated": "Laskutuskaudella {{studentCount}} opiskelijaa on liittynyt {{signUpCount}} kurssille ja opettaja on suorittanut {{evaluationCount}} arviointia",
+      "publishedUnpublished": "{{publishedCount}} julkaistua kurssia ({{unpublishedCount}} julkaisematonta)"
+    },
     "labels": {
       "activeBillingPeriod": "Aktiivinen laskutuskausi",
       "accumulatedBill": "Kertynyt lasku",
@@ -573,17 +580,12 @@
       "summary": "Yhteenveto",
       "workspacesAndStudents": "Kurssit ja opiskelijat"
     },
-    "content": {
-      "activeInactive": " {{activeCount}} aktiivista opiskelijaa ({{archivedCount}} arkistoitua)",
-      "accumulated": "Laskutuskaudella {{studentCount}} opiskelijaa on liittynyt {{signUpCount}} kurssille ja opettaja on suorittanut {{evaluationCount}} arviointia",
-      "publishedUnpublished": "{{publishedCount}} julkaistua kurssia ({{unpublishedCount}} julkaisematonta)"
-    },
-    "wcag": {
-      "workspaceTemplateSelect": "Aseta kurssiaihio valituksi"
-    },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
       "loadError_summary": "Yhteenvedon lataaminen epäonnistui, koeta ladata näkymä uudelleen"
+    },
+    "wcag": {
+      "workspaceTemplateSelect": "Aseta kurssiaihio valituksi"
     }
   },
 
@@ -598,6 +600,31 @@
       "tourNettiperuskoulu": "Tutustu Nettiperuskouluun",
       "tourNettiperuskoulu_aineopiskelu": "Tutustu Nettiperuskoulun aineopiskeluun",
       "update": "Päivitä tietoja"
+    },
+    "content": {
+      "alwaysUp": "Nettiperuskoulussa ja Nettilukiossa opiskelu ei ole aikaan tai paikkaan sidottua. Meillä opiskellaan ympäri vuoden ja vuorokauden kaikkialla Suomessa sekä ulkomailla.",
+      "aineopiskelu": "Yksittäisiä lukion ja perusopetuksen kursseja.",
+      "checkContactInfo": "Ovatko seuraavat tiedot oikein?",
+      "educationWednesday": "Koulutuskeskiviikko kokoaa kerran kuussa oppimisesta ja koulutuksesta kiinnostuneet yhteisen teeman äärelle kuulemaan innoittavia alustuksia, jakamaan käytännön vinkkejä ja esimerkkejä parhaista toimintatavoista sekä keskustelemaan siitä, miten koulutuskenttää voidaan käytännössä kehittää.",
+      "forgotPassword": "Syötä alla olevaan kenttään sähköpostiosoitteesi, niin lähetämme siihen linkin, jonka avulla voit palauttaa salasanasi.",
+      "immigrantEducation": "Maahanmuuttajakoulutukset tarjoavat perusopetusta aikuisille. Otavan Opiston kampuksella Savo kohtaa koko maailman.",
+      "inactiveStudent": "Näkymäsi on rajoitettu, koska opintosi ovat päättyneet. Pääset edelleen suoritusrekisteriisi ja tutustumaan kursseihin.</p><p>Ongelmatilanteissa ota yhteyttä Helpdeskiin (<a href:'mailto:helpdesk@muikkuverkko.fi'>helpdesk@muikkuverkko.fi</a>).",
+      "pointOfContinue": "Olit viimeksi kohdassa",
+      "nettilukio": "Tavoitteena aikuislukion päättötodistus ja ylioppilaslakki.",
+      "nettiperuskoulu": "Tavoitteena aikuisten perusopetuksen päättötodistus.",
+      "newBeginning": "Otavan Opisto on Alku uudelle. Sympaattinen ja viihtyisä kampusalue on täynnä elämää ja mahtavia ihmisiä.",
+      "noWorkspaces": "Sinulla ei ole yhtään kurssia.",
+      "noWorkspaces_pt1": "Et ole opiskelijana millään kurssilla. Voit käyttää",
+      "noWorkspaces_coursepicker": "kurssipoimuria",
+      "noWorkspaces_pt2": "löytääksesi sinua kiinnostavia kursseja.",
+      "noUserByEmail": "Muikussa ei ole käyttäjätiliä, jonka sähköpostiosoite olisi {{email}}.",
+      "openMaterials": "Creative Commons -lisensoituja oppimateriaaleja, joiden käyttö ei vaadi rekisteröitymistä.",
+      "organization": "<p>Otavia on Mikkelin kaupungin ylläpitämä liikelaitos, jossa voi suorittaa aikuisten lukiokoulutuksen, perusopetuksen ja vapaan sivistystyön opintoja. Otavian erityisosaamista ovat etäopetus ja verkkopedagogiikka, monikulttuuristen ryhmien opetus sekä vapaan sivistystyön koulutukset. Otavia tarjoaa koulutusta ja koulutuksen kehittämiseen liittyviä palveluita alueellisesti, valtakunnallisesti ja globaalisti.</p>",
+      "passwordChangeMailSent": "Lähetimme varmistusviestin osoitteeseen {{email}}. Pääset vaihtamaan salasanasi klikkaamalla viestissä olevaa linkkiä.",
+      "plagScan": "Meillä on käytössä PlagScan -plagiaatintunnistusjärjestelmä",
+      "selfImprovement": "Otavan Opiston kursseilla kehität itseäsi ja osaamistasi. Tarjolla on kattava valikoima oppimiseen, hyvinvointiin, tulevaisuuteen ja tietotekniikkaan liittyviä lyhytkursseja.",
+      "site": "Nettilukion ja Nettiperuskoulun oppimisympäristö",
+      "studentApplication": " Tutustu koulutuksiin ja täytä hakulomake."
     },
     "labels": {
       "accessibilityStatement": "Saavutettavuusseloste",
@@ -626,31 +653,6 @@
       "studying": "Opiskelu",
       "wall": "Seinämä",
       "welcome": "Tervetuloa muikkuun!"
-    },
-    "content": {
-      "alwaysUp": "Nettiperuskoulussa ja Nettilukiossa opiskelu ei ole aikaan tai paikkaan sidottua. Meillä opiskellaan ympäri vuoden ja vuorokauden kaikkialla Suomessa sekä ulkomailla.",
-      "aineopiskelu": "Yksittäisiä lukion ja perusopetuksen kursseja.",
-      "checkContactInfo": "Ovatko seuraavat tiedot oikein?",
-      "educationWednesday": "Koulutuskeskiviikko kokoaa kerran kuussa oppimisesta ja koulutuksesta kiinnostuneet yhteisen teeman äärelle kuulemaan innoittavia alustuksia, jakamaan käytännön vinkkejä ja esimerkkejä parhaista toimintatavoista sekä keskustelemaan siitä, miten koulutuskenttää voidaan käytännössä kehittää.",
-      "forgotPassword": "Syötä alla olevaan kenttään sähköpostiosoitteesi, niin lähetämme siihen linkin, jonka avulla voit palauttaa salasanasi.",
-      "immigrantEducation": "Maahanmuuttajakoulutukset tarjoavat perusopetusta aikuisille. Otavan Opiston kampuksella Savo kohtaa koko maailman.",
-      "inactiveStudent": "Näkymäsi on rajoitettu, koska opintosi ovat päättyneet. Pääset edelleen suoritusrekisteriisi ja tutustumaan kursseihin.</p><p>Ongelmatilanteissa ota yhteyttä Helpdeskiin (<a href:'mailto:helpdesk@muikkuverkko.fi'>helpdesk@muikkuverkko.fi</a>).",
-      "pointOfContinue": "Olit viimeksi kohdassa",
-      "nettilukio": "Tavoitteena aikuislukion päättötodistus ja ylioppilaslakki.",
-      "nettiperuskoulu": "Tavoitteena aikuisten perusopetuksen päättötodistus.",
-      "newBeginning": "Otavan Opisto on Alku uudelle. Sympaattinen ja viihtyisä kampusalue on täynnä elämää ja mahtavia ihmisiä.",
-      "noWorkspaces": "Sinulla ei ole yhtään kurssia.",
-      "noWorkspaces_pt1": "Et ole opiskelijana millään kurssilla. Voit käyttää",
-      "noWorkspaces_coursepicker": "kurssipoimuria",
-      "noWorkspaces_pt2": "löytääksesi sinua kiinnostavia kursseja.",
-      "noUserByEmail": "Muikussa ei ole käyttäjätiliä, jonka sähköpostiosoite olisi {{email}}.",
-      "openMaterials": "Creative Commons -lisensoituja oppimateriaaleja, joiden käyttö ei vaadi rekisteröitymistä.",
-      "organization": "<p>Otavia on Mikkelin kaupungin ylläpitämä liikelaitos, jossa voi suorittaa aikuisten lukiokoulutuksen, perusopetuksen ja vapaan sivistystyön opintoja. Otavian erityisosaamista ovat etäopetus ja verkkopedagogiikka, monikulttuuristen ryhmien opetus sekä vapaan sivistystyön koulutukset. Otavia tarjoaa koulutusta ja koulutuksen kehittämiseen liittyviä palveluita alueellisesti, valtakunnallisesti ja globaalisti.</p>",
-      "passwordChangeMailSent": "Lähetimme varmistusviestin osoitteeseen {{email}}. Pääset vaihtamaan salasanasi klikkaamalla viestissä olevaa linkkiä.",
-      "plagScan": "Meillä on käytössä PlagScan -plagiaatintunnistusjärjestelmä",
-      "selfImprovement": "Otavan Opiston kursseilla kehität itseäsi ja osaamistasi. Tarjolla on kattava valikoima oppimiseen, hyvinvointiin, tulevaisuuteen ja tietotekniikkaan liittyviä lyhytkursseja.",
-      "site": "Nettilukion ja Nettiperuskoulun oppimisympäristö",
-      "studentApplication": " Tutustu koulutuksiin ja täytä hakulomake."
     },
     "wcag": {
       "indexViewHeader": "Muikun etusivu",
@@ -689,6 +691,24 @@
       "replyAll": "Vastaa kaikille",
       "show": "$t(common:actions.show)",
       "show_comments": "Näytä vastaukset"
+    },
+    "content": {
+      "empty": "$t(common:content.empty)",
+      "empty_messages": "Ei viestejä",
+      "empty_announcements": "Ei tiedotteita.",
+      "empty_contactLog": "Ei yhteydenottoja",
+      "empty_discussions": "Ei keskusteluja käynnissä",
+      "empty_subscriptions": "Ei tilattuja keskusteluja",
+      "notFound": "Valittua tiedotetta ei löytytynyt.",
+      "removed": "Viesti on poistettu",
+      "noneSelected_announcements": "Et ole valinnut yhtään tiedotetta",
+      "removing": "$t(common:content.removing)",
+      "removing_message": "Oletko varma, että haluat poistaa viestin?",
+      "removing_announcement": "Oletko varma että haluat poistaa tiedotteen?",
+      "removing_contactEntry": "Oletko varma, että haluat poistaa yhteydenoton? Jos poistat yhteydenoton, myös sen kommentit poistuvat.",
+      "removing_discussionArea": "Huom! Keskustelualueen poisto poistaa myös kaikki sen alla olevat viestit!",
+      "removing_reply": "Vastaus poistetaan lopullisesti, oletko varma, että haluat jatkaa?",
+      "removing_thread": "Viesti ja siihen tulleet vastaukset poistetaan lopullisesti. Oletko aivan varma, että haluat jatkaa?"
     },
     "labels": {
       "addSignature": "Lisää allekirjoitus",
@@ -765,39 +785,6 @@
       "unread": "Lukemattomat",
       "unsubscribe": "Lopeta herätteiden tilaus"
     },
-    "content": {
-      "empty": "$t(common:content.empty)",
-      "empty_messages": "Ei viestejä",
-      "empty_announcements": "Ei tiedotteita.",
-      "empty_contactLog": "Ei yhteydenottoja",
-      "empty_discussions": "Ei keskusteluja käynnissä",
-      "empty_subscriptions": "Ei tilattuja keskusteluja",
-      "notFound": "Valittua tiedotetta ei löytytynyt.",
-      "removed": "Viesti on poistettu",
-      "noneSelected_announcements": "Et ole valinnut yhtään tiedotetta",
-      "removing": "$t(common:content.removing)",
-      "removing_message": "Oletko varma, että haluat poistaa viestin?",
-      "removing_announcement": "Oletko varma että haluat poistaa tiedotteen?",
-      "removing_contactEntry": "Oletko varma, että haluat poistaa yhteydenoton? Jos poistat yhteydenoton, myös sen kommentit poistuvat.",
-      "removing_discussionArea": "Huom! Keskustelualueen poisto poistaa myös kaikki sen alla olevat viestit!",
-      "removing_reply": "Vastaus poistetaan lopullisesti, oletko varma, että haluat jatkaa?",
-      "removing_thread": "Viesti ja siihen tulleet vastaukset poistetaan lopullisesti. Oletko aivan varma, että haluat jatkaa?"
-    },
-    "validation": {
-      "beginDate": "Tiedotteen alkamispäivämäärä on pakollinen tieto",
-      "caption": "$t(common:validation.caption)",
-      "caption_message": "Viestin otsikko on pakollinen tieto.",
-      "caption_announcements": "Tiedotteen otsikko on pakollinen tieto",
-      "content": "$t(common:validation.content)",
-      "content_message": "Viestin sisältö on pakollinen tieto.",
-      "content_announcements": "Tiedotteen sisältö on pakollinen tieto",
-      "endDate": "Tiedotteen loppumispäivämäärä on pakollinen tieto",
-      "name": "$t(common:validation.name)",
-      "name_area": "Alueen nimi on pakollinen tieto",
-      "name_labels": "Tunnisteen nimi on pakollinen tieto",
-      "recipients": "Viestin vastaanottajat on pakollinen tieto.",
-      "targetGroup": "Tiedotteen kohderyhmä on pakollinen tieto"
-    },
     "notifications": {
       "addError": "Tunnisteen asettaminen ei onnistunut",
       "alreadyExistsError": "Antamallasi nimellä oleva tunniste löytyy jo",
@@ -858,6 +845,22 @@
       "updateSuccess_contactLog": "Yhteydenoton muokkaus onnistui",
       "workspacesRequiredError": "Viestillä ei ole määriteltyjä kohdetyöntiloja"
     },
+    "validation": {
+      "beginDate": "Tiedotteen alkamispäivämäärä on pakollinen tieto",
+      "caption": "$t(common:validation.caption)",
+      "caption_message": "Viestin otsikko on pakollinen tieto.",
+      "caption_announcements": "Tiedotteen otsikko on pakollinen tieto",
+      "content": "$t(common:validation.content)",
+      "content_message": "Viestin sisältö on pakollinen tieto.",
+      "content_announcements": "Tiedotteen sisältö on pakollinen tieto",
+      "endDate": "Tiedotteen loppumispäivämäärä on pakollinen tieto",
+      "name": "$t(common:validation.name)",
+      "name_area": "Alueen nimi on pakollinen tieto",
+      "name_labels": "Tunnisteen nimi on pakollinen tieto",
+      "recipients": "Viestin vastaanottajat on pakollinen tieto.",
+      "targetGroup": "Tiedotteen kohderyhmä on pakollinen tieto"
+    },
+
     "wcag": {
       "content": "Viestin sisältö",
       "content_truncated": "Viestin typistetty sisältö",
@@ -886,6 +889,12 @@
       "done": "Merkitse tehdyksi",
       "incomplete": "Merkitse keskeneräiseksi",
       "send": "Lähetä hyväksyttäväksi"
+    },
+    "content": {
+      "empty": "$t(common:content.empty)",
+      "empty_tasks": "Ei tehtäviä",
+      "empty_student": "Sinulle ei ole annettu tehtäviä, etkä ole luonut sellaisia itse. Voit luoda uusia tehtäviä opinnot-näkymässä.",
+      "instructions": "<p>Plus-ikonista aukeaa editori, jolla voit luoda itsellesi uuden tehtävän. Halutessasi voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy vain sinulle itsellesi. Lisäksi ohjaajasi voi antaa sinulle tehtäviä, joiden valmistumista hän voi seurata. Kun olet tehnyt tehtävän, voit kuitata omat tehtäväsi tehdyiksi. Ohjaajan antamat tehtävät lähetät ohjaajalle hyväksyttäviksi. Kun ohjaaja kuittaa tehtävän tehdyksi, tehtävän tilaksi vaihtuu Tehty. Tehtävät eivät siirry automaattisesti arkistoon, vaan sinun pitää itse tehdä se klikkaamalla Roskakori-kuvaketta.</p>"
     },
     "notifications": {
       "archiveError": "Tehtävän arkistointi epäonnistui, ole hyvä ja yritä uudelleen. {{error}}",
@@ -923,12 +932,6 @@
       "tasks_active": "Aktiiviset tehtävät",
       "tasks_archived": "Arkistoidut tehtävät",
       "tasks_student": "Opiskelijalle annetut tehtävät"
-    },
-    "content": {
-      "empty": "$t(common:content.empty)",
-      "empty_tasks": "Ei tehtäviä",
-      "empty_student": "Sinulle ei ole annettu tehtäviä, etkä ole luonut sellaisia itse. Voit luoda uusia tehtäviä opinnot-näkymässä.",
-      "instructions": "<p>Plus-ikonista aukeaa editori, jolla voit luoda itsellesi uuden tehtävän. Halutessasi voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy vain sinulle itsellesi. Lisäksi ohjaajasi voi antaa sinulle tehtäviä, joiden valmistumista hän voi seurata. Kun olet tehnyt tehtävän, voit kuitata omat tehtäväsi tehdyiksi. Ohjaajan antamat tehtävät lähetät ohjaajalle hyväksyttäviksi. Kun ohjaaja kuittaa tehtävän tehdyksi, tehtävän tilaksi vaihtuu Tehty. Tehtävät eivät siirry automaattisesti arkistoon, vaan sinun pitää itse tehdä se klikkaamalla Roskakori-kuvaketta.</p>"
     }
   },
 
@@ -936,6 +939,29 @@
     "actions": {
       "create": "Luo käyttäjäryhmä",
       "edit": "Muokkaa käyttäjäryhmää"
+    },
+    "content": {
+      "editDetails": "Nimi on pakollinen tieto. Voit merkitä käyttäjäryhmän halutessasi ohjausryhmäksi.",
+      "empty": "Käyttäjiä ei löytynyt",
+      "empty_studentGroups": "Opiskelijaryhmiä ei löytynyt",
+      "empty_students": "Opiskelijoita ei löytynyt",
+      "empty_teachers": "Opettajia ei löytynyt",
+      "noneSelected": "Ei valittuja käyttäjiä",
+      "noneSelected_councelors": "Ei valittuja ohjaajia",
+      "noneSelected_students": "Ei valittuja opiskelijoita",
+      "noneSelected_teachers": "Ei valittuja opettajia",
+      "noStaff": "Annetuilla ehdoilla ei löydy henkilökunnan jäseniä",
+      "notFound": "Annetuilla ehdoilla ei löydy käyttäjiä",
+      "notFound_students": "Annetuilla ehdoilla ei löydy opiskelijoita",
+      "notFound_userGroups": "Annetuilla ehdoilla ei löydy käyttäjäryhmiä",
+      "search": "Kirjoita hakukenttään hakeaksesi käyttäjistä",
+      "search_students": "Kirjoita hakukenttään hakeaksesi opiskelijoista",
+      "search_staff": "Kirjoita hakukenttään hakeaksesi henkilökunnasta",
+      "search_studentsAndGroups": "Kirjoita hakukenttään hakeaksesi opiskelijoista ja opiskelijaryhmistä",
+      "searchToRemove": "Hae käyttäjiä poistaaksesi heidät",
+      "searchToRemove_students": "Hae opiskelijoita poistaaksesi heidät kurssilta. Poisto toimii klikkaamalla opiskelijan nimeä. Poistettavia opiskelijoita voit selata toisella välilehdellä.",
+      "searchToRemove_staff": "Hae henkilökunnan jäseniä poistaaksesi heidät käyttäjäryhmästä. Poisto toimii klikkaamalla jäsenen nimeä. Poistettavia jäseniä voit selata toisella välilehdellä.",
+      "searchToRemove_teachers": "Hae opettajia poistaaksesi heidät kurssilta. Poisto toimii klikkaamalla opettajan nimeä. Poistettavia opettajia voit selata toisella välilehdellä."
     },
     "labels": {
       "add": "Lisää käyttäjä",
@@ -1021,29 +1047,6 @@
       "userGroupStudents": "Käyttäjäryhmän opiskelijat",
       "workspaceStudents": "Kurssin opiskelijat"
     },
-    "content": {
-      "editDetails": "Nimi on pakollinen tieto. Voit merkitä käyttäjäryhmän halutessasi ohjausryhmäksi.",
-      "empty": "Käyttäjiä ei löytynyt",
-      "empty_studentGroups": "Opiskelijaryhmiä ei löytynyt",
-      "empty_students": "Opiskelijoita ei löytynyt",
-      "empty_teachers": "Opettajia ei löytynyt",
-      "noneSelected": "Ei valittuja käyttäjiä",
-      "noneSelected_councelors": "Ei valittuja ohjaajia",
-      "noneSelected_students": "Ei valittuja opiskelijoita",
-      "noneSelected_teachers": "Ei valittuja opettajia",
-      "noStaff": "Annetuilla ehdoilla ei löydy henkilökunnan jäseniä",
-      "notFound": "Annetuilla ehdoilla ei löydy käyttäjiä",
-      "notFound_students": "Annetuilla ehdoilla ei löydy opiskelijoita",
-      "notFound_userGroups": "Annetuilla ehdoilla ei löydy käyttäjäryhmiä",
-      "search": "Kirjoita hakukenttään hakeaksesi käyttäjistä",
-      "search_students": "Kirjoita hakukenttään hakeaksesi opiskelijoista",
-      "search_staff": "Kirjoita hakukenttään hakeaksesi henkilökunnasta",
-      "search_studentsAndGroups": "Kirjoita hakukenttään hakeaksesi opiskelijoista ja opiskelijaryhmistä",
-      "searchToRemove": "Hae käyttäjiä poistaaksesi heidät",
-      "searchToRemove_students": "Hae opiskelijoita poistaaksesi heidät kurssilta. Poisto toimii klikkaamalla opiskelijan nimeä. Poistettavia opiskelijoita voit selata toisella välilehdellä.",
-      "searchToRemove_staff": "Hae henkilökunnan jäseniä poistaaksesi heidät käyttäjäryhmästä. Poisto toimii klikkaamalla jäsenen nimeä. Poistettavia jäseniä voit selata toisella välilehdellä.",
-      "searchToRemove_teachers": "Hae opettajia poistaaksesi heidät kurssilta. Poisto toimii klikkaamalla opettajan nimeä. Poistettavia opettajia voit selata toisella välilehdellä."
-    },
     "notifications": {
       "archiveError": "$t(common:notifications.archiveError)",
       "archiveError_student": "Opiskelijan arkistointi epäonnistui",
@@ -1095,9 +1098,6 @@
       "flags": "Liput",
       "share": "Jaa lippu {{flag}}"
     },
-    "validation": {
-      "caption": "Lipun nimi on pakollinen tieto"
-    },
     "notifications": {
       "addError": "Virhe lipun lisäämisessä.Yritä uudelleen.",
       "createError": "Virhe lipun luomisessa. Yritä uudelleen.",
@@ -1105,12 +1105,16 @@
       "removeError": "Virhe lipun poistamisessa. Yritä uudelleen.",
       "updateError": "Virhe lipun muokkaamisessa. Yritä uudelleen",
       "warning": "Poistaaksesi lipun, sillä ei saa olla jakoja. Poista jaot poistaaksesi lipun."
+    },
+    "validation": {
+      "caption": "Lipun nimi on pakollinen tieto"
     }
   },
 
   "materials": {
     "actions": {
-      "add": "Lisää kuva",
+      "add": "$t(common:actions.add)",
+      "add_image": "Lisää kuva",
       "add_formula": "Lisää kaava",
       "cancel": "$t(common:actions.cancel)",
       "cancel_assignment": "Peruuta tehtävän palautus",
@@ -1125,6 +1129,48 @@
       "stop": "Lopeta nauhoitus",
       "revert": "Palaa edelliseen julkaistuun versioon",
       "update": "Palauta tehtävä uudelleen"
+    },
+    "content": {
+      "add": "Lisää",
+      "add_file": "Lisää tiedosto klikkaamalla tästä tai raahaamalla se tähän laatikkoon. Voit palauttaa laatikkoon useamman tiedoston. Suurin sallittu tiedostokoko 10 Mt",
+      "add_audio": "Lisää äänitiedosto klikkaamalla alla olevaa kenttää",
+      "add_producers": "Lisää tuottaja",
+      "audioFieldIsReadOnly": "Uusia äänitiedostoja ei voida lisätä sillä kenttä on 'vain luku' -tilassa.",
+      "confirm": "Julkaiseminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
+      "confirm_pageRemoval": "Sivun poistaminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
+      "empty": "$t(common:content.empty)",
+      "empty_audio": "Ei äänitiedostoja",
+      "empty_materials": "Kurssille ei ole vielä luotu materiaaleja",
+      "hiddenButAnswered": "Piilotettu tehtävä",
+      "hiddenButAnswered_assignment": "Tämä arvoitava tehtävä on piilotettu ja korvattu toisella tehtävällä. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee yhä vastauksesi ja voi sen arvioida.",
+      "hiddenButAnswered_exercise": "Tämä harjoitustehtävä on piilotettu ja korvattu toisella tehtävällä. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee yhä vastauksesi ja voi sen arvioida.",
+      "interimEvaluationDisclaimer": "Välipalautepyyntöjen luominen on poissa käytöstä, kun kurssista on olemassa aktiivinen arviointipyyntö. Peruuta arviointipyyntö tai odota että pyyntö on käsitelty.",
+      "noRecordings": "Ei nauhoituksia",
+      "materialLinked": "Materiaali on linkitetty ja käytössä useammalla ({{materialCount}}) kurssilla. Huomaathan, että materiaalin muokkaaminen tällä kurssilla muuttaa sitä myös muissa.",
+      "notSignedUpWarning": "Olethan tietoinen siitä, ettet ole ilmoittautunut kurssin opiskelijaksi! Voit vastata tehtäviin ilmoittautumattakin, mutta kurssin arviointi edellyttää sitä, että olet kurssilla opiskelijana. Voit ilmoittautua kurssille klikkaamalla",
+      "publishing_page": "Oletko varma, että haluat julkaista sivun?",
+      "removeDisabled": "Tiedoston poistaminen ei ole mahdollista",
+      "removeDisabled_audio": "Äänityksen poistaminen ei ole mahdollista",
+      "removing": "$t(common:content.removing)",
+      "removing_page": "Oletko varma, että haluat poistaa sivun?",
+      "removing_attachment": "Oletko varma, että haluat poistaa liitteen '{{name}}'?",
+      "removing_audio": "Oletko varma että haluat poistaa tehtävään liitetyn nauhoituksen?",
+      "removing_file": "Oletko varma että haluat poistaa tehtävään liitetyn tiedoston?",
+      "removing_section": "Oletko varma, että haluat poistaa osion?",
+      "sectionRemoveDenied": "Tällä hetkellä vain tyhjiä osioita voi poistaa",
+      "statusUploading": "Ladataan palvelimelle {{progress}} %",
+      "startRecording": "Aloita äänitys klikkaamalla painiketta",
+      "stopRecording": "Lopeta äänitys klikkaamalla painiketta",
+      "viewRestricted": "Tämän materiaalin näyttäminen on rajattu vain kirjautuneille käyttäjille",
+      "viewRestricted_workspaceMembers": "Tämän materiaalin näyttäminen on rajattu vain kurssin jäsenille",
+      "undoMaterial0Page": "Oletko varma, että haluat peruuttaa kaikki muutokset ja palauttaa sivun julkaistuun versioon?"
+    },
+    "instructions": {
+      "connectField": "Yhdistä parit valitsemalla ensin vasemman sarakkeen teksti ja sen jälkeen oikean sarakkeen teksti.",
+      "journalMemoField": "Tee oppimispäiväkirjamerkintä tähän kenttään. Merkintä tallentuu automaattisesti oppimispäiväkirjaasi. Kun merkintä on valmis, klikkaa \"Julkaise merkintä\" -painiketta. Voit muokata merkintää klikkaamalla \"Muokkaa merkintää\" ja julkaisemalla sen uudelleen.",
+      "mathField": "Tee kaavoja valitsemalla merkkejä valikosta tai kirjoittamalla LaTeXia. Älä kopioi merkkejä muualta. Muualta kopioidut merkit voivat aiheuttaa ongelmia kaavoihin.",
+      "organizationField": "Valitse ensin teksti, jonka haluat siirtää. Sen jälkeen valitse kenttä, johon haluat tekstin siirtyvän. Jos teet tehtävää tietokoneella, voit myös raahata tekstejä kenttiin.",
+      "sorterField": "Järjestä tekstit valitsemalla peräkkäin kaksi tekstiä, joiden haluat vaihtavan paikkaa keskenään. Jos teet tehtävää tietokoneella, voit myös raahata tekstejä."
     },
     "labels": {
       "allowCommercial": "Sallitaanko teoksen kaupallinen käyttö?",
@@ -1228,41 +1274,6 @@
       "unanswered": "Aloittamattomat",
       "wordCount": "Sanoja"
     },
-    "content": {
-      "add": "Lisää",
-      "add_file": "Lisää tiedosto klikkaamalla tästä tai raahaamalla se tähän laatikkoon. Voit palauttaa laatikkoon useamman tiedoston. Suurin sallittu tiedostokoko 10 Mt",
-      "add_audio": "Lisää äänitiedosto klikkaamalla alla olevaa kenttää",
-      "add_producers": "Lisää tuottaja",
-      "audioFieldIsReadOnly": "Uusia äänitiedostoja ei voida lisätä sillä kenttä on 'vain luku' -tilassa.",
-      "confirm": "Julkaiseminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
-      "confirm_pageRemoval": "Sivun poistaminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
-      "empty": "$t(common:content.empty)",
-      "empty_audio": "Ei äänitiedostoja",
-      "empty_materials": "Kurssille ei ole vielä luotu materiaaleja",
-      "hiddenButAnswered": "Piilotettu tehtävä",
-      "hiddenButAnswered_assignment": "Tämä arvoitava tehtävä on piilotettu ja korvattu toisella tehtävällä. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee yhä vastauksesi ja voi sen arvioida.",
-      "hiddenButAnswered_exercise": "Tämä harjoitustehtävä on piilotettu ja korvattu toisella tehtävällä. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee yhä vastauksesi ja voi sen arvioida.",
-      "noRecordings": "Ei nauhoituksia",
-      "interimEvaluationDisclaimer": "Välipalautepyyntöjen luominen on poissa käytöstä, kun kurssista on olemassa aktiivinen arviointipyyntö. Peruuta arviointipyyntö tai odota että pyyntö on käsitelty.",
-      "materialLinked": "Materiaali on linkitetty ja käytössä useammalla ({{materialCount}}) kurssilla. Huomaathan, että materiaalin muokkaaminen tällä kurssilla muuttaa sitä myös muissa.",
-      "notSignedUpWarning": "Olethan tietoinen siitä, ettet ole ilmoittautunut kurssin opiskelijaksi! Voit vastata tehtäviin ilmoittautumattakin, mutta kurssin arviointi edellyttää sitä, että olet kurssilla opiskelijana. Voit ilmoittautua kurssille klikkaamalla",
-      "publishing_page": "Oletko varma, että haluat julkaista sivun?",
-      "removeDisabled": "Tiedoston poistaminen ei ole mahdollista",
-      "removeDisabled_audio": "Äänityksen poistaminen ei ole mahdollista",
-      "removing": "$t(common:content.removing)",
-      "removing_page": "Oletko varma, että haluat poistaa sivun?",
-      "removing_attachment": "Oletko varma, että haluat poistaa liitteen '{{name}}'?",
-      "removing_audio": "Oletko varma että haluat poistaa tehtävään liitetyn nauhoituksen?",
-      "removing_file": "Oletko varma että haluat poistaa tehtävään liitetyn tiedoston?",
-      "removing_section": "Oletko varma, että haluat poistaa osion?",
-      "sectionRemoveDenied": "Tällä hetkellä vain tyhjiä osioita voi poistaa",
-      "statusUploading": "Ladataan palvelimelle {{progress}} %",
-      "startRecording": "Aloita äänitys klikkaamalla painiketta",
-      "stopRecording": "Lopeta äänitys klikkaamalla painiketta",
-      "viewRestricted": "Tämän materiaalin näyttäminen on rajattu vain kirjautuneille käyttäjille",
-      "viewRestricted_workspaceMembers": "Tämän materiaalin näyttäminen on rajattu vain kurssin jäsenille",
-      "undoMaterialPage": "Oletko varma, että haluat peruuttaa kaikki muutokset ja palauttaa sivun julkaistuun versioon?"
-    },
     "notifications": {
       "assignmentSubmitted": "Tehtävä palautettu",
       "assignmentUpdated": "Tehtävä palautettu uudelleen",
@@ -1309,7 +1320,39 @@
       "show": "Näytä täydennyspyyntö",
       "signUp": "Ilmoittaudu"
     },
-
+    "content": {
+      "addDetails": "Kurssin nimi on pakollinen tieto. Päivämäärät ovat valinnaisia. Huomaa, että kurssi täytyy erikseen julkaista ennen kuin se näkyy opiskelijoille kurssipoimurissa. Valitse, keillä on pääsy kurssille.",
+      "archiveStudent": "Oletko varma että haluat arkistoida käyttäjän {{studentName}} kurssilta?",
+      "cancel_evaluationRequest": "Peruuta kurssin opettajalle lähetetty arviointipyyntö. Opettaja saa automaattisen tiedon peruutuksesta.",
+      "cannotSignUpWarning": "Olet tutustumassa tähän kurssiin mutta sinulla ei ole sille ilmoittautumisoikeutta. Voit halutessasi vastata tehtäviin mutta et voi pyytää kurssiarviointia. Mikäli haluat ilmoittautua kurssille, ota yhteyttä ohjaajaasi.",
+      "changeImage": "Klikkaa kuvaa vaihtaaksesi sitä",
+      "empty": "$t(common:content.empty)",
+      "empty_workspaces": "Ei kursseja",
+      "empty_activeStudents": "Kurssilla ei ole yhtään aktiivista opiskelijaa",
+      "empty_archivedStudent": "Kurssilla ei ole yhtään arkistoitua opiskelijaa",
+      "empty_announcements": "Kurssilla ei ole yhtään tiedotetta",
+      "empty_evaluables": "Kurssilla ei ole yhtään arvioitavaa tehtävää",
+      "empty_beginDate": "Alkupäivämäärää ei asetettu",
+      "empty_teachers": "Kurssilla ei ole vielä opettajaa",
+      "empty_endDate": "Loppupäivämäärää ei asetettu",
+      "empty_exercises": "Kurssilla ei ole yhtään harjoitustehtävää",
+      "empty_intermin": "Kurssilla ei ole yhtään välipalautetehtävää",
+      "empty_journals": "Kurssilla ei ole yhtään oppimispäiväkirjamerkintää",
+      "empty_instructions": "Kurssille ei ole vielä luotu ohjeita",
+      "evaluationHasFee": "Tämän kurssin arviointi on maksullinen, mutta opiskelu on maksutonta.",
+      "logInGuidingInformation": "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.",
+      "mustBePublished": "Huomaa, että kurssi täytyy erikseen julkaista ennen kuin se näkyy opiskelijoille kurssipoimurissa - riippumatta asetetusta alkamispäivämäärästä. Päivämääriä ei ole pakko asettaa.",
+      "notFound_workspaces": "Valitsemillasi suodattimilla ja/tai hakuehdoilla ei löytynyt yhtään kurssia",
+      "notFound_templates": "Annetuilla ehdoilla ei löydy kurssipohjia",
+      "notNamed": "Kurssia ei ole nimetty",
+      "noneSelected": "Ei valittua kurssipohjaa",
+      "removing_image": "Oletko varma että haluat poistaa kurssille asetetun kuvan? Poistaminen palauttaa oletuskuvan kurssille.",
+      "reviewSummary": "Tarkista, että asettamasi tiedot ovat oikein",
+      "requestEvaluation": "Pyydä kurssin arviointia opettajalta. Opettaja saa automaattisen tiedon arviointipyynnöstäsi.",
+      "selectTemplate": "Valitse kurssipohja, jonka pohjalta kurssi luodaan. Jos haluamasi kurssipohja ei näy listassa, voit käyttää hakua löytääksesi sen.",
+      "signUp": "Ilmoittaudu kurssille {{name}} {{nameExtension}}",
+      "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun käyttäjän {{studentName}}?"
+    },
     "labels": {
       "access": "Pääsy",
       "anyone": "Kuka tahansa",
@@ -1443,40 +1486,6 @@
       "workspaceTypeSelect": "Kurssityyppien listausvalinta"
     },
 
-    "content": {
-      "addDetails": "Kurssin nimi on pakollinen tieto. Päivämäärät ovat valinnaisia. Huomaa, että kurssi täytyy erikseen julkaista ennen kuin se näkyy opiskelijoille kurssipoimurissa. Valitse, keillä on pääsy kurssille.",
-      "archiveStudent": "Oletko varma että haluat arkistoida käyttäjän {{studentName}} kurssilta?",
-      "cancel_evaluationRequest": "Peruuta kurssin opettajalle lähetetty arviointipyyntö. Opettaja saa automaattisen tiedon peruutuksesta.",
-      "cannotSignUpWarning": "Olet tutustumassa tähän kurssiin mutta sinulla ei ole sille ilmoittautumisoikeutta. Voit halutessasi vastata tehtäviin mutta et voi pyytää kurssiarviointia. Mikäli haluat ilmoittautua kurssille, ota yhteyttä ohjaajaasi.",
-      "changeImage": "Klikkaa kuvaa vaihtaaksesi sitä",
-      "empty": "$t(common:content.empty)",
-      "empty_workspaces": "Ei kursseja",
-      "empty_activeStudents": "Kurssilla ei ole yhtään aktiivista opiskelijaa",
-      "empty_archivedStudent": "Kurssilla ei ole yhtään arkistoitua opiskelijaa",
-      "empty_announcements": "Kurssilla ei ole yhtään tiedotetta",
-      "empty_evaluables": "Kurssilla ei ole yhtään arvioitavaa tehtävää",
-      "empty_beginDate": "Alkupäivämäärää ei asetettu",
-      "empty_teachers": "Kurssilla ei ole vielä opettajaa",
-      "empty_endDate": "Loppupäivämäärää ei asetettu",
-      "empty_exercises": "Kurssilla ei ole yhtään harjoitustehtävää",
-      "empty_intermin": "Kurssilla ei ole yhtään välipalautetehtävää",
-      "empty_journals": "Kurssilla ei ole yhtään oppimispäiväkirjamerkintää",
-      "empty_instructions": "Kurssille ei ole vielä luotu ohjeita",
-      "evaluationHasFee": "Tämän kurssin arviointi on maksullinen, mutta opiskelu on maksutonta.",
-      "logInGuidingInformation": "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.",
-      "mustBePublished": "Huomaa, että kurssi täytyy erikseen julkaista ennen kuin se näkyy opiskelijoille kurssipoimurissa - riippumatta asetetusta alkamispäivämäärästä. Päivämääriä ei ole pakko asettaa.",
-      "notFound_workspaces": "Valitsemillasi suodattimilla ja/tai hakuehdoilla ei löytynyt yhtään kurssia",
-      "notFound_templates": "Annetuilla ehdoilla ei löydy kurssipohjia",
-      "notNamed": "Kurssia ei ole nimetty",
-      "noneSelected": "Ei valittua kurssipohjaa",
-      "removing_image": "Oletko varma että haluat poistaa kurssille asetetun kuvan? Poistaminen palauttaa oletuskuvan kurssille.",
-      "reviewSummary": "Tarkista, että asettamasi tiedot ovat oikein",
-      "requestEvaluation": "Pyydä kurssin arviointia opettajalta. Opettaja saa automaattisen tiedon arviointipyynnöstäsi.",
-      "selectTemplate": "Valitse kurssipohja, jonka pohjalta kurssi luodaan. Jos haluamasi kurssipohja ei näy listassa, voit käyttää hakua löytääksesi sen.",
-      "signUp": "Ilmoittaudu kurssille {{name}} {{nameExtension}}",
-      "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun käyttäjän {{studentName}}?"
-    },
-
     "notifications": {
       "cancelError": "Peruutus epäonnistui",
       "cancelError_evaluationRequests": "Arviointipyynnön peruutus epäonnistui",
@@ -1550,6 +1559,16 @@
       "edit": "Muokkaa merkintää",
       "save": "Julkaise merkintä"
     },
+    "content": {
+      "empty": "$t(common:content.empty)",
+      "empty_entries": "Ei päiväkirjamerkintöjä",
+      "empty_comments": "Päiväkirjamerkintään ei ole lisätty yhtään kommenttia.",
+      "empty_evaluation": "Oppimispäiväkirjasta ei ole annettu kokonaispalautetta.",
+      "empty_student": "Opiskelijalla ei ole yhtään päiväkirjamerkintää",
+      "empty_workspace": "Kurssilla ei ole yhtään oppimispäiväkirjamerkintää",
+      "empty_you": "Sinulla ei ole vielä yhtään päiväkirjamerkintää.",
+      "removing": "Oletko varma että haluat poistaa päiväkirjamerkinnän?"
+    },
     "labels": {
       "create": "Uusi päiväkirjamerkintä",
       "edit": "Muokkaa päiväkirjamerkintää",
@@ -1562,16 +1581,6 @@
       "others": "Muut",
       "remove": "Poista päiväkirjamerkintä",
       "type": "Merkinnän tyyppi"
-    },
-    "content": {
-      "empty": "$t(common:content.empty)",
-      "empty_entries": "Ei päiväkirjamerkintöjä",
-      "empty_comments": "Päiväkirjamerkintään ei ole lisätty yhtään kommenttia.",
-      "empty_evaluation": "Oppimispäiväkirjasta ei ole annettu kokonaispalautetta.",
-      "empty_student": "Opiskelijalla ei ole yhtään päiväkirjamerkintää",
-      "empty_workspace": "Kurssilla ei ole yhtään oppimispäiväkirjamerkintää",
-      "empty_you": "Sinulla ei ole vielä yhtään päiväkirjamerkintää.",
-      "removing": "Oletko varma että haluat poistaa päiväkirjamerkinnän?"
     },
     "notifications": {
       "createError": "$t(common:notifications.createError)",
@@ -1606,13 +1615,13 @@
       "add": "Lisää tiedosto",
       "download": "Lataa tiedosto"
     },
-    "labels": {
-      "remove": "Tiedoston poisto",
-      "zipFileName": "tiedostot.zip"
-    },
     "content": {
       "add": "Lisää tiedosto klikkaamalla tästä tai raahaamalla tiedosto tähän laatikkoon",
       "empty": "Ei tiedostoja"
+    },
+    "labels": {
+      "remove": "Tiedoston poisto",
+      "zipFileName": "tiedostot.zip"
     },
     "notifications": {
       "sizeTooLarge": "Tiedoston koko on liian suuri. Suurin sallittu tiedostokoko on 10MB.",
@@ -1642,6 +1651,41 @@
       "remove_evaluation": "Poista arviointi",
       "remove_evaluationRequest": "Poista arviointipyyntö",
       "remove_interimEvaluationRequest": "Poista välipalautepyyntö"
+    },
+    "content": {
+      "archive_student": "Haluatko arkistoida opiskelijan <b>{{studentName}}</b> kurssilta?",
+      "empty": "$t(common:content.empty)",
+      "empty_evaluationHistory": "Arviointihistoria on tyhjä",
+      "empty_assignments": "Ei tehtäviä",
+      "empty_students": "Kurssilla ei ole opiskelijoita!",
+      "empty_vocalEvaluations": "Ei suullisia palautteita",
+      "evaluationRequest1": "jätti",
+      "evaluationRequest2": "arviointipyynnön",
+      "evaluationRequestCancel1": "peruutti",
+      "evaluationRequestCancel2": "arviointipyynnön",
+      "evaluationRequestsHandled": "Mahtavaa! Kaikki arviointipyynnöt on käsitelty!",
+      "gradeFail1": "arvioi kurssisuorituksen",
+      "gradeFail2": "hylätyksi",
+      "gradePass1": "arvioi kurssisuorituksen",
+      "gradePass2": "hyväksytyksi",
+      "gradeImproved1": "arvioi kurssisuorituksen",
+      "gradeImproved2": "korotetuksi",
+      "interimEvaluation1": "antoi",
+      "interimEvaluation2": "välipalautteen",
+      "interimEvaluationRequest1": "jätti",
+      "interimEvaluationRequest2": "välipalautepyynnön",
+      "interimEvaluationRequestCancel1": "peruutti",
+      "interimEvaluationRequestCancel2": "välipalautepyynnön",
+      "isRecording": "Tallennus käynnissä. Jatkaaksesi paina Lopeta tallennus-painiketta, kun olet valmis.",
+      "notFound": "Valituilla suodattimilla ei löytynyt yhtään opiskelijaa.",
+      "removing": "$t(common:content.removing)",
+      "removing_entry": "Oletko varma, että haluat poistaa merkinnän opiskelijalta {{studentName}}?",
+      "removing_evaluationRequest": "Oletko varma että haluat poistaa opiskelijan <b>{{student}}</b> arviointipyynnön kurssilta <b>{{workspace}}</b>?",
+      "removing_interimRequest": "Oletko varma että haluat poistaa opiskelijan <b>{{student}}</b> välipalautepyynnön kurssilta <b>{{workspace}}</b>?",
+      "removing_vocalEvaluation": "Oletko varma että haluat poistaa suullisen palautteen?",
+      "supplementationRequest1": "pyysi",
+      "supplementationRequest2": "täydennystä",
+      "unsavedVocalEvaluations": " Tehtävän arvioinnissa on tallentamattomia suullisia palautteita ja kaikki nauhoitteet menetetään mikäli arviointia ei tallenneta. Oletko varma että haluat poistua tehtävän arvioinnista?"
     },
     "labels": {
       "evaluation": "Opintojakson sanallinen arviointi",
@@ -1692,41 +1736,6 @@
       "workspaceEvaluation": "Kurssin kokonaisarviointi",
       "workspaceSupplementationRequest": "Kurssin täydennyspyyntö",
       "written": "Kirjoitettu"
-    },
-    "content": {
-      "archive_student": "Haluatko arkistoida opiskelijan <b>{{studentName}}</b> kurssilta?",
-      "empty": "$t(common:content.empty)",
-      "empty_evaluationHistory": "Arviointihistoria on tyhjä",
-      "empty_assignments": "Ei tehtäviä",
-      "empty_students": "Kurssilla ei ole opiskelijoita!",
-      "empty_vocalEvaluations": "Ei suullisia palautteita",
-      "evaluationRequest1": "jätti",
-      "evaluationRequest2": "arviointipyynnön",
-      "evaluationRequestCancel1": "peruutti",
-      "evaluationRequestCancel2": "arviointipyynnön",
-      "evaluationRequestsHandled": "Mahtavaa! Kaikki arviointipyynnöt on käsitelty!",
-      "gradeFail1": "arvioi kurssisuorituksen",
-      "gradeFail2": "hylätyksi",
-      "gradePass1": "arvioi kurssisuorituksen",
-      "gradePass2": "hyväksytyksi",
-      "gradeImproved1": "arvioi kurssisuorituksen",
-      "gradeImproved2": "korotetuksi",
-      "interimEvaluation1": "antoi",
-      "interimEvaluation2": "välipalautteen",
-      "interimEvaluationRequest1": "jätti",
-      "interimEvaluationRequest2": "välipalautepyynnön",
-      "interimEvaluationRequestCancel1": "peruutti",
-      "interimEvaluationRequestCancel2": "välipalautepyynnön",
-      "isRecording": "Tallennus käynnissä. Jatkaaksesi paina Lopeta tallennus-painiketta, kun olet valmis.",
-      "notFound": "Valituilla suodattimilla ei löytynyt yhtään opiskelijaa.",
-      "removing": "$t(common:content.removing)",
-      "removing_entry": "Oletko varma, että haluat poistaa merkinnän opiskelijalta {{studentName}}?",
-      "removing_evaluationRequest": "Oletko varma että haluat poistaa opiskelijan <b>{{student}}</b> arviointipyynnön kurssilta <b>{{workspace}}</b>?",
-      "removing_interimRequest": "Oletko varma että haluat poistaa opiskelijan <b>{{student}}</b> välipalautepyynnön kurssilta <b>{{workspace}}</b>?",
-      "removing_vocalEvaluation": "Oletko varma että haluat poistaa suullisen palautteen?",
-      "supplementationRequest1": "pyysi",
-      "supplementationRequest2": "täydennystä",
-      "unsavedVocalEvaluations": " Tehtävän arvioinnissa on tallentamattomia suullisia palautteita ja kaikki nauhoitteet menetetään mikäli arviointia ei tallenneta. Oletko varma että haluat poistua tehtävän arvioinnista?"
     },
     "notifications": {
       "hiddenError": "Piilotettu",
@@ -1779,27 +1788,6 @@
       "pay": "Maksa tilaus",
       "remove": "Poista tilaus"
     },
-    "labels": {
-      "complete": "Viimeistele tilaus",
-      "confirm": "Vahvista tilaus",
-      "history": "Tilaushistoria",
-      "id": "Tilausnumero",
-      "info": "Tilauksen tiedot",
-      "nonActiveUser": "Opintosi ovat päättyneet",
-      "open": "Avoimet tilaukset",
-      "order": "Tilaus",
-      "orders": "Tilaukset",
-      "price": "Hinta",
-      "product": "Tuote",
-      "state": "Tila",
-      "state_CANCELLED": "Peruutettu",
-      "state_COMPLETE": "Valmis",
-      "state_CREATED": "Luotu",
-      "state_ERRORED": "Virhe",
-      "state_ONGOING": "Käynnissä",
-      "state_PAID": "Maksettu",
-      "remove": "Poista valittu tilaus"
-    },
     "content": {
       "cancelled": "Opiskelija peruutti tilauksen.",
       "complete": "Tilaus on viety loppuun ja opiskelijan opintoaikaa on pidennetty.",
@@ -1827,6 +1815,27 @@
       "redirect": "Sinut uudelleenohjataan Mikkelin kaupungin verkkokauppaan.",
       "removing": "Oletko varma että haluat poistaa opiskelijan tilauksen?"
     },
+    "labels": {
+      "complete": "Viimeistele tilaus",
+      "confirm": "Vahvista tilaus",
+      "history": "Tilaushistoria",
+      "id": "Tilausnumero",
+      "info": "Tilauksen tiedot",
+      "nonActiveUser": "Opintosi ovat päättyneet",
+      "open": "Avoimet tilaukset",
+      "order": "Tilaus",
+      "orders": "Tilaukset",
+      "price": "Hinta",
+      "product": "Tuote",
+      "state": "Tila",
+      "state_CANCELLED": "Peruutettu",
+      "state_COMPLETE": "Valmis",
+      "state_CREATED": "Luotu",
+      "state_ERRORED": "Virhe",
+      "state_ONGOING": "Käynnissä",
+      "state_PAID": "Maksettu",
+      "remove": "Poista valittu tilaus"
+    },
     "notifications": {
       "cancelSuccess": "Keskeytit tilauksen maksutapahtuman. Ole hyvä ja ota yhteyttä ohjaajaasi.",
       "completionError": "Opiskelijan tilauksen viimeistely epäonistui",
@@ -1840,6 +1849,7 @@
       "updateError": "Tilauksen päivittäminen epäonnistui"
     }
   },
+
   "ops": {
     "mandatory": "Pakollinen",
     "mandatory_lukioOPS2016": "Pakollinen",
