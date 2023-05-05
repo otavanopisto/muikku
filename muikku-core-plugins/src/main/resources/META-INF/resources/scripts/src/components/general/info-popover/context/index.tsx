@@ -1,4 +1,6 @@
 import * as React from "react";
+import mApi from "~/lib/mApi";
+import promisify from "~/util/promisify";
 
 /**
  * UserInfoByUserId
@@ -12,11 +14,65 @@ interface UserInfoByUserId {
 }
 
 /**
- * UserInfo
+ * Info data. Some of the fields are boolean, but are returned as string by the API.
+ * Everyvalue is optional and can be null. Values are returned if they are defined in the API call.
  */
-interface UserInfo {
-  id: number;
-  name: string;
+export interface UserInfo {
+  /**
+   * User id. Normally this is number, but the API returns it as string
+   * @example "1"
+   */
+  userId: string;
+  /**
+   * School data identifier.
+   * @example "PYRAMUS-XX" | "PYRAMUS-STAFF-XX"
+   */
+  schoolDataIdentifier: string;
+  /**
+   * If the user is a student. Api returns this as string, but it is boolean
+   * @example "true" | "false"
+   */
+  isStudent: string;
+  /**
+   * Name of the user
+   */
+  firstName: string;
+  /**
+   * Last name of the user
+   */
+  lastName: string;
+  /**
+   * Address of the user
+   */
+  address?: string | null;
+  /**
+   * Email of the user
+   */
+  email?: string | null;
+  /**
+   * Phone number of the user
+   */
+  phoneNumber?: string | null;
+  /**
+   * Vacation end date
+   */
+  vacationEnd?: string | null;
+  /**
+   * Vacation start date
+   */
+  vacationStart?: string | null;
+  /**
+   * If the user has an avatar. Api returns this as string, but it is boolean
+   * and can be converted to boolean later.
+   * @example "true" | "false"
+   */
+  hasAvatar?: string | null;
+  /**
+   * If the user has enabled whatsapp. Api returns this as string, but it is boolean
+   * and can be converted to boolean later.
+   * @example "true" | "false"
+   */
+  whatsapp?: string | null;
 }
 
 type Action =
@@ -99,12 +155,22 @@ async function fetchUserInfo(
 ) {
   dispatch({ type: "start-fetch", userId });
   try {
-    setTimeout(() => {
-      const fetchedData: UserInfo = { id: userId, name: "John Doe" };
-      dispatch({ type: "finish-fetch", userId, fetchedData });
+    const fetchedData = (await promisify(
+      mApi().user.userInfo.read(userId, {
+        data: [
+          "AVATAR",
+          "EMAIL",
+          "ADDRESS",
+          "VACATIONS",
+          "WHATSAPP",
+          "PHONENUMBER",
+        ],
+      }),
+      "callback"
+    )()) as UserInfo;
 
-      onSuccess && onSuccess();
-    }, 200);
+    dispatch({ type: "finish-fetch", userId, fetchedData });
+    onSuccess && onSuccess();
   } catch (error) {
     dispatch({ type: "error-fetch", userId, error });
     onFail && onFail();
