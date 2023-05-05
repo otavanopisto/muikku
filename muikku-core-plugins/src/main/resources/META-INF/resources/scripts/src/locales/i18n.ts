@@ -8,6 +8,7 @@ export const resources = {
   fi,
 } as const;
 
+
 export const availableLanguages = Object.keys(resources);
 export const defaultNS = "common";
 

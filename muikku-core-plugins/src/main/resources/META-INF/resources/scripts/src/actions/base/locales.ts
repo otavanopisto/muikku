@@ -9,7 +9,6 @@ import i18n from "~/locales/i18n";
 
 // ACTIONS for locale
 export type LOCALE_SET = SpecificActionType<"LOCALE_SET", string>;
-
 export type LOCALE_UPDATE = SpecificActionType<"LOCALE_UPDATE", string>;
 
 // TRIGGER types for locale
@@ -47,6 +46,8 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
         mApi().me.locale.create({ lang: data.locale }),
         "callback"
       )();
+
+      i18n.changeLanguage(data.locale)
 
       dispatch({
         type: "LOCALE_SET",
