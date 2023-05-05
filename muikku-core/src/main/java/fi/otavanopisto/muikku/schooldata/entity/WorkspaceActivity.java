@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-import java.util.Date;
 import java.util.List;
 
 public class WorkspaceActivity {
@@ -19,46 +18,6 @@ public class WorkspaceActivity {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public List<String> getCurriculumIdentifiers() {
-    return curriculumIdentifiers;
-  }
-
-  public void setCurriculumIdentifiers(List<String> curriculumIdentifiers) {
-    this.curriculumIdentifiers = curriculumIdentifiers;
-  }
-
-  public String getGrade() {
-    return grade;
-  }
-
-  public void setGrade(String grade) {
-    this.grade = grade;
-  }
-
-  public Boolean getPassingGrade() {
-    return passingGrade;
-  }
-
-  public void setPassingGrade(Boolean passingGrade) {
-    this.passingGrade = passingGrade;
-  }
-
-  public Date getDate() {
-    return date;
-  }
-
-  public void setDate(Date date) {
-    this.date = date;
-  }
-
-  public WorkspaceActivityState getState() {
-    return state;
-  }
-
-  public void setState(WorkspaceActivityState state) {
-    this.state = state;
   }
 
   public String getIdentifier() {
@@ -101,43 +60,39 @@ public class WorkspaceActivity {
     this.evaluablesAnswered = evaluablesAnswered;
   }
 
-  public String getText() {
-    return text;
+  public List<WorkspaceActivityCurriculum> getCurriculums() {
+    return curriculums;
   }
 
-  public void setText(String text) {
-    this.text = text;
+  public void setCurriculums(List<WorkspaceActivityCurriculum> curriculums) {
+    this.curriculums = curriculums;
   }
 
-  public Date getGradeDate() {
-    return gradeDate;
+  public List<WorkspaceActivitySubject> getSubjects() {
+    return subjects;
   }
 
-  public void setGradeDate(Date gradeDate) {
-    this.gradeDate = gradeDate;
+  public void setSubjects(List<WorkspaceActivitySubject> subjects) {
+    this.subjects = subjects;
   }
 
-  public String getWorkspaceSubjectIdentifier() {
-    return workspaceSubjectIdentifier;
+  public List<WorkspaceAssessmentState> getAssessmentStates() {
+    return assessmentStates;
   }
 
-  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
+  public void setAssessmentStates(List<WorkspaceAssessmentState> assessmentStates) {
+    this.assessmentStates = assessmentStates;
   }
 
   private Long id;
   private String identifier;
-  private String workspaceSubjectIdentifier;
+  private List<WorkspaceActivitySubject> subjects;
+  private List<WorkspaceAssessmentState> assessmentStates;
   private String name;
-  private List<String> curriculumIdentifiers;
-  private String grade;
-  private Boolean passingGrade;
-  private Date gradeDate;
-  private Date date;
-  private String text;
-  private WorkspaceActivityState state;
+  private List<WorkspaceActivityCurriculum> curriculums;
   private Integer exercisesTotal;
   private Integer exercisesAnswered;
   private Integer evaluablesTotal;
   private Integer evaluablesAnswered;
+
 }

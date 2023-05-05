@@ -17,8 +17,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -38,6 +38,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseOptionality;
 import fi.otavanopisto.pyramus.rest.model.CourseParticipationType;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
@@ -258,23 +259,23 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role) {
     Long courseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
-    String roleId = identifierMapper.getPyramusCourseRoleId(roleIdentifier);
 
-    if (StringUtils.equals(roleId, "STUDENT")) {
+    if (role == WorkspaceRoleArchetype.STUDENT) {
       Long studentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
       CourseStudent courseStudent = new CourseStudent(null, courseId, studentId, OffsetDateTime.now(), Boolean.FALSE, null, null, Boolean.FALSE, CourseOptionality.OPTIONAL, null);
       
       return Arrays.asList(entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/students", courseStudent))).get(0);
     } else {
       Long staffMemberId = identifierMapper.getPyramusStaffId(user.getIdentifier());
+      CourseStaffMemberRoleEnum staffMemberRole = identifierMapper.getCourseStaffMemberRole(role);
       
-      if (NumberUtils.isNumber(roleId) && (staffMemberId != null)) {
-        CourseStaffMember courseStaffMember = new CourseStaffMember(null, courseId, staffMemberId, NumberUtils.createLong(roleId));
+      if (staffMemberRole != null && (staffMemberId != null)) {
+        CourseStaffMember courseStaffMember = new CourseStaffMember(null, courseId, staffMemberId, staffMemberRole);
         return entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/staffMembers", courseStaffMember));
       } else {
-        logger.severe(String.format("Given staff member role could not be parsed: %s, %s", roleIdentifier, user.getIdentifier()));
+        logger.severe(String.format("Given staff member role could not be parsed: %s, %s", staffMemberRole, user.getIdentifier()));
         throw new RuntimeException("Could not parse workspace staff member role");
       }
     }

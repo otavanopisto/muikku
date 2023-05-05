@@ -7,12 +7,14 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import CKEditor from "~/components/general/ckeditor";
+import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * JournalProps
@@ -60,8 +62,7 @@ interface JournalFieldState {
 /* eslint-disable camelcase */
 const ckEditorConfig = {
   autoGrow_onStartup: true,
-  mathJaxLib:
-    "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML",
+  mathJaxLib: MATHJAXSRC,
   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
   toolbar: [
     {
@@ -248,13 +249,30 @@ export default class JournalField extends React.Component<
         // note how somehow numbers come as string...
         field = (
           <>
-            <label>
-              <b>
+            <span className="material-page__taskfield-header">
+              <span className="material-page__taskfield-title">
                 {this.props.i18n.text.get(
                   "plugin.workspace.journalMemoField.label"
                 )}
-              </b>
-            </label>
+              </span>
+              <Instructions
+                modifier="instructions"
+                alignSelfVertically="top"
+                openByHover={false}
+                closeOnClick={true}
+                closeOnOutsideClick={true}
+                persistent
+                content={
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: this.props.i18n.text.get(
+                        "plugin.workspace.journalMemoField.instructions"
+                      ),
+                    }}
+                  />
+                }
+              />
+            </span>
             <CKEditor
               configuration={ckEditorConfig}
               onChange={this.onCKEditorChange}

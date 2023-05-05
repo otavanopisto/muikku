@@ -2,18 +2,19 @@ package fi.otavanopisto.muikku.mock.model;
 
 import java.util.List;
 
+import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 
 public class MockCourseStudent {
   private long id;
-  private long courseId;
   private long studentId;
   private List<CourseActivity> courseActivities;
+  private Course course;
 
-  public MockCourseStudent(long id, long courseId, long studentId, List<CourseActivity> courseActivities) {
+  public MockCourseStudent(long id, Course course, long studentId, List<CourseActivity> courseActivities) {
     super();
     this.id = id;
-    this.courseId = courseId;
+    this.setCourse(course);
     this.studentId = studentId;
     this.courseActivities = courseActivities;
   }
@@ -24,14 +25,6 @@ public class MockCourseStudent {
 
   public void setId(long id) {
     this.id = id;
-  }
-
-  public long getCourseId() {
-    return courseId;
-  }
-
-  public void setCourseId(long courseId) {
-    this.courseId = courseId;
   }
 
   public long getStudentId() {
@@ -48,6 +41,14 @@ public class MockCourseStudent {
 
   public void setCourseActivities(List<CourseActivity> courseActivities) {
     this.courseActivities = courseActivities;
+  }
+
+  public Course getCourse() {
+    return course;
+  }
+
+  public void setCourse(Course course) {
+    this.course = course;
   }
   
 }

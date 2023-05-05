@@ -336,7 +336,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 )}
 
               <div className="application-sub-panel">
-                <div className="application-sub-panel__header">
+                <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
                   {this.props.i18n.text.get(
                     "plugin.records.tasks.sectionTitle"
                   )}
@@ -345,7 +345,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     alignSelfVertically="top"
                     openByHover={false}
                     closeOnClick={true}
-                    closeOnOutsideClick={false}
+                    closeOnOutsideClick={true}
                     persistent
                     content={
                       <div

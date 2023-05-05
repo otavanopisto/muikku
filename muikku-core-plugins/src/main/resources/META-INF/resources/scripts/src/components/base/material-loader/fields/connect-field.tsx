@@ -8,6 +8,7 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * FieldType
@@ -567,6 +568,7 @@ export default class ConnectField extends React.Component<
     return (
       <>
         <ReadspeakerMessage text="Yhdistelykenttä" />
+
         <span
           className={`material-page__connectfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
@@ -576,6 +578,26 @@ export default class ConnectField extends React.Component<
             i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
+          <span className="material-page__taskfield-header">
+            <span></span>
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: this.props.i18n.text.get(
+                      "plugin.workspace.connectField.instructions"
+                    ),
+                  }}
+                />
+              }
+            />
+          </span>
           <span
             className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
           >

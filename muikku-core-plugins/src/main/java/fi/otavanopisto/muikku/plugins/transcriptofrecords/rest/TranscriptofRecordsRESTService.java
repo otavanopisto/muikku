@@ -41,6 +41,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsPermissions;
@@ -57,6 +58,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -64,6 +66,7 @@ import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -101,6 +104,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private UserController userController;
 
   @Inject
+  private EvaluationController evaluationController;
+
+  @Inject
   private UserEntityController userEntityController;
 
   @Inject
@@ -125,6 +131,46 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Any
   private Instance<SearchProvider> searchProviders;
 
+  @GET
+  @Path("/users/{USERIDENTIFIER}/workspaceActivity")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaceActivities(
+      @PathParam("USERIDENTIFIER") String userIdentifier,
+      @QueryParam("workspaceIdentifier") String wsIdentifier,
+      @QueryParam("includeTransferCredits") boolean includeTransferCredits,
+      @QueryParam("includeAssignmentStatistics") boolean includeAssignmentStatistics) {
+
+    // Access check
+
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(userIdentifier);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", userIdentifier)).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.GET_WORKSPACE_ACTIVITY)) {
+      Long userEntityId = sessionController.getLoggedUserEntity().getId();
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+      if (userEntity == null || !userEntity.getId().equals(userEntityId)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+
+    // Optional workspace filter
+
+    SchoolDataIdentifier workspaceIdentifier = null;
+    if (!StringUtils.isEmpty(wsIdentifier)) {
+      workspaceIdentifier = SchoolDataIdentifier.fromId(wsIdentifier);
+    }
+
+    // Activity data
+
+    WorkspaceActivityInfo activityInfo = evaluationController.listWorkspaceActivities(
+        studentIdentifier,
+        workspaceIdentifier,
+        includeTransferCredits,
+        includeAssignmentStatistics);
+    return Response.ok(activityInfo).build();
+  }
+  
   @GET
   @Path("/files/{ID}/content")
   @RESTPermit(handling = Handling.INLINE)

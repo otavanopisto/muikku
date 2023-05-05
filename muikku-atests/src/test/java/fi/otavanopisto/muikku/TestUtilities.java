@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +28,9 @@ import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
+import fi.otavanopisto.pyramus.rest.model.CourseActivitySubject;
 import fi.otavanopisto.pyramus.rest.model.CourseLength;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -171,7 +174,7 @@ public class TestUtilities {
   }
 
   public static CourseStudent courseStudentFromMockCourseStudent(MockCourseStudent mockCourseStudent) {
-    CourseStudent courseStudent = new CourseStudent(mockCourseStudent.getId(), mockCourseStudent.getCourseId(), mockCourseStudent.getStudentId(),
+    CourseStudent courseStudent = new CourseStudent(mockCourseStudent.getId(), mockCourseStudent.getCourse().getId(), mockCourseStudent.getStudentId(),
       OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), false, null, null, null, null, null);
     return courseStudent;
   }
@@ -208,10 +211,21 @@ public class TestUtilities {
     List<CourseActivity> courseActivities = new ArrayList<>();
     CourseActivity ca = new CourseActivity();
     ca.setCourseId(course.getId());
-    ca.setCourseModuleId(course.getCourseModules().iterator().next().getId());
+    CourseActivitySubject cas = new CourseActivitySubject();
+    cas.setCourseModuleId(course.getCourseModules().iterator().next().getId());
+    cas.setSubjectName("Test course");
+    cas.setSubjectCode("tc_11");
+    cas.setCourseLength(course.getLocalTeachingDays());
+    cas.setCourseLengthSymbol("ov");
+    ca.setSubjects(Arrays.asList(cas));
     ca.setCourseName(course.getName());
-    ca.setState(courseActivityState);
-    ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+    
+    CourseActivityAssessment caa = new CourseActivityAssessment();
+    caa.setCourseModuleId(cas.getCourseModuleId());
+    caa.setState(courseActivityState);
+    caa.setDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+    caa.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+    ca.setAssessments(Arrays.asList(caa));
     courseActivities.add(ca);
     return courseActivities;
   }
