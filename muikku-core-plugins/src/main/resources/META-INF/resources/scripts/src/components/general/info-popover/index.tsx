@@ -45,7 +45,7 @@ interface InfoPopoverProps {
 
 /**
  * Creates info popover when hovering over the info target "aka" user
- * Popover persist for 0.3 second after mouse leaves the info target or when hovering
+ * Popover persist for 0.2 second after mouse leaves the info target or when hovering
  * over the popover content
  *
  * @param props InfoPopoverProps
