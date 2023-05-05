@@ -313,14 +313,22 @@ class CommunicatorMessages extends BodyScrollLoader<
                           {userGroupRecepient.name}
                         </span>
                       ))}
-                      {message.workspaceRecipients.map((workspaceRecepient) => (
-                        <span
-                          className="application-list__header-recipient"
-                          key={workspaceRecepient.workspaceEntityId}
-                        >
-                          {workspaceRecepient.workspaceName}
-                        </span>
-                      ))}
+                      {message.workspaceRecipients.map((workspaceRecepient) => {
+                        let workspaceName = workspaceRecepient.workspaceName;
+
+                        if (workspaceRecepient.workspaceExtension) {
+                          workspaceName += ` (${workspaceRecepient.workspaceExtension})`;
+                        }
+
+                        return (
+                          <span
+                            className="application-list__header-recipient"
+                            key={workspaceRecepient.workspaceEntityId}
+                          >
+                            {workspaceName}
+                          </span>
+                        );
+                      })}
                     </span>
                   </div>
                   <div className="application-list__header-item-date">
