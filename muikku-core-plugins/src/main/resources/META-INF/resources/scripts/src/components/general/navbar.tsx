@@ -7,7 +7,6 @@ import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
 import "~/sass/elements/navbar.scss";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { availableLanguages } from "~/locales/i18n";
 import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
@@ -162,18 +161,6 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
               </li>
               <li role="none" key="language-picker">
                 <LanguagePicker />
-              </li>
-              <li>
-                <select
-                  defaultValue={this.props.i18n.language}
-                  onChange={(e) =>
-                    this.props.i18n.changeLanguage(e.target.value)
-                  }
-                >
-                  {availableLanguages.map((language) => (
-                    <option key={language}>{language}</option>
-                  ))}
-                </select>
               </li>
             </ul>
           </div>
