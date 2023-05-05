@@ -123,7 +123,7 @@ public class CommunicatorAssessmentRequestController {
           }
         }
         
-        if (assessmentState.getDate() != null && assessmentState.getGrade() != null) {
+        if (assessmentState.getGradeDate() != null && assessmentState.getGrade() != null) {
           workspaceSubjectsBody = workspaceSubjectsBody + getText("plugin.communicator.assessmentrequest.existingGrade.body",
               new SimpleDateFormat("d.M.yyyy").format(assessmentState.getGradeDate()),
               assessmentState.getGrade(),
