@@ -5,6 +5,7 @@ import {
   WorkspaceNote,
 } from "~/reducers/notebook/notebook";
 import CKEditor from "../ckeditor";
+import { MATHJAXSRC } from "~/lib/mathjax";
 import SessionStateComponent from "../session-state-component";
 import Button from "../button";
 import { StateType } from "~/reducers";
@@ -79,8 +80,7 @@ const options: OptionDefault<NoteDefaultLocation>[] = [
 /* eslint-disable camelcase */
 const ckEditorConfig = {
   autoGrow_onStartup: true,
-  mathJaxLib:
-    "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
+  mathJaxLib: MATHJAXSRC,
   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
   toolbar: [
     {
