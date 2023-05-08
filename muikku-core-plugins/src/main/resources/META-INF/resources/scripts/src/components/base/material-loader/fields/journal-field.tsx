@@ -13,6 +13,7 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * JournalProps
@@ -247,13 +248,30 @@ export default class JournalField extends React.Component<
         // note how somehow numbers come as string...
         field = (
           <>
-            <label>
-              <b>
+            <span className="material-page__taskfield-header">
+              <span className="material-page__taskfield-title">
                 {this.props.i18n.text.get(
                   "plugin.workspace.journalMemoField.label"
                 )}
-              </b>
-            </label>
+              </span>
+              <Instructions
+                modifier="instructions"
+                alignSelfVertically="top"
+                openByHover={false}
+                closeOnClick={true}
+                closeOnOutsideClick={true}
+                persistent
+                content={
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: this.props.i18n.text.get(
+                        "plugin.workspace.journalMemoField.instructions"
+                      ),
+                    }}
+                  />
+                }
+              />
+            </span>
             <CKEditor
               configuration={ckEditorConfig}
               onChange={this.onCKEditorChange}

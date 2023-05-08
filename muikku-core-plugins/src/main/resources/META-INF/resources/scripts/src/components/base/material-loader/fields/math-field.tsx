@@ -12,6 +12,7 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * MathFieldProps
@@ -140,6 +141,26 @@ export default class TextField extends React.Component<
           i18n={this.props.i18n}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
+        <span className="material-page__taskfield-header">
+          <span></span>
+          <Instructions
+            modifier="instructions"
+            alignSelfVertically="top"
+            openByHover={false}
+            closeOnClick={true}
+            closeOnOutsideClick={true}
+            persistent
+            content={
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: this.props.i18n.text.get(
+                    "plugin.workspace.mathField.instructions"
+                  ),
+                }}
+              />
+            }
+          />
+        </span>
         <MathField
           ref="base"
           className="material-page__mathfield"
