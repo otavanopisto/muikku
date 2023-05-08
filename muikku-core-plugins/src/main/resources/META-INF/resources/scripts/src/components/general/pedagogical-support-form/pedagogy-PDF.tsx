@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Document, Page, Text, Image, View, Font } from "@react-pdf/renderer";
+import { Document, Page, Text, Image, View } from "@react-pdf/renderer";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import * as moment from "moment";
@@ -20,7 +20,9 @@ interface PedagogyPDFProps {
 }
 
 /**
- * PedagogyPDF
+ * PedagogyPDF rendered with react-pdf and given data.
+ * Data is parsed from JSON to FormData and can be undefined, so data is rendered conditionally.
+ *
  * @param props props
  * @returns JSX.Element
  */
@@ -54,81 +56,79 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       {}
     );
 
-  const studentOpinion =
-    formData?.studentOpinionOfSupport.length > 0 ? (
-      formData.studentOpinionOfSupport.map((opinion: Opinion, i) => (
-        <View key={i} style={styles.opinionContainer}>
-          <View style={styles.opinionInfo} wrap={false}>
-            <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Merkitsijä</Text>
-              <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
-            </View>
+  const studentOpinion = formData?.studentOpinionOfSupport?.map(
+    (opinion: Opinion, i) => (
+      <View key={i} style={styles.opinionContainer}>
+        <View style={styles.opinionInfo} wrap={false}>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>Merkitsijä</Text>
+            <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
+          </View>
 
-            <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
-              <Text style={styles.infoFieldValue}>
-                {opinion.updatedDate
-                  ? `${moment(opinion.creationDate).format(
-                      "DD.MM.YYYY"
-                    )} (Päivitetty ${moment(opinion.updatedDate).format(
-                      "DD.MM.YYYY"
-                    )})`
-                  : moment(opinion.creationDate).format("DD.MM.YYYY")}
-              </Text>
-            </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
+            <Text style={styles.infoFieldValue}>
+              {opinion.updatedDate
+                ? `${moment(opinion.creationDate).format(
+                    "DD.MM.YYYY"
+                  )} (Päivitetty ${moment(opinion.updatedDate).format(
+                    "DD.MM.YYYY"
+                  )})`
+                : moment(opinion.creationDate).format("DD.MM.YYYY")}
+            </Text>
+          </View>
 
-            <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Merkintä</Text>
-              <View style={styles.infoFieldValue}>
-                <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
-              </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>Merkintä</Text>
+            <View style={styles.infoFieldValue}>
+              <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
             </View>
           </View>
         </View>
-      ))
-    ) : (
-      <View>
-        <Text>Ei mielipidettä asetettu</Text>
       </View>
-    );
+    )
+  ) || (
+    <View>
+      <Text>Ei mielipidettä asetettu</Text>
+    </View>
+  );
 
-  const schoolOpinion =
-    formData?.schoolOpinionOfSupport.length > 0 ? (
-      formData.schoolOpinionOfSupport.map((opinion: Opinion, i) => (
-        <View key={i} style={styles.opinionContainer}>
-          <View style={styles.opinionInfo} wrap={false}>
-            <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Merkitsijä</Text>
-              <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
-            </View>
+  const schoolOpinion = formData?.schoolOpinionOfSupport?.map(
+    (opinion: Opinion, i) => (
+      <View key={i} style={styles.opinionContainer}>
+        <View style={styles.opinionInfo} wrap={false}>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>Merkitsijä</Text>
+            <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
+          </View>
 
-            <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
-              <Text style={styles.infoFieldValue}>
-                {opinion.updatedDate
-                  ? `${moment(opinion.creationDate).format(
-                      "DD.MM.YYYY"
-                    )} (Päivitetty ${moment(opinion.updatedDate).format(
-                      "DD.MM.YYYY"
-                    )})`
-                  : moment(opinion.creationDate).format("DD.MM.YYYY")}
-              </Text>
-            </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
+            <Text style={styles.infoFieldValue}>
+              {opinion.updatedDate
+                ? `${moment(opinion.creationDate).format(
+                    "DD.MM.YYYY"
+                  )} (Päivitetty ${moment(opinion.updatedDate).format(
+                    "DD.MM.YYYY"
+                  )})`
+                : moment(opinion.creationDate).format("DD.MM.YYYY")}
+            </Text>
+          </View>
 
-            <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>Merkintä</Text>
-              <View style={styles.infoFieldValue}>
-                <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
-              </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>Merkintä</Text>
+            <View style={styles.infoFieldValue}>
+              <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
             </View>
           </View>
         </View>
-      ))
-    ) : (
-      <View>
-        <Text>Ei mielipidettä asetettu</Text>
       </View>
-    );
+    )
+  ) || (
+    <View>
+      <Text>Ei mielipidettä asetettu</Text>
+    </View>
+  );
 
   const pageHeader = (
     <View style={styles.header} fixed>
@@ -239,16 +239,14 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>Pedagogisen tuen perusteet</Text>
-          {formData?.supportReasons && formData?.supportReasons.length > 0
-            ? formData?.supportReasons.map((value, i) => (
-                <Text key={i} style={styles.infoFieldValue}>
-                  - {supportReasonTranslationByValue[value]}
-                </Text>
-              ))
-            : "-"}
+          {formData?.supportReasons?.map((value, i) => (
+            <Text key={i} style={styles.infoFieldValue}>
+              - {supportReasonTranslationByValue[value]}
+            </Text>
+          )) || <Text style={styles.infoFieldValue}>-</Text>}
         </View>
 
-        {formData?.supportReasons.includes("other") ? (
+        {formData?.supportReasons?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
             <Text style={styles.infoFieldLabel}>Muu syy</Text>
             <Text style={styles.infoFieldValue}>
@@ -260,16 +258,14 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         <Text style={styles.pageTitle}>Suunnitelma</Text>
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>Suunnitellut tukitoimet</Text>
-          {formData?.supportActions && formData?.supportActions.length > 0
-            ? formData?.supportActions.map((value, i) => (
-                <Text key={i} style={styles.infoFieldValue}>
-                  - {supportActionTranslationByValue[value]}
-                </Text>
-              ))
-            : "-"}
+          {formData?.supportActions?.map((value, i) => (
+            <Text key={i} style={styles.infoFieldValue}>
+              - {supportActionTranslationByValue[value]}
+            </Text>
+          )) || <Text style={styles.infoFieldValue}>-</Text>}
         </View>
 
-        {formData?.supportActions.includes("other") ? (
+        {formData?.supportActions?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
             <Text style={styles.infoFieldLabel}>Muu syy</Text>
             <Text style={styles.infoFieldValue}>
@@ -282,17 +278,14 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           <Text style={styles.infoFieldLabel}>
             Ennakko suunnitelma ylioppilaskirjoituksiin
           </Text>
-          {formData?.matriculationExaminationSupport &&
-          formData?.matriculationExaminationSupport.length > 0
-            ? formData?.matriculationExaminationSupport.map((value, i) => (
-                <Text key={i} style={styles.infoFieldValue}>
-                  - {matriculationActionTranslationByValue[value]}
-                </Text>
-              ))
-            : "-"}
+          {formData?.matriculationExaminationSupport?.map((value, i) => (
+            <Text key={i} style={styles.infoFieldValue}>
+              - {matriculationActionTranslationByValue[value]}
+            </Text>
+          )) || <Text style={styles.infoFieldValue}>-</Text>}
         </View>
 
-        {formData?.matriculationExaminationSupport.includes("other") ? (
+        {formData?.matriculationExaminationSupport?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
             <Text style={styles.infoFieldLabel}>Muu syy</Text>
             <Text style={styles.infoFieldValue}>
@@ -308,42 +301,43 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       <Page style={styles.body} size="A4">
         {pageHeader}
         <Text style={styles.pageTitle}>Toteutetut tukitoimet</Text>
-        {formData?.supportActionsImplemented &&
-        formData?.supportActionsImplemented.length > 0
-          ? formData?.supportActionsImplemented.map((iAction, i) => (
-              <View key={i} style={styles.implementedActionContainer}>
-                <View style={styles.implementationInfo} wrap={false}>
-                  <View style={styles.infoFieldContainer}>
-                    <Text style={styles.infoFieldLabel}>Tukitoimi</Text>
-                    <Text style={styles.infoFieldValue}>
-                      {supportActionTranslationByValue[iAction.action]}
-                    </Text>
-                  </View>
-
-                  <View style={styles.infoFieldContainer}>
-                    <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
-                    <Text style={styles.infoFieldValue}>
-                      {moment(iAction.date).format("DD.MM.YYYY")}
-                    </Text>
-                  </View>
-
-                  <View style={styles.infoFieldContainer}>
-                    <Text style={styles.infoFieldLabel}>Kurssi</Text>
-                    <Text style={styles.infoFieldValue}>
-                      {iAction?.course?.name || "-"}
-                    </Text>
-                  </View>
-
-                  <View style={styles.infoFieldContainer}>
-                    <Text style={styles.infoFieldLabel}>Lisätietoa</Text>
-                    <Text style={styles.infoFieldValue}>
-                      {iAction?.extraInfoDetails || "-"}
-                    </Text>
-                  </View>
-                </View>
+        {formData?.supportActionsImplemented?.map((iAction, i) => (
+          <View key={i} style={styles.implementedActionContainer}>
+            <View style={styles.implementationInfo} wrap={false}>
+              <View style={styles.infoFieldContainer}>
+                <Text style={styles.infoFieldLabel}>Tukitoimi</Text>
+                <Text style={styles.infoFieldValue}>
+                  {supportActionTranslationByValue[iAction.action]}
+                </Text>
               </View>
-            ))
-          : "Ei toteutettuja tukitoimia"}
+
+              <View style={styles.infoFieldContainer}>
+                <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
+                <Text style={styles.infoFieldValue}>
+                  {moment(iAction.date).format("DD.MM.YYYY")}
+                </Text>
+              </View>
+
+              <View style={styles.infoFieldContainer}>
+                <Text style={styles.infoFieldLabel}>Kurssi</Text>
+                <Text style={styles.infoFieldValue}>
+                  {iAction?.course?.name || "-"}
+                </Text>
+              </View>
+
+              <View style={styles.infoFieldContainer}>
+                <Text style={styles.infoFieldLabel}>Lisätietoa</Text>
+                <Text style={styles.infoFieldValue}>
+                  {iAction?.extraInfoDetails || "-"}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )) || (
+          <View>
+            <Text>Ei toteutettuja tukitoimia</Text>
+          </View>
+        )}
       </Page>
 
       {
