@@ -395,9 +395,12 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
     ) => {
       try {
         // Make a deep copy of the current state of last workspaces
-        const lastWorkspaces = JSON.parse(
-          JSON.stringify(getState().workspaces.lastWorkspaces)
-        ) as WorkspaceMaterialReferenceType[];
+        // Because lastWorkspaces can be null if the user has no last workspaces
+        // in this case we need to create an empty array instead
+        const lastWorkspaces =
+          (JSON.parse(
+            JSON.stringify(getState().workspaces.lastWorkspaces)
+          ) as WorkspaceMaterialReferenceType[]) || [];
 
         // Location for the newReference according to workspaceId
         const existingReferenceLocation = lastWorkspaces.findIndex(

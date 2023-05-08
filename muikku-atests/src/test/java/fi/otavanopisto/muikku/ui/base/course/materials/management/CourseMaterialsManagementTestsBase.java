@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -43,7 +44,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -94,7 +95,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
   
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -155,7 +156,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         login();
         Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     
-        CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+        CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
         mockBuilder
           .addCourseStaffMember(course1.getId(), courseStaffMember)
           .build();
@@ -216,7 +217,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
   
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -276,7 +277,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
   
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -338,7 +339,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
   
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -399,7 +400,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
   
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -457,7 +458,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();

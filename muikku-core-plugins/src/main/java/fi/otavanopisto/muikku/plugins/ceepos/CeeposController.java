@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.plugins.ceepos.dao.CeeposOrderDAO;
 import fi.otavanopisto.muikku.plugins.ceepos.dao.CeeposProductDAO;
 import fi.otavanopisto.muikku.plugins.ceepos.dao.CeeposStudyTimeOrderDAO;
@@ -49,8 +51,8 @@ public class CeeposController {
     return ceeposProductDAO.findByCode(code);
   }
 
-  public List<CeeposProduct> listProducts() {
-    return ceeposProductDAO.listAll();
+  public List<CeeposProduct> listProducts(String line) {
+    return StringUtils.isEmpty(line) ? ceeposProductDAO.listAll() : ceeposProductDAO.listByLine(line);
   }
   
   public List<CeeposOrder> listOrdersByUserIdentifier(String userIdentifier) {

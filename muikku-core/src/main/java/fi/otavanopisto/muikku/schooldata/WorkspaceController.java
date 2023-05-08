@@ -11,25 +11,22 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
-import fi.otavanopisto.muikku.dao.users.RoleSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceMaterialProducerDAO;
+import fi.otavanopisto.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceSettingsDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.model.users.RoleEntity;
-import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.users.UserRoleType;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSettings;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserSignup;
-import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
@@ -63,10 +60,10 @@ public class WorkspaceController {
   private WorkspaceUserSignupDAO workspaceUserSignupDAO;
 
   @Inject
-  private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
-
-  @Inject
   private WorkspaceMaterialProducerDAO workspaceMaterialProducerDAO;
+  
+  @Inject
+  private WorkspaceRoleEntityDAO workspaceRoleEntityDAO;
 
   /* Workspace */
 
@@ -234,9 +231,8 @@ public class WorkspaceController {
 
   /* WorkspaceUsers */
 
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, Role role) {
-    return workspaceSchoolDataController.createWorkspaceUser(workspace, user, role.getSchoolDataSource(),
-        role.getIdentifier());
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role) {
+    return workspaceSchoolDataController.createWorkspaceUser(workspace, user, role);
   }
 
   public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity) {
@@ -291,26 +287,10 @@ public class WorkspaceController {
   
   /* WorkspaceRoleEntity */
 
-  public WorkspaceRoleEntity findWorkspaceRoleEntityByDataSourceAndIdentifier(String schoolDataSource,
-      String roleIdentifier) {
-    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-    if (dataSource == null) {
-      logger.log(Level.SEVERE, "Could not find school data source '" + schoolDataSource + "'");
-      return null;
-    }
-
-    RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(
-        dataSource, roleIdentifier);
-    if (roleSchoolDataIdentifier != null) {
-      RoleEntity roleEntity = roleSchoolDataIdentifier.getRoleEntity();
-      if (roleEntity.getType() == UserRoleType.WORKSPACE) {
-        return (WorkspaceRoleEntity) roleEntity;
-      }
-    }
-
-    return null;
+  public WorkspaceRoleEntity findWorkspaceRoleEntityByArchetype(WorkspaceRoleArchetype archetype) {
+    return workspaceRoleEntityDAO.findByArchetype(archetype);
   }
-
+  
   /* WorkspaceSettings */
 
   public WorkspaceSettings findWorkspaceSettings(WorkspaceEntity workspaceEntity) {

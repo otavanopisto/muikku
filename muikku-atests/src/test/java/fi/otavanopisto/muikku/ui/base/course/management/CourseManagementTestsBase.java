@@ -30,6 +30,7 @@ import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
@@ -61,7 +62,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -134,7 +135,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -183,7 +184,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -254,7 +255,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -325,7 +326,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -373,7 +374,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -428,7 +429,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -456,7 +457,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForVisible(".dialog__content-row #signUpMessage");
         sendKeys("#signUpMessage", "Hello!\nSigning up!");
         
-        MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+        MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
         
         mockBuilder
           .addCourseStudent(course1.getId(), courseStudent)

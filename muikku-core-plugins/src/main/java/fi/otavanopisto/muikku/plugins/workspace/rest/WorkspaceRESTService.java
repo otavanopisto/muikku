@@ -377,6 +377,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       for (WorkspaceMaterialProducer workspaceMaterialProducer : workspaceMaterialProducers) {
         workspaceController.createWorkspaceMaterialProducer(workspaceEntity, workspaceMaterialProducer.getName());
       }
+      
+      workspaceEntity.setLanguage(sourceWorkspaceEntity.getLanguage());
     }
 
     EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
