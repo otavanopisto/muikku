@@ -158,6 +158,10 @@
   }
 }
 
+.application-sub-panel__header--with-instructions {
+  justify-content: space-between;
+}
+
 .application-sub-panel__header--workspace-settings {
   padding: 0;
 }
