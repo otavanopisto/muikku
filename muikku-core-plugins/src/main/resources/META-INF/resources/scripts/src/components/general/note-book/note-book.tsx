@@ -36,7 +36,6 @@ import { useScroll } from "./hooks/useScroll";
 import { useDragDropManager } from "react-dnd";
 import Dropdown from "~/components/general/dropdown";
 import { useLocalStorage } from "usehooks-ts";
-import AnimateHeight from "react-animate-height";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -233,17 +232,10 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
       return (
         <div key={note.id}>
           {notebook.noteEditorOpen && index === 0 && (
-            <AnimateHeight
-              height={!notebook.noteInTheEditor ? "auto" : 0}
-              contentClassName={
-                notebook.noteEditedPosition === 0
-                  ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
-                  : "notebook__add-note-here-button"
-              }
+            <AddHere
+              isActive={notebook.noteEditedPosition === 0}
               onClick={handleChoosePositionClick(0)}
-            >
-              <p>Luo uusi muistiinpano tähän kohtaan</p>
-            </AnimateHeight>
+            />
           )}
 
           <DraggableElement
@@ -267,29 +259,15 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
 
           {notebook.noteEditorOpen ? (
             isLast ? (
-              <AnimateHeight
-                height={!notebook.noteInTheEditor ? "auto" : 0}
-                contentClassName={
-                  isLast && notebook.noteEditedPosition === null
-                    ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
-                    : "notebook__add-note-here-button"
-                }
+              <AddHere
+                isActive={notebook.noteEditedPosition === null}
                 onClick={handleChoosePositionClick(null)}
-              >
-                <p>Luo uusi muistiinpano tähän kohtaan</p>
-              </AnimateHeight>
+              />
             ) : (
-              <AnimateHeight
-                height={!notebook.noteInTheEditor ? "auto" : 0}
-                contentClassName={
-                  notebook.noteEditedPosition === index + 1
-                    ? "notebook__add-note-here-button notebook__add-note-here-button--ACTIVE"
-                    : "notebook__add-note-here-button"
-                }
+              <AddHere
+                isActive={notebook.noteEditedPosition === index + 1}
                 onClick={handleChoosePositionClick(index + 1)}
-              >
-                <p>Luo uusi muistiinpano tähän kohtaan</p>
-              </AnimateHeight>
+              />
             )
           ) : null}
         </div>
@@ -303,7 +281,6 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
       noteInTheEditor,
       notebook.noteEditedPosition,
       notebook.noteEditorOpen,
-      notebook.noteInTheEditor,
       openedItems,
       setOpenedItems,
       toggleNotebookEditor,
@@ -404,5 +381,45 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     dispatch
   );
 }
+
+/**
+ * AddHereProps
+ */
+interface AddHereProps {
+  isActive: boolean;
+  onClick: React.MouseEventHandler<unknown>;
+}
+
+/**
+ * AddHere
+ * @param props props
+ * @returns JSX.Element
+ */
+const AddHere = (props: AddHereProps) => {
+  const { isActive, onClick } = props;
+
+  const handleIconClick = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.stopPropagation();
+      onClick(e);
+    },
+    [onClick]
+  );
+
+  return (
+    <div
+      className={
+        isActive
+          ? "notebook__set-note-location notebook__set-note-location--selected"
+          : "notebook__set-note-location"
+      }
+    >
+      <span
+        className="notebook__set-note-location-icon icon-list-add"
+        onClick={handleIconClick}
+      />
+    </div>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(NoteBook);
