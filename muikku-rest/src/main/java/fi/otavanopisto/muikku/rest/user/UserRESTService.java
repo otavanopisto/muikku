@@ -352,6 +352,20 @@ public class UserRESTService extends AbstractRESTService {
         } 
       }
       
+      if (d.equals(UserInfo.EXTRAINFO)) {
+        UserEntityProperty extraInfo = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-extrainfo");
+        if (extraInfo != null) {
+          result.put("extraInfo", extraInfo.getValue());
+        }
+      } 
+      
+      if (d.equals(UserInfo.APPOINTMENTCALENDAR)) {
+        UserEntityProperty appointmentCalendar = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-appointmentCalendar");
+        if (appointmentCalendar != null) {
+          result.put("appointmentCalendar", appointmentCalendar.getValue());
+        }
+      } 
+      
       if (d.equals(UserInfo.AVATAR)) {
         Boolean hasAvatar = userEntityFileController.hasProfilePicture(userEntity);
         result.put("hasAvatar", hasAvatar.toString());

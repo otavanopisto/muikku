@@ -12,5 +12,9 @@ public enum UserInfo {
   
   VACATIONS,
   
-  WHATSAPP
+  WHATSAPP,
+  
+  EXTRAINFO,
+  
+  APPOINTMENTCALENDAR
 }
