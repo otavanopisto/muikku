@@ -34,6 +34,12 @@ export interface UserInfo {
    */
   isStudent: string;
   /**
+   * If logged user has permissions to see student in the guider. Used in conjunction with isStudent.
+   * Api returns this as string, but it is boolean.
+   * @example "true" | "false"
+   */
+  loggedUserHasPermission: string;
+  /**
    * Name of the user
    */
   firstName: string;

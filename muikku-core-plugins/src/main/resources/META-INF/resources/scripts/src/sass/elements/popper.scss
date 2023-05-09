@@ -4,13 +4,13 @@
 @import "../base/breakpoints";
 
 .popover {
-  background-color: white;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  border: 1px solid #ddd;
-  font-size: 90%;
+  background-color: $color-default;
+  border: 1px solid $color-default-separator-border;
   border-radius: 4px;
+  box-shadow: 0 10px 20px rgba(0 0 0 / 30%);
   box-sizing: border-box;
-  width: max-content;
+  font-size: 90%;
   max-width: calc(100vw - 10px);
+  width: max-content;
   z-index: 999;
 }

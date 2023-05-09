@@ -293,9 +293,12 @@ function ContactActions(props: ContactActionsProps) {
   return (
     <>
       <div className="item-list__user-actions">
-        {info.isStudent === "true" && (
-          <GuiderStudentLink schoolDataIdentifier={info.schoolDataIdentifier} />
-        )}
+        {info.isStudent === "true" &&
+          info.loggedUserHasPermission === "true" && (
+            <GuiderStudentLink
+              schoolDataIdentifier={info.schoolDataIdentifier}
+            />
+          )}
       </div>
       <div className="item-list__user-actions">
         <CommunicatorNewMessage
