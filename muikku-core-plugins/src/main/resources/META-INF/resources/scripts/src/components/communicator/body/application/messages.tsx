@@ -125,19 +125,13 @@ class CommunicatorMessages extends BodyScrollLoader<
 
       if (thread.sender.studiesEnded === true) {
         return (
-          <InfoPopover
-            communicatorId={thread.communicatorMessageId}
-            userId={thread.sender.userEntityId}
-          >
+          <InfoPopover userId={thread.sender.userEntityId}>
             <span className="message__user-studies-ended">{name}</span>
           </InfoPopover>
         );
       }
       return (
-        <InfoPopover
-          communicatorId={thread.communicatorMessageId}
-          userId={thread.sender.userEntityId}
-        >
+        <InfoPopover userId={thread.sender.userEntityId}>
           <span>{name}</span>
         </InfoPopover>
       );
@@ -158,10 +152,12 @@ class CommunicatorMessages extends BodyScrollLoader<
           </span>
         );
       }
+
+      const name = getName(recipient as any, !this.props.status.isStudent);
+
       if (recipient.studiesEnded === true) {
         return (
           <InfoPopover
-            communicatorId={thread.communicatorMessageId}
             key={recipient.recipientId}
             userId={recipient.recipientId}
           >
@@ -169,20 +165,14 @@ class CommunicatorMessages extends BodyScrollLoader<
               className="message__user-studies-ended"
               key={recipient.recipientId}
             >
-              {getName(recipient as any, !this.props.status.isStudent)}
+              {name}
             </span>
           </InfoPopover>
         );
       }
       return (
-        <InfoPopover
-          communicatorId={thread.communicatorMessageId}
-          key={recipient.recipientId}
-          userId={recipient.recipientId}
-        >
-          <span key={recipient.recipientId}>
-            {getName(recipient as any, !this.props.status.isStudent)}
-          </span>
+        <InfoPopover key={recipient.recipientId} userId={recipient.recipientId}>
+          <span key={recipient.recipientId}>{name}</span>
         </InfoPopover>
       );
     });
@@ -198,9 +188,15 @@ class CommunicatorMessages extends BodyScrollLoader<
             (w2) => w2.workspaceEntityId === w.workspaceEntityId
           ) === pos
       )
-      .map((workspace) => (
-        <span key={workspace.workspaceEntityId}>{workspace.workspaceName}</span>
-      ));
+      .map((workspace) => {
+        let workspaceName = workspace.workspaceName;
+
+        if (workspace.workspaceExtension) {
+          workspaceName += ` (${workspace.workspaceExtension})`;
+        }
+
+        return <span key={workspace.workspaceEntityId}>{workspaceName}</span>;
+      });
 
     return [
       messageRecipientsList,
@@ -317,14 +313,22 @@ class CommunicatorMessages extends BodyScrollLoader<
                           {userGroupRecepient.name}
                         </span>
                       ))}
-                      {message.workspaceRecipients.map((workspaceRecepient) => (
-                        <span
-                          className="application-list__header-recipient"
-                          key={workspaceRecepient.workspaceEntityId}
-                        >
-                          {workspaceRecepient.workspaceName}
-                        </span>
-                      ))}
+                      {message.workspaceRecipients.map((workspaceRecepient) => {
+                        let workspaceName = workspaceRecepient.workspaceName;
+
+                        if (workspaceRecepient.workspaceExtension) {
+                          workspaceName += ` (${workspaceRecepient.workspaceExtension})`;
+                        }
+
+                        return (
+                          <span
+                            className="application-list__header-recipient"
+                            key={workspaceRecepient.workspaceEntityId}
+                          >
+                            {workspaceName}
+                          </span>
+                        );
+                      })}
                     </span>
                   </div>
                   <div className="application-list__header-item-date">

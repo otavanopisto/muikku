@@ -1,8 +1,4 @@
-/* eslint-disable jsdoc/require-jsdoc */
-import { Placement } from "@popperjs/core";
 import * as React from "react";
-import { createPortal } from "react-dom";
-import { usePopper } from "react-popper";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
@@ -14,22 +10,29 @@ import {
 } from "~/actions/base/notifications";
 import Avatar from "../avatar";
 import { ButtonPill } from "~/components/general/button";
-import { fetchUserInfo, useInfoPopperContext } from "./context";
+import { fetchUserInfo, useInfoPopperContext, UserInfo } from "./context";
+import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
+import { WhatsappButtonLink } from "../whatsapp-link";
+import { i18nType } from "~/reducers/base/i18n";
+import { GuiderStudentLink } from "../guider-link";
+import * as moment from "moment";
+import {
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverTrigger,
+} from "../popover";
+import "~/sass/elements/item-list.scss";
 
 /**
  * InfoPopoverProps
  */
 interface InfoPopoverProps {
-  communicatorId: number;
+  i18n: i18nType;
   /**
    * User id to fetch user info
    */
   userId: number;
-  /**
-   * Placement of the popover
-   * @default "right-end"
-   */
-  placement?: Placement;
   /**
    * Children which works as the activator for the popover
    */
@@ -42,116 +45,96 @@ interface InfoPopoverProps {
 
 /**
  * Creates info popover when hovering over the info target "aka" user
- * Popover persist for 0.3 second after mouse leaves the info target or when hovering
+ * Popover persist for 0.2 second after mouse leaves the info target or when hovering
  * over the popover content
  *
  * @param props InfoPopoverProps
  * @returns JSX.Element
  */
 const InfoPopover = (props: InfoPopoverProps) => {
-  const { userId, children, placement } = props;
+  const { userId, children } = props;
 
+  // Context
   const context = useInfoPopperContext();
 
   const [hoveringContent, setHoveringContent] = React.useState(false);
   const [hoveringActivator, setHoveringActivator] = React.useState(false);
+  const [newMessageDialogIsOpen, setNewMessageDialogIsOpen] =
+    React.useState(false);
 
   // Delay handler refs
   const activatorDelayHandler = React.useRef(null);
   const contentDelayHandler = React.useRef(null);
 
-  // Popper refs
-  const [referenceElement, setReferenceElement] = React.useState(null);
-  const [popperElement, setPopperElement] = React.useState(null);
-  const [arrowElement, setArrowElement] = React.useState(null);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { styles, attributes, state, update } = usePopper(
-    referenceElement,
-    popperElement,
-    {
-      modifiers: [
-        {
-          name: "arrow",
-          options: {
-            element: arrowElement,
-            padding: 8,
-          },
-        },
-        {
-          name: "offset",
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
-      placement: placement || "right-end",
-    }
-  );
-
-  // Popover is visible when hovering over the content or the activator
-  const popoverOpen = React.useMemo(
-    () => hoveringContent || hoveringActivator,
-    [hoveringActivator, hoveringContent]
-  );
-
   React.useEffect(() => {
+    /**
+     * Fetch user info
+     */
     const fetchData = async () => {
-      await fetchUserInfo(
-        context.dispatch,
-        userId,
-        () => {
-          // Updates popper position when user info is fetched
-          update();
-        },
-        () => {
-          // Updates popper position when user info is fetched
-          update();
-        }
-      );
+      await fetchUserInfo(context.dispatch, userId);
     };
 
     // Fetch user info if it's not already fetched and popper update is defined
-    if (popoverOpen && update && !context.state.infosByUserId[userId]) {
+    if (
+      (hoveringContent || hoveringActivator) &&
+      !context.state.infosByUserId[userId]
+    ) {
       fetchData();
     }
-  }, [context, popoverOpen, props.communicatorId, update, userId]);
+  }, [context, hoveringActivator, hoveringContent, userId]);
 
-  const childElement = React.Children.only(children);
+  // User info from context
+  const data = context.state.infosByUserId[userId];
 
-  // activator is cloned to add event handlers and a ref
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const clonedActivator = React.cloneElement(childElement as any, {
-    onMouseEnter: () => {
-      if (activatorDelayHandler.current) {
-        clearTimeout(activatorDelayHandler.current);
-      }
-
-      !hoveringActivator && setHoveringActivator(true);
-    },
-    onMouseLeave: () => {
-      if (activatorDelayHandler.current) {
-        clearTimeout(activatorDelayHandler.current);
-      }
-
-      if (hoveringActivator) {
-        activatorDelayHandler.current = setTimeout(() => {
-          hoveringActivator && setHoveringActivator(false);
-        }, 200);
-      }
-    },
-    ref: setReferenceElement,
-  });
+  // Popover is visible when hovering over the content or the activator
+  // and when the data is fetched or new message dialog is open
+  const popoverOpen = React.useMemo(() => {
+    if (
+      ((hoveringContent || hoveringActivator) && data && data.info) ||
+      newMessageDialogIsOpen
+    ) {
+      return true;
+    }
+    return false;
+  }, [data, hoveringActivator, hoveringContent, newMessageDialogIsOpen]);
 
   return (
-    <>
-      {popoverOpen &&
-        createPortal(
+    <Popover open={popoverOpen} placement="top">
+      <PopoverTrigger
+        ref={activatorDelayHandler}
+        asChild
+        onMouseEnter={() => {
+          if (activatorDelayHandler.current) {
+            clearTimeout(activatorDelayHandler.current);
+          }
+
+          if (!hoveringActivator) {
+            activatorDelayHandler.current = setTimeout(() => {
+              setHoveringActivator(true);
+            }, 200);
+          }
+        }}
+        onMouseLeave={() => {
+          if (activatorDelayHandler.current) {
+            clearTimeout(activatorDelayHandler.current);
+          }
+
+          if (hoveringActivator) {
+            activatorDelayHandler.current = setTimeout(() => {
+              setHoveringActivator(false);
+            }, 200);
+          }
+        }}
+      >
+        {children}
+      </PopoverTrigger>
+      <PopoverContent ref={contentDelayHandler} className="popover">
+        {data && data.info && !data.isloading && (
           <div
-            className="popper"
-            ref={setPopperElement}
-            style={styles.popper}
-            {...attributes.popper}
+            // Temporary fix to stop bubbling to the parent
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             onMouseOver={() => {
               if (contentDelayHandler.current) {
                 clearTimeout(contentDelayHandler.current);
@@ -169,161 +152,209 @@ const InfoPopover = (props: InfoPopoverProps) => {
                 }, 200);
               }
             }}
+            className="item-list__item item-list__item--teacher"
           >
-            {!context.state.infosByUserId[userId] ||
-            context.state.infosByUserId[userId].isloading ? (
-              <div className="popper-content">
-                <div className="loader-empty" />
+            <div className="item-list__profile-picture">
+              <Avatar
+                id={parseInt(data.info.userId)}
+                firstName={data.info.firstName}
+                hasImage={data.info.hasAvatar === "true"}
+              ></Avatar>
+            </div>
+            <div className="item-list__text-body item-list__text-body--multiline">
+              <div className="item-list__user-name">
+                {data.info.firstName} {data.info.lastName}
               </div>
-            ) : (
-              <div className="popper-content">
-                <div
-                  className="user-info"
-                  style={{ display: "flex", flexDirection: "column" }}
-                >
-                  <div
-                    className="user-info__header"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    <Avatar id={0} hasImage={false} firstName="Testi" />
-                    <div
-                      className="user-info__header-meta"
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        padding: "0 5px",
-                      }}
-                    >
-                      <h3 className="user-info__header-meta-name">
-                        Testi Nimi
-                      </h3>
-                      <span className="user-info__header-meta-email">
-                        testi.testaaja@gmail.com
-                      </span>
-                    </div>
+              <ContactInformation info={data.info} i18n={props.i18n} />
+              <ContactVacation info={data.info} i18n={props.i18n} />
+              <ContactActions
+                info={data.info}
+                i18n={props.i18n}
+                onCommunicatorMessageOpen={() =>
+                  setNewMessageDialogIsOpen(true)
+                }
+                onCommunicatorMessageClose={() =>
+                  setNewMessageDialogIsOpen(false)
+                }
+              />
+
+              {/* {teacher.properties["profile-extraInfo"] !== undefined &&
+                teacher.properties["profile-extraInfo"] !== null && (
+                  <div className="item-list__user-extra-info">
+                    {teacher.properties["profile-extraInfo"]}
                   </div>
-                  <div
-                    className="user-info__contacts"
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    <div
-                      className="user-info__contact-row"
-                      style={{ display: "flex" }}
-                    >
-                      <span
-                        className="user-info__contact-label"
-                        style={{ marginRight: "5px" }}
-                      >
-                        p
-                      </span>
-                      <span className="user-info__contact-value">
-                        040 123 4567
-                      </span>
-                    </div>
-                    <div className="user-info__contact-row">
-                      <span
-                        className="user-info__contact-label"
-                        style={{ marginRight: "5px" }}
-                      >
-                        s
-                      </span>
-                      <span className="user-info__contact-value">
-                        asdasdasd
-                      </span>
-                    </div>
-
-                    <div className="user-info__contact-row">
-                      <span
-                        className="user-info__contact-label"
-                        style={{ marginRight: "5px" }}
-                      >
-                        o
-                      </span>
-                      <span className="user-info__contact-value">
-                        Mikkelintie 1, Mikkeli 50100
-                      </span>
-                    </div>
-                  </div>
-
-                  <div
-                    className="user-info__horizontal-divider"
-                    style={{
-                      height: "2px",
-                      backgroundColor: "#e0e0e0",
-                      marginBottom: "5px",
-                    }}
-                  />
-
-                  <div
-                    className="user-info__actions"
-                    style={{ display: "flex" }}
-                  >
-                    <div className="user-info__actions-primary">
-                      <div
-                        style={{
-                          height: "100%",
-                          display: "flex",
-                          alignItems: "center",
-                          minWidth: "200px",
-                          justifyContent: "center",
-                          backgroundColor: "green",
-                          marginRight: "5px",
-                        }}
-                      >
-                        Näytä jotakin
-                      </div>
-                    </div>
-                    <div
-                      className="user-info__actions-secondary"
-                      style={{ display: "flex" }}
-                    >
-                      <ButtonPill
-                        icon="whatsapp"
-                        style={{ marginRight: "5px" }}
-                      />
-                      <ButtonPill
-                        icon="envelope-alt"
-                        style={{ marginRight: "5px" }}
-                      />
-                      <ButtonPill
-                        icon="whatsapp"
-                        style={{ marginRight: "5px" }}
-                      />
-                      <ButtonPill icon="envelope-alt" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div
-              className="popper-arrow"
-              ref={setArrowElement}
-              style={styles.arrow}
-              {...attributes.arrow}
-            />
-          </div>,
-          document.body
+                )} */}
+            </div>
+          </div>
         )}
-      {clonedActivator}
-    </>
+        <PopoverArrow />
+      </PopoverContent>
+    </Popover>
   );
 };
+
+/**
+ * ContactInformationProps
+ */
+interface ContactInformationProps {
+  info: UserInfo;
+  i18n: i18nType;
+}
+
+/**
+ * ContactInformation
+ * @param props props
+ * @param props.info info
+ * @returns JSX.Element
+ */
+function ContactInformation(props: ContactInformationProps) {
+  const { info } = props;
+  return (
+    <div className="item-list__user-contact-info">
+      <div className="item-list__user-email">
+        <span className="glyph icon-envelope"></span>
+        {info.email}
+      </div>
+      {info.phoneNumber ? (
+        <div className="item-list__user-phone">
+          <span className="glyph icon-phone"></span>
+          {info.phoneNumber}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * ContactVacationProps
+ */
+interface ContactVacationProps {
+  info: UserInfo;
+  i18n: i18nType;
+}
+
+/**
+ * ContactVacation
+ * @param props props
+ * @param props.info info
+ * @param props.i18n i18n
+ * @returns JSX.Element
+ */
+function ContactVacation(props: ContactVacationProps) {
+  const { info, i18n } = props;
+
+  let displayVacationPeriod = !!info.vacationStart;
+  // however if we have a range
+  if (info.vacationEnd) {
+    // we must check for the ending
+    const vacationEndsAt = moment(info.vacationEnd);
+    const today = moment();
+    // if it's before or it's today then we display, otherwise nope
+    displayVacationPeriod =
+      vacationEndsAt.isAfter(today, "day") ||
+      vacationEndsAt.isSame(today, "day");
+  }
+
+  if (!displayVacationPeriod) {
+    return null;
+  }
+
+  return (
+    <div className="item-list__user-vacation-period">
+      {i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}
+      &nbsp;
+      {i18n.time.format(info.vacationStart)}
+      {info.vacationEnd ? "–" + i18n.time.format(info.vacationEnd) : null}
+    </div>
+  );
+}
+
+/**
+ * ContactActionsProps
+ */
+interface ContactActionsProps {
+  info: UserInfo;
+  i18n: i18nType;
+  onCommunicatorMessageOpen?: () => void;
+  onCommunicatorMessageClose?: () => void;
+}
+
+/**
+ * ContactActions
+ * @param props props
+ * @param props.info info
+ * @param props.i18n i18n
+ * @returns JSX.Element
+ */
+function ContactActions(props: ContactActionsProps) {
+  const { info, i18n, onCommunicatorMessageOpen, onCommunicatorMessageClose } =
+    props;
+
+  return (
+    <>
+      <div className="item-list__user-actions">
+        {info.isStudent === "true" && (
+          <GuiderStudentLink schoolDataIdentifier={info.schoolDataIdentifier} />
+        )}
+      </div>
+      <div className="item-list__user-actions">
+        <CommunicatorNewMessage
+          extraNamespace="workspace-teachers"
+          onOpen={onCommunicatorMessageOpen}
+          onClose={onCommunicatorMessageClose}
+          initialSelectedItems={[
+            {
+              type: info.isStudent === "true" ? "user" : "staff",
+              value: {
+                id: parseInt(info.userId),
+                name: `${info.firstName} ${info.lastName}`,
+              },
+            },
+          ]}
+        >
+          <ButtonPill
+            aria-label={i18n.text.get(
+              "plugin.workspace.index.newMessage.label"
+            )}
+            icon="envelope"
+            title={i18n.text.get("plugin.workspace.index.newMessage.label")}
+            buttonModifiers={["new-message", "new-message-to-staff"]}
+          ></ButtonPill>
+        </CommunicatorNewMessage>
+        {info.phoneNumber && info.whatsapp === "true" ? (
+          <WhatsappButtonLink i18n={i18n} mobileNumber={info.phoneNumber} />
+        ) : null}
+
+        {/* {teacher.properties["profile-appointmentCalendar"] !==
+    undefined &&
+    teacher.properties["profile-appointmentCalendar"] !==
+      null && (
+      <ButtonPill
+        aria-label={this.props.i18n.text.get(
+          "plugin.workspace.index.appointmentCalendar.label"
+        )}
+        title={this.props.i18n.text.get(
+          "plugin.workspace.index.appointmentCalendar.label"
+        )}
+        icon="clock"
+        buttonModifiers="appointment-calendar"
+        openInNewTab="_blank"
+        href={teacher.properties["profile-appointmentCalendar"]}
+      />
+    )} */}
+      </div>
+    </>
+  );
+}
 
 /**
  * mapStateToProps
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {};
+  return {
+    i18n: state.i18n,
+  };
 }
 
 /**
