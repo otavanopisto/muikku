@@ -38,7 +38,6 @@ import {
 } from "~/util/modifiers";
 import LabelUpdateDialog from "../../dialogs/label-update";
 import { MessagesType } from "~/reducers/main-function/messages";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
@@ -65,8 +64,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface CommunicatorToolbarProps extends WithTranslation<["common"]> {
   messages: MessagesType;
-  i18nOLD: i18nType;
-
   deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType;
   addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType;
   removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType;
@@ -606,7 +603,6 @@ class CommunicatorToolbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     messages: state.messages,
-    i18nOLD: state.i18nOLD,
   };
 }
 

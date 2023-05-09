@@ -345,7 +345,7 @@ class VacationSettings extends React.Component<
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileVacationStart">
-                    {this.props.t("labels.endDate", {ns: "profile" })}{" "}
+                    {this.props.t("labels.endDate", { ns: "profile" })}{" "}
                   </label>
                   <DatePicker
                     id="profileVacationEnd"
@@ -386,11 +386,15 @@ class VacationSettings extends React.Component<
                       onChange={this.onVacationAutoReplyChange}
                     />
                     <label htmlFor="profileVacationAutoReply">
-                      {this.props.t("labels.vacationAutoReply", {ns: "profile"})}
+                      {this.props.t("labels.vacationAutoReply", {
+                        ns: "profile",
+                      })}
                     </label>
                   </div>
                   <div className="form-element__description">
-                    {this.props.t("content.vacationAutoReply", {ns: "profile"})}
+                    {this.props.t("content.vacationAutoReply", {
+                      ns: "profile",
+                    })}
                   </div>
                 </div>
               </div>

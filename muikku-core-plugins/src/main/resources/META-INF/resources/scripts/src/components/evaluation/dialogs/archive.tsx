@@ -2,7 +2,6 @@ import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
@@ -36,7 +35,6 @@ interface ArchiveDialogProps extends AssessmentRequest, WithTranslation {
   place: "card" | "modal";
   isOpen?: boolean;
   onClose?: () => void;
-  i18nOLD: i18nType;
   archiveStudent: ArchiveStudent;
   evaluations: EvaluationState;
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
@@ -169,7 +167,6 @@ class ArchiveDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     evaluations: state.evaluations,
   };
 }

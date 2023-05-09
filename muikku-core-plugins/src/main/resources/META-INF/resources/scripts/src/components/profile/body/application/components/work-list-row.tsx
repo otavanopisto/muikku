@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import "~/sass/elements/glyph.scss";
 import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import WorkListEditable from "./work-list-editable";
 import {
   DeleteProfileWorklistItemTriggerType,
@@ -252,7 +253,7 @@ class WorkListRow extends React.Component<
           {this.props.item.description}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
-          {this.props.i18nOLD.time.format(this.props.item.entryDate)}
+          {localizeTime(this.props.item.entryDate)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
           {this.props.item.price}

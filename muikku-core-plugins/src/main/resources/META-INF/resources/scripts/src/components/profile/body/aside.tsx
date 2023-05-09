@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
@@ -14,7 +13,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * NavigationProps
  */
 interface NavigationProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   location: string;
   status: StatusType;
 }
@@ -117,7 +115,6 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     location: state.profile.location,
     status: state.status,
   };

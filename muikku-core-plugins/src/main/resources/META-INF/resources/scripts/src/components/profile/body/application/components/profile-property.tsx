@@ -3,7 +3,6 @@ import * as React from "react";
 /**
  * ProfileProperty
  * @param props props
- * @param props.i18nOLD i18nOLD
  * @param props.label label
  * @param props.condition condition
  * @param props.modifier modifier

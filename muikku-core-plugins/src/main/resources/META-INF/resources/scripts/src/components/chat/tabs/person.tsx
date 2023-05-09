@@ -4,15 +4,11 @@ import { IChatContact } from "../chat";
 // import PromptDialog, {
 //   PromptDialogButtons,
 // } from "~/components/general/prompt-dialog";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * IPersonProps
  */
 interface IPersonProps {
-  i18nOLD: i18nType;
   modifier?: string;
   person: IChatContact;
   /** If this person is removable from the roster */
@@ -107,14 +103,5 @@ class Person extends React.Component<IPersonProps, IPersonState> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
 
-export default connect(mapStateToProps)(Person);
+export default Person;

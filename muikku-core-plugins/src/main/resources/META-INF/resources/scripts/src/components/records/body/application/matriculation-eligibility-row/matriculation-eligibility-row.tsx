@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { SubjectEligibilityType } from "~/reducers/main-function/records/yo";
 import "~/sass/elements/application-sub-panel.scss";
 import { withTranslation, WithTranslation } from "react-i18next";

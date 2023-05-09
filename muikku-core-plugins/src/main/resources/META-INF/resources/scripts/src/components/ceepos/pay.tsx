@@ -14,12 +14,10 @@ import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 interface CeeposPayProps extends WithTranslation {
-  i18nOLD: i18nType;
   ceepos: CeeposState;
   status: StatusType;
 }
@@ -83,7 +81,6 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                         this.props.ceepos.purchase
                       )}
                       initialMessage={getErrorMessageContent(
-                        this.props.i18nOLD,
                         this.props.ceepos.purchase,
                         this.props.ceepos.payStatusMessage
                       )}
@@ -121,7 +118,6 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
 
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     ceepos: state.ceepos,
     status: state.status,
   };

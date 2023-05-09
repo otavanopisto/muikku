@@ -121,9 +121,7 @@ class NotesItemEdit extends SessionStateComponent<
       >
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.t(
-              "labels.title"
-            )}
+            {this.props.i18n.t("labels.title")}
           </label>
           <input
             className="env-dialog__input"
@@ -137,7 +135,7 @@ class NotesItemEdit extends SessionStateComponent<
 
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.t("labels.priority", {ns: "tasks"})}
+            {this.props.i18n.t("labels.priority", { ns: "tasks" })}
           </label>
           <select
             className="env-dialog__select"
@@ -173,9 +171,7 @@ class NotesItemEdit extends SessionStateComponent<
       <div key="edit-note-2" className="env-dialog__row env-dialog__row--dates">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.t(
-              "labels.beginDate"
-            )}
+            {this.props.i18n.t("labels.beginDate")}
           </label>
           <DatePicker
             className="env-dialog__input"
@@ -197,10 +193,7 @@ class NotesItemEdit extends SessionStateComponent<
         </div>
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.t(
-              "labels.endDate",
-              {ns: "common"}
-            )}
+            {this.props.i18n.t("labels.endDate", { ns: "common" })}
           </label>
           <DatePicker
             className="env-dialog__input"
@@ -225,9 +218,7 @@ class NotesItemEdit extends SessionStateComponent<
       <div key="edit-note-3" className="env-dialog__row">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.t(
-              "labels.description"
-            )}
+            {this.props.i18n.t("labels.description")}
           </label>
           <CKEditor
             onChange={(e) => this.handleNotesItemChange("description", e)}
@@ -258,9 +249,7 @@ class NotesItemEdit extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="modify-message"
-        title={this.props.i18n.t(
-          "labels.edit", {ns: "tasks"}
-        )}
+        title={this.props.i18n.t("labels.edit", { ns: "tasks" })}
         content={content}
         footer={footer}
         onOpen={this.clearUp}
@@ -289,4 +278,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default withTranslation("tasks")(connect(mapStateToProps, mapDispatchToProps)(NotesItemEdit));
+export default withTranslation("tasks")(
+  connect(mapStateToProps, mapDispatchToProps)(NotesItemEdit)
+);

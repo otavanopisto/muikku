@@ -1,6 +1,5 @@
 import * as React from "react";
 import mApi from "~/lib/mApi";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/chat.scss";
 import "~/sass/elements/wcag.scss";

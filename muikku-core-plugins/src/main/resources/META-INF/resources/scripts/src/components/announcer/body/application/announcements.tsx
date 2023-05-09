@@ -4,7 +4,7 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import {localizeTime} from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
@@ -39,7 +39,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * AnnouncementsProps
  */
 interface AnnouncementsProps extends WithTranslation {
-  i18nOLD: i18nType;
   announcements: AnnouncementsType;
   userIndex: UserIndexType;
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType;
@@ -125,10 +124,10 @@ class Announcements extends React.Component<
                     <ApplicationListItemHeader>
                       <ApplicationListHeaderPrimary>
                         <ApplicationListItemDate
-                          startDate={this.props.i18nOLD.time.format(
+                          startDate={localizeTime(
                             announcement.startDate
                           )}
-                          endDate={this.props.i18nOLD.time.format(
+                          endDate={localizeTime(
                             announcement.endDate
                           )}
                         />
@@ -208,7 +207,6 @@ class Announcements extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     announcements: state.announcements,
     userIndex: state.userIndex,
   };

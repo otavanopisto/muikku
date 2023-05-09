@@ -6,7 +6,6 @@
 
 import * as React from "react";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import { v4 as uuidv4 } from "uuid";
@@ -39,7 +38,6 @@ interface SelectFieldProps extends WithTranslation {
   ) => any;
 
   usedAs: UsedAs;
-  i18nOLD: i18nType;
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
   onAnswerChange?: (name: string, value: boolean) => any;

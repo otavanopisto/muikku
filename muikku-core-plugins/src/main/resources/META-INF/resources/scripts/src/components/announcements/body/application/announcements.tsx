@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
@@ -12,12 +11,12 @@ import { StateType } from "~/reducers";
 import { UserIndexType } from "~/reducers/user-index";
 import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 import { withTranslation, WithTranslation } from "react-i18next";
+import {localizeTime} from "~/locales/i18n";
 
 /**
  * AnnouncementProps
  */
 interface AnnouncementProps extends WithTranslation {
-  i18nOLD: i18nType;
   announcement: AnnouncementType;
   userIndex: UserIndexType;
 }
@@ -46,6 +45,8 @@ class Announcement extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const articleDate = this.props.announcement && localizeTime(this.props.announcement.startDate);
+
     if (!this.props.announcement) {
       return (
         <div>
@@ -57,6 +58,7 @@ class Announcement extends React.Component<
       );
     }
     return (
+
       <article className="article">
         <header className="article__header">
           {this.props.announcement.caption}
@@ -91,7 +93,7 @@ class Announcement extends React.Component<
           </div>
         ) : null}
         <div className="article__date">
-          {this.props.i18nOLD.time.format(this.props.announcement.startDate)}
+          {articleDate}
         </div>
         <section className="article__body rich-text">
           <CkeditorLoaderContent html={this.props.announcement.content} />
@@ -108,7 +110,6 @@ class Announcement extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     announcement: state.announcements.current,
     userIndex: state.userIndex,
   };

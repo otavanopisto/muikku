@@ -1,7 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/contact-event.scss";
 import "~/sass/elements/rich-text.scss";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { ContactLogEvent } from "~/reducers/main-function/guider";
 import CommentContactEvent from "./editors/new-comment";
 import EditContactEvent from "./editors/edit-event";
@@ -23,7 +22,6 @@ interface ContactEventProps {
   allPrivileges: boolean;
   studentId: number;
   modifier?: string;
-  i18nOLD: i18nType;
   status: StatusType;
 }
 
@@ -193,7 +191,6 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18nOLD: state.i18nOLD,
   };
 }
 

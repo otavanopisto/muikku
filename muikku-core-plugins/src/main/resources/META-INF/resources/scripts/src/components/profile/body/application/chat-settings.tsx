@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { ProfileType } from "~/reducers/main-function/profile";
 import {
   saveProfileProperty,
@@ -25,7 +24,6 @@ import { AnyActionType } from "~/actions";
  * ChatSettingsProps
  */
 interface ChatSettingsProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -265,7 +263,6 @@ class ChatSettings extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     profile: state.profile,
     status: state.status,
   };

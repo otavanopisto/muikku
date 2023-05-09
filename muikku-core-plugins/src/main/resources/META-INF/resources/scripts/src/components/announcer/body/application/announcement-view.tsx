@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import {localizeTime} from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/rich-text.scss";
@@ -22,7 +22,6 @@ import { AnyActionType } from "~/actions/index";
  * MessageViewProps
  */
 interface MessageViewProps {
-  i18nOLD: i18nType;
   announcements: AnnouncementsType;
   userIndex: UserIndexType;
 }
@@ -62,10 +61,10 @@ class AnnouncementView extends React.Component<
           <ApplicationListItemHeader modifiers="announcer-announcement">
             <ApplicationListHeaderPrimary modifiers="announcement-meta">
               <ApplicationListItemDate
-                startDate={this.props.i18nOLD.time.format(
+                startDate={localizeTime(
                   this.props.announcements.current.startDate
                 )}
-                endDate={this.props.i18nOLD.time.format(
+                endDate={localizeTime(
                   this.props.announcements.current.endDate
                 )}
               />
@@ -123,7 +122,6 @@ class AnnouncementView extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     announcements: state.announcements,
     userIndex: state.userIndex,
   };

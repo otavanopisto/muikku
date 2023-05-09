@@ -4,7 +4,6 @@ import {
   GuiderStudentType,
   GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";

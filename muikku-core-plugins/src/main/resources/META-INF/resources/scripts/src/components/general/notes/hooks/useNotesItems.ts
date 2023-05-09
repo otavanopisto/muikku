@@ -26,7 +26,6 @@ const initialState: UseNotesItem = {
  * Custom hook notesItems list
  *
  * @param studentId "userId"
- * @param i18nOLD i18nOLD
  * @param displayNotification displayNotification
  * @returns notesItems lists and methods to create, update, pin, archive and return archived notesItems
  */

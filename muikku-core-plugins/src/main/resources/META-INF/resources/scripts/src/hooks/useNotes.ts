@@ -14,7 +14,6 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 /**
  * A hook for getting notes with status "ONGOING" and functions to manipulate them
  * @param status user status for user
- * @param i18nOLD localization
  * @param displayNotification notification thunk
  * @returns an array of notes and functions to update and change status
  */

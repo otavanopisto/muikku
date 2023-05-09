@@ -1,4 +1,3 @@
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";

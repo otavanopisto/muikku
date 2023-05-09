@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import mApi from "~/lib/mApi";
@@ -22,7 +21,6 @@ import { AnyActionType } from "~/actions";
  * SecurityProps
  */
 interface SecurityProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -270,7 +268,6 @@ class Security extends React.Component<SecurityProps, SecurityState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     profile: state.profile,
     status: state.status,
   };

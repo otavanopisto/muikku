@@ -2,13 +2,13 @@ import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { getName } from "~/util/modifiers";
 import { ButtonPill } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
 import moment from "~/lib/moment";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/buttons.scss";
@@ -22,7 +22,6 @@ import i18n from "~/locales/i18n";
  */
 interface WorkspaceTeachersProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
   status: StatusType;
 }
 
@@ -119,12 +118,12 @@ class WorkspaceTeachers extends React.Component<
                         <div className="item-list__user-vacation-period">
                           {t("labels.away", { ns: "workspace" })}
                           &nbsp;
-                          {this.props.i18nOLD.time.format(
+                          {localizeTime(
                             teacher.properties["profile-vacation-start"]
                           )}
                           {teacher.properties["profile-vacation-end"]
                             ? "–" +
-                              this.props.i18nOLD.time.format(
+                              localizeTime(
                                 teacher.properties["profile-vacation-end"]
                               )
                             : null}
@@ -222,7 +221,6 @@ class WorkspaceTeachers extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };

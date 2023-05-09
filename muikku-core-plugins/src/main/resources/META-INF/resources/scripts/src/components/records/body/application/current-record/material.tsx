@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import {
   AssignmentType,
   MaterialCompositeRepliesType,
@@ -28,7 +28,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface MaterialProps extends WithTranslation {
   material: MaterialContentNodeType;
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
   status: StatusType;
   compositeReply: MaterialCompositeRepliesType;
   open: boolean;
@@ -110,11 +109,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
             <Dropdown
               openByHover
               content={
-                <span>
-                  {this.props.i18nOLD.time.format(
-                    compositeReply.evaluationInfo.date
-                  )}
-                </span>
+                <span>{localizeTime(compositeReply.evaluationInfo.date)}</span>
               }
             >
               <span
@@ -130,11 +125,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
             <Dropdown
               openByHover
               content={
-                <span>
-                  {this.props.i18nOLD.time.format(
-                    compositeReply.evaluationInfo.date
-                  )}
-                </span>
+                <span>{localizeTime(compositeReply.evaluationInfo.date)}</span>
               }
             >
               <span

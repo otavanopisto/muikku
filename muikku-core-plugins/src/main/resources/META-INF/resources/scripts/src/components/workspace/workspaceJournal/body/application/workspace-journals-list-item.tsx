@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import { StatusType } from "~/reducers/base/status";
@@ -27,12 +26,12 @@ import WorkspaceJournalCommentList from "./workspace-journal-comment-list";
 import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * JournalProps
  */
 interface WorkspaceJournalsListItemProps extends WithTranslation {
-  i18nOLD: i18nType;
   status: StatusType;
   journal: WorkspaceJournalWithComments;
   workspace: WorkspaceType;
@@ -166,12 +165,7 @@ class WorkspaceJournalsListItem extends React.Component<
               )}
             </div>
             <div className="application-list__item-header-aside">
-              <span>
-                {this.props.i18nOLD.time.format(
-                  this.props.journal.created,
-                  "L LT"
-                )}
-              </span>
+              <span>{localizeTime(this.props.journal.created, "L LT")}</span>
             </div>
           </ApplicationListItemHeader>
           <ApplicationListItemBody className="application-list__item-body">
@@ -239,7 +233,6 @@ class WorkspaceJournalsListItem extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };

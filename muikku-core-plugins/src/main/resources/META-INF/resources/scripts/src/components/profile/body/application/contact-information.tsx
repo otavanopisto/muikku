@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Button, { IconButton } from "~/components/general/button";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { ProfileType } from "~/reducers/main-function/profile";
 import ProfileProperty from "./components/profile-property";
@@ -27,7 +26,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * ContactInformationProps
  */
 interface ContactInformationProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -298,7 +296,7 @@ class ContactInformation extends React.Component<
                 value={this.props.status.profile.emails}
               />
               {/* Displaying multiple addresses seems moot at this point, not gonna remove this entirely though until we are sure it's truly not needed
-            <ProfileProperty i18nOLD={this.props.i18nOLD} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addresses.label"
+            <ProfileProperty condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addresses.label"
               value={this.props.status.profile.addresses} />
             */}
               {this.props.status.isStudent && (
@@ -564,7 +562,6 @@ class ContactInformation extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     profile: state.profile,
     status: state.status,
   };

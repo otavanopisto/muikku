@@ -18,14 +18,13 @@ import {
 } from "~/actions/base/notifications";
 import { WorkspaceJournalType } from "~/reducers/workspaces/journals";
 import JournalComment from "./journalComment";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * JournalProps
  */
 interface JournalProps {
   displayNotification: DisplayNotificationTriggerType;
-  i18nOLD: i18nType;
   journal: WorkspaceJournalType;
   open: boolean;
   onJournalClick: (
@@ -39,7 +38,7 @@ interface JournalProps {
  * @returns JSX.Element
  */
 const Journal: React.FC<JournalProps> = (props) => {
-  const { i18nOLD, displayNotification, journal, onJournalClick, open } = props;
+  const { displayNotification, journal, onJournalClick, open } = props;
   const [showComments, setShowComments] = React.useState<boolean>(false);
   const { t } = useTranslation("journal");
   const { journalComments, loadJournalComments } = useJournalComments(
@@ -80,7 +79,7 @@ const Journal: React.FC<JournalProps> = (props) => {
           </span>
         </div>
         <div className="application-list__item-header-aside">
-          <span>{i18nOLD.time.format(journal.created, "L LT")}</span>
+          <span>{localizeTime(journal.created, "L LT")}</span>
         </div>
       </ApplicationListItemHeader>
       <ApplicationListItemBody className="application-list__item-body">
@@ -121,16 +120,6 @@ const Journal: React.FC<JournalProps> = (props) => {
 };
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -138,4 +127,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Journal);
+export default connect(null, mapDispatchToProps)(Journal);

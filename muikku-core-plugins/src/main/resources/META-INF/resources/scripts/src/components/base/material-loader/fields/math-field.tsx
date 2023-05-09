@@ -6,7 +6,6 @@
 
 import * as React from "react";
 import MathField from "./better-math-field";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/math-field.scss";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
@@ -22,7 +21,6 @@ interface MathFieldProps extends WithTranslation {
   content: {
     name: string;
   };
-  i18nOLD: i18nType;
   userId: number;
   usedAs: UsedAs;
   readOnly?: boolean;

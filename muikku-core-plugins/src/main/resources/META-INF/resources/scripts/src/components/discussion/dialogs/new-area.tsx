@@ -3,7 +3,6 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/link.scss";
@@ -13,7 +12,6 @@ import {
   createDiscussionArea,
   CreateDiscussionAreaTriggerType,
 } from "~/actions/discussion";
-import { StateType } from "~/reducers";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**

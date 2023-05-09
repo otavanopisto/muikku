@@ -1,6 +1,5 @@
 import Link from "~/components/general/link";
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import {
   AnnouncementListType,
@@ -13,13 +12,13 @@ import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { Panel } from "~/components/general/panel";
+import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AnnouncementsPanelProps
  */
 interface AnnouncementsPanelProps extends WithTranslation<"common"> {
-  i18nOLD: i18nType;
   status: StatusType;
   announcements: AnnouncementListType;
   overflow?: boolean;
@@ -148,7 +147,7 @@ class AnnouncementsPanel extends React.Component<
                 {announcement.caption}
               </span>
               <span className="item-list__announcement-date">
-                {this.props.i18nOLD.time.format(announcement.startDate)}
+                {localizeTime(announcement.startDate)}
               </span>
               {announcement.workspaces && announcement.workspaces.length ? (
                 <div className="labels item-list__announcement-workspaces">
@@ -238,18 +237,10 @@ class AnnouncementsPanel extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18nOLD: state.i18nOLD,
     announcements: state.announcements.announcements,
   };
 }
 
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
 export default withTranslation(["frontPage", "messaging"])(
-  connect(mapStateToProps, mapDispatchToProps)(AnnouncementsPanel)
+  connect(mapStateToProps)(AnnouncementsPanel)
 );

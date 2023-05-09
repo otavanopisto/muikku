@@ -14,13 +14,12 @@ import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
 import { useTranslation } from "react-i18next";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventCommentProps {
-  i18nOLD: i18nType;
   journalComment: JournalComment;
   userEntityId: number;
   workspaceEntityId: number;
@@ -40,7 +39,6 @@ const EvaluationJournalEventComment: React.FC<
   EvaluationDiaryEventCommentProps
 > = (props) => {
   const {
-    i18nOLD,
     journalComment,
     status,
     onEditClick,
@@ -77,10 +75,10 @@ const EvaluationJournalEventComment: React.FC<
   const creatorName = creatorIsMe
     ? t("labels.self")
     : `${firstName} ${lastName}`;
-  const formatedDate = `${i18nOLD.time.format(
+  const formatedDate = `${localizeTime(created, "l")} - ${localizeTime(
     created,
-    "l"
-  )} - ${i18nOLD.time.format(created, "LT")}`;
+    "LT"
+  )}`;
 
   return (
     <div
@@ -127,7 +125,6 @@ const EvaluationJournalEventComment: React.FC<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

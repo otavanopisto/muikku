@@ -4,16 +4,13 @@ import LoginButton from "../../base/login-button";
 import ForgotPasswordDialog from "../../base/forgot-password-dialog";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * FrontpageNavbarProps
  */
-interface FrontpageNavbarProps extends WithTranslation {
-  i18nOLD: i18nType;
-}
+interface FrontpageNavbarProps extends WithTranslation {}
 
 /**
  * FrontpageNavbarState
@@ -146,23 +143,4 @@ class FrontpageNavbar extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default withTranslation(["frontPage"])(
-  connect(mapStateToProps, mapDispatchToProps)(FrontpageNavbar)
-);
+export default withTranslation(["frontPage"])(FrontpageNavbar);

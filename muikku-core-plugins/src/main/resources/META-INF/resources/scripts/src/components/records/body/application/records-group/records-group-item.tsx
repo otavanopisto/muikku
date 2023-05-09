@@ -11,7 +11,7 @@ import {
 import Button from "~/components/general/button";
 import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { RecordWorkspaceActivityByLine } from "~/reducers/main-function/records";
 import { Assessment } from "~/reducers/workspaces";
 import ActivityIndicator from "../records-indicators/activity-indicator";
@@ -22,7 +22,6 @@ import RecordsAssessmentIndicator from "../records-indicators/records-assessment
  * RecordsGroupItemProps
  */
 interface RecordsGroupItemProps {
-  i18nOLD: i18nType;
   credit: RecordWorkspaceActivityByLine;
   isCombinationWorkspace: boolean;
 }
@@ -115,7 +114,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
    * @returns JSX.Element
    */
   const renderAssessmentsInformations = () => {
-    const { i18nOLD, credit } = props;
+    const { credit } = props;
 
     return (
       <>
@@ -161,7 +160,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     {t("labels.date", { count: 0 })}:
                   </span>
                   <span className="workspace-assessment__date-data">
-                    {i18nOLD.time.format(a.date)}
+                    {localizeTime(a.date)}
                   </span>
                 </div>
                 <div className="workspace-assessment__literal">
@@ -210,7 +209,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     </span>
 
                     <span className="workspace-assessment__date-data">
-                      {i18nOLD.time.format(a.date)}
+                      {localizeTime(a.date)}
                     </span>
                   </div>
 
@@ -259,7 +258,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       {t("labels.date", { count: 1 })}:
                     </span>
                     <span className="workspace-assessment__date-data">
-                      {i18nOLD.time.format(a.date)}
+                      {localizeTime(a.date)}
                     </span>
                   </div>
                   <div className="workspace-assessment__literal">
@@ -403,21 +402,4 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(mapStateToProps, mapDispatchToProps)(RecordsGroupItem);
+export default RecordsGroupItem;

@@ -1,14 +1,9 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
-import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
-import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { bindActionCreators } from "redux";
 import { Suggestion } from "~/@types/shared";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -106,4 +101,4 @@ class WorkspaceDescriptionDialog extends React.Component<
   }
 }
 
-export default withTranslation()(WorkspaceDescriptionDialog);
+export default withTranslation("workspace")(WorkspaceDescriptionDialog);

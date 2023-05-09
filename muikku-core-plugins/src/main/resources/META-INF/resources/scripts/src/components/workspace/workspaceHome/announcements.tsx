@@ -1,7 +1,7 @@
 import { WorkspaceType } from "~/reducers/workspaces";
 import { AnnouncementListType } from "~/reducers/announcements";
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { StatusType } from "~/reducers/base/status";
@@ -17,7 +17,6 @@ interface WorkspaceAnnouncementsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceType;
   announcements: AnnouncementListType;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -73,7 +72,7 @@ class WorkspaceAnnouncements extends React.Component<
                         {a.caption}
                       </span>
                       <span className="item-list__announcement-date">
-                        {this.props.i18nOLD.time.format(a.startDate)}
+                        {localizeTime(a.startDate)}
                       </span>
                     </span>
                   </Link>
@@ -82,7 +81,10 @@ class WorkspaceAnnouncements extends React.Component<
             </div>
           ) : (
             <div className="panel__body panel__body--empty">
-              {t("content.empty", { ns: "messaging", context: "announcements" })}
+              {t("content.empty", {
+                ns: "messaging",
+                context: "announcements",
+              })}
             </div>
           )}
         </div>
@@ -98,7 +100,6 @@ class WorkspaceAnnouncements extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     announcements: state.announcements.announcements,
     status: state.status,

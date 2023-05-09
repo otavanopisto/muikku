@@ -3,7 +3,6 @@ import "~/sass/elements/chat.scss";
 import "~/sass/elements/wcag.scss";
 import { IBareMessageType } from "./chat";
 import ChatMessage from "./chatMessage";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { requestPrescense } from "~/helper-functions/chat";
 import { IChatContact } from "./chat";
 import { obtainNick } from "~/helper-functions/chat";

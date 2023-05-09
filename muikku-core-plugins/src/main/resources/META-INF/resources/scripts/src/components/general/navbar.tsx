@@ -2,12 +2,9 @@ import LanguagePicker from "./navbar/language-picker";
 import ProfileItem from "./navbar/profile-item";
 import Drawer from "./navbar/drawer";
 import * as React from "react";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
 import "~/sass/elements/navbar.scss";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * NavbarProps
@@ -23,7 +20,6 @@ interface NavbarProps extends WithTranslation {
   navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>;
   mobileTitle?: string;
   extraContent?: any;
-  i18nOLD: i18nType;
   isProfileContainedInThisApp: boolean;
 }
 
@@ -178,25 +174,4 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @returns object
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(Navbar)
-);
+export default withTranslation()(Navbar);

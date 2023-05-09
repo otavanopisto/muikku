@@ -1,9 +1,6 @@
 import * as React from "react";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { Assessment } from "~/reducers/workspaces";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
 
@@ -12,7 +9,6 @@ import { useTranslation } from "react-i18next";
  */
 interface AssessmentRequestIndicatorProps {
   assessment: Assessment;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -23,7 +19,7 @@ interface AssessmentRequestIndicatorProps {
 export const AssessmentRequestIndicator: React.FC<
   AssessmentRequestIndicatorProps
 > = (props) => {
-  const { assessment, i18nOLD } = props;
+  const { assessment } = props;
 
   const { t } = useTranslation(["studies", "common"]);
 
@@ -40,7 +36,7 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "evaluationRequest",
-              date: i18nOLD.time.format(assessment.date),
+              date: localizeTime(assessment.date),
             })}
           </span>
         }
@@ -57,7 +53,7 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "interimEvaluationRequest",
-              date: i18nOLD.time.format(assessment.date),
+              date: localizeTime(assessment.date),
             })}
           </span>
         }
@@ -69,24 +65,4 @@ export const AssessmentRequestIndicator: React.FC<
   return null;
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AssessmentRequestIndicator);
+export default AssessmentRequestIndicator;

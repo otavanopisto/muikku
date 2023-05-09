@@ -1,7 +1,5 @@
 import FrontpageNavbar from "./body/navbar";
 import * as React from "react";
-import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import FrontpageHero from "./body/header";
 import FrontpageStudying from "./body/studying";
 import FrontpageVideos from "./body/videos";
@@ -24,14 +22,11 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/screen-container.scss";
 
 import ScreenContainer from "~/components/general/screen-container";
-import { StateType } from "~/reducers";
 
 /**
  * FrontpageBodyProps
  */
-interface FrontpageBodyProps {
-  i18nOLD: i18nType;
-}
+interface FrontpageBodyProps {}
 
 /**
  * FrontpageBodyState
@@ -67,21 +62,4 @@ class FrontpageBody extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(FrontpageBody);
+export default FrontpageBody;

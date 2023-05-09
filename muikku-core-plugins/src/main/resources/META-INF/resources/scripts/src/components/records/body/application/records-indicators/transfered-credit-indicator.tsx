@@ -1,8 +1,5 @@
 import * as React from "react";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
+import { localizeTime } from "~/locales/i18n";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 import Dropdown from "~/components/general/dropdown";
@@ -13,7 +10,6 @@ import { useTranslation } from "react-i18next";
  */
 interface TransfereCreditIndicatorProps {
   transferCredit: RecordWorkspaceActivity;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -24,7 +20,7 @@ interface TransfereCreditIndicatorProps {
 const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   props
 ) => {
-  const { i18nOLD, transferCredit } = props;
+  const { transferCredit } = props;
 
   const { t } = useTranslation(["studies", "common"]);
 
@@ -43,7 +39,7 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
         <span>
           {t("content.transferCreditsDate", {
             ns: "studies",
-            date: i18nOLD.time.format(assessment.date),
+            date: localizeTime(assessment.date),
           }) + getShortenGradeExtension(assessment.grade)}
         </span>
       }
@@ -59,24 +55,4 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TransfereCreditIndicator);
+export default TransfereCreditIndicator;

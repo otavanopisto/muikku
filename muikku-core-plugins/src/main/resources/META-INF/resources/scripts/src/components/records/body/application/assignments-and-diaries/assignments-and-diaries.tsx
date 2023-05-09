@@ -8,7 +8,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import ApplicationList from "~/components/general/application-list";
 import { StatusType } from "../../../../../reducers/base/status";
 import Material from "../current-record/material";
@@ -31,7 +31,6 @@ import { useRecordWorkspace } from "./hooks/useRecordWorkpace";
  * AssignmentsAndDiariesProps
  */
 interface AssignmentsAndDiariesProps {
-  i18nOLD: i18nType;
   status: StatusType;
   credit: RecordWorkspaceActivity;
   userEntityId: number;
@@ -49,7 +48,7 @@ export type AssignmentsTabType =
  * @returns JSX.Element
  */
 const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
-  const { i18nOLD, status, credit, userEntityId, displayNotification } = props;
+  const { status, credit, userEntityId, displayNotification } = props;
 
   const { t } = useTranslation([
     "studies",
@@ -296,7 +295,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             <Material
               key={m.id}
               material={m}
-              i18nOLD={i18nOLD}
               workspace={recordWorkspace.workspace}
               compositeReply={compositeReply}
               status={status}
@@ -345,7 +343,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             <Material
               key={m.id}
               material={m}
-              i18nOLD={i18nOLD}
               workspace={recordWorkspace.workspace}
               compositeReply={compositeReply}
               status={status}
@@ -395,7 +392,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               <Material
                 key={m.id}
                 material={m}
-                i18nOLD={i18nOLD}
                 workspace={recordWorkspace.workspace}
                 compositeReply={compositeReply}
                 status={status}
@@ -461,10 +457,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                   {t("labels.feedbackDate", { ns: "journal" })}:
                 </div>
                 <div className="journal__meta-item-data">
-                  {i18nOLD.time.format(
-                    journalsData.journalFeedback.created,
-                    "L LT"
-                  )}
+                  {localizeTime(journalsData.journalFeedback.created, "L LT")}
                 </div>
               </div>
               <div className="journal__meta-item">
@@ -664,7 +657,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18nOLD: state.i18nOLD,
     userEntityId: state.status.userId,
   };
 }

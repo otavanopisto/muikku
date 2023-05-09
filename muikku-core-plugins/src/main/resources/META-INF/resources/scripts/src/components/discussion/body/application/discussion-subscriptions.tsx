@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { getName } from "~/util/modifiers";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/rich-text.scss";
@@ -55,7 +55,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * DiscussionSubscribedThreadsProps
  */
 interface DiscussionSubscriptionsProps extends WithTranslation {
-  i18nOLD: i18nType;
   discussion: DiscussionType;
   status: StatusType;
   workspaces: WorkspacesType;
@@ -603,7 +602,7 @@ class DiscussionSubscriptions extends React.Component<
                   user,
                   this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                 )}
-              , {this.props.i18nOLD.time.format(subscribredThread.created)}
+              , {localizeTime(subscribredThread.created)}
             </span>
 
             {sThreads.workspaceName && (
@@ -629,9 +628,7 @@ class DiscussionSubscriptions extends React.Component<
               <span>
                 {this.props.t("labels.lastMessage", {
                   ns: "messaging",
-                  time: this.props.i18nOLD.time.format(
-                    subscribredThread.updated
-                  ),
+                  time: localizeTime(subscribredThread.updated),
                 })}
               </span>
             </div>
@@ -804,7 +801,6 @@ class DiscussionSubscriptions extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     status: state.status,
     workspaces: state.workspaces,

@@ -1,12 +1,9 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
-import { StateType } from "~/reducers";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/feed.scss";
 import "~/sass/elements/wcag.scss";
+import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
-
 
 /**
  * FeedProps
@@ -20,8 +17,6 @@ interface FeedProps extends WithTranslation {
     image: string;
     feed: string;
   }>;
-
-  i18nOLD: i18nType;
 }
 
 /**
@@ -81,16 +76,14 @@ class Feed extends React.Component<FeedProps, FeedState> {
                   rel="noreferrer"
                   className={`link link--feed-${entry.feed}`}
                 >
-                  {this.props.t("actions.readMore", {ns: "frontPage"})} (
+                  {this.props.t("actions.readMore", { ns: "frontPage" })} (
                   {entry.feed === "nettilukio"
                     ? "nettilukio.fi"
                     : "nettiperuskoulu.fi"}
                   )
                   <span className="visually-hidden">
                     {entry.title}
-                    {this.props.t(
-                      "wcag.externalLink"
-                    )}
+                    {this.props.t("wcag.externalLink")}
                   </span>
                   <span
                     role="presentation"
@@ -100,7 +93,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
               </div>
               <div className="feed__item-meta">
                 <span className="feed__item-date">
-                  {this.props.i18nOLD.time.format(entry.publicationDate)}
+                  {localizeTime(entry.publicationDate)}
                 </span>
               </div>
             </div>
@@ -111,23 +104,4 @@ class Feed extends React.Component<FeedProps, FeedState> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @returns object
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(Feed));
+export default withTranslation()(Feed);

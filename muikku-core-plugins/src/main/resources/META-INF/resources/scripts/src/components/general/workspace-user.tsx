@@ -3,7 +3,6 @@ import Avatar from "~/components/general/avatar";
 import { ShortWorkspaceUserWithActiveStatusType } from "~/reducers/user-index";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import LazyLoader from "~/components/general/lazy-loader";
 import { IconButton } from "~/components/general/button";
 import { getName, filterHighlight } from "~/util/modifiers";

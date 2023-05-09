@@ -5,13 +5,11 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { bindActionCreators } from "redux";
 import Record from "./record";
-import { i18nType } from "~/reducers/base/i18nOLD";
 
 /**
  * RecordingsListProps
  */
 export interface RecordingsListProps {
-  i18nOLD: i18nType;
   records: RecordValue[] | null;
   noDeleteFunctions?: boolean;
   deleteAudio?: (recordId: string) => void;
@@ -50,22 +48,4 @@ function RecordingsList(props: RecordingsListProps) {
   ) : null;
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RecordingsList);
+export default RecordingsList;

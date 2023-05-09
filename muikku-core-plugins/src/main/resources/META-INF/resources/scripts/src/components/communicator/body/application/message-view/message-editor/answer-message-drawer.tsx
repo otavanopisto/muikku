@@ -9,7 +9,6 @@ import {
 } from "~/actions/main-function/messages/index";
 import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { ContactRecipientType } from "~/reducers/user-index";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import CKEditor from "~/components/general/ckeditor";

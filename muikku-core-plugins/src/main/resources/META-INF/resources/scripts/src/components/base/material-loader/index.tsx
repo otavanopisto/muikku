@@ -18,7 +18,6 @@ import {
   MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
@@ -209,7 +208,6 @@ export interface MaterialLoaderProps {
   material: MaterialContentNodeType;
   folder?: MaterialContentNodeType;
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
   status: StatusType;
   modifiers?: string | Array<string>;
   id?: string;
@@ -728,7 +726,6 @@ class MaterialLoader extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     websocket: state.websocket,
   };

@@ -7,7 +7,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/form.scss";
 import ContentPanel from "~/components/general/content-panel";
 import { WorkspaceType } from "~/reducers/workspaces";
@@ -19,7 +19,6 @@ import { AnyActionType } from "~/actions";
  * PermissionsByUsergroupsProps
  */
 interface PermissionsByUsergroupsProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   workspace: WorkspaceType;
 }
 
@@ -104,19 +103,10 @@ class PermissionsByUsergroups extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
   };
 }
 
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
 export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(PermissionsByUsergroups)
+  connect(mapStateToProps)(PermissionsByUsergroups)
 );

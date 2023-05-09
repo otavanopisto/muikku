@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/pager.scss";
 import "~/sass/elements/wcag.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -14,7 +13,6 @@ interface PagerProps extends WithTranslation {
   current: number;
   pages: number;
   modifier?: string;
-  i18nOLD: i18nType;
   identifier?: string;
 }
 

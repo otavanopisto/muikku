@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { getName } from "~/util/modifiers";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/rich-text.scss";
@@ -36,13 +35,13 @@ import {
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * DiscussionThreadsProps
  */
 interface DiscussionThreadsProps extends WithTranslation {
   discussion: DiscussionType;
-  i18nOLD: i18nType;
   status: StatusType;
   subscribeDiscussionThread: SubscribeDiscussionThread;
   unsubscribeDiscussionThread: UnsubscribeDiscustionThread;
@@ -284,7 +283,7 @@ class DDiscussionThreads extends React.Component<
                       user,
                       this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                     )}
-                  , {this.props.i18nOLD.time.format(thread.created)}
+                  , {localizeTime(thread.created)}
                 </span>
               </div>
               <div className="application-list__item-footer-content-aside">
@@ -302,7 +301,7 @@ class DDiscussionThreads extends React.Component<
                   <span>
                     {this.props.i18n.t("labels.lastMessage", {
                       ns: "messaging",
-                      time: this.props.i18nOLD.time.format(thread.updated),
+                      time: localizeTime(thread.updated),
                     })}
                   </span>
                 </div>
@@ -340,7 +339,6 @@ class DDiscussionThreads extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     status: state.status,
   };

@@ -10,7 +10,6 @@ import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import NotesItemList from "./notes-item-list";
 import { ButtonPill } from "~/components/general/button";
 import NotesItemNew from "./notes-item-new";
@@ -43,10 +42,6 @@ interface NotesProps {
    * Handles display notification from redux side
    */
   displayNotification: DisplayNotificationTriggerType;
-  /**
-   * For localization
-   */
-  i18nOLD: i18nType;
 }
 
 /**
@@ -215,16 +210,6 @@ const Notes: React.FC<NotesProps> = (props) => {
 };
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -232,7 +217,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notes);
+export default connect(null, mapDispatchToProps)(Notes);
 
 /**
  * NotesToolbarProps

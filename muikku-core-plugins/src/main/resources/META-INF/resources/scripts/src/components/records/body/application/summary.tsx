@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/glyph.scss";
@@ -34,7 +34,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * SummaryProps
  */
 interface SummaryProps extends WithTranslation {
-  i18nOLD: i18nType;
   records: RecordsType;
   contacts: Contacts;
   summary: SummaryType;
@@ -85,7 +84,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
                 <span className="application-sub-panel__single-entry">
                   {this.props.summary.data.studentsDetails.studyStartDate
-                    ? this.props.i18nOLD.time.format(
+                    ? localizeTime(
                         this.props.summary.data.studentsDetails.studyStartDate
                       )
                     : t("content.empty", {
@@ -105,7 +104,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 <span className="application-sub-panel__single-entry">
                   {this.props.summary.data.studentsDetails.studyEndDate ||
                   this.props.summary.data.studentsDetails.studyTimeEnd
-                    ? this.props.i18nOLD.time.format(
+                    ? localizeTime(
                         this.props.summary.data.studentsDetails.studyEndDate ||
                           this.props.summary.data.studentsDetails.studyTimeEnd
                       )
@@ -177,14 +176,14 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                     context: "xa",
                                   })}
                                   &nbsp;
-                                  {this.props.i18nOLD.time.format(
+                                  {localizeTime(
                                     counselor.properties[
                                       "profile-vacation-start"
                                     ]
                                   )}
                                   {counselor.properties["profile-vacation-end"]
                                     ? "–" +
-                                      this.props.i18nOLD.time.format(
+                                      localizeTime(
                                         counselor.properties[
                                           "profile-vacation-end"
                                         ]
@@ -419,7 +418,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     records: state.records,
     contacts: state.contacts,
     summary: state.summary,

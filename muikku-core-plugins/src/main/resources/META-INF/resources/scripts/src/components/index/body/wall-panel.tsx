@@ -44,7 +44,6 @@ const WallPanel: React.FC<WallProps> = (props) => {
         {notes.length > 0 ? (
           notes.map((note) => (
             <Note
-              // i18nOLD={i18nOLD}
               isCreator={note.creator === status.userId}
               key={note.id}
               note={note}

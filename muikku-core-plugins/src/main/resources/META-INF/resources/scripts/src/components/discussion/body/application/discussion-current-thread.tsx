@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import {localizeTime} from "~/locales/i18n";
 import {
   DiscussionType,
   DiscussionUserType,
@@ -45,7 +45,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface DiscussionCurrentThreadProps extends WithTranslation {
   discussion: DiscussionType;
-  i18nOLD: i18nType;
   userId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissions: any;
@@ -311,7 +310,7 @@ class DiscussionCurrentThread extends React.Component<
             aside={
               <span style={{ display: "flex", alignItems: "center" }}>
                 <span>
-                  {this.props.i18nOLD.time.format(
+                  {localizeTime(
                     this.props.discussion.current.created
                   )}
                 </span>
@@ -345,7 +344,7 @@ class DiscussionCurrentThread extends React.Component<
                       {
                         context: "in",
                         ns: "messaging",
-                        time: this.props.i18nOLD.time.format(
+                        time: localizeTime(
                           this.props.discussion.current.lastModified
                         ),
                       }
@@ -497,7 +496,6 @@ class DiscussionCurrentThread extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     discussion: state.discussion,
     userId: state.status.userId,
     permissions: state.status.permissions,

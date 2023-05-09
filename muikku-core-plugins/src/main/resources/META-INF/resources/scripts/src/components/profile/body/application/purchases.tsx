@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import {
   ProfileType,
   PurchaseType,
@@ -28,7 +28,6 @@ import { AnyActionType } from "~/actions";
  * IPurchasesProps
  */
 interface IPurchasesProps extends WithTranslation {
-  i18nOLD: i18nType;
   profile: ProfileType;
 }
 
@@ -144,12 +143,12 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           </span>
                           <span>
                             {this.props.t("labels.created")}:{" "}
-                            {this.props.i18nOLD.time.format(p.created)}
+                            {localizeTime(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
                               {this.props.t("labels.paid")} :{" "}
-                              {this.props.i18nOLD.time.format(p.paid)}
+                              {localizeTime(p.paid)}
                             </span>
                           ) : null}
                         </span>
@@ -184,7 +183,6 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                               ]}
                               initialSubject={getErrorMessageTitle(p)}
                               initialMessage={getErrorMessageContent(
-                                this.props.i18nOLD,
                                 p,
                                 this.props.t("content.state", {
                                   context: p.state,
@@ -248,12 +246,12 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           </span>
                           <span>
                             {this.props.t("labels.created")}:{" "}
-                            {this.props.i18nOLD.time.format(p.created)}
+                            {localizeTime(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
                               {this.props.t("labels.paid")}:{" "}
-                              {this.props.i18nOLD.time.format(p.paid)}
+                              {localizeTime(p.paid)}
                             </span>
                           ) : null}
                         </span>
@@ -286,7 +284,6 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     profile: state.profile,
   };
 }

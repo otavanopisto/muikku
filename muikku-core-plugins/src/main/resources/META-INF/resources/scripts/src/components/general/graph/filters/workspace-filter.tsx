@@ -1,4 +1,3 @@
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 import { withTranslation, WithTranslation } from "react-i18next";

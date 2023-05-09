@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -29,7 +28,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * UploadImageDialogProps
  */
 interface UploadImageDialogProps extends WithTranslation {
-  i18nOLD: i18nType;
   displayNotification: DisplayNotificationTriggerType;
   uploadProfileImage: UploadProfileImageTriggerType;
 
@@ -202,7 +200,7 @@ class UploadImageDialog extends React.Component<
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        title={this.props.t("labels.profileImage", {ns: "profile"})}
+        title={this.props.t("labels.profileImage", { ns: "profile" })}
         content={content}
         footer={footer}
         modifier="upload-image"
@@ -210,16 +208,6 @@ class UploadImageDialog extends React.Component<
       />
     );
   }
-}
-
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
 }
 
 /**
@@ -234,5 +222,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(UploadImageDialog)
+  connect(null, mapDispatchToProps)(UploadImageDialog)
 );

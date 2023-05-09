@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -25,7 +24,6 @@ import { AnyActionType } from "~/actions";
  */
 interface UpdateUsernamePasswordDialogProps
   extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   profile: ProfileType;
@@ -295,7 +293,6 @@ class UpdateUsernamePasswordDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     profile: state.profile,
   };
 }

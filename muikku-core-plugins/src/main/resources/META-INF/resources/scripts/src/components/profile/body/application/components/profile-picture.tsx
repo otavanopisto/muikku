@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import { ProfileType } from "~/reducers/main-function/profile";
 import UploadImageDialog from "../../../dialogs/upload-image";
@@ -16,7 +15,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * ProfilePictureProps
  */
 interface ProfilePictureProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   status: StatusType;
   profile: ProfileType;
 }
@@ -123,7 +121,7 @@ class ProfilePicture extends React.Component<
   render() {
     return (
       <div className="form-element">
-        <label>{this.props.t("labels.profileImage", {ns: "profile"})}</label>
+        <label>{this.props.t("labels.profileImage", { ns: "profile" })}</label>
         <div className="application-sub-panel__item-data form-element">
           {!this.props.status.hasImage ? (
             <div className="change-image">
@@ -205,19 +203,11 @@ class ProfilePicture extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     profile: state.profile,
   };
 }
 
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
 export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(ProfilePicture)
+  connect(mapStateToProps)(ProfilePicture)
 );

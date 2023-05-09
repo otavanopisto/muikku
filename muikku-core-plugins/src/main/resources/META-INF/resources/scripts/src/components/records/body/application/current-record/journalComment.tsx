@@ -8,7 +8,7 @@ import {
   ApplicationListItemBody,
 } from "~/components/general/application-list";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
@@ -16,7 +16,6 @@ import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
  * JournalCommentProps
  */
 interface JournalCommentProps extends JournalComment {
-  i18nOLD: i18nType;
   status: StatusType;
 }
 
@@ -26,26 +25,17 @@ interface JournalCommentProps extends JournalComment {
  * @returns JSX.Element
  */
 const JournalComment: React.FC<JournalCommentProps> = (props) => {
-  const {
-    comment,
-    i18nOLD,
-    status,
-    created,
-    id,
-    firstName,
-    lastName,
-    authorId,
-  } = props;
+  const { comment, status, created, id, firstName, lastName, authorId } = props;
   const creatorIsMe = status.userId === authorId;
   const { t } = useTranslation();
   const creatorName = creatorIsMe
     ? t("labels.self")
     : `${firstName} ${lastName}`;
 
-  const formatedDate = `${i18nOLD.time.format(
+  const formatedDate = `${localizeTime(created, "l")} - ${localizeTime(
     created,
-    "l"
-  )} - ${i18nOLD.time.format(created, "LT")}`;
+    "LT"
+  )}`;
 
   return (
     <ApplicationListItem key={id}>
@@ -67,7 +57,6 @@ const JournalComment: React.FC<JournalCommentProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

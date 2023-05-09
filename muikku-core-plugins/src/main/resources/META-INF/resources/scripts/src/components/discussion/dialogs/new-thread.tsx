@@ -4,7 +4,6 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { DiscussionType } from "~/reducers/discussion";
 import {
   createDiscussionThread,

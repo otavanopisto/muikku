@@ -21,15 +21,14 @@ import {
   EvaluationJournalFilters,
   EvaluationStudyDiaryEvent,
 } from "~/@types/evaluation";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "~/components/general/dropdown";
+import { localizeTime } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventListProps {
-  i18nOLD: i18nType;
   selectedAssessment: AssessmentRequest;
   evaluation: EvaluationState;
   deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType;
@@ -44,7 +43,7 @@ interface EvaluationDiaryEventListProps {
 const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
   props
 ) => {
-  const { evaluation, i18nOLD } = props;
+  const { evaluation } = props;
 
   const { t } = useTranslation(["journal", "evaluation", "common"]);
 
@@ -246,7 +245,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                     {t("labels.feedbackDate", { ns: "journal" })}:
                   </span>
                   <span className="evaluation-modal__item-meta-item-data">
-                    {i18nOLD.time.format(journalFeedback.created, "l")}
+                    {localizeTime(journalFeedback.created, "l")}
                   </span>
                 </div>
               </div>
@@ -389,7 +388,6 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     evaluation: state.evaluations,
   };
 }

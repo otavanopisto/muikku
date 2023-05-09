@@ -20,7 +20,6 @@ interface NoteProps {
   onStatusUpdate: (id: number, status: NotesItemStatus) => void;
   onUpdate: (id: number, update: NotesItemUpdate) => void;
   note: NotesItemRead;
-  // i18nOLD: i18nType;
 }
 
 /**

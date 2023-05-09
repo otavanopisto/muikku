@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { Assessment } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -12,7 +12,6 @@ import { useTranslation } from "react-i18next";
  * AssessmentProps
  */
 interface RecordsAssessmentIndicatorProps {
-  i18nOLD: i18nType;
   assessment?: Assessment;
   isCombinationWorkspace: boolean;
 }
@@ -25,7 +24,7 @@ interface RecordsAssessmentIndicatorProps {
 const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
   props
 ) => {
-  const { i18nOLD, assessment, isCombinationWorkspace } = props;
+  const { assessment, isCombinationWorkspace } = props;
 
   const { t } = useTranslation(["studies", "common"]);
 
@@ -43,7 +42,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluablesDone", {
               ns: "studies",
-              date: i18nOLD.time.format(assessment.date),
+              date: localizeTime(assessment.date),
             }) + getShortenGradeExtension(assessment.grade)}
           </span>
         }
@@ -73,7 +72,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluablesDone", {
               ns: "studies",
-              date: i18nOLD.time.format(assessment.date),
+              date: localizeTime(assessment.date),
             }) +
               " - " +
               status}
@@ -101,7 +100,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
               {assessment.grade
                 ? t("labels.evaluablesDone", {
                     ns: "studies",
-                    date: i18nOLD.time.format(assessment.date),
+                    date: localizeTime(assessment.date),
                   }) + getShortenGradeExtension(assessment.grade)
                 : t("content.notEvaluated", {
                     ns: "studies",
@@ -124,24 +123,4 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
   return null;
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RecordsAssessmentIndicator);
+export default RecordsAssessmentIndicator;

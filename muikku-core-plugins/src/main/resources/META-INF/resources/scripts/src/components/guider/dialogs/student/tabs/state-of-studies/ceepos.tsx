@@ -1,7 +1,7 @@
 import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -31,7 +31,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * CeeposProps
  */
 interface CeeposProps extends WithTranslation {
-  i18nOLD: i18nType;
   status: StatusType;
   guider: GuiderType;
   locale: string;
@@ -320,12 +319,12 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       </span>
                       <span>
                         {this.props.i18n.t("labels.created")}:{" "}
-                        {this.props.i18nOLD.time.format(p.created)}
+                        {localizeTime(p.created)}
                       </span>
                       {p.paid ? (
                         <span>
                           {this.props.i18n.t("labels.paid")}:{" "}
-                          {this.props.i18nOLD.time.format(p.paid)}
+                          {localizeTime(p.paid)}
                         </span>
                       ) : null}
                     </span>
@@ -415,7 +414,6 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     guider: state.guider,
     locale: state.locales.current,
     status: state.status,

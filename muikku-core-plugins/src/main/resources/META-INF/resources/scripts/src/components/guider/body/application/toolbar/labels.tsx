@@ -9,7 +9,6 @@ import {
   flatten,
 } from "~/util/modifiers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   createGuiderFilterLabel,
   CreateGuiderFilterLabelTriggerType,
@@ -39,7 +38,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * GuiderToolbarLabelsProps
  */
 interface GuiderToolbarLabelsProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   guider: GuiderType;
   createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType;
   addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType;
@@ -257,7 +255,6 @@ class GuiderToolbarLabels extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     guider: state.guider,
   };
 }

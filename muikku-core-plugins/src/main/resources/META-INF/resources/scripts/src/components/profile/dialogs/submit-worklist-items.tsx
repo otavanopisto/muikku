@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import { bindActionCreators } from "redux";
@@ -21,7 +20,6 @@ import { AnyActionType } from "~/actions";
  * SubmitWorklistItemsDialogProps
  */
 interface SubmitWorklistItemsDialogProps extends WithTranslation {
-  i18nOLD: i18nType;
   summary: WorklistItemsSummary;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
@@ -113,16 +111,6 @@ class SubmitWorklistItemsDialog extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -131,5 +119,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default withTranslation(["worklist"])(
-  connect(mapStateToProps, mapDispatchToProps)(SubmitWorklistItemsDialog)
+  connect(null, mapDispatchToProps)(SubmitWorklistItemsDialog)
 );

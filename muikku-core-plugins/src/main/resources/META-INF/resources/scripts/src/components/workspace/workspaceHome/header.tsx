@@ -5,7 +5,7 @@ import {
   WorkspaceCurriculumFilterListType,
   WorkspaceType,
 } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import ProgressData from "../progressData";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
@@ -25,7 +25,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface WorkspaceHomeHeaderProps extends WithTranslation {
   workspace: WorkspaceType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
-  i18nOLD: i18nType;
   status: StatusType;
   updateWorkspace: UpdateWorkspaceTriggerType;
 }
@@ -295,10 +294,10 @@ class WorkspaceHomeHeader extends React.Component<
               <span className="meta__item-description">
                 {t("labels.workspaceDates", {
                   ns: "workspace",
-                  beginDate: this.props.i18nOLD.time.format(
+                  beginDate: localizeTime(
                     this.props.workspace.additionalInfo.beginDate
                   ),
-                  endDate: this.props.i18nOLD.time.format(
+                  endDate: localizeTime(
                     this.props.workspace.additionalInfo.endDate
                   ),
                 })}
@@ -329,7 +328,6 @@ class WorkspaceHomeHeader extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     availableCurriculums: state.workspaces.availableCurriculums,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,

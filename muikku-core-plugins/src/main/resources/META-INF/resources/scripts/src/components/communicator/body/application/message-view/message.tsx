@@ -4,8 +4,8 @@ import {
   MessageThreadLabelListType,
 } from "~/reducers/main-function/messages";
 import Link from "~/components/general/link";
+import {localizeTime} from "~/locales/i18n";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { connect, Dispatch } from "react-redux";
 import { ContactRecipientType, UserType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
@@ -21,6 +21,7 @@ import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
 import { WithTranslation, withTranslation } from "react-i18next";
 
+
 /**
  * MessageProps
  */
@@ -28,7 +29,6 @@ interface MessageProps extends WithTranslation {
   message: MessageType;
   status: StatusType;
   signature: MessageSignatureType;
-  i18nOLD: i18nType;
   labels?: MessageThreadLabelListType;
 }
 
@@ -324,7 +324,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 // TODO: use i18next
                 aria-label={this.props.t("wcag.date", { ns: "messaging" })}
               >
-                {this.props.i18nOLD.time.format(this.props.message.created)}
+                {localizeTime(this.props.message.created)}
               </span>
             </div>
           </div>
@@ -427,7 +427,6 @@ class Message extends React.Component<MessageProps, MessageState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     signature: state.messages && state.messages.signature,
   };

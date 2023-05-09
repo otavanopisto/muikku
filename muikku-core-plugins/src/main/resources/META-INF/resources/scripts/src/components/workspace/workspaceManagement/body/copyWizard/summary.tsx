@@ -1,6 +1,6 @@
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import { CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
 import Button from "~/components/general/button";
@@ -15,7 +15,6 @@ import { bindActionCreators } from "redux";
  */
 interface StepProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
   getStore: () => CopyWizardStoreType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateStore: (u: CopyWizardStoreUpdateType) => any;
@@ -78,7 +77,7 @@ class Step extends React.Component<StepProps, StepState> {
             {t("labels.begingDate_copySummary", {
               ns: "workspace",
               beginDate: beginDate
-                ? this.props.i18nOLD.time.format(beginDate)
+                ? localizeTime(beginDate)
                 : t("labels.noBeginDate", { ns: "workspace" }),
             })}
           </p>
@@ -86,7 +85,7 @@ class Step extends React.Component<StepProps, StepState> {
             {t("labels.endDate_copySummary", {
               ns: "workspace",
               endDate: endDate
-                ? this.props.i18nOLD.time.format(endDate)
+                ? localizeTime(endDate)
                 : t("labels.noEndDate", { ns: "workspace" }),
             })}
           </p>
@@ -149,24 +148,4 @@ class Step extends React.Component<StepProps, StepState> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default withTranslation(["workspace", "common"])(
-  connect(mapStateToProps, mapDispatchToProps)(Step)
-);
+export default withTranslation(["workspace", "common"])(Step);

@@ -2,10 +2,9 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Link from "../../general/link";
 import { MessageThreadListType } from "~/reducers/main-function/messages";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
-
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -13,7 +12,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * LastMessagesPanelProps
  */
 interface LastMessagesPanelProps extends WithTranslation {
-  i18nOLD: i18nType;
   lastThreads: MessageThreadListType;
 }
 
@@ -62,7 +60,7 @@ class LastMessagesPanel extends React.Component<
                     {thread.caption}
                   </span>
                   <span className="item-list__latest-message-date">
-                    {this.props.i18nOLD.time.format(thread.created)}
+                    {localizeTime(thread.created)}
                   </span>
                 </span>
               </Link>
@@ -84,18 +82,10 @@ class LastMessagesPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     lastThreads: state.messages.threads,
   };
 }
 
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
 export default withTranslation(["frontPage", "messaging"])(
-  connect(mapStateToProps, mapDispatchToProps)(LastMessagesPanel)
+  connect(mapStateToProps)(LastMessagesPanel)
 );

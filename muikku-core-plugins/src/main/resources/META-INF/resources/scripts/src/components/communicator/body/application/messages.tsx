@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { colorIntToHex, getName } from "~/util/modifiers";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import {localizeTime} from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -47,7 +47,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface CommunicatorMessagesProps extends WithTranslation<["common"]> {
   threads: MessageThreadListType;
   hasMore: boolean;
-  i18nOLD: i18nType;
   state: MessagesStateType;
   searchMessages: MessageSearchResult[];
   selectedThreads: MessageThreadListType;
@@ -289,7 +288,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                     </span>
                   </div>
                   <div className="application-list__header-item-date">
-                    {this.props.i18nOLD.time.format(message.created)}
+                    {localizeTime(message.created)}
                   </div>
                 </ApplicationListItemHeader>
                 <ApplicationListItemBody modifiers="communicator-message">
@@ -426,7 +425,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                         ns: "messaging",
                       })}
                     >
-                      {this.props.i18nOLD.time.format(
+                      {localizeTime(
                         thread.threadLatestMessageDate
                       )}
                     </div>
@@ -483,7 +482,6 @@ class CommunicatorMessages extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     threads: state.messages.threads,
     searchMessages: state.messages.searchMessages,
     hasMore: state.messages.hasMore,

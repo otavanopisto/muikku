@@ -4,7 +4,6 @@
  * https://docs.amcharts.com/3/javascriptcharts
  */
 
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
 import WorkspaceFilter from "./filters/workspace-filter";

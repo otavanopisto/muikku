@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/course.scss";
@@ -47,7 +47,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * StateOfStudiesProps
  */
 interface StateOfStudiesProps extends WithTranslation {
-  i18nOLD: i18nType;
   guider: GuiderType;
   status: StatusType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
@@ -173,7 +172,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyStartDate
-              ? this.props.i18nOLD.time.format(
+              ? localizeTime(
                   this.props.guider.currentStudent.basic.studyStartDate
                 )
               : "-"}
@@ -184,7 +183,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyEndDate
-              ? this.props.i18nOLD.time.format(
+              ? localizeTime(
                   this.props.guider.currentStudent.basic.studyEndDate
                 )
               : "-"}
@@ -195,7 +194,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyTimeEnd
-              ? this.props.i18nOLD.time.format(
+              ? localizeTime(
                   this.props.guider.currentStudent.basic.studyTimeEnd
                 )
               : "-"}
@@ -295,7 +294,7 @@ class StateOfStudies extends React.Component<
           >
             <ApplicationSubPanelItem.Content>
               {this.props.guider.currentStudent.basic.lastLogin
-                ? this.props.i18nOLD.time.format(
+                ? localizeTime(
                     this.props.guider.currentStudent.basic.lastLogin,
                     "LLL"
                   )
@@ -315,7 +314,7 @@ class StateOfStudies extends React.Component<
                 key={notification}
               >
                 <ApplicationSubPanelItem.Content>
-                  {this.props.i18nOLD.time.format(
+                  {localizeTime(
                     this.props.guider.currentStudent.notifications[notification]
                   )}
                 </ApplicationSubPanelItem.Content>
@@ -450,7 +449,6 @@ class StateOfStudies extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     guider: state.guider,
     status: state.status,
   };

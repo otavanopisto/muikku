@@ -9,14 +9,12 @@ import GeneralInformation from "./application/general-information";
 import Security from "./application/security";
 import VacationSettings from "./application/vacation-settings";
 import WorkList from "./application/work-list";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Purchases from "./application/purchases";
 
 /**
  * ProfileApplicationProps
  */
 interface ProfileApplicationProps {
-  i18nOLD: i18nType;
   aside: React.ReactElement;
   status: StatusType;
 }
@@ -65,7 +63,6 @@ class ProfileApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

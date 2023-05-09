@@ -6,6 +6,7 @@ import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { UserIndexType, ContactRecipientType } from "~/reducers/user-index";
 import { i18nType } from "reducers/base/i18nOLD";
+import {localizeTime} from "~/locales/i18n";
 import { AnnouncementType } from "~/reducers/announcements";
 import { AnyActionType } from "~/actions";
 import DatePicker from "react-datepicker";
@@ -426,10 +427,10 @@ class NewEditAnnouncement extends SessionStateComponent<
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
-            this.props.i18nOLD.time.format(this.state.endDate, "YYYY-MM-DD"),
+            localizeTime(this.state.endDate, "YYYY-MM-DD"),
           startDate:
             this.state.startDate &&
-            this.props.i18nOLD.time.format(this.state.startDate, "YYYY-MM-DD"),
+            localizeTime(this.state.startDate, "YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget
             .filter((w) => w.type === "usergroup")
             .map((w) => (w.value as any).id),
@@ -465,10 +466,10 @@ class NewEditAnnouncement extends SessionStateComponent<
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
-            this.props.i18nOLD.time.format(this.state.endDate, "YYYY-MM-DD"),
+            localizeTime(this.state.endDate, "YYYY-MM-DD"),
           startDate:
             this.state.startDate &&
-            this.props.i18nOLD.time.format(this.state.startDate, "YYYY-MM-DD"),
+            localizeTime(this.state.startDate, "YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget
             .filter((w) => w.type === "usergroup")
             .map((w) => (w.value as any).id),

@@ -32,6 +32,7 @@ import {
   loadCurrentOrganizationWorkspaceStudents,
 } from "~/actions/workspaces/organization";
 import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import AutofillSelector, {
@@ -1049,7 +1050,7 @@ class OrganizationEditWorkspace extends React.Component<
               <DialogRowContent modifiers="summary-dates">
                 <span>
                   {this.state.beginDate
-                    ? this.props.i18nOLD.time.format(this.state.beginDate)
+                    ? localizeTime(this.state.beginDate)
                     : t("content.empty", {
                         ns: "workspace",
                         context: "beginDate",
@@ -1057,7 +1058,7 @@ class OrganizationEditWorkspace extends React.Component<
                 </span>
                 <span>
                   {this.state.endDate
-                    ? this.props.i18nOLD.time.format(this.state.endDate)
+                    ? localizeTime(this.state.endDate)
                     : t("content.empty", {
                         ns: "workspace",
                         context: "endDate",

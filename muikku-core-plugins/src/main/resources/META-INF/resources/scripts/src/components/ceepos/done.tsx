@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import {localizeTime} from "~/locales/i18n";
 import { CeeposState } from "~/reducers/main-function/ceepos";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
@@ -18,7 +18,6 @@ import "~/sass/elements/glyph.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 interface CeeposDoneProps extends WithTranslation {
-  i18nOLD: i18nType;
   pay?: boolean;
   done?: boolean;
   status?: number;
@@ -67,7 +66,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                 })}
               </div>
               <div>
-                {this.props.i18nOLD.time.format(
+                {localizeTime(
                   this.props.ceepos.purchase.created
                 )}
               </div>
@@ -82,7 +81,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                   })}
                 </div>
                 <div>
-                  {this.props.i18nOLD.time.format(
+                  {localizeTime(
                     this.props.ceepos.purchase.paid
                   )}
                 </div>
@@ -178,7 +177,6 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                     this.props.ceepos.purchase
                   )}
                   initialMessage={getErrorMessageContent(
-                    this.props.i18nOLD,
                     this.props.ceepos.purchase,
                     this.props.ceepos.payStatusMessage
                   )}
@@ -219,7 +217,6 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
 
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     ceepos: state.ceepos,
   };
 }
