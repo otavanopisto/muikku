@@ -352,4 +352,8 @@ public class WorkspaceEntityController {
     return educationTypeMapping;
   }
   
+  public List<WorkspaceEntity> listCommonWorkspaces (UserSchoolDataIdentifier teacher, UserSchoolDataIdentifier student){
+    return workspaceEntityDAO.listCommonWorkspaces(teacher, student);
+  }
+  
 }

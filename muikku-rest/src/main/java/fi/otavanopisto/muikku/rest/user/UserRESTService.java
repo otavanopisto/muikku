@@ -316,6 +316,7 @@ public class UserRESTService extends AbstractRESTService {
       schoolDataBridgeSessionController.endSystemSession();
     }
     
+ 
 
     for (UserInfo d : data) {
       
@@ -381,6 +382,41 @@ public class UserRESTService extends AbstractRESTService {
     result.put("userId", userEntity.getId().toString());
     result.put("schoolDataIdentifier", userEntity.defaultSchoolDataIdentifier().getDataSource() + "-" + userEntity.defaultSchoolDataIdentifier().getIdentifier());
 
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    EnvironmentRoleArchetype loggedUserRole = null;
+    if (loggedUser.defaultSchoolDataIdentifier() != null) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+          findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser.defaultSchoolDataIdentifier());
+      loggedUserRole = userSchoolDataIdentifier.getRole().getArchetype();
+    }
+    
+    if (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+      
+      if (loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+        result.put("loggedUserHasPermission", "true");
+      } else if (loggedUserRole.equals(EnvironmentRoleArchetype.TEACHER)) {
+        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
+        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+
+        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
+        
+        if (!commonWorkspaces.isEmpty()) {
+          result.put("loggedUserHasPermission", "true");
+        } else {
+          result.put("loggedUserHasPermission", "false");
+        }
+      } else {
+        Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
+        
+        if (amICounselor) {
+          result.put("loggedUserHasPermission", "true");
+        } else {
+          result.put("loggedUserHasPermission", "false");
+        }
+      }
+      
+    }
+    
     return Response.ok(result).build();
   }
   
