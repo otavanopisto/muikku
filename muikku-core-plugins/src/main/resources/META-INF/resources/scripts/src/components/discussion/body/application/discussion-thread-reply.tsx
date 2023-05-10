@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   DiscussionUserType,
   DiscussionThreadReplyType,
@@ -22,6 +21,7 @@ import {
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
 import { AnyActionType } from "~/actions";
+import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -29,7 +29,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface DiscussionThreadReplyProps extends WithTranslation {
   discussionItem: DiscussionThreadReplyType;
-  i18nOLD: i18nType;
   status: StatusType;
   user: DiscussionUserType;
   avatar?: JSX.Element;
@@ -116,11 +115,7 @@ class DiscussionThreadReply extends React.Component<
         hidden={isHidden}
       >
         <DiscussionThreadHeader
-          aside={
-            <span>
-              {this.props.i18nOLD.time.format(discussionItem.created)}
-            </span>
-          }
+          aside={<span>{localizeTime.date(discussionItem.created)}</span>}
         >
           <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">
             {getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}
@@ -143,9 +138,7 @@ class DiscussionThreadReply extends React.Component<
                   <span className="application-list__item-edited">
                     {this.props.i18n.t("labels.edited", {
                       context: "in",
-                      time: this.props.i18nOLD.time.format(
-                        discussionItem.lastModified
-                      ),
+                      time: localizeTime.date(discussionItem.lastModified),
                     })}
                   </span>
                 ) : null}
@@ -156,9 +149,7 @@ class DiscussionThreadReply extends React.Component<
                   <span className="application-list__item-edited">
                     {this.props.i18n.t("labels.edited", {
                       context: "in",
-                      time: this.props.i18nOLD.time.format(
-                        discussionItem.lastModified
-                      ),
+                      time: localizeTime.date(discussionItem.lastModified),
                     })}
                   </span>
                 ) : null}
@@ -260,7 +251,6 @@ class DiscussionThreadReply extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

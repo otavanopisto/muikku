@@ -172,7 +172,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyStartDate
-              ? localizeTime(
+              ? localizeTime.date(
                   this.props.guider.currentStudent.basic.studyStartDate
                 )
               : "-"}
@@ -183,7 +183,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyEndDate
-              ? localizeTime(
+              ? localizeTime.date(
                   this.props.guider.currentStudent.basic.studyEndDate
                 )
               : "-"}
@@ -194,7 +194,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyTimeEnd
-              ? localizeTime(
+              ? localizeTime.date(
                   this.props.guider.currentStudent.basic.studyTimeEnd
                 )
               : "-"}
@@ -294,7 +294,7 @@ class StateOfStudies extends React.Component<
           >
             <ApplicationSubPanelItem.Content>
               {this.props.guider.currentStudent.basic.lastLogin
-                ? localizeTime(
+                ? localizeTime.date(
                     this.props.guider.currentStudent.basic.lastLogin,
                     "LLL"
                   )
@@ -314,7 +314,7 @@ class StateOfStudies extends React.Component<
                 key={notification}
               >
                 <ApplicationSubPanelItem.Content>
-                  {localizeTime(
+                  {localizeTime.date(
                     this.props.guider.currentStudent.notifications[notification]
                   )}
                 </ApplicationSubPanelItem.Content>

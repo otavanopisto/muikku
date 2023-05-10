@@ -294,10 +294,10 @@ class WorkspaceHomeHeader extends React.Component<
               <span className="meta__item-description">
                 {t("labels.workspaceDates", {
                   ns: "workspace",
-                  beginDate: localizeTime(
+                  beginDate: localizeTime.date(
                     this.props.workspace.additionalInfo.beginDate
                   ),
-                  endDate: localizeTime(
+                  endDate: localizeTime.date(
                     this.props.workspace.additionalInfo.endDate
                   ),
                 })}

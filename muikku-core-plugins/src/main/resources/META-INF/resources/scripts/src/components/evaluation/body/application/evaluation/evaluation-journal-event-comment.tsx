@@ -75,10 +75,10 @@ const EvaluationJournalEventComment: React.FC<
   const creatorName = creatorIsMe
     ? t("labels.self")
     : `${firstName} ${lastName}`;
-  const formatedDate = `${localizeTime(created, "l")} - ${localizeTime(
+  const formatedDate = `${localizeTime.date(
     created,
-    "LT"
-  )}`;
+    "l"
+  )} - ${localizeTime.date(created, "LT")}`;
 
   return (
     <div

@@ -147,7 +147,7 @@ class AnnouncementsPanel extends React.Component<
                 {announcement.caption}
               </span>
               <span className="item-list__announcement-date">
-                {localizeTime(announcement.startDate)}
+                {localizeTime.date(announcement.startDate)}
               </span>
               {announcement.workspaces && announcement.workspaces.length ? (
                 <div className="labels item-list__announcement-workspaces">

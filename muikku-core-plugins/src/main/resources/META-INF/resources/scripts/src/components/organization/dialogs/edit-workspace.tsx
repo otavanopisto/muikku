@@ -31,7 +31,6 @@ import {
   loadCurrentOrganizationWorkspaceStaff,
   loadCurrentOrganizationWorkspaceStudents,
 } from "~/actions/workspaces/organization";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { localizeTime } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
@@ -74,7 +73,6 @@ type UserCategoryType = "students" | "staff";
 interface OrganizationEditWorkspaceProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  i18nOLD: i18nType;
   users: UsersSelectType;
   workspace: WorkspaceType;
   currentWorkspace: WorkspaceType;
@@ -399,12 +397,12 @@ class OrganizationEditWorkspace extends React.Component<
         this.setState({
           workspaceAccess: workspace.access,
           beginDate: workspace.details.beginDate
-            ? this.props.i18nOLD.time
+            ? localizeTime
                 .getLocalizedMoment(workspace.details.beginDate)
                 .toDate()
             : null,
           endDate: workspace.details.endDate
-            ? this.props.i18nOLD.time
+            ? localizeTime
                 .getLocalizedMoment(workspace.details.endDate)
                 .toDate()
             : null,
@@ -721,9 +719,7 @@ class OrganizationEditWorkspace extends React.Component<
                 id="workspaceBeginDate"
                 maxDate={this.state.endDate}
                 updateField={this.handleDateChange.bind(this, "beginDate")}
-                locale={outputCorrectDatePickerLocale(
-                  this.props.i18nOLD.time.getLocale()
-                )}
+                locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
                 selected={this.state.beginDate}
                 modifiers="organization-workspace-date"
                 labels={{
@@ -735,9 +731,7 @@ class OrganizationEditWorkspace extends React.Component<
                 id="workspaceEndDate"
                 minDate={this.state.beginDate}
                 updateField={this.handleDateChange.bind(this, "endDate")}
-                locale={outputCorrectDatePickerLocale(
-                  this.props.i18nOLD.time.getLocale()
-                )}
+                locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
                 selected={this.state.endDate}
                 modifiers="organization-workspace-date"
                 labels={{
@@ -1050,7 +1044,7 @@ class OrganizationEditWorkspace extends React.Component<
               <DialogRowContent modifiers="summary-dates">
                 <span>
                   {this.state.beginDate
-                    ? localizeTime(this.state.beginDate)
+                    ? localizeTime.date(this.state.beginDate)
                     : t("content.empty", {
                         ns: "workspace",
                         context: "beginDate",
@@ -1058,7 +1052,7 @@ class OrganizationEditWorkspace extends React.Component<
                 </span>
                 <span>
                   {this.state.endDate
-                    ? localizeTime(this.state.endDate)
+                    ? localizeTime.date(this.state.endDate)
                     : t("content.empty", {
                         ns: "workspace",
                         context: "endDate",
@@ -1317,7 +1311,6 @@ class OrganizationEditWorkspace extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     users: state.userSelect,
     currentWorkspace: state.organizationWorkspaces.currentWorkspace,
   };

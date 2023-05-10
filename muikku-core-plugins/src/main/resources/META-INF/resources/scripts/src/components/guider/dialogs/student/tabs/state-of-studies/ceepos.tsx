@@ -319,12 +319,12 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       </span>
                       <span>
                         {this.props.i18n.t("labels.created")}:{" "}
-                        {localizeTime(p.created)}
+                        {localizeTime.date(p.created)}
                       </span>
                       {p.paid ? (
                         <span>
                           {this.props.i18n.t("labels.paid")}:{" "}
-                          {localizeTime(p.paid)}
+                          {localizeTime.date(p.paid)}
                         </span>
                       ) : null}
                     </span>

@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { colorIntToHex, getName } from "~/util/modifiers";
-import {localizeTime} from "~/locales/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -288,7 +288,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                     </span>
                   </div>
                   <div className="application-list__header-item-date">
-                    {localizeTime(message.created)}
+                    {localizeTime.date(message.created)}
                   </div>
                 </ApplicationListItemHeader>
                 <ApplicationListItemBody modifiers="communicator-message">
@@ -425,9 +425,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                         ns: "messaging",
                       })}
                     >
-                      {localizeTime(
-                        thread.threadLatestMessageDate
-                      )}
+                      {localizeTime.date(thread.threadLatestMessageDate)}
                     </div>
                   </ApplicationListItemHeader>
                   <ApplicationListItemBody modifiers="communicator-message">

@@ -79,7 +79,7 @@ const Journal: React.FC<JournalProps> = (props) => {
           </span>
         </div>
         <div className="application-list__item-header-aside">
-          <span>{localizeTime(journal.created, "L LT")}</span>
+          <span>{localizeTime.date(journal.created, "L LT")}</span>
         </div>
       </ApplicationListItemHeader>
       <ApplicationListItemBody className="application-list__item-body">

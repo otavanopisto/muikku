@@ -60,7 +60,7 @@ class LastMessagesPanel extends React.Component<
                     {thread.caption}
                   </span>
                   <span className="item-list__latest-message-date">
-                    {localizeTime(thread.created)}
+                    {localizeTime.date(thread.created)}
                   </span>
                 </span>
               </Link>

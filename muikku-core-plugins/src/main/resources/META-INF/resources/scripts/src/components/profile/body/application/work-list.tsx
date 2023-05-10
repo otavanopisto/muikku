@@ -8,7 +8,6 @@ import {
   LoadProfileWorklistSectionTriggerType,
 } from "~/actions/main-function/profile";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import {
   ProfileType,
   WorklistTemplate,
@@ -31,7 +30,6 @@ const currentMonthDayLimit = 10;
  * IWorkListProps
  */
 interface IWorkListProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
   insertProfileWorklistItem: InsertProfileWorklistItemTriggerType;
@@ -228,7 +226,6 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <WorkListEditable
-                  i18nOLD={this.props.i18nOLD}
                   base={this.state.currentTemplate}
                   currentMonthDayLimit={currentMonthDayLimit}
                   onSubmit={this.insertNew}
@@ -273,7 +270,6 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     profile: state.profile,
     status: state.status,
   };

@@ -4,7 +4,7 @@ import {
   MessageThreadLabelListType,
 } from "~/reducers/main-function/messages";
 import Link from "~/components/general/link";
-import {localizeTime} from "~/locales/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { ContactRecipientType, UserType } from "~/reducers/user-index";
@@ -20,7 +20,6 @@ import { AnyActionType } from "~/actions";
 import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
 import { WithTranslation, withTranslation } from "react-i18next";
-
 
 /**
  * MessageProps
@@ -324,7 +323,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 // TODO: use i18next
                 aria-label={this.props.t("wcag.date", { ns: "messaging" })}
               >
-                {localizeTime(this.props.message.created)}
+                {localizeTime.date(this.props.message.created)}
               </span>
             </div>
           </div>

@@ -36,7 +36,7 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "evaluationRequest",
-              date: localizeTime(assessment.date),
+              date: localizeTime.date(assessment.date),
             })}
           </span>
         }
@@ -53,7 +53,7 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "interimEvaluationRequest",
-              date: localizeTime(assessment.date),
+              date: localizeTime.date(assessment.date),
             })}
           </span>
         }

@@ -1,14 +1,12 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
 import "~/sass/elements/chat.scss";
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { IBareMessageType } from "./chat";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import DeleteMessageDialog from "./deleteMessageDialog";
+import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -30,7 +28,6 @@ const USER_INFO_CACHE: {
 interface IChatMessageProps extends WithTranslation {
   canToggleInfo: boolean;
   message: IBareMessageType;
-  i18nOLD: i18nType;
   canModerate?: boolean;
   editMessage?: (stanzaId: string, textContent: string) => void;
   deleteMessage?: (stanzaId: string) => void;
@@ -294,7 +291,7 @@ class ChatMessage extends React.Component<
             )}
           </span>
           <span className="chat__message-meta-timestamp">
-            {this.props.i18nOLD.time.formatDaily(this.props.message.timestamp)}
+            {localizeTime.formatDaily(this.props.message.timestamp)}
           </span>
           {(this.props.canModerate || this.props.message.isSelf) &&
           !this.props.message.deleted &&
@@ -370,7 +367,7 @@ class ChatMessage extends React.Component<
               {this.props.message.edited && (
                 <div className="chat__message-edited-info">
                   {this.props.i18n.t("labels.edited")}{" "}
-                  {this.props.i18nOLD.time.formatDaily(
+                  {localizeTime.formatDaily(
                     this.props.message.edited.timestamp
                   )}
                 </div>
@@ -388,21 +385,4 @@ class ChatMessage extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-
-export default withTranslation("messaging")(
-  connect(mapStateToProps, {})(ChatMessage)
-);
-
-
-
+export default withTranslation("messaging")(ChatMessage);

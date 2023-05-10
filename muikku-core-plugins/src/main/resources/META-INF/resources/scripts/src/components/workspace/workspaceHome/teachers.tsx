@@ -118,12 +118,12 @@ class WorkspaceTeachers extends React.Component<
                         <div className="item-list__user-vacation-period">
                           {t("labels.away", { ns: "workspace" })}
                           &nbsp;
-                          {localizeTime(
+                          {localizeTime.date(
                             teacher.properties["profile-vacation-start"]
                           )}
                           {teacher.properties["profile-vacation-end"]
                             ? "–" +
-                              localizeTime(
+                              localizeTime.date(
                                 teacher.properties["profile-vacation-end"]
                               )
                             : null}

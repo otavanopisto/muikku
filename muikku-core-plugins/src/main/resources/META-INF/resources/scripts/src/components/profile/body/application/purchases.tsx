@@ -143,12 +143,12 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           </span>
                           <span>
                             {this.props.t("labels.created")}:{" "}
-                            {localizeTime(p.created)}
+                            {localizeTime.date(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
                               {this.props.t("labels.paid")} :{" "}
-                              {localizeTime(p.paid)}
+                              {localizeTime.date(p.paid)}
                             </span>
                           ) : null}
                         </span>
@@ -246,12 +246,12 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           </span>
                           <span>
                             {this.props.t("labels.created")}:{" "}
-                            {localizeTime(p.created)}
+                            {localizeTime.date(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
                               {this.props.t("labels.paid")}:{" "}
-                              {localizeTime(p.paid)}
+                              {localizeTime.date(p.paid)}
                             </span>
                           ) : null}
                         </span>

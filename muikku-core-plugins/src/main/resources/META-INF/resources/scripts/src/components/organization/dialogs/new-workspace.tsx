@@ -28,7 +28,6 @@ import {
   createWorkspace,
   CreateWorkspaceTriggerType,
 } from "~/actions/workspaces/organization";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import ApplicationList, {
@@ -50,6 +49,7 @@ import {
 import "~/sass/elements/course.scss";
 import { TagItem } from "~/components/general/tag-input";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
 import { AnyActionType } from "~/actions";
 
 /**
@@ -67,7 +67,6 @@ interface ValidationType {
 interface OrganizationNewWorkspaceProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  i18nOLD: i18nType;
   data?: CreateWorkspaceType;
   users: UsersSelectType;
   templates: WorkspaceType[];
@@ -375,7 +374,7 @@ class OrganizationNewWorkspace extends React.Component<
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getLocaledDate(date: any) {
-    return this.props.i18nOLD.time.getLocalizedMoment(date).format("L");
+    return localizeTime.getLocalizedMoment(date).format("L");
   }
 
   /**
@@ -585,7 +584,7 @@ class OrganizationNewWorkspace extends React.Component<
                 modifiers="organization-workspace-date"
                 maxDate={this.state.endDate}
                 updateField={this.handleDateChange.bind(this, "beginDate")}
-                locale={this.props.i18nOLD.time.getLocale()}
+                locale={localizeTime.getLocale()}
                 selected={this.state.beginDate}
                 labels={{
                   label: t("labels.beginDate"),
@@ -596,7 +595,7 @@ class OrganizationNewWorkspace extends React.Component<
                 modifiers="organization-workspace-date"
                 minDate={this.state.beginDate}
                 updateField={this.handleDateChange.bind(this, "endDate")}
-                locale={this.props.i18nOLD.time.getLocale()}
+                locale={localizeTime.getLocale()}
                 selected={this.state.endDate}
                 labels={{
                   label: t("labels.endDate"),
@@ -1020,7 +1019,6 @@ class OrganizationNewWorkspace extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     users: state.userSelect,
     templates: state.organizationWorkspaces.templateWorkspaces,
   };

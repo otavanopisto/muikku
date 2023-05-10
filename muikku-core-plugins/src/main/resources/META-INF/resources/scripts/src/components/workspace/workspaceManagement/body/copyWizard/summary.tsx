@@ -77,7 +77,7 @@ class Step extends React.Component<StepProps, StepState> {
             {t("labels.begingDate_copySummary", {
               ns: "workspace",
               beginDate: beginDate
-                ? localizeTime(beginDate)
+                ? localizeTime.date(beginDate)
                 : t("labels.noBeginDate", { ns: "workspace" }),
             })}
           </p>
@@ -85,7 +85,7 @@ class Step extends React.Component<StepProps, StepState> {
             {t("labels.endDate_copySummary", {
               ns: "workspace",
               endDate: endDate
-                ? localizeTime(endDate)
+                ? localizeTime.date(endDate)
                 : t("labels.noEndDate", { ns: "workspace" }),
             })}
           </p>

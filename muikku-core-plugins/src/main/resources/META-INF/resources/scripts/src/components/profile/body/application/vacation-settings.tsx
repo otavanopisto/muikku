@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -29,7 +29,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * VacationSettingsProps
  */
 interface VacationSettingsProps extends WithTranslation {
-  i18nOLD: i18nType;
   profile: ProfileType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -335,7 +334,7 @@ class VacationSettings extends React.Component<
                     )}
                     maxDate={this.state.profileVacationEnd}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18nOLD.time.getLocale()
+                      localizeTime.getLocale()
                     )}
                     selected={this.state.profileVacationStart}
                     dateFormat="P"
@@ -356,7 +355,7 @@ class VacationSettings extends React.Component<
                     )}
                     minDate={this.state.profileVacationStart}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18nOLD.time.getLocale()
+                      localizeTime.getLocale()
                     )}
                     selected={this.state.profileVacationEnd}
                     dateFormat="P"
@@ -475,7 +474,6 @@ class VacationSettings extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     profile: state.profile,
     status: state.status,
   };

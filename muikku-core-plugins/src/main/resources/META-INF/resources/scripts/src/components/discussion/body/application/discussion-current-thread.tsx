@@ -1,5 +1,5 @@
 import * as React from "react";
-import {localizeTime} from "~/locales/i18n";
+import { localizeTime } from "~/locales/i18n";
 import {
   DiscussionType,
   DiscussionUserType,
@@ -310,9 +310,7 @@ class DiscussionCurrentThread extends React.Component<
             aside={
               <span style={{ display: "flex", alignItems: "center" }}>
                 <span>
-                  {localizeTime(
-                    this.props.discussion.current.created
-                  )}
+                  {localizeTime.date(this.props.discussion.current.created)}
                 </span>
               </span>
             }
@@ -344,7 +342,7 @@ class DiscussionCurrentThread extends React.Component<
                       {
                         context: "in",
                         ns: "messaging",
-                        time: localizeTime(
+                        time: localizeTime.date(
                           this.props.discussion.current.lastModified
                         ),
                       }

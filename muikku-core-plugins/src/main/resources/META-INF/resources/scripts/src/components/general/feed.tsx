@@ -93,7 +93,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
               </div>
               <div className="feed__item-meta">
                 <span className="feed__item-date">
-                  {localizeTime(entry.publicationDate)}
+                  {localizeTime.date(entry.publicationDate)}
                 </span>
               </div>
             </div>

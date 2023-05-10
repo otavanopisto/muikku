@@ -39,7 +39,7 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
         <span>
           {t("content.transferCreditsDate", {
             ns: "studies",
-            date: localizeTime(assessment.date),
+            date: localizeTime.date(assessment.date),
           }) + getShortenGradeExtension(assessment.grade)}
         </span>
       }

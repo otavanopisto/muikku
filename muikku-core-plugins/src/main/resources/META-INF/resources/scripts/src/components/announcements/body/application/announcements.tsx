@@ -11,7 +11,7 @@ import { StateType } from "~/reducers";
 import { UserIndexType } from "~/reducers/user-index";
 import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 import { withTranslation, WithTranslation } from "react-i18next";
-import {localizeTime} from "~/locales/i18n";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * AnnouncementProps
@@ -45,7 +45,9 @@ class Announcement extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const articleDate = this.props.announcement && localizeTime(this.props.announcement.startDate);
+    const articleDate =
+      this.props.announcement &&
+      localizeTime.date(this.props.announcement.startDate);
 
     if (!this.props.announcement) {
       return (
@@ -58,7 +60,6 @@ class Announcement extends React.Component<
       );
     }
     return (
-
       <article className="article">
         <header className="article__header">
           {this.props.announcement.caption}
@@ -92,9 +93,7 @@ class Announcement extends React.Component<
             })}
           </div>
         ) : null}
-        <div className="article__date">
-          {articleDate}
-        </div>
+        <div className="article__date">{articleDate}</div>
         <section className="article__body rich-text">
           <CkeditorLoaderContent html={this.props.announcement.content} />
         </section>

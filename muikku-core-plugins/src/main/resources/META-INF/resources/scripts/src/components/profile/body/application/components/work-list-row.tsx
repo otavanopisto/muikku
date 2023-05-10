@@ -9,7 +9,6 @@ import { ButtonPill } from "~/components/general/button";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import "~/sass/elements/glyph.scss";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { localizeTime } from "~/locales/i18n";
 import WorkListEditable from "./work-list-editable";
 import {
@@ -35,7 +34,6 @@ const previousMonth = moment().subtract(1, "months");
  * WorkListRowProps
  */
 interface WorkListRowProps extends WithTranslation {
-  i18nOLD: i18nType;
   item: StoredWorklistItem;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
   editProfileWorklistItem: EditProfileWorklistItemTriggerType;
@@ -162,7 +160,6 @@ class WorkListRow extends React.Component<
     if (this.state.editMode) {
       return (
         <WorkListEditable
-          i18nOLD={this.props.i18nOLD}
           base={this.props.item}
           onSubmit={this.onEdit}
           onCancel={this.toggleEditMode}
@@ -253,7 +250,7 @@ class WorkListRow extends React.Component<
           {this.props.item.description}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
-          {localizeTime(this.props.item.entryDate)}
+          {localizeTime.date(this.props.item.entryDate)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
           {this.props.item.price}
@@ -293,16 +290,6 @@ class WorkListRow extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -314,5 +301,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(WorkListRow)
+  connect(null, mapDispatchToProps)(WorkListRow)
 );

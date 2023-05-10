@@ -8,7 +8,7 @@ import {
   CreateContactLogEventTriggerType,
 } from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -32,7 +32,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface NewContactEventProps extends WithTranslation {
   children?: JSX.Element;
-  i18nOLD: i18nType;
   createContactLogEvent: CreateContactLogEventTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
   logsPerPage: number;
@@ -82,8 +81,8 @@ class NewContactEvent extends SessionStateComponent<
         text: props.initialMessage || "",
         sender: props.initialSender || "",
         date:
-          props.i18nOLD.time.getLocalizedMoment(props.initialDate).toDate() ||
-          props.i18nOLD.time.getLocalizedMoment().toDate(),
+          localizeTime.getLocalizedMoment(props.initialDate).toDate() ||
+          localizeTime.getLocalizedMoment().toDate(),
         type: props.initialType || "OTHER",
         locked: false,
       },
@@ -100,9 +99,8 @@ class NewContactEvent extends SessionStateComponent<
         text: this.props.initialMessage || "",
         sender: this.props.initialSender || "",
         date:
-          this.props.i18nOLD.time
-            .getLocalizedMoment(this.props.initialDate)
-            .toDate() || this.props.i18nOLD.time.getLocalizedMoment().toDate(),
+          localizeTime.getLocalizedMoment(this.props.initialDate).toDate() ||
+          localizeTime.getLocalizedMoment().toDate(),
         type: this.props.initialType || "OTHER",
         locked: false,
       },
@@ -187,9 +185,8 @@ class NewContactEvent extends SessionStateComponent<
         text: this.props.initialMessage || "",
         sender: this.props.initialSender || "",
         date:
-          this.props.i18nOLD.time
-            .getLocalizedMoment(this.props.initialDate)
-            .toDate() || this.props.i18nOLD.time.getLocalizedMoment().toDate(),
+          localizeTime.getLocalizedMoment(this.props.initialDate).toDate() ||
+          localizeTime.getLocalizedMoment().toDate(),
         type: this.props.initialType || "OTHER",
         locked: false,
       },
@@ -231,9 +228,7 @@ class NewContactEvent extends SessionStateComponent<
               className="env-dialog__input"
               id="contactEventdate"
               onChange={this.onDateChange}
-              locale={outputCorrectDatePickerLocale(
-                this.props.i18nOLD.time.getLocale()
-              )}
+              locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
               selected={this.state.date}
               dateFormat="P"
             ></DatePicker>
@@ -335,7 +330,6 @@ NewContactEvent.contextType = contactLogsContext;
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
     currentStudent: state.guider.currentStudent.basic,
   };

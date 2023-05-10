@@ -1,4 +1,3 @@
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import {
   WorkspaceType,
@@ -6,9 +5,6 @@ import {
   WorkspaceActivityType,
   WorkspaceForumStatisticsType,
 } from "~/reducers/workspaces";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
 import WorkspaceChart from "./workspace/workspace-chart";
 import "~/sass/elements/application-list.scss";
@@ -21,16 +17,14 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
 /**
  * StudentWorkspaceProps
  */
 interface StudentWorkspaceProps extends WithTranslation {
-  /**Localization */
-  i18nOLD: i18nType;
   workspace: WorkspaceType;
 }
 
@@ -204,7 +198,7 @@ class StudentWorkspace extends React.Component<
                 {codeSubjectString}
               </span>
 
-              <GuiderAssessment i18nOLD={this.props.i18nOLD} assessment={a} />
+              <GuiderAssessment assessment={a} />
             </div>
           );
         })}
@@ -249,8 +243,7 @@ class StudentWorkspace extends React.Component<
              * Add date to string if date is present
              */
             if (a.date) {
-              resultingStateText +=
-                " - " + this.props.i18nOLD.time.format(a.date);
+              resultingStateText += " - " + localizeTime.date(a.date);
             }
 
             return (
@@ -308,7 +301,6 @@ class StudentWorkspace extends React.Component<
                * Only show assessment in header line if its not combination workspace
                */
               <GuiderAssessment
-                i18nOLD={this.props.i18nOLD}
                 assessment={this.props.workspace.activity.assessmentState[0]}
               />
             ) : null}
@@ -448,27 +440,7 @@ class StudentWorkspace extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-
-export default withTranslation(["guider"])(
-  connect(mapStateToProps, mapDispatchToProps)(StudentWorkspace)
-);
+export default withTranslation(["guider"])(StudentWorkspace);
 
 // Other component used only by Workspace component
 
@@ -476,7 +448,6 @@ export default withTranslation(["guider"])(
  * CourseActivityRowProps
  */
 interface CourseActivityRowProps<C> {
-  i18nOLD: i18nType;
   workspace: WorkspaceType;
   labelTranslationString: string;
   conditionalAttribute: keyof C;
@@ -530,14 +501,14 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
       if (props.givenDateAttributeLocale) {
         output += t(props.givenDateAttributeLocale, {
           defaultValue: "Locale does not exist",
-          value: props.i18nOLD.time.format(
+          value: localizeTime.date(
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
             ]
           ),
         });
       } else {
-        output += props.i18nOLD.time.format(
+        output += localizeTime.date(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (props.workspace as any)[props.mainAttribute][
             props.givenDateAttribute
@@ -565,7 +536,6 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
  */
 interface GuiderAssessmentProps {
   assessment?: Assessment;
-  i18nOLD: i18nType;
 }
 
 /**
@@ -574,7 +544,7 @@ interface GuiderAssessmentProps {
  * @returns JSX.Element
  */
 const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
-  const { assessment, i18nOLD } = props;
+  const { assessment } = props;
   const { t } = useTranslation(["workspace", "common"]);
 
   if (assessment) {
@@ -592,7 +562,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
             t("labels.evaluated", {
               ns: "workspace",
               context: "in",
-              date: i18nOLD.time.format(assessment.date),
+              date: localizeTime.date(assessment.date),
             }) + getShortenGradeExtension(assessment.grade)
           }
           className={`application-list__indicator-badge application-list__indicator-badge--course ${modifier}`}
@@ -614,7 +584,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
             t("labels.evaluated", {
               ns: "workspace",
               context: "in",
-              date: i18nOLD.time.format(assessment.date),
+              date: localizeTime.date(assessment.date),
             }) +
             " - " +
             status

@@ -283,7 +283,7 @@ class DDiscussionThreads extends React.Component<
                       user,
                       this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                     )}
-                  , {localizeTime(thread.created)}
+                  , {localizeTime.date(thread.created)}
                 </span>
               </div>
               <div className="application-list__item-footer-content-aside">
@@ -301,7 +301,7 @@ class DDiscussionThreads extends React.Component<
                   <span>
                     {this.props.i18n.t("labels.lastMessage", {
                       ns: "messaging",
-                      time: localizeTime(thread.updated),
+                      time: localizeTime.date(thread.updated),
                     })}
                   </span>
                 </div>

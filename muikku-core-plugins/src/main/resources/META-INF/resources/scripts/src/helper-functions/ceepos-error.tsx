@@ -1,4 +1,4 @@
-import i18n, {localizeTime} from "~/locales/i18n";
+import i18n, { localizeTime } from "~/locales/i18n";
 import { PurchaseType } from "~/reducers/main-function/profile";
 
 /**
@@ -6,10 +6,7 @@ import { PurchaseType } from "~/reducers/main-function/profile";
  * @param order  order
  * @param message  message
  */
-export function getErrorMessageContent(
-  order: PurchaseType,
-  message?: string
-) {
+export function getErrorMessageContent(order: PurchaseType, message?: string) {
   /**
    * errorMessage which can come from backend or from localization properties
    */
@@ -37,7 +34,7 @@ export function getErrorMessageContent(
     "<div><b>" +
     i18n.t("labels.created") +
     "</b>: " +
-    localizeTime(order.created) +
+    localizeTime.date(order.created) +
     "</div>" +
     "</div>";
 

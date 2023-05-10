@@ -109,7 +109,9 @@ class Material extends React.Component<MaterialProps, MaterialState> {
             <Dropdown
               openByHover
               content={
-                <span>{localizeTime(compositeReply.evaluationInfo.date)}</span>
+                <span>
+                  {localizeTime.date(compositeReply.evaluationInfo.date)}
+                </span>
               }
             >
               <span
@@ -125,7 +127,9 @@ class Material extends React.Component<MaterialProps, MaterialState> {
             <Dropdown
               openByHover
               content={
-                <span>{localizeTime(compositeReply.evaluationInfo.date)}</span>
+                <span>
+                  {localizeTime.date(compositeReply.evaluationInfo.date)}
+                </span>
               }
             >
               <span

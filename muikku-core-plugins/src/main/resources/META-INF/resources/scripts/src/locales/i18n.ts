@@ -10,7 +10,6 @@ export const resources = {
   fi,
 } as const;
 
-
 export const availableLanguages = Object.keys(resources);
 export const defaultNS = "common";
 const lang = document.querySelector("html").lang;
@@ -27,17 +26,100 @@ i18n.use(initReactI18next).init({
   },
 });
 
+/**Localize
+ * Helper functions for  time localization
+ */
+export class LocalizeTime {
+  language;
+  /**
+   * constructor
+   * @param language given language
+   */
+  constructor(language: string) {
+    this.language = language;
+  }
 
-export const localizeTime = (date?: Date | string, format?: string): string =>
-{
-  const dateParam = date ? date : new Date;
-  const formatParam = format ? format : "L";
+  /**
+   * date
+   * @param date date
+   * @param format format
+   */
+  date(date?: Date | string, format?: string) {
+    const dateParam = date ? date : new Date();
+    const formatParam = format ? format : "L";
 
-  return  moment(dateParam)
-  .locale(outputCorrectMomentLocale(lang.toLowerCase()))
-  .format(formatParam);
+    return moment(dateParam)
+      .locale(outputCorrectMomentLocale(this.language.toLowerCase()))
+      .format(formatParam);
+  }
 
+  /**
+   * getLocalizedMoment
+   * @param inp inp
+   * @param strict strict
+   * @returns localized moment
+   */
+  getLocalizedMoment(inp?: moment.MomentInput, strict?: boolean) {
+    return moment(inp, strict).locale(
+      outputCorrectMomentLocale(this.language.toLowerCase())
+    );
+  }
+  /**
+   * formatDaily
+   * @param date date
+   * @param todayFormat todayFormat
+   * @param otherDayFormat otherDayFormat
+   */
+  formatDaily(date = new Date(), todayFormat = "LT", otherDayFormat = "l") {
+    const momentOfDate = moment(date);
+    const isToday = moment().isSame(momentOfDate, "day");
+    return moment(date)
+      .locale(outputCorrectMomentLocale(this.language.toLowerCase()))
+      .format(isToday ? todayFormat : otherDayFormat);
+  }
+  /**
+   * subtract
+   * @param date date. Default is new Date()
+   * @param input input. Default is 1
+   * @param value value. Default is "days"
+   */
+  subtract(
+    date = new Date(),
+    input = 1,
+    value: moment.DurationInputArg2 = "days"
+  ) {
+    return moment(date).subtract(input, value).calendar();
+  }
+  /**
+   * add
+   * @param date date. Default is new Date()
+   * @param input input. Default is 1
+   * @param value value. Default is "days"
+   */
+  add(date = new Date(), input = 1, value: moment.DurationInputArg2 = "days") {
+    return moment(date).add(input, value).calendar();
+  }
 
+  /**
+   * duration
+   * @param inp inp
+   * @param unit unit
+   * @returns moment duration
+   */
+  duration(
+    inp?: moment.DurationInputArg1,
+    unit?: moment.unitOfTime.DurationConstructor
+  ) {
+    return moment.duration(inp, unit);
+  }
+  /**
+   * getLocale
+   */
+  getLocale() {
+    return this.language.toLowerCase();
+  }
 }
+
+export const localizeTime = new LocalizeTime(lang);
 
 export default i18n;

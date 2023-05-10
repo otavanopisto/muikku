@@ -165,7 +165,9 @@ class WorkspaceJournalsListItem extends React.Component<
               )}
             </div>
             <div className="application-list__item-header-aside">
-              <span>{localizeTime(this.props.journal.created, "L LT")}</span>
+              <span>
+                {localizeTime.date(this.props.journal.created, "L LT")}
+              </span>
             </div>
           </ApplicationListItemHeader>
           <ApplicationListItemBody className="application-list__item-body">

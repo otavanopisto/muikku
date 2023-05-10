@@ -61,7 +61,7 @@ class GeneralInformation extends React.Component<
     const studyTimeEndValues = [];
     if (this.props.status.profile.studyTimeEnd) {
       studyTimeEndValues.push(
-        localizeTime(this.props.status.profile.studyTimeEnd)
+        localizeTime.date(this.props.status.profile.studyTimeEnd)
       );
       if (this.props.status.profile.studyTimeLeftStr) {
         studyTimeEndValues.push(this.props.status.profile.studyTimeLeftStr);
@@ -83,7 +83,9 @@ class GeneralInformation extends React.Component<
                 modifier="study-start-date"
                 condition={!!this.props.status.profile.studyStartDate}
                 label={this.props.t("labels.studyTimeStart", { ns: "users" })}
-                value={localizeTime(this.props.status.profile.studyStartDate)}
+                value={localizeTime.date(
+                  this.props.status.profile.studyStartDate
+                )}
               />
 
               <ProfileProperty

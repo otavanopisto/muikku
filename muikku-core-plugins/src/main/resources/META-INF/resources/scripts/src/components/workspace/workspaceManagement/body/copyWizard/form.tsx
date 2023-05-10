@@ -10,13 +10,12 @@ import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18nOLD";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * StepProps
  */
 interface StepProps extends WithTranslation {
-  i18nOLD: i18nType;
   workspace: WorkspaceType;
   getStore: () => CopyWizardStoreType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -216,7 +215,7 @@ class Step extends React.Component<StepProps, StepState> {
                     onChange={this.updateStartDate}
                     maxDate={this.props.getStore().endDate}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18nOLD.time.getLocale()
+                      localizeTime.getLocale()
                     )}
                     selected={this.props.getStore().beginDate}
                     dateFormat="P"
@@ -232,7 +231,7 @@ class Step extends React.Component<StepProps, StepState> {
                     onChange={this.updateEndDate}
                     minDate={this.props.getStore().beginDate}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18nOLD.time.getLocale()
+                      localizeTime.getLocale()
                     )}
                     selected={this.props.getStore().endDate}
                     dateFormat="P"
@@ -310,24 +309,4 @@ class Step extends React.Component<StepProps, StepState> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default withTranslation(["workspace", "common"])(
-  connect(mapStateToProps, mapDispatchToProps)(Step)
-);
+export default withTranslation(["workspace", "common"])(Step);

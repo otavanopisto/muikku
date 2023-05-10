@@ -23,7 +23,7 @@ import {
   WorklistTemplate,
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
-import i18n, {localizeTime} from "~/locales/i18n";
+import i18n, { localizeTime } from "~/locales/i18n";
 
 /**
  * LoadProfilePropertiesSetTriggerType
@@ -696,7 +696,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
           "callback"
         )()) as StoredWorklistItem;
 
-        let displayName = localizeTime(
+        let displayName = localizeTime.date(
           worklistItem.entryDate,
           "MMMM YYYY"
         );

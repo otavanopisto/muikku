@@ -32,10 +32,10 @@ const JournalComment: React.FC<JournalCommentProps> = (props) => {
     ? t("labels.self")
     : `${firstName} ${lastName}`;
 
-  const formatedDate = `${localizeTime(created, "l")} - ${localizeTime(
+  const formatedDate = `${localizeTime.date(
     created,
-    "LT"
-  )}`;
+    "l"
+  )} - ${localizeTime.date(created, "LT")}`;
 
   return (
     <ApplicationListItem key={id}>

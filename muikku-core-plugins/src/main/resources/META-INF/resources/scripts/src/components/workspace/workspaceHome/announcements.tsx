@@ -72,7 +72,7 @@ class WorkspaceAnnouncements extends React.Component<
                         {a.caption}
                       </span>
                       <span className="item-list__announcement-date">
-                        {localizeTime(a.startDate)}
+                        {localizeTime.date(a.startDate)}
                       </span>
                     </span>
                   </Link>

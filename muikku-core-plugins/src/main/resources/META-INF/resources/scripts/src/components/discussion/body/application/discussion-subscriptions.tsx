@@ -602,7 +602,7 @@ class DiscussionSubscriptions extends React.Component<
                   user,
                   this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                 )}
-              , {localizeTime(subscribredThread.created)}
+              , {localizeTime.date(subscribredThread.created)}
             </span>
 
             {sThreads.workspaceName && (
@@ -628,7 +628,7 @@ class DiscussionSubscriptions extends React.Component<
               <span>
                 {this.props.t("labels.lastMessage", {
                   ns: "messaging",
-                  time: localizeTime(subscribredThread.updated),
+                  time: localizeTime.date(subscribredThread.updated),
                 })}
               </span>
             </div>

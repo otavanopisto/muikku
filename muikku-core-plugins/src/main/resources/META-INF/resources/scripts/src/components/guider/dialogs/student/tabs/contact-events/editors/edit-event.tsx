@@ -1,4 +1,3 @@
-import { i18nType } from "~/reducers/base/i18nOLD";
 import * as React from "react";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -20,6 +19,7 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { ContactLogEvent } from "~/reducers/main-function/guider";
+import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -32,7 +32,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * ReplyThreadDrawerProps
  */
 interface EditContactLogEventProps extends WithTranslation<["common"]> {
-  i18nOLD: i18nType;
   status: StatusType;
   contactEvent: ContactLogEvent;
   studentUserEntityId: number;
@@ -67,7 +66,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
     this.state = this.getRecoverStoredState(
       {
         locked: false,
-        date: props.i18nOLD.time
+        date: localizeTime
           .getLocalizedMoment(this.props.contactEvent.entryDate)
           .toDate(),
         text: this.props.contactEvent.text,
@@ -113,7 +112,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
   clearUp = () => {
     this.setStateAndClear(
       {
-        date: this.props.i18nOLD.time
+        date: localizeTime
           .getLocalizedMoment(this.props.contactEvent.entryDate)
           .toDate(),
         text: this.props.contactEvent.text,
@@ -183,9 +182,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
               className="env-dialog__input"
               id="contactEventdate"
               onChange={this.onDateChange}
-              locale={outputCorrectDatePickerLocale(
-                this.props.i18nOLD.time.getLocale()
-              )}
+              locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
               dateFormat="P"
               selected={this.state.date}
             ></DatePicker>
@@ -279,7 +276,6 @@ class EditContactLogEventEvent extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     status: state.status,
   };
 }

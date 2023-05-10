@@ -42,7 +42,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluablesDone", {
               ns: "studies",
-              date: localizeTime(assessment.date),
+              date: localizeTime.date(assessment.date),
             }) + getShortenGradeExtension(assessment.grade)}
           </span>
         }
@@ -72,7 +72,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluablesDone", {
               ns: "studies",
-              date: localizeTime(assessment.date),
+              date: localizeTime.date(assessment.date),
             }) +
               " - " +
               status}
@@ -100,7 +100,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
               {assessment.grade
                 ? t("labels.evaluablesDone", {
                     ns: "studies",
-                    date: localizeTime(assessment.date),
+                    date: localizeTime.date(assessment.date),
                   }) + getShortenGradeExtension(assessment.grade)
                 : t("content.notEvaluated", {
                     ns: "studies",

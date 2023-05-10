@@ -84,7 +84,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
                 <span className="application-sub-panel__single-entry">
                   {this.props.summary.data.studentsDetails.studyStartDate
-                    ? localizeTime(
+                    ? localizeTime.date(
                         this.props.summary.data.studentsDetails.studyStartDate
                       )
                     : t("content.empty", {
@@ -104,7 +104,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 <span className="application-sub-panel__single-entry">
                   {this.props.summary.data.studentsDetails.studyEndDate ||
                   this.props.summary.data.studentsDetails.studyTimeEnd
-                    ? localizeTime(
+                    ? localizeTime.date(
                         this.props.summary.data.studentsDetails.studyEndDate ||
                           this.props.summary.data.studentsDetails.studyTimeEnd
                       )
@@ -176,14 +176,14 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                     context: "xa",
                                   })}
                                   &nbsp;
-                                  {localizeTime(
+                                  {localizeTime.date(
                                     counselor.properties[
                                       "profile-vacation-start"
                                     ]
                                   )}
                                   {counselor.properties["profile-vacation-end"]
                                     ? "–" +
-                                      localizeTime(
+                                      localizeTime.date(
                                         counselor.properties[
                                           "profile-vacation-end"
                                         ]

@@ -4,7 +4,7 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
-import {localizeTime} from "~/locales/i18n";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
@@ -124,12 +124,8 @@ class Announcements extends React.Component<
                     <ApplicationListItemHeader>
                       <ApplicationListHeaderPrimary>
                         <ApplicationListItemDate
-                          startDate={localizeTime(
-                            announcement.startDate
-                          )}
-                          endDate={localizeTime(
-                            announcement.endDate
-                          )}
+                          startDate={localizeTime.date(announcement.startDate)}
+                          endDate={localizeTime.date(announcement.endDate)}
                         />
                       </ApplicationListHeaderPrimary>
                     </ApplicationListItemHeader>

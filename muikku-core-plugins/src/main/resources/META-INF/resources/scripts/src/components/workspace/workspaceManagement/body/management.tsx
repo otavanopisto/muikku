@@ -13,7 +13,6 @@ import {
   Language,
   languageOptions,
 } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18nOLD";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import Link from "~/components/general/link";
@@ -64,7 +63,6 @@ const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 interface ManagementPanelProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceType;
-  i18nOLD: i18nType;
   workspaceTypes: Array<WorkspaceTypeType>;
   updateWorkspace: UpdateWorkspaceTriggerType;
   updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType;
@@ -1028,7 +1026,7 @@ class ManagementPanel extends React.Component<
                         : undefined
                     }
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18nOLD.time.getLocale()
+                      localizeTime.getLocale()
                     )}
                     selected={this.state.workspaceSignupStartDate}
                     dateFormat="P"
@@ -1051,7 +1049,7 @@ class ManagementPanel extends React.Component<
                         : new Date()
                     }
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18nOLD.time.getLocale()
+                      localizeTime.getLocale()
                     )}
                     selected={this.state.workspaceSignupEndDate}
                     dateFormat="P"
@@ -1110,7 +1108,7 @@ class ManagementPanel extends React.Component<
                     onChange={this.updateStartDate}
                     maxDate={this.state.workspaceEndDate}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18nOLD.time.getLocale()
+                      localizeTime.getLocale()
                     )}
                     selected={this.state.workspaceStartDate}
                     dateFormat="P"
@@ -1129,7 +1127,7 @@ class ManagementPanel extends React.Component<
                     onChange={this.updateEndDate}
                     minDate={this.state.workspaceStartDate}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18nOLD.time.getLocale()
+                      localizeTime.getLocale()
                     )}
                     selected={this.state.workspaceEndDate}
                     dateFormat="P"
@@ -1315,7 +1313,6 @@ class ManagementPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18nOLD: state.i18nOLD,
     workspace: state.workspaces.currentWorkspace,
     workspaceTypes: state.workspaces.types,
     status: state.status,

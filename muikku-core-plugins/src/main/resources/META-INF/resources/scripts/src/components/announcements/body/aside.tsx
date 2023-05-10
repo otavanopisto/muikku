@@ -8,7 +8,7 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/item-list.scss";
 import { AnyActionType } from "~/actions";
-import {localizeTime} from "~/locales/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -61,7 +61,7 @@ class AnnouncementsAside extends React.Component<
                         {announcement.caption}
                       </span>
                       <span className="item-list__announcement-date">
-                        {localizeTime(announcement.startDate)}
+                        {localizeTime.date(announcement.startDate)}
                       </span>
                       {announcement.workspaces &&
                       announcement.workspaces.length ? (

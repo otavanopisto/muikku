@@ -1,10 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
 import EnvironmentDialog from "~/components/general/environment-dialog";
-import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18nOLD";
-import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
@@ -17,6 +12,7 @@ import {
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
+import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -28,7 +24,6 @@ interface NotesItemNewProps extends WithTranslation {
    */
   newNoteOwnerId: number;
   children: React.ReactElement;
-  i18nOLD: i18nType;
   onNotesItemSaveClick?: (
     newNotesItem: NotesItemCreate,
     onSuccess?: () => void
@@ -196,9 +191,7 @@ class NotesItemNew extends SessionStateComponent<
             onChange={(date, e) =>
               this.handleNotesItemChange("startDate", date)
             }
-            locale={outputCorrectDatePickerLocale(
-              this.props.i18nOLD.time.getLocale()
-            )}
+            locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
             dateFormat="P"
             minDate={new Date()}
             maxDate={this.state.notesItem.dueDate}
@@ -206,7 +199,7 @@ class NotesItemNew extends SessionStateComponent<
         </div>
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.t("labels.endDate", {ns: "common"})}
+            {this.props.i18n.t("labels.endDate", { ns: "common" })}
           </label>
           <DatePicker
             className="env-dialog__input"
@@ -216,9 +209,7 @@ class NotesItemNew extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
-            locale={outputCorrectDatePickerLocale(
-              this.props.i18nOLD.time.getLocale()
-            )}
+            locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
             dateFormat="P"
             minDate={
               this.state.notesItem.startDate !== null
@@ -273,24 +264,4 @@ class NotesItemNew extends SessionStateComponent<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18nOLD: state.i18nOLD,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default withTranslation("tasks")(
-  connect(mapStateToProps, mapDispatchToProps)(NotesItemNew)
-);
+export default withTranslation("tasks")(NotesItemNew);
