@@ -420,14 +420,7 @@ public class UserRESTService extends AbstractRESTService {
           result.put("loggedUserHasPermission", "false");
         }
       } else {
-        Boolean amICounselor = false;
-        schoolDataBridgeSessionController.startSystemSession();
-        try {
-          amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
-        }
-        finally {
-          schoolDataBridgeSessionController.endSystemSession();
-        }
+        Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
         
         if (amICounselor) {
           result.put("loggedUserHasPermission", "true");
