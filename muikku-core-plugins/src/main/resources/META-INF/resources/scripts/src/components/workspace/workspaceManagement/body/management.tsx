@@ -53,6 +53,7 @@ import {
   outputCorrectDatePickerLocale,
 } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
+import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
