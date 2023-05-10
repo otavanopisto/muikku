@@ -44,13 +44,12 @@ export class LocalizeTime {
    * @param date date
    * @param format format
    */
-  date(date?: Date | string, format?: string) {
+  date(date?: Date | string, format = "L") {
     const dateParam = date ? date : new Date();
-    const formatParam = format ? format : "L";
 
     return moment(dateParam)
       .locale(outputCorrectMomentLocale(this.language.toLowerCase()))
-      .format(formatParam);
+      .format(format);
   }
 
   /**
