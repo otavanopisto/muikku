@@ -352,7 +352,7 @@ public class UserRESTService extends AbstractRESTService {
         }
       }
     } else {
-      result.put("loggedUserHasPermission", "false");
+      result.put("loggedUserHasPermission", "true");
     }
     
     
