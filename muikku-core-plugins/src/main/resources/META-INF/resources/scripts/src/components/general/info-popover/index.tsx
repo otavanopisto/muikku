@@ -212,10 +212,13 @@ function ContactInformation(props: ContactInformationProps) {
   const { info } = props;
   return (
     <div className="item-list__user-contact-info">
-      <div className="item-list__user-email">
-        <span className="glyph icon-envelope"></span>
-        {info.email}
-      </div>
+      {info.email ? (
+        <div className="item-list__user-email">
+          <span className="glyph icon-envelope"></span>
+          {info.email}
+        </div>
+      ) : null}
+
       {info.phoneNumber ? (
         <div className="item-list__user-phone">
           <span className="glyph icon-phone"></span>
@@ -327,29 +330,31 @@ function ContactActions(props: ContactActionsProps) {
           )}
       </div>
       <div className="item-list__user-actions">
-        <CommunicatorNewMessage
-          extraNamespace="workspace-teachers"
-          onOpen={onCommunicatorMessageOpen}
-          onClose={onCommunicatorMessageClose}
-          initialSelectedItems={[
-            {
-              type: info.isStudent === "true" ? "user" : "staff",
-              value: {
-                id: parseInt(info.userId),
-                name: `${info.firstName} ${info.lastName}`,
+        {info.loggedUserHasPermission === "true" ? (
+          <CommunicatorNewMessage
+            extraNamespace="workspace-teachers"
+            onOpen={onCommunicatorMessageOpen}
+            onClose={onCommunicatorMessageClose}
+            initialSelectedItems={[
+              {
+                type: info.isStudent === "true" ? "user" : "staff",
+                value: {
+                  id: parseInt(info.userId),
+                  name: `${info.firstName} ${info.lastName}`,
+                },
               },
-            },
-          ]}
-        >
-          <ButtonPill
-            aria-label={i18n.text.get(
-              "plugin.workspace.index.newMessage.label"
-            )}
-            icon="envelope"
-            title={i18n.text.get("plugin.workspace.index.newMessage.label")}
-            buttonModifiers={["new-message", "new-message-to-staff"]}
-          ></ButtonPill>
-        </CommunicatorNewMessage>
+            ]}
+          >
+            <ButtonPill
+              aria-label={i18n.text.get(
+                "plugin.workspace.index.newMessage.label"
+              )}
+              icon="envelope"
+              title={i18n.text.get("plugin.workspace.index.newMessage.label")}
+              buttonModifiers={["new-message", "new-message-to-staff"]}
+            ></ButtonPill>
+          </CommunicatorNewMessage>
+        ) : null}
 
         {info.phoneNumber && info.whatsapp === "true" ? (
           <WhatsappButtonLink i18n={i18n} mobileNumber={info.phoneNumber} />
