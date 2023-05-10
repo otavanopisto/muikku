@@ -152,7 +152,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
                 }, 200);
               }
             }}
-            className="item-list__item item-list__item--teacher"
+            className="item-list__item item-list__item--info-popper"
           >
             <div className="item-list__profile-picture">
               <Avatar
@@ -167,6 +167,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
               </div>
               <ContactInformation info={data.info} i18n={props.i18n} />
               <ContactVacation info={data.info} i18n={props.i18n} />
+              <ContactExtraInfo info={data.info} i18n={props.i18n} />
               <ContactActions
                 info={data.info}
                 i18n={props.i18n}
@@ -270,6 +271,31 @@ function ContactVacation(props: ContactVacationProps) {
 }
 
 /**
+ * ContactExtraInfoProps
+ */
+interface ContactExtraInfoProps {
+  info: UserInfo;
+  i18n: i18nType;
+}
+
+/**
+ * ContactVacation
+ * @param props props
+ * @param props.info info
+ * @param props.i18n i18n
+ * @returns JSX.Element
+ */
+function ContactExtraInfo(props: ContactExtraInfoProps) {
+  const { info } = props;
+
+  if (!info.extraInfo) {
+    return null;
+  }
+
+  return <div className="item-list__user-extra-info">{info.extraInfo}</div>;
+}
+
+/**
  * ContactActionsProps
  */
 interface ContactActionsProps {
@@ -324,27 +350,25 @@ function ContactActions(props: ContactActionsProps) {
             buttonModifiers={["new-message", "new-message-to-staff"]}
           ></ButtonPill>
         </CommunicatorNewMessage>
+
         {info.phoneNumber && info.whatsapp === "true" ? (
           <WhatsappButtonLink i18n={i18n} mobileNumber={info.phoneNumber} />
         ) : null}
 
-        {/* {teacher.properties["profile-appointmentCalendar"] !==
-    undefined &&
-    teacher.properties["profile-appointmentCalendar"] !==
-      null && (
-      <ButtonPill
-        aria-label={this.props.i18n.text.get(
-          "plugin.workspace.index.appointmentCalendar.label"
-        )}
-        title={this.props.i18n.text.get(
-          "plugin.workspace.index.appointmentCalendar.label"
-        )}
-        icon="clock"
-        buttonModifiers="appointment-calendar"
-        openInNewTab="_blank"
-        href={teacher.properties["profile-appointmentCalendar"]}
-      />
-    )} */}
+        {info.appointmentCalendar ? (
+          <ButtonPill
+            aria-label={i18n.text.get(
+              "plugin.workspace.index.appointmentCalendar.label"
+            )}
+            title={i18n.text.get(
+              "plugin.workspace.index.appointmentCalendar.label"
+            )}
+            icon="clock"
+            buttonModifiers="appointment-calendar"
+            openInNewTab="_blank"
+            href={info.appointmentCalendar}
+          />
+        ) : null}
       </div>
     </>
   );
