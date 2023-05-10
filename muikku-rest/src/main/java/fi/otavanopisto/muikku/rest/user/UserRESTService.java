@@ -316,14 +316,70 @@ public class UserRESTService extends AbstractRESTService {
       schoolDataBridgeSessionController.endSystemSession();
     }
     
- 
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    EnvironmentRoleArchetype loggedUserRole = null;
+    if (loggedUser.defaultSchoolDataIdentifier() != null) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+          findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser.defaultSchoolDataIdentifier());
+      loggedUserRole = userSchoolDataIdentifier.getRole().getArchetype();
+    }
+    Boolean isStudent = userEntityController.isStudent(userEntity);
+
+    if (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+      
+      // "loggedUserHasPermission" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
+      if (loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+        result.put("loggedUserHasPermission", "true");
+      } else if (loggedUserRole.equals(EnvironmentRoleArchetype.TEACHER)) {
+        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
+        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+
+        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
+        
+        if (!commonWorkspaces.isEmpty()) {
+          result.put("loggedUserHasPermission", "true");
+        } else {
+          result.put("loggedUserHasPermission", "false");
+        }
+      } else {
+        Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
+        
+        // True if logged user is student's counselor or logged user is not student & searchable user is not student
+        if (amICounselor || (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && !isStudent)) {
+          result.put("loggedUserHasPermission", "true");
+        } else {
+          result.put("loggedUserHasPermission", "false");
+        }
+      }
+    } else {
+      result.put("loggedUserHasPermission", "false");
+    }
+    
+    
+    if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && isStudent) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    result.put("isStudent", isStudent.toString());
+    result.put("userId", userEntity.getId().toString());
+    result.put("schoolDataIdentifier", userEntity.defaultSchoolDataIdentifier().getDataSource() + "-" + userEntity.defaultSchoolDataIdentifier().getIdentifier());
+
 
     for (UserInfo d : data) {
       
       if (contactInfo != null) {
         
-        result.put("firstName",contactInfo.getFirstName());
+        result.put("firstName", contactInfo.getFirstName());
         result.put("lastName", contactInfo.getLastName());
+        
+        if (d.equals(UserInfo.AVATAR)) {
+          Boolean hasAvatar = userEntityFileController.hasProfilePicture(userEntity);
+          result.put("hasAvatar", hasAvatar.toString());
+        }
+        
+        if (result.get("loggedUserHasPermission").equals("false") && !loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+          return Response.ok(result).build();
+        }
         
         if (d.equals(UserInfo.EMAIL)) {
           result.put("email", contactInfo.getEmail());
@@ -352,84 +408,44 @@ public class UserRESTService extends AbstractRESTService {
         } 
       }
       
-      if (d.equals(UserInfo.EXTRAINFO)) {
-        UserEntityProperty extraInfo = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-extrainfo");
-        if (extraInfo != null) {
-          result.put("extraInfo", extraInfo.getValue());
-        }
-      } 
-      
-      if (d.equals(UserInfo.APPOINTMENTCALENDAR)) {
-        UserEntityProperty appointmentCalendar = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-appointmentCalendar");
-        if (appointmentCalendar != null) {
-          result.put("appointmentCalendar", appointmentCalendar.getValue());
-        }
-      } 
-      
-      if (d.equals(UserInfo.AVATAR)) {
-        Boolean hasAvatar = userEntityFileController.hasProfilePicture(userEntity);
-        result.put("hasAvatar", hasAvatar.toString());
-      }
-      
-      if (d.equals(UserInfo.WHATSAPP)) {
-        UserEntityProperty whatsapp = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-whatsapp");
-        if (whatsapp != null) {
-          result.put("whatsapp", whatsapp.getValue());
-        }
-      }
-      
-      if (d.equals(UserInfo.VACATIONS)) {
-        UserEntityProperty vacationStart = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-vacation-start");
-        UserEntityProperty vacationEnd = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-vacation-end");
+      if (result.get("loggedUserHasPermission").equals("true") || loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+        if (d.equals(UserInfo.EXTRAINFO)) {
+          UserEntityProperty extraInfo = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-extrainfo");
+          if (extraInfo != null) {
+            result.put("extraInfo", extraInfo.getValue());
+          }
+        } 
         
-        if (vacationStart != null) {
-          result.put("vacationStart", vacationStart.getValue());
+        if (d.equals(UserInfo.APPOINTMENTCALENDAR)) {
+          UserEntityProperty appointmentCalendar = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-appointmentCalendar");
+          if (appointmentCalendar != null) {
+            result.put("appointmentCalendar", appointmentCalendar.getValue());
+          }
+        } 
+        
+        if (d.equals(UserInfo.WHATSAPP)) {
+          UserEntityProperty whatsapp = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-whatsapp");
+          if (whatsapp != null) {
+            result.put("whatsapp", whatsapp.getValue());
+          }
         }
         
-        if (vacationEnd != null) {
-          result.put("vacationEnd", vacationEnd.getValue());
+        if (d.equals(UserInfo.VACATIONS)) {
+          UserEntityProperty vacationStart = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-vacation-start");
+          UserEntityProperty vacationEnd = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-vacation-end");
+          
+          if (vacationStart != null) {
+            result.put("vacationStart", vacationStart.getValue());
+          }
+          
+          if (vacationEnd != null) {
+            result.put("vacationEnd", vacationEnd.getValue());
+          }
         }
       }
-    }
-    Boolean isStudent = userEntityController.isStudent(userEntity);
-    result.put("isStudent", isStudent.toString());
-    result.put("userId", userEntity.getId().toString());
-    result.put("schoolDataIdentifier", userEntity.defaultSchoolDataIdentifier().getDataSource() + "-" + userEntity.defaultSchoolDataIdentifier().getIdentifier());
-
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    EnvironmentRoleArchetype loggedUserRole = null;
-    if (loggedUser.defaultSchoolDataIdentifier() != null) {
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
-          findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser.defaultSchoolDataIdentifier());
-      loggedUserRole = userSchoolDataIdentifier.getRole().getArchetype();
     }
     
-    if (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-      
-      if (loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        result.put("loggedUserHasPermission", "true");
-      } else if (loggedUserRole.equals(EnvironmentRoleArchetype.TEACHER)) {
-        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
-        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
-
-        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
-        
-        if (!commonWorkspaces.isEmpty()) {
-          result.put("loggedUserHasPermission", "true");
-        } else {
-          result.put("loggedUserHasPermission", "false");
-        }
-      } else {
-        Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
-        
-        if (amICounselor) {
-          result.put("loggedUserHasPermission", "true");
-        } else {
-          result.put("loggedUserHasPermission", "false");
-        }
-      }
-      
-    }
+    
     
     return Response.ok(result).build();
   }
