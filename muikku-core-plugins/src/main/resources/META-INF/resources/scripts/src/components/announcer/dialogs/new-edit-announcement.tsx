@@ -114,12 +114,12 @@ class NewEditAnnouncement extends SessionStateComponent<
         subject: props.announcement ? props.announcement.caption : "",
         locked: false,
         startDate: props.announcement
-          ? localize
+          ? localizeTime
               .getLocalizedMoment(this.props.announcement.startDate)
               .toDate()
           : localizeTime.getLocalizedMoment().toDate(),
         endDate: props.announcement
-          ? localize
+          ? localizeTime
               .getLocalizedMoment(this.props.announcement.endDate)
               .toDate()
           : localizeTime.getLocalizedMoment().add(1, "day").toDate(),
@@ -180,10 +180,10 @@ class NewEditAnnouncement extends SessionStateComponent<
             subject: nextProps.announcement.caption,
             text: nextProps.announcement.content,
             currentTarget: this.baseAnnouncementCurrentTarget,
-            startDate: localize
+            startDate: localizeTime
               .getLocalizedMoment(nextProps.announcement.startDate)
               .toDate(),
-            endDate: localize
+            endDate: localizeTime
               .getLocalizedMoment(nextProps.announcement.endDate)
               .toDate(),
           },
@@ -234,10 +234,10 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
-          startDate: localize
+          startDate: localizeTime
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
-          endDate: localize
+          endDate: localizeTime
             .getLocalizedMoment(this.props.announcement.endDate)
             .toDate(),
         },
@@ -305,10 +305,10 @@ class NewEditAnnouncement extends SessionStateComponent<
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
           currentTarget: this.baseAnnouncementCurrentTarget,
-          startDate: localize
+          startDate: localizeTime
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
-          endDate: localize
+          endDate: localizeTime
             .getLocalizedMoment(this.props.announcement.endDate)
             .toDate(),
         },
