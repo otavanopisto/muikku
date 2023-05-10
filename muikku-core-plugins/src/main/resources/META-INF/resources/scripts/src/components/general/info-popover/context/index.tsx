@@ -68,6 +68,10 @@ export interface UserInfo {
    */
   vacationStart?: string | null;
   /**
+   * Extra info or description of the user
+   */
+  extraInfo?: string | null;
+  /**
    * If the user has an avatar. Api returns this as string, but it is boolean
    * and can be converted to boolean later.
    * @example "true" | "false"
@@ -79,6 +83,11 @@ export interface UserInfo {
    * @example "true" | "false"
    */
   whatsapp?: string | null;
+  /**
+   * Appointment calendar href. If the loaded user has enabled and set appointment calendar and
+   * logged user has permissions to use this feature.
+   */
+  appointmentCalendar?: string | null;
 }
 
 type Action =
@@ -170,6 +179,8 @@ async function fetchUserInfo(
           "VACATIONS",
           "WHATSAPP",
           "PHONENUMBER",
+          "APPOINTMENTCALENDAR",
+          "EXTRAINFO",
         ],
       }),
       "callback"
