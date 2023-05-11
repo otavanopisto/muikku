@@ -81,43 +81,47 @@
   right: 25px;
 }
 
+// Sets different paddings for left as there is extra border
+.material-page__title--exercise,
+.material-page__title--assignment,
+.material-page__title--journal,
+.material-page__title--interim-evaluation {
+  padding-left: 7px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding-left: 15px;
+  }
+}
+
 .material-page__title--exercise {
   border-left: 3px solid $color-exercise;
-  padding: 0 0 0 6px;
 
   @include breakpoint($breakpoint-pad) {
     border-left: 5px solid $color-exercise;
-    padding: 0 0 0 15px;
   }
 }
 
 .material-page__title--assignment {
   border-left: 3px solid $color-assignment;
-  padding: 0 0 0 6px;
 
   @include breakpoint($breakpoint-pad) {
     border-left: 5px solid $color-assignment;
-    padding: 0 0 0 15px;
   }
 }
 
 .material-page__title--journal {
   border-left: 3px solid $color-journal-page;
-  padding: 0 0 0 6px;
 
   @include breakpoint($breakpoint-pad) {
     border-left: 5px solid $color-journal-page;
-    padding: 0 0 0 15px;
   }
 }
 
 .material-page__title--interim-evaluation {
   border-left: 3px solid $color-interim-evaluation;
-  padding: 0 0 0 6px;
 
   @include breakpoint($breakpoint-pad) {
     border-left: 5px solid $color-interim-evaluation;
-    padding: 0 0 0 15px;
   }
 }
 
