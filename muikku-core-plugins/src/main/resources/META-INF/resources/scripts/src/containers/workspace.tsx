@@ -283,9 +283,12 @@ export default class Workspace extends React.Component<
    */
   onWorkspaceMaterialsBodyActiveNodeIdChange(newId: number) {
     const state: StateType = this.props.store.getState();
-    const workspaceNameExtension = state.workspaces.currentWorkspace.nameExtension ? " (" + state.workspaces.currentWorkspace.nameExtension + ")" : "";
-    const workspaceName = state.workspaces.currentWorkspace.name +  workspaceNameExtension;
-
+    const workspaceNameExtension = state.workspaces.currentWorkspace
+      .nameExtension
+      ? " (" + state.workspaces.currentWorkspace.nameExtension + ")"
+      : "";
+    const workspaceName =
+      state.workspaces.currentWorkspace.name + workspaceNameExtension;
 
     if (!newId) {
       history.pushState(null, null, location.origin + location.pathname + "#");
