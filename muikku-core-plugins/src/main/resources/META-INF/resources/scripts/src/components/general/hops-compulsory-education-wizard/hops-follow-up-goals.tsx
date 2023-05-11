@@ -79,7 +79,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             id="graduationGoalMonth"
             onChange={(date) => handleGoalsChange("graduationGoal", date)}
             selected={followUpData.followUp.graduationGoal}
-            locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+            locale={outputCorrectDatePickerLocale(localizeTime.language)}
             dateFormat="MM/yyyy"
             showMonthYearPicker
             showFullMonthYearPicker

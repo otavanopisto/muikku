@@ -182,7 +182,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
               className="env-dialog__input"
               id="contactEventdate"
               onChange={this.onDateChange}
-              locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+              locale={outputCorrectDatePickerLocale(localizeTime.language)}
               dateFormat="P"
               selected={this.state.date}
             ></DatePicker>

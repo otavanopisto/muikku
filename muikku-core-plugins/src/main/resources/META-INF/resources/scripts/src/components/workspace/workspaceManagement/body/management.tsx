@@ -1027,7 +1027,7 @@ class ManagementPanel extends React.Component<
                         : undefined
                     }
                     locale={outputCorrectDatePickerLocale(
-                      localizeTime.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.state.workspaceSignupStartDate}
                     dateFormat="P"
@@ -1050,7 +1050,7 @@ class ManagementPanel extends React.Component<
                         : new Date()
                     }
                     locale={outputCorrectDatePickerLocale(
-                      localizeTime.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.state.workspaceSignupEndDate}
                     dateFormat="P"
@@ -1109,7 +1109,7 @@ class ManagementPanel extends React.Component<
                     onChange={this.updateStartDate}
                     maxDate={this.state.workspaceEndDate}
                     locale={outputCorrectDatePickerLocale(
-                      localizeTime.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.state.workspaceStartDate}
                     dateFormat="P"
@@ -1128,7 +1128,7 @@ class ManagementPanel extends React.Component<
                     onChange={this.updateEndDate}
                     minDate={this.state.workspaceStartDate}
                     locale={outputCorrectDatePickerLocale(
-                      localizeTime.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.state.workspaceEndDate}
                     dateFormat="P"

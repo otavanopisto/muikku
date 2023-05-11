@@ -334,7 +334,7 @@ class VacationSettings extends React.Component<
                     )}
                     maxDate={this.state.profileVacationEnd}
                     locale={outputCorrectDatePickerLocale(
-                      localizeTime.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.state.profileVacationStart}
                     dateFormat="P"
@@ -355,7 +355,7 @@ class VacationSettings extends React.Component<
                     )}
                     minDate={this.state.profileVacationStart}
                     locale={outputCorrectDatePickerLocale(
-                      localizeTime.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.state.profileVacationEnd}
                     dateFormat="P"

@@ -215,7 +215,7 @@ class Step extends React.Component<StepProps, StepState> {
                     onChange={this.updateStartDate}
                     maxDate={this.props.getStore().endDate}
                     locale={outputCorrectDatePickerLocale(
-                      localizeTime.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.props.getStore().beginDate}
                     dateFormat="P"
@@ -231,7 +231,7 @@ class Step extends React.Component<StepProps, StepState> {
                     onChange={this.updateEndDate}
                     minDate={this.props.getStore().beginDate}
                     locale={outputCorrectDatePickerLocale(
-                      localizeTime.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.props.getStore().endDate}
                     dateFormat="P"

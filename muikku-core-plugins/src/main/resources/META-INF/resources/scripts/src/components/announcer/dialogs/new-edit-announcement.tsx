@@ -550,7 +550,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             className="env-dialog__input env-dialog__input--date-picker"
             selected={this.state.startDate}
             onChange={this.handleDateChange.bind(this, "startDate")}
-            locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+            locale={outputCorrectDatePickerLocale(localizeTime.language)}
             dateFormat="P"
           />
         </div>
@@ -563,7 +563,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             className="env-dialog__input env-dialog__input--date-picker"
             selected={this.state.endDate}
             onChange={this.handleDateChange.bind(this, "endDate")}
-            locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+            locale={outputCorrectDatePickerLocale(localizeTime.language)}
             dateFormat="P"
           />
         </div>

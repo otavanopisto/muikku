@@ -182,7 +182,7 @@ class NotesItemEdit extends SessionStateComponent<
             onChange={(date, e) =>
               this.handleNotesItemChange("startDate", date)
             }
-            locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+            locale={outputCorrectDatePickerLocale(localizeTime.language)}
             dateFormat="P"
             minDate={new Date()}
             maxDate={this.state.notesItem.dueDate}
@@ -200,7 +200,7 @@ class NotesItemEdit extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
-            locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+            locale={outputCorrectDatePickerLocale(localizeTime.language)}
             dateFormat="P"
             minDate={
               this.state.notesItem.startDate !== null

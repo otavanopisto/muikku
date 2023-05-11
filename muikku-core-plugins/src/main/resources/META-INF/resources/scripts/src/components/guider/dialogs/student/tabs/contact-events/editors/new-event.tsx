@@ -228,7 +228,7 @@ class NewContactEvent extends SessionStateComponent<
               className="env-dialog__input"
               id="contactEventdate"
               onChange={this.onDateChange}
-              locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+              locale={outputCorrectDatePickerLocale(localizeTime.language)}
               selected={this.state.date}
               dateFormat="P"
             ></DatePicker>

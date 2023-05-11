@@ -584,7 +584,7 @@ class OrganizationNewWorkspace extends React.Component<
                 modifiers="organization-workspace-date"
                 maxDate={this.state.endDate}
                 updateField={this.handleDateChange.bind(this, "beginDate")}
-                locale={localizeTime.getLocale()}
+                locale={localizeTime.language}
                 selected={this.state.beginDate}
                 labels={{
                   label: t("labels.beginDate"),
@@ -595,7 +595,7 @@ class OrganizationNewWorkspace extends React.Component<
                 modifiers="organization-workspace-date"
                 minDate={this.state.beginDate}
                 updateField={this.handleDateChange.bind(this, "endDate")}
-                locale={localizeTime.getLocale()}
+                locale={localizeTime.language}
                 selected={this.state.endDate}
                 labels={{
                   label: t("labels.endDate"),

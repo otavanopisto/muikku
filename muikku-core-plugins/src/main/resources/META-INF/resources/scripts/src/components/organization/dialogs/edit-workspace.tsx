@@ -719,7 +719,7 @@ class OrganizationEditWorkspace extends React.Component<
                 id="workspaceBeginDate"
                 maxDate={this.state.endDate}
                 updateField={this.handleDateChange.bind(this, "beginDate")}
-                locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+                locale={outputCorrectDatePickerLocale(localizeTime.language)}
                 selected={this.state.beginDate}
                 modifiers="organization-workspace-date"
                 labels={{
@@ -731,7 +731,7 @@ class OrganizationEditWorkspace extends React.Component<
                 id="workspaceEndDate"
                 minDate={this.state.beginDate}
                 updateField={this.handleDateChange.bind(this, "endDate")}
-                locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+                locale={outputCorrectDatePickerLocale(localizeTime.language)}
                 selected={this.state.endDate}
                 modifiers="organization-workspace-date"
                 labels={{

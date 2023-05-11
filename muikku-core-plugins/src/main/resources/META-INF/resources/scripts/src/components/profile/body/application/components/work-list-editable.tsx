@@ -269,7 +269,7 @@ class WorkListEditable extends React.Component<
               id={"date-" + (this.props.base && this.props.base.id)}
               className="form-element__input form-element__input--worklist-date"
               onChange={this.handleDateChange.bind(this)}
-              locale={outputCorrectDatePickerLocale(localizeTime.getLocale())}
+              locale={outputCorrectDatePickerLocale(localizeTime.language)}
               selected={this.state.date}
               // the entry date min date allows us to pick the previous month within the limit, or otherwise
               // we can only choose from this month forwards

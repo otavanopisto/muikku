@@ -30,13 +30,27 @@ i18n.use(initReactI18next).init({
  * Helper functions for  time localization
  */
 export class LocalizeTime {
-  language;
+  lang;
   /**
    * constructor
    * @param language given language
    */
   constructor(language: string) {
-    this.language = language;
+    this.lang = language;
+  }
+
+  /**
+   * get language
+   */
+  get language(): string {
+    return this.language.toLowerCase();
+  }
+
+  /**
+   * get language
+   */
+  set language(lang: string) {
+    this.lang = lang;
   }
 
   /**
@@ -110,12 +124,6 @@ export class LocalizeTime {
     unit?: moment.unitOfTime.DurationConstructor
   ) {
     return moment.duration(inp, unit);
-  }
-  /**
-   * getLocale
-   */
-  getLocale() {
-    return this.language.toLowerCase();
   }
 }
 
