@@ -4,12 +4,225 @@
 @import "../base/mixins";
 
 // Please "whatever creature rules in HIS place" forgive us from this MADNESS of nesting, important declerations etc. as there are nothing we can do about it!
-/* stylelint-disable selector-class-pattern, declaration-no-important */
+
+// Because deep nesting and very specific selectors used in ReadSpeaker styling we need to use same level of specificity to override styles succesfully even if it's pure maddness.
+// This is prone for duplication unfortunately.
+
+// Master wrapping element gets classNames based on the situation within the player.
+// When playing is paused master wrapper gets className calles "rspause".
+// When playing started the master wrapper gets className "rsexpanded".
+
+/* stylelint-disable */
+.rsbtn.muikku,
 .rsbtn.muikku.mega_toggle {
   align-items: center;
   display: flex;
   justify-content: flex-start;
+  margin: 0;
 
+  .toolsopen {
+    .rsbtn_play {
+      border-bottom-right-radius: 15px;
+    }
+  }
+
+  // Button's child span definition
+  .rsicn {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    font-size: 1rem;
+    height: 1.5rem;
+    justify-content: center;
+    padding: 0;
+    width: 2rem;
+  }
+
+    // When player is expanded a.k.a content is playing
+  &.rsexpanded {
+
+      // Expanded players wrapper
+    .rsbtn_exp {
+      align-items: center;
+      background-color: $color-default;
+      height: auto;
+      line-height: 1;
+      margin: 0;
+      order: 2;
+      padding: 0;
+      width: auto;
+
+      // Loading and playing progressbars
+      .rs-player-loadindicator {
+        background-color: $color-default-separator-border;
+        left: -33px !important;
+        right: -33px !important;
+        top: -5px !important;
+
+        .rsbtn-loading{
+          background-color: $color-notice;
+        }
+
+        .rsbtn-progress {
+          background-color: $color-success;
+        }
+      }
+
+      &:hover {
+        background-color: $color-default-separator-border;
+      }
+
+      // Some unnecessary container that just is there but needs overrides
+      .rsbtn_exp_inner {
+        background-color: $color-default;
+        border: 0;
+        border-radius: 0;
+        display: flex;
+        flex-basis: auto;
+        flex-flow: row nowrap;
+        flex-grow: 0;
+        flex-shrink: 0;
+        height: auto;
+        width: auto;
+
+        // Generic player button item inside expanded player container
+        button.rsbtn_player_item {
+          align-items: center;
+          background-color: $color-default;
+          border-bottom: 1px solid $color-default-separator-border;
+          border-left: 0;
+          border-radius: 0;
+          border-right: 0;
+          border-top: 1px solid $color-default-separator-border;
+          display: flex;
+          flex-basis: auto;
+          flex-grow: 0;
+          flex-shrink: 0;
+          float: none;
+          height: auto;
+          line-height: 1;
+          margin: 0;
+          order: 3;
+          padding: 0;
+          position: relative;
+          width: auto;
+        }
+
+        // Setting the baseline styles and overrides for every button inside expanded player
+        button[class^="rsbtn_"] {
+          &:hover {
+            background-color: $color-default-separator-border;
+          }
+
+          *[class^="rsicn"] {
+            line-height:1;
+
+            &:hover,
+            &:active {
+              &::before {
+                font-size: 1rem;
+              }
+            }
+
+            &::before {
+              color: lighten($color-default-contrast, 30%);
+              font-size: 1rem;
+            }
+          }
+        }
+
+        // Pause onHover effect
+        button.rsbtn_pause {
+          .rsicn-pause {
+            &:hover,
+            &:active {
+              &::before {
+                color: $color-error;
+              }
+            }
+          }
+        }
+
+        // Stop onHover effect
+        button.rsbtn_stop {
+          .rsicn-stop {
+            &:hover,
+            &:active {
+              &::before {
+                color: $color-fatal;
+              }
+            }
+          }
+        }
+
+        // Adjust volume onHover effect
+        button.rsbtn_volume {
+          .rsicn-volume {
+            &:hover,
+            &:active {
+              &::before {
+                color: $color-info;
+              }
+            }
+          }
+        }
+
+        // Close onHover effect
+        button.rsbtn_closer {
+          .rsicn-cross {
+            &:hover,
+            &:active {
+              &::before {
+                color: $color-fatal;
+                content: "\e90b";
+              }
+            }
+          }
+
+          // Override the ReadSpeaker's icon change with onHover event
+          &:hover,
+          &:active {
+            .rsicn-cross {
+              &::before {
+                color: $color-fatal;
+                content: "\e90b";
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // When player is paused
+  &.rspaused {
+
+    .rsbtn_exp {
+      .rsbtn_exp_inner {
+
+        // Resume onHover effect
+        button.rsbtn_pause {
+
+          .rsicn-pause {
+            &:hover,
+            &:active {
+
+              &::before {
+                color: $color-success;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Prevent float rules as they are canzur generally fucks everything up
+  * {
+    float: none !important;
+  }
+
+  // Set typography baselines for every <a> and <span> elements used in ReadSpeaker
   a,
   span {
     font-family: $system-font-family;
@@ -17,20 +230,16 @@
     font-weight: 400;
   }
 
-  .rsbtn_toolpanel.vertical {
-    position: absolute;
-  }
-
-  // Toggle button that triggers popper
-  .rsbtn_tooltoggle {
+  // Toggle button that triggers settings popper
+  button.rsbtn_tooltoggle {
     align-items: center;
-    background: $color-default;
+    background-color: $color-default;
     border-bottom: 1px solid $color-default-separator-border;
-    border-bottom-right-radius: 10px;
-    border-left: 1px solid $color-default-separator-border;
+    border-bottom-right-radius: 15px;
+    border-left: 0;
     border-right: 1px solid $color-default-separator-border;
     border-top: 1px solid $color-default-separator-border;
-    border-top-right-radius: 10px;
+    border-top-right-radius: 15px;
     display: flex;
     flex-basis: auto;
     flex-grow: 0;
@@ -39,43 +248,122 @@
     height: auto;
     line-height: 1;
     margin: 0;
-    order: 2;
+    order: 3;
     padding: 0;
     position: relative;
     width: auto;
 
     &:hover,
-    &:active {
-      border: 1px solid $color-default-separator-border;
+    &:active,
+    &:focus {
+      background-color: $color-default-separator-border;
+      border-bottom: 1px solid $color-default-separator-border;
+      border-left: 0;
+      border-right: 1px solid $color-default-separator-border;
+      border-top: 1px solid $color-default-separator-border;
 
       .rsicn.rsicn-arrow-down::before {
         color: $color-info;
       }
     }
 
-    // Actual container for the setting menu trigger
-    .rsicn.rsicn-arrow-down {
-      align-items: center;
-      cursor: pointer;
-      display: flex;
-      font-size: 1rem;
-      height: 1.5rem;
-      justify-content: center;
-      padding: 0;
-      width: 2rem;
-
+    .rsicn-arrow-down {
       &:hover,
       &:active {
         color: $color-default-contrast;
-        font-size: 1rem;
+
       }
 
       &::before {
         color: lighten($color-default-contrast, 30%);
-        content: "\e609";
-        font-family: "muikku" !important;
-        font-size: 0.7rem;
-        font-variant: normal;
+        font-size: 1rem;
+      }
+    }
+  }
+
+  // Dropdown popover
+  .rsbtn_toolpanel.vertical {
+    margin-top: 4px;
+    position: absolute;
+    right: -10px;
+
+    &::before {
+      border: solid transparent;
+      border-top-width: medium;
+      border-right-width: medium;
+      border-bottom-color: transparent;
+      border-bottom-width: medium;
+      border-left-width: medium;
+      border-bottom-color: #ffffff;
+      border-width: 4px;
+      bottom: 100%;
+      content: " ";
+      display: block;
+      height: 0;
+      pointer-events: none;
+      position: absolute;
+      right: 23px;
+      top: -7px;
+      width: 0;
+      z-index: 99;
+    }
+
+    .rsbtn_tools {
+      border-radius: 5px;
+      border: 0;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+
+      .rsbtn_tools_inner {
+
+        .rsbtn_toolcontainer {
+          min-width: 150px;
+
+          ul.rsbtn_toollist {
+            background-color: $color-default;
+            border-radius: 5px;
+            padding: 5px;
+
+            li[class^="rsbtn_tool"] {
+              background-color: $color-default;
+              border: 0;
+              height: auto;
+              max-height: none;
+              min-height: auto;
+
+              button.rsbtn_tool {
+                align-items: center;
+                display: flex;
+                justify-content: flex-start;
+                padding: 5px;
+
+                span[class^="rsicn"] {
+                  font-size: 1rem;
+                  height: auto;
+                  line-height:1;
+                }
+
+                span.rsbtn_btnlabel {
+                  font-size: 0.875rem;
+                  font-weight: 400;
+                }
+
+                &:hover,
+                &:active,
+                &:focus {
+                  background-color: rgba(0, 0, 0, 0.05);
+                }
+              }
+
+              &:last-child {
+                border: 0;
+              }
+            }
+          }
+        }
+
+        .rsbtn_powered {
+          display: none;
+        }
       }
     }
   }
@@ -83,13 +371,13 @@
   // anchor element that wraps the play button thingy
   a.rsbtn_play {
     align-items: center;
-    background: $color-default;
+    background-color: $color-default;
     border-bottom: 1px solid $color-default-separator-border;
-    border-bottom-left-radius: 10px;
+    border-bottom-left-radius: 15px;
     border-left: 1px solid $color-default-separator-border;
     border-right: 0;
     border-top: 1px solid $color-default-separator-border;
-    border-top-left-radius: 10px;
+    border-top-left-radius: 15px;
     cursor: pointer;
     display: flex;
     flex-basis: auto;
@@ -104,7 +392,7 @@
     width: auto;
 
     &:hover {
-      background: $color-default-separator-border;
+      background-color: $color-default-separator-border;
 
       .rsbtn_right.rsplay::before {
         color: $color-info;
@@ -138,4 +426,4 @@
     }
   }
 }
-/* stylelint-enable selector-class-pattern, declaration-no-important */
+/* stylelint-enable */
