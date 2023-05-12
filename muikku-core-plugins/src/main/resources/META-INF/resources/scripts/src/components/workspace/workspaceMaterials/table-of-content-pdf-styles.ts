@@ -54,7 +54,6 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     marginVertical: 5,
     paddingBottom: 10,
-    borderBottom: "1px solid #cfcfcf",
   },
   tocTopicContainer: {
     display: "flex",
@@ -72,12 +71,15 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: "4px",
+    borderRadius: "50%",
   },
   tocTopicIconRestrictedToLoggedUsers: {
     backgroundColor: "#de3211",
+    color: "#ffffff",
   },
   tocTopicIconRestrictedToMembers: {
     backgroundColor: "#62c3eb",
+    color: "#ffffff",
   },
   tocElementContainer: {
     display: "flex",
@@ -91,17 +93,24 @@ export const styles = StyleSheet.create({
   tocElementTitle: {
     padding: "4px 4px 4px 8px",
   },
-  tocElementIcon: {
+  tocIconContainer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "4px",
+    borderRadius: "50%",
+  },
+  tocElementIcon: {
+    height: "28px",
+    width: "28px",
   },
   tocElementIconRestrictedToLoggedUsers: {
     backgroundColor: "#de3211",
+    color: "#ffffff",
   },
   tocElementIconRestrictedToMembers: {
     backgroundColor: "#62c3eb",
+    color: "#ffffff",
   },
   tocElementAssignment: {
     borderLeft: "3px solid #ce01bd",
@@ -153,6 +162,14 @@ export const styles = StyleSheet.create({
     fontFamily: "Times-Roman",
     marginVertical: 10,
     textTransform: "uppercase",
+  },
+  arrowIcon: {
+    display: "flex",
+    width: "1em",
+    height: "1em",
+    strokeWidth: 0,
+    stroke: "#000000",
+    fill: "#000000",
   },
 });
 
