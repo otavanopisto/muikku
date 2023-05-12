@@ -44,6 +44,7 @@ import {
 import Dropdown from "~/components/general/dropdown";
 import { IconButton } from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
+import TableOfContentPDFDialog from "./table-of-content-pdf-dialog";
 
 /**
  * ContentProps
@@ -551,6 +552,20 @@ class ContentComponent extends SessionStateComponent<
         // )}
         tocHeaderExtraContent={
           <div>
+            <Dropdown openByHover content={<p>Sisällysluettelo PDF</p>}>
+              <TableOfContentPDFDialog
+                assignmentTypeFilters={this.state.assignmentTypeFilters}
+                materials={this.props.materials}
+                workspace={this.props.workspace}
+                compositeReplies={this.props.materialReplies}
+              >
+                <IconButton
+                  icon="board"
+                  buttonModifiers={["notebook-action"]}
+                  disablePropagation={true}
+                />
+              </TableOfContentPDFDialog>
+            </Dropdown>
             <Dropdown openByHover content={<p>Avaa kaikki</p>}>
               <IconButton
                 icon="arrow-down"
