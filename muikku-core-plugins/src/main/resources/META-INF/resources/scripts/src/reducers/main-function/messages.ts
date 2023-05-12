@@ -183,16 +183,20 @@ export interface MessagesNavigationItemUpdateType {
   text: string;
 }
 
+export type NavigationItemTypes = "folder" | "label"
+
+
+
 /**
  * MessagesNavigationItemType
  */
 export interface MessagesNavigationItemType {
   location: string;
-  type: string;
+  type: NavigationItemTypes;
   id: string | number;
   icon: string;
   color?: string;
-  text: string;
+  text: string ;
 }
 
 /**
@@ -214,34 +218,28 @@ const defaultNavigation: MessagesNavigationItemListType = [
     type: "folder",
     id: "inbox",
     icon: "folder",
-    text: i18n.t("labels.inbox", { ns: "messaging" }),
+    text: "inbox",
   },
   {
     location: "unread",
     type: "folder",
     id: "unread",
     icon: "folder",
-    text: i18n.t("labels.unread", {
-      ns: "messaging",
-    }),
+    text: "unread",
   },
   {
     location: "sent",
     type: "folder",
     id: "sent",
     icon: "folder",
-    text: i18n.t("labels.sent", {
-      ns: "messaging",
-    }),
+    text: "sent",
   },
   {
     location: "trash",
     type: "folder",
     id: "trash",
     icon: "trash-alt",
-    text: i18n.t("labels.trash", {
-      ns: "messaging",
-    }),
+    text: "trash",
   },
 ];
 

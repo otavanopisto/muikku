@@ -44,7 +44,7 @@ class NavigationAside extends React.Component<
             hash={navItem.location}
             icon={navItem.icon}
           >
-            {navItem.text}
+            {this.props.t("labels.category", {ns: "messaging", context: navItem.text})}
           </NavigationElement>
         )
       );

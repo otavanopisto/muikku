@@ -40,14 +40,14 @@ export class LocalizeTime {
   }
 
   /**
-   * get language
+   * getter function for language
    */
   get language(): string {
-    return this.language.toLowerCase();
+    return this.lang.toLowerCase();
   }
 
   /**
-   * get language
+   * setter function for language
    */
   set language(lang: string) {
     this.lang = lang;

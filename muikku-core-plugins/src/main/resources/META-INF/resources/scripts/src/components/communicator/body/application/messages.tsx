@@ -224,14 +224,26 @@ class CommunicatorMessages extends BodyScrollLoader<
         <BodyScrollKeeper hidden={!!this.props.currentThread}>
           {this.props.searchMessages.map((message) => {
             // Lets set the correct messageFolder string based on which folrder the message belongs to
-            let messageFolder;
-            if (message.folder === "INBOX") {
-              messageFolder = this.props.t("labels.inbox", { ns: "messaging" });
-            } else if (message.folder === "SENT") {
-              messageFolder = this.props.t("labels.sent", { ns: "messaging" });
-            } else {
-              messageFolder = this.props.t("labels.trash", { ns: "messaging" });
-            }
+            const messageFolder = this.props.t("labels.folder", {
+              ns: "messaging",
+              context: message.folder.toLowerCase(),
+            });
+            // if (message.folder === "INBOX") {-
+            //   messageFolder = this.props.t("labels.folder", {
+            //     ns: "messaging",
+            //     context: "inbox",
+            //   });
+            // } else if (message.folder === "SENT") {
+            //   messageFolder = this.props.t("labels.folder", {
+            //     ns: "messaging",
+            //     context: "sent",
+            //   });
+            // } else {
+            //   messageFolder = this.props.t("labels.folder", {
+            //     ns: "messaging",
+            //     context: "trash",
+            //   });
+            // }
 
             let senderName = `${message.sender.firstName} ${
               message.sender.nickName ? message.sender.nickName : ""

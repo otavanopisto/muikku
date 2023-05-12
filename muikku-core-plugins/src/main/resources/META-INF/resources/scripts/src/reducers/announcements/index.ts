@@ -21,25 +21,25 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "active",
     id: "active",
     icon: "folder",
-    text: i18n.t("labels.category", { context: "active", ns: "messaging" }),
+    text: "active",
   },
   {
     location: "expired",
     id: "expired",
     icon: "folder",
-    text: i18n.t("labels.category", { context: "expired", ns: "messaging" }),
+    text: "expired",
   },
   {
     location: "own",
     id: "own",
     icon: "folder",
-    text: i18n.t("labels.category", { context: "own", ns: "messaging" }),
+    text: "own",
   },
   {
     location: "archived",
     id: "archived",
     icon: "trash-alt",
-    text: i18n.t("labels.category", { context: "archived", ns: "messaging" }),
+    text: "archived",
   },
 ];
 

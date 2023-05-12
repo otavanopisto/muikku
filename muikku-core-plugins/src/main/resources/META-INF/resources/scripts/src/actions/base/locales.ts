@@ -1,11 +1,10 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi from "~/lib/mApi";
-import { StateType } from "~/reducers";
 import { LocaleReadResponse, LocaleType } from "~/reducers/base/locales";
 import promisify from "~/util/promisify";
 import notificationActions from "~/actions/base/notifications";
-import i18n from "~/locales/i18n";
+import i18n, {localizeTime} from "~/locales/i18n";
 
 // ACTIONS for locale
 export type LOCALE_SET = SpecificActionType<"LOCALE_SET", string>;
@@ -39,7 +38,6 @@ export interface LoadLocaleTriggerType {
 const setLocale: SetLocaleTriggerType = function setLocale(data) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-    getState: () => StateType
   ) => {
     try {
       await promisify(
@@ -47,7 +45,9 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
         "callback"
       )();
 
+      localizeTime.language = data.locale;
       i18n.changeLanguage(data.locale)
+
 
       dispatch({
         type: "LOCALE_SET",
@@ -72,13 +72,14 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
 const loadLocale: LoadLocaleTriggerType = function loadLocale() {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-    getState: () => StateType
   ) => {
     try {
       const locale = (await promisify(
         mApi().me.locale.read(),
         "callback"
       )()) as LocaleReadResponse;
+
+      localizeTime.language = locale.lang;
 
       dispatch({
         type: "LOCALE_UPDATE",
