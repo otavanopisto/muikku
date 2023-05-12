@@ -11,7 +11,6 @@ import {
 import Avatar from "../avatar";
 import { ButtonPill } from "~/components/general/button";
 import { fetchUserInfo, useInfoPopperContext, UserInfo } from "./context";
-import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { WhatsappButtonLink } from "../whatsapp-link";
 import { i18nType } from "~/reducers/base/i18n";
 import { GuiderStudentLink } from "../guider-link";
@@ -45,7 +44,7 @@ interface InfoPopoverProps {
 
 /**
  * Creates info popover when hovering over the info target "aka" user
- * Popover persist for 0.2 second after mouse leaves the info target or when hovering
+ * Popover opens and closes with 0.2 second delay after mouse enters or leaves the info target or when hovering
  * over the popover content
  *
  * @param props InfoPopoverProps
@@ -178,13 +177,6 @@ const InfoPopover = (props: InfoPopoverProps) => {
                   setNewMessageDialogIsOpen(false)
                 }
               />
-
-              {/* {teacher.properties["profile-extraInfo"] !== undefined &&
-                teacher.properties["profile-extraInfo"] !== null && (
-                  <div className="item-list__user-extra-info">
-                    {teacher.properties["profile-extraInfo"]}
-                  </div>
-                )} */}
             </div>
           </div>
         )}
@@ -203,7 +195,9 @@ interface ContactInformationProps {
 }
 
 /**
- * ContactInformation
+ * Creates a ContactInformation component which displays email and phone number of the user
+ * or more if needed
+ *
  * @param props props
  * @param props.info info
  * @returns JSX.Element
@@ -238,7 +232,8 @@ interface ContactVacationProps {
 }
 
 /**
- * ContactVacation
+ * Creates a ContactVacation component to render vacation information of the user
+ *
  * @param props props
  * @param props.info info
  * @param props.i18n i18n
@@ -268,7 +263,7 @@ function ContactVacation(props: ContactVacationProps) {
       {i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}
       &nbsp;
       {i18n.time.format(info.vacationStart)}
-      {info.vacationEnd ? "–" + i18n.time.format(info.vacationEnd) : null}
+      {info.vacationEnd ? `- ${i18n.time.format(info.vacationEnd)}` : null}
     </div>
   );
 }
@@ -282,7 +277,9 @@ interface ContactExtraInfoProps {
 }
 
 /**
- * ContactVacation
+ * Creates a ContactExtraInfo component to render extra info about a user
+ * if it's available
+ *
  * @param props props
  * @param props.info info
  * @param props.i18n i18n
@@ -309,15 +306,16 @@ interface ContactActionsProps {
 }
 
 /**
- * ContactActions
+ * Creates a ContactActions component to render actions that can be used
+ * if the user has permission to do so and they are available
+ *
  * @param props props
  * @param props.info info
  * @param props.i18n i18n
  * @returns JSX.Element
  */
 function ContactActions(props: ContactActionsProps) {
-  const { info, i18n, onCommunicatorMessageOpen, onCommunicatorMessageClose } =
-    props;
+  const { info, i18n } = props;
 
   return (
     <>
@@ -330,7 +328,8 @@ function ContactActions(props: ContactActionsProps) {
           )}
       </div>
       <div className="item-list__user-actions">
-        {info.loggedUserHasPermission === "true" ? (
+        {/**WILL BE ENABLED LATER, WHEN COMMUNICATOR PERMISSIONS ARE CLEAR */}
+        {/* {info.loggedUserHasPermission === "true" ? (
           <CommunicatorNewMessage
             extraNamespace="workspace-teachers"
             onOpen={onCommunicatorMessageOpen}
@@ -354,7 +353,7 @@ function ContactActions(props: ContactActionsProps) {
               buttonModifiers={["new-message", "new-message-to-staff"]}
             ></ButtonPill>
           </CommunicatorNewMessage>
-        ) : null}
+        ) : null} */}
 
         {info.phoneNumber && info.whatsapp === "true" ? (
           <WhatsappButtonLink i18n={i18n} mobileNumber={info.phoneNumber} />
