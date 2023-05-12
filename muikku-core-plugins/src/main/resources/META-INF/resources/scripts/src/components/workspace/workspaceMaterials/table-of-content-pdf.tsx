@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Document, Page, Path, Svg, Text, View } from "@react-pdf/renderer";
+import { Document, Page, Text, View } from "@react-pdf/renderer";
 import { styles } from "./table-of-content-pdf-styles";
 import {
   MaterialCompositeRepliesListType,
@@ -44,6 +44,10 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
     compositeReplies,
   } = props;
 
+  /**
+   * renderToc
+   * @returns JSX.Element
+   */
   const renderToc = () => {
     const content: ContentType[] = [];
 
@@ -82,8 +86,6 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
     mSubNode: MaterialContentNodeType,
     index: number
   ) => {
-    const jotain = 0;
-
     const topicMaterial = materials.find((m) => m.id === mSubNode.parentId);
 
     const isTocTopicViewRestrictedFromUser =
@@ -123,13 +125,8 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
     );
 
     // If Toc topic is restricted so is the element
-    // Or if element is restricted
     // Or if element is filtered out
-    if (
-      isTocTopicViewRestrictedFromUser ||
-      isTocElementViewRestricted ||
-      filteredOut
-    ) {
+    if (isTocTopicViewRestrictedFromUser || filteredOut) {
       return null;
     }
 
@@ -190,9 +187,19 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
       }
     }
 
+    if (isTocElementViewRestricted && !status.isStudent && status.loggedIn) {
+      icon = "restriction";
+      stylesByState =
+        mSubNode.viewRestrict === MaterialViewRestriction.LOGGED_IN
+          ? styles.tocElementIconRestrictedToLoggedUsers
+          : mSubNode.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS
+          ? styles.tocElementIconRestrictedToMembers
+          : null;
+    }
+
     return (
       <View
-        key={mSubNode.id}
+        key={mSubNode.workspaceMaterialId}
         style={{ ...styles.tocElementContainer, ...assigmentTypeStyles }}
       >
         <Text style={styles.tocElementTitle}>{mSubNode.title}</Text>
@@ -213,28 +220,73 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
     mNode: MaterialContentNodeType,
     index: number
   ) => {
-    const jotain = 0;
+    // Boolean if there is view Restriction for toc topic
+    const isTocTopicViewRestricted =
+      mNode.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
+      mNode.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
+
+    // section is restricted in following cases:
+    // section is restricted for logged in users and users is not logged in...
+    // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
+    const isTocTopicViewRestrictedFromUser =
+      (mNode.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+        !status.loggedIn) ||
+      (mNode.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+        !workspace.isCourseMember &&
+        (status.isStudent || !status.loggedIn));
+
+    if (isTocTopicViewRestrictedFromUser) {
+      return null;
+    }
+
+    const icon: string =
+      isTocTopicViewRestricted && !status.isStudent && status.loggedIn
+        ? "restriction globe"
+        : null;
+
+    const iconStylesByRestriction =
+      mNode.viewRestrict === MaterialViewRestriction.LOGGED_IN
+        ? styles.tocTopicIconRestrictedToLoggedUsers
+        : mNode.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS
+        ? styles.tocTopicIconRestrictedToMembers
+        : null;
 
     return (
-      <View key={mNode.id} wrap={false} style={styles.tocTopicContainer}>
-        <View style={styles.tocTopicTitle}>
-          <Text>{mNode.title}</Text>
-        </View>
+      <View
+        key={mNode.workspaceMaterialId}
+        wrap={false}
+        style={styles.tocTopicContainer}
+      >
+        <Text style={styles.tocTopicTitle}>{mNode.title}</Text>
+        <Text style={{ ...styles.tocTopicIcon, ...iconStylesByRestriction }}>
+          {icon}
+        </Text>
       </View>
     );
   };
 
-  let pageTitle = "Muistiinpanot";
+  const pageHeader = (
+    <View style={styles.header} fixed>
+      <View style={styles.headerInfoContainer}>
+        <Text style={styles.headerTitle}>Sisällysluettelo</Text>
+        {props.workspaceName && (
+          <Text style={styles.headerSubtitle}>{props.workspaceName}</Text>
+        )}
 
-  if (props.workspaceName) {
-    pageTitle += ` - ${props.workspaceName}`;
-  }
+        <Text
+          style={styles.headerPageNumber}
+          render={({ pageNumber, totalPages }) =>
+            `${pageNumber} (${totalPages})`
+          }
+        />
+      </View>
+    </View>
+  );
 
   return (
     <Document>
       <Page style={styles.body} size="A4" wrap>
-        <Text style={styles.pageTitle}>{pageTitle}</Text>
-
+        {pageHeader}
         {materials && materials.length > 0 ? (
           renderToc()
         ) : (

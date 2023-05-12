@@ -34,16 +34,28 @@ const NoteBookPDF = (props: NoteBookPFDProps) => {
     </View>
   );
 
-  let pageTitle = "Muistiinpanot";
+  const pageHeader = (
+    <View style={styles.header} fixed>
+      <View style={styles.headerInfoContainer}>
+        <Text style={styles.headerTitle}>Muistiinpanot</Text>
+        {props.workspaceName && (
+          <Text style={styles.headerSubtitle}>{props.workspaceName}</Text>
+        )}
 
-  if (props.workspaceName) {
-    pageTitle += ` - ${props.workspaceName}`;
-  }
+        <Text
+          style={styles.headerPageNumber}
+          render={({ pageNumber, totalPages }) =>
+            `${pageNumber} (${totalPages})`
+          }
+        />
+      </View>
+    </View>
+  );
 
   return (
     <Document>
       <Page style={styles.body} size="A4" wrap>
-        <Text style={styles.pageTitle}>{pageTitle}</Text>
+        {pageHeader}
 
         {notes && notes.length > 0 ? (
           notes.map((n) => renderNote(n))
