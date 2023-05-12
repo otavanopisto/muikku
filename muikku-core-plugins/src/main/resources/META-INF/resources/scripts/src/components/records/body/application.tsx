@@ -172,7 +172,10 @@ class StudiesApplication extends React.Component<
             this.props.hops.value.goalMatriculationExam === "maybe")
         );
       case "PEDAGOGY_FORM":
-        return this.state?.pedagogyFormState !== "INACTIVE";
+        return (
+          this.state?.pedagogyFormState === "PENDING" ||
+          this.state?.pedagogyFormState === "APPROVED"
+        );
     }
 
     return true;

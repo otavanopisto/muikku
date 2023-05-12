@@ -79,6 +79,10 @@ class VisibilityAndApprovalDialog extends React.Component<
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">LUVAT</legend>
           <div className="hops-container__row">
+            Valitse ketkä saavat nähdä suunnitelman erityisopettajan ja rehtorin
+            lisäksi. Voit muokata valintojasi myöhemmin.
+          </div>
+          <div className="hops-container__row">
             <div
               className="hops__form-element-container hops__form-element-container--single-row"
               style={{ flexFlow: "unset" }}
@@ -92,7 +96,7 @@ class VisibilityAndApprovalDialog extends React.Component<
                 checked={visibility.includes("GUARDIANS")}
                 onChange={onVisibilityChange}
               />
-              <label htmlFor="fromFamilyMember" className="hops__label">
+              <label htmlFor="forGuardians" className="hops__label">
                 Olen alaikäinen. Pedagogisen tuen suunnitelman tietoja saa antaa
                 huoltajalleni.
               </label>
@@ -119,6 +123,11 @@ class VisibilityAndApprovalDialog extends React.Component<
         </fieldset>
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">HYVÄKSYMINEN</legend>
+          <div className="hops-container__row">
+            Lue pedagogisen tuen suunnitelma ja merkitse se hyväksytyksi. Jos et
+            hyväksy suunnitelmaa, ota yhteyttä erityisopettajaan.
+          </div>
+
           <div className="hops-container__row">
             <div
               className="hops__form-element-container hops__form-element-container--single-row"
@@ -167,7 +176,7 @@ class VisibilityAndApprovalDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="Hyväksyminen ja luvat"
+        title="Suunnitelman hyväksyminen"
         content={content}
         footer={footer}
         closeOnOverlayClick={false}

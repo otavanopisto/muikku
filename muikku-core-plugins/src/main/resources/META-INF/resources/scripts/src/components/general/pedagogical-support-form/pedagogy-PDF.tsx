@@ -201,7 +201,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         </View>
 
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>Asiakirjan päivämäärä</Text>
+          <Text style={styles.infoFieldLabel}>Asiakirjan laatimispäivä</Text>
           <Text style={styles.infoFieldValue}>
             {moment(data.created).format("DD.MM.YYYY")}
           </Text>
@@ -248,7 +248,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         {formData?.supportReasons?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Muu syy</Text>
+            <Text style={styles.infoFieldLabel}>Muu peruste</Text>
             <Text style={styles.infoFieldValue}>
               {formData?.supportReasonOther || "-"}
             </Text>
@@ -267,7 +267,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         {formData?.supportActions?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Muu syy</Text>
+            <Text style={styles.infoFieldLabel}>Muu toimenpide</Text>
             <Text style={styles.infoFieldValue}>
               {formData?.supportActionOther || "-"}
             </Text>
@@ -276,7 +276,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>
-            Ennakko suunnitelma ylioppilaskirjoituksiin
+            Ennakkosuunnitelma ylioppilaskirjoituksiin
           </Text>
           {formData?.matriculationExaminationSupport?.map((value, i) => (
             <Text key={i} style={styles.infoFieldValue}>
@@ -287,7 +287,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         {formData?.matriculationExaminationSupport?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Muu syy</Text>
+            <Text style={styles.infoFieldLabel}>Muu toimenpide</Text>
             <Text style={styles.infoFieldValue}>
               {formData?.matriculationExaminationSupportOther || "-"}
             </Text>

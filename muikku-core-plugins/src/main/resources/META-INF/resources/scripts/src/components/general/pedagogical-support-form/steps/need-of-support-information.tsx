@@ -157,6 +157,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               isMulti
               menuPortalTarget={document.body}
               menuPosition={"fixed"}
+              // eslint-disable-next-line jsdoc/require-jsdoc
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
@@ -165,6 +166,8 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   )) ||
                 undefined
               }
+              placeholder="Valitse..."
+              noOptionsMessage={() => "Ei enempää vaihtoehtoja"}
               options={supportReasonsOptions}
               onChange={handleSupportReasonChange}
               isSearchable={false}
@@ -208,6 +211,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               isMulti
               menuPortalTarget={document.body}
               menuPosition={"fixed"}
+              // eslint-disable-next-line jsdoc/require-jsdoc
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
@@ -216,6 +220,8 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   )) ||
                 undefined
               }
+              placeholder="Valitse..."
+              noOptionsMessage={() => "Ei enempää vaihtoehtoja"}
               options={supportActionsOptions}
               onChange={handleSupportActionChange}
               isSearchable={false}
@@ -257,6 +263,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               isMulti
               menuPortalTarget={document.body}
               menuPosition={"fixed"}
+              // eslint-disable-next-line jsdoc/require-jsdoc
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
@@ -267,6 +274,8 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   )) ||
                 undefined
               }
+              placeholder="Valitse..."
+              noOptionsMessage={() => "Ei enempää vaihtoehtoja"}
               options={matriculationSupportActionsOptions}
               onChange={handleMatriculationSupportActionChange}
               isSearchable={false}

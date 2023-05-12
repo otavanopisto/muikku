@@ -68,12 +68,16 @@ class VisibilityDialog extends React.Component<
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">LUVAT</legend>
         <div className="hops-container__row">
+          Valitse ketkä saavat nähdä suunnitelman erityisopettajan ja rehtorin
+          lisäksi. Voit muokata valintojasi myöhemmin.
+        </div>
+        <div className="hops-container__row">
           <div
             className="hops__form-element-container hops__form-element-container--single-row"
             style={{ flexFlow: "unset" }}
           >
             <input
-              id="fromFamilyMember"
+              id="forGuardians"
               type="checkbox"
               name="forGuardians"
               className="hops__input"
@@ -81,9 +85,9 @@ class VisibilityDialog extends React.Component<
               checked={visibility.includes("GUARDIANS")}
               onChange={onVisibilityChange}
             ></input>
-            <label htmlFor="fromFamilyMember" className="hops__label">
-              Lomakkeella olevat tiedot saa antaa alaikäisen opiskelijan
-              huoltajalle?
+            <label htmlFor="forGuardians" className="hops__label">
+              Olen alaikäinen. Pedagogisen tuen suunnitelman tietoja saa antaa
+              huoltajalleni.
             </label>
           </div>
           <div
@@ -91,7 +95,7 @@ class VisibilityDialog extends React.Component<
             style={{ flexFlow: "unset" }}
           >
             <input
-              id="fromFamilyMember"
+              id="forTeachers"
               type="checkbox"
               name="forTeachers"
               className="hops__input"
@@ -99,9 +103,9 @@ class VisibilityDialog extends React.Component<
               checked={visibility.includes("TEACHERS")}
               onChange={onVisibilityChange}
             ></input>
-            <label htmlFor="fromFamilyMember" className="hops__label">
-              Tietoja saa luovuttaa opiskelijaa opettavalle ja ohjaavalle
-              henkilökunnalle?
+            <label htmlFor="forTeachers" className="hops__label">
+              Pedagogisen tuen suunnitelman tietoja saa antaa minua opettavalle
+              ja ohjaavalle henkilökunnalle.
             </label>
           </div>
         </div>
@@ -133,7 +137,7 @@ class VisibilityDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="Näkyvyys oikeuksien muokkaaminen"
+        title="Jako-oikeuksien muokkaaminen"
         content={content}
         footer={footer}
         closeOnOverlayClick={false}
