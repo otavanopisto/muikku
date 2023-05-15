@@ -1236,6 +1236,7 @@
       "metaData": "Tiedot",
       "newPage": "Nimetön",
       "noLicense": "Ei määritetty",
+      "notes": "Muistiinpanot",
       "operators": "Operaattorit",
       "theoryPages": "Teoriasivut",
       "journalAssignments": "Oppimispäiväkirjatehtävät",
@@ -1271,6 +1272,7 @@
       "source": "Lähde",
       "symbols": "Symbolit",
       "tableOfContents": "Sisällysluettelo",
+      "teacherMessage": "Viesti opettajalle",
       "totalAssignments": "Tehtäviä yhteensä",
       "unanswered": "Aloittamattomat",
       "wordCount": "Sanoja"
