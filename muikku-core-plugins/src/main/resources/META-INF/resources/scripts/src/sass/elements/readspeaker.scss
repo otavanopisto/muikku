@@ -16,13 +16,15 @@
 .rsbtn.muikku,
 .rsbtn.muikku.mega_toggle {
   align-items: center;
+  border: 1px solid $color-default-separator-border;
+  border-radius: 15px 15px 15px 15px;
   display: flex;
   justify-content: flex-start;
   margin: 0;
 
   .toolsopen {
     .rsbtn_play {
-      border-bottom-right-radius: 15px;
+      border-radius: 15px;
     }
   }
 
@@ -68,15 +70,11 @@
         }
       }
 
-      &:hover {
-        background-color: $color-default-separator-border;
-      }
-
       // Some unnecessary container that just is there but needs overrides
       .rsbtn_exp_inner {
         background-color: $color-default;
         border: 0;
-        border-radius: 0;
+        border-radius: 15px;
         display: flex;
         flex-basis: auto;
         flex-flow: row nowrap;
@@ -89,11 +87,8 @@
         button.rsbtn_player_item {
           align-items: center;
           background-color: $color-default;
-          border-bottom: 1px solid $color-default-separator-border;
-          border-left: 0;
-          border-radius: 0;
-          border-right: 0;
-          border-top: 1px solid $color-default-separator-border;
+          border: 0;
+          border-radius: 15px;
           display: flex;
           flex-basis: auto;
           flex-grow: 0;
@@ -234,12 +229,8 @@
   button.rsbtn_tooltoggle {
     align-items: center;
     background-color: $color-default;
-    border-bottom: 1px solid $color-default-separator-border;
-    border-bottom-right-radius: 15px;
-    border-left: 0;
-    border-right: 1px solid $color-default-separator-border;
-    border-top: 1px solid $color-default-separator-border;
-    border-top-right-radius: 15px;
+    border: 0;
+    border-radius: 15px;
     display: flex;
     flex-basis: auto;
     flex-grow: 0;
@@ -257,10 +248,7 @@
     &:active,
     &:focus {
       background-color: $color-default-separator-border;
-      border-bottom: 1px solid $color-default-separator-border;
-      border-left: 0;
-      border-right: 1px solid $color-default-separator-border;
-      border-top: 1px solid $color-default-separator-border;
+      border: 0;
 
       .rsicn.rsicn-arrow-down::before {
         color: $color-info;
@@ -372,12 +360,8 @@
   a.rsbtn_play {
     align-items: center;
     background-color: $color-default;
-    border-bottom: 1px solid $color-default-separator-border;
-    border-bottom-left-radius: 15px;
-    border-left: 1px solid $color-default-separator-border;
-    border-right: 0;
-    border-top: 1px solid $color-default-separator-border;
-    border-top-left-radius: 15px;
+    border: 0;
+    border-radius: 15px;
     cursor: pointer;
     display: flex;
     flex-basis: auto;
