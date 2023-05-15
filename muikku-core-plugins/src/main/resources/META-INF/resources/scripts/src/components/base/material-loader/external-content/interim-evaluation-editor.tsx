@@ -294,7 +294,9 @@ class InterimEvaluationEditor extends React.Component<
             buttonModifiers={this.props.stateConfiguration["button-class"]}
             onClick={this.handlePushInterimRequest}
           >
-            {this.props.stateConfiguration["button-text"]}
+          {t(this.props.stateConfiguration["button-text"], {
+            ns: "workspace",
+          })}
           </Button>
         ) : null}
         {this.props.stateConfiguration[
@@ -317,7 +319,7 @@ class InterimEvaluationEditor extends React.Component<
       <>
         <div className="material-page__content rich-text">
           <span className="material-page__interim-evaluation-field-label">
-            Viesti opettajalle:
+            {t("actions.hide", { ns: "materials" })}
           </span>
           <span className={`material-page__interim-evaluation-wrapper`}>
             {field}

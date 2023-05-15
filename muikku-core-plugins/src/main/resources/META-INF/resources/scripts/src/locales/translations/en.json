@@ -492,7 +492,7 @@
     },
     "labels": {
       "additionalInfo": "Additional information",
-      "beliefSubjectIs": "My belief subjects are",
+      "beliefSubjectIs": "My religion and ethics subject is",
       "biology": "Biology",
       "chemistry": "Chemistry",
       "ethics": "Ethics",
@@ -506,7 +506,7 @@
       "maybe": "Maybe",
       "ops2016": "In natural sciences (physics, chemistry, biology and geography) you must pass two mandatory courses in one of the subject and one from others. Natural science subject, where at least 2 courses must be passed.",
       "ops2021": "In natural sciences (physics, chemistry, biology and geography) you must have two studying points in three subjects and for points in one. Which subject for four points, you can choose for yourself.",
-      "religionEl": "Ev.lut. religion",
+      "religionEl": "Evangelical Lutheran religion",
       "religionOther": "Religion, other",
       "select": "Select...",
       "shortSyllabus": "Short syllabus",
@@ -1231,6 +1231,7 @@
       "metaData": "Metadata",
       "newPage": "New page",
       "noLicense": "No license",
+      "notes": "Notes",
       "operators": "Operations",
       "theoryPages": "Theory pages",
       "journalAssignments": "Journal assignments",
@@ -1266,6 +1267,7 @@
       "source": "Source",
       "symbols": "Symbols",
       "tableOfContents": "Table of contents",
+      "teacherMessage": "Message for teacher",
       "totalAssignments": "Total assignments",
       "unanswered": "Unanswered",
       "wordCount": "Words"

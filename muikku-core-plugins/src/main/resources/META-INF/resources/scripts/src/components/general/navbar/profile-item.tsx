@@ -107,7 +107,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         >
           {this.props.status.hasImage ? (
             <img
-              alt={this.props.t("labels.profileImage", {ns: "profile"})}
+              alt={this.props.t("labels.profileImage", { ns: "profile" })}
               src={getUserImageUrl(
                 this.props.status.userId,
                 null,

@@ -551,7 +551,7 @@ class ContentComponent extends SessionStateComponent<
         tocHeaderExtraContent={
           <div>
             {/* <Dropdown openByHover content={<p>{t("actions.openAll")}</p>}> */}
-            <Dropdown openByHover content={<p>{"actions.closeAll"}</p>}>
+            <Dropdown openByHover content={<p>{t("actions.openAll")}</p>}>
               <IconButton
                 icon="arrow-down"
                 buttonModifiers={["toc-action"]}
@@ -609,7 +609,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="exercise-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.exercises", { ns: "materials" })}
+                        {t("labels.exercises", { ns: "materials", count: 0 })}
                       </label>
                     </div>
                   </div>
@@ -628,7 +628,10 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="assignment-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.evaluables", { ns: "materials" })}
+                        {t("labels.evaluables", {
+                          ns: "materials",
+                          count: 0,
+                        })}
                       </label>
                     </div>
                   </div>
