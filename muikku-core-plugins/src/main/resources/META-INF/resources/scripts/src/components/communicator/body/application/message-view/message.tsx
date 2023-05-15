@@ -19,7 +19,6 @@ import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { AnyActionType } from "~/actions";
 import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
-import Dropdown from "~/components/general/dropdown";
 
 /**
  * MessageProps
@@ -322,28 +321,13 @@ class Message extends React.Component<MessageProps, MessageState> {
               </span>
             </div>
             <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
-              <Dropdown
-                openByHover
-                alignSelfVertically="top"
-                content={
-                  <p>
-                    {`${this.props.i18n.time.format(
-                      this.props.message.created
-                    )} ${this.props.i18n.time.format(
-                      this.props.message.created,
-                      "LT"
-                    )}`}
-                  </p>
-                }
+              <span
+                aria-label={this.props.i18n.text.get(
+                  "plugin.wcag.messageSendDate.aria.label"
+                )}
               >
-                <span
-                  aria-label={this.props.i18n.text.get(
-                    "plugin.wcag.messageSendDate.aria.label"
-                  )}
-                >
-                  {this.props.i18n.time.format(this.props.message.created)}
-                </span>
-              </Dropdown>
+                {this.props.i18n.time.format(this.props.message.created)}
+              </span>
             </div>
           </div>
           {this.props.labels && this.props.labels.length ? (

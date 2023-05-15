@@ -38,7 +38,6 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
-import Dropdown from "~/components/general/dropdown";
 
 /**
  * CommunicatorMessagesProps
@@ -301,25 +300,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                       ))}
                     </span>
                   </div>
-
-                  <Dropdown
-                    openByHover
-                    alignSelfVertically="top"
-                    content={
-                      <p>
-                        {`${this.props.i18n.time.format(
-                          message.created
-                        )} ${this.props.i18n.time.format(
-                          message.created,
-                          "LT"
-                        )}`}
-                      </p>
-                    }
-                  >
-                    <div className="application-list__header-item-date">
-                      {this.props.i18n.time.format(message.created)}
-                    </div>
-                  </Dropdown>
+                  <div className="application-list__header-item-date">
+                    {this.props.i18n.time.format(message.created)}
+                  </div>
                 </ApplicationListItemHeader>
                 <ApplicationListItemBody modifiers="communicator-message">
                   <span className="application-list__header-item-body">
@@ -451,32 +434,16 @@ class CommunicatorMessages extends BodyScrollLoader<
                         {thread.messageCountInThread}
                       </div>
                     ) : null}
-
-                    <Dropdown
-                      openByHover
-                      alignSelfVertically="top"
-                      content={
-                        <p>
-                          {`${this.props.i18n.time.format(
-                            thread.threadLatestMessageDate
-                          )} ${this.props.i18n.time.format(
-                            thread.threadLatestMessageDate,
-                            "LT"
-                          )}`}
-                        </p>
-                      }
+                    <div
+                      className="application-list__header-item-date"
+                      aria-label={this.props.i18n.text.get(
+                        "plugin.wcag.messageSendDate.aria.label"
+                      )}
                     >
-                      <div
-                        className="application-list__header-item-date"
-                        aria-label={this.props.i18n.text.get(
-                          "plugin.wcag.messageSendDate.aria.label"
-                        )}
-                      >
-                        {this.props.i18n.time.format(
-                          thread.threadLatestMessageDate
-                        )}
-                      </div>
-                    </Dropdown>
+                      {this.props.i18n.time.format(
+                        thread.threadLatestMessageDate
+                      )}
+                    </div>
                   </ApplicationListItemHeader>
                   <ApplicationListItemBody modifiers="communicator-message">
                     <span
