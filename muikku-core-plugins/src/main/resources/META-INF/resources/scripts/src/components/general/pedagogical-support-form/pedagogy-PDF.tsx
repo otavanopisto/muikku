@@ -56,8 +56,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       {}
     );
 
-  const studentOpinion = formData?.studentOpinionOfSupport?.map(
-    (opinion: Opinion, i) => (
+  const studentOpinion = (formData?.studentOpinionOfSupport &&
+    formData?.studentOpinionOfSupport.length > 0 &&
+    formData?.studentOpinionOfSupport.map((opinion: Opinion, i) => (
       <View key={i} style={styles.opinionContainer}>
         <View style={styles.opinionInfo} wrap={false}>
           <View style={styles.infoFieldContainer}>
@@ -86,15 +87,15 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           </View>
         </View>
       </View>
-    )
-  ) || (
+    ))) || (
     <View>
       <Text>Ei mielipidettä asetettu</Text>
     </View>
   );
 
-  const schoolOpinion = formData?.schoolOpinionOfSupport?.map(
-    (opinion: Opinion, i) => (
+  const schoolOpinion = (formData?.schoolOpinionOfSupport &&
+    formData?.schoolOpinionOfSupport.length > 0 &&
+    formData?.schoolOpinionOfSupport.map((opinion: Opinion, i) => (
       <View key={i} style={styles.opinionContainer}>
         <View style={styles.opinionInfo} wrap={false}>
           <View style={styles.infoFieldContainer}>
@@ -123,8 +124,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           </View>
         </View>
       </View>
-    )
-  ) || (
+    ))) || (
     <View>
       <Text>Ei mielipidettä asetettu</Text>
     </View>
@@ -301,39 +301,41 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       <Page style={styles.body} size="A4">
         {pageHeader}
         <Text style={styles.pageTitle}>Toteutetut tukitoimet</Text>
-        {formData?.supportActionsImplemented?.map((iAction, i) => (
-          <View key={i} style={styles.implementedActionContainer}>
-            <View style={styles.implementationInfo} wrap={false}>
-              <View style={styles.infoFieldContainer}>
-                <Text style={styles.infoFieldLabel}>Tukitoimi</Text>
-                <Text style={styles.infoFieldValue}>
-                  {supportActionTranslationByValue[iAction.action]}
-                </Text>
-              </View>
+        {(formData?.supportActionsImplemented &&
+          formData?.supportActionsImplemented.length > 0 &&
+          formData?.supportActionsImplemented.map((iAction, i) => (
+            <View key={i} style={styles.implementedActionContainer}>
+              <View style={styles.implementationInfo} wrap={false}>
+                <View style={styles.infoFieldContainer}>
+                  <Text style={styles.infoFieldLabel}>Tukitoimi</Text>
+                  <Text style={styles.infoFieldValue}>
+                    {supportActionTranslationByValue[iAction.action]}
+                  </Text>
+                </View>
 
-              <View style={styles.infoFieldContainer}>
-                <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
-                <Text style={styles.infoFieldValue}>
-                  {moment(iAction.date).format("DD.MM.YYYY")}
-                </Text>
-              </View>
+                <View style={styles.infoFieldContainer}>
+                  <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
+                  <Text style={styles.infoFieldValue}>
+                    {moment(iAction.date).format("DD.MM.YYYY")}
+                  </Text>
+                </View>
 
-              <View style={styles.infoFieldContainer}>
-                <Text style={styles.infoFieldLabel}>Kurssi</Text>
-                <Text style={styles.infoFieldValue}>
-                  {iAction?.course?.name || "-"}
-                </Text>
-              </View>
+                <View style={styles.infoFieldContainer}>
+                  <Text style={styles.infoFieldLabel}>Kurssi</Text>
+                  <Text style={styles.infoFieldValue}>
+                    {iAction?.course?.name || "-"}
+                  </Text>
+                </View>
 
-              <View style={styles.infoFieldContainer}>
-                <Text style={styles.infoFieldLabel}>Lisätietoa</Text>
-                <Text style={styles.infoFieldValue}>
-                  {iAction?.extraInfoDetails || "-"}
-                </Text>
+                <View style={styles.infoFieldContainer}>
+                  <Text style={styles.infoFieldLabel}>Lisätietoa</Text>
+                  <Text style={styles.infoFieldValue}>
+                    {iAction?.extraInfoDetails || "-"}
+                  </Text>
+                </View>
               </View>
             </View>
-          </View>
-        )) || (
+          ))) || (
           <View>
             <Text>Ei toteutettuja tukitoimia</Text>
           </View>
