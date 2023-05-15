@@ -451,19 +451,31 @@ class CommunicatorMessages extends BodyScrollLoader<
                       </div>
                     ) : null}
 
-                    <div
-                      className="application-list__header-item-date"
-                      aria-label={this.props.i18n.text.get(
-                        "plugin.wcag.messageSendDate.aria.label"
-                      )}
+                    <Dropdown
+                      alignSelfVertically="top"
+                      openByHover
+                      content={
+                        <p>
+                          {`${this.props.i18n.time.format(
+                            thread.threadLatestMessageDate
+                          )} - Klo ${this.props.i18n.time.format(
+                            thread.threadLatestMessageDate,
+                            "LT"
+                          )}`}
+                        </p>
+                      }
                     >
-                      {`${this.props.i18n.time.format(
-                        thread.threadLatestMessageDate
-                      )} - Klo ${this.props.i18n.time.format(
-                        thread.threadLatestMessageDate,
-                        "LT"
-                      )}`}
-                    </div>
+                      <div
+                        className="application-list__header-item-date"
+                        aria-label={this.props.i18n.text.get(
+                          "plugin.wcag.messageSendDate.aria.label"
+                        )}
+                      >
+                        {`${this.props.i18n.time.format(
+                          thread.threadLatestMessageDate
+                        )}`}
+                      </div>
+                    </Dropdown>
                   </ApplicationListItemHeader>
                   <ApplicationListItemBody modifiers="communicator-message">
                     <span
