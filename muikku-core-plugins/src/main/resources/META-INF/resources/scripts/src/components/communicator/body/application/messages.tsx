@@ -38,6 +38,7 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * CommunicatorMessagesProps
@@ -300,9 +301,24 @@ class CommunicatorMessages extends BodyScrollLoader<
                       ))}
                     </span>
                   </div>
-                  <div className="application-list__header-item-date">
-                    {this.props.i18n.time.format(message.created)}
-                  </div>
+                  <Dropdown
+                    alignSelfVertically="top"
+                    openByHover
+                    content={
+                      <p>
+                        {`${this.props.i18n.time.format(
+                          message.created
+                        )} - Klo ${this.props.i18n.time.format(
+                          message.created,
+                          "LT"
+                        )}`}
+                      </p>
+                    }
+                  >
+                    <div className="application-list__header-item-date">
+                      {this.props.i18n.time.format(message.created)}
+                    </div>
+                  </Dropdown>
                 </ApplicationListItemHeader>
                 <ApplicationListItemBody modifiers="communicator-message">
                   <span className="application-list__header-item-body">
@@ -434,15 +450,19 @@ class CommunicatorMessages extends BodyScrollLoader<
                         {thread.messageCountInThread}
                       </div>
                     ) : null}
+
                     <div
                       className="application-list__header-item-date"
                       aria-label={this.props.i18n.text.get(
                         "plugin.wcag.messageSendDate.aria.label"
                       )}
                     >
-                      {this.props.i18n.time.format(
+                      {`${this.props.i18n.time.format(
                         thread.threadLatestMessageDate
-                      )}
+                      )} - Klo ${this.props.i18n.time.format(
+                        thread.threadLatestMessageDate,
+                        "LT"
+                      )}`}
                     </div>
                   </ApplicationListItemHeader>
                   <ApplicationListItemBody modifiers="communicator-message">
