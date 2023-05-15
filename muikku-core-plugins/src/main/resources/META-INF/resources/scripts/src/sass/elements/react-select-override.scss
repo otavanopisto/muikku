@@ -124,3 +124,9 @@
     }
   }
 }
+
+.react-select-override--pedagogy-form {
+  .react-select-override__control {
+    max-width: unset;
+  }
+}

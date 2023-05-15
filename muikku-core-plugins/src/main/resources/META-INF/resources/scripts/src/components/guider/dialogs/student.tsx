@@ -33,7 +33,9 @@ import { getName } from "~/util/modifiers";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
 import { COMPULSORY_HOPS_VISIBLITY } from "../../general/hops-compulsory-education-wizard/index";
-import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
+import UpperSecondaryPedagogicalSupportWizardForm, {
+  UPPERSECONDARY_PEDAGOGYFORM,
+} from "~/components/general/pedagogical-support-form";
 
 export type tabs =
   | "STUDIES"
@@ -190,6 +192,9 @@ class StudentDialog extends React.Component<
     if (
       this.props.guider.currentStudent &&
       this.props.guider.currentStudent.basic &&
+      UPPERSECONDARY_PEDAGOGYFORM.includes(
+        this.props.guider.currentStudent.basic.studyProgrammeName
+      ) &&
       this.props.guider.currentStudent.pedagogyFormAvailable &&
       this.props.guider.currentStudent.pedagogyFormAvailable.accessible
     ) {

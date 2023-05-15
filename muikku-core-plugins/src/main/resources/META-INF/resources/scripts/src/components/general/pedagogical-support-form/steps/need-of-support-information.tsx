@@ -152,8 +152,9 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             </label>
             <Select
               id="needOfPedagogySupport"
-              className="react-select-override react-select-override--hops"
+              className="react-select-override react-select-override--hops react-select-override--pedagogy-form"
               classNamePrefix="react-select-override"
+              closeMenuOnSelect={false}
               isMulti
               menuPortalTarget={document.body}
               menuPosition={"fixed"}
@@ -206,8 +207,9 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             </label>
             <Select
               id="suggestedSupportActions"
-              className="react-select-override react-select-override--hops"
+              className="react-select-override react-select-override--hops react-select-override--pedagogy-form"
               classNamePrefix="react-select-override"
+              closeMenuOnSelect={false}
               isMulti
               menuPortalTarget={document.body}
               menuPosition={"fixed"}
@@ -258,8 +260,9 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             </label>
             <Select
               id="prePlansForMatriculationExam"
-              className="react-select-override react-select-override--hops"
+              className="react-select-override react-select-override--hops react-select-override--pedagogy-form"
               classNamePrefix="react-select-override"
+              closeMenuOnSelect={false}
               isMulti
               menuPortalTarget={document.body}
               menuPosition={"fixed"}

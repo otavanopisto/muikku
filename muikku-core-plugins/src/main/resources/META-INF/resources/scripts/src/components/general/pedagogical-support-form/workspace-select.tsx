@@ -63,12 +63,12 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
       className="react-select-override react-select-override--hops"
       classNamePrefix="react-select-override"
       isClearable
-      placeholder="Search workspaces..."
+      placeholder="Etsi työtiloja..."
       options={options}
       value={selectedValue}
       onChange={handleSelectChange}
       onInputChange={handleTextInput}
-      noOptionsMessage={() => "No workspaces Found"}
+      noOptionsMessage={() => "Ei vaihtoehtoja"}
       isLoading={loadingWorkspaces}
       isDisabled={disabled}
     />
