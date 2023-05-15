@@ -4,6 +4,15 @@ import FollowUpGoals from "../hops-follow-up-goals";
 import { HopsBaseProps, HopsUser } from "..";
 import { FollowUp, HopsStudyPeriodPlan } from "~/@types/shared";
 import HopsPeriodPlan from "../hops-period-plan";
+import { FollowUpProvider } from "../context/follow-up-context";
+import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "~/actions";
+import { StateType } from "~/reducers";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import { WebsocketStateType } from "~/reducers/util/websocket";
 
 /**
  * StudiesPlanningProps
@@ -17,6 +26,8 @@ interface HopsStudiesPlanningProps extends HopsBaseProps {
   superVisorModifies: boolean;
   studyPeriodPlan?: HopsStudyPeriodPlan;
   onStudyPeriodPlanChange: (studyPeriodPlan: HopsStudyPeriodPlan) => void;
+  websocketState: WebsocketStateType;
+  displayNotification: DisplayNotificationTriggerType;
 
   /**
    * This is utility method to jump specific step. Doesn validate so use it carefully.
@@ -92,70 +103,97 @@ class HopsStudiesPlanning extends React.Component<
       (this.props.phase && this.props.phase >= 2);
 
     return (
-      <div className="hops-container" ref={(ref) => (this.myRef = ref)}>
-        <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">Tavoitteet</legend>
-
-          <FollowUpGoals
-            disabled={this.props.disabled}
-            studentId={this.props.studentId}
-            studyTimeEnd={this.props.studyTimeEnd}
-          />
-        </fieldset>
-
-        <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">Opintolaskuri</legend>
-          {!hasAccessToStudyTool ? (
-            <div className="hops-container__info">
-              <div className="hops-container__not-available">
-                Tämä osa lomakkeesta aktivoidaan ohjaajan toimesta.
-              </div>
-            </div>
-          ) : (
-            <div className="hops-container__info">
-              <div className="hops__form-element-container">
-                Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta
-                aikaan, joka sinulla on viikoittain käytössäsi opiskeluun. Yhden
-                kurssin suorittaminen vie aikaa keskimäärin 28 tuntia. Jos
-                valmistuminen ei ole mahdollista ajassa, jonka voit käyttää
-                opiskelemiseen, kannattaa asiaa pohtia uudelleen.
-              </div>
-              <HopsPlanningTool
-                user={this.props.user}
-                usePlace={this.props.usePlace}
-                studentId={this.props.studentId}
-                studentsUserEntityId={this.props.studentsUserEntityId}
-                disabled={this.props.disabled}
-                studyTimeEnd={this.props.studyTimeEnd}
-                superVisorModifies={this.props.superVisorModifies}
-                showIndicators={true}
-              />
-            </div>
-          )}
-        </fieldset>
-
-        {hasAccessToStudyTool && (
+      <FollowUpProvider
+        websocketState={this.props.websocketState}
+        studentId={this.props.studentId}
+        displayNotification={this.props.displayNotification}
+      >
+        <div className="hops-container" ref={(ref) => (this.myRef = ref)}>
           <fieldset className="hops-container__fieldset">
-            <legend className="hops-container__subheader">
-              Opiskelusuunnitelma
-            </legend>
-            <div className="hops-container__info">
-              <div className="hops__form-element-container">
-                Aikatauluta opintojasi seuraavalle 6 kuukauden jaksolle (2
-                kurssia/kuukausi). Merkitse kuukausittain suoritettavat kurssit
-                (esim. ot1, bi1)
-              </div>
-              <HopsPeriodPlan
-                disabled={this.props.disabled}
-                studyPeriodPlan={this.props.studyPeriodPlan}
-                onStudyPeriodPlanChange={this.props.onStudyPeriodPlanChange}
-              />
-            </div>
+            <legend className="hops-container__subheader">Tavoitteet</legend>
+
+            <FollowUpGoals
+              disabled={this.props.disabled}
+              studentId={this.props.studentId}
+              studyTimeEnd={this.props.studyTimeEnd}
+            />
           </fieldset>
-        )}
-      </div>
+
+          <fieldset className="hops-container__fieldset">
+            <legend className="hops-container__subheader">Opintolaskuri</legend>
+            {!hasAccessToStudyTool ? (
+              <div className="hops-container__info">
+                <div className="hops-container__not-available">
+                  Tämä osa lomakkeesta aktivoidaan ohjaajan toimesta.
+                </div>
+              </div>
+            ) : (
+              <div className="hops-container__info">
+                <div className="hops__form-element-container">
+                  Opintoaikalaskuri vertaa valmistumiselle asettamaasi
+                  tavoitetta aikaan, joka sinulla on viikoittain käytössäsi
+                  opiskeluun. Yhden kurssin suorittaminen vie aikaa keskimäärin
+                  28 tuntia. Jos valmistuminen ei ole mahdollista ajassa, jonka
+                  voit käyttää opiskelemiseen, kannattaa asiaa pohtia uudelleen.
+                </div>
+                <HopsPlanningTool
+                  user={this.props.user}
+                  usePlace={this.props.usePlace}
+                  studentId={this.props.studentId}
+                  studentsUserEntityId={this.props.studentsUserEntityId}
+                  disabled={this.props.disabled}
+                  studyTimeEnd={this.props.studyTimeEnd}
+                  superVisorModifies={this.props.superVisorModifies}
+                  showIndicators={true}
+                />
+              </div>
+            )}
+          </fieldset>
+
+          {hasAccessToStudyTool && (
+            <fieldset className="hops-container__fieldset">
+              <legend className="hops-container__subheader">
+                Opiskelusuunnitelma
+              </legend>
+              <div className="hops-container__info">
+                <div className="hops__form-element-container">
+                  Aikatauluta opintojasi seuraavalle 6 kuukauden jaksolle (2
+                  kurssia/kuukausi). Merkitse kuukausittain suoritettavat
+                  kurssit (esim. ot1, bi1)
+                </div>
+                <HopsPeriodPlan
+                  disabled={this.props.disabled}
+                  studyPeriodPlan={this.props.studyPeriodPlan}
+                  onStudyPeriodPlanChange={this.props.onStudyPeriodPlanChange}
+                />
+              </div>
+            </fieldset>
+          )}
+        </div>
+      </FollowUpProvider>
     );
   }
 }
 
-export default HopsStudiesPlanning;
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    websocketState: state.websocket,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return { displayNotification };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HopsStudiesPlanning);

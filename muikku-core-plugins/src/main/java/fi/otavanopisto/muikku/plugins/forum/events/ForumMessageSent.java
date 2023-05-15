@@ -5,10 +5,11 @@ public class ForumMessageSent {
   public ForumMessageSent() {
   }
   
-  public ForumMessageSent(Long areaId, Long threadId, Long posterUserEntityId, String baseUrl, String workspaceUrlName) {
+  public ForumMessageSent(Long areaId, Long threadId, Long replyId, Long posterUserEntityId, String baseUrl, String workspaceUrlName) {
     super();
     this.areaId = areaId;
     this.threadId = threadId;
+    this.replyId = replyId;
     this.posterUserEntityId = posterUserEntityId;
     this.baseUrl = baseUrl;
     this.workspaceUrlName = workspaceUrlName;
@@ -24,6 +25,10 @@ public class ForumMessageSent {
 
   public Long getThreadId() {
     return threadId;
+  }
+
+  public Long getReplyId() {
+    return replyId;
   }
 
   public Long getPosterUserEntityId() {
@@ -44,6 +49,7 @@ public class ForumMessageSent {
 
   private Long areaId;
   private Long threadId;
+  private Long replyId;
   private Long posterUserEntityId;
   private String baseUrl;
   private String workspaceUrlName;

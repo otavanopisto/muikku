@@ -85,7 +85,7 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
   return (
     <div
       id={entityId ? `readspeaker_button${entityId}` : "readspeaker_button0"}
-      className="rs_skip rsbtn rs_preserve"
+      className="rs_skip rsbtn muikku rs_preserve"
     >
       <a
         rel="nofollow"
@@ -97,7 +97,7 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
       >
         <span className="rsbtn_left rsimg rspart">
           <span className="rsbtn_text">
-            <span>ReadSpeaker</span>
+            <span>Kuuntele</span>
           </span>
         </span>
         <span className="rsbtn_right rsimg rsplay rspart"></span>

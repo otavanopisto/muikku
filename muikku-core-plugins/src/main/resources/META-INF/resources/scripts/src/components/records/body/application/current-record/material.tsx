@@ -216,7 +216,6 @@ export default class Material extends React.Component<
                     case "INCOMPLETE":
                       evalStateClassName =
                         "material-page__assignment-assessment--incomplete";
-                      evalStateIcon = "icon-thumb-down";
                       break;
                     case "FAILED":
                       evalStateClassName =
@@ -231,7 +230,6 @@ export default class Material extends React.Component<
                     case "WITHDRAWN":
                       evalStateClassName =
                         "material-page__assignment-assessment--withdrawn";
-                      evalStateIcon = "";
                       break;
                   }
                 }

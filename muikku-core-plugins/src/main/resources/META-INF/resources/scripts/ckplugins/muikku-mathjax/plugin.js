@@ -6,7 +6,7 @@
 
 ( function() {
 
-  var cdn = 'http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  var cdn = 'http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML';
 
   CKEDITOR.dialog.add( 'muikku-mathjax', function( editor ) {
 
@@ -54,18 +54,18 @@
                     var value = that.getInputElement().getValue();
                     // isAsciiMath is not present in widget at this point
                     var isAsciiMath = that.getDialog().getValueOf('info', 'isAsciiMath');
-                    var untrimmed = CKEDITOR.plugins.muikkuMathjax.untrim(isAsciiMath, value);
+                    var untrimmed = CKEDITOR.plugins.muikkuMathjax.escapeHtmlEntities(CKEDITOR.plugins.muikkuMathjax.untrim(isAsciiMath, value));
                     preview.setValue(untrimmed);
                   } );
                 }
               },
 
               setup: function( widget ) {
-                this.setValue( CKEDITOR.plugins.muikkuMathjax.trim(widget.data.isAsciiMath, widget.data.math) );
+                this.setValue( CKEDITOR.plugins.muikkuMathjax.unescapeHtmlEntities(CKEDITOR.plugins.muikkuMathjax.trim(widget.data.isAsciiMath, widget.data.math)) );
               },
 
               commit: function( widget ) {
-                widget.setData( 'math', CKEDITOR.plugins.muikkuMathjax.untrim(widget.data.isAsciiMath, this.getValue()));
+                widget.setData( 'math', CKEDITOR.plugins.muikkuMathjax.escapeHtmlEntities(CKEDITOR.plugins.muikkuMathjax.untrim(widget.data.isAsciiMath, this.getValue())) );
               }
             },
             {
@@ -290,7 +290,7 @@
         end = value.lastIndexOf( '\\)' );
       }
       
-      if (begin === -1 || end === -1 || begin === end) {
+      if (begin === -1 || end === -1) {
         return value;
       }
 
@@ -304,7 +304,22 @@
         return "\\(" + value + "\\)";
       }
     }
+    
+    CKEDITOR.plugins.muikkuMathjax.escapeHtmlEntities = function(value) {
+      return value ? value
+        .replaceAll("&", "&amp;")
+        .replaceAll(`"`, "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;") : value;
+    }
 
+    CKEDITOR.plugins.muikkuMathjax.unescapeHtmlEntities = function(value) {
+      return value ? value
+        .replaceAll(/&amp;/gi, "&")
+        .replaceAll(/&quot;/gi, `"`)
+        .replaceAll(/&lt;/gi, "<")
+        .replaceAll(/&gt;/gi, ">") : value;
+    }
 
     /**
      * FrameWrapper is responsible for communication between the MathJax library
@@ -535,7 +550,7 @@
  *
  *        config.mathJaxLib = 'http:\/\/example.com\/libs\/MathJax.js';
  *
- * @cfg {String} [mathJaxLib='http:\/\/cdn.mathjax.org\/mathjax\/2.2-latest\/MathJax.js?config=TeX-AMS_HTML']
+ * @cfg {String} [mathJaxLib='http:\/\/cdn.mathjax.org\/mathjax\/2.2-latest\/MathJax.js?config=TeX-MML-AM_CHTML']
  * @member CKEDITOR.config
  */
 

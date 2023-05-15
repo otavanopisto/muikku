@@ -457,7 +457,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForVisible(".dialog__content-row #signUpMessage");
         sendKeys("#signUpMessage", "Hello!\nSigning up!");
         
-        MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+        MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
         
         mockBuilder
           .addCourseStudent(course1.getId(), courseStudent)

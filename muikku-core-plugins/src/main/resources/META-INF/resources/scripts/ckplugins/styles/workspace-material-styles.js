@@ -33,7 +33,17 @@ CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.longCitation"), element: 'div', attributes: { 'class': 'material-citation-long material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exampleBox"), element: 'div', attributes: { 'class': 'material-example material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exerciseBox"), element: 'div', attributes: { 'class': 'material-exercise material-styles-text' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exerciseFeedbackBox"), element: 'div', attributes: { 'class': 'material-exercise-feedback material-styles-block', 'data-show': "true" } }
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exerciseFeedbackBox"), element: 'div', attributes: { 'class': 'material-exercise-feedback material-styles-block', 'data-show': "true" } },
+
+  { name: "Kuuntele ja toista", element: 'div', attributes: { 'class': 'material-visually-guided-styles-combo-block material-visually-guided-styles-combo__listen-and-speak'} },
+  { name: "Kuuntele", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__listen'} },
+  { name: "Puhu", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__speak'} },
+  { name: "Lue", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__read'} },
+  { name: "Kirjoita", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__write'} },
+  { name: "Katso", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__look'} },
+  { name: "Yhdistä", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__connect'} },
+  { name: "Äänitä", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__record'} },
+  { name: "Etsi", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__search'} },
 
   /* Inline Styles */
 

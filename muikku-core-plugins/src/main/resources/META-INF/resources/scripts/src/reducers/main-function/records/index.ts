@@ -1,5 +1,5 @@
-import { UserWithSchoolDataType, UserFileType } from "~/reducers/user-index";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { UserFileType } from "~/reducers/user-index";
+import { Assessment, WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { Reducer } from "redux";
 import {
@@ -9,56 +9,80 @@ import {
   MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
 
+export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
+
 /**
- * TransferCreditType
+ * Subject data for record workspace activity
  */
-export interface TransferCreditType {
-  assessorIdentifier: string;
-  courseName: string;
-  courseNumber: number;
-  curriculumIdentifier: string;
-  date: string;
-  gradeIdentifier: string;
-  gradingScaleIdentifier: string;
-  grade: string;
-  gradingScale: string;
-  passed: boolean;
+export interface RecordWorkspaceActivitySubject {
+  identifier?: string | null;
+  subjectCode: string;
+  subjectName: string;
+  courseNumber?: number;
+  courseLength: number;
+  courseLengthSymbol: string;
+}
+
+/**
+ * Record workspace curriculum that includes
+ * curriculum identifier and curriculum name
+ */
+export interface RecordWorkspaceActivityCurriculum {
   identifier: string;
-  length: number;
-  lengthUnitIdentifier: string;
-  schoolIdentifier: string;
-  studentIdentifier: string;
-  subjectIdentifier: string;
-  verbalAssessment: string;
+  name: string;
 }
 
-export type RecordGroupType = {
+/**
+ * Record workspace activity info with line and category, default line and activities
+ */
+export interface RecordWorkspaceActivityInfo {
+  lineName: string;
+  lineCategory: string;
+  defaultLine: boolean;
+  activities: RecordWorkspaceActivity[];
+}
+
+/**
+ * RecordWorkspaceByLineCategory
+ */
+export interface RecordWorkspaceActivitiesWithLineCategory {
+  lineCategory: string;
+  credits: RecordWorkspaceActivityByLine[];
+  transferCredits: RecordWorkspaceActivityByLine[];
+}
+
+/**
+ * Record workspace activity with line name
+ */
+export interface RecordWorkspaceActivityByLine {
+  lineName: string;
+  activity: RecordWorkspaceActivity;
+}
+
+/**
+ * Record workspace with activity data
+ */
+export interface RecordWorkspaceActivity {
+  id: number;
+  identifier: string;
+  subjects: RecordWorkspaceActivitySubject[] | null;
+  assessmentStates: Assessment[];
+  name: string;
+  curriculums: RecordWorkspaceActivityCurriculum[] | null;
+  exercisesTotal?: number | null;
+  exercisesAnswered?: number | null;
+  evaluablesTotal?: number | null;
+  evaluablesAnswered?: number | null;
+}
+
+/**
+ * RecordGroupType
+ */
+export interface RecordGroupType {
+  groupCurriculumName?: string;
   groupCurriculumIdentifier?: string;
-  workspaces: Array<WorkspaceType>;
-  transferCredits: Array<TransferCreditType>;
-};
-
-export type RecordsOrderedType = Array<RecordGroupType>;
-
-export type AllStudentUsersDataType = Array<{
-  user: UserWithSchoolDataType;
-  records: RecordsOrderedType;
-}>;
-
-/**
- * GradingScaleInfoType
- */
-export interface GradingScaleInfoType {
-  scale: string;
-  grade: string;
-  passing: boolean;
-}
-
-/**
- * RecordsGradesType
- */
-export interface RecordsGradesType {
-  [key: string]: GradingScaleInfoType;
+  credits: RecordWorkspaceActivity[];
+  transferCredits: RecordWorkspaceActivity[];
 }
 
 /**
@@ -86,7 +110,7 @@ export type CurrentStudentUserAndWorkspaceStatusType =
  * RecordsType
  */
 export interface RecordsType {
-  userData: AllStudentUsersDataType;
+  userData: RecordWorkspaceActivitiesWithLineCategory[];
   userDataStatus: AllStudentUsersDataStatusType;
   files: Array<UserFileType>;
   currentStatus: CurrentStudentUserAndWorkspaceStatusType;

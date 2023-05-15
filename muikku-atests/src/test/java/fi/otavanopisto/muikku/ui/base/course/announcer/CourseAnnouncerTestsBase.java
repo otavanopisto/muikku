@@ -104,7 +104,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     
 
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-    MockCourseStudent mockCourseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     
     mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
     
@@ -139,7 +139,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     
 
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-    MockCourseStudent mockCourseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     
     mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
    
@@ -175,7 +175,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
 
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-    MockCourseStudent mockCourseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     
     mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
    

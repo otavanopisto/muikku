@@ -828,7 +828,7 @@ class ContentComponent extends SessionStateComponent<
                         );
                         break;
                       case "INCOMPLETE":
-                        icon = "thumb-down";
+                        icon = "check";
                         className = "toc__item--incomplete";
                         iconTitle = this.props.i18n.text.get(
                           "plugin.workspace.materials.assignmentIncompleteTooltip"
