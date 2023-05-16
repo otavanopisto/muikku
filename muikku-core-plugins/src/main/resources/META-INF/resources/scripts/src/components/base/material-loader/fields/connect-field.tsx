@@ -7,6 +7,7 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { Instructions } from "~/components/general/instructions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FieldType
@@ -19,7 +20,7 @@ interface FieldType {
 /**
  * ConnectFieldProps
  */
-interface ConnectFieldProps {
+interface ConnectFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -74,7 +75,7 @@ interface ConnectFieldState {
 /**
  * ConnectField
  */
-export default class ConnectField extends React.Component<
+class ConnectField extends React.Component<
   ConnectFieldProps,
   ConnectFieldState
 > {
@@ -363,7 +364,7 @@ export default class ConnectField extends React.Component<
    * @param executeTriggerChangeFunction
    * @param fielda
    * @param fieldb
-   * @returns
+   * @returns fieldType
    */
   swapCounterpart(
     executeTriggerChangeFunction: boolean,
@@ -582,9 +583,9 @@ export default class ConnectField extends React.Component<
             content={
               <div
                 dangerouslySetInnerHTML={{
-                  __html: this.props.i18n.text.get(
-                    "plugin.workspace.connectField.instructions"
-                  ),
+                  __html: this.props.t("instructions.connectField", {
+                    ns: "materials",
+                  }),
                 }}
               />
             }
@@ -761,3 +762,5 @@ export default class ConnectField extends React.Component<
     );
   }
 }
+
+export default withTranslation("materials")(ConnectField);

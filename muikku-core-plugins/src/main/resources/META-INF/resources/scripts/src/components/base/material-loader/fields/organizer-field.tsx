@@ -7,6 +7,7 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { Instructions } from "~/components/general/instructions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FieldType
@@ -43,7 +44,7 @@ interface CategoryTerm {
 /**
  * OrganizerFieldProps
  */
-interface OrganizerFieldProps {
+interface OrganizerFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -110,7 +111,7 @@ interface OrganizerFieldState {
 /**
  * OrganizerField
  */
-export default class OrganizerField extends React.Component<
+class OrganizerField extends React.Component<
   OrganizerFieldProps,
   OrganizerFieldState
 > {
@@ -511,9 +512,9 @@ export default class OrganizerField extends React.Component<
             content={
               <div
                 dangerouslySetInnerHTML={{
-                  __html: this.props.i18n.text.get(
-                    "plugin.workspace.organizerField.instructions"
-                  ),
+                  __html: this.props.t("instructions.organizationField", {
+                    ns: "materials",
+                  }),
                 }}
               />
             }
@@ -682,3 +683,5 @@ export default class OrganizerField extends React.Component<
     );
   }
 }
+
+export default withTranslation("materials")(OrganizerField);
