@@ -59,7 +59,7 @@
         background-color: $color-default-separator-border;
         left: -33px !important;
         right: -33px !important;
-        top: -5px !important;
+        top: -10px !important;
 
         .rsbtn-loading{
           background-color: $color-notice;
@@ -106,21 +106,22 @@
         // Setting the baseline styles and overrides for every button inside expanded player
         button[class^="rsbtn_"] {
           &:hover {
-            background-color: $color-default-separator-border;
+            background-color: $color-readspeaker-selected;
           }
 
           *[class^="rsicn"] {
             line-height:1;
 
             &:hover,
-            &:active {
+            &:active,
+            &:focus {
               &::before {
                 font-size: 1rem;
               }
             }
 
             &::before {
-              color: lighten($color-default-contrast, 30%);
+              color: $color-default;
               font-size: 1rem;
             }
           }
@@ -130,10 +131,15 @@
         button.rsbtn_pause {
           .rsicn-pause {
             &:hover,
-            &:active {
+            &:active,
+            &:focus {
               &::before {
-                color: $color-error;
+                color: $color-default;
               }
+            }
+
+            &::before {
+              color: $color-default-helper;
             }
           }
         }
@@ -142,10 +148,15 @@
         button.rsbtn_stop {
           .rsicn-stop {
             &:hover,
-            &:active {
+            &:active,
+            &:focus {
               &::before {
-                color: $color-fatal;
+                color: $color-default;
               }
+            }
+
+            &::before {
+              color: $color-default-helper;
             }
           }
         }
@@ -154,10 +165,15 @@
         button.rsbtn_volume {
           .rsicn-volume {
             &:hover,
-            &:active {
+            &:active,
+            &:focus {
               &::before {
-                color: $color-info;
+                color: $color-default;
               }
+            }
+
+            &::before {
+              color: $color-default-helper;
             }
           }
         }
@@ -166,20 +182,26 @@
         button.rsbtn_closer {
           .rsicn-cross {
             &:hover,
-            &:active {
+            &:active,
+            &:focus {
               &::before {
-                color: $color-fatal;
+                color: $color-default;
                 content: "\e90b";
               }
+            }
+
+            &::before {
+              color: $color-default-helper,
             }
           }
 
           // Override the ReadSpeaker's icon change with onHover event
           &:hover,
-          &:active {
+          &:active,
+          &:focus {
             .rsicn-cross {
               &::before {
-                color: $color-fatal;
+                color: $color-default;
                 content: "\e90b";
               }
             }
@@ -200,11 +222,16 @@
 
           .rsicn-pause {
             &:hover,
-            &:active {
+            &:active,
+            &:focus {
 
               &::before {
-                color: $color-success;
+                color: $color-default;
               }
+            }
+
+            &::before {
+              color: $color-default-helper;
             }
           }
         }
@@ -247,23 +274,18 @@
     &:hover,
     &:active,
     &:focus {
-      background-color: $color-default-separator-border;
+      background-color: $color-readspeaker-selected;
       border: 0;
 
       .rsicn.rsicn-arrow-down::before {
-        color: $color-info;
+        color: $color-default;
       }
     }
 
     .rsicn-arrow-down {
-      &:hover,
-      &:active {
-        color: $color-default-contrast;
-
-      }
 
       &::before {
-        color: lighten($color-default-contrast, 30%);
+        color: $color-default-helper;
         font-size: 1rem;
       }
     }
@@ -376,10 +398,10 @@
     width: auto;
 
     &:hover {
-      background-color: $color-default-separator-border;
+      background-color: $color-readspeaker-selected;
 
       .rsbtn_right.rsplay::before {
-        color: $color-info;
+        color: $color-default;
       }
     }
 
@@ -396,7 +418,7 @@
       width: 2rem;
 
       &::before {
-        color: lighten($color-default-contrast, 30%);
+        color: $color-default-helper;
         content: "\ea27";
         font-family: "muikku" !important;
         font-size: 1rem;
