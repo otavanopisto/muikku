@@ -13,6 +13,7 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * SorterFieldItemType
@@ -392,13 +393,34 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
     // we use that element and the class to create the field
     return (
       <span
-        className={`material-page__sorterfield-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__sorterfield-wrapper material-page__sorterfield-wrapper--${elementClassName} ${fieldSavedStateClass}`}
       >
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
+        <span className="material-page__taskfield-header">
+          <span></span>
+          <Instructions
+            modifier="instructions"
+            alignSelfVertically="top"
+            openByHover={false}
+            closeOnClick={true}
+            closeOnOutsideClick={true}
+            persistent
+            content={
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "instructions.connectField", {ns: "materials"}
+                  ),
+                }}
+              />
+            }
+          />
+        </span>
+
         <span
           className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
         >

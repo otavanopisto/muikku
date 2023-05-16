@@ -826,7 +826,7 @@ class ContentComponent extends SessionStateComponent<
 
                         break;
                       case "INCOMPLETE":
-                        icon = "thumb-down";
+                        icon = "check";
                         className = "toc__item--incomplete";
                         iconTitle = t("labels.evaluated", {
                           context: "incomplete",

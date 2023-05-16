@@ -327,14 +327,14 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 )}
 
               <div className="application-sub-panel">
-                <div className="application-sub-panel__header">
+                <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
                   {t("labels.tasks", { ns: "tasks" })}
                   <Instructions
                     modifier="instructions"
                     alignSelfVertically="top"
                     openByHover={false}
                     closeOnClick={true}
-                    closeOnOutsideClick={false}
+                    closeOnOutsideClick={true}
                     persistent
                     content={
                       <div

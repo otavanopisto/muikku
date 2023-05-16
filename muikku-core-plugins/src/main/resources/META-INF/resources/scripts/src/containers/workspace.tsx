@@ -285,6 +285,12 @@ export default class Workspace extends React.Component<
    */
   onWorkspaceMaterialsBodyActiveNodeIdChange(newId: number) {
     const state: StateType = this.props.store.getState();
+    const workspaceNameExtension = state.workspaces.currentWorkspace
+      .nameExtension
+      ? " (" + state.workspaces.currentWorkspace.nameExtension + ")"
+      : "";
+    const workspaceName =
+      state.workspaces.currentWorkspace.name + workspaceNameExtension;
 
     if (!newId) {
       history.pushState(null, null, location.origin + location.pathname + "#");
@@ -302,7 +308,7 @@ export default class Workspace extends React.Component<
             updateLastWorkspaces({
               url: location.origin + location.pathname,
               workspaceId: state.workspaces.currentWorkspace.id,
-              workspaceName: state.workspaces.currentWorkspace.name,
+              workspaceName: workspaceName,
               materialName:
                 state.workspaces.currentMaterials[0].children[0].title,
             }) as Action
@@ -347,7 +353,7 @@ export default class Workspace extends React.Component<
             updateLastWorkspaces({
               url: location.origin + location.pathname + newHash,
               workspaceId: state.workspaces.currentWorkspace.id,
-              workspaceName: state.workspaces.currentWorkspace.name,
+              workspaceName: workspaceName,
               materialName: materialChapter.children[indexFound].title,
             }) as Action
           );

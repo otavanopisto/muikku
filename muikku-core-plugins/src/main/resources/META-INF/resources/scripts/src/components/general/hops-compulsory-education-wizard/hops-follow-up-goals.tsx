@@ -6,7 +6,6 @@ import {
   FollowUpStudies,
   FollowUpGoal,
 } from "../../../@types/shared";
-import { useFollowUpGoal } from "./hooks/useFollowUp";
 import { StateType } from "~/reducers";
 import {
   displayNotification,
@@ -23,6 +22,7 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { localizeTime } from "~/locales/i18n";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
+import { updateFollowUpData, useFollowUp } from "./context/follow-up-context";
 
 /**
  * FollowUpGoalsProps
@@ -42,13 +42,9 @@ interface HopsFollowUpGoalsProps {
  * @returns JSX.Element
  */
 const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
-  const { disabled, studentId, websocketState, displayNotification } = props;
+  const { disabled } = props;
 
-  const { followUpData, ...followUpHandlers } = useFollowUpGoal(
-    studentId,
-    websocketState,
-    displayNotification
-  );
+  const followUpData = useFollowUp();
 
   /**
    * Handles goals change
@@ -65,7 +61,11 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
       [key]: value,
     };
 
-    followUpHandlers.updateFollowUpData(props.studentId, updatedFollowUpData);
+    updateFollowUpData(
+      props.studentId,
+      updatedFollowUpData,
+      props.displayNotification
+    );
   };
 
   return (
@@ -180,8 +180,10 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
         </AnimateHeight>
         <AnimateHeight
           height={
+            followUpData.followUp.followUpGoal ===
+              FollowUpGoal.POSTGRADUATE_STUDIES &&
             followUpData.followUp.followUpStudies ===
-            FollowUpStudies.VOCATIONAL_SCHOOL
+              FollowUpStudies.VOCATIONAL_SCHOOL
               ? "auto"
               : 0
           }

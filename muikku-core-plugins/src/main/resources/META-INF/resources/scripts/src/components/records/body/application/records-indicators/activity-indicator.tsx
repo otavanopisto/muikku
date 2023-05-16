@@ -1,7 +1,4 @@
 import * as React from "react";
-import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
 import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
@@ -36,8 +33,9 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <span>
               {t("labels.evaluablesDone", {
                 ns: "studies",
-                percent:
-                  (credit.evaluablesAnswered / credit.evaluablesTotal) * 100,
+                percent: Math.round(
+                  (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
+                ),
               })}
             </span>
           }
@@ -46,7 +44,9 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
-                (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
+                Math.round(
+                  (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
+                )
               }
             ></div>
           </div>
@@ -61,8 +61,9 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <span>
               {t("labels.exercisesDone", {
                 ns: "studies",
-                percent:
-                  (credit.exercisesAnswered / credit.exercisesTotal) * 100,
+                percent: Math.round(
+                  (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                ),
               })}
             </span>
           }
@@ -71,7 +72,9 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
-                (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                Math.round(
+                  (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                )
               }
             ></div>
           </div>

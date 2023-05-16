@@ -12,6 +12,7 @@ import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * MathFieldProps
@@ -134,6 +135,26 @@ class TextField extends React.Component<MathFieldProps, MathFieldState> {
           syncError={this.state.syncError}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
+        <span className="material-page__taskfield-header">
+          <span></span>
+          <Instructions
+            modifier="instructions"
+            alignSelfVertically="top"
+            openByHover={false}
+            closeOnClick={true}
+            closeOnOutsideClick={true}
+            persistent
+            content={
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "instructions.mathField", {ns: "materials"}
+                  ),
+                }}
+              />
+            }
+          />
+        </span>
         <MathField
           ref="base"
           className="material-page__mathfield"

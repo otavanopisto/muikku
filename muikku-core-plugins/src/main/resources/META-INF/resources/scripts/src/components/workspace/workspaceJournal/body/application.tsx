@@ -112,6 +112,7 @@ class WorkspaceJournalApplication extends React.Component<
                 otherStudent.userEntityId === student.userEntityId
             ) === index
         )
+        .filter((student) => student.active)
         .map(
           (student) =>
             ({

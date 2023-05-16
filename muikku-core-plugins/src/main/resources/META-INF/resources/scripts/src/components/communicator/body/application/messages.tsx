@@ -40,6 +40,7 @@ import ApplicationList, {
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * CommunicatorMessagesProps
@@ -299,9 +300,22 @@ class CommunicatorMessages extends BodyScrollLoader<
                       ))}
                     </span>
                   </div>
-                  <div className="application-list__header-item-date">
-                    {localizeTime.date(message.created)}
-                  </div>
+                  <Dropdown
+                    alignSelfVertically="top"
+                    openByHover
+                    content={
+                      <p>
+                        {`${localizeTime.date(message.created)} - Klo ${localizeTime.date(
+                          message.created,
+                          "LT"
+                        )}`}
+                      </p>
+                    }
+                  >
+                    <div className="application-list__header-item-date">
+                      {localizeTime.date(message.created)}
+                    </div>
+                  </Dropdown>
                 </ApplicationListItemHeader>
                 <ApplicationListItemBody modifiers="communicator-message">
                   <span className="application-list__header-item-body">
@@ -430,15 +444,31 @@ class CommunicatorMessages extends BodyScrollLoader<
                         {thread.messageCountInThread}
                       </div>
                     ) : null}
-                    <div
-                      className="application-list__header-item-date"
-                      // TODO: use i18next
-                      aria-label={this.props.t("wcag.date", {
-                        ns: "messaging",
-                      })}
+
+                    <Dropdown
+                      alignSelfVertically="top"
+                      openByHover
+                      content={
+                        <p>
+                          {`${localizeTime.date(
+                            thread.threadLatestMessageDate
+                          )} - Klo ${localizeTime.date(
+                            thread.threadLatestMessageDate,
+                            "LT"
+                          )}`}
+                        </p>
+                      }
                     >
-                      {localizeTime.date(thread.threadLatestMessageDate)}
-                    </div>
+                      <div
+                        className="application-list__header-item-date"
+                        aria-label={this.props.t("wcag.date", {
+                          ns: "messaging",
+                        })}                      >
+                        {`${localizeTime.date(
+                          thread.threadLatestMessageDate
+                        )}`}
+                      </div>
+                    </Dropdown>
                   </ApplicationListItemHeader>
                   <ApplicationListItemBody modifiers="communicator-message">
                     <span

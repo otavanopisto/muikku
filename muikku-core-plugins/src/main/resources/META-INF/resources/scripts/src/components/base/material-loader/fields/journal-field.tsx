@@ -13,6 +13,7 @@ import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * JournalProps
@@ -247,9 +248,28 @@ class JournalField extends React.Component<
         // note how somehow numbers come as string...
         field = (
           <>
-            <label>
-              <b>{t("labels.diaryEntry", { ns: "materials" })}:</b>
-            </label>
+            <span className="material-page__taskfield-header">
+              <span className="material-page__taskfield-title">
+              {t("labels.diaryEntry", { ns: "materials" })}
+              </span>
+              <Instructions
+                modifier="instructions"
+                alignSelfVertically="top"
+                openByHover={false}
+                closeOnClick={true}
+                closeOnOutsideClick={true}
+                persistent
+                content={
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: t(
+                        "instructions.journalMemoField", {ns: "materials"}
+                      ),
+                    }}
+                  />
+                }
+              />
+            </span>
             <CKEditor
               configuration={ckEditorConfig}
               onChange={this.onCKEditorChange}

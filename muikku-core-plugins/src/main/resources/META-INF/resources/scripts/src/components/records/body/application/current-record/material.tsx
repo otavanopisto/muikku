@@ -209,7 +209,6 @@ class Material extends React.Component<MaterialProps, MaterialState> {
                     case "INCOMPLETE":
                       evalStateClassName =
                         "material-page__assignment-assessment--incomplete";
-                      evalStateIcon = "icon-thumb-down";
                       break;
                     case "FAILED":
                       evalStateClassName =
@@ -224,7 +223,6 @@ class Material extends React.Component<MaterialProps, MaterialState> {
                     case "WITHDRAWN":
                       evalStateClassName =
                         "material-page__assignment-assessment--withdrawn";
-                      evalStateIcon = "";
                       break;
                   }
                 }

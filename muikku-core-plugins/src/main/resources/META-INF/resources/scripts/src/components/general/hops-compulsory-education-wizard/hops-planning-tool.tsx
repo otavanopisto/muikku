@@ -16,7 +16,6 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { useFollowUpGoal } from "./hooks/useFollowUp";
 import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
 import { AnyActionType } from "~/actions";
@@ -29,6 +28,7 @@ import Dropdown from "../dropdown";
 import { useSupervisorOptionalSuggestions } from "~/hooks/useSupervisorOptionalSuggestion";
 import { HopsUsePlace } from "./index";
 import { localizeTime } from "~/locales/i18n";
+import { useFollowUp } from "./context/follow-up-context";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -114,16 +114,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     props.displayNotification
   );
 
-  const { followUpData } = useFollowUpGoal(
-    props.studentId,
-    props.websocketState,
-    props.displayNotification
-  );
-
   const filteredSchoolCourseTable = filterSpecialSubjects(
     schoolCourseTable,
     studyOptions.options
   );
+
+  const followUpData = useFollowUp();
 
   /**
    * Compared graduation goal to need mandatory studies and shows indicator/message
