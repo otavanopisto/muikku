@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.pedagogy.rest;
 
 import java.util.List;
-import java.util.Set;
 
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormVisibility;
 

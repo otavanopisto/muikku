@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
@@ -307,6 +308,8 @@ public interface UserSchoolDataBridge {
   public List<GroupUser> listGroupUsersByGroupAndType(String groupIdentifier, GroupUserType type);
 
   public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers);
+  
+  public List<SpecEdTeacher> listStudentSpecEdTeachers(SchoolDataIdentifier studentIdentifier, boolean includeGuidanceCouncelors, boolean onlyMessageReceivers);
   
   public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword);
 
