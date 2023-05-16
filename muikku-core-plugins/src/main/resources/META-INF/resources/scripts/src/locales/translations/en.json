@@ -1333,7 +1333,7 @@
       "empty_teachers": "There are no teacher in the course",
       "empty_endDate": "End date is not set",
       "empty_exercises": "There are no exercises in the course",
-      "empty_intermin": " There are no interim evaluation assingments in the course",
+      "empty_intermin": " There are no interim evaluation assignments in the course",
       "empty_journals": "There are no journal entries in the course",
       "empty_instructions": "The course does not have instructions yet",
       "evaluationHasFee": "Evaluation of this course has a fee, but the studying is free.",

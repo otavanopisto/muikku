@@ -9,7 +9,6 @@ import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import mApi from "~/lib/mApi";
-import { StateType } from "~/reducers";
 import { WorkspaceInterimEvaluationRequest } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import {
@@ -294,9 +293,9 @@ class InterimEvaluationEditor extends React.Component<
             buttonModifiers={this.props.stateConfiguration["button-class"]}
             onClick={this.handlePushInterimRequest}
           >
-          {t(this.props.stateConfiguration["button-text"], {
-            ns: "workspace",
-          })}
+            {t(this.props.stateConfiguration["button-text"], {
+              ns: "workspace",
+            })}
           </Button>
         ) : null}
         {this.props.stateConfiguration[
@@ -319,7 +318,7 @@ class InterimEvaluationEditor extends React.Component<
       <>
         <div className="material-page__content rich-text">
           <span className="material-page__interim-evaluation-field-label">
-            {t("actions.hide", { ns: "materials" })}
+            {t("labels.teacherMessage", { ns: "materials" })}
           </span>
           <span className={`material-page__interim-evaluation-wrapper`}>
             {field}
@@ -339,14 +338,6 @@ class InterimEvaluationEditor extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {};
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -358,5 +349,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default withTranslation(["workspace", "materials", "common"])(
-  connect(mapStateToProps, mapDispatchToProps)(InterimEvaluationEditor)
+  connect(null, mapDispatchToProps)(InterimEvaluationEditor)
 );
