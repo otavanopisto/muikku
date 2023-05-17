@@ -462,10 +462,14 @@
   .rspopup_play.rspopup_btn {
     border: 0;
     color: $color-default-contrast;
+    padding:  5px 10px 5px 30px;
 
     &::before,
     &::after {
       color: $color-readspeaker-icon;
+      font-size: 0.825rem;
+      line-height: 1.9rem;
+      margin: 0;
     }
 
     &:hover,

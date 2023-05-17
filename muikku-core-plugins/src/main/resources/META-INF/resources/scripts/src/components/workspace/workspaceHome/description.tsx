@@ -51,65 +51,47 @@ class DescriptionPanel extends React.Component<
    */
   render() {
     return (
-      <ReadspeakerProvider displayNotification={this.props.displayNotification}>
-        <div className="panel panel--workspace-description">
-          <div className="panel__header">
-            <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
-            <h2 className="panel__header-title">
-              {this.props.i18n.text.get(
-                "plugin.workspace.index.descriptionTitle"
-              )}
-            </h2>
-            <ReadSpeakerReader
-              readParameterType="readclass"
-              readParameters={["readthis"]}
-            />
-          </div>
-
-          <div className="panel__body rs_skip_always">
-            <span className="visually-hidden rs_message">
-              Is hidden but readead by ReadSpeaker 1
-            </span>
-
-            <ReadspeakerMessage text="Is hidden but readead by ReadSpeaker 1" />
-
-            <span className="visually-hidden rs_message">
-              {/* Is hidden but readead by ReadSpeaker 2 */}
-            </span>
-
-            {this.props.workspace && (
-              <MaterialLoader
-                editable={this.props.workspaceEditMode.active}
-                modifiers="workspace-description"
-                material={this.props.workspace.contentDescription}
-                workspace={this.props.workspace}
-                canDelete={false}
-                canHide={false}
-                canPublish
-                disablePlugins
-                readOnly
-                isInFrontPage
-                canAddAttachments
-                canEditContent
-                canSetTitle={false}
-              >
-                {(props, state, stateConfiguration) => (
-                  <div>
-                    <MaterialLoaderEditorButtonSet {...props} {...state} />
-                    <MaterialLoaderTitle {...props} {...state} />
-                    <MaterialLoaderContent
-                      {...props}
-                      {...state}
-                      stateConfiguration={stateConfiguration}
-                    />
-                    <MaterialLoaderProducersLicense {...props} {...state} />
-                  </div>
-                )}
-              </MaterialLoader>
+      <div className="panel panel--workspace-description">
+        <div className="panel__header">
+          <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
+          <h2 className="panel__header-title">
+            {this.props.i18n.text.get(
+              "plugin.workspace.index.descriptionTitle"
             )}
-          </div>
+          </h2>
         </div>
-      </ReadspeakerProvider>
+
+        {this.props.workspace && (
+          <MaterialLoader
+            editable={this.props.workspaceEditMode.active}
+            modifiers="workspace-description"
+            material={this.props.workspace.contentDescription}
+            workspace={this.props.workspace}
+            canDelete={false}
+            canHide={false}
+            canPublish
+            disablePlugins
+            readOnly
+            isInFrontPage
+            canAddAttachments
+            canEditContent
+            canSetTitle={false}
+          >
+            {(props, state, stateConfiguration) => (
+              <div>
+                <MaterialLoaderEditorButtonSet {...props} {...state} />
+                <MaterialLoaderTitle {...props} {...state} />
+                <MaterialLoaderContent
+                  {...props}
+                  {...state}
+                  stateConfiguration={stateConfiguration}
+                />
+                <MaterialLoaderProducersLicense {...props} {...state} />
+              </div>
+            )}
+          </MaterialLoader>
+        )}
+      </div>
     );
   }
 }
