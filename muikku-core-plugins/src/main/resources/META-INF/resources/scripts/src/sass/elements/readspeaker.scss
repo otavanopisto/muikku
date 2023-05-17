@@ -451,4 +451,30 @@
     }
   }
 }
+
+#rsbtn_popup.rspopup {
+  background: $color-default;
+  border-radius: 5px;
+  border: 0;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  padding: 5px;
+
+  .rspopup_play.rspopup_btn {
+    border: 0;
+    color: $color-default-contrast;
+
+    &::before,
+    &::after {
+      color: $color-readspeaker-icon;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: $color-default-contrast;
+    }
+  }
+}
+
 /* stylelint-enable */
