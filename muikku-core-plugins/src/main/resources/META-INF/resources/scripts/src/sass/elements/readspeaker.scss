@@ -47,7 +47,8 @@
     .rsbtn_exp_inner {
 
       // Volume dropdown
-      .rsbtn_volume_container.rsbtn_dropdown {
+      .rsbtn_volume_container.rsbtn_dropdown,
+      .rsbtn_speed_container.rsbtn_dropdown {
         background: $color-default;
         border-radius: 5px;
         border: 0;
@@ -82,10 +83,15 @@
     // When player is expanded a.k.a content is playing
   &.rsexpanded {
 
+    // Hide the initial play button as is it not necessary when player is expanded
+    a.rsbtn_play {
+      display: none;
+    }
+
       // Expanded players wrapper
     .rsbtn_exp {
       align-items: center;
-      background-color: $color-default;
+      background-color: transparent;
       height: auto;
       line-height: 1;
       margin: 0;
@@ -96,7 +102,7 @@
       // Loading and playing progressbars
       .rs-player-loadindicator {
         background-color: $color-default-separator-border;
-        left: -33px !important;
+        left: 0 !important;
         right: -33px !important;
         top: -10px !important;
 
@@ -155,85 +161,19 @@
             &:active,
             &:focus {
               &::before {
+                color: $color-default;
                 font-size: 1rem;
               }
             }
 
             &::before {
-              color: $color-default;
+              color: $color-readspeaker-icon;
               font-size: 1rem;
             }
           }
         }
 
-        // Pause onHover effect
-        button.rsbtn_pause {
-          .rsicn-pause {
-            &:hover,
-            &:active,
-            &:focus {
-              &::before {
-                color: $color-default;
-              }
-            }
-
-            &::before {
-              color: $color-default-helper;
-            }
-          }
-        }
-
-        // Stop onHover effect
-        button.rsbtn_stop {
-          .rsicn-stop {
-            &:hover,
-            &:active,
-            &:focus {
-              &::before {
-                color: $color-default;
-              }
-            }
-
-            &::before {
-              color: $color-default-helper;
-            }
-          }
-        }
-
-        // Adjust volume onHover effect
-        button.rsbtn_volume {
-          .rsicn-volume {
-            &:hover,
-            &:active,
-            &:focus {
-              &::before {
-                color: $color-default;
-              }
-            }
-
-            &::before {
-              color: $color-default-helper;
-            }
-          }
-        }
-
-        // Close onHover effect
         button.rsbtn_closer {
-          .rsicn-cross {
-            &:hover,
-            &:active,
-            &:focus {
-              &::before {
-                color: $color-default;
-                content: "\e90b";
-              }
-            }
-
-            &::before {
-              color: $color-default-helper,
-            }
-          }
-
           // Override the ReadSpeaker's icon change with onHover event
           &:hover,
           &:active,
@@ -270,7 +210,7 @@
             }
 
             &::before {
-              color: $color-default-helper;
+              color: $color-readspeaker-icon;
             }
           }
         }
@@ -324,7 +264,7 @@
     .rsicn-arrow-down {
 
       &::before {
-        color: $color-default-helper;
+        color: $color-readspeaker-icon;
         font-size: 1rem;
       }
     }
@@ -457,28 +397,26 @@
       width: 2rem;
 
       &::before {
-        color: $color-default-helper;
+        color: $color-readspeaker-icon;
         content: "\ea27";
         font-family: "muikku" !important;
         font-size: 1rem;
         font-variant: normal;
       }
     }
-
-    // We ASSUME this element we hide here contains the Readspeaker text and 2 loud speaker icons which we dont want to see
-    .rsbtn_left {
-      display: none;
-    }
   }
 }
 
 // Readspeaker controlpanel
 #rs-controlpanel.unselectable {
+  align-items: center;
   background: $color-readspeaker-selected;
   border: 1px solid $color-readspeaker-selected;
   border-radius: 20px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   color: $color-default;
+  display: flex;
+  justify-content: center;
 
   .rsicn.rsicn-logo {
     display: none;
@@ -488,6 +426,7 @@
     border: 0;
     border-radius: 15px 15px 15px 15px;
     color: $color-default;
+    float: none;
 
     &:hover,
     &:active,
