@@ -32,6 +32,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel;
 
@@ -660,14 +661,32 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             assertTextIgnoreCase(".evaluation-modal__item-meta-item-data", evaluationDateString);
             
             logout();
-            mockBuilder.mockLogin(student);
+            StudentMatriculationEligibility studentMatriculationEligibilityAI = new StudentMatriculationEligibility(true, 5, 4, 1);
+            StudentMatriculationEligibility studentMatriculationEligibilityMAA = new StudentMatriculationEligibility(false, 8, 5, 1);
+            mockBuilder
+            .addStudent(student)
+            .mockStudentCourseStats(student.getId(), 25)
+            .mockMatriculationEligibility(true)
+            .mockMatriculationExam(true)
+            .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
+            .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
+            .mockLogin(student)
+            .build();
             login();
             selectFinnishLocale();
             navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
             waitForVisible(".journal--feedback");
             assertTextIgnoreCase(".journal--feedback .journal__body", evaluationText);
             assertTextIgnoreCase(".journal--feedback .journal__meta-item:first-child .journal__meta-item-data", evaluationDateString);
-            assertTextIgnoreCase(".journal--feedback .journal__meta-item:last-child .journal__meta-item-data", "Admin User");            
+            assertTextIgnoreCase(".journal--feedback .journal__meta-item:last-child .journal__meta-item-data", "Admin User");
+            navigate("/records#records", false);
+            waitAndClick(".button--assignments-and-exercieses");
+            waitForVisible(".dialog--studies");
+            waitForVisible(".journal--feedback");
+            assertTextIgnoreCase(".journal--feedback .journal__body", evaluationText);
+//            TODO: This can be enabled when records show date without zeros in it.
+//            assertTextStartsWith(".journal--feedback .journal__meta-item:first-child .journal__meta-item-data", evaluationDateString);
+            assertTextIgnoreCase(".journal--feedback .journal__meta-item:last-child .journal__meta-item-data", "Admin User");
           } finally {
             archiveUserByEmail(student.getEmail());
             deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
