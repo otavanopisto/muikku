@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: "Times-Roman",
     marginLeft: 5,
-    flexBasis: "100",
+    flexBasis: "300",
     flexShrink: 0,
     textAlign: "right",
   },
@@ -57,9 +57,9 @@ export const styles = StyleSheet.create({
     borderBottom: "1px solid #cfcfcf",
   },
   noteFieldLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Bold",
-    marginBottom: 5,
+    marginBottom: 10,
   },
   noteFieldValue: {
     fontSize: 10,
@@ -90,5 +90,9 @@ export const htmlStyles = {
     fontFamily: "Times-Roman",
     marginTop: 10,
     marginBottom: 5,
+  },
+  blockquote: {
+    fontSize: 12,
+    fontFamily: "Times-Roman",
   },
 };
