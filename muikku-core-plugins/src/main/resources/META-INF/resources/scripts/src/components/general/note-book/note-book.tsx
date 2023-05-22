@@ -286,7 +286,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         <Dropdown openByHover content={<p>PDF</p>}>
           <NoteBookPDFDialog notes={notes} workspace={props.currentWorkspace}>
             <IconButton
-              icon="board"
+              icon="pdf"
               buttonModifiers={["notebook-action"]}
               disablePropagation={true}
             />

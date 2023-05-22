@@ -38,6 +38,7 @@ export const styles = StyleSheet.create({
     fontFamily: "Times-Roman",
     marginLeft: 5,
     flexBasis: "300",
+    flexGrow: 1,
     flexShrink: 0,
     textAlign: "right",
   },

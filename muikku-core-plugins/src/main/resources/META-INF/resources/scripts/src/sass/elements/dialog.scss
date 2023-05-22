@@ -111,7 +111,7 @@
 .dialog__window--notebook-pdf-dialog {
   @include breakpoint($breakpoint-pad) {
     height: 90%;
-    max-width: unset;
+    max-width: 1000px;
     width: 90%;
   }
 }
@@ -444,6 +444,10 @@
   padding: $dialog-content-padding;
   position: relative;
   width: 100%;
+}
+
+.dialog__content--notebook-pdf-dialog {
+  max-height: 100%;
 }
 
 .dialog__content--disconnect-warning {
