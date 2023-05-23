@@ -66,6 +66,11 @@ export const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: "Times-Roman",
   },
+  empty: {
+    fontSize: 10,
+    fontFamily: "Times-Roman",
+    marginVertical: 10,
+  },
   pageTitle: {
     fontSize: 10,
     fontFamily: "Times-Roman",

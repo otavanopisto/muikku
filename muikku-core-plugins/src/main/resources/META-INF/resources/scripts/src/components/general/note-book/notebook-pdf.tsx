@@ -61,7 +61,7 @@ const NoteBookPDF = (props: NoteBookPFDProps) => {
           notes.map((n) => renderNote(n))
         ) : (
           <View>
-            <Text style={styles.noteFieldLabel}>Ei muistiinpanoja</Text>
+            <Text style={styles.empty}>Ei muistiinpanoja</Text>
           </View>
         )}
       </Page>

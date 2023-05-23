@@ -552,20 +552,6 @@ class ContentComponent extends SessionStateComponent<
         // )}
         tocHeaderExtraContent={
           <div>
-            <Dropdown openByHover content={<p>Sisällysluettelo PDF</p>}>
-              <TableOfContentPDFDialog
-                assignmentTypeFilters={this.state.assignmentTypeFilters}
-                materials={this.props.materials}
-                workspace={this.props.workspace}
-                compositeReplies={this.props.materialReplies}
-              >
-                <IconButton
-                  icon="board"
-                  buttonModifiers={["notebook-action"]}
-                  disablePropagation={true}
-                />
-              </TableOfContentPDFDialog>
-            </Dropdown>
             <Dropdown openByHover content={<p>Avaa kaikki</p>}>
               <IconButton
                 icon="arrow-down"
@@ -701,6 +687,20 @@ class ContentComponent extends SessionStateComponent<
               }
             >
               <IconButton icon="filter" buttonModifiers={["toc-action"]} />
+            </Dropdown>
+            <Dropdown openByHover content={<p>Sisällysluettelo PDF</p>}>
+              <TableOfContentPDFDialog
+                assignmentTypeFilters={this.state.assignmentTypeFilters}
+                materials={this.props.materials}
+                workspace={this.props.workspace}
+                compositeReplies={this.props.materialReplies}
+              >
+                <IconButton
+                  icon="pdf"
+                  buttonModifiers={["notebook-action"]}
+                  disablePropagation={true}
+                />
+              </TableOfContentPDFDialog>
             </Dropdown>
           </div>
         }

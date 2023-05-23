@@ -37,7 +37,8 @@ export const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: "Times-Roman",
     marginLeft: 5,
-    flexBasis: "100",
+    flexBasis: "300",
+    flexGrow: 1,
     flexShrink: 0,
     textAlign: "right",
   },
@@ -148,20 +149,16 @@ export const styles = StyleSheet.create({
     backgroundColor: "#de3211",
     color: "#ffffff",
   },
-  noteFieldLabel: {
-    fontSize: 10,
-    fontFamily: "Times-Bold",
-    marginBottom: 5,
-  },
-  noteFieldValue: {
-    fontSize: 10,
-    fontFamily: "Times-Roman",
-  },
   pageTitle: {
     fontSize: 10,
     fontFamily: "Times-Roman",
     marginVertical: 10,
     textTransform: "uppercase",
+  },
+  empty: {
+    fontSize: 10,
+    fontFamily: "Times-Roman",
+    marginVertical: 10,
   },
   arrowIcon: {
     display: "flex",

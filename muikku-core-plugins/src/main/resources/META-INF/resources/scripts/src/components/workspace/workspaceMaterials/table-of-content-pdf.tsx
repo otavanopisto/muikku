@@ -300,7 +300,7 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
           renderToc()
         ) : (
           <View style={styles.contentContainer}>
-            <Text style={styles.noteFieldLabel}>Ei muistiinpanoja</Text>
+            <Text style={styles.empty}>Ei materialisivuja</Text>
           </View>
         )}
       </Page>

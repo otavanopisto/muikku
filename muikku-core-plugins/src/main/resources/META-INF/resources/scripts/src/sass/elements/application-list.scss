@@ -796,16 +796,6 @@
   flex-shrink: 1;
 }
 
-.application-list__item-header-main--journal-entry {
-  border-left: 3px solid $color-journal-entry;
-  padding: 0 0 0 10px;
-}
-
-.application-list__item-header-main--journal-entry-mandatory {
-  border-left: 3px solid $color-journal-page;
-  padding: 0 0 0 10px;
-}
-
 .application-list__item-header-main-content {
   display: inline-block;
 }
