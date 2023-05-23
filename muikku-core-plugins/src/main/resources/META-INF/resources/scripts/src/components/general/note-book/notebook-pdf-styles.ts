@@ -87,15 +87,13 @@ export const htmlStyles = {
   },
   h3: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
-    fontWeight: "bold",
+    fontFamily: "Times-Bold",
     marginTop: 15,
     marginBottom: 5,
   },
   h4: {
     fontSize: 11,
-    fontFamily: "Times-Roman",
-    fontWeight: "bold",
+    fontFamily: "Times-Bold",
     marginTop: 15,
     marginBottom: 5,
   },
@@ -110,16 +108,16 @@ export const htmlStyles = {
     paddingVertical: 5,
   },
   b: {
-    fontWeight: "bold",
+    fontFamily: "Times-Bold",
   },
   strong: {
-    fontWeight: "bold",
+    fontFamily: "Times-Bold",
   },
   i: {
-    fontStyle: "italic",
+    fontFamily: "Times-Italic",
   },
   em: {
-    fontStyle: "italic",
+    fontFamily: "Times-Italic",
   },
   u: {
     textDecoration: "underline"
