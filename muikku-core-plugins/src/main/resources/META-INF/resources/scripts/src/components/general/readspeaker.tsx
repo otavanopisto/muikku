@@ -95,11 +95,6 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
           document.location.href
         )}`}
       >
-        <span className="rsbtn_left rsimg rspart">
-          <span className="rsbtn_text">
-            <span>Kuuntele</span>
-          </span>
-        </span>
         <span className="rsbtn_right rsimg rsplay rspart"></span>
       </a>
     </div>

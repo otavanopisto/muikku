@@ -19,6 +19,7 @@ import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { AnyActionType } from "~/actions";
 import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * MessageProps
@@ -326,7 +327,12 @@ class Message extends React.Component<MessageProps, MessageState> {
                   "plugin.wcag.messageSendDate.aria.label"
                 )}
               >
-                {this.props.i18n.time.format(this.props.message.created)}
+                {`${this.props.i18n.time.format(
+                  this.props.message.created
+                )} - Klo ${this.props.i18n.time.format(
+                  this.props.message.created,
+                  "LT"
+                )}`}
               </span>
             </div>
           </div>

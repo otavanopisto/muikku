@@ -13,9 +13,12 @@
 // When playing started the master wrapper gets className "rsexpanded".
 
 /* stylelint-disable */
+
+// ReadSpeaker player
 .rsbtn.muikku,
 .rsbtn.muikku.mega_toggle {
   align-items: center;
+  background-color: $color-default;
   border: 1px solid $color-default-separator-border;
   border-radius: 15px 15px 15px 15px;
   display: flex;
@@ -40,13 +43,55 @@
     width: 2rem;
   }
 
+  .rsbtn_exp {
+    .rsbtn_exp_inner {
+
+      // Volume dropdown
+      .rsbtn_volume_container.rsbtn_dropdown,
+      .rsbtn_speed_container.rsbtn_dropdown {
+        background: $color-default;
+        border-radius: 5px;
+        border: 0;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        margin: 4px 0 0;
+
+        &::before {
+          border: solid transparent;
+          border-top-width: medium;
+          border-right-width: medium;
+          border-bottom-color: transparent;
+          border-bottom-width: medium;
+          border-left-width: medium;
+          border-bottom-color: $color-default;
+          border-width: 4px;
+          bottom: 100%;
+          content: " ";
+          display: block;
+          height: 0;
+          pointer-events: none;
+          position: absolute;
+          right: 15px;
+          top: -7px;
+          width: 0;
+          z-index: 99;
+        }
+      }
+    }
+
+  }
+
     // When player is expanded a.k.a content is playing
   &.rsexpanded {
+
+    // Hide the initial play button as is it not necessary when player is expanded
+    a.rsbtn_play {
+      display: none;
+    }
 
       // Expanded players wrapper
     .rsbtn_exp {
       align-items: center;
-      background-color: $color-default;
+      background-color: transparent;
       height: auto;
       line-height: 1;
       margin: 0;
@@ -57,9 +102,9 @@
       // Loading and playing progressbars
       .rs-player-loadindicator {
         background-color: $color-default-separator-border;
-        left: -33px !important;
+        left: 0 !important;
         right: -33px !important;
-        top: -5px !important;
+        top: -10px !important;
 
         .rsbtn-loading{
           background-color: $color-notice;
@@ -106,80 +151,36 @@
         // Setting the baseline styles and overrides for every button inside expanded player
         button[class^="rsbtn_"] {
           &:hover {
-            background-color: $color-default-separator-border;
+            background-color: $color-readspeaker-selected;
           }
 
           *[class^="rsicn"] {
             line-height:1;
 
             &:hover,
-            &:active {
+            &:active,
+            &:focus {
               &::before {
+                color: $color-default;
                 font-size: 1rem;
               }
             }
 
             &::before {
-              color: lighten($color-default-contrast, 30%);
+              color: $color-readspeaker-icon;
               font-size: 1rem;
             }
           }
         }
 
-        // Pause onHover effect
-        button.rsbtn_pause {
-          .rsicn-pause {
-            &:hover,
-            &:active {
-              &::before {
-                color: $color-error;
-              }
-            }
-          }
-        }
-
-        // Stop onHover effect
-        button.rsbtn_stop {
-          .rsicn-stop {
-            &:hover,
-            &:active {
-              &::before {
-                color: $color-fatal;
-              }
-            }
-          }
-        }
-
-        // Adjust volume onHover effect
-        button.rsbtn_volume {
-          .rsicn-volume {
-            &:hover,
-            &:active {
-              &::before {
-                color: $color-info;
-              }
-            }
-          }
-        }
-
-        // Close onHover effect
         button.rsbtn_closer {
-          .rsicn-cross {
-            &:hover,
-            &:active {
-              &::before {
-                color: $color-fatal;
-                content: "\e90b";
-              }
-            }
-          }
-
           // Override the ReadSpeaker's icon change with onHover event
           &:hover,
-          &:active {
+          &:active,
+          &:focus {
             .rsicn-cross {
               &::before {
-                color: $color-fatal;
+                color: $color-default;
                 content: "\e90b";
               }
             }
@@ -200,11 +201,16 @@
 
           .rsicn-pause {
             &:hover,
-            &:active {
+            &:active,
+            &:focus {
 
               &::before {
-                color: $color-success;
+                color: $color-default;
               }
+            }
+
+            &::before {
+              color: $color-readspeaker-icon;
             }
           }
         }
@@ -247,23 +253,18 @@
     &:hover,
     &:active,
     &:focus {
-      background-color: $color-default-separator-border;
+      background-color: $color-readspeaker-selected;
       border: 0;
 
       .rsicn.rsicn-arrow-down::before {
-        color: $color-info;
+        color: $color-default;
       }
     }
 
     .rsicn-arrow-down {
-      &:hover,
-      &:active {
-        color: $color-default-contrast;
-
-      }
 
       &::before {
-        color: lighten($color-default-contrast, 30%);
+        color: $color-readspeaker-icon;
         font-size: 1rem;
       }
     }
@@ -282,7 +283,7 @@
       border-bottom-color: transparent;
       border-bottom-width: medium;
       border-left-width: medium;
-      border-bottom-color: #ffffff;
+      border-bottom-color: $color-default;
       border-width: 4px;
       bottom: 100%;
       content: " ";
@@ -376,10 +377,10 @@
     width: auto;
 
     &:hover {
-      background-color: $color-default-separator-border;
+      background-color: $color-readspeaker-selected;
 
       .rsbtn_right.rsplay::before {
-        color: $color-info;
+        color: $color-default;
       }
     }
 
@@ -396,18 +397,88 @@
       width: 2rem;
 
       &::before {
-        color: lighten($color-default-contrast, 30%);
+        color: $color-readspeaker-icon;
         content: "\ea27";
         font-family: "muikku" !important;
         font-size: 1rem;
         font-variant: normal;
       }
     }
+  }
+}
 
-    // We ASSUME this element we hide here contains the Readspeaker text and 2 loud speaker icons which we dont want to see
-    .rsbtn_left {
-      display: none;
+// Readspeaker controlpanel
+#rs-controlpanel.unselectable {
+  align-items: center;
+  background: $color-readspeaker-selected;
+  border: 1px solid $color-readspeaker-selected;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  color: $color-default;
+  display: flex;
+  justify-content: center;
+
+  .rsicn.rsicn-logo {
+    display: none;
+  }
+
+  button.rs-controlpanel-btn {
+    border: 0;
+    border-radius: 15px 15px 15px 15px;
+    color: $color-default;
+    float: none;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $color-default;
+      color: $color-readspeaker-selected;
+    }
+  }
+
+  .rs-controlpanel-scroll-toggler {
+    background: $color-default;
+    border: 0;
+    border-radius: 15px 15px 15px 15px;
+
+    .rs-controlpanel-scroll-label {
+      color: $color-default-contrast;
+      font-size: 0.75rem;
+    }
+
+    .rs-controlpanel-scroll-state {
+      font-size: 0.75rem;
     }
   }
 }
+
+#rsbtn_popup.rspopup {
+  background: $color-default;
+  border-radius: 5px;
+  border: 0;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  padding: 5px;
+
+  .rspopup_play.rspopup_btn {
+    border: 0;
+    color: $color-default-contrast;
+    padding:  5px 10px 5px 30px;
+
+    &::before,
+    &::after {
+      color: $color-readspeaker-icon;
+      font-size: 0.825rem;
+      line-height: 1.9rem;
+      margin: 0;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: $color-default-contrast;
+    }
+  }
+}
+
 /* stylelint-enable */
