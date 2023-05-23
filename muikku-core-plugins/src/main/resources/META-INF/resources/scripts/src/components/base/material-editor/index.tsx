@@ -216,40 +216,47 @@ const CKEditorConfig = (
     : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax,muikku-journalfield",
 });
 
+type PageTypeLocales =
+  | "labels.exercises"
+  | "labels.evaluables"
+  | "labels.journalAssignments"
+  | "labels.interimEvaluationPages"
+  | "labels.theoryPages";
+
 /**
  * MaterialPageTypeConfic
  */
 interface MaterialPageTypeConfic {
   type: AssignmentType | null;
   classNameMod: string;
-  text: string;
+  text: PageTypeLocales;
 }
 
 const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
   {
     type: "EXERCISE",
     classNameMod: "material-editor-dropdown-exercise",
-    text: i18n.t("labels.exercises", { ns: "materials" }),
+    text: "labels.exercises",
   },
   {
     type: "EVALUATED",
     classNameMod: "material-editor-dropdown-assignment",
-    text: i18n.t("labels.evaluables", { ns: "materials" }),
+    text: "labels.evaluables",
   },
   {
     type: "JOURNAL",
     classNameMod: "material-editor-dropdown-journal",
-    text: i18n.t("labels.journalAssignments", { ns: "materials" }),
+    text: "labels.journalAssignments",
   },
   {
     type: "INTERIM_EVALUATION",
     classNameMod: "material-editor-dropdown-interim-evaluation",
-    text: i18n.t("labels.interimEvaluationPages", { ns: "materials" }),
+    text: "labels.interimEvaluationPages",
   },
   {
     type: null,
     classNameMod: "material-editor-dropdown-theory",
-    text: i18n.t("labels.theoryPages", { ns: "materials" }),
+    text: "labels.theoryPages",
   },
 ];
 
@@ -794,7 +801,9 @@ class MaterialEditor extends React.Component<
         )}
       >
         <span className="link__icon icon-puzzle"></span>
-        <span>{materialPageConfig.text}</span>
+        <span>
+          {this.props.t(materialPageConfig.text, { ns: "materials" })}
+        </span>
       </Link>
     );
   };
