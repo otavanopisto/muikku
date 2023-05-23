@@ -86,19 +86,42 @@ export const htmlStyles = {
     marginVertical: 5,
   },
   h3: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
-    marginTop: 10,
+    fontWeight: "bold",
+    marginTop: 15,
     marginBottom: 5,
   },
   h4: {
-    fontSize: 10,
+    fontSize: 11,
     fontFamily: "Times-Roman",
-    marginTop: 10,
+    fontWeight: "bold",
+    marginTop: 15,
     marginBottom: 5,
   },
   blockquote: {
+    backgroundColor: "#f8f8f8",
+    borderLeft: "5px solid #f2f2f2",
     fontSize: 12,
     fontFamily: "Times-Roman",
+    marginVertical: 10,
+    marginRight: 0,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  b: {
+    fontWeight: "bold",
+  },
+  strong: {
+    fontWeight: "bold",
+  },
+  i: {
+    fontStyle: "italic",
+  },
+  em: {
+    fontStyle: "italic",
+  },
+  u: {
+    textDecoration: "underline"
   },
 };
