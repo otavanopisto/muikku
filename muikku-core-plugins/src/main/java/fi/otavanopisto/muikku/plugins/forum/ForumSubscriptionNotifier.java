@@ -135,7 +135,7 @@ public class ForumSubscriptionNotifier {
             params.put("content", content);
             
             if (event.getWorkspaceUrlName() != null) {
-              params.put("url", String.format("%s/workspace/%s/discussions#" + forumArea.getId() + "/1/" + forumThread.getId(), event.getBaseUrl(), event.getWorkspaceUrlName()));
+              params.put("url", String.format("%s/workspace/%s/discussions#0/1/" + forumArea.getId() + "/" + forumThread.getId(), event.getBaseUrl(), event.getWorkspaceUrlName()));
 
             } else {
               params.put("url", String.format("%s/discussion#" + forumArea.getId() + "/1/" + forumArea.getId() + "/" + forumThread.getId(), event.getBaseUrl()));
