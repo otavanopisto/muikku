@@ -40,6 +40,7 @@ export const GuiderStudentLink: React.FC<GuiderStudentLinkProps> = (props) => {
       href={`https://${window.location.hostname}/guider#?c=${schoolDataIdentifier}`}
       openInNewTab="_blank"
     >
+      {/* TODO: lokalisointi*/}
       Avaa opiskelijan ohjausnäkymä
     </Link>
   );
