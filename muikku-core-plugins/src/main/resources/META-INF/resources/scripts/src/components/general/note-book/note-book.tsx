@@ -334,6 +334,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
           <NoteEditor />
         </div>
 
+        {/* TODO: lokalisointi*/}
         <NoteList>
           {notebook.state === "LOADING" ? (
             <div className="empty-loader" />

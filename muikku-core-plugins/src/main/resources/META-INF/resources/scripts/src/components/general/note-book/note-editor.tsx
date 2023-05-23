@@ -373,6 +373,7 @@ class NoteEditor extends SessionStateComponent<
             {!this.props.note && (
               <div className="form__row">
                 <div className="form-element">
+                  {/* TODO: lokalisointi*/}
                   <label>Oletus sijainti</label>
 
                   <Select
@@ -394,6 +395,7 @@ class NoteEditor extends SessionStateComponent<
                   />
 
                   <div className="notebook__select-position-info">
+                    {/* TODO: lokalisointi*/}
                     {this.state.defaultLocation === "BOTTOM" ? (
                       <p>
                         Oletuksena uusi muistiinpano luodaan listan viimeiseksi.
@@ -412,6 +414,7 @@ class NoteEditor extends SessionStateComponent<
               </div>
             )}
 
+            {/* TODO: lokalisointi*/}
             <div className="form__buttons form__buttons--notebook">
               <Button
                 className="button button--dialog-execute"
@@ -427,6 +430,7 @@ class NoteEditor extends SessionStateComponent<
               >
                 Peruuta
               </Button>
+
               {this.recovered && (
                 <Button
                   buttonModifiers="dialog-clear"
