@@ -36,11 +36,12 @@ import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
-import StudySuggestionMatrix from "./state-of-studies/study-suggestion-matrix";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
+import StudyProgress from "~/components/general/study-progress";
+import StudyProgressContextProvider from "~/components/general/study-progress/context";
 
 /**
  * StateOfStudiesProps
@@ -414,16 +415,50 @@ class StateOfStudies extends React.Component<
                     )}
                   </ApplicationSubPanel.Header>
                   <ApplicationSubPanel.Body>
-                    <StudySuggestionMatrix
+                    <StudyProgressContextProvider
+                      user="supervisor"
+                      useCase="state-of-studies"
                       studentId={this.props.guider.currentStudent.basic.id}
                       studentUserEntityId={
                         this.props.guider.currentStudent.basic.userEntityId
                       }
-                    />
+                      dataToLoad={["studentActivity"]}
+                    >
+                      <StudyProgress
+                        studyProgrammeName="Nettiperuskoulu"
+                        editMode={true}
+                      />
+                    </StudyProgressContextProvider>
                   </ApplicationSubPanel.Body>
                 </ApplicationSubPanel>
               </ApplicationSubPanel>
-            ) : null}
+            ) : (
+              <ApplicationSubPanel modifier="student-data-container">
+                <ApplicationSubPanel>
+                  <ApplicationSubPanel.Header>
+                    {this.props.i18n.text.get(
+                      "plugin.guider.user.details.progressOfStudies"
+                    )}
+                  </ApplicationSubPanel.Header>
+                  <ApplicationSubPanel.Body>
+                    <StudyProgressContextProvider
+                      user="supervisor"
+                      useCase="state-of-studies"
+                      studentId={this.props.guider.currentStudent.basic.id}
+                      studentUserEntityId={
+                        this.props.guider.currentStudent.basic.userEntityId
+                      }
+                      dataToLoad={["studentActivity"]}
+                    >
+                      <StudyProgress
+                        studyProgrammeName="Nettilukio"
+                        editMode={true}
+                      />
+                    </StudyProgressContextProvider>
+                  </ApplicationSubPanel.Body>
+                </ApplicationSubPanel>
+              </ApplicationSubPanel>
+            )}
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>

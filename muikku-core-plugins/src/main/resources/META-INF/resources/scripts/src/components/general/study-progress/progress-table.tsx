@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  SchoolSubject,
-  StudentActivityByStatus,
-  StudentActivityCourse,
-  StudentCourseChoice,
-  SupervisorOptionalSuggestion,
-} from "~/@types/shared";
+import { SchoolSubject, StudentActivityCourse } from "~/@types/shared";
 import {
   Table,
   TableHead,
@@ -14,9 +8,9 @@ import {
   Tr,
   Th,
 } from "~/components/general/table";
-import { schoolCourseTable } from "~/mock/mock-data";
+
 import { connect } from "react-redux";
-import { HopsUsePlace, HopsUser } from ".";
+import { StudyProgrammeName } from ".";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
@@ -24,61 +18,27 @@ import {
   LANGUAGE_SUBJECTS,
   OTHER_SUBJECT_OUTSIDE_HOPS,
   SKILL_AND_ART_SUBJECTS,
-  UpdateSuggestionParams,
 } from "../../../hooks/useStudentActivity";
-import HopsSuggestionList from "./hops-suggested-list";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 import { UpdateSupervisorOptionalSuggestionParams } from "~/hooks/useSupervisorOptionalSuggestion";
+import {
+  useStudyProgressContextState,
+  useStudyProgressContextUpdater,
+  useStudyProgressStaticDataContext,
+} from "./context";
+import {
+  compulsoryOrUpperSecondary,
+  filterMatrix,
+  showSubject,
+} from "~/helper-functions/shared";
+import SuggestionList from "./suggestion-list";
 
 /**
  * CourseTableProps
  */
-interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
-  /**
-   * matrix to be rendered
-   */
-  matrix: SchoolSubject[];
-  /**
-   * useCase
-   */
-  useCase: "study-matrix" | "hops-planning";
-  /**
-   * Table uses sticky header
-   */
-  usePlace: HopsUsePlace;
-  /**
-   * user
-   */
-  user: HopsUser;
-  /**
-   * studentId
-   */
-  studentId: string;
-  studentsUserEntityId: number;
-  /**
-   * disabled
-   */
-  disabled: boolean;
-  /**
-   * Boolean indicating that supervisor can modify values
-   */
-  superVisorModifies: boolean;
-
-  /**
-   * List of student choices
-   */
-  studentChoiceList?: StudentCourseChoice[];
-
-  /**
-   * List of student choices
-   */
-  supervisorOptionalSuggestionsList?: SupervisorOptionalSuggestion[];
-
-  updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
-  updateSuggestionOptional?: (
-    params: UpdateSupervisorOptionalSuggestionParams
-  ) => void;
-  updateStudentChoice?: (params: UpdateStudentChoicesParams) => void;
+interface HopsCourseTableProps {
+  studyProgrammeName: StudyProgrammeName;
+  editMode: boolean;
 }
 
 /**
@@ -87,7 +47,13 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
  * @param props props
  * @returns JSX.Element
  */
-const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
+const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
+  const { editMode, studyProgrammeName } = props;
+
+  const studyProgress = useStudyProgressContextState();
+  const studyProgressStatic = useStudyProgressStaticDataContext();
+  const studyProgressUpdater = useStudyProgressContextUpdater();
+
   /**
    * handleToggleChoiceClick
    * @param choiceParams choiceParams
@@ -95,7 +61,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
   const handleToggleChoiceClick =
     (choiceParams: UpdateStudentChoicesParams) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.updateStudentChoice && props.updateStudentChoice(choiceParams);
+      studyProgressUpdater.updateStudentChoice(choiceParams);
     };
 
   /**
@@ -105,19 +71,29 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
   const handleToggleSuggestOptional =
     (params: UpdateSupervisorOptionalSuggestionParams) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.updateSuggestionOptional && props.updateSuggestionOptional(params);
+      studyProgressUpdater.updateSupervisorOptionalSuggestion(params);
     };
+
+  const matrix = compulsoryOrUpperSecondary(studyProgrammeName);
+
+  const filteredMatrix = filterMatrix(
+    studyProgrammeName,
+    matrix,
+    studyProgress.options
+  );
 
   /**
    * currentMaxCourses
    */
-  const currentMaxCourses = getHighestCourseNumber(schoolCourseTable);
+  const currentMaxCourses = getHighestCourseNumber(matrix);
 
   /**
    * renderRows
    * !!--USES list of mock objects currently--!!
    */
-  const renderRows = props.matrix.map((sSubject, i) => {
+  const renderRows = filteredMatrix.map((sSubject, i) => {
+    let showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
+
     /**
      * Render courses based on possible max number of courses
      * So subject with less courses have their rows same amount of table cells but as empty
@@ -174,8 +150,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
          * and push another modifier or change table data content options values
          */
         if (
-          props.studentChoiceList &&
-          props.studentChoiceList.find(
+          studyProgress.studentChoices.find(
             (sCourse) =>
               sCourse.subject === sSubject.subjectCode &&
               sCourse.courseNumber === course.courseNumber
@@ -185,8 +160,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
           modifiers.push("OPTIONAL-SELECTED");
         }
         if (
-          props.supervisorOptionalSuggestionsList &&
-          props.supervisorOptionalSuggestionsList.find(
+          studyProgress.supervisorOptionalSuggestions.find(
             (sOCourse) =>
               sOCourse.subject === sSubject.subjectCode &&
               sOCourse.courseNumber === course.courseNumber
@@ -200,34 +174,33 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
          * Only one of these can happen
          */
         if (
-          props.user === "supervisor" &&
-          props.suggestedNextList &&
-          props.suggestedNextList.find(
+          studyProgressStatic.user === "supervisor" &&
+          studyProgress.suggestedNextList.find(
             (sCourse) =>
               sCourse.subject === sSubject.subjectCode &&
               sCourse.courseNumber === course.courseNumber
           )
         ) {
-          const suggestedCourseDataNext = props.suggestedNextList.filter(
-            (sCourse) => sCourse.subject === sSubject.subjectCode
-          );
+          const suggestedCourseDataNext =
+            studyProgress.suggestedNextList.filter(
+              (sCourse) => sCourse.subject === sSubject.subjectCode
+            );
 
           courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
 
           modifiers.push("NEXT");
         } else if (
-          props.transferedList &&
-          props.transferedList.find(
+          studyProgress.transferedList.find(
             (tCourse) =>
               tCourse.subject === sSubject.subjectCode &&
               tCourse.courseNumber === course.courseNumber
           )
         ) {
+          showSubjectRow = true;
           canBeSelected = false;
           modifiers.push("APPROVAL");
         } else if (
-          props.gradedList &&
-          props.gradedList.find(
+          studyProgress.gradedList.find(
             (gCourse) =>
               gCourse.subject === sSubject.subjectCode &&
               gCourse.courseNumber === course.courseNumber
@@ -236,8 +209,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
           canBeSelected = false;
           modifiers.push("COMPLETED");
         } else if (
-          props.onGoingList &&
-          props.onGoingList.find(
+          studyProgress.onGoingList.find(
             (oCourse) =>
               oCourse.subject === sSubject.subjectCode &&
               oCourse.courseNumber === course.courseNumber
@@ -251,16 +223,18 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
          * Button is shown only if modifying user is supervisor
          */
         const showSuggestAndAddToHopsButtons =
-          props.user === "supervisor" &&
-          props.superVisorModifies &&
-          props.useCase === "hops-planning";
+          editMode &&
+          studyProgressStatic.user === "supervisor" &&
+          studyProgressStatic.useCase === "hops-planning";
 
         /**
          * Suggestion list is shown only if not disabled, for supervisor only
          * and there can be made selections
          */
         const showSuggestionList =
-          !props.disabled && props.user === "supervisor" && canBeSelected;
+          editMode &&
+          studyProgressStatic.user === "supervisor" &&
+          canBeSelected;
 
         const courseDropdownName =
           sSubject.subjectCode + course.courseNumber + " - " + course.name;
@@ -270,9 +244,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
             key={`${sSubject.subjectCode}-${course.courseNumber}`}
             modifiers={modifiers}
             onClick={
-              !course.mandatory && props.user === "student"
+              !course.mandatory && studyProgressStatic.user === "student"
                 ? handleToggleChoiceClick({
-                    studentId: props.studentId,
+                    studentId: studyProgressStatic.studentId,
                     courseNumber: course.courseNumber,
                     subject: sSubject.subjectCode,
                   })
@@ -280,7 +254,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
             }
           >
             <Dropdown
-              openByHover={props.user !== "supervisor"}
+              openByHover={studyProgressStatic.user !== "supervisor"}
               content={
                 <div className="hops-container__study-tool-dropdown-container">
                   <div className="hops-container__study-tool-dropdow-title">
@@ -291,16 +265,16 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                   {course.mandatory ? (
                     <>
                       {showSuggestionList && (
-                        <HopsSuggestionList
-                          studentId={props.studentId}
-                          studentsUserEntityId={props.studentsUserEntityId}
+                        <SuggestionList
+                          studentId={studyProgressStatic.studentId}
+                          studentsUserEntityId={
+                            studyProgressStatic.studentUserEntityId
+                          }
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
-                          updateSuggestionNext={props.updateSuggestionNext}
-                          canSuggestForNext={
-                            props.useCase === "hops-planning" ||
-                            props.useCase === "study-matrix"
+                          updateSuggestionNext={
+                            studyProgressUpdater.updateSuggestionForNext
                           }
                         />
                       )}
@@ -317,7 +291,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                             onClick={handleToggleSuggestOptional({
                               courseNumber: course.courseNumber,
                               subject: sSubject.subjectCode,
-                              studentId: props.studentId,
+                              studentId: studyProgressStatic.studentId,
                             })}
                           >
                             {suggestedBySupervisor
@@ -329,7 +303,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                         {showSuggestAndAddToHopsButtons && (
                           <Button
                             onClick={handleToggleChoiceClick({
-                              studentId: props.studentId,
+                              studentId: studyProgressStatic.studentId,
                               courseNumber: course.courseNumber,
                               subject: sSubject.subjectCode,
                             })}
@@ -343,16 +317,16 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                       </div>
 
                       {showSuggestionList && (
-                        <HopsSuggestionList
-                          studentId={props.studentId}
-                          studentsUserEntityId={props.studentsUserEntityId}
+                        <SuggestionList
+                          studentId={studyProgressStatic.studentId}
+                          studentsUserEntityId={
+                            studyProgressStatic.studentUserEntityId
+                          }
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
-                          updateSuggestionNext={props.updateSuggestionNext}
-                          canSuggestForNext={
-                            props.useCase === "hops-planning" ||
-                            props.useCase === "study-matrix"
+                          updateSuggestionNext={
+                            studyProgressUpdater.updateSuggestionForNext
                           }
                         />
                       )}
@@ -375,30 +349,35 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
       });
 
     return (
-      <Tr key={sSubject.name} modifiers={["course"]}>
-        <Td modifiers={["subject"]}>
-          <div>{`${sSubject.name} (${sSubject.subjectCode})`}</div>
-        </Td>
-        {courses}
-      </Tr>
+      showSubjectRow && (
+        <Tr key={sSubject.name} modifiers={["course"]}>
+          <Td modifiers={["subject"]}>
+            <div>{`${sSubject.name} (${sSubject.subjectCode})`}</div>
+          </Td>
+          {courses}
+        </Tr>
+      )
     );
   });
 
   /**
    * Subjects and courses related to skills and arts
    */
-  const renderSkillsAndArtRows = props.skillsAndArt
+  const renderSkillsAndArtRows = studyProgress.skillsAndArt
     ? SKILL_AND_ART_SUBJECTS.map((s) => {
         let missingColumsCount = currentMaxCourses;
 
-        if (props.skillsAndArt[s].length !== 0) {
+        if (
+          studyProgress.skillsAndArt[s] &&
+          studyProgress.skillsAndArt[s].length !== 0
+        ) {
           return (
             <Tr key={s} modifiers={["course"]}>
               <Td modifiers={["subject"]}>
-                <div>{props.skillsAndArt[s][0].subjectName}</div>
+                <div>{studyProgress.skillsAndArt[s][0].subjectName}</div>
               </Td>
 
-              {props.skillsAndArt[s].map((c, index) => {
+              {studyProgress.skillsAndArt[s].map((c, index) => {
                 missingColumsCount--;
 
                 const listItemModifiers = ["course", "centered", "APPROVAL"];
@@ -406,7 +385,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                 return (
                   <Td key={index} modifiers={listItemModifiers}>
                     <Dropdown
-                      openByHover={props.user !== "supervisor"}
+                      openByHover={studyProgressStatic.user !== "supervisor"}
                       content={
                         <div className="hops-container__study-tool-dropdown-container">
                           <div className="hops-container__study-tool-dropdow-title">
@@ -451,18 +430,23 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
   /**
    * Subjects and courses related to skills and arts
    */
-  const renderOtherLanguageSubjectsRows = props.otherLanguageSubjects
+  const renderOtherLanguageSubjectsRows = studyProgress.otherLanguageSubjects
     ? LANGUAGE_SUBJECTS.map((s) => {
         let missingColumsCount = currentMaxCourses;
 
-        if (props.otherLanguageSubjects[s].length !== 0) {
+        if (
+          studyProgress.otherLanguageSubjects[s] &&
+          studyProgress.otherLanguageSubjects[s].length !== 0
+        ) {
           return (
             <Tr key={s} modifiers={["course"]}>
               <Td modifiers={["subject"]}>
-                <div>{props.otherLanguageSubjects[s][0].subjectName}</div>
+                <div>
+                  {studyProgress.otherLanguageSubjects[s][0].subjectName}
+                </div>
               </Td>
 
-              {props.otherLanguageSubjects[s].map((c, index) => {
+              {studyProgress.otherLanguageSubjects[s].map((c, index) => {
                 missingColumsCount--;
 
                 const listItemModifiers = ["course", "centered", "APPROVAL"];
@@ -470,7 +454,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                 return (
                   <Td key={index} modifiers={listItemModifiers}>
                     <Dropdown
-                      openByHover={props.user !== "supervisor"}
+                      openByHover={studyProgressStatic.user !== "supervisor"}
                       content={
                         <div className="hops-container__study-tool-dropdown-container">
                           <div className="hops-container__study-tool-dropdow-title">
@@ -515,10 +499,13 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
   /**
    * Subjects and courses related to skills and arts
    */
-  const renderOtherSubjectsRows = props.otherSubjects
+  const renderOtherSubjectsRows = studyProgress.otherSubjects
     ? OTHER_SUBJECT_OUTSIDE_HOPS.map((s) => {
-        if (props.otherSubjects[s].length !== 0) {
-          return props.otherSubjects[s].map((c, index) => {
+        if (
+          studyProgress.otherSubjects[s] &&
+          studyProgress.otherSubjects[s].length !== 0
+        ) {
+          return studyProgress.otherSubjects[s].map((c, index) => {
             const listItemModifiers = ["subject"];
 
             return (
@@ -541,9 +528,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
 
   const uTableHeadModifiers = ["course"];
 
-  if (props.usePlace === "studies") {
+  if (studyProgressStatic.useCase === "hops-planning") {
     uTableHeadModifiers.push("sticky");
-  } else if (props.usePlace === "guider") {
+  } else if (studyProgressStatic.useCase === "state-of-studies") {
     uTableHeadModifiers.push("sticky-inside-dialog");
   }
 
@@ -633,4 +620,4 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HopsCourseTable);
+export default connect(mapStateToProps, mapDispatchToProps)(ProgressTable);
