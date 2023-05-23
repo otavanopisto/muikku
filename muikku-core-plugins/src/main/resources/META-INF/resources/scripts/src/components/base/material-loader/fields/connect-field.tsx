@@ -567,6 +567,7 @@ export default class ConnectField extends React.Component<
 
     return (
       <>
+        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Yhdistelykenttä" />
 
         <span

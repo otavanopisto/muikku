@@ -298,6 +298,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
 
         return (
           <>
+            {/* TODO: lokalisointi*/}
             <ReadspeakerMessage text="Kuva" />
             <Zoom key={props.key} imgsrc={props.src}>
               <Tag {...props}>{children}</Tag>

@@ -371,6 +371,7 @@ export default class SorterField extends React.Component<
       });
       return (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Järjestelytehtävä" />
           <span
             ref="base"
@@ -409,6 +410,7 @@ export default class SorterField extends React.Component<
     // we use that element and the class to create the field
     return (
       <>
+        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Järjestelytehtävä" />
         <span
           className={`material-page__sorterfield-wrapper ${fieldSavedStateClass} rs_skip_always`}

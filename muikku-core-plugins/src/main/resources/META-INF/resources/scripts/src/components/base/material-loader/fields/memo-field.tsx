@@ -372,6 +372,7 @@ export default class MemoField extends React.Component<
     // and here the element itself
     return (
       <>
+        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Muistiokenttä" />
         <span
           className={`material-page__memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}

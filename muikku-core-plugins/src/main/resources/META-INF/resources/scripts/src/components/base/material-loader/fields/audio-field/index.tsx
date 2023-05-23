@@ -450,6 +450,7 @@ export default class AudioField extends React.Component<
       }
       return (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Äänitystehtävä" />
           <span className="material-page__audiofield-wrapper rs_skip_always">
             <span className="material-page__audiofield">
@@ -630,6 +631,7 @@ export default class AudioField extends React.Component<
     // and this is the container
     return (
       <>
+        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Äänitystehtävä" />
         <span
           className={`material-page__audiofield-wrapper ${fieldSavedStateClass} rs_skip_always`}

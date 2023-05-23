@@ -328,6 +328,7 @@ export default class MultiSelectField extends React.Component<
     if (this.props.invisible) {
       return (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Monivalintatehtävä" />
           <span className="material-page__checkbox-wrapper rs_skip_always">
             <span

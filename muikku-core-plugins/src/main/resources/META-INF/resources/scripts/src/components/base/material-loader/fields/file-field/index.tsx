@@ -207,6 +207,7 @@ export default class FileField extends React.Component<
     // and this is the container
     return (
       <>
+        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Tiedoston palautuslaatikko" />
         <span
           className={`material-page__filefield-wrapper ${fieldSavedStateClass} rs_skip_always`}

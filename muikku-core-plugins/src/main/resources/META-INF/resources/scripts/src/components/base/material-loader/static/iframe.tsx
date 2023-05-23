@@ -196,6 +196,7 @@ export default class Iframe extends React.Component<IframeProps, IframeState> {
 
           return (
             <>
+              {/* TODO: lokalisointi*/}
               <ReadspeakerMessage text="Iframe upotus" />
               <span className="material-page__iframe-wrapper rs_skip_always">
                 <OutsideClickListener

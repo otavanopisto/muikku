@@ -14,10 +14,6 @@ import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
-import ReadSpeakerReader, {
-  ReadspeakerMessage,
-} from "~/components/general/readspeaker";
-import { ReadspeakerProvider } from "~/components/context/readspeaker-context";
 import {
   displayNotification,
   DisplayNotificationTriggerType,

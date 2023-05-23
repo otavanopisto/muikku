@@ -287,6 +287,7 @@ export default class TextField extends React.Component<
     if (this.props.invisible) {
       return (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Tekstikenttä" />
           <span
             ref="base"
@@ -387,6 +388,7 @@ export default class TextField extends React.Component<
       );
       return (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Tekstikenttä" />
           <span className="material-page__textfield-wrapper rs_skip_always">
             {component}
@@ -408,6 +410,7 @@ export default class TextField extends React.Component<
 
       return (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Tekstikenttä" />
           <span className="material-page__textfield-wrapper rs_skip_always">
             {component}
@@ -438,6 +441,7 @@ export default class TextField extends React.Component<
     } else {
       component = (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Tekstikenttä" />
           <span
             className={`material-page__textfield ${fieldStateAfterCheck} rs_skip_always`}
@@ -465,6 +469,7 @@ export default class TextField extends React.Component<
     // Standard modifiable version
     return (
       <>
+        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Tekstikenttä" />
         <span
           className={`material-page__textfield-wrapper ${fieldSavedStateClass} rs_skip_always`}

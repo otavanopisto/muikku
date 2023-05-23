@@ -439,6 +439,7 @@ export default class OrganizerField extends React.Component<
     if (this.props.invisible) {
       return (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Järjestelytehtävä" />
           <span className="material-page__organizerfield-wrapper rs_skip_always">
             <span className="material-page__organizerfield">
@@ -505,6 +506,7 @@ export default class OrganizerField extends React.Component<
     // we add that class name in our component
     return (
       <>
+        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Järjestelytehtävä" />
         <span
           className={`material-page__organizerfield-wrapper ${fieldSavedStateClass} rs_skip_always`}

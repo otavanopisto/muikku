@@ -302,6 +302,7 @@ export default class JournalField extends React.Component<
     // and here the element itself
     return (
       <>
+        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Oppimispäiväkirjatehtävä" />
         <span
           className={`material-page__journalfield-wrapper ${fieldSavedStateClass} rs_skip_always`}

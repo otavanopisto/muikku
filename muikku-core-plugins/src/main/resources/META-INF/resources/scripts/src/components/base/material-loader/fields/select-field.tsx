@@ -228,6 +228,7 @@ export default class SelectField extends React.Component<
       ) {
         return (
           <>
+            {/* TODO: lokalisointi*/}
             <ReadspeakerMessage text="Valintakenttä" />
             <span className="material-page__selectfield-wrapper rs_skip_always">
               <select
@@ -246,6 +247,7 @@ export default class SelectField extends React.Component<
 
       return (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Valintakenttä" />
           <span
             className="material-page__radiobutton-wrapper rs_skip_always"
@@ -362,6 +364,7 @@ export default class SelectField extends React.Component<
         this.props.content.listType === "list" ? "list" : "dropdown";
       return (
         <>
+          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage text="Valintakenttä" />
           <span
             className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass} rs_skip_always`}
@@ -405,6 +408,7 @@ export default class SelectField extends React.Component<
     //this is for the standard
     return (
       <>
+        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Valintakenttä" />
         <span
           className={`material-page__radiobutton-wrapper ${fieldSavedStateClass} rs_skip_always`}
