@@ -14,7 +14,7 @@ class FrontpageFooter extends React.Component<WithTranslation> {
         <div className="footer__container">
           <div className="footer__item footer__item--contact">
             <h2 className="footer__header">
-              {this.props.t("labels.contact", { ns: "frontPage" })}
+              {this.props.t("labels.contactInfo")}
             </h2>
             <p className="footer__subitem">
               <span className="glyph icon-location"></span>

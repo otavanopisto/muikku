@@ -217,11 +217,11 @@ const CKEditorConfig = (
 });
 
 type PageTypeLocales =
-  | "labels.exercises"
-  | "labels.evaluables"
-  | "labels.journalAssignments"
-  | "labels.interimEvaluationPages"
-  | "labels.theoryPages";
+  | "labels.exercise"
+  | "labels.evaluable"
+  | "labels.journalAssignment"
+  | "labels.interimEvaluationPage"
+  | "labels.theoryPage";
 
 /**
  * MaterialPageTypeConfic
@@ -236,27 +236,27 @@ const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
   {
     type: "EXERCISE",
     classNameMod: "material-editor-dropdown-exercise",
-    text: "labels.exercises",
+    text: "labels.exercise",
   },
   {
     type: "EVALUATED",
     classNameMod: "material-editor-dropdown-assignment",
-    text: "labels.evaluables",
+    text: "labels.evaluable",
   },
   {
     type: "JOURNAL",
     classNameMod: "material-editor-dropdown-journal",
-    text: "labels.journalAssignments",
+    text: "labels.journalAssignment",
   },
   {
     type: "INTERIM_EVALUATION",
     classNameMod: "material-editor-dropdown-interim-evaluation",
-    text: "labels.interimEvaluationPages",
+    text: "labels.interimEvaluationPage",
   },
   {
     type: null,
     classNameMod: "material-editor-dropdown-theory",
-    text: "labels.theoryPages",
+    text: "labels.theoryPage",
   },
 ];
 
