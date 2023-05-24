@@ -758,9 +758,8 @@ class OrganizationEditWorkspace extends React.Component<
                       )}
                     />
                     <label htmlFor="accessMembers">
-                      {t("labels.access", {
+                      {t("labels.membersOnly", {
                         ns: "workspace",
-                        context: "members",
                       })}
                     </label>
                   </div>
@@ -773,9 +772,8 @@ class OrganizationEditWorkspace extends React.Component<
                       onChange={this.setWorkspaceAccess.bind(this, "LOGGED_IN")}
                     />
                     <label htmlFor="accessLoggedin">
-                      {t("labels.access", {
+                      {t("labels.loggedInUsers", {
                         ns: "workspace",
-                        context: "loggedIn",
                       })}
                     </label>
                   </div>
@@ -788,9 +786,8 @@ class OrganizationEditWorkspace extends React.Component<
                       onChange={this.setWorkspaceAccess.bind(this, "ANYONE")}
                     />
                     <label htmlFor="accessAnyone">
-                      {t("labels.access", {
+                      {t("labels.anyone", {
                         ns: "workspace",
-                        context: "anyone",
                       })}
                     </label>
                   </div>
@@ -824,7 +821,7 @@ class OrganizationEditWorkspace extends React.Component<
                   context: "workspaceStudents",
                   stepInfo: `${page}/${this.totalSteps}`,
                 })}
-                description={t("labels.search", {
+                description={t("content.search", {
                   ns: "users",
                   context: "studentsAndGroups",
                 })}
@@ -934,9 +931,9 @@ class OrganizationEditWorkspace extends React.Component<
                 identifier="addWorkspaceTeachers"
                 modifier="add-teachers"
                 loader={this.doStaffSearch}
-                placeholder={t("labels.search", {
+                placeholder={t("content.search", {
                   ns: "users",
-                  context: "teachers",
+                  context: "workspaceTeachers",
                 })}
                 selectedItems={this.state.addStaff}
                 searchItems={staffSearchItems}

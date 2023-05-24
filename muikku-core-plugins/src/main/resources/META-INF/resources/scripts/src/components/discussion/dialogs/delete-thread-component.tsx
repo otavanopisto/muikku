@@ -145,9 +145,13 @@ class DiscussionDeleteThreadComponent extends React.Component<
         title={
           this.props.reply
             ? this.props.i18n.t("labels.remove", {
-                context: "reply",
+                context: "comment",
+                ns: "messaging",
               })
-            : this.props.i18n.t("labels.remove")
+            : this.props.i18n.t("labels.remove", {
+                context: "message",
+                ns: "messaging",
+              })
         }
         content={content}
         footer={footer}

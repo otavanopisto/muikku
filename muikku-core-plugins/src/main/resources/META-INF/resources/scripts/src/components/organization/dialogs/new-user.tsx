@@ -346,7 +346,7 @@ class OrganizationUser extends React.Component<
         onClose={this.clearComponentState}
         executing={this.state.executing}
         modifier="new-user"
-        title={t("labels.add", { ns: "users" })}
+        title={t("labels.create", { ns: "users" })}
         content={content}
         footer={footer}
       >
