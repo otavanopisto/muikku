@@ -333,7 +333,7 @@
       "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {{value}}",
       "lastJournalEntry": "viimeisin merkintä: {{value}}",
       "lastSubmittedAssignment": "viimeisin palautus: {{value}}",
-      "notInWorkspaces": "Opiskelija ei ole missään kurssilla",
+      "notInWorkspaces": "Opiskelija ei ole millään kurssilla",
       "numberOfAssignments": "{{value}} tehtävää",
       "numberOfExercises": "{{value}} tehtävää",
       "numberOfJournalEntries": "{{value}} merkintää",
@@ -725,7 +725,7 @@
       "removing_announcement": "Oletko varma että haluat poistaa tiedotteen?",
       "removing_contactEntry": "Oletko varma, että haluat poistaa yhteydenoton? Jos poistat yhteydenoton, myös sen kommentit poistuvat.",
       "removing_discussionArea": "Huom! Keskustelualueen poisto poistaa myös kaikki sen alla olevat viestit!",
-      "removing_reply": "Vastaus poistetaan lopullisesti, oletko varma, että haluat jatkaa?",
+      "removing_reply": "Vastaus poistetaan lopullisesti. Oletko varma, että haluat jatkaa?",
       "removing_thread": "Viesti ja siihen tulleet vastaukset poistetaan lopullisesti. Oletko aivan varma, että haluat jatkaa?"
     },
     "labels": {
@@ -760,8 +760,8 @@
       "folder_inbox": "Saapuneet",
       "folder_unread": "Lukemattomat",
       "folder_sent": "Lähetetyt",
-      "folder_trash": "Roskakakori",
-      "lastMessage": "Viimeisin viesti: {{time}}",
+      "folder_trash": "Roskakori",
+      "lastMessage": "Uusin viesti: {{time}}",
       "lock": "Lukitse viesti",
       "message": "Viesti",
       "name_discussionArea": "Keskustelualueen nimi",
@@ -903,7 +903,7 @@
 
   "tasks": {
     "actions": {
-      "approve": "Merkitse hyväksytyksi",
+      "approve": "Merkitse tehdyksi",
       "cancel": "Peruuta hyväksyntäpyyntö",
       "done": "Merkitse tehdyksi",
       "incomplete": "Merkitse keskeneräiseksi",

@@ -23,7 +23,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * CommunicatorNewMessageProps
  */
-interface CommunicatorNewMessageProps extends WithTranslation<["common"]> {
+interface CommunicatorNewMessageProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   replyThreadId?: number;
@@ -332,7 +332,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
           this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
         }
         placeholder={this.props.t("labels.search", { context: "recipients" })}
-        label={this.props.t("labels.search", { context: "recipients" })}
+        label={this.props.t("labels.recipients", {
+          ns: "messaging",
+          count: 0,
+        })}
         selectedItems={this.state.selectedItems}
         onChange={this.setSelectedItems}
         autofocus={!this.props.initialSelectedItems}

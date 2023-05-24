@@ -259,9 +259,8 @@ class DicussionNewThread extends SessionStateComponent<
    * render
    */
   render() {
-    // TODO: use i18next
     const editorTitle =
-      this.props.i18n.t("labels.create") +
+      this.props.i18n.t("labels.create", { context: "message" }) +
       " - " +
       this.props.i18n.t("labels.content");
 
@@ -372,7 +371,7 @@ class DicussionNewThread extends SessionStateComponent<
           onClick={this.createThread.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.t("actions.send")}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
@@ -395,7 +394,7 @@ class DicussionNewThread extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-message"
-        title={this.props.i18n.t("labels.create")}
+        title={this.props.i18n.t("labels.create", { context: "message" })}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}

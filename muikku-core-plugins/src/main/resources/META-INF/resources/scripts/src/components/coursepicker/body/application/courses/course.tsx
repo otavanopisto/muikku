@@ -262,7 +262,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                       "coursepicker-course-action",
                     ]}
                   >
-                    {/* {this.props.t("workspaces:actions.signIn")} */} kirjs
+                    {this.props.t("actions.signUp", { ns: "workspace" })}{" "}
                   </Button>
                 </WorkspaceSignupDialog>
               ) : null}
