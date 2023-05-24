@@ -697,7 +697,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public UserContactInfo getUserContactInfo(String userIdentifier) {
+  public UserContactInfo getStudentContactInfo(String userIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

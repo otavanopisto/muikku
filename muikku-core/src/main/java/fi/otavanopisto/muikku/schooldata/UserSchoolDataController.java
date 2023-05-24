@@ -167,8 +167,8 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).getUserDefaultEmailAddress(userIdentifier);
   }
   
-  public UserContactInfo getUserContactInfo(String schoolDataSource, String userIdentifier) {
-    return getUserBridge(schoolDataSource).getUserContactInfo(userIdentifier);
+  public UserContactInfo getStudentContactInfo(String schoolDataSource, String userIdentifier) {
+    return getUserBridge(schoolDataSource).getStudentContactInfo(userIdentifier);
   }
   
   public StudentGuidanceRelation getGuidanceRelation(String schoolDataSource, String studentIdentifier) {

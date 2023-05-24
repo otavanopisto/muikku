@@ -1642,16 +1642,13 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public UserContactInfo getUserContactInfo(String userIdentifier) {
+  public UserContactInfo getStudentContactInfo(String userIdentifier) {
     Long userId = identifierMapper.getPyramusStudentId(userIdentifier);
-    if (userId == null) {
-      userId = identifierMapper.getPyramusStaffId(userIdentifier);
-    }
     if (userId == null) {
       return null;
     }
     fi.otavanopisto.pyramus.rest.model.UserContactInfo contactInfo = pyramusClient.get(
-        String.format("/users/users/%d/contactInfo", userId),
+        String.format("/students/students/%d/contactInfo", userId),
         fi.otavanopisto.pyramus.rest.model.UserContactInfo.class);
     return contactInfo == null ? null : entityFactory.createEntity(contactInfo);
   }

@@ -143,13 +143,13 @@ public interface UserSchoolDataBridge {
   public String getUserDefaultEmailAddress(String userIdentifier);
   
   /**
-   * Returns contact info of the given user.
+   * Returns contact info of the given student.
    * 
-   * @param userIdentifier User identifier
+   * @param userIdentifier Student identifier
    * 
-   * @return User's contact info
+   * @return Student's contact info
    */
-  public UserContactInfo getUserContactInfo(String userIdentifier);
+  public UserContactInfo getStudentContactInfo(String userIdentifier);
   
   /**
    * Returns the current user's guidance relation to the given student.

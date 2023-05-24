@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
@@ -35,12 +36,12 @@ import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormVisibility;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
@@ -65,6 +66,9 @@ public class PedagogyRestService {
   private UserEntityController userEntityController;
 
   @Inject
+  private UserEmailEntityController userEmailEntityController;
+
+  @Inject
   private UserEntityFileController userEntityFileController;
   
   @Inject
@@ -72,9 +76,6 @@ public class PedagogyRestService {
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   /**
    * mApi().pedagogy.form.access.read('PYRAMUS-STUDENT-123');
@@ -268,23 +269,28 @@ public class PedagogyRestService {
     
     // Owner and student contact info
     
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
-      UserContactInfo contactInfo = userController.getUserContactInfo(identifier.getDataSource(), identifier.getIdentifier());
-      model.setStudentInfo(toMap(contactInfo));
-      Long formCreator = getFormCreator(form);
-      if (formCreator != null) {
-        model.setOwnerId(formCreator);
-        UserEntity userEntity = userEntityController.findUserEntityById(formCreator);
-        if (userEntity != null) {
-          contactInfo = userController.getUserContactInfo(userEntity.getDefaultSchoolDataSource().getIdentifier(), userEntity.getDefaultIdentifier());
-          model.setOwnerInfo(toMap(contactInfo));
-        }
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    UserContactInfo contactInfo = userController.getStudentContactInfo(identifier.getDataSource(), identifier.getIdentifier());
+    model.setStudentInfo(toMap(contactInfo));
+
+    // For form owner, only return name, email, and phone number
+
+    Long formCreator = getFormCreator(form);
+    if (formCreator != null) {
+      model.setOwnerId(formCreator);
+      UserEntity userEntity = userEntityController.findUserEntityById(formCreator);
+      if (userEntity != null) {
+        UserEntityName userEntityName = userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true);
+        String email = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
+        // Note: Phone number from Muikku, not Pyramus
+        UserEntityProperty phoneProperty = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-phone");
+        Map<String, String> properties = new HashMap<>();
+        properties.put("firstName", userEntityName.getFirstName());
+        properties.put("lastName", userEntityName.getLastName());
+        properties.put("email", email);
+        properties.put("phoneNumber", phoneProperty == null ? null : phoneProperty.getValue());
+        model.setOwnerInfo(properties);
       }
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
     }
     model.setStudentIdentifier(studentIdentifier);
     

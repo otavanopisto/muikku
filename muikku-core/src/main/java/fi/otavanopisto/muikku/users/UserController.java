@@ -58,8 +58,8 @@ public class UserController {
     return userSchoolDataController.getUserDefaultEmailAddress(schoolDataSource, userIdentifier);
   }
   
-  public UserContactInfo getUserContactInfo(String schoolDataSource, String userIdentifier) {
-    return userSchoolDataController.getUserContactInfo(schoolDataSource, userIdentifier);
+  public UserContactInfo getStudentContactInfo(String schoolDataSource, String userIdentifier) {
+    return userSchoolDataController.getStudentContactInfo(schoolDataSource, userIdentifier);
   }
   
   public StudentGuidanceRelation getGuidanceRelation(String schoolDataSource, String studentIdentifier) {
