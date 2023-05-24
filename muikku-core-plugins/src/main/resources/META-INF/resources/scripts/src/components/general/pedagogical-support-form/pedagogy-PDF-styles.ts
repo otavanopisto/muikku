@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     paddingHorizontal: 35,
-    lineHeight: 1,
+    lineHeight: 1.25,
   },
   header: {
     color: "#000000",
@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   headerSubtitle: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginLeft: 5,
     flexBasis: "100",
@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     textAlign: "right",
   },
   headerPageNumber: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginLeft: 5,
     flexBasis: "40",
@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
     textAlign: "right",
   },
   pageTitle: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginVertical: 10,
     textTransform: "uppercase",
@@ -76,17 +76,17 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   infoFieldLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Bold",
     marginBottom: 5,
   },
   infoFieldValue: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginLeft: 70,
   },
   infoListItemValue: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
   },
   implementedActionContainer: {
@@ -115,24 +115,53 @@ export const styles = StyleSheet.create({
     flexWrap: "nowrap",
     width: "100%",
   },
+  empty: {
+    fontSize: 12,
+    fontFamily: "Times Roman",
+  }
 });
 
 export const htmlStyles = {
   p: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginVertical: 5,
   },
   h3: {
-    fontSize: 10,
+    fontSize: 14,
     fontFamily: "Times-Roman",
-    marginTop: 10,
+    marginTop: 15,
     marginBottom: 5,
   },
   h4: {
-    fontSize: 10,
+    fontSize: 13,
     fontFamily: "Times-Roman",
-    marginTop: 10,
+    marginTop: 15,
     marginBottom: 5,
+  },
+  blockquote: {
+    backgroundColor: "#f8f8f8",
+    borderLeft: "5px solid #f2f2f2",
+    fontSize: 12,
+    fontFamily: "Times-Roman",
+    marginVertical: 10,
+    marginRight: 0,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  b: {
+    fontFamily: "Times-Bold",
+  },
+  strong: {
+    fontFamily: "Times-Bold",
+  },
+  i: {
+    fontFamily: "Times-Italic",
+  },
+  em: {
+    fontFamily: "Times-Italic",
+  },
+  u: {
+    textDecoration: "underline",
   },
 };
