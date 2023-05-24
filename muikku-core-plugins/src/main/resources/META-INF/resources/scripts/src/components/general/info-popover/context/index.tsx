@@ -48,10 +48,6 @@ export interface UserInfo {
    */
   lastName: string;
   /**
-   * Address of the user
-   */
-  address?: string | null;
-  /**
    * Email of the user
    */
   email?: string | null;
