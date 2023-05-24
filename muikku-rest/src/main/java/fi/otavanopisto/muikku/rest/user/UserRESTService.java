@@ -321,9 +321,9 @@ public class UserRESTService extends AbstractRESTService {
 
     if (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
       
-      // "loggedUserHasPermission" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
+      // "moreInfoForLoggedUser" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
       if (loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        result.put("loggedUserHasPermission", "true");
+        result.put("moreInfoForLoggedUser", "true");
       } else if (loggedUserRole.equals(EnvironmentRoleArchetype.TEACHER)) {
         UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
         UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
@@ -331,22 +331,22 @@ public class UserRESTService extends AbstractRESTService {
         List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
         
         if (!commonWorkspaces.isEmpty()) {
-          result.put("loggedUserHasPermission", "true");
+          result.put("moreInfoForLoggedUser", "true");
         } else {
-          result.put("loggedUserHasPermission", "false");
+          result.put("moreInfoForLoggedUser", "false");
         }
       } else {
         Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
         
         // True if logged user is student's counselor & searchable user is not student
         if (amICounselor || !isStudent) {
-          result.put("loggedUserHasPermission", "true");
+          result.put("moreInfoForLoggedUser", "true");
         } else {
-          result.put("loggedUserHasPermission", "false");
+          result.put("moreInfoForLoggedUser", "false");
         }
       }
     } else {
-      result.put("loggedUserHasPermission", "false");
+      result.put("moreInfoForLoggedUser", "false");
     }
     
     if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && isStudent) {
@@ -370,7 +370,7 @@ public class UserRESTService extends AbstractRESTService {
         result.put("hasAvatar", hasAvatar.toString());
       }
         
-      if (result.get("loggedUserHasPermission").equals("true") || loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+      if (result.get("moreInfoForLoggedUser").equals("true") || loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
       
         if (d.equals(UserInfo.EMAIL)) {
           String email = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
