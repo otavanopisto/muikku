@@ -551,7 +551,7 @@ class ContentComponent extends SessionStateComponent<
         //   "plugin.workspace.materials.tocTitle"
         // )}
         tocHeaderExtraContent={
-          <div>
+          <>
             <Dropdown openByHover content={<p>Avaa kaikki</p>}>
               <IconButton
                 icon="arrow-down"
@@ -702,7 +702,7 @@ class ContentComponent extends SessionStateComponent<
                 />
               </TableOfContentPDFDialog>
             </Dropdown>
-          </div>
+          </>
         }
       >
         {this.state.materials.map((node, nodeIndex) => {

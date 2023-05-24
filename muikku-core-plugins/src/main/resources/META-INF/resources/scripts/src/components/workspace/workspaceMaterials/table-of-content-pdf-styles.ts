@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     paddingHorizontal: 35,
-    lineHeight: 1,
+    lineHeight: 1.25,
   },
   header: {
     color: "#000000",
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "Times-Roman",
     fontWeight: "bold",
     flexBasis: "auto",
@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   headerSubtitle: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginLeft: 5,
     flexBasis: "300",
@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
     textAlign: "right",
   },
   headerPageNumber: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginLeft: 5,
     flexBasis: "40",
@@ -58,14 +58,16 @@ export const styles = StyleSheet.create({
   },
   tocTopicContainer: {
     display: "flex",
+    fontSize: 12,
     flexDirection: "row",
-    margin: "5px 0px",
+    margin: "10px 0px 5px",
     color: "#2c2c2c",
     alignItems: "center",
     justifyContent: "space-between",
   },
   tocTopicTitle: {
     textTransform: "uppercase",
+    fontSize: 12,
   },
   tocTopicIcon: {
     display: "flex",
@@ -84,6 +86,7 @@ export const styles = StyleSheet.create({
   },
   tocElementContainer: {
     display: "flex",
+    fontSize: 12,
     flexDirection: "row",
     borderLeft: "3px solid #ffffff",
     margin: "5px 5px 5px 0px",
@@ -93,6 +96,7 @@ export const styles = StyleSheet.create({
   },
   tocElementTitle: {
     padding: "4px 4px 4px 8px",
+    fontSize: 12,
   },
   tocIconContainer: {
     display: "flex",
@@ -102,8 +106,8 @@ export const styles = StyleSheet.create({
     borderRadius: "50%",
   },
   tocElementIcon: {
-    height: "28px",
-    width: "28px",
+    height: "14px",
+    width: "14px",
   },
   tocElementIconRestrictedToLoggedUsers: {
     backgroundColor: "#de3211",
@@ -150,13 +154,13 @@ export const styles = StyleSheet.create({
     color: "#ffffff",
   },
   pageTitle: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginVertical: 10,
     textTransform: "uppercase",
   },
   empty: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginVertical: 10,
   },
@@ -172,18 +176,18 @@ export const styles = StyleSheet.create({
 
 export const htmlStyles = {
   p: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginVertical: 5,
   },
   h3: {
-    fontSize: 10,
+    fontSize: 14,
     fontFamily: "Times-Roman",
     marginTop: 10,
     marginBottom: 5,
   },
   h4: {
-    fontSize: 10,
+    fontSize: 13,
     fontFamily: "Times-Roman",
     marginTop: 10,
     marginBottom: 5,

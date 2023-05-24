@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     paddingHorizontal: 35,
-    lineHeight: 1,
+    lineHeight: 1.25,
   },
   header: {
     color: "#000000",
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "Times-Roman",
     fontWeight: "bold",
     flexBasis: "auto",
@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   headerSubtitle: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginLeft: 5,
     flexBasis: "300",
@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
     textAlign: "right",
   },
   headerPageNumber: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginLeft: 5,
     flexBasis: "40",
@@ -58,16 +58,16 @@ export const styles = StyleSheet.create({
     borderBottom: "1px solid #cfcfcf",
   },
   noteFieldLabel: {
-    fontSize: 12,
-    fontFamily: "Times-Bold",
+    fontSize: 16,
+    fontFamily: "Times-Roman",
     marginBottom: 10,
   },
   noteFieldValue: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
   },
   empty: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginVertical: 10,
   },
@@ -81,19 +81,19 @@ export const styles = StyleSheet.create({
 
 export const htmlStyles = {
   p: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Times-Roman",
     marginVertical: 5,
   },
   h3: {
-    fontSize: 12,
-    fontFamily: "Times-Bold",
+    fontSize: 14,
+    fontFamily: "Times-Roman",
     marginTop: 15,
     marginBottom: 5,
   },
   h4: {
-    fontSize: 11,
-    fontFamily: "Times-Bold",
+    fontSize: 13,
+    fontFamily: "Times-Roman",
     marginTop: 15,
     marginBottom: 5,
   },
@@ -120,6 +120,6 @@ export const htmlStyles = {
     fontFamily: "Times-Italic",
   },
   u: {
-    textDecoration: "underline"
+    textDecoration: "underline",
   },
 };
