@@ -327,7 +327,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                   this.props.message.created
                 )} - Klo ${localizeTime.date(
                   this.props.message.created,
-                  "LT"
+                  "h:mm"
                 )}`}
               </span>
             </div>

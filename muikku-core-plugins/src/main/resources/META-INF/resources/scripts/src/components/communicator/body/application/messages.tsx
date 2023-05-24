@@ -307,7 +307,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                       <p>
                         {`${localizeTime.date(message.created)} - Klo ${localizeTime.date(
                           message.created,
-                          "LT"
+                          "h:mm"
                         )}`}
                       </p>
                     }
@@ -454,7 +454,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                             thread.threadLatestMessageDate
                           )} - Klo ${localizeTime.date(
                             thread.threadLatestMessageDate,
-                            "LT"
+                            "h:mm"
                           )}`}
                         </p>
                       }

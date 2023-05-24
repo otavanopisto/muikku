@@ -58,7 +58,7 @@ export class LocalizeTime {
    * @param date date
    * @param format format
    */
-  date(date?: Date | string, format = "L") {
+  date(date?: Date | string, format = "l") {
     const dateParam = date ? date : new Date();
 
     return moment(dateParam)
@@ -83,7 +83,7 @@ export class LocalizeTime {
    * @param todayFormat todayFormat
    * @param otherDayFormat otherDayFormat
    */
-  formatDaily(date = new Date(), todayFormat = "LT", otherDayFormat = "l") {
+  formatDaily(date = new Date(), todayFormat = "h:mm", otherDayFormat = "l") {
     const momentOfDate = moment(date);
     const isToday = moment().isSame(momentOfDate, "day");
     return moment(date)

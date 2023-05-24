@@ -248,7 +248,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const formatedDate = `${moment(created).format("l")} - ${moment(
     created
-  ).format("LT")}`;
+  ).format("h:mm")}`;
 
   const arrowClasses = !showComments
     ? `evaluation-modal__event-arrow evaluation-modal__event-arrow--journal-comment evaluation-modal__event-arrow--right`

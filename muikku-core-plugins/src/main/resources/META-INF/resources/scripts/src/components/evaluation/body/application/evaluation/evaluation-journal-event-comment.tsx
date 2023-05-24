@@ -78,7 +78,7 @@ const EvaluationJournalEventComment: React.FC<
   const formatedDate = `${localizeTime.date(
     created,
     "l"
-  )} - ${localizeTime.date(created, "LT")}`;
+  )} - ${localizeTime.date(created, "h:mm")}`;
 
   return (
     <div

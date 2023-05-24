@@ -35,7 +35,7 @@ const JournalComment: React.FC<JournalCommentProps> = (props) => {
   const formatedDate = `${localizeTime.date(
     created,
     "l"
-  )} - ${localizeTime.date(created, "LT")}`;
+  )} - ${localizeTime.date(created, "h:mm")}`;
 
   return (
     <ApplicationListItem key={id}>

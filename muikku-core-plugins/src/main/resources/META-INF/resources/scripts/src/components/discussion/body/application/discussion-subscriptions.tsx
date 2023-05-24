@@ -464,7 +464,7 @@ class DiscussionSubscriptions extends React.Component<
           <Dropdown
             openByHover
             modifier="discussion-tooltip"
-            content={"Lopeta keskustelualueen tilaus"}
+            content={this.props.t("content.unsubscribe", {ns: "messaging"})}
           >
             <IconButton
               icon="bookmark-full"
@@ -498,7 +498,7 @@ class DiscussionSubscriptions extends React.Component<
           <div className="application-list__item-footer-content-aside">
             <div className="application-list__item-counter-container">
               <span className="application-list__item-counter-title">
-                Threadien määrä:{" "}
+                {this.props.t("labels.threadCount", {ns: "messaging"})}
               </span>
               <span className="application-list__item-counter">
                 {subscribedArea.numThreads}

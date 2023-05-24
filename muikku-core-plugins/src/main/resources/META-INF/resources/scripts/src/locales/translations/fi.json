@@ -726,7 +726,8 @@
       "removing_contactEntry": "Oletko varma, että haluat poistaa yhteydenoton? Jos poistat yhteydenoton, myös sen kommentit poistuvat.",
       "removing_discussionArea": "Huom! Keskustelualueen poisto poistaa myös kaikki sen alla olevat viestit!",
       "removing_reply": "Vastaus poistetaan lopullisesti. Oletko varma, että haluat jatkaa?",
-      "removing_thread": "Viesti ja siihen tulleet vastaukset poistetaan lopullisesti. Oletko aivan varma, että haluat jatkaa?"
+      "removing_thread": "Viesti ja siihen tulleet vastaukset poistetaan lopullisesti. Oletko aivan varma, että haluat jatkaa?",
+      "unsubscribe": "Lopeta keskustelualueen tilaus"
     },
     "labels": {
       "addSignature": "Lisää allekirjoitus",
@@ -788,6 +789,7 @@
       "subscriptions": "Tilatut keskustelut",
       "subscriptions_workspace": "Kurssien tilatut keskustelut",
       "target": "Kohderyhmä",
+      "threadCount": "Viestien määrä",
       "type": "Yhteydenoton tyyppi",
       "type_ABSENCE": "Poissaolo",
       "type_CHATLOG": "Pikaviestin",
