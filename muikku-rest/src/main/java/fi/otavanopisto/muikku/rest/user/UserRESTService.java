@@ -73,7 +73,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
-import fi.otavanopisto.muikku.rest.UserContactInfoRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMemberBasicInfo;
 import fi.otavanopisto.muikku.rest.model.Student;
@@ -115,6 +114,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -164,9 +164,6 @@ public class UserRESTService extends AbstractRESTService {
   private UserGroupEntityController userGroupEntityController; 
   
   @Inject
-  private UserEmailEntityController userEmailEntityController;
-  
-  @Inject
   private SessionController sessionController;
   
   @Inject
@@ -208,6 +205,9 @@ public class UserRESTService extends AbstractRESTService {
   
   @Inject 
   private CourseMetaController courseMetaController;
+  
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
   @GET
   @Path("/property/{KEY}")
@@ -307,14 +307,6 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     Map<String, String> result = new HashMap<String, String>();
-    UserContactInfoRestModel contactInfo = null;
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      contactInfo = userController.getUserContactInfo(userEntity.defaultSchoolDataIdentifier());
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
     
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     EnvironmentRoleArchetype loggedUserRole = null;
@@ -322,6 +314,8 @@ public class UserRESTService extends AbstractRESTService {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
           findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser.defaultSchoolDataIdentifier());
       loggedUserRole = userSchoolDataIdentifier.getRole().getArchetype();
+    } else {
+      return Response.status(Status.BAD_REQUEST).build();
     }
     Boolean isStudent = userEntityController.isStudent(userEntity);
 
@@ -344,17 +338,16 @@ public class UserRESTService extends AbstractRESTService {
       } else {
         Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
         
-        // True if logged user is student's counselor or logged user is not student & searchable user is not student
-        if (amICounselor || (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && !isStudent)) {
+        // True if logged user is student's counselor & searchable user is not student
+        if (amICounselor || !isStudent) {
           result.put("loggedUserHasPermission", "true");
         } else {
           result.put("loggedUserHasPermission", "false");
         }
       }
     } else {
-      result.put("loggedUserHasPermission", "true");
+      result.put("loggedUserHasPermission", "false");
     }
-    
     
     if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && isStudent) {
       return Response.status(Status.FORBIDDEN).build();
@@ -362,53 +355,37 @@ public class UserRESTService extends AbstractRESTService {
     
     result.put("isStudent", isStudent.toString());
     result.put("userId", userEntity.getId().toString());
-    result.put("schoolDataIdentifier", userEntity.defaultSchoolDataIdentifier().getDataSource() + "-" + userEntity.defaultSchoolDataIdentifier().getIdentifier());
-
+    result.put("schoolDataIdentifier", userEntity.defaultSchoolDataIdentifier().toId());
+    UserEntityName name = userEntityController.getName(userEntity, true);
+    
+    if (name != null) {
+      result.put("firstName", name.getFirstName());
+      result.put("lastName", name.getLastName());
+    }
 
     for (UserInfo d : data) {
+       
+      if (d.equals(UserInfo.AVATAR)) {
+        Boolean hasAvatar = userEntityFileController.hasProfilePicture(userEntity);
+        result.put("hasAvatar", hasAvatar.toString());
+      }
+        
+      if (result.get("loggedUserHasPermission").equals("true") || loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
       
-      if (contactInfo != null) {
-        
-        result.put("firstName", contactInfo.getFirstName());
-        result.put("lastName", contactInfo.getLastName());
-        
-        if (d.equals(UserInfo.AVATAR)) {
-          Boolean hasAvatar = userEntityFileController.hasProfilePicture(userEntity);
-          result.put("hasAvatar", hasAvatar.toString());
-        }
-        
-        if (result.get("loggedUserHasPermission").equals("false") && !loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-          return Response.ok(result).build();
-        }
-        
         if (d.equals(UserInfo.EMAIL)) {
-          result.put("email", contactInfo.getEmail());
-        }
-        
-        if (d.equals(UserInfo.ADDRESS)) {
-          String street = contactInfo.getStreetAddress();
-          String zipCode = contactInfo.getZipCode();
-          String city = contactInfo.getCity();
-          String country = contactInfo.getCountry();
-          
-          if (street != null && zipCode != null && city != null && country != null) {
-            result.put("address", street + ", " + zipCode + " " + city + ", " + country);
+          String email = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
+          if (email != null) {
+            result.put("email", email);
           }
         }
-        
+          
         if (d.equals(UserInfo.PHONENUMBER)) {
-          if (contactInfo.getPhoneNumber() != null) {
-            result.put("phoneNumber", contactInfo.getPhoneNumber());
-          } else {
-            UserEntityProperty phoneNumber = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-phone");
-            if (phoneNumber != null) {
-              result.put("phoneNumber", phoneNumber.getValue());
-            }
+          UserEntityProperty phoneNumber = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-phone");
+          if (phoneNumber != null) {
+            result.put("phoneNumber", phoneNumber.getValue());
           }
         } 
-      }
-      
-      if (result.get("loggedUserHasPermission").equals("true") || loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+        
         if (d.equals(UserInfo.EXTRAINFO)) {
           UserEntityProperty extraInfo = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-extrainfo");
           if (extraInfo != null) {
@@ -437,16 +414,13 @@ public class UserRESTService extends AbstractRESTService {
           if (vacationStart != null) {
             result.put("vacationStart", vacationStart.getValue());
           }
-          
+            
           if (vacationEnd != null) {
             result.put("vacationEnd", vacationEnd.getValue());
           }
         }
       }
     }
-    
-    
-    
     return Response.ok(result).build();
   }
   

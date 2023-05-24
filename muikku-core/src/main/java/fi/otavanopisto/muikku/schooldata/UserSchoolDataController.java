@@ -20,7 +20,6 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
-import fi.otavanopisto.muikku.rest.UserContactInfoRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
@@ -163,10 +162,6 @@ public class UserSchoolDataController {
   
   public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).getUserDefaultEmailAddress(userIdentifier);
-  }
-  
-  public UserContactInfoRestModel getUserContactInfo(String schoolDataSource, String userIdentifier) {
-    return getUserBridge(schoolDataSource).getUserContactInfo(userIdentifier);
   }
   
   public User increaseStudyTime(SchoolDataIdentifier schoolDataIdentifier, Integer months) {

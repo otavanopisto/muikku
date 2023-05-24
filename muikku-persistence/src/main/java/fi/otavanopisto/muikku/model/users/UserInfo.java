@@ -4,8 +4,6 @@ public enum UserInfo {
 
   AVATAR,
   
-  ADDRESS,
-  
   EMAIL,
   
   PHONENUMBER,

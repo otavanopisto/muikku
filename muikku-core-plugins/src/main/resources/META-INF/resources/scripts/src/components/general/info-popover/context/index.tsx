@@ -175,7 +175,6 @@ async function fetchUserInfo(
         data: [
           "AVATAR",
           "EMAIL",
-          "ADDRESS",
           "VACATIONS",
           "WHATSAPP",
           "PHONENUMBER",
