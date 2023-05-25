@@ -135,7 +135,7 @@ export default class SorterField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -145,9 +145,8 @@ export default class SorterField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(
     nextProps: SorterFieldProps,
@@ -169,10 +168,9 @@ export default class SorterField extends React.Component<
 
   /**
    * swap - Swaps two items
-   * @param itemA
-   * @param itemB
-   * @param triggerChange
-   * @returns
+   * @param triggerChange triggerChange
+   * @param itemA itemA
+   * @param itemB itemB
    */
   swap(
     triggerChange: boolean,
@@ -212,7 +210,6 @@ export default class SorterField extends React.Component<
 
   /**
    * checkAnswers
-   * @returns
    */
   checkAnswers() {
     // if not set to actually do we cancel
@@ -268,8 +265,8 @@ export default class SorterField extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(prevProps: SorterFieldProps, prevState: SorterFieldState) {
     this.checkAnswers();
@@ -277,8 +274,7 @@ export default class SorterField extends React.Component<
 
   /**
    * selectItem
-   * @param item
-   * @returns
+   * @param item item
    */
   selectItem(item: SorterFieldItemType) {
     if (this.state.selectedItem) {
@@ -313,7 +309,6 @@ export default class SorterField extends React.Component<
 
   /**
    * render
-   * @returns
    */
   render() {
     if (!this.props.content) {
