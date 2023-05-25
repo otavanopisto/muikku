@@ -57,36 +57,38 @@ class DescriptionPanel extends React.Component<
           </h2>
         </div>
 
-        {this.props.workspace && (
-          <MaterialLoader
-            editable={this.props.workspaceEditMode.active}
-            modifiers="workspace-description"
-            material={this.props.workspace.contentDescription}
-            workspace={this.props.workspace}
-            canDelete={false}
-            canHide={false}
-            canPublish
-            disablePlugins
-            readOnly
-            isInFrontPage
-            canAddAttachments
-            canEditContent
-            canSetTitle={false}
-          >
-            {(props, state, stateConfiguration) => (
-              <div>
-                <MaterialLoaderEditorButtonSet {...props} {...state} />
-                <MaterialLoaderTitle {...props} {...state} />
-                <MaterialLoaderContent
-                  {...props}
-                  {...state}
-                  stateConfiguration={stateConfiguration}
-                />
-                <MaterialLoaderProducersLicense {...props} {...state} />
-              </div>
-            )}
-          </MaterialLoader>
-        )}
+        <div className="panel__body">
+          {this.props.workspace && (
+            <MaterialLoader
+              editable={this.props.workspaceEditMode.active}
+              modifiers="workspace-description"
+              material={this.props.workspace.contentDescription}
+              workspace={this.props.workspace}
+              canDelete={false}
+              canHide={false}
+              canPublish
+              disablePlugins
+              readOnly
+              isInFrontPage
+              canAddAttachments
+              canEditContent
+              canSetTitle={false}
+            >
+              {(props, state, stateConfiguration) => (
+                <div>
+                  <MaterialLoaderEditorButtonSet {...props} {...state} />
+                  <MaterialLoaderTitle {...props} {...state} />
+                  <MaterialLoaderContent
+                    {...props}
+                    {...state}
+                    stateConfiguration={stateConfiguration}
+                  />
+                  <MaterialLoaderProducersLicense {...props} {...state} />
+                </div>
+              )}
+            </MaterialLoader>
+          )}
+        </div>
       </div>
     );
   }
