@@ -89,7 +89,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       </View>
     ))) || (
     <View>
-      <Text>Ei mielipidettä asetettu</Text>
+      <Text style={styles.empty}>Ei mielipidettä asetettu</Text>
     </View>
   );
 
@@ -126,7 +126,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       </View>
     ))) || (
     <View>
-      <Text>Ei mielipidettä asetettu</Text>
+      <Text style={styles.empty}>Ei mielipidettä asetettu</Text>
     </View>
   );
 
@@ -337,7 +337,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
             </View>
           ))) || (
           <View>
-            <Text>Ei toteutettuja tukitoimia</Text>
+            <Text style={styles.empty}>Ei toteutettuja tukitoimia</Text>
           </View>
         )}
       </Page>
