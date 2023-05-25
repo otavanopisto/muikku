@@ -37,15 +37,14 @@ export const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 16,
-    fontFamily: "Times-Roman",
-    fontWeight: "bold",
+    fontFamily: "Helvetica",
     flexBasis: "auto",
     flexShrink: 1,
     flexGrow: 1,
   },
   headerSubtitle: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginLeft: 5,
     flexBasis: "100",
     flexShrink: 0,
@@ -53,7 +52,7 @@ export const styles = StyleSheet.create({
   },
   headerPageNumber: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginLeft: 5,
     flexBasis: "40",
     flexShrink: 0,
@@ -61,7 +60,7 @@ export const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginVertical: 10,
     textTransform: "uppercase",
   },
@@ -77,17 +76,39 @@ export const styles = StyleSheet.create({
   },
   infoFieldLabel: {
     fontSize: 12,
-    fontFamily: "Times-Bold",
-    marginBottom: 5,
+    fontFamily: "Helvetica-Bold",
+    marginBottom: 2,
   },
   infoFieldValue: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginLeft: 70,
   },
-  infoListItemValue: {
+  infoFieldContainerSameRow: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    flexGrow: 0,
+    flexShrink: 0,
+    marginVertical: 10,
+    height: "auto",
+    width: "100%",
+    maxWidth: "100%",
+  },
+  infoFieldLabelSameRow: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica-Bold",
+    marginBottom: 0,
+    flexBasis: 90,
+    flexGrow: 0,
+    flexShrink: 0,
+  },
+  infoFieldValueSameRow: {
+    fontSize: 12,
+    fontFamily: "Helvetica",
+    flexBasis: 440,
+    flexGrow: 0,
+    flexShrink: 0,
   },
   implementedActionContainer: {
     display: "flex",
@@ -117,49 +138,61 @@ export const styles = StyleSheet.create({
   },
   empty: {
     fontSize: 12,
-    fontFamily: "Times Roman",
-  }
+    fontFamily: "Helvetica",
+  },
 });
 
 export const htmlStyles = {
   p: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginVertical: 5,
+  },
+  "p:first-child": {
+    marginTop: 0,
   },
   h3: {
     fontSize: 14,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginTop: 15,
     marginBottom: 5,
   },
+  "h3:first-child": {
+    marginTop: 0,
+  },
   h4: {
     fontSize: 13,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginTop: 15,
     marginBottom: 5,
+  },
+  "h4:first-child": {
+    marginTop: 0,
   },
   blockquote: {
     backgroundColor: "#f8f8f8",
     borderLeft: "5px solid #f2f2f2",
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginVertical: 10,
     marginRight: 0,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
+  "blockquote:first-child": {
+    marginTop: 0,
+  },
   b: {
-    fontFamily: "Times-Bold",
+    fontFamily: "Helvetica-Bold",
   },
   strong: {
-    fontFamily: "Times-Bold",
+    fontFamily: "Helvetica-Bold",
   },
   i: {
-    fontFamily: "Times-Italic",
+    fontFamily: "Helvetica-Oblique",
   },
   em: {
-    fontFamily: "Times-Italic",
+    fontFamily: "Helvetica-Oblique",
   },
   u: {
     textDecoration: "underline",

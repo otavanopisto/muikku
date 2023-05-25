@@ -61,27 +61,23 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
     formData?.studentOpinionOfSupport.map((opinion: Opinion, i) => (
       <View key={i} style={styles.opinionContainer}>
         <View style={styles.opinionInfo} wrap={false}>
-          <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Merkitsijä</Text>
-            <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
-          </View>
-
-          <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
-            <Text style={styles.infoFieldValue}>
+          <View style={styles.infoFieldContainerSameRow}>
+            <Text style={styles.infoFieldLabelSameRow}>Merkitsijä</Text>
+            <Text style={styles.infoFieldValueSameRow}>
+              {opinion.creatorName},{" "}
               {opinion.updatedDate
                 ? `${moment(opinion.creationDate).format(
                     "DD.MM.YYYY"
-                  )} (Päivitetty ${moment(opinion.updatedDate).format(
+                  )} (päivitetty ${moment(opinion.updatedDate).format(
                     "DD.MM.YYYY"
                   )})`
                 : moment(opinion.creationDate).format("DD.MM.YYYY")}
             </Text>
           </View>
 
-          <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Merkintä</Text>
-            <View style={styles.infoFieldValue}>
+          <View style={styles.infoFieldContainerSameRow}>
+            <Text style={styles.infoFieldLabelSameRow}>Merkintä</Text>
+            <View style={styles.infoFieldValueSameRow}>
               <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
             </View>
           </View>
@@ -98,27 +94,23 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
     formData?.schoolOpinionOfSupport.map((opinion: Opinion, i) => (
       <View key={i} style={styles.opinionContainer}>
         <View style={styles.opinionInfo} wrap={false}>
-          <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Merkitsijä</Text>
-            <Text style={styles.infoFieldValue}>{opinion.creatorName}</Text>
-          </View>
-
-          <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
-            <Text style={styles.infoFieldValue}>
+          <View style={styles.infoFieldContainerSameRow}>
+            <Text style={styles.infoFieldLabelSameRow}>Merkitsijä</Text>
+            <Text style={styles.infoFieldValueSameRow}>
+              {opinion.creatorName},{" "}
               {opinion.updatedDate
                 ? `${moment(opinion.creationDate).format(
                     "DD.MM.YYYY"
-                  )} (Päivitetty ${moment(opinion.updatedDate).format(
+                  )} (päivitetty ${moment(opinion.updatedDate).format(
                     "DD.MM.YYYY"
                   )})`
                 : moment(opinion.creationDate).format("DD.MM.YYYY")}
             </Text>
           </View>
 
-          <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Merkintä</Text>
-            <View style={styles.infoFieldValue}>
+          <View style={styles.infoFieldContainerSameRow}>
+            <Text style={styles.infoFieldLabelSameRow}>Merkintä</Text>
+            <View style={styles.infoFieldValueSameRow}>
               <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
             </View>
           </View>
@@ -198,6 +190,10 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>Asiakirjan laatija</Text>
           <Text style={styles.infoFieldValue}>{documentCreator}</Text>
+          <Text style={styles.infoFieldValue}>
+            {data.ownerInfo.phoneNumber}
+          </Text>
+          <Text style={styles.infoFieldValue}>{data.ownerInfo.email}</Text>
         </View>
 
         <View style={styles.infoFieldContainer}>
@@ -306,33 +302,31 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           formData?.supportActionsImplemented.map((iAction, i) => (
             <View key={i} style={styles.implementedActionContainer}>
               <View style={styles.implementationInfo} wrap={false}>
-                <View style={styles.infoFieldContainer}>
-                  <Text style={styles.infoFieldLabel}>Tukitoimi</Text>
-                  <Text style={styles.infoFieldValue}>
-                    {supportActionTranslationByValue[iAction.action]}
-                  </Text>
-                </View>
-
-                <View style={styles.infoFieldContainer}>
-                  <Text style={styles.infoFieldLabel}>Päivämäärä</Text>
-                  <Text style={styles.infoFieldValue}>
+                <View style={styles.infoFieldContainerSameRow}>
+                  <Text style={styles.infoFieldLabelSameRow}>Tukitoimi</Text>
+                  <Text style={styles.infoFieldValueSameRow}>
+                    {supportActionTranslationByValue[iAction.action]},{" "}
                     {moment(iAction.date).format("DD.MM.YYYY")}
                   </Text>
                 </View>
 
-                <View style={styles.infoFieldContainer}>
-                  <Text style={styles.infoFieldLabel}>Kurssi</Text>
-                  <Text style={styles.infoFieldValue}>
-                    {iAction?.course?.name || "-"}
-                  </Text>
-                </View>
+                {iAction?.course?.name ? (
+                  <View style={styles.infoFieldContainerSameRow}>
+                    <Text style={styles.infoFieldLabelSameRow}>Kurssi</Text>
+                    <Text style={styles.infoFieldValueSameRow}>
+                      {iAction?.course?.name}
+                    </Text>
+                  </View>
+                ) : null}
 
-                <View style={styles.infoFieldContainer}>
-                  <Text style={styles.infoFieldLabel}>Lisätietoa</Text>
-                  <Text style={styles.infoFieldValue}>
-                    {iAction?.extraInfoDetails || "-"}
-                  </Text>
-                </View>
+                {iAction?.extraInfoDetails ? (
+                  <View style={styles.infoFieldContainerSameRow}>
+                    <Text style={styles.infoFieldLabelSameRow}>Lisätietoa</Text>
+                    <Text style={styles.infoFieldValueSameRow}>
+                      {iAction?.extraInfoDetails}
+                    </Text>
+                  </View>
+                ) : null}
               </View>
             </View>
           ))) || (
