@@ -449,7 +449,6 @@ export default class Draggable extends React.Component<
 
     if (this.state.isDragging) {
       if (new Date().getTime() - this.timer <= 100) {
-        console.log("new Date().getTime() - this.timer <= 100");
         this.props.onClick && this.props.onClick(e as any);
         this.setState(
           {
@@ -459,7 +458,6 @@ export default class Draggable extends React.Component<
           queueJax
         );
       } else {
-        console.log("this.detectCollisions(true);");
         this.props.interactionGroup &&
           this.props.onDropInto &&
           this.detectCollisions(true);
@@ -575,7 +573,6 @@ export default class Draggable extends React.Component<
           this.props.onInteractionWith(interactionData[winner.interactId]);
           this.currentInteractionId = winner.interactId;
         } else {
-          console.log("drop");
           //otherwise we trigger the drop event and deregister any previous interaction
           this.props.onDropInto(interactionData[winner.interactId]);
           this.currentInteractionId = this.props.interactionData
@@ -584,7 +581,6 @@ export default class Draggable extends React.Component<
         }
       }
     } else if (!contestants.length && this.props.interactionData && isDrop) {
-      console.log("drop");
       this.props.onDropInto(interactionData[this.selfId]);
       this.currentInteractionId = this.selfId;
     }
