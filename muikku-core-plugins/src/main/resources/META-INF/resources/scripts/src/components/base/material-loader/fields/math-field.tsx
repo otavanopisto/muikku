@@ -135,7 +135,7 @@ export default class TextField extends React.Component<
     return (
       <>
         {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Matikkatehtäväkenttä" />
+        <ReadspeakerMessage text="Matematiikkatehtävä" />
         <div
           className={`material-page__mathfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >

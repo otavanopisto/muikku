@@ -51,7 +51,7 @@ export default class MathJAX extends React.Component<
       return (
         <>
           {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Matikkakaava" />
+          <ReadspeakerMessage text="Matematiikkakaava" />
           <span className="math-tex rs_skip_always">{this.props.children}</span>
         </>
       );
@@ -59,7 +59,7 @@ export default class MathJAX extends React.Component<
     return (
       <>
         {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Matikkakaava" />
+        <ReadspeakerMessage text="Matematiikkakaava" />
         <span className="math-tex rs_skip_always">
           <MathjaxReactLoader
             script={MATHJAXSRC}
