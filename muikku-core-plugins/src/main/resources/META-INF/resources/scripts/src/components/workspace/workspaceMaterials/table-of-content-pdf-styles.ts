@@ -26,25 +26,23 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   headerTitle: {
-    fontSize: 18,
-    fontFamily: "Times-Roman",
-    fontWeight: "bold",
+    fontSize: 16,
+    fontFamily: "Helvetica",
     flexBasis: "auto",
     flexShrink: 1,
     flexGrow: 1,
   },
   headerSubtitle: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginLeft: 5,
     flexBasis: "300",
-    flexGrow: 1,
     flexShrink: 0,
     textAlign: "right",
   },
   headerPageNumber: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginLeft: 5,
     flexBasis: "40",
     flexShrink: 0,
@@ -95,19 +93,19 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   tocElementTitle: {
-    padding: "4px 4px 4px 8px",
+    padding: "2px 4px 2px 8px",
     fontSize: 12,
   },
   tocIconContainer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "4px",
+    padding: "2px",
     borderRadius: "50%",
   },
   tocElementIcon: {
-    height: "14px",
-    width: "14px",
+    height: "10px",
+    width: "10px",
   },
   tocElementIconRestrictedToLoggedUsers: {
     backgroundColor: "#de3211",
@@ -153,16 +151,16 @@ export const styles = StyleSheet.create({
     backgroundColor: "#de3211",
     color: "#ffffff",
   },
-  pageTitle: {
-    fontSize: 12,
-    fontFamily: "Times-Roman",
-    marginVertical: 10,
-    textTransform: "uppercase",
-  },
   empty: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginVertical: 10,
+  },
+  pageTitle: {
+    fontSize: 12,
+    fontFamily: "Helvetica",
+    marginVertical: 10,
+    textTransform: "uppercase",
   },
   arrowIcon: {
     display: "flex",
@@ -177,19 +175,56 @@ export const styles = StyleSheet.create({
 export const htmlStyles = {
   p: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginVertical: 5,
+  },
+  "p:first-child": {
+    marginTop: 0,
   },
   h3: {
     fontSize: 14,
-    fontFamily: "Times-Roman",
-    marginTop: 10,
+    fontFamily: "Helvetica",
+    marginTop: 15,
     marginBottom: 5,
+  },
+  "h3:first-child": {
+    marginTop: 0,
   },
   h4: {
     fontSize: 13,
-    fontFamily: "Times-Roman",
-    marginTop: 10,
+    fontFamily: "Helvetica",
+    marginTop: 15,
     marginBottom: 5,
+  },
+  "h4:first-child": {
+    marginTop: 0,
+  },
+  blockquote: {
+    backgroundColor: "#f8f8f8",
+    borderLeft: "5px solid #f2f2f2",
+    fontSize: 12,
+    fontFamily: "Helvetica",
+    marginVertical: 10,
+    marginRight: 0,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  "blockquote:first-child": {
+    marginTop: 0,
+  },
+  b: {
+    fontFamily: "Helvetica-Bold",
+  },
+  strong: {
+    fontFamily: "Helvetica-Bold",
+  },
+  i: {
+    fontFamily: "Helvetica-Oblique",
+  },
+  em: {
+    fontFamily: "Helvetica-Oblique",
+  },
+  u: {
+    textDecoration: "underline",
   },
 };
