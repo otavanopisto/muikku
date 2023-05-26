@@ -477,7 +477,7 @@ class WorkspaceUsers extends React.Component<
               tabs={[
                 {
                   id: "ACTIVE",
-                  name: t("labels.active"),
+                  name: t("labels.activeStudents", {ns: "users"}),
                   type: "workspace-students",
                   component: (
                     <ApplicationList footer={pager} modifiers="workspace-users">
@@ -498,7 +498,7 @@ class WorkspaceUsers extends React.Component<
                 },
                 {
                   id: "INACTIVE",
-                  name: t("labels.archived"),
+                  name: t("labels.archivedStudents", {ns: "users"}),
                   type: "workspace-students",
                   component: (
                     <ApplicationList

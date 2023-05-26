@@ -74,7 +74,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         hash: "security",
       },
       {
-        name: this.props.t("labels.settings", { context: "vacation" }),
+        name: this.props.t("labels.vacationSettings", { ns: "profile" }),
         hash: "vacation",
       },
       {

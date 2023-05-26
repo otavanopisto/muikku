@@ -920,7 +920,7 @@ class OrganizationEditWorkspace extends React.Component<
                   context: "workspaceTeachers",
                   stepInfo: `${page}/${this.totalSteps}`,
                 })}
-                description={t("labels.search", {
+                description={t("content.search", {
                   ns: "users",
                   context: "staff",
                 })}
@@ -931,7 +931,7 @@ class OrganizationEditWorkspace extends React.Component<
                 identifier="addWorkspaceTeachers"
                 modifier="add-teachers"
                 loader={this.doStaffSearch}
-                placeholder={t("content.search", {
+                placeholder={t("labels.search", {
                   ns: "users",
                   context: "workspaceTeachers",
                 })}

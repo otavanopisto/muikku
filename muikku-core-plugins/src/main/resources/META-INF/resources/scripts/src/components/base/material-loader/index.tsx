@@ -158,7 +158,7 @@ const STATES = [
     "assignment-type": "INTERIM_EVALUATION",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-interim-evaluation",
-    "button-text": "actions.send",
+    "button-text": "actions.send_interimEvaluation",
     "success-state": "SUBMITTED",
     "button-disabled": false,
     "fields-read-only": false,

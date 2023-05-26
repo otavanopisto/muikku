@@ -413,7 +413,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               <div
                 dangerouslySetInnerHTML={{
                   __html: t(
-                    "instructions.connectField", {ns: "materials"}
+                    "instructions.sorterField", {ns: "materials"}
                   ),
                 }}
               />

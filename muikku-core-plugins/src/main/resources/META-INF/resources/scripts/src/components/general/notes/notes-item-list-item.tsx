@@ -203,7 +203,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       if (startDate && dueDate) {
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
-            <span className="notes__item-dates-text">{t("labels.active")}</span>
+            <span className="notes__item-dates-text">{t("labels.active", {count: 1})}</span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")} - {moment(dueDate).format("l")}
             </span>
@@ -212,7 +212,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       } else if (startDate) {
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
-            <span className="notes__item-dates-text">{t("labels.active")}</span>
+            <span className="notes__item-dates-text">{t("labels.active", {count: 1})}</span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")}
             </span>
@@ -222,7 +222,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       } else if (dueDate) {
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
-            <span className="notes__item-dates-text">{t("labels.active")}</span>
+            <span className="notes__item-dates-text">{t("labels.active", {count: 1})}</span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
             <span className="notes__item-dates-date">
               {moment(dueDate).format("l")}

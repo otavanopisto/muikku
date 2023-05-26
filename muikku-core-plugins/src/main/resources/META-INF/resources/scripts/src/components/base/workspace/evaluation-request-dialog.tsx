@@ -141,7 +141,7 @@ class EvaluationRequestDialog extends React.Component<
           onClick={this.request.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {t("actions.send")}
+          {t("actions.send", {context: "evaluationRequest"})}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}

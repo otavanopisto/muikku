@@ -292,7 +292,9 @@ class ContactInformation extends React.Component<
             <div className="application-sub-panel__body">
               <ProfileProperty
                 condition={!!this.props.status.profile.emails.length}
-                label="plugin.profile.emails.label"
+                label={this.props.t("labels.emails", {
+                  count: this.props.status.profile.emails.length,
+                })}
                 value={this.props.status.profile.emails}
               />
               {/* Displaying multiple addresses seems moot at this point, not gonna remove this entirely though until we are sure it's truly not needed

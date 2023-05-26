@@ -1139,7 +1139,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     ) : (
                       <div className="chat__controlbox-empty-item">
                         {this.props.i18n.t("content.empty", {
-                          context: "people",
+                          context: "students",
                         })}
                       </div>
                     )}
