@@ -39,7 +39,6 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
-import fi.otavanopisto.muikku.rest.UserContactInfoRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
@@ -1631,23 +1630,4 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return pyramusClient.get(String.format("/students/students/%d/amICounselor", studentId), Boolean.class);
 
   }
-
-  @Override
-  public UserContactInfoRestModel getUserContactInfo(String userIdentifier) {
-    Long userId = identifierMapper.getPyramusStudentId(userIdentifier);
-    if (userId == null) {
-      userId = identifierMapper.getPyramusStaffId(userIdentifier);
-    }
-    if (userId == null) {
-      return null;
-    }
-    fi.otavanopisto.pyramus.rest.model.UserContactInfo result = pyramusClient.get(String.format("/users/users/%d/contactInfo", userId), fi.otavanopisto.pyramus.rest.model.UserContactInfo.class);
-
-    if (result == null) {
-      throw new SchoolDataBridgeInternalException(String.format("Could not resolve contact info for user %s", userIdentifier));
-    }
-
-    return new UserContactInfoRestModel(result.getFirstName(), result.getLastName(), result.getDateOfBirth(), result.getAddressName(), result.getStreetAddress(), result.getZipCode(), result.getCountry(), result.getCity(), result.getEmail(), result.getPhoneNumber());
-  }
-
 }

@@ -321,7 +321,7 @@ function ContactActions(props: ContactActionsProps) {
     <>
       <div className="item-list__user-actions">
         {info.isStudent === "true" &&
-          info.loggedUserHasPermission === "true" && (
+          info.moreInfoForLoggedUser === "true" && (
             <GuiderStudentLink
               schoolDataIdentifier={info.schoolDataIdentifier}
             />
@@ -329,7 +329,7 @@ function ContactActions(props: ContactActionsProps) {
       </div>
       <div className="item-list__user-actions">
         {/**WILL BE ENABLED LATER, WHEN COMMUNICATOR PERMISSIONS ARE CLEAR */}
-        {/* {info.loggedUserHasPermission === "true" ? (
+        {/* {info.moreInfoForLoggedUser === "true" ? (
           <CommunicatorNewMessage
             extraNamespace="workspace-teachers"
             onOpen={onCommunicatorMessageOpen}

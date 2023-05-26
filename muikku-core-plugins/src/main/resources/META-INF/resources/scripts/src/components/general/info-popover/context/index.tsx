@@ -38,7 +38,7 @@ export interface UserInfo {
    * Api returns this as string, but it is boolean.
    * @example "true" | "false"
    */
-  loggedUserHasPermission: string;
+  moreInfoForLoggedUser: string;
   /**
    * Name of the user
    */
