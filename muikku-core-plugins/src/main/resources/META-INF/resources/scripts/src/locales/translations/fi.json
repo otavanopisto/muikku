@@ -1323,7 +1323,7 @@
       "copy": "Tee kopio",
       "copy_workspace": "Kopioi kurssi",
       "create": "t(common:actions.create)",
-      "create_workspace": "Luo kurssi", // cant be the basic case
+      "create_workspace": "Luo kurssi",
       "create_journal": "Uusi merkintä",
       "edit": "Muokkaa kurssia",
       "hide_supplementationRequest": "Piilota täydennyspyyntö",
