@@ -1330,7 +1330,6 @@
       "defaultPosition": "Oletussijainti"
     }
   },
-
   "workspace": {
     "actions": {
       "appointment": "Varaa aika",
@@ -1611,6 +1610,7 @@
       "journal": "Oppimispäiväkirja",
       "entries": "Oppimispäiväkirjamerkinnät",
       "mandatories": "Pakolliset",
+      "mandatory": "Pakollinen",
       "others": "Muut",
       "remove": "Poista päiväkirjamerkintä",
       "type": "Merkinnän tyyppi"

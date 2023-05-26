@@ -1311,7 +1311,25 @@
       "updateError_compositeReplies": "Updating the answer failed"
     }
   },
-
+  "notebook": {
+    "actions": {
+      "add": "Add a note",
+      "edit": "Edit the note",
+      "hideContent": "Hide content",
+      "organize": "Organize notes",
+      "remove": "Remove the note",
+      "showContent": "Show content"
+    },
+    "content": {
+      "empty": "No notes",
+      "defaultPosition": "A new note will be created at the end of the list. You can also choose the position from the list. The choice will be saved.",
+      "defaultPosition_bottom": "A new note will be created at the beginning of the list. You can also choose the position from the list. The choice will be saved.",
+      "remove": "Are you sure you wish to remove the note?"
+    },
+    "labels": {
+      "defaultPosition": "Default position"
+    }
+  },
   "workspace": {
     "actions": {
       "appointment": "Reserve an appointment",
@@ -1592,6 +1610,7 @@
       "feedbackAuthor": "Feedback author",
       "journal": "Journal",
       "entries": "Journal entries",
+      "mandatory": "Pakollinen",
       "mandatories": "Mandatories",
       "others": "Others",
       "remove": "Remove the entry",
@@ -1624,7 +1643,6 @@
       "updateError_comment": "Updating the comment failed: {{error}}"
     }
   },
-
   "files": {
     "actions": {
       "add": "Add a file",
@@ -1646,7 +1664,6 @@
       "uploadSuccess": "Uploading the file was successful"
     }
   },
-
   "evaluation": {
     "actions": {
       "askSupplementation": "Ask supplementation",
