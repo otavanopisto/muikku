@@ -26,25 +26,23 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   headerTitle: {
-    fontSize: 18,
-    fontFamily: "Times-Roman",
-    fontWeight: "bold",
+    fontSize: 16,
+    fontFamily: "Helvetica",
     flexBasis: "auto",
     flexShrink: 1,
     flexGrow: 1,
   },
   headerSubtitle: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginLeft: 5,
     flexBasis: "300",
-    flexGrow: 1,
     flexShrink: 0,
     textAlign: "right",
   },
   headerPageNumber: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginLeft: 5,
     flexBasis: "40",
     flexShrink: 0,
@@ -59,21 +57,21 @@ export const styles = StyleSheet.create({
   },
   noteFieldLabel: {
     fontSize: 16,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginBottom: 10,
   },
   noteFieldValue: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
   },
   empty: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginVertical: 10,
   },
   pageTitle: {
-    fontSize: 10,
-    fontFamily: "Times-Roman",
+    fontSize: 12,
+    fontFamily: "Helvetica",
     marginVertical: 10,
     textTransform: "uppercase",
   },
@@ -82,42 +80,54 @@ export const styles = StyleSheet.create({
 export const htmlStyles = {
   p: {
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginVertical: 5,
+  },
+  "p:first-child": {
+    marginTop: 0,
   },
   h3: {
     fontSize: 14,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginTop: 15,
     marginBottom: 5,
   },
+  "h3:first-child": {
+    marginTop: 0,
+  },
   h4: {
     fontSize: 13,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginTop: 15,
     marginBottom: 5,
+  },
+  "h4:first-child": {
+    marginTop: 0,
   },
   blockquote: {
     backgroundColor: "#f8f8f8",
     borderLeft: "5px solid #f2f2f2",
     fontSize: 12,
-    fontFamily: "Times-Roman",
+    fontFamily: "Helvetica",
     marginVertical: 10,
     marginRight: 0,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
+  "blockquote:first-child": {
+    marginTop: 0,
+  },
   b: {
-    fontFamily: "Times-Bold",
+    fontFamily: "Helvetica-Bold",
   },
   strong: {
-    fontFamily: "Times-Bold",
+    fontFamily: "Helvetica-Bold",
   },
   i: {
-    fontFamily: "Times-Italic",
+    fontFamily: "Helvetica-Oblique",
   },
   em: {
-    fontFamily: "Times-Italic",
+    fontFamily: "Helvetica-Oblique",
   },
   u: {
     textDecoration: "underline",

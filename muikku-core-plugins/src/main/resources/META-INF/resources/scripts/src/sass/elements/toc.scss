@@ -23,6 +23,7 @@
 // Workspace materials ToC is loaded inside tab and we need to remove the top border
 .toc--workspace-materials {
   border-top-color: transparent;
+  border-top-width: 0;
   height: 100%;
 }
 

@@ -697,7 +697,7 @@ class ContentComponent extends SessionStateComponent<
               >
                 <IconButton
                   icon="pdf"
-                  buttonModifiers={["notebook-action"]}
+                  buttonModifiers={["toc-action"]}
                   disablePropagation={true}
                 />
               </TableOfContentPDFDialog>
