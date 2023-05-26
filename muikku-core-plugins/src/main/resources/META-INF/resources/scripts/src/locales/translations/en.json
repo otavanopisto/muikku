@@ -62,7 +62,8 @@
       "removing_room": "Are you sure you want to remove the room <b>{{room}}</b>? This action cannot be undone."
     },
     "labels": {
-      "active": "Active",
+      "active_one": "Aktiivinen",
+      "active_other": "Aktiiviset",
       "address": "Address",
       "announcer": "Announcer",
       "appointment": "Reserve an appointment",
@@ -222,7 +223,6 @@
       "password": "Password is mandatory",
       "password_match": "Given passwords do not match"
     },
-
     "wcag": {
       "alternateNavigation": "Navigation for User Profile and Language selection of Muikku",
       "chooseRulersColor": "Choose ruler's background color",
@@ -245,7 +245,6 @@
       "preset3": "Preset theme 3"
     }
   },
-
   "profile": {
     "actions": {
       "test": "Test URL"
@@ -285,7 +284,6 @@
       "loadError": "Could not load profile image"
     }
   },
-
   "worklist": {
     "actions": {
       "send": "Send for approval"
@@ -318,7 +316,6 @@
       "updateError": "Entry editing failed"
     }
   },
-
   "guider": {
     "content": {
       "addTaskInstruction": "Clicking on the plus icon will open the editor where you are able to give a new task to a student. You may schedule the task to start and/or finish at a specified time by setting the start date and/or finish date for the task. You may also leave the date fields empty. The dates will have no impact on the visibility of the task.</p><p>The student will see the task you have given them on the state of studies tab in the Studies view. Once the student has marked the task as done, its status changes to Waiting for approval. You can then approve or reject the task. Finally, you will have to archive the task (by clicking the Trashcan icon).",
@@ -398,7 +395,6 @@
       "userSelect": "Set user selected"
     }
   },
-
   "studies": {
     "actions": {
       "addSubject": "Add a subject",
@@ -469,7 +465,6 @@
       "updateError_summary": "Loading of the summary information failed. Please try refreshing the page."
     }
   },
-
   "hops": {
     "content": {
       "completionEstimateYears1": "I estimate I will graduate Lukio in",
@@ -502,8 +497,8 @@
       "educationSector": "Education sector",
       "else": "Something else?",
       "ethics": "Ethics",
-      "followUpQuestion": "What do you plan to do after Nettiperuskoulu",
       "followUpStudyQuestion": "Where are you going to apply",
+      "followUpQuestion": "What do you plan to do after Nettiperuskoulu",
       "french": "French",
       "german": "German",
       "geography": "Geography",
@@ -571,7 +566,6 @@
       "updateError": "Editing the HOPS failed. Please try refreshing the page."
     }
   },
-
   "organization": {
     "content": {
       "activeInactive": " {{activeCount}} active students ({{archivedCount}} archived)",
@@ -601,7 +595,6 @@
       "workspaceTemplateSelect": "Set template selected"
     }
   },
-
   "frontPage": {
     "actions": {
       "apply": "Submit Application",
@@ -676,7 +669,6 @@
       "videos": "Presentation Videos of Otavia"
     }
   },
-
   "paging": {
     "wcag": {
       "currentPage": "Current page",
@@ -686,7 +678,6 @@
       "prev10": "Move 10 pages backwards"
     }
   },
-
   "messaging": {
     "actions": {
       "create": "$t(common:actions.create)",
@@ -722,7 +713,8 @@
       "removing_contactEntry": "Are you sure you want to remove the contact event? If you remove it, any comment it has will also be removed",
       "removing_discussionArea": "Attention! Removing the discussion area will also remove all the messages in it!",
       "removing_reply": "The reply will be removed permanently, are you sure you wish to continue?",
-      "removing_thread": "The thread and all it's replies will be removed permanently. Are you sure you wish to continue?"
+      "removing_thread": "The thread and all it's replies will be removed permanently. Are you sure you wish to continue?",
+      "unsubscribe": "Cancel area subscription"
     },
     "labels": {
       "addSignature": "Add signature",
@@ -783,7 +775,8 @@
       "subscribed": "Subscribed",
       "subscriptions": "Subscribed discussions",
       "subscriptions_workspace": "Subscribed course discussions",
-      "target": "Targer",
+      "target": "Target",
+      "threadCount": "Thread count",
       "type": "Contact type",
       "type_ABSENCE": "Absence",
       "type_CHATLOG": "Chat",
@@ -895,7 +888,6 @@
       "unread": "Unread message"
     }
   },
-
   "tasks": {
     "actions": {
       "approve": "Mark approved",
@@ -978,6 +970,7 @@
       "searchToRemove_teachers": "Search for teachers to remove them from the course. Removing works by clicking the person's name. You can view the teachers to be removed on the second tab."
     },
     "labels": {
+      "activeStudents": "Active students",
       "add": "Add user",
       "add_userGroupStudents": "Add users to the user group - {{stepInfo}}",
       "add_userGroupTeachers": "Add teachers to the user group - {{stepInfo}}",
@@ -991,6 +984,7 @@
       "all": "All students",
       "archive": "Archiving a user from the course",
       "archived": "Student is archived",
+      "archivedStudents": "Archived students",
       "chosenStudents": "Selected students",
       "chosenTeachers": "Selected teachers",
       "counselors_one": "Counselor",
@@ -1124,7 +1118,6 @@
       "caption": "Flage name is mandatory"
     }
   },
-
   "materials": {
     "actions": {
       "add": "$t(common:actions.add)",
@@ -1299,6 +1292,7 @@
       "assignmentWithdrawn": "Assignment withrdawn",
       "connectionError": "Connection to the server broke, reconnecting...",
       "documentCopied": "Document ({{title}}) has been copied to the clipboard",
+      "loading": "Loading {{progress}} %",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_materials": "Material loading failed",
       "loadError_answers": "Loading the answers failed",
@@ -1327,7 +1321,9 @@
       "continue": "Continue",
       "copy": " Make a copy",
       "copy_workspace": "Copy course",
-      "create": "Create course",
+      "create": "t(common:actions.create)",
+      "create_workspace": "Create course",
+      "create_journal": "Create journal",
       "edit": "Edit course",
       "hide": "$t(common:actions.hide)",
       "hide_supplementationRequest": "Hide supplementation request",
@@ -1375,17 +1371,16 @@
     },
     "labels": {
       "access": "Access",
-      "anyone": "Anyone",
-      "loggedInUsers": "Logged users",
-      "membersOnly": "Members only",
       "addingDetails": "Adding details to the course",
       "additionalInfo": "Additional information",
+      "anyone": "Anyone",
       "away": "Away",
       "basicInfo": "Basic info",
+      "beginAndEndDate": "Begin and end dates",
       "begingDate": "$t(common:labels.beginDate)",
       "begingDate_copySummary": "Begin date: {{beginDate}}",
-      "beginAndEndDate": "Begin and end dates",
-      "cancel": "Cancel evaluation request",
+      "cancel": "t(common:labels.cancel)",
+      "cancel_evaluationRequest": "Cancel evaluation request",
       "chatStatus": "Chat state",
       "chatEnabled": "Chat room in use",
       "chatDisabled": "Chat room not in use",
@@ -1432,9 +1427,11 @@
       "linkMaterials": "Link materials",
       "localeCode": "Locale completed",
       "loading": "Loading, please wait...",
+      "loggedInUsers": "Logged users",
       "mandatory": "Mandatory",
       "materialCopyType": "Material copy type",
       "materials": "Course materials",
+      "membersOnly": "Members only",
       "message": "Message to course teacher",
       "myWorkspaces": "My courses",
       "name": "Course name",
@@ -1571,7 +1568,6 @@
       "workspaceLicense": "Course lisence"
     }
   },
-
   "journal": {
     "actions": {
       "create": "Create entry",

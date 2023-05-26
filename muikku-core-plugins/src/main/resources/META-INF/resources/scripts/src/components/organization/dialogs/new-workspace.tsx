@@ -983,6 +983,7 @@ class OrganizationNewWorkspace extends React.Component<
         totalSteps={this.totalSteps}
         executeLabel={t("actions.create", {
           ns: "workspace",
+          context: "workspace"
         })}
         nextLabel={t("actions.next")}
         lastLabel={t("actions.previous")}
@@ -1004,6 +1005,7 @@ class OrganizationNewWorkspace extends React.Component<
         modifier="new-workspace"
         title={t("actions.create", {
           ns: "workspace",
+          context: "workspace"
         })}
         content={content}
       >

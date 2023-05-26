@@ -44,7 +44,6 @@
       "signOut": "Kirjaudu ulos",
       "update": "Päivitä"
     },
-
     "content": {
       "empty": "Ei sisältöä",
       "empty_people": "Ei henkilöitä",
@@ -62,7 +61,6 @@
       "removing_person": "Oletko varma, että haluat poistaa käyttäjän listasta?",
       "removing_room": "Oletko aivan varma että haluat poistaa huoneen <b>{{room}}</b>? Tätä toimintoa ei voi peruuttaa."
     },
-
     "labels": {
       "active_one": "Aktiivinen",
       "active_other": "Aktiiviset",
@@ -164,7 +162,6 @@
       "write": "Kirjoita viestisi...",
       "yes": "Kyllä"
     },
-
     "notifications": {
       "403": "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
       "403_password": "Tarkista salasana jatkaaksesi salasanan vaihtoa",
@@ -212,7 +209,6 @@
       "updateSuccess_credentials": "Tunnusten vaihto onnistui",
       "updateSuccess_password": "Salasana vaihdettu onnistuneesti"
     },
-
     "validation": {
       "beginDate": "Alkamispäivämäärä on pakollinen tieto",
       "caption": "Otsikko on pakollinen tieto",
@@ -227,7 +223,6 @@
       "password": "Salasanakenttä ei voi olla tyhjä",
       "password_match": "Syötetyt salasanat eivät vastaa toisiaan"
     },
-
     "wcag": {
       "alternateNavigation": "Muikun käyttäjäprofiilin ja kielivalinnan navigaatio",
       "chooseRulersColor": "Valitse lukiviivaimen taustaväri",
@@ -250,7 +245,6 @@
       "preset3": "Esiasetettu teema 3"
     }
   },
-
   "profile": {
     "actions": {
       "test": "Testaa URL"
@@ -290,7 +284,6 @@
       "loadError": "Profiilikuvan lataus epäonnistui"
     }
   },
-
   "worklist": {
     "actions": {
       "send": "Lähetä hyväksyttäväksi"
@@ -323,7 +316,6 @@
       "updateError": "Merkinnän muokkaus epäonnistui"
     }
   },
-
   "guider": {
     "content": {
       "addTaskInstruction": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Halutessasi voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee Odottaa käsittelyä. Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (Roskakori-kuvake).</p>",
@@ -403,7 +395,6 @@
       "userSelect": "Aseta opiskelija valituksi"
     }
   },
-
   "studies": {
     "actions": {
       "addSubject": "Lisää aine",
@@ -474,7 +465,6 @@
       "updateError_summary": "Yhteenvedon tietojen lataaminen epäonnistui. Yritä ladata sivu uudelleen."
     }
   },
-
   "hops": {
     "content": {
       "completionEstimateYears1": "Arvioin suorittavani lukion",
@@ -497,7 +487,6 @@
       "studyOptionalLanguages": "Haluan suorittaa valinnaiset kielet",
       "vocationalYears": "vuoden laajuinen ammatillinen perustutkinto ja haluan suorittaa pelkät yo-kirjoitukset"
     },
-
     "labels": {
       "additionalInfo": "Lisätietoa",
       "arts": "Taide",
@@ -508,9 +497,9 @@
       "educationSector": "Koulutusala",
       "else": "Joku muu?",
       "ethics": "Elämänkatsomustieto",
-      "french": "Ranska",
       "followUpStudyQuestion": "Mihin aiot hakea",
       "followUpQuestion": "Mitä aiot tehdä Nettiperuskoulun jälkeen",
+      "french": "Ranska",
       "german": "Saksa",
       "geography": "Maantiede",
       "goals": "Kokonaistavoitteet",
@@ -538,7 +527,6 @@
       "trade": "Kauppa",
       "transport": "Liikenne"
     },
-
     "matriculationSubjects": {
       "A": "Äidinkieli",
       "A5": "Suomi toisena kielenä",
@@ -578,7 +566,6 @@
       "updateError": "HOPS-päivitys epäonnistui. Yritä uudelleen."
     }
   },
-
   "organization": {
     "content": {
       "activeInactive": " {{activeCount}} aktiivista opiskelijaa ({{archivedCount}} arkistoitua)",
@@ -608,7 +595,6 @@
       "workspaceTemplateSelect": "Aseta kurssiaihio valituksi"
     }
   },
-
   "frontPage": {
     "actions": {
       "apply": "Hae Opiskelemaan",
@@ -683,7 +669,6 @@
       "videos": "Otavian esittelyvideoita"
     }
   },
-
   "paging": {
     "wcag": {
       "currentPage": "Nykyinen sivu",
@@ -693,7 +678,6 @@
       "prev10": "Siirry 10 sivua taaksepäin"
     }
   },
-
   "messaging": {
     "actions": {
       "create": "$t(common:actions.create)",
@@ -884,7 +868,6 @@
       "recipients": "Viestin vastaanottajat on pakollinen tieto.",
       "targetGroup": "Tiedotteen kohderyhmä on pakollinen tieto"
     },
-
     "wcag": {
       "content": "Viestin sisältö",
       "content_truncated": "Viestin typistetty sisältö",
@@ -905,7 +888,6 @@
       "unread": "Lukematon viesti"
     }
   },
-
   "tasks": {
     "actions": {
       "approve": "Merkitse tehdyksi",
@@ -988,6 +970,7 @@
       "searchToRemove_teachers": "Hae opettajia poistaaksesi heidät kurssilta. Poisto toimii klikkaamalla opettajan nimeä. Poistettavia opettajia voit selata toisella välilehdellä."
     },
     "labels": {
+      "activeStudents": "Aktiiviset",
       "add": "Lisää käyttäjä",
       "add_userGroupStudents": "Lisää opiskelijoita käyttäjäryhmään - {{stepInfo}}",
       "add_userGroupTeachers": "Lisää opettajia käyttäjäryhmään - {{stepInfo}}",
@@ -1001,7 +984,6 @@
       "all": "Kaikki opiskelijat",
       "archive": "Arkistoi käyttäjä kurssilta",
       "archived": "Opiskelija on arkistoitu",
-      "activeStudents": "Aktiiviset",
       "archivedStudents": "Arkistoidut",
       "chosenStudents": "Valitut opiskelijat",
       "chosenTeachers": "Valitut opettajat",
@@ -1136,7 +1118,6 @@
       "caption": "Lipun nimi on pakollinen tieto"
     }
   },
-
   "materials": {
     "actions": {
       "add": "$t(common:actions.add)",
@@ -1341,7 +1322,8 @@
       "continue": "Jatka",
       "copy": "Tee kopio",
       "copy_workspace": "Kopioi kurssi",
-      "create": "Luo kurssi",
+      "create": "t(common:actions.create)",
+      "create_workspace": "Luo kurssi", // cant be the basic case
       "create_journal": "Uusi merkintä",
       "edit": "Muokkaa kurssia",
       "hide_supplementationRequest": "Piilota täydennyspyyntö",
@@ -1394,9 +1376,10 @@
       "anyone": "Kuka tahansa",
       "away": "Poissa",
       "basicInfo": "Perustiedot",
+      "beginAndEndDate": "Alku- ja loppupäivämäärä",
       "begingDate": "$t(common:labels.beginDate)",
       "begingDate_copySummary": "Alkamispäivä: {{beginDate}}",
-      "beginAndEndDate": "Alku- ja loppupäivämäärä",
+      "cancel": "t(common:labels.cancel)",
       "cancel_evaluationRequest": "Peruuta arviointipyyntö",
       "chatStatus": "Chatin tila",
       "chatEnabled": "Chat-huone käytössä",
@@ -1520,7 +1503,6 @@
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
       "workspaceTypeSelect": "Kurssityyppien listausvalinta"
     },
-
     "notifications": {
       "cancelError": "Peruutus epäonnistui",
       "cancelError_evaluationRequests": "Arviointipyynnön peruutus epäonnistui",
@@ -1576,7 +1558,6 @@
       "updateError_student": "Opiskelijan päivitys epäonnistui",
       "updateError_userGroupPermissions": "Käyttäjäryhmän oikeuksin päivitys epäonnistui"
     },
-
     "wcag": {
       "announcementSelect": "Aseta tiedote valituksi",
       "editingMasterSwitch": "Editointitilan valitsin",
@@ -1587,7 +1568,6 @@
       "workspaceLicense": "Kurssin lisenssi"
     }
   },
-
   "journal": {
     "actions": {
       "create": "Uusi merkintä",
