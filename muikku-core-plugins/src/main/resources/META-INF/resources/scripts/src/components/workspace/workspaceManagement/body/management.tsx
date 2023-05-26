@@ -849,7 +849,7 @@ class ManagementPanel extends React.Component<
                           onClick={this.editCurrentImage}
                         >
                           <span className="icon icon-pencil" />
-                          {t("actions.edit")}
+                          {t("actions.edit", { ns: "common" })}
                         </Button>
                         <Button
                           buttonModifiers="change-image-delete button--change-image-workspace"
@@ -1337,6 +1337,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["workspace", "users", "materials", "common"])(
+export default withTranslation(["workspace"])(
   connect(mapStateToProps, mapDispatchToProps)(ManagementPanel)
 );
