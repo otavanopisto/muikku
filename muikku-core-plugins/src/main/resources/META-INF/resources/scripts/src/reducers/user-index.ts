@@ -1,6 +1,7 @@
 import { ActionType } from "~/actions";
 import { PagingUserListType } from "~/reducers/main-function/users";
 import { Reducer } from "redux";
+import { Role } from "./base/status";
 export type ManipulateType = "UPDATE" | "CREATE";
 
 /**
@@ -11,7 +12,7 @@ export interface CreateUserType {
   lastName: string;
   email: string;
   studyProgrammeIdentifier?: string;
-  role?: string;
+  roles?: string[];
   ssn?: string;
 }
 
@@ -23,7 +24,7 @@ export interface UpdateUserType {
   firstName: string;
   lastName: string;
   email: string;
-  role?: string;
+  roles?: string[];
   studyProgrammeIdentifier?: string;
   ssn?: string;
 }
@@ -45,10 +46,9 @@ export interface UserType {
   organizationIdentifier?: string;
   isDefaultOrganization?: boolean;
   permissions?: Array<string>;
-  roles?: Array<string>;
+  roles?: Role[];
 
   //EXTENDED VALUES, may or may not be available
-  role?: string;
   ssn?: string;
   email?: string;
   language?: string;

@@ -39,7 +39,12 @@ interface OrganizationUserProps {
  */
 interface OrganizationUserState {
   user: {
-    [field: string]: string;
+    studyProgrammeIdentifier?: string;
+    ssn?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    roles: string[];
   };
   locked: boolean;
   executing: boolean;
@@ -64,7 +69,7 @@ class OrganizationUser extends React.Component<
     super(props);
     this.state = {
       user: {
-        role: "STUDENT",
+        roles: [ "STUDENT" ],
       },
       locked: false,
       executing: false,
@@ -99,7 +104,7 @@ class OrganizationUser extends React.Component<
   clearComponentState() {
     this.setState({
       user: {
-        role: "STUDENT",
+        roles: [ "STUDENT" ],
         studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier,
       },
       firstNameValid: 2,
@@ -147,7 +152,7 @@ class OrganizationUser extends React.Component<
       valid = false;
     }
 
-    if (this.state.user.role == "STUDENT") {
+    if (this.state.user.roles.includes("STUDENT")) {
       if (
         this.state.user.studyProgrammeIdentifier == "" ||
         this.state.user.studyProgrammeIdentifier == undefined
@@ -199,7 +204,7 @@ class OrganizationUser extends React.Component<
           firstName: this.state.user.firstName,
           lastName: this.state.user.lastName,
           email: this.state.user.email,
-          role: this.state.user.role,
+          roles: this.state.user.roles,
         };
 
         this.props.createStaffmember({
@@ -209,7 +214,7 @@ class OrganizationUser extends React.Component<
            */
           success: () => {
             this.setState({
-              user: { role: "STUDENT" },
+              user: { roles: [ "STUDENT" ] },
               firstNameValid: 2,
               lastNameValid: 2,
               emailValid: 2,
@@ -303,7 +308,7 @@ class OrganizationUser extends React.Component<
             )}
           />
         </DialogRow>
-        {this.state.user.role == "STUDENT" ? (
+        {this.state.user.roles.includes("STUDENT") ? (
           <>
             <DialogRow modifiers="new-user">
               <SSNFormElement

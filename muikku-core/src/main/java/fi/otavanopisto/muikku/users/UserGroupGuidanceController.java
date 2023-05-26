@@ -7,6 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -58,7 +59,16 @@ public class UserGroupGuidanceController {
       boolean isActiveIdentifier = gcUserIdentifer.equals(gcUserEntity.defaultSchoolDataIdentifier());
 
       // Restrict to specified roles 
-      boolean isInRole = gcUserSchoolDataIdentifier.getRole() != null ? counselorRoles.contains(gcUserSchoolDataIdentifier.getRole().getArchetype()) : false;
+      boolean isInRole = false;
+      
+      if (gcUserSchoolDataIdentifier.getRoles() != null) {
+        for (EnvironmentRoleEntity roleEntity : gcUserSchoolDataIdentifier.getRoles()) {
+          if (counselorRoles.contains(roleEntity.getArchetype())) {
+            isInRole = true;
+            break;
+          }
+        }
+      }
       
       if (isActiveIdentifier && isInRole) {
         councelorList.add(gcUserEntity);

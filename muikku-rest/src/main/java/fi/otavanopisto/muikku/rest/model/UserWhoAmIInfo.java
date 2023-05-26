@@ -25,7 +25,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               boolean isDefaultOrganization,
               boolean isActive,
               Set<String> permissions,
-              EnvironmentRoleArchetype role,
+              Set<EnvironmentRoleArchetype> roles,
               String locale,
               String displayName,
               String emails,
@@ -45,7 +45,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.organizationIdentifier = organizationIdentifier;
     this.isDefaultOrganization = isDefaultOrganization;
     this.isActive = isActive;
-    this.role = role;
+    this.roles = roles;
     this.locale = locale;
     this.setPermissions(permissions);
     this.displayName = displayName;
@@ -202,12 +202,12 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.locale = locale;
   }
 
-  public EnvironmentRoleArchetype getRole() {
-    return role;
+  public Set<EnvironmentRoleArchetype> getRoles() {
+    return roles;
   }
 
-  public void setRole(EnvironmentRoleArchetype role) {
-    this.role = role;
+  public void setRoles(Set<EnvironmentRoleArchetype> roles) {
+    this.roles = roles;
   }
 
   private String studyProgrammeName;
@@ -228,6 +228,6 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;
   private String locale;
-  private EnvironmentRoleArchetype role;
+  private Set<EnvironmentRoleArchetype> roles;
 
 }

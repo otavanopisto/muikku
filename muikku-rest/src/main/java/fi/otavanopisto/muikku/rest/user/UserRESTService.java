@@ -57,7 +57,6 @@ import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
@@ -583,8 +582,7 @@ public class UserRESTService extends AbstractRESTService {
     }
 
     // Bug fix #2966: REST endpoint should only return students
-    EnvironmentRoleEntity userRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
-    if (userRole == null || userRole.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
+    if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
@@ -1404,7 +1402,7 @@ public class UserRESTService extends AbstractRESTService {
     
     // Payload validation
     
-    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail()) || CollectionUtils.isEmpty(payload.getRoles())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
@@ -1488,7 +1486,8 @@ public class UserRESTService extends AbstractRESTService {
     // Payload validation
     
     if (!StringUtils.equals(id, payload.getIdentifier()) ||
-        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+        CollectionUtils.isEmpty(payload.getRoles()) ||
+        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
@@ -1677,11 +1676,13 @@ public class UserRESTService extends AbstractRESTService {
 
     // User role
     
-    EnvironmentRoleArchetype role = null;
+    Set<EnvironmentRoleArchetype> roles = new HashSet<>();
     if (userIdentifier != null) {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
           findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
-      role = userSchoolDataIdentifier.getRole().getArchetype();
+      if (userSchoolDataIdentifier != null) {
+        roles = userSchoolDataIdentifier.getRoles().stream().map(roleEntity -> roleEntity.getArchetype()).collect(Collectors.toSet());
+      }
     }
     
     // Environment level permissions
@@ -1785,7 +1786,7 @@ public class UserRESTService extends AbstractRESTService {
         isDefaultOrganization,
         currentUserSession.isActive(),
         permissionSet,
-        role,
+        roles,
         locale,
         user == null ? null : user.getDisplayName(),
         emails,
@@ -1916,6 +1917,12 @@ public class UserRESTService extends AbstractRESTService {
             organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
+
+          List<String> roles = new ArrayList<>();
+          if (usdi.getRoles() != null) {
+            usdi.getRoles().forEach(roleEntity -> roles.add(roleEntity.getArchetype().name()));
+          }
+          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
             new Long((Integer) o.get("userEntityId")),
@@ -1924,7 +1931,7 @@ public class UserRESTService extends AbstractRESTService {
             email,
             propertyMap,
             organizationRESTModel,
-            (String) o.get("archetype"),
+            roles,
             hasImage));
         }
       }

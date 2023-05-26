@@ -20,8 +20,8 @@ public class SchoolDataUserUpdatedEvent {
     return userEntityId;
   }
   
-  public SchoolDataUserEventIdentifier addDiscoveredIdentifier(SchoolDataIdentifier identifier, SchoolDataIdentifier roleIdentifier, SchoolDataIdentifier organizationIdentifier) {
-    SchoolDataUserEventIdentifier eventIdentifier = new SchoolDataUserEventIdentifier(identifier, roleIdentifier, organizationIdentifier);
+  public SchoolDataUserEventIdentifier addDiscoveredIdentifier(SchoolDataIdentifier identifier, List<SchoolDataIdentifier> roleIdentifiers, SchoolDataIdentifier organizationIdentifier) {
+    SchoolDataUserEventIdentifier eventIdentifier = new SchoolDataUserEventIdentifier(identifier, roleIdentifiers, organizationIdentifier);
     discoveredIdentifiers.add(eventIdentifier);
     return eventIdentifier;
   }
@@ -30,8 +30,8 @@ public class SchoolDataUserUpdatedEvent {
     return discoveredIdentifiers;
   }
 
-  public SchoolDataUserEventIdentifier addUpdatedIdentifier(SchoolDataIdentifier identifier, SchoolDataIdentifier roleIdentifier, SchoolDataIdentifier organizationIdentifier) {
-    SchoolDataUserEventIdentifier eventIdentifier = new SchoolDataUserEventIdentifier(identifier, roleIdentifier, organizationIdentifier);
+  public SchoolDataUserEventIdentifier addUpdatedIdentifier(SchoolDataIdentifier identifier, List<SchoolDataIdentifier> roleIdentifiers, SchoolDataIdentifier organizationIdentifier) {
+    SchoolDataUserEventIdentifier eventIdentifier = new SchoolDataUserEventIdentifier(identifier, roleIdentifiers, organizationIdentifier);
     updatedIdentifiers.add(eventIdentifier);
     return eventIdentifier;
   }
@@ -40,8 +40,8 @@ public class SchoolDataUserUpdatedEvent {
     return updatedIdentifiers;
   }
 
-  public SchoolDataUserEventIdentifier addRemovedIdentifier(SchoolDataIdentifier identifier, SchoolDataIdentifier roleIdentifier, SchoolDataIdentifier organizationIdentifier) {
-    SchoolDataUserEventIdentifier eventIdentifier = new SchoolDataUserEventIdentifier(identifier, roleIdentifier, organizationIdentifier);
+  public SchoolDataUserEventIdentifier addRemovedIdentifier(SchoolDataIdentifier identifier, List<SchoolDataIdentifier> roleIdentifiers, SchoolDataIdentifier organizationIdentifier) {
+    SchoolDataUserEventIdentifier eventIdentifier = new SchoolDataUserEventIdentifier(identifier, roleIdentifiers, organizationIdentifier);
     removedIdentifiers.add(eventIdentifier);
     return eventIdentifier;
   }

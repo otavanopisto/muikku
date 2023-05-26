@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -51,8 +50,8 @@ public class ChatController {
       
       // Chat is always available for admins
       
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
-      if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+      if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return true;
       }
       
@@ -64,7 +63,6 @@ public class ChatController {
             .map(identifier -> SchoolDataIdentifier.fromId(identifier))
             .collect(Collectors.toSet());
 
-        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
         if (userSchoolDataIdentifier != null) {
           OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
           if (organization != null) {

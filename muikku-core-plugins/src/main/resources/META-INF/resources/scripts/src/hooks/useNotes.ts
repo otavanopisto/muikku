@@ -24,11 +24,11 @@ export const useOnGoingNotes = (
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [notes, setNotes] = React.useState(<NotesItemRead[]>[]);
-  const { userId, role } = status;
+  const { userId, roles } = status;
 
   React.useEffect(() => {
     // This is for students only hook, if you call it as someone else, no loading should happen
-    if (role !== Role.STUDENT) {
+    if (roles ? roles.includes(Role.STUDENT) : false) {
       return;
     }
 
@@ -50,7 +50,7 @@ export const useOnGoingNotes = (
       }
     };
     loadNotes();
-  }, [userId, role, displayNotification, i18n]);
+  }, [userId, roles, displayNotification, i18n]);
 
   /**
    * changenotesItemStatus

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -136,7 +137,7 @@ public class MeRESTService {
     }
 
     UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-    if (loggedUser == null || loggedUser.getRole() == null || loggedUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT) {
+    if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
@@ -174,6 +175,13 @@ public class MeRESTService {
         }
       }
 
+      List<String> roles = new ArrayList<>();
+      if (usdi.getRoles() != null) {
+        roles = usdi.getRoles().stream()
+            .map(roleEntity -> roleEntity.getArchetype().name())
+            .collect(Collectors.toList());
+      }
+      
       staffMembers.add(new GuidanceCounselorRestModel(
           userEntity.defaultSchoolDataIdentifier().toId(),
           userEntity.getId(),
@@ -182,7 +190,7 @@ public class MeRESTService {
           email,
           propertyMap,
           organizationRESTModel,
-          usdi.getRole() != null && usdi.getRole().getArchetype() != null ? usdi.getRole().getArchetype().name() : null,
+          roles,
           hasImage,
           chatEnabled));
     }

@@ -41,7 +41,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
@@ -62,10 +61,10 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFil
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
-import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -237,11 +236,11 @@ public class GuiderRESTService extends PluginRESTService {
     // #6170: Teachers used to see only their own workspaces' students. They should also see their own groups' students
     
     boolean joinGroupsAndWorkspaces = false;
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    if (roleEntity == null) {
+    UserSchoolDataIdentifier loggedUserSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
+    if (loggedUserSchoolDataIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Unknown role").build();
     }
-    if (roleEntity.getArchetype() == EnvironmentRoleArchetype.TEACHER) {
+    if (loggedUserSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.TEACHER)) {
       myUserGroups = CollectionUtils.isEmpty(userGroupIds) && CollectionUtils.isEmpty(workspaceIds);
       myWorkspaces = CollectionUtils.isEmpty(userGroupIds) && CollectionUtils.isEmpty(workspaceIds);
       joinGroupsAndWorkspaces = myUserGroups && myWorkspaces;
@@ -342,8 +341,7 @@ public class GuiderRESTService extends PluginRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+      OrganizationEntity organization = loggedUserSchoolDataIdentifier.getOrganization();
 
       SearchResult result = elasticSearchProvider.searchUsers(
           Arrays.asList(organization),
@@ -469,8 +467,7 @@ public class GuiderRESTService extends PluginRESTService {
     }
 
     // Bug fix #2966: REST endpoint should only return students
-    EnvironmentRoleEntity userRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
-    if (userRole == null || userRole.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
+    if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
@@ -736,9 +733,9 @@ public class GuiderRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response increaseStudyTime(@PathParam("ID") Long userEntityId, @QueryParam("months") Integer months) {
 
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
 
-    if (roleEntity == null || roleEntity.getArchetype().equals(EnvironmentRoleArchetype.STUDENT)) {
+    if (userSchoolDataIdentifier == null || userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       logger.severe("Logged user does not have permission");
       return Response.status(Status.FORBIDDEN).entity("Logged user does not have permission").build();
     }

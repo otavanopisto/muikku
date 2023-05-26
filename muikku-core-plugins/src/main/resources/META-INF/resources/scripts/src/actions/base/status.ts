@@ -51,6 +51,8 @@ async function loadWhoAMI(
     await promisify(mApi().user.whoami.read(), "callback")()
   );
 
+  const isStudent = whoAmI.roles ? whoAmI.roles.includes(Role.STUDENT) : false;
+  
   dispatch({
     type: "UPDATE_STATUS",
     payload: {
@@ -59,8 +61,8 @@ async function loadWhoAMI(
       hasImage: whoAmI.hasImage,
       hasFees: whoAmI.hasEvaluationFees,
       isActiveUser: whoAmI.isActive,
-      role: whoAmI.role,
-      isStudent: whoAmI.role === Role.STUDENT,
+      roles: whoAmI.roles,
+      isStudent: isStudent,
       userSchoolDataIdentifier: whoAmI.identifier,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(

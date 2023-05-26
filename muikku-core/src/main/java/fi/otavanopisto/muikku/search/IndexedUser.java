@@ -25,7 +25,7 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
       type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
-      name = "archetype",
+      name = "roles",
       type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
@@ -228,14 +228,6 @@ public class IndexedUser {
     this.schoolDataSource = schoolDataSource;
   }
 
-  public EnvironmentRoleArchetype getArchetype() {
-    return archetype;
-  }
-
-  public void setArchetype(EnvironmentRoleArchetype archetype) {
-    this.archetype = archetype;
-  }
-
   public Long getUserEntityId() {
     return userEntityId;
   }
@@ -285,6 +277,14 @@ public class IndexedUser {
     this.studyPeriods = studyPeriods;
   }
 
+  public Set<EnvironmentRoleArchetype> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<EnvironmentRoleArchetype> roles) {
+    this.roles = roles;
+  }
+
   private String identifier;
   private String schoolDataSource;
   private String firstName;
@@ -304,7 +304,7 @@ public class IndexedUser {
   private SchoolDataIdentifier curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
-  private EnvironmentRoleArchetype archetype;
+  private Set<EnvironmentRoleArchetype> roles;
   private Long userEntityId;
   private Boolean defaultIdentifier;
   private String email;

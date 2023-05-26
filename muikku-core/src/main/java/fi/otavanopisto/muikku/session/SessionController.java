@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.util.ResourceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -52,6 +53,9 @@ public interface SessionController {
    * @param isActive is the user active (e.g. not having ended studies)
    */
   public void login(String authSource, String dataSource, String identifier);
+  
+  public boolean hasRole(EnvironmentRoleArchetype role);
+  public boolean hasAnyRole(EnvironmentRoleArchetype ... roles);
   
   boolean hasPermission(String permission, ContextReference contextReference);
   

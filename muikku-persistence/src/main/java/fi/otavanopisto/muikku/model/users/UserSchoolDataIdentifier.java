@@ -1,17 +1,25 @@
 package fi.otavanopisto.muikku.model.users;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotEmpty;
+import org.apache.commons.lang3.ArrayUtils;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -61,20 +69,49 @@ public class UserSchoolDataIdentifier {
     this.archived = archived;
   }
 
-  public EnvironmentRoleEntity getRole() {
-    return role;
-  }
-
-  public void setRole(EnvironmentRoleEntity role) {
-    this.role = role;
-  }
-
   public OrganizationEntity getOrganization() {
     return organization;
   }
 
   public void setOrganization(OrganizationEntity organization) {
     this.organization = organization;
+  }
+
+  @Transient
+  public boolean hasRole(EnvironmentRoleArchetype role) {
+    return hasAnyRole(role);
+  }
+  
+  @Transient
+  public boolean hasAnyRole(EnvironmentRoleArchetype ... roles) {
+    if (getRoles() != null) {
+      for (EnvironmentRoleEntity roleEntity : getRoles()) {
+        if (ArrayUtils.contains(roles, roleEntity.getArchetype())) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+  
+  @Transient
+  public boolean isStaff() {
+    return hasAnyRole(
+        EnvironmentRoleArchetype.TEACHER,
+        EnvironmentRoleArchetype.ADMINISTRATOR,
+        EnvironmentRoleArchetype.MANAGER,
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER
+    );
+  }
+  
+  public List<EnvironmentRoleEntity> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<EnvironmentRoleEntity> roles) {
+    this.roles = roles;
   }
 
   @Id
@@ -92,8 +129,9 @@ public class UserSchoolDataIdentifier {
   @ManyToOne
   private UserEntity userEntity;
 
-  @ManyToOne
-  private EnvironmentRoleEntity role;
+  @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinTable (name = "UserSchoolDataIdentifierRoles", joinColumns = @JoinColumn(name = "userSchoolDataIdentifier_id"), inverseJoinColumns = @JoinColumn(name = "role"))
+  private List<EnvironmentRoleEntity> roles;
 
   @ManyToOne
   private OrganizationEntity organization;

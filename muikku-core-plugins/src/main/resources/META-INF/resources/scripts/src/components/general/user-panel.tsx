@@ -12,6 +12,7 @@ import {
   UsersListType,
 } from "~/reducers/main-function/users";
 import PagerV2 from "~/components/general/pagerV2";
+import { Role } from "~/reducers/base/status";
 
 /**
  * UserPanelProps
@@ -120,19 +121,22 @@ export default class UserPanel extends React.Component<
                     lastName: user.lastName,
                     email: user.email,
                     id: user.id,
-                    role: user.role ? user.role : "STUDENT",
+                    roles: user.roles ? user.roles : [ Role.STUDENT ],
                     studyProgrammeIdentifier: user.studyProgrammeIdentifier,
                   };
                   const actions =
-                    data.role == "STUDENT" ? (
+                    data.roles.includes(Role.STUDENT) ? (
                       <div>
                         <StudentDialog data={data}>
                           <span className="icon-pencil"></span>
                         </StudentDialog>
                       </div>
-                    ) : data.role === "ADMINISTRATOR" ||
-                      data.role === "STUDY_PROGRAMME_LEADER" ? (
-                      <div title={data.role}>
+                    ) : data.roles.includes(Role.ADMINISTRATOR) ||
+                      data.roles.includes(Role.STUDY_PROGRAMME_LEADER) ? (
+                        /*
+                        * TODO does this need the title-attribute? .. title={data.roles}
+                        */
+                      <div>
                         <span className="state-DISABLED icon-pencil"></span>
                       </div>
                     ) : (

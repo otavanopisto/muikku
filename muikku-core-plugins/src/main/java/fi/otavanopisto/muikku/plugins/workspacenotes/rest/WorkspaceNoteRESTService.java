@@ -17,17 +17,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNote;
 import fi.otavanopisto.muikku.plugins.workspacenotes.WorkspaceNoteController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -51,9 +48,6 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
-  
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
 
   /*
@@ -212,10 +206,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     }
     
     // non-admins can only list their own notes
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
     if (!owner.equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -258,10 +251,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     }
     
     // users can only edit their own notes
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
     if (!owner.equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -310,9 +302,4 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
 
   }
   
-  private EnvironmentRoleArchetype getUserRoleArchetype(SchoolDataIdentifier userSchoolDataIdentifier) {
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
-    EnvironmentRoleArchetype userRoleArchetype = roleEntity != null ? roleEntity.getArchetype() : null;
-    return userRoleArchetype;
-  }
 } 

@@ -13,7 +13,7 @@ import {
 } from "~/actions/main-function/users";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { StatusType } from "~/reducers/base/status";
+import { Role, StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { UserType } from "~/reducers/user-index";
@@ -35,7 +35,11 @@ interface OrganizationUserProps {
  */
 interface OrganizationUserState {
   user: {
-    [field: string]: string;
+//    [field: string]: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    roles: Role[];
   };
   locked: boolean;
   firstNameValid: number;
@@ -58,7 +62,7 @@ class OrganizationUser extends React.Component<
     super(props);
     this.state = {
       user: {
-        role: this.props.data.role,
+        roles: this.props.data.roles,
         firstName: this.props.data.firstName,
         lastName: this.props.data.lastName,
         email: this.props.data.email,
@@ -137,7 +141,7 @@ class OrganizationUser extends React.Component<
         firstName: this.state.user.firstName,
         lastName: this.state.user.lastName,
         email: this.state.user.email,
-        role: this.state.user.role,
+        roles: this.state.user.roles,
       };
 
       this.props.updateStaffmember({
@@ -183,7 +187,7 @@ class OrganizationUser extends React.Component<
               "plugin.organization.users.addUser.label.role"
             )}
             updateField={this.updateField}
-            value={this.props.data.role}
+            //TODO value={this.props.data.role}
           >
             <option value="MANAGER">
               {this.props.i18n.text.get(

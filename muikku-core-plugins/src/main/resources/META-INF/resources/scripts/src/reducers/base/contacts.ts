@@ -24,7 +24,7 @@ export interface Contact {
   organization: { id: number; name: string };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: any;
-  role: string;
+  roles: string[];
   userEntityId: number;
 }
 

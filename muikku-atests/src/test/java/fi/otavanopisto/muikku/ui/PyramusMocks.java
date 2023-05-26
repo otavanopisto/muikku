@@ -10,6 +10,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -216,7 +217,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     staffStudyProgrammes.add(1l);
     staffStudyProgrammes.add(2l);
     StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, (long) 1, null, "Test", "Staff1member", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables, staffStudyProgrammes);
+      EnumSet.of(fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER), tags, variables, staffStudyProgrammes);
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
     
@@ -236,7 +237,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, (long) 1, null, "Test", "Staff2member", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables, staffStudyProgrammes);
+      EnumSet.of(fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER), tags, variables, staffStudyProgrammes);
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember2);
     stubFor(get(urlEqualTo("/1/staff/members/3"))
@@ -255,7 +256,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, (long) 1, null, "Test", "Administrator", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables, staffStudyProgrammes);
+      EnumSet.of(fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR), tags, variables, staffStudyProgrammes);
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember3);
     
@@ -489,7 +490,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     staffStudyProgrammes.add(1l);
     staffStudyProgrammes.add(2l);
     StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
-        role, tags, variables, staffStudyProgrammes);
+        EnumSet.of(role), tags, variables, staffStudyProgrammes);
       
     String staffMemberJson = objectMapper.writeValueAsString(staffMember);
     
@@ -668,7 +669,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     staffStudyProgrammes.add(1l);
     staffStudyProgrammes.add(2l);
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, (long) 1, null, "Test", "Administrator", null, 
-      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables, staffStudyProgrammes);
+      EnumSet.of(fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR), tags, variables, staffStudyProgrammes);
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember3);
     

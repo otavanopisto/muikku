@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
-import { StatusType } from "~/reducers/base/status";
+import { Role, StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/empty.scss";
@@ -363,7 +363,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                         ) : null}
 
                         {/* We show "Complete order" button only if logged in user has COMPLETE_ORDER permission */}
-                        {this.props.status.role === "ADMINISTRATOR" ? (
+                        {(this.props.status.roles ? this.props.status.roles.includes(Role.ADMINISTRATOR) : false) ? (
                           <Button
                             onClick={this.beginOrderManualCompleteProcess.bind(
                               this,

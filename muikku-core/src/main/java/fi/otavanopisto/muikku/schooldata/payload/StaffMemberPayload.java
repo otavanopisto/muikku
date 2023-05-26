@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.schooldata.payload;
 
+import java.util.Set;
+
 public class StaffMemberPayload {
 
   public String getIdentifier() {
@@ -34,18 +36,18 @@ public class StaffMemberPayload {
     this.email = email;
   }
 
-  public String getRole() {
-    return role;
+  public Set<String> getRoles() {
+    return roles;
   }
 
-  public void setRole(String role) {
-    this.role = role;
+  public void setRoles(Set<String> roles) {
+    this.roles = roles;
   }
 
   private String identifier;
   private String firstName;
   private String lastName;
   private String email;
-  private String role;
+  private Set<String> roles;
 
 }
