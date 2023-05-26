@@ -9,6 +9,7 @@ import {
 } from "~/actions/base/notifications";
 import "~/sass/elements/readspeaker.scss";
 import { useReadspeakerContext } from "../context/readspeaker-context";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * ReadSpeakerReaderProps
@@ -31,6 +32,10 @@ interface ReadSpeakerReaderProps {
    * Edit mode
    */
   editMode: boolean;
+  /**
+   * Status info
+   */
+  status: StatusType;
 }
 
 /**
@@ -42,7 +47,7 @@ interface ReadSpeakerReaderProps {
  * @returns JSX.Element
  */
 const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
-  const { readParameterType, editMode, entityId } = props;
+  const { readParameterType, editMode, entityId, status } = props;
 
   const { rspkr, rspkrLoaded } = useReadspeakerContext();
 
@@ -80,7 +85,7 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
       ? props.readParameters.join()
       : props.readParameters[0];
 
-  if (!rspkr.current || editMode) return null;
+  if (!status.loggedIn || !rspkr.current || editMode) return null;
 
   return (
     <div
@@ -107,6 +112,7 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
  */
 function mapStateToProps(state: StateType) {
   return {
+    status: state.status,
     editMode: state.workspaces.editMode.active,
   };
 }
