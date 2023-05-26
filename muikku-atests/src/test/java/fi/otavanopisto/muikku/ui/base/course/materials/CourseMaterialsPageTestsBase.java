@@ -1337,8 +1337,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForVisible(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title");
           assertText(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title", "Second test note");
           waitAndClick(".notebook__actions .icon-arrow-down");
-          waitForPresent(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-auto .notebook__item-body p");
-          assertText(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-auto .notebook__item-body p", note);
+          waitForPresent("div.notebook__items > div:nth-child(1) .notebook__item .rah-static--height-auto .notebook__item-body p");
+          assertText("div.notebook__items > div:nth-child(1) .notebook__item .rah-static--height-auto .notebook__item-body p", note);
 //        Test collapse function
           waitAndClick(".notebook__actions .icon-arrow-up");
           waitForPresent(".notebook__items .draggable-element:first-child .notebook__item .rah-static--height-specific");
