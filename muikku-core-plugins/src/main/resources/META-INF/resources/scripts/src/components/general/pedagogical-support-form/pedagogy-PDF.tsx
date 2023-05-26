@@ -189,7 +189,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>Asiakirjan laatija</Text>
-          <Text style={styles.infoFieldValue}>{documentCreator}</Text>
+          <Text style={styles.infoFieldValue}>
+            {documentCreator}, erityisopettaja
+          </Text>
           <Text style={styles.infoFieldValue}>
             {data.ownerInfo.phoneNumber}
           </Text>
