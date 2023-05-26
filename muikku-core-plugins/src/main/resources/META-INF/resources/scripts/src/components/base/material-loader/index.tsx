@@ -110,7 +110,16 @@ const STATES = [
   },
   {
     "assignment-type": "EVALUATED",
-    state: ["FAILED", "INCOMPLETE"],
+    state: ["FAILED"],
+    "button-class": "muikku-withdraw-assignment",
+    "button-text": "plugin.workspace.materialsLoader.withdrawAssignmentButton",
+    "success-text": "plugin.workspace.materialsLoader.assignmentWithdrawn",
+    "button-disabled": true,
+    "fields-read-only": true,
+  },
+  {
+    "assignment-type": "EVALUATED",
+    state: ["INCOMPLETE"],
     "button-class": "muikku-withdraw-assignment",
     "button-text": "actions.cancel_assignment",
     "success-text": "notifications.assignmentWithdrawn",

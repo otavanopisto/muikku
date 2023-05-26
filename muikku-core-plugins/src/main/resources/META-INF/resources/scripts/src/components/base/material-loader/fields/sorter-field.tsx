@@ -304,7 +304,6 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
 
   /**
    * render
-   * @returns
    */
   render() {
     const { t } = this.props;
