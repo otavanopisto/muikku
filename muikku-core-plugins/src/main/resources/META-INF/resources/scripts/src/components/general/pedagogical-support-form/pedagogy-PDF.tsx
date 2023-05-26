@@ -78,7 +78,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           <View style={styles.infoFieldContainerSameRow}>
             <Text style={styles.infoFieldLabelSameRow}>Merkintä</Text>
             <View style={styles.infoFieldValueSameRow}>
-              <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
+              <Html stylesheet={htmlStyles}>{opinion.opinion || "-"}</Html>
             </View>
           </View>
         </View>
@@ -111,7 +111,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           <View style={styles.infoFieldContainerSameRow}>
             <Text style={styles.infoFieldLabelSameRow}>Merkintä</Text>
             <View style={styles.infoFieldValueSameRow}>
-              <Html stylesheet={htmlStyles}>{opinion.opinion}</Html>
+              <Html stylesheet={htmlStyles}>{opinion.opinion || "-"}</Html>
             </View>
           </View>
         </View>
@@ -237,11 +237,17 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>Pedagogisen tuen perusteet</Text>
-          {formData?.supportReasons?.map((value, i) => (
-            <Text key={i} style={styles.infoFieldValue}>
-              - {supportReasonTranslationByValue[value]}
-            </Text>
-          )) || <Text style={styles.infoFieldValue}>-</Text>}
+          {formData?.supportReasons?.length > 0 ? (
+            <>
+              {formData?.supportReasons?.map((value, i) => (
+                <Text key={i} style={styles.infoFieldValue}>
+                  - {supportReasonTranslationByValue[value]}
+                </Text>
+              )) || <Text style={styles.infoFieldValue}>-</Text>}
+            </>
+          ) : (
+            <Text style={styles.infoFieldValue}>-</Text>
+          )}
         </View>
 
         {formData?.supportReasons?.includes("other") ? (
@@ -256,11 +262,17 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         <Text style={styles.pageTitle}>Suunnitelma</Text>
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>Suunnitellut tukitoimet</Text>
-          {formData?.supportActions?.map((value, i) => (
-            <Text key={i} style={styles.infoFieldValue}>
-              - {supportActionTranslationByValue[value]}
-            </Text>
-          )) || <Text style={styles.infoFieldValue}>-</Text>}
+          {formData?.supportActions?.length > 0 ? (
+            <>
+              {formData?.supportActions?.map((value, i) => (
+                <Text key={i} style={styles.infoFieldValue}>
+                  - {supportActionTranslationByValue[value]}
+                </Text>
+              )) || <Text style={styles.infoFieldValue}>-</Text>}
+            </>
+          ) : (
+            <Text style={styles.infoFieldValue}>-</Text>
+          )}
         </View>
 
         {formData?.supportActions?.includes("other") ? (
@@ -276,11 +288,12 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           <Text style={styles.infoFieldLabel}>
             Ennakkosuunnitelma ylioppilaskirjoituksiin
           </Text>
-          {formData?.matriculationExaminationSupport?.map((value, i) => (
-            <Text key={i} style={styles.infoFieldValue}>
-              - {matriculationActionTranslationByValue[value]}
-            </Text>
-          )) || <Text style={styles.infoFieldValue}>-</Text>}
+          {(formData?.matriculationExaminationSupport?.length > 0 &&
+            formData?.matriculationExaminationSupport?.map((value, i) => (
+              <Text key={i} style={styles.infoFieldValue}>
+                - {matriculationActionTranslationByValue[value]}
+              </Text>
+            ))) || <Text style={styles.infoFieldValue}>-</Text>}
         </View>
 
         {formData?.matriculationExaminationSupport?.includes("other") ? (
