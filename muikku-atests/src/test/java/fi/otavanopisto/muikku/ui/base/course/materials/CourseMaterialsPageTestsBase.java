@@ -1292,8 +1292,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //          Create note
           waitAndClick("#notebook");
           waitAndClickAndConfirm(".notebook__actions .icon-plus", ".notebook__editor.state-OPEN #note-entry-title", 3, 2000);
-//          waitAndClick(".notebook__actions .icon-plus");
-//          waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
           waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "First test note");
           String note = "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. Fusce vitae tortor lectus. Praesent imperdiet pulvinar nulla, et dictum quam faucibus et. Quisque dictum ligula at diam venenatis cursus. "
               + "Nullam efficitur diam id commodo interdum. Pellentesque neque lectus, bibendum ac neque ut, sodales commodo eros. Morbi ac sem tortor.";
@@ -1324,8 +1322,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
               + "The all mighty vendace is nigh! (edited)");
 //         Create second note
           waitAndClickAndConfirm(".notebook__actions .icon-plus", ".notebook__editor.state-OPEN #note-entry-title", 3, 2000);
-//          waitAndClick(".notebook__actions .icon-plus");
-//          waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
           waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "Second test note");
           note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In auctor massa ac gravida iaculis. Sed iaculis odio eget tortor auctor feugiat."
               + " Fusce urna dolor, aliquet cursus tempor vitae, rutrum nec urna. In luctus, tortor vel tempor cursus, leo diam venenatis est.";
