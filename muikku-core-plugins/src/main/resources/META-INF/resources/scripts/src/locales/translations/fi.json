@@ -940,7 +940,6 @@
       "tasks_student": "Opiskelijalle annetut tehtävät"
     }
   },
-
   "users": {
     "actions": {
       "create": "Luo käyttäjäryhmä",
@@ -1310,6 +1309,25 @@
       "updateError_page": "Materiaalisivun päivitys epäonnistui",
       "updateError_answers": "Tehtävän tilan päivitys epäonnistui",
       "updateError_compositeReplies": "Vastauksen päivitys epäonnistui"
+    }
+  },
+  "notebook": {
+    "actions": {
+      "add": "Lisää muistiinpano",
+      "edit": "Muokkaa muistiinpanoa",
+      "hideContent": "Piilota sisältö",
+      "organize": "Järjestele muistiinpanoja",
+      "remove": "Poista muistiinpano",
+      "showContent": "Näytä sisältö"
+    },
+    "content": {
+      "empty": "Ei muistiinpanoja",
+      "defaultPosition": "Oletuksena uusi muistiinpano luodaan listan viimeiseksi. Voit myös valita sijainnin listasta. Valintalaatikon valinta tallentuu muistiin.",
+      "defaultPosition_bottom": "Oletuksena uusi muistiinpano luodaan listan viimeiseksi. Voit myös valita sijainnin listasta. Valintalaatikon valinta tallentuu muistiin.",
+      "remove": "Oletko varma, että haluat poistaa muistiinpanon?"
+    },
+    "labels": {
+      "defaultPosition": "Oletussijainti"
     }
   },
 

@@ -335,7 +335,7 @@ class NoteEditor extends SessionStateComponent<
           <div className="form">
             <div className="form__row">
               <div className="form-element">
-                <label htmlFor="note-entry-title" className="">
+                <label htmlFor="note-entry-title">
                   {this.props.t("labels.title")}
                 </label>
 
@@ -366,8 +366,11 @@ class NoteEditor extends SessionStateComponent<
             {!this.props.note && (
               <div className="form__row">
                 <div className="form-element">
-                  {/* TODO: lokalisointi*/}
-                  <label>Oletus sijainti</label>
+                  <label>
+                    {this.props.t("labels.defaultPosition", {
+                      ns: "notebook",
+                    })}
+                  </label>
 
                   <Select
                     className="react-select-override"
@@ -386,41 +389,39 @@ class NoteEditor extends SessionStateComponent<
                       }),
                     }}
                   />
-
                   <div className="notebook__select-position-info">
-                    {/* TODO: lokalisointi*/}
                     {this.state.defaultLocation === "BOTTOM" ? (
                       <p>
-                        Oletuksena uusi muistiinpano luodaan listan viimeiseksi.
-                        Voit myös valita sijainnin listasta. Valintalaatikon
-                        valinta tallentuu muistiin
+                        {this.props.t("content.defaultPosition", {
+                          ns: "notebook",
+                          context: "bottom",
+                        })}
                       </p>
                     ) : (
                       <p>
-                        Oletuksena uusi muistiinpano luodaan listan
-                        ensimmäiseksi. Voit myös valita sijainnin listasta.
-                        Valintalaatikon valinta tallennetaan muistiin.
+                        {this.props.t("content.defaultPosition", {
+                          ns: "notebook",
+                        })}
                       </p>
                     )}
                   </div>
                 </div>
               </div>
             )}
-
-            {/* TODO: lokalisointi*/}
             <div className="form__buttons form__buttons--notebook">
               <Button
                 className="button button--dialog-execute"
                 disabled={this.state.locked}
                 onClick={this.handleSaveClick}
               >
-                Tallenna
+                {this.props.t("actions.save")}
               </Button>
               <Button
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked}
                 onClick={this.handleCancelClick}
               >
+                {this.props.t("actions.cancel")}
                 Peruuta
               </Button>
 
@@ -430,6 +431,10 @@ class NoteEditor extends SessionStateComponent<
                   disabled={this.state.locked}
                   onClick={this.handleDeleteDraftClick}
                 >
+                  {this.props.t("actions.remove", {
+                    ns: "common",
+                    context: "draf",
+                  })}
                   Poista luonnos
                 </Button>
               )}
@@ -471,6 +476,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation()(
+export default withTranslation("notebook")(
   connect(mapStateToProps, mapDispatchToProps)(NoteEditor)
 );

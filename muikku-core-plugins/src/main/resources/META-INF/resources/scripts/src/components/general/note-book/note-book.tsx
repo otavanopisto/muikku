@@ -35,6 +35,7 @@ import { useScroll } from "./hooks/useScroll";
 import { useDragDropManager } from "react-dnd";
 import Dropdown from "~/components/general/dropdown";
 import { useLocalStorage } from "usehooks-ts";
+import { useTranslation } from "react-i18next";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -90,6 +91,8 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
     []
   );
   const [editOrder, setEditOrder] = React.useState<boolean>(false);
+
+  const { t } = useTranslation("notebook");
 
   React.useEffect(() => {
     if (notes === null) {
@@ -289,7 +292,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
   return (
     <div className="notebook">
       <div className="notebook__actions">
-        <Dropdown openByHover content={<p>Lisää muistiinpano</p>}>
+        <Dropdown openByHover content={<p>{t("actions.add")}</p>}>
           <IconButton
             icon="plus"
             buttonModifiers={["notebook-action"]}
@@ -297,7 +300,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
             disablePropagation={true}
           />
         </Dropdown>
-        <Dropdown openByHover content={<p>Järjestele muistiinpanoja</p>}>
+        <Dropdown openByHover content={<p>{t("actions.organize")}</p>}>
           <IconButton
             icon="move"
             buttonModifiers={["notebook-action"]}
@@ -305,7 +308,10 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
             disablePropagation={true}
           />
         </Dropdown>
-        <Dropdown openByHover content={<p>Avaa kaikki</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.openAll", { ns: "common" })}</p>}
+        >
           <IconButton
             icon="arrow-down"
             buttonModifiers={["notebook-action"]}
@@ -313,7 +319,10 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
             disablePropagation={true}
           />
         </Dropdown>
-        <Dropdown openByHover content={<p>Sulje kaikki</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.closeAll", { ns: "common" })}</p>}
+        >
           <IconButton
             icon="arrow-up"
             buttonModifiers={["notebook-action"]}
@@ -331,8 +340,6 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         >
           <NoteEditor />
         </div>
-
-        {/* TODO: lokalisointi*/}
         <NoteList>
           {notebook.state === "LOADING" ? (
             <div className="empty-loader" />
@@ -342,7 +349,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
             )
           ) : (
             <div className="empty">
-              <span>Ei muistiinpanoja</span>
+              <span>{t("content.empty")}</span>
             </div>
           )}
         </NoteList>

@@ -9,6 +9,7 @@ import { StateType } from "~/reducers";
 import CkeditorContentLoader from "../../base/ckeditor-loader/content";
 import Button from "../button";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * NoteBookProps
@@ -68,7 +69,7 @@ interface NoteListItemProps {
  */
 export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
   const { open, onOpenClick, note } = props;
-
+  const { t } = useTranslation("notebook");
   const [showContent, setShowContent] = React.useState<boolean>(false);
   const [deleteIsActive, setDeleteIsActive] = React.useState<boolean>(false);
 
@@ -114,11 +115,16 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
         <div className="notebook__item-title" onClick={handleOpenClick}>
           {props.note.title}
         </div>
-        {/* TODO: lokalisointi*/}
         <div className="notebook__item-actions">
           <Dropdown
             openByHover
-            content={showContent ? <p>Sulje sisältö</p> : <p>Näytä sisältö</p>}
+            content={
+              showContent ? (
+                <p>{t("actions.hideContent")}</p>
+              ) : (
+                <p>{t("actions.showContent")}</p>
+              )
+            }
           >
             <IconButton
               icon="arrow-down"
@@ -127,7 +133,7 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
               buttonModifiers={["notebook-item-action", "note-item-content"]}
             />
           </Dropdown>
-          <Dropdown openByHover content={<p>Muokkaa muistiinpanoa</p>}>
+          <Dropdown openByHover content={<p>{t("actions.edit")}</p>}>
             <IconButton
               icon="pencil"
               onClick={handleEditClick}
@@ -135,7 +141,7 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
               buttonModifiers={["notebook-item-action"]}
             />
           </Dropdown>
-          <Dropdown openByHover content={<p>Poista muistiinpano</p>}>
+          <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
             <IconButton
               icon="trash"
               onClick={() => setDeleteIsActive(!deleteIsActive)}
@@ -145,23 +151,24 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
           </Dropdown>
         </div>
       </div>
-      {/* TODO: lokalisointi*/}
       <AnimateHeight
         height={deleteIsActive ? "auto" : 0}
         contentClassName="notebook__item-delete-container"
       >
         <div className="notebook__item-delete">
           <div className="notebook__item-description">
-            Haluatko varmasti poistaa muistiinpanon?
+            {t("content.remove")}
           </div>
           <div className="notebook__item-buttonset">
             <Button buttonModifiers={["fatal"]} onClick={handleDeleteClick}>
+              {t("actions.remove", { ns: "common" })}
               Poista
             </Button>
             <Button
               buttonModifiers={["cancel"]}
               onClick={() => setDeleteIsActive(false)}
             >
+              {t("actions.cancel", { ns: "common" })}
               Peruuta
             </Button>
           </div>
