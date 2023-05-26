@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.frontpage.ts",
   "scripts": {
+    "dev": "webpack serve --open",
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint . --ext .ts,.tsx",
@@ -96,10 +97,13 @@
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.29.4",
     "eslint-plugin-react-hooks": "4.3.0",
+    "html-webpack-plugin": "^5.5.1",
     "prettier": "2.6.0",
     "stylelint": "14.6.0",
     "stylelint-config-standard-scss": "3.0.0",
     "stylelint-declaration-strict-value": "1.8.0",
-    "stylelint-order": "5.0.0"
-  }
+    "stylelint-order": "5.0.0",
+    "webpack-dev-server": "^4.15.0"
+  },
+  "proxy": "dev.muikku.fi:8443"
 }
