@@ -20,6 +20,7 @@ import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugins.forum.events.ForumMessageSent;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
+import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumAreaSubscription;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -61,9 +62,16 @@ public class ForumSubscriptionNotifier {
       areaSubscriptions = forumAreaSubsciptionController.listByArea(forumArea);
     }
     
+    ForumThreadReply forumThreadReply = null;
+    
+    if (event.getReplyId() != null) {
+      forumThreadReply = forumController.getForumThreadReply(event.getReplyId());
+    }
+    
     ForumThread forumThread = forumController.getForumThread(event.getThreadId());
     UserEntity poster = userEntityController.findUserEntityById(event.getPosterUserEntityId());
     
+    String content = null;
 
     if (areaSubscriptions != null) {
       for (ForumAreaSubscription areaSubscription : areaSubscriptions) {
@@ -80,11 +88,18 @@ public class ForumSubscriptionNotifier {
         
         if ((poster != null) && (recipient != null)) {
           if (!Objects.equals(poster.getId(), recipient.getId())) {
+            
+            if (forumThreadReply != null) {
+              content = forumThreadReply.getMessage();
+            } else {
+              content = forumThread.getMessage();
+            }
+            
             Map<String, Object> params = new HashMap<String, Object>();
             User senderUser = userController.findUserByUserEntityDefaults(poster);
             params.put("sender", String.format("%s", senderUser.getDisplayName()));
             params.put("subject", forumThread.getTitle());
-            params.put("content", forumThread.getMessage());
+            params.put("content", content);
             if (event.getWorkspaceUrlName() != null) {
               params.put("url", String.format("%s/workspace/%s/discussions#" + forumArea.getId(), event.getBaseUrl(), event.getWorkspaceUrlName()));
 
@@ -107,17 +122,23 @@ public class ForumSubscriptionNotifier {
 
         if ((forumThread != null) && (poster != null) && (recipient != null)) {
           if (!Objects.equals(poster.getId(), recipient.getId())) {
+            if (forumThreadReply != null) {
+              content = forumThreadReply.getMessage();
+            } else {
+              content = forumThread.getMessage();
+            }
+            
             Map<String, Object> params = new HashMap<String, Object>();
             User senderUser = userController.findUserByUserEntityDefaults(poster);
             params.put("sender", String.format("%s", senderUser.getDisplayName()));
             params.put("subject", forumThread.getTitle());
-            params.put("content", forumThread.getMessage());
+            params.put("content", content);
             
             if (event.getWorkspaceUrlName() != null) {
-              params.put("url", String.format("%s/workspace/%s/discussions#" + forumArea.getId() + "/1/" + forumThread.getId(), event.getBaseUrl(), event.getWorkspaceUrlName()));
+              params.put("url", String.format("%s/workspace/%s/discussions#0/1/" + forumArea.getId() + "/" + forumThread.getId(), event.getBaseUrl(), event.getWorkspaceUrlName()));
 
             } else {
-              params.put("url", String.format("%s/discussion#" + forumArea.getId() + "/1/" + forumThread.getId(), event.getBaseUrl()));
+              params.put("url", String.format("%s/discussion#" + forumArea.getId() + "/1/" + forumArea.getId() + "/" + forumThread.getId(), event.getBaseUrl()));
             }
             notifierController.sendNotification(forumThreadNewMessageNotification, poster, recipient, params);
           }

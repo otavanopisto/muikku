@@ -390,7 +390,12 @@ class Message extends React.Component<MessageProps, MessageState> {
                   "plugin.wcag.messageSendDate.aria.label"
                 )}
               >
-                {this.props.i18n.time.format(this.props.message.created)}
+                {`${this.props.i18n.time.format(
+                  this.props.message.created
+                )} - Klo ${this.props.i18n.time.format(
+                  this.props.message.created,
+                  "LT"
+                )}`}
               </span>
             </div>
           </div>
