@@ -338,7 +338,7 @@ public class UserRESTService extends AbstractRESTService {
       } else {
         Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
         
-        // True if logged user is student's counselor & searchable user is not student
+        // True if logged user is student's counselor / searchable user is not student
         if (amICounselor || !isStudent) {
           result.put("moreInfoForLoggedUser", "true");
         } else {
@@ -346,7 +346,9 @@ public class UserRESTService extends AbstractRESTService {
         }
       }
     } else {
-      result.put("moreInfoForLoggedUser", "false");
+      if (!isStudent) {
+        result.put("moreInfoForLoggedUser", "true");
+      }
     }
     
     if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && isStudent) {
@@ -370,7 +372,7 @@ public class UserRESTService extends AbstractRESTService {
         result.put("hasAvatar", hasAvatar.toString());
       }
         
-      if (result.get("moreInfoForLoggedUser").equals("true") || loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+      if (result.get("moreInfoForLoggedUser").equals("true")) {
       
         if (d.equals(UserInfo.EMAIL)) {
           String email = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
