@@ -15,6 +15,8 @@ import {
   toggleNotebookEditor,
   DeleteNotebookEntry,
   deleteNotebookEntry,
+  UpdateSelectedNotePosition,
+  updateSelectedNotePosition,
 } from "../../../actions/notebook/notebook";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceType } from "~/reducers/workspaces/index";
@@ -64,6 +66,7 @@ interface NoteBookProps {
   updateNotebookEntriesOrder: UpdateNotebookEntriesOrder;
   toggleNotebookEditor: ToggleNotebookEditor;
   deleteNotebookEntry: DeleteNotebookEntry;
+  updateSelectedNotePosition: UpdateSelectedNotePosition;
 }
 
 /**
@@ -78,6 +81,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
     updateNotebookEntriesOrder,
     toggleNotebookEditor,
     deleteNotebookEntry,
+    updateSelectedNotePosition,
   } = props;
   const { notes, noteInTheEditor } = notebook;
 
@@ -180,7 +184,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
    * @returns note item
    */
   const renderNote = React.useCallback(
-    (note: WorkspaceNote, index: number) => {
+    (note: WorkspaceNote, index: number, isLast: boolean) => {
       /**
        * Handles opening/closing note specific note
        *
@@ -214,25 +218,59 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         deleteNotebookEntry({ workspaceNoteId: noteId });
       };
 
+      /**
+       * handleChoosePositionClick
+       *
+       * @param index of the following note
+       */
+      const handleChoosePositionClick =
+        (index: number) =>
+        (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          updateSelectedNotePosition(index);
+        };
+
       return (
-        <DraggableElement
-          key={note.id}
-          id={note.id}
-          index={index}
-          active={editOrder}
-          onElementDrag={handleElementDrag}
-          onElementDrop={handleElementDrop}
-        >
-          <NoteListItem
+        <div key={note.id}>
+          {notebook.noteEditorOpen && index === 0 && (
+            <AddHere
+              isActive={notebook.noteEditedPosition === 0}
+              onClick={handleChoosePositionClick(0)}
+            />
+          )}
+
+          <DraggableElement
             key={note.id}
-            note={note}
-            open={openedItems.includes(note.id)}
-            onOpenClick={handleOpenNoteClick}
-            isEdited={noteInTheEditor && noteInTheEditor.id === note.id}
-            onEditClick={handleEditNoteClick}
-            onDeleteClick={handleDeleteNoteClick}
-          />
-        </DraggableElement>
+            id={note.id}
+            index={index}
+            active={editOrder}
+            onElementDrag={handleElementDrag}
+            onElementDrop={handleElementDrop}
+          >
+            <NoteListItem
+              key={note.id}
+              note={note}
+              open={openedItems.includes(note.id)}
+              onOpenClick={handleOpenNoteClick}
+              isEdited={noteInTheEditor && noteInTheEditor.id === note.id}
+              onEditClick={handleEditNoteClick}
+              onDeleteClick={handleDeleteNoteClick}
+            />
+          </DraggableElement>
+
+          {notebook.noteEditorOpen ? (
+            isLast ? (
+              <AddHere
+                isActive={notebook.noteEditedPosition === null}
+                onClick={handleChoosePositionClick(null)}
+              />
+            ) : (
+              <AddHere
+                isActive={notebook.noteEditedPosition === index + 1}
+                onClick={handleChoosePositionClick(index + 1)}
+              />
+            )
+          ) : null}
+        </div>
       );
     },
     [
@@ -241,8 +279,12 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
       handleElementDrag,
       handleElementDrop,
       noteInTheEditor,
+      notebook.noteEditedPosition,
+      notebook.noteEditorOpen,
       openedItems,
+      setOpenedItems,
       toggleNotebookEditor,
+      updateSelectedNotePosition,
     ]
   );
 
@@ -292,11 +334,14 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
           <NoteEditor />
         </div>
 
+        {/* TODO: lokalisointi*/}
         <NoteList>
           {notebook.state === "LOADING" ? (
             <div className="empty-loader" />
           ) : notes ? (
-            notes.map((note, index) => renderNote(note, index))
+            notes.map((note, index, array) =>
+              renderNote(note, index, array.length - 1 === index)
+            )
           ) : (
             <div className="empty">
               <span>Ei muistiinpanoja</span>
@@ -332,9 +377,50 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       updateNotebookEntriesOrder,
       toggleNotebookEditor,
       deleteNotebookEntry,
+      updateSelectedNotePosition,
     },
     dispatch
   );
 }
+
+/**
+ * AddHereProps
+ */
+interface AddHereProps {
+  isActive: boolean;
+  onClick: React.MouseEventHandler<unknown>;
+}
+
+/**
+ * AddHere
+ * @param props props
+ * @returns JSX.Element
+ */
+const AddHere = (props: AddHereProps) => {
+  const { isActive, onClick } = props;
+
+  const handleIconClick = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.stopPropagation();
+      onClick(e);
+    },
+    [onClick]
+  );
+
+  return (
+    <div
+      className={
+        isActive
+          ? "notebook__set-note-location notebook__set-note-location--selected"
+          : "notebook__set-note-location"
+      }
+    >
+      <span
+        className="notebook__set-note-location-icon icon-list-add"
+        onClick={handleIconClick}
+      />
+    </div>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(NoteBook);
