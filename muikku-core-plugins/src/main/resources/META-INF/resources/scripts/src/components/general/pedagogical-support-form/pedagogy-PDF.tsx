@@ -131,14 +131,25 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         />
       </View>
       <View style={styles.headerInfoContainer}>
-        <Text style={styles.headerTitle}>Pedagogisen tuen suunnitelma</Text>
-        <Text style={styles.headerSubtitle}>Salassa pidettävä</Text>
-        <Text
-          style={styles.headerPageNumber}
-          render={({ pageNumber, totalPages }) =>
-            `${pageNumber} (${totalPages})`
-          }
-        />
+        <View style={styles.headerInfoContainerMain}>
+          <Text style={styles.headerTitle}>Pedagogisen tuen suunnitelma</Text>
+        </View>
+        <View style={styles.headerInfoContainerAside}>
+          <View style={styles.headerInfoContainerAsidePrimary}>
+            <Text style={styles.headerSubtitle}>Salassa pidettävä</Text>
+            <Text style={styles.headerSubtitle}>
+              {moment().format("D.M.YYYY")}
+            </Text>
+          </View>
+          <View style={styles.headerInfoContainerAsideSecondary}>
+            <Text
+              style={styles.headerPageNumber}
+              render={({ pageNumber, totalPages }) =>
+                `${pageNumber} (${totalPages})`
+              }
+            />
+          </View>
+        </View>
       </View>
     </View>
   );
