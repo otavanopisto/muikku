@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -214,25 +215,6 @@ public class UserRESTService extends AbstractRESTService {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     UserEntityProperty property = userEntityController.getUserEntityPropertyByKey(loggedUserEntity, key);
     return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue(), property == null ? null : property.getUserEntity().getId())).build();
-  }
-  
-  @GET
-  @Path("/defaultEmailAddress")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getCurrentUserDefaultEmailAddress() {
-    String email = null;
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      email = userController.getUserDefaultEmailAddress(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-    
-    // Return value should really be text/plain but due to an mApi bug,
-    // the address has to be returned as a json string, hence the quotes
-    
-    return Response.ok(String.format("\"%s\"", email)).build();
   }
 
   @GET
@@ -1725,7 +1707,7 @@ public class UserRESTService extends AbstractRESTService {
     
     String emails = null;
     if (userIdentifier != null) {
-      List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(userIdentifier);
+      List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(userIdentifier).stream().map(UserEmailEntity::getAddress).collect(Collectors.toList());
       try {
         emails = new ObjectMapper().writeValueAsString(foundEmails);
       }
@@ -1890,7 +1872,7 @@ public class UserRESTService extends AbstractRESTService {
           
           String email = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
           
-          Long userEntityId = new Long((Integer) o.get("userEntityId"));
+          Long userEntityId = Long.valueOf((Integer) o.get("userEntityId"));
           UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
           Map<String, String> propertyMap = new HashMap<String, String>();
           if (userEntity != null) {
@@ -1918,7 +1900,7 @@ public class UserRESTService extends AbstractRESTService {
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
-            new Long((Integer) o.get("userEntityId")),
+            Long.valueOf((Integer) o.get("userEntityId")),
             (String) o.get("firstName"),
             (String) o.get("lastName"), 
             email,

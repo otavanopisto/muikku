@@ -160,10 +160,6 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).findUser(userIdentifier);
   }
   
-  public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
-    return getUserBridge(schoolDataSource).getUserDefaultEmailAddress(userIdentifier);
-  }
-  
   public User increaseStudyTime(SchoolDataIdentifier schoolDataIdentifier, Integer months) {
     return getUserBridge(schoolDataIdentifier.getDataSource()).increaseStudyTime(schoolDataIdentifier.getIdentifier(), months);
   }
