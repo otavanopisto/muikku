@@ -3,8 +3,6 @@ import * as React from "react";
 import { HistoryEntry } from "~/@types/pedagogy-form";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
-/* import { IconButton } from "~/components/general/button"; */
-import "~/sass/elements/hops.scss";
 import "~/sass/elements/hops.scss";
 import { formFieldsWithTranslation } from "./helpers";
 
