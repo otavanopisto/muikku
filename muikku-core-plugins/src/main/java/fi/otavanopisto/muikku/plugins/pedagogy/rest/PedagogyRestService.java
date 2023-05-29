@@ -214,6 +214,14 @@ public class PedagogyRestService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getFormState(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+
+    // Access check
+    
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true);
+    if (!access.isAccessible()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
     return Response.ok(form == null ? PedagogyFormState.INACTIVE : form.getState()).build();
   }
