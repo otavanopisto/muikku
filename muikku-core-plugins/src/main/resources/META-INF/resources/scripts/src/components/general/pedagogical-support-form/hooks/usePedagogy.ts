@@ -266,6 +266,8 @@ export const usePedagogy = (
         extraDetails !== "" ? extraDetails : null
       );
 
+      console.log("updatedData", updatedData);
+
       unstable_batchedUpdates(() => {
         setEditIsActive(false);
         setData(updatedData);
@@ -301,51 +303,55 @@ export const usePedagogy = (
       ...JSON.parse(data.formData),
     } as FormData;
 
-    dataToUpdate = {
-      ...dataToUpdate,
-      studentOpinionOfSupport: dataToUpdate.studentOpinionOfSupport.map(
-        (opinion, index) => {
-          const oldOpinion = oldData.studentOpinionOfSupport[index];
+    // If there is no oldData to compare to,
+    // there is no need to check if something has changed
+    if (Object.keys(oldData).length > 0) {
+      dataToUpdate = {
+        ...dataToUpdate,
+        studentOpinionOfSupport: dataToUpdate.studentOpinionOfSupport.map(
+          (opinion, index) => {
+            const oldOpinion = oldData.studentOpinionOfSupport[index];
 
-          if (oldOpinion) {
-            const opinionHasChanged = !objectsAreSame<Opinion>(
-              opinion,
-              oldOpinion
-            );
+            if (oldOpinion) {
+              const opinionHasChanged = !objectsAreSame<Opinion>(
+                opinion,
+                oldOpinion
+              );
 
-            if (opinionHasChanged) {
-              return {
-                ...opinion,
-                updatedDate: new Date(),
-              };
+              if (opinionHasChanged) {
+                return {
+                  ...opinion,
+                  updatedDate: new Date(),
+                };
+              }
             }
+
+            return opinion;
           }
+        ),
+        schoolOpinionOfSupport: dataToUpdate.schoolOpinionOfSupport.map(
+          (opinion, index) => {
+            const oldOpinion = oldData.schoolOpinionOfSupport[index];
 
-          return opinion;
-        }
-      ),
-      schoolOpinionOfSupport: dataToUpdate.schoolOpinionOfSupport.map(
-        (opinion, index) => {
-          const oldOpinion = oldData.schoolOpinionOfSupport[index];
+            if (oldOpinion) {
+              const opinionHasChanged = !objectsAreSame<Opinion>(
+                opinion,
+                oldOpinion
+              );
 
-          if (oldOpinion) {
-            const opinionHasChanged = !objectsAreSame<Opinion>(
-              opinion,
-              oldOpinion
-            );
-
-            if (opinionHasChanged) {
-              return {
-                ...opinion,
-                updatedDate: new Date(),
-              };
+              if (opinionHasChanged) {
+                return {
+                  ...opinion,
+                  updatedDate: new Date(),
+                };
+              }
             }
-          }
 
-          return opinion;
-        }
-      ),
-    };
+            return opinion;
+          }
+        ),
+      };
+    }
 
     return (await promisify(
       mApi().pedagogy.form.formData.update(studentId, {

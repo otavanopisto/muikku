@@ -43,7 +43,12 @@
 }
 
 .label--draft {
-  background-color: lighten($color-clear, 40%);
+  background-color: lighten($color-clear, 30%);
+  width: fit-content;
+}
+
+.label--mandatory {
+  background-color: lighten($color-journal-page, 30%);
   width: fit-content;
 }
 

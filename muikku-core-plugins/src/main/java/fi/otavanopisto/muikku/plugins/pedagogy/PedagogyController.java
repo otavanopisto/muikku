@@ -138,7 +138,7 @@ public class PedagogyController {
           url.append("://");
           url.append(httpRequest.getServerName());
           url.append("/guider#?c=");
-          url.append(sessionController.getLoggedUserIdentifier());
+          url.append(sessionController.getLoggedUser().toId());
 
           String subject = localeController.getText(
               sessionController.getLocale(),
@@ -232,7 +232,7 @@ public class PedagogyController {
           url.append("://");
           url.append(httpRequest.getServerName());
           url.append("/guider#?c=");
-          url.append(sessionController.getLoggedUserIdentifier());
+          url.append(sessionController.getLoggedUser().toId());
 
           String subject = localeController.getText(
               sessionController.getLocale(),
