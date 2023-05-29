@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import org.parboiled.common.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.dao.users.UserEmailEntityDAO;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
