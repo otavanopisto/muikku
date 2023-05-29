@@ -537,7 +537,7 @@ public class ForumRESTService extends PluginRESTService {
           newThread.getSticky(), 
           newThread.getLocked());
 
-      forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, null));
+      forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), null, sessionController.getLoggedUserEntity().getId(), baseUrl, null));
       
       return Response.ok(
         restModels.restModel(thread)
@@ -776,10 +776,10 @@ public class ForumRESTService extends PluginRESTService {
             return Response.status(Status.BAD_REQUEST).entity("Parent reply is in wrong thread").build();
           }
         }
+        ForumThreadReply reply = forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply);
+        forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), forumThread.getId(), reply.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, null));
         
-        forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), forumThread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, null));
-        
-        return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply))).build();
+        return Response.ok(createRestModel(reply)).build();
       } else {
         return Response.status(Status.FORBIDDEN).build();
       }
