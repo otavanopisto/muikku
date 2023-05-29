@@ -55,7 +55,7 @@ public class UserController {
   public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
     return userSchoolDataController.getUserDefaultEmailAddress(schoolDataSource, userIdentifier);
   }
-
+  
   public User findUserByIdentifier(SchoolDataIdentifier userIdentifier) {
     if (userIdentifier == null) {
       return null; 
