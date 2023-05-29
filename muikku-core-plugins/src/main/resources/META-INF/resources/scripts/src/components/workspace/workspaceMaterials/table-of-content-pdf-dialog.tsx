@@ -81,6 +81,7 @@ const TableOfContentPDFDialog = (props: TableOfContentPDFDialogProps) => {
       onClose={onClose}
       title="Sisällysluettelo"
       content={content}
+      disableScroll
     >
       {children}
     </Dialog>
