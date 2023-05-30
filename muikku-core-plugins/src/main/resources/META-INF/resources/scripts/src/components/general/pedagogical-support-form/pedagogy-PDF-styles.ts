@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     width: 50,
   },
   headerInfoContainer: {
-    alignItems: "center",
+    alignItems: "flex-start",
     flexBasis: "auto",
     display: "flex",
     flexDirection: "row",
@@ -67,7 +67,7 @@ export const styles = StyleSheet.create({
     flexShrink: 0,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 12,
     fontFamily: "Helvetica",
     flexBasis: "auto",
     flexShrink: 1,
