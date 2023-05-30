@@ -108,6 +108,14 @@
   }
 }
 
+.dialog__window--notebook-pdf-dialog {
+  @include breakpoint($breakpoint-pad) {
+    height: 90%;
+    max-width: 1000px;
+    width: 90%;
+  }
+}
+
 .dialog__window--assignments {
   @include breakpoint($breakpoint-pad) {
     max-width: 1000px;
@@ -436,6 +444,10 @@
   padding: $dialog-content-padding;
   position: relative;
   width: 100%;
+}
+
+.dialog__content--notebook-pdf-dialog {
+  max-height: 100%;
 }
 
 .dialog__content--disconnect-warning {

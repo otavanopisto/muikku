@@ -22,11 +22,14 @@ interface AvatarProps {
 const Avatar = (props: AvatarProps) => {
   const { id, userCategory, hasImage, firstName, avatarAriaLabel } = props;
 
-  const category =
-    (userCategory && userCategory) ||
-    (id && (id > 10 ? (id % 10) + 1 : id)) ||
+  const category = React.useMemo(() => {
+    if (userCategory) return userCategory;
+    if (id) {
+      return id > 10 ? (id % 10) + 1 : id;
+    }
     // This is a nullcheck. Makes the avatar readable (and colourful!) if the id is "null"
-    Math.floor(Math.random() * 10 + 1);
+    return Math.floor(Math.random() * 10 + 1);
+  }, [id, userCategory]);
 
   return hasImage ? (
     <object

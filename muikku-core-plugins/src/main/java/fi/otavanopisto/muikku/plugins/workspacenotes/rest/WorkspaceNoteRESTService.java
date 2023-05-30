@@ -64,7 +64,8 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    * WorkspaceNoteRestModel: = { 
    * title: "title here",
    * workspaceNote: "text here",
-   * workspaceEntityId: 123
+   * workspaceEntityId: 123,
+   * nextSiblingId: 12
    * };
    * 
    * returns:
@@ -96,7 +97,12 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Workspace entity not found").build();
     }
     
-    WorkspaceNote newWorkspaceNote = workspaceNoteController.createWorkspaceNote(sessionController.getLoggedUserEntity().getId(), workspaceNote.getTitle(), workspaceNote.getWorkspaceNote(), workspaceEntity.getId());
+    WorkspaceNote referenceNote = null;
+    if (workspaceNote.getNextSiblingId() != null) {
+      referenceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNote.getNextSiblingId());
+    }
+    
+    WorkspaceNote newWorkspaceNote = workspaceNoteController.createWorkspaceNote(sessionController.getLoggedUserEntity().getId(), workspaceNote.getTitle(), workspaceNote.getWorkspaceNote(), workspaceEntity.getId(), referenceNote);
 
     return Response.ok(toRestModel(newWorkspaceNote)).build();
   }
