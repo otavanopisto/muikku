@@ -692,5 +692,4 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-
 }

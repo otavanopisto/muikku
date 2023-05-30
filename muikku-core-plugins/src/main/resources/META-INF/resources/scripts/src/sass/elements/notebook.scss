@@ -82,6 +82,7 @@
   border: 1px solid $color-default-separator-border;
   border-radius: 3px;
   box-shadow: 0 0 15px rgba(0 0 0 / 2%);
+  margin-bottom: 5px;
   padding: 10px;
   width: 100%;
 
@@ -123,7 +124,6 @@
   align-items: flex-start;
   display: flex;
   justify-content: space-between;
-  margin: 0 0 10px;
 }
 
 .notebook__item-title {
@@ -152,15 +152,72 @@
     }
   }
 
-  p {
-    margin: 10px 0;
+  h3:first-child {
+    font-weight: 300;
+    margin-top: 10px;
   }
 
-  p:first-child {
+  h4:first-child {
     margin-top: 0;
   }
 
-  p:last-child {
-    margin-bottom: 0;
+  p {
+    margin: 10px 0;
   }
+}
+
+.notebook-pdf {
+  height: 100%;
+  width: 100%;
+}
+
+.notebook__set-note-location {
+  align-items: center;
+  color: $color-default-separator-border;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 5px 0 10px;
+  width: 100%;
+}
+
+.notebook__set-note-location::before,
+.notebook__set-note-location::after {
+  border-bottom: 1px solid $color-default-separator-border;
+  content: "";
+  height: 0;
+  width: 100%;
+}
+
+.notebook__set-note-location--selected {
+  .notebook__set-note-location-icon {
+    background-color: $color-execute;
+    border-color: $color-execute;
+    color: $color-default;
+  }
+}
+
+.notebook__set-note-location-icon {
+  background-color: $color-default;
+  border: 2px solid lighten($color-execute, 10%);
+  border-radius: 50%;
+  color: lighten($color-execute, 10%);
+  cursor: pointer;
+  font-size: 1.25rem;
+  margin: 0 5px;
+  padding: 5px;
+  transition: all 0.2s ease-in-out;
+  z-index: 999;
+}
+
+.notebook__set-note-location-icon:hover {
+  background-color: lighten($color-execute, 10%);
+  border-color: lighten($color-execute, 10%);
+  color: $color-default;
+}
+
+.notebook__select-position-info {
+  font-size: 0.8125rem;
+  margin: 5px 0 0;
+  padding: 5px 0 0;
 }
