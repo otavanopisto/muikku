@@ -9,7 +9,7 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 
 /**
- * MatriculationExaminationWizardDialogProps
+ * WarningDialogProps
  */
 interface WarningDialogProps {
   i18n: i18nType;
@@ -21,12 +21,12 @@ interface WarningDialogProps {
 }
 
 /**
- * MatriculationExaminationWizardDialogState
+ * WarningDialogState
  */
 interface WarningDialogState {}
 
 /**
- * MatriculationExaminationWizardDialog
+ * WarningDialog
  */
 class WarningDialog extends React.Component<
   WarningDialogProps,

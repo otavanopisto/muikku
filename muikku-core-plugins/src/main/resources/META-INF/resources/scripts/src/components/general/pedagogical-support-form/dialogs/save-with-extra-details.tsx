@@ -11,7 +11,7 @@ import { formFieldsWithTranslation } from "../helpers";
 import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
 
 /**
- * MatriculationExaminationWizardDialogProps
+ * SaveExtraDetailsDialogProps
  */
 interface SaveExtraDetailsDialogProps {
   i18n: i18nType;
@@ -24,12 +24,12 @@ interface SaveExtraDetailsDialogProps {
 }
 
 /**
- * MatriculationExaminationWizardDialogState
+ * SaveExtraDetailsDialogState
  */
 interface SaveExtraDetailsDialogState {}
 
 /**
- * MatriculationExaminationWizardDialog
+ * SaveExtraDetailsDialog
  */
 class SaveExtraDetailsDialog extends React.Component<
   SaveExtraDetailsDialogProps,

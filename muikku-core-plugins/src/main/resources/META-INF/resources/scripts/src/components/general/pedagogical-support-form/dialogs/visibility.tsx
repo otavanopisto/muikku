@@ -10,7 +10,7 @@ import { AnyActionType } from "~/actions";
 import { Visibility } from "~/@types/pedagogy-form";
 
 /**
- * MatriculationExaminationWizardDialogProps
+ * VisibilityDialogProps
  */
 interface VisibilityDialogProps {
   i18n: i18nType;
@@ -22,12 +22,12 @@ interface VisibilityDialogProps {
 }
 
 /**
- * MatriculationExaminationWizardDialogState
+ * VisibilityDialogState
  */
 interface VisibilityDialogState {}
 
 /**
- * MatriculationExaminationWizardDialog
+ * VisibilityDialog
  */
 class VisibilityDialog extends React.Component<
   VisibilityDialogProps,

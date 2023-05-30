@@ -10,7 +10,7 @@ import { AnyActionType } from "~/actions";
 import { Visibility } from "~/@types/pedagogy-form";
 
 /**
- * MatriculationExaminationWizardDialogProps
+ * VisibilityAndApprovalDialogProps
  */
 interface VisibilityAndApprovalDialogProps {
   i18n: i18nType;
@@ -25,12 +25,12 @@ interface VisibilityAndApprovalDialogProps {
 }
 
 /**
- * MatriculationExaminationWizardDialogState
+ * VisibilityAndApprovalDialogState
  */
 interface VisibilityAndApprovalDialogState {}
 
 /**
- * MatriculationExaminationWizardDialog
+ * VisibilityAndApprovalDialog
  */
 class VisibilityAndApprovalDialog extends React.Component<
   VisibilityAndApprovalDialogProps,
