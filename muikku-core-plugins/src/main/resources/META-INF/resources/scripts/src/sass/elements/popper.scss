@@ -4,6 +4,8 @@
 @import "../base/breakpoints";
 
 .popover {
+  @include text;
+
   background-color: $color-default;
   border: 1px solid $color-default-separator-border;
   border-radius: 4px;
