@@ -33,6 +33,7 @@ import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestMode
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
+
 public interface UserSchoolDataBridge {
     
   /**
