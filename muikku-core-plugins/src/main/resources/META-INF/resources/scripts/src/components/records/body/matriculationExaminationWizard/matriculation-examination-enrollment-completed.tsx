@@ -80,8 +80,8 @@ export class MatriculationExaminationEnrollmentCompleted extends React.Component
               </p>
               <p>
                 Tulosta lomake, allekirjoita ja päivää se ja lähetä skannattuna
-                tai kuvana yo-ilmoittautumiset@otavia.fi tai kirjeitse Otavia/Nettilukio,
-                Otavantie 2B, 50670 Otava.
+                tai kuvana yo-ilmoittautumiset@otavia.fi tai kirjeitse
+                Otavia/Nettilukio, Otavantie 2B, 50670 Otava.
               </p>
               <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
             </div>
