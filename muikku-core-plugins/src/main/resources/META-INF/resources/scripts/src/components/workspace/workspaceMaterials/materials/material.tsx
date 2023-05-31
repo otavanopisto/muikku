@@ -124,6 +124,17 @@ class WorkspaceMaterial extends React.Component<
       }
     }
 
+    let isDisabled = false;
+
+    if (this.props.workspace.activity) {
+      isDisabled = this.props.workspace.activity.assessmentState.some(
+        (a) =>
+          a.state === "pending" ||
+          a.state === "pending_fail" ||
+          a.state === "pending_pass"
+      );
+    }
+
     return (
       <LazyLoader
         useChildrenAsLazy={true}
@@ -148,8 +159,8 @@ class WorkspaceMaterial extends React.Component<
             material={this.props.materialContentNode}
             workspace={this.props.workspace}
             compositeReplies={this.props.compositeReplies}
-            answerable={this.props.status.loggedIn}
-            readOnly={!this.props.status.loggedIn}
+            answerable={this.props.status.loggedIn && !isDisabled}
+            readOnly={!this.props.status.loggedIn || isDisabled}
             onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
