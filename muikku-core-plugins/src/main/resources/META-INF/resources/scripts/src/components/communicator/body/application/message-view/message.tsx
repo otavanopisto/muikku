@@ -392,7 +392,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               >
                 {`${this.props.i18n.time.format(
                   this.props.message.created
-                )} - Klo ${this.props.i18n.time.format(
+                )} klo ${this.props.i18n.time.format(
                   this.props.message.created,
                   "LT"
                 )}`}
