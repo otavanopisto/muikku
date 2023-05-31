@@ -8,10 +8,13 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
@@ -29,6 +32,7 @@ import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
+
 
 public interface UserSchoolDataBridge {
     
@@ -129,6 +133,24 @@ public interface UserSchoolDataBridge {
    * @param identifier user's identifier to be removed
    */
   public void removeUser(String identifier);
+  
+  /**
+   * Returns contact info of the given student.
+   * 
+   * @param userIdentifier Student identifier
+   * 
+   * @return Student's contact info
+   */
+  public UserContactInfo getStudentContactInfo(String userIdentifier);
+  
+  /**
+   * Returns the current user's guidance relation to the given student.
+   * 
+   * @param studentIdentifier Student identifier
+   * 
+   * @return User's guidance relation to the given student
+   */
+  public StudentGuidanceRelation getGuidanceRelation(String studentIdentifier);
   
   /**
    * Increases student's study time end by given months.
@@ -278,6 +300,8 @@ public interface UserSchoolDataBridge {
   public List<GroupUser> listGroupUsersByGroupAndType(String groupIdentifier, GroupUserType type);
 
   public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers);
+  
+  public List<SpecEdTeacher> listStudentSpecEdTeachers(SchoolDataIdentifier studentIdentifier, boolean includeGuidanceCouncelors, boolean onlyMessageReceivers);
   
   public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword);
 

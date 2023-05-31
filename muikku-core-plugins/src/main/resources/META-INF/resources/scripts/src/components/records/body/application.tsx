@@ -24,6 +24,10 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
+import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
+import { FormState } from "~/@types/pedagogy-form";
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
 
 /**
  * StudiesApplicationProps
@@ -45,13 +49,16 @@ type StudiesTab =
   | "HOPS"
   | "SUMMARY"
   | "YO"
-  | "STUDY_INFO";
+  | "STUDY_INFO"
+  | "PEDAGOGY_FORM";
 
 /**
  * StudiesApplicationState
  */
 interface StudiesApplicationState {
   activeTab: StudiesTab;
+  loading: boolean;
+  pedagogyFormState?: FormState;
 }
 
 /**
@@ -69,6 +76,7 @@ class StudiesApplication extends React.Component<
     super(props);
 
     this.state = {
+      loading: false,
       activeTab: "SUMMARY",
     };
   }
@@ -76,7 +84,12 @@ class StudiesApplication extends React.Component<
   /**
    * componentDidMount
    */
-  componentDidMount() {
+  async componentDidMount() {
+    this.setState({ loading: true });
+
+    const state = await this.loadPedagogyFormState();
+
+    this.setState({ loading: false, pedagogyFormState: state });
     /**
      * If page is refreshed, we need to check hash which
      * tab was opened and set that at the start to state as
@@ -107,6 +120,12 @@ class StudiesApplication extends React.Component<
         });
         break;
 
+      case "pedagogy-form":
+        this.setState({
+          activeTab: "PEDAGOGY_FORM",
+        });
+        break;
+
       default:
         this.setState({
           activeTab: "SUMMARY",
@@ -114,6 +133,17 @@ class StudiesApplication extends React.Component<
         break;
     }
   }
+
+  /**
+   * loadPedagogyFormState
+   */
+  loadPedagogyFormState = async () =>
+    (await promisify(
+      mApi().pedagogy.form.state.read(
+        this.props.status.userSchoolDataIdentifier
+      ),
+      "callback"
+    )()) as FormState;
 
   /**
    * Returns whether section with given hash should be visible or not
@@ -141,6 +171,11 @@ class StudiesApplication extends React.Component<
           (this.props.hops.value.goalMatriculationExam === "yes" ||
             this.props.hops.value.goalMatriculationExam === "maybe")
         );
+      case "PEDAGOGY_FORM":
+        return (
+          this.state?.pedagogyFormState === "PENDING" ||
+          this.state?.pedagogyFormState === "APPROVED"
+        );
     }
 
     return true;
@@ -152,7 +187,7 @@ class StudiesApplication extends React.Component<
    * @param hash hash
    */
   onTabChange = (
-    id: "RECORDS" | "HOPS" | "SUMMARY" | "YO",
+    id: "RECORDS" | "HOPS" | "SUMMARY" | "YO" | "PEDAGOGY_FORM",
     hash?: string | Tab
   ) => {
     if (hash) {
@@ -224,6 +259,20 @@ class StudiesApplication extends React.Component<
           </ApplicationPanelBody>
         ),
       },
+      {
+        id: "PEDAGOGY_FORM",
+        name: "Pedagogisen tuen suunnitelma",
+        hash: "pedagogy-form",
+        type: "pedagogy-form",
+        component: (
+          <ApplicationPanelBody modifier="tabs">
+            <UpperSecondaryPedagogicalSupportWizardForm
+              userRole="STUDENT"
+              studentId={this.props.status.userSchoolDataIdentifier}
+            />
+          </ApplicationPanelBody>
+        ),
+      },
     ];
 
     panelTabs = panelTabs
@@ -233,7 +282,7 @@ class StudiesApplication extends React.Component<
     /**
      * Just because we need to have all tabs ready first before rendering Application panel
      */
-    const ready = this.props.hops.status === "READY";
+    const ready = this.props.hops.status === "READY" || !this.state.loading;
 
     return (
       <ApplicationPanel

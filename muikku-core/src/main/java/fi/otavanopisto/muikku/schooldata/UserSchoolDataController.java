@@ -22,11 +22,14 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
@@ -158,6 +161,14 @@ public class UserSchoolDataController {
   
   public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).findUser(userIdentifier);
+  }
+  
+  public UserContactInfo getStudentContactInfo(String schoolDataSource, String userIdentifier) {
+    return getUserBridge(schoolDataSource).getStudentContactInfo(userIdentifier);
+  }
+  
+  public StudentGuidanceRelation getGuidanceRelation(String schoolDataSource, String studentIdentifier) {
+    return getUserBridge(schoolDataSource).getGuidanceRelation(studentIdentifier);
   }
   
   public User increaseStudyTime(SchoolDataIdentifier schoolDataIdentifier, Integer months) {
@@ -528,6 +539,16 @@ public class UserSchoolDataController {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listStudentGuidanceCounselors(studentIdentifier, onlyMessageReceivers);
+  }
+  
+  public List<SpecEdTeacher> listStudentSpecEdTeachers(SchoolDataIdentifier studentIdentifier,
+      boolean includeGuidanceCouncelors, boolean onlyMessageReceivers) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).listStudentSpecEdTeachers(studentIdentifier, includeGuidanceCouncelors, onlyMessageReceivers);
+    
   }
   
 }
