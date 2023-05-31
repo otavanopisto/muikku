@@ -29,6 +29,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSpecEdTeacher;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentMatriculationEligibility;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
@@ -47,9 +48,12 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
@@ -712,7 +716,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       // Convert Pyramus student group id to Muikku userGroupEntityId
 
       SchoolDataIdentifier userGroupIdentifier = new SchoolDataIdentifier(
-          identifierMapper.getStudentGroupIdentifier(new Long(response.getEntity().getIdentifier())),
+          identifierMapper.getStudentGroupIdentifier(Long.valueOf(response.getEntity().getIdentifier())),
           SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
       Long userGroupEntityId = userGroupDiscoveryWaiter.waitDiscovered(userGroupIdentifier);
       response.getEntity().setIdentifier(userGroupEntityId.toString());
@@ -725,7 +729,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     // Convert Muikku userGroupEntityId to Pyramus student group id
 
-    Long userGroupEntityId = new Long(payload.getIdentifier());
+    Long userGroupEntityId = Long.valueOf(payload.getIdentifier());
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
     Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
     payload.setIdentifier(pyramusStudentGroupId.toString());
@@ -755,7 +759,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     // Convert Muikku userGroupEntityId to Pyramus student group id
 
-    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    Long userGroupEntityId = Long.valueOf(payload.getGroupIdentifier());
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
     Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
     payload.setGroupIdentifier(pyramusStudentGroupId.toString());
@@ -791,7 +795,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     // Convert Muikku userGroupEntityId to Pyramus student group id
 
-    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    Long userGroupEntityId = Long.valueOf(payload.getGroupIdentifier());
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
     Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
     payload.setGroupIdentifier(pyramusStudentGroupId.toString());
@@ -938,6 +942,25 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
     
     return entityFactory.createEntities(pyramusClient.get(path, StudentGroupUser[].class));
+  }
+  
+  @Override
+  public List<SpecEdTeacher> listStudentSpecEdTeachers(SchoolDataIdentifier studentIdentifier,
+      boolean includeGuidanceCouncelors, boolean onlyMessageReceivers) {
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    String path = String.format("/students/students/%d/specEdTeachers", pyramusStudentId);
+    if (includeGuidanceCouncelors) {
+      path += "?includeGuidanceCouncelors=true";
+    }
+    if (onlyMessageReceivers) {
+      path += includeGuidanceCouncelors ? "&" : "?" + "onlyMessageReceivers=true";
+    }
+    fi.otavanopisto.pyramus.rest.model.SpecEdTeacher[] pyramusTeachers = pyramusClient.get(path, fi.otavanopisto.pyramus.rest.model.SpecEdTeacher[].class);
+    List<SpecEdTeacher> muikkuTeachers = new ArrayList<>();
+    for (fi.otavanopisto.pyramus.rest.model.SpecEdTeacher teacher : pyramusTeachers) {
+      muikkuTeachers.add(new PyramusSpecEdTeacher(identifierMapper.getStaffIdentifier(teacher.getId()), teacher.isGuidanceCouncelor()));
+    }
+    return muikkuTeachers;
   }
   
   private Person findPyramusPerson(Long personId) {
@@ -1617,6 +1640,18 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
     return pyramusClient.get(String.format("/users/users/%d/defaultEmailAddress", userId), String.class);
   }
+
+  @Override
+  public UserContactInfo getStudentContactInfo(String userIdentifier) {
+    Long userId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (userId == null) {
+      return null;
+    }
+    fi.otavanopisto.pyramus.rest.model.UserContactInfo contactInfo = pyramusClient.get(
+        String.format("/students/students/%d/contactInfo", userId),
+        fi.otavanopisto.pyramus.rest.model.UserContactInfo.class);
+    return contactInfo == null ? null : entityFactory.createEntity(contactInfo);
+  }
   
   @Override
   public boolean amICounselor(String studentIdentifier) {
@@ -1630,4 +1665,17 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return pyramusClient.get(String.format("/students/students/%d/amICounselor", studentId), Boolean.class);
 
   }
+
+  @Override
+  public StudentGuidanceRelation getGuidanceRelation(String studentIdentifier) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      return null;
+    }
+    fi.otavanopisto.pyramus.rest.model.StudentGuidanceRelation relation = pyramusClient.get(
+        String.format("/students/students/%d/guidanceRelation", studentId),
+        fi.otavanopisto.pyramus.rest.model.StudentGuidanceRelation.class);
+    return relation == null ? null : entityFactory.createEntity(relation);
+  }
+
 }

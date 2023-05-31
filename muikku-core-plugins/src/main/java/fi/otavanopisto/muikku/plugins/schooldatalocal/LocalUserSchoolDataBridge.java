@@ -28,11 +28,14 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
@@ -692,4 +695,21 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
+
+  @Override
+  public UserContactInfo getStudentContactInfo(String userIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public StudentGuidanceRelation getGuidanceRelation(String studentIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public List<SpecEdTeacher> listStudentSpecEdTeachers(SchoolDataIdentifier studentIdentifier,
+      boolean includeGuidanceCouncelors, boolean onlyMessageReceivers) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
 }

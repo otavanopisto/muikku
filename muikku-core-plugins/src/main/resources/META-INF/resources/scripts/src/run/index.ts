@@ -22,10 +22,7 @@ export default async function runApp(
 ): Promise<Store<StateType>> {
   let store: Store<StateType>;
   if (process.env["NODE_ENV"] !== "production") {
-    store = createStore(
-      reducer,
-      composeWithDevTools(applyMiddleware(thunk, logger))
-    );
+    store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
   } else {
     store = createStore(reducer, applyMiddleware(thunk));
   }

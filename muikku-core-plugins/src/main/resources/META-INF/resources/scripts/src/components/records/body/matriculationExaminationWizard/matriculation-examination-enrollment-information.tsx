@@ -903,8 +903,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             <Button
               buttonModifiers={"add-matriculation-row"}
               onClick={this.handleNewFinishedAttendanceClick}
+              icon="plus"
             >
-              <span className="icon-plus"></span>
               Lisää uusi rivi
             </Button>
           </div>
@@ -929,8 +929,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             <Button
               buttonModifiers={"add-matriculation-row"}
               onClick={this.handleNewEnrolledAttendanceClick}
+              icon="plus"
             >
-              <span className="icon-plus"></span>
               Lisää uusi rivi
             </Button>
           </div>
@@ -974,8 +974,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             <Button
               buttonModifiers={"add-matriculation-row"}
               onClick={this.handleNewPlannedAttendanceClick}
+              icon="plus"
             >
-              <span className="icon-plus"></span>
               Lisää uusi rivi
             </Button>
           </div>

@@ -83,6 +83,7 @@ import {
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
+  setLocationToPedagogyFormInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { updateHops } from "~/actions/main-function/hops";
@@ -317,6 +318,10 @@ export default class MainFunction extends React.Component<
         setLocationToHopsInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateHops() as Action);
+    } else if (givenLocation === "pedagogy-form") {
+      this.props.store.dispatch(
+        setLocationToPedagogyFormInTranscriptOfRecords() as Action
+      );
     } else if (givenLocation === "yo") {
       this.props.store.dispatch(
         setLocationToYoInTranscriptOfRecords() as Action

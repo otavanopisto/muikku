@@ -186,6 +186,10 @@
   justify-content: flex-start;
   margin: 0 5px;
   padding: 10px 0;
+
+  &:last-child {
+    border: 0;
+  }
 }
 
 .hops-container__history-event-primary,
@@ -246,6 +250,13 @@
   padding: 4px;
 }
 
+.hops-container__section {
+  border: 0;
+  border-bottom: 1px solid $color-default-separator-border;
+  margin: 0 0 20px;
+  padding: 0 0 10px;
+}
+
 .hops-container__row {
   display: flex;
   flex-flow: row wrap;
@@ -268,6 +279,15 @@
       width: 10px;
     }
   }
+}
+
+.hops-container__row--submit-middle-of-the-form {
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.hops-container__row--remove-row-action {
+  justify-content: flex-end;
 }
 
 .hops-container__row--input-groups {
@@ -395,6 +415,7 @@
   height: 1.5rem;
   justify-content: center;
   margin: 0 10px 0 0;
+  padding: 4px 10px;
   width: 1.5rem;
 
   // Checked element
