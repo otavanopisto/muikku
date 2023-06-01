@@ -5,7 +5,6 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { CourseStatus, StudentActivityCourse } from "~/@types/shared";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { Suggestion, SuggestedCourse } from "~/@types/shared";
-import { AlternativeStudyObject } from "~/hooks/useStudentAlternativeOptions";
 import { filterSpecialSubjects } from "~/helper-functions/shared";
 
 /**
@@ -77,7 +76,7 @@ export const useCourseCarousel = (
             const loadedStudentAlternativeOptions = (await promisify(
               mApi().hops.student.alternativeStudyOptions.read(studentId),
               "callback"
-            )()) as AlternativeStudyObject;
+            )()) as string[];
 
             //Loaded student activity list
             const studentActivityList = (await promisify(

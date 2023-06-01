@@ -812,7 +812,7 @@ export const schoolCourseTableUppersecondary: SchoolSubject[] = [
   },
   {
     name: "Ruotsi, B1-oppimäärä",
-    subjectCode: "RUB",
+    subjectCode: "RUB1",
     availableCourses: [
       {
         name: "Opiskelutaidot ja kieli-identiteetin rakentaminen",

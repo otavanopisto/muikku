@@ -1,13 +1,10 @@
 import { SchoolSubject } from "~/@types/shared";
 import { StudyProgrammeName } from "~/components/general/study-progress";
-import { AlternativeStudyObject } from "~/hooks/useStudentAlternativeOptions";
 import {
   schoolCourseTable,
   schoolCourseTableUppersecondary,
   subjectsNotIncludedInNettilukio,
 } from "~/mock/mock-data";
-
-const MOCK_SELECTED_SUBJECTS = ["ÄI", "MAA", "UE", "ENA", "JPB3"];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RELIGION_SUBJECTS_CS = ["ue", "uo", "et"];
@@ -51,31 +48,22 @@ export const sleep = (m: number) => new Promise((r) => setTimeout(r, m));
  */
 export const filterSpecialSubjects = (
   schoolCourseTable: SchoolSubject[],
-  options: AlternativeStudyObject
+  options: string[]
 ) => {
-  let alteredShoolCourseTable = schoolCourseTable;
+  const subjectsToFilterOut: string[] = [
+    ...RELIGION_SUBJECTS_CS,
+    ...NATIVE_LANGUAGE_SUBJECTS_CS,
+  ];
 
-  if (options.nativeLanguageSelection === "s2") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "äi"
-    );
-  } else if (options.nativeLanguageSelection === "äi") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "s2"
-    );
-  }
+  options.forEach((option) => {
+    const indexOf = subjectsToFilterOut.indexOf(option);
 
-  if (options.religionSelection === "et") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "ue"
-    );
-  } else if (options.religionSelection === "ue") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "et"
-    );
-  }
+    indexOf !== -1 && subjectsToFilterOut.splice(indexOf, 1);
+  });
 
-  return alteredShoolCourseTable;
+  return schoolCourseTable.filter(
+    (subject) => !subjectsToFilterOut.includes(subject.subjectCode)
+  );
 };
 
 /**
@@ -164,14 +152,14 @@ export const compulsoryOrUpperSecondary = (
 export const filterMatrix = (
   studyProgrammeName: StudyProgrammeName,
   matrix: SchoolSubject[],
-  options: AlternativeStudyObject
+  options: string[]
 ) => {
   switch (studyProgrammeName) {
     case "Nettiperuskoulu":
       return filterSpecialSubjects(matrix, options);
 
     case "Nettilukio":
-      return filterUpperSecondarySubjects(matrix, MOCK_SELECTED_SUBJECTS);
+      return filterUpperSecondarySubjects(matrix, options);
 
     default:
       return matrix;

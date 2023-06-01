@@ -18,7 +18,6 @@ import {
   SKILL_AND_ART_SUBJECTS,
   UpdateSuggestionParams,
 } from "~/hooks/useStudentActivity";
-import { AlternativeStudyObject } from "~/hooks/useStudentAlternativeOptions";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 import { UpdateSupervisorOptionalSuggestionParams } from "~/hooks/useSupervisorOptionalSuggestion";
 import mApi from "~/lib/mApi";
@@ -135,7 +134,7 @@ interface StudyProgresContextProviderProps {
 interface StudyProgressContextState extends StudentActivityByStatus {
   studentChoices: StudentCourseChoice[];
   supervisorOptionalSuggestions: SupervisorOptionalSuggestion[];
-  options: AlternativeStudyObject;
+  options: string[];
 }
 
 /**
@@ -168,10 +167,7 @@ const StudyProgressContextProvider = (
       otherSubjects: {},
       supervisorOptionalSuggestions: [],
       studentChoices: [],
-      options: {
-        nativeLanguageSelection: null,
-        religionSelection: null,
-      },
+      options: [],
     });
 
   const ref = React.useRef(studyProgress);
@@ -363,7 +359,7 @@ const StudyProgressContextProvider = (
             const options = (await promisify(
               mApi().hops.student.alternativeStudyOptions.read(studentId),
               "callback"
-            )()) as AlternativeStudyObject;
+            )()) as string[];
 
             return options;
           })(),
@@ -586,16 +582,10 @@ const StudyProgressContextProvider = (
      * @param data.nativeLanguageSelection nativeLanguageSelection
      * @param data.religionSelection religionSelection
      */
-    const onAnswerSavedAtServer = (data: {
-      nativeLanguageSelection: string;
-      religionSelection: string;
-    }) => {
+    const onAnswerSavedAtServer = (data: string[]) => {
       setStudyProgress((oStudyProgress) => ({
         ...oStudyProgress,
-        options: {
-          nativeLanguageSelection: data.nativeLanguageSelection,
-          religionSelection: data.religionSelection,
-        },
+        options: data,
       }));
     };
 
