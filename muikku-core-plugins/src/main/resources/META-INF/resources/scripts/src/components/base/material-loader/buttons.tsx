@@ -26,14 +26,14 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
 
   if (props.invisible) {
     return (
-      <div className="material-page__buttonset">
+      <div className="material-page__buttonset rs_skip_always">
         <a className="button button--muikku-check-exercises">a</a>
       </div>
     );
   }
 
   return (
-    <div className="material-page__buttonset">
+    <div className="material-page__buttonset rs_skip_always">
       {!props.stateConfiguration["button-disabled"] ? (
         <Button
           buttonModifiers={props.stateConfiguration["button-class"]}
