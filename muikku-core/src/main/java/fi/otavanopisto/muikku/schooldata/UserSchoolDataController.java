@@ -163,10 +163,6 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).findUser(userIdentifier);
   }
   
-  public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
-    return getUserBridge(schoolDataSource).getUserDefaultEmailAddress(userIdentifier);
-  }
-  
   public UserContactInfo getStudentContactInfo(String schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).getStudentContactInfo(userIdentifier);
   }

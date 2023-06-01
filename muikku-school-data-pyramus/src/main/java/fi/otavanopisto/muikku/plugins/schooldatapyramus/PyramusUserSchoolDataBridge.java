@@ -1630,18 +1630,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public String getUserDefaultEmailAddress(String userIdentifier) {
-    Long userId = identifierMapper.getPyramusStudentId(userIdentifier);
-    if (userId == null) {
-      userId = identifierMapper.getPyramusStaffId(userIdentifier);
-    }
-    if (userId == null) {
-      return null;
-    }
-    return pyramusClient.get(String.format("/users/users/%d/defaultEmailAddress", userId), String.class);
-  }
-
-  @Override
   public UserContactInfo getStudentContactInfo(String userIdentifier) {
     Long userId = identifierMapper.getPyramusStudentId(userIdentifier);
     if (userId == null) {

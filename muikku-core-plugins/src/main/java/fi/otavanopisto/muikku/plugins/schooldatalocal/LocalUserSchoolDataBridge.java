@@ -672,11 +672,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public String getUserDefaultEmailAddress(String userIdentifier) {
-    throw new SchoolDataBridgeInternalException("Not supported");
-  }
-
-  @Override
   public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }

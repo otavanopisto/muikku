@@ -135,15 +135,6 @@ public interface UserSchoolDataBridge {
   public void removeUser(String identifier);
   
   /**
-   * Returns the default email address of the given user.
-   * 
-   * @param userIdentifier User identifier
-   * 
-   * @return User's default email address
-   */
-  public String getUserDefaultEmailAddress(String userIdentifier);
-  
-  /**
    * Returns contact info of the given student.
    * 
    * @param userIdentifier Student identifier

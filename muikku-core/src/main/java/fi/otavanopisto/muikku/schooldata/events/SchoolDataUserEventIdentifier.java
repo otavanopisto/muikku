@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 
 public class SchoolDataUserEventIdentifier {
 
@@ -18,11 +19,11 @@ public class SchoolDataUserEventIdentifier {
     return identifier;
   }
 
-  public void addEmail(String email) {
+  public void addEmail(UserEmail email) {
     this.emails.add(email);
   }
   
-  public List<String> getEmails() {
+  public List<UserEmail> getEmails() {
     return emails;
   }
 
@@ -35,7 +36,7 @@ public class SchoolDataUserEventIdentifier {
   }
 
   private final SchoolDataIdentifier identifier;
-  private final List<String> emails = new ArrayList<>();
+  private final List<UserEmail> emails = new ArrayList<>();
   private final SchoolDataIdentifier environmentRoleIdentifier;
   private final SchoolDataIdentifier organizationIdentifier;
 }

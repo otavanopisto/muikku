@@ -50,14 +50,6 @@ public class UserController {
     return userSchoolDataController.findUser(schoolDataSource, userIdentifier);
   }
   
-  public String getUserDefaultEmailAddress(SchoolDataIdentifier schoolDataIdentifier) {
-    return userSchoolDataController.getUserDefaultEmailAddress(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
-  }
-
-  public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
-    return userSchoolDataController.getUserDefaultEmailAddress(schoolDataSource, userIdentifier);
-  }
-  
   public UserContactInfo getStudentContactInfo(String schoolDataSource, String userIdentifier) {
     return userSchoolDataController.getStudentContactInfo(schoolDataSource, userIdentifier);
   }

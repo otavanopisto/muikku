@@ -25,6 +25,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 
@@ -44,6 +45,9 @@ public class PedagogyController {
   
   @Inject
   private UserController userController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -115,91 +119,79 @@ public class PedagogyController {
     // Notification about student accepting the form
     
     if (state == PedagogyFormState.APPROVED) {
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        UserEntityName userEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
-        
-        boolean visibleToGuidanceCouncelors = false;
-        if (!StringUtils.isEmpty(form.getVisibility())) {
-          String[] visibilities = form.getVisibility().split(",");
-          for (String s : visibilities) {
-            if (PedagogyFormVisibility.valueOf(s) == PedagogyFormVisibility.TEACHERS) {
-              visibleToGuidanceCouncelors = true;
-              break;
-            }
+      UserEntityName userEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
+
+      boolean visibleToGuidanceCouncelors = false;
+      if (!StringUtils.isEmpty(form.getVisibility())) {
+        String[] visibilities = form.getVisibility().split(",");
+        for (String s : visibilities) {
+          if (PedagogyFormVisibility.valueOf(s) == PedagogyFormVisibility.TEACHERS) {
+            visibleToGuidanceCouncelors = true;
+            break;
           }
         }
+      }
 
-        List<SpecEdTeacher> specEdTeachers = userSchoolDataController.listStudentSpecEdTeachers(sessionController.getLoggedUser(), visibleToGuidanceCouncelors, true);
-        if (!specEdTeachers.isEmpty()) {
+      List<SpecEdTeacher> specEdTeachers = userSchoolDataController.listStudentSpecEdTeachers(sessionController.getLoggedUser(), visibleToGuidanceCouncelors, true);
+      if (!specEdTeachers.isEmpty()) {
 
-          StringBuffer url = new StringBuffer();
-          url.append(httpRequest.getScheme());
-          url.append("://");
-          url.append(httpRequest.getServerName());
-          url.append("/guider#?c=");
-          url.append(sessionController.getLoggedUser().toId());
+        StringBuffer url = new StringBuffer();
+        url.append(httpRequest.getScheme());
+        url.append("://");
+        url.append(httpRequest.getServerName());
+        url.append("/guider#?c=");
+        url.append(sessionController.getLoggedUser().toId());
 
-          String subject = localeController.getText(
-              sessionController.getLocale(),
-              "plugin.pedagogy.approval.subject",
-              new String[] {userEntityName.getDisplayNameWithLine()});
+        String subject = localeController.getText(
+            sessionController.getLocale(),
+            "plugin.pedagogy.approval.subject",
+            new String[] {userEntityName.getDisplayNameWithLine()});
 
-          String content = localeController.getText(
-              sessionController.getLocale(),
-              "plugin.pedagogy.approval.content",
-              new String[] {userEntityName.getDisplayNameWithLine(), url.toString()});
+        String content = localeController.getText(
+            sessionController.getLocale(),
+            "plugin.pedagogy.approval.content",
+            new String[] {userEntityName.getDisplayNameWithLine(), url.toString()});
 
-          for (SpecEdTeacher specEdTeacher : specEdTeachers) {
-            String email = userController.getUserDefaultEmailAddress(specEdTeacher.getIdentifier());
-            mailer.sendMail(MailType.HTML,
-                Arrays.asList(email),
-                subject,
-                content);
-          }
+        for (SpecEdTeacher specEdTeacher : specEdTeachers) {
+          String email = userEmailEntityController.getUserDefaultEmailAddress(specEdTeacher.getIdentifier(), false); 
+          mailer.sendMail(MailType.HTML,
+              Arrays.asList(email),
+              subject,
+              content);
         }
+      }
         
-      }
-      finally {
-        schoolDataBridgeSessionController.endSystemSession();
-      }
     }
     
     // Notification about pending form
     
     else if (state == PedagogyFormState.PENDING) {
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        UserEntityName staffName = userEntityController.getName(sessionController.getLoggedUser(), true);
-        String staffMail = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
-        SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(form.getStudentIdentifier());
-        UserEntityName studentName = userEntityController.getName(studentIdentifier, true);
-        String studentMail = userController.getUserDefaultEmailAddress(studentIdentifier);
-        
-        StringBuffer url = new StringBuffer();
-        url.append(httpRequest.getScheme());
-        url.append("://");
-        url.append(httpRequest.getServerName());
-        url.append("/records#pedagogy-form");
+      UserEntityName staffName = userEntityController.getName(sessionController.getLoggedUser(), true);
+      String staffMail = userEmailEntityController.getUserDefaultEmailAddress(sessionController.getLoggedUser(), false);
+      SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(form.getStudentIdentifier());
+      UserEntityName studentName = userEntityController.getName(studentIdentifier, true);
+      String studentMail = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
 
-        String subject = localeController.getText(
-            sessionController.getLocale(),
-            "plugin.pedagogy.pending.subject",
-            new String[] {});
+      StringBuffer url = new StringBuffer();
+      url.append(httpRequest.getScheme());
+      url.append("://");
+      url.append(httpRequest.getServerName());
+      url.append("/records#pedagogy-form");
 
-        String content = localeController.getText(
-            sessionController.getLocale(),
-            "plugin.pedagogy.pending.content",
-            new String[] {studentName.getDisplayNameWithLine(), staffName.getDisplayName(), url.toString(), staffMail});
+      String subject = localeController.getText(
+          sessionController.getLocale(),
+          "plugin.pedagogy.pending.subject",
+          new String[] {});
 
-        mailer.sendMail(MailType.HTML,
-            Arrays.asList(studentMail),
-            subject,
-            content);
-      }
-      finally {
-        schoolDataBridgeSessionController.endSystemSession();
-      }
+      String content = localeController.getText(
+          sessionController.getLocale(),
+          "plugin.pedagogy.pending.content",
+          new String[] {studentName.getDisplayNameWithLine(), staffName.getDisplayName(), url.toString(), staffMail});
+
+      mailer.sendMail(MailType.HTML,
+          Arrays.asList(studentMail),
+          subject,
+          content);
       
     }
 
@@ -221,40 +213,34 @@ public class PedagogyController {
     // Notification if the visibility was changed after the form has been approved by the student
     
     if (form.getState() == PedagogyFormState.APPROVED) {
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        UserEntityName userEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
-        boolean visibleToGuidanceCouncelors = visibility != null && visibility.contains(PedagogyFormVisibility.TEACHERS);
-        List<SpecEdTeacher> specEdTeachers = userSchoolDataController.listStudentSpecEdTeachers(sessionController.getLoggedUser(), true, true);
-        if (!specEdTeachers.isEmpty()) {
-          StringBuffer url = new StringBuffer();
-          url.append(httpRequest.getScheme());
-          url.append("://");
-          url.append(httpRequest.getServerName());
-          url.append("/guider#?c=");
-          url.append(sessionController.getLoggedUser().toId());
+      UserEntityName userEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
+      boolean visibleToGuidanceCouncelors = visibility != null && visibility.contains(PedagogyFormVisibility.TEACHERS);
+      List<SpecEdTeacher> specEdTeachers = userSchoolDataController.listStudentSpecEdTeachers(sessionController.getLoggedUser(), true, true);
+      if (!specEdTeachers.isEmpty()) {
+        StringBuffer url = new StringBuffer();
+        url.append(httpRequest.getScheme());
+        url.append("://");
+        url.append(httpRequest.getServerName());
+        url.append("/guider#?c=");
+        url.append(sessionController.getLoggedUser().toId());
 
-          String subject = localeController.getText(
-              sessionController.getLocale(),
-              "plugin.pedagogy.visibility.subject",
-              new String[] {userEntityName.getDisplayNameWithLine()});
+        String subject = localeController.getText(
+            sessionController.getLocale(),
+            "plugin.pedagogy.visibility.subject",
+            new String[] {userEntityName.getDisplayNameWithLine()});
 
-          for (SpecEdTeacher specEdTeacher : specEdTeachers) {
-            String content = !specEdTeacher.isGuidanceCouncelor() || visibleToGuidanceCouncelors
-                ? localeController.getText(sessionController.getLocale(), "plugin.pedagogy.visibility.content.access",
+        for (SpecEdTeacher specEdTeacher : specEdTeachers) {
+          String content = !specEdTeacher.isGuidanceCouncelor() || visibleToGuidanceCouncelors
+              ? localeController.getText(sessionController.getLocale(), "plugin.pedagogy.visibility.content.access",
                   new String[] {userEntityName.getDisplayNameWithLine(), url.toString()})
-                : localeController.getText(sessionController.getLocale(), "plugin.pedagogy.visibility.content.noAccess",
-                  new String[] {userEntityName.getDisplayNameWithLine()});
-            String email = userController.getUserDefaultEmailAddress(specEdTeacher.getIdentifier());
-            mailer.sendMail(MailType.HTML,
-                Arrays.asList(email),
-                subject,
-                content);
-          }
+                  : localeController.getText(sessionController.getLocale(), "plugin.pedagogy.visibility.content.noAccess",
+                      new String[] {userEntityName.getDisplayNameWithLine()});
+          String email = userEmailEntityController.getUserDefaultEmailAddress(specEdTeacher.getIdentifier(), false);
+          mailer.sendMail(MailType.HTML,
+              Arrays.asList(email),
+              subject,
+              content);
         }
-      }
-      finally {
-        schoolDataBridgeSessionController.endSystemSession();
       }
     }
 
