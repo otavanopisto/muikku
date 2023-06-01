@@ -7,6 +7,7 @@ import {
   StatusType,
   WhoAmIType,
 } from "~/reducers/base/status";
+import { WorkspaceBasicInfo } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import { Role } from "../../reducers/base/status";
 
@@ -22,6 +23,11 @@ export type UPDATE_STATUS_HAS_IMAGE = SpecificActionType<
 export type UPDATE_STATUS = SpecificActionType<
   "UPDATE_STATUS",
   Partial<StatusType>
+>;
+
+export type UPDATE_STATUS_WORKSPACEID = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACEID",
+  number
 >;
 
 /**
@@ -350,8 +356,25 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const worspaceId = getState().status.currentWorkspaceId;
-      loadWorkspacePermissions(worspaceId, dispatch, readyCb);
+      const workspaceUrlName = window.location.pathname.split("/")[2];
+
+      let workspaceBasicInfo: WorkspaceBasicInfo = undefined;
+
+      if (workspaceUrlName) {
+        workspaceBasicInfo = <WorkspaceBasicInfo>(
+          await promisify(
+            mApi().workspace.workspaces.basicInfo.read(workspaceUrlName),
+            "callback"
+          )()
+        );
+      }
+
+      dispatch({
+        type: "UPDATE_STATUS_WORKSPACEID",
+        payload: workspaceBasicInfo.id,
+      });
+
+      loadWorkspacePermissions(workspaceBasicInfo.id, dispatch, readyCb);
     };
   };
 

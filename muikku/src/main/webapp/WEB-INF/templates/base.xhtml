@@ -17,11 +17,6 @@
         content="width=device-width, initial-scale=1, user-scalable=yes"
         name="viewport"
       />
-      <meta name="muikku:loggedIn" value="#{sessionBackingBean.loggedIn}" />
-      <meta
-        name="muikku:activeUser"
-        value="#{sessionBackingBean.isActiveUser}"
-      />
       <ui:insert name="meta"></ui:insert>
 
       <script type="text/javascript">
@@ -129,8 +124,11 @@
 
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;display=swap" rel="stylesheet" />
-      
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;display=swap"
+        rel="stylesheet"
+      />
+
       <ui:insert name="styles"></ui:insert>
 
       <!-- Here goes what a page needs, usually their controllers -->
