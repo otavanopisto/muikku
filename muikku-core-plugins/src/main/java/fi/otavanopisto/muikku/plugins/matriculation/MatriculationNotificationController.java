@@ -53,7 +53,7 @@ public class MatriculationNotificationController {
     if (StringUtils.isNotBlank(enrollment.getEmail())) {
       List<String> to = Arrays.asList(enrollment.getEmail());
       List<String> cc = new ArrayList<>();
-      List<String> bcc = Arrays.asList("riikka.turpeinen@otavia.fi");
+      List<String> bcc = Arrays.asList("yo-ilmoittautumiset@otavia.fi");
       mailer.sendMail(MailType.HTML, to, cc, bcc, "Ilmoittautuminen ylioppilaskirjoituksiin", content);
     }
   }
