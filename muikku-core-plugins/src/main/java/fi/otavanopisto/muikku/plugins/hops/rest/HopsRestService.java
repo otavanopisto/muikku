@@ -55,13 +55,13 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
@@ -69,7 +69,6 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
@@ -104,9 +103,6 @@ public class HopsRestService {
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
-  private UserController userController;
-
-  @Inject
   private UserSchoolDataController userSchoolDataController;
 
   @Inject
@@ -130,6 +126,9 @@ public class HopsRestService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @GET
   @Path("/isHopsAvailable/{STUDENTIDENTIFIER}")
@@ -958,15 +957,12 @@ public class HopsRestService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-
-    User user = userController.findUserByIdentifier(studentIdentifier);
-    UserProperty aidinkieli = userSchoolDataController.getUserProperty(user, "lukioAidinkieli");
-    UserProperty uskonto = userSchoolDataController.getUserProperty(user, "lukioUskonto");
-
-    AlternativeStudyOptionsRestModel alternativeStudyOptionsRestModel = new AlternativeStudyOptionsRestModel();
-    alternativeStudyOptionsRestModel.setNativeLanguageSelection(aidinkieli != null ? aidinkieli.getValue() : null);
-    alternativeStudyOptionsRestModel.setReligionSelection(uskonto != null ? uskonto.getValue() : null);
-
-    return Response.ok(alternativeStudyOptionsRestModel).build();
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      return Response.ok(userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier)).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 }
