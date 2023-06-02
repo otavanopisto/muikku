@@ -8,5 +8,7 @@ import tabOrMouse from "~/util/tab-or-mouse";
 runApp(reducer, App, async (store) => {
   tabOrMouse();
 
-  return await mainFunctionDefault(store);
+  const websocket = await mainFunctionDefault(store);
+
+  return { websocket };
 });
