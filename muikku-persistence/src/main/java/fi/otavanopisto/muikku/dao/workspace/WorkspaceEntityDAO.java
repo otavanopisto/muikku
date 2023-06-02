@@ -12,10 +12,13 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 
 public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
@@ -251,5 +254,28 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
   public void delete(WorkspaceEntity workspaceEntity) {
     super.delete(workspaceEntity);
   }
+  
+  public List<WorkspaceEntity> listCommonWorkspaces(UserSchoolDataIdentifier teacher, UserSchoolDataIdentifier student) {
+    // Looking for common workspaces for (active) student & teacher
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceEntity> criteria = criteriaBuilder.createQuery(WorkspaceEntity.class);
+        Root<WorkspaceUserEntity> teacherRoot = criteria.from(WorkspaceUserEntity.class);
+        Root<WorkspaceUserEntity> studentRoot = criteria.from(WorkspaceUserEntity.class);
+        
+        criteria.select(teacherRoot.get(WorkspaceUserEntity_.workspaceEntity));
+        criteria.where(
+          criteriaBuilder.and(
+            criteriaBuilder.equal(teacherRoot.get(WorkspaceUserEntity_.userSchoolDataIdentifier), teacher),
+            criteriaBuilder.equal(studentRoot.get(WorkspaceUserEntity_.userSchoolDataIdentifier), student),
+            criteriaBuilder.equal(studentRoot.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(teacherRoot.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(teacherRoot.get(WorkspaceUserEntity_.workspaceEntity), studentRoot.get(WorkspaceUserEntity_.workspaceEntity))
+          ) 
+        );
+        
+        return entityManager.createQuery(criteria).getResultList();
+     }
 
 }

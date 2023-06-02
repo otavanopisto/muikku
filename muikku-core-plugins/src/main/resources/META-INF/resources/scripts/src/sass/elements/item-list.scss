@@ -57,6 +57,11 @@
   cursor: auto;
 }
 
+.item-list__item--info-popper {
+  cursor: auto;
+  max-width: 325px;
+}
+
 // Item-list items in workspaces panel
 .item-list--panel-workspaces .item-list__item {
   @include text;

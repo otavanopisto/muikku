@@ -18,13 +18,20 @@ public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
 
   private static final long serialVersionUID = -6107936582505695829L;
   
-  public UserEmailEntity create(UserSchoolDataIdentifier userSchoolDataIdentifier, String address) {
+  public UserEmailEntity create(UserSchoolDataIdentifier userSchoolDataIdentifier, String address, Boolean defaultAddress) {
     UserEmailEntity userEmail = new UserEmailEntity();
     
     userEmail.setUserSchoolDataIdentifier(userSchoolDataIdentifier);
     userEmail.setAddress(address);
+    userEmail.setDefaultAddress(defaultAddress);
     
     return persist(userEmail);
+  }
+  
+  public UserEmailEntity update(UserEmailEntity userEmailEntity, String address, Boolean defaultAddress) {
+    userEmailEntity.setAddress(address);
+    userEmailEntity.setDefaultAddress(defaultAddress);
+    return persist(userEmailEntity);
   }
   
   public UserEmailEntity findByUserSchoolDataIdentifierAndAddress(UserSchoolDataIdentifier identifier, String address) {

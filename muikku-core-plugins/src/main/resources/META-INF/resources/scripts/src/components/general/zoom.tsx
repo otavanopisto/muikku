@@ -72,7 +72,7 @@ export default class Zoom extends React.Component<ZoomProps, ZoomState> {
       );
     }
     return (
-      <span onClick={this.toggleZoom} className="zoom">
+      <span onClick={this.toggleZoom} className="zoom rs_skip_always">
         <span className="zoom__clickable-item">{this.props.children}</span>
         {zoomComponent}
       </span>

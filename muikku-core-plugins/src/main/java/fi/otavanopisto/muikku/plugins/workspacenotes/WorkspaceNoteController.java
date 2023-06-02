@@ -25,21 +25,38 @@ public class WorkspaceNoteController {
     return workspaceNotes;
   }
   
-  public WorkspaceNote createWorkspaceNote(Long owner, String title, String note, Long workspaceId) {
+  public WorkspaceNote createWorkspaceNote(Long owner, String title, String note, Long workspaceId, WorkspaceNote referenceNote) {
     
-    Integer maximumOrderNumber = workspaceNoteDAO.getMaximumOrderNumberByOwnerAndWorkspace(workspaceId, owner);
+    Integer orderNumber = workspaceNoteDAO.getMaximumOrderNumberByOwnerAndWorkspace(workspaceId, owner);
     
-    if (maximumOrderNumber == null) {
-      maximumOrderNumber = 0;
+    if (referenceNote == null) {
+      if (orderNumber == null) {
+        orderNumber = 0;
+      } else {
+        ++orderNumber;
+      }
     } else {
-      ++maximumOrderNumber;
+      // Order number of the reference note
+      Integer referenceOrderNumber = referenceNote.getOrderNumber() == null ? 0 : referenceNote.getOrderNumber();
+      // Workspace notes with order number >= reference order number
+      List<WorkspaceNote> subsequentNotes = workspaceNoteDAO.listByOrderNumberEqualOrGreater(referenceNote);
+      // Sort workspace notes according to order number
+      subsequentNotes.sort(Comparator.comparing(WorkspaceNote::getOrderNumber));
+
+      // note order number = referenceOrderNumber, subsequent notes =
+      // ++referenceOrderNumber
+      orderNumber = referenceOrderNumber;
+      for (WorkspaceNote subsequentNote : subsequentNotes) {
+        workspaceNoteDAO.updateOrderNumber(subsequentNote, ++referenceOrderNumber);
+      }
     }
+    
     return workspaceNoteDAO.create(
         owner, 
         title,
         note, 
         workspaceId, 
-        maximumOrderNumber);
+        orderNumber);
   }
   
   public WorkspaceNote updateWorkspaceNote(WorkspaceNote workspaceNote, String title, String note) {

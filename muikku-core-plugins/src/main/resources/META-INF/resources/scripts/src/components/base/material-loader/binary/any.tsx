@@ -14,7 +14,7 @@ export default function Any(props: {
   i18n: i18nType;
 }) {
   return (
-    <div>
+    <div className="rs_skip_always">
       <Link
         href={`/rest/materials/binary/${props.material.materialId}/content`}
         openInNewTab={props.material.title}
