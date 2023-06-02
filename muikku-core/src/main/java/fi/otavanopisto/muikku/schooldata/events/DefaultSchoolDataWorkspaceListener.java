@@ -193,7 +193,10 @@ public class DefaultSchoolDataWorkspaceListener {
               }
             }
           }
-          else {
+          
+          // #6597: Support for role changes, even if we currently support only course students and teachers 
+          
+          if (event.getRole() != null) {
             WorkspaceRoleEntity workspaceRoleEntity = workspaceController.findWorkspaceRoleEntityByArchetype(event.getRole());
             if (workspaceRoleEntity != null && !workspaceRoleEntity.getId().equals(workspaceUserEntity.getWorkspaceUserRole().getId())) {
               workspaceUserEntity = workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceRoleEntity);

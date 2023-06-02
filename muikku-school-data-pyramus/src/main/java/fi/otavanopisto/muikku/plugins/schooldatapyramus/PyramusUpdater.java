@@ -700,9 +700,13 @@ public class PyramusUpdater {
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
     WorkspaceRoleArchetype role = identifierMapper.getWorkspaceRoleArchetype(courseStaffMember.getRole());
     
-    schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        userIdentifier, role, true));
+    // #6597: Only fire a discovery event if the role is known to us
+    
+    if (role != null) {
+      schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+          identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+          userIdentifier, role, true));
+    }
   }
   
   private void fireCourseStaffMemberUpdated(CourseStaffMember courseStaffMember) {
@@ -711,9 +715,17 @@ public class PyramusUpdater {
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
     WorkspaceRoleArchetype role = identifierMapper.getWorkspaceRoleArchetype(courseStaffMember.getRole());
 
-    schoolDataWorkspaceUserUpdatedEvent.fire(new SchoolDataWorkspaceUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        userIdentifier, role, true));
+    // #6597: For known roles, fire update. For unknown roles, fire removed just in case a staff member
+    // with a previously known role changed to unknown, at which point we are no longer interested in their existence
+    
+    if (role != null) {
+      schoolDataWorkspaceUserUpdatedEvent.fire(new SchoolDataWorkspaceUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+          identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+          userIdentifier, role, true));
+    }
+    else {
+      fireCourseStaffMemberRemoved(courseStaffMember.getId(), courseStaffMember.getStaffMemberId(), courseStaffMember.getCourseId());
+    }
   }
 
   private void fireCourseStaffMemberRemoved(Long courseStaffMemberId, Long staffMemberId, Long courseId) {
