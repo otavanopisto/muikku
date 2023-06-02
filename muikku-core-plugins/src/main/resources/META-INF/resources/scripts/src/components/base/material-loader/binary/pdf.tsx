@@ -14,7 +14,7 @@ export default function Pdf(props: {
   i18n: i18nType;
 }) {
   return (
-    <div className="material-page__content material-page__content--binary-pdf">
+    <div className="material-page__content material-page__content--binary-pdf rs_skip_always">
       <object
         type="application/pdf"
         data={`/rest/materials/binary/${props.material.materialId}/content`}

@@ -788,18 +788,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".material-page__connectfield-wrapper");
         scrollIntoView(".material-page__connectfield-wrapper");
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
-            "                  ']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]");
         
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
-            "                  ']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Hampurilainen')]");
 
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
-            "                  ']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
 
         waitAndClick(".button--muikku-submit-exercise");
@@ -1291,8 +1288,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           
 //          Create note
           waitAndClick("#notebook");
-          waitAndClick(".notebook__actions .icon-plus");
-          waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
+          waitAndClickAndConfirm(".notebook__actions .icon-plus", ".notebook__editor.state-OPEN #note-entry-title", 3, 2000);
           waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "First test note");
           String note = "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. Fusce vitae tortor lectus. Praesent imperdiet pulvinar nulla, et dictum quam faucibus et. Quisque dictum ligula at diam venenatis cursus. "
               + "Nullam efficitur diam id commodo interdum. Pellentesque neque lectus, bibendum ac neque ut, sodales commodo eros. Morbi ac sem tortor.";
@@ -1322,8 +1318,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertText(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p", "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. "
               + "The all mighty vendace is nigh! (edited)");
 //         Create second note
-          waitAndClick(".notebook__actions .icon-plus");
-          waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
+          waitAndClickAndConfirm(".notebook__actions .icon-plus", ".notebook__editor.state-OPEN #note-entry-title", 3, 2000);
           waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "Second test note");
           note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In auctor massa ac gravida iaculis. Sed iaculis odio eget tortor auctor feugiat."
               + " Fusce urna dolor, aliquet cursus tempor vitae, rutrum nec urna. In luctus, tortor vel tempor cursus, leo diam venenatis est.";
@@ -1337,8 +1332,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForVisible(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title");
           assertText(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title", "Second test note");
           waitAndClick(".notebook__actions .icon-arrow-down");
-          waitForPresent(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-auto .notebook__item-body p");
-          assertText(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-auto .notebook__item-body p", note);
+          waitForPresent("div.notebook__items > div:nth-child(1) .notebook__item .rah-static--height-auto .notebook__item-body p");
+          assertText("div.notebook__items > div:nth-child(1) .notebook__item .rah-static--height-auto .notebook__item-body p", note);
 //        Test collapse function
           waitAndClick(".notebook__actions .icon-arrow-up");
           waitForPresent(".notebook__items .draggable-element:first-child .notebook__item .rah-static--height-specific");

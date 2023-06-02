@@ -9,7 +9,7 @@ import Zoom from "~/components/general/zoom";
  */
 export default function Image(props: { material: MaterialContentNodeType }) {
   return (
-    <div className="material-page__content material-page__content--binary-image">
+    <div className="material-page__content material-page__content--binary-image rs_skip_always">
       <Zoom
         imgsrc={`/rest/materials/binary/${props.material.materialId}/content`}
       >

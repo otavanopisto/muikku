@@ -1,3 +1,5 @@
+/* stylelint-disable scale-unlimited/declaration-strict-value */
+/* stylelint-disable color-named */
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/vars";
@@ -16,6 +18,13 @@
 .wizard {
   .cke {
     border: 2px solid $color-form-element-border;
+  }
+
+  &.wizard--hops-form,
+  &.wizard--pedagogy-form {
+    .cke {
+      border: 2px solid $color-hops-dialog-form-element-border;
+    }
   }
 
   // These override the stepzilla plugin styles
@@ -104,6 +113,23 @@
       }
     }
 
+    .progtrckr-error {
+      border-bottom: 4px solid red;
+      color: red;
+
+      &:hover::before {
+        color: red;
+      }
+
+      &::before {
+        @include step-indicator;
+
+        background-color: red;
+        content: "";
+        line-height: normal;
+      }
+    }
+
     li::before {
       bottom: -12px;
       left: calc(50% - 10px);
@@ -146,5 +172,20 @@
 
   li {
     display: block;
+  }
+}
+
+.wizard__container {
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.wizard__footer {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  > * {
+    margin: 0 5px;
   }
 }

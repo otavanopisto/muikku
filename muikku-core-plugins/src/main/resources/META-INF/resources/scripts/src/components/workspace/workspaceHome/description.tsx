@@ -6,16 +6,18 @@ import {
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-
 import MaterialLoader from "~/components/base/material-loader";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
 
 /**
  * DescriptionPanelProps
@@ -25,6 +27,7 @@ interface DescriptionPanelProps {
   i18n: i18nType;
   isInFrontPage?: boolean;
   workspaceEditMode: WorkspaceEditModeStateType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -53,6 +56,7 @@ class DescriptionPanel extends React.Component<
             )}
           </h2>
         </div>
+
         <div className="panel__body">
           {this.props.workspace && (
             <MaterialLoader
@@ -106,7 +110,9 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  */
 function mapDispatchToProps() {
-  return {};
+  return {
+    displayNotification,
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel);
