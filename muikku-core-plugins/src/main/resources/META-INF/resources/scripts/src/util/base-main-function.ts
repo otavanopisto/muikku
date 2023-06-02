@@ -75,8 +75,8 @@ export default async function (
     return new Promise((resolve) => {
       // eslint-disable-next-line jsdoc/require-jsdoc
       const resolveFn = () => {
+        updateUnreadThreadMessagesCount();
         resolve(initializeWebsocket(actionsAndCallbacks));
-        resolve(updateUnreadThreadMessagesCount());
       };
       store.dispatch(<Action>loadStatus(resolveFn));
     });
@@ -87,8 +87,8 @@ export default async function (
       const resolveFn = () => {
         loadedTotal++;
         if (loadedTotal === 2) {
+          updateUnreadThreadMessagesCount();
           resolve(initializeWebsocket(actionsAndCallbacks));
-          resolve(updateUnreadThreadMessagesCount());
         }
       };
       store.dispatch(<Action>loadStatus(resolveFn));
