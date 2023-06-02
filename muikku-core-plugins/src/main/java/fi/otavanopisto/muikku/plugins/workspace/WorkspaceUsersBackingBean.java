@@ -34,7 +34,6 @@ public class WorkspaceUsersBackingBean extends AbstractWorkspaceBackingBean {
   private WorkspaceController workspaceController;
 
   @Inject
-  @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction

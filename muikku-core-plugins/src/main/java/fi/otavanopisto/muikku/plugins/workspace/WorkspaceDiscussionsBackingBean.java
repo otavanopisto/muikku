@@ -45,7 +45,6 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
   private ForumController forumController;
 
   @Inject
-  @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction
