@@ -117,6 +117,7 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
         <div className="notebook__item-title" onClick={handleOpenClick}>
           {props.note.title}
         </div>
+        {/* TODO: lokalisointi*/}
         <div className="notebook__item-actions">
           <Dropdown
             openByHover
@@ -147,6 +148,7 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
           </Dropdown>
         </div>
       </div>
+      {/* TODO: lokalisointi*/}
       <AnimateHeight
         height={deleteIsActive ? "auto" : 0}
         contentClassName="notebook__item-delete-container"

@@ -494,7 +494,8 @@ public class HopsRestService {
     String schoolDataSource = sessionController.getLoggedUserSchoolDataSource();
     Subject subjectObject = courseMetaController.findSubjectByCode(schoolDataSource, subject);
     if (subjectObject == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      // If querying with an unknown subject, immediately return no results 
+      return Response.ok(suggestedWorkspaces).build();
     }
 
     // Do the search
