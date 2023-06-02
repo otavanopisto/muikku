@@ -10,6 +10,7 @@ help:
 	@echo "make clean			- Clean the whole application"
 	@echo "make front-build		- Build only the front end"
 	@echo "make front-prettier	- Run prettier on front code"
+	@echo "make front-run-dev	- Run webpack dev server"
 	@echo "make produce-ddl		- Produce the database definition from Entities"
 	@echo "make test-log		- Show the server log after test"
 	@echo "make test-rest		- Run the rest test package"
@@ -29,6 +30,10 @@ front-build:
 .PHONY: front-prettier
 front-prettier:
 	cd $(muikku_front_dir) && npm ci && npm run prettier-format
+
+.PHONY: front-run-dev
+front-run-dev:
+	cd $(muikku_front_dir) && npm ci && npm run dev
 
 .PHONY: produce-ddl
 produce-ddl:
