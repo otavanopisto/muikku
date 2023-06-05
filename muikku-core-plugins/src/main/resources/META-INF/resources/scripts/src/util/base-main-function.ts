@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-console */
 import Websocket from "~/util/websocket";
 import mApi from "~/lib/mApi";
 import { Action } from "redux";
@@ -30,8 +32,6 @@ export default async function (
     setupWorkspacePermissions?: boolean;
   } = {}
 ) {
-  const state: StateType = store.getState();
-
   let actionsAndCallbacks = {};
   if (getOptionValue(options.setupMessages)) {
     actionsAndCallbacks = {
@@ -50,36 +50,45 @@ export default async function (
     };
   }
 
-  let websocket: any = null;
-  if (state.status.loggedIn) {
-    websocket = new Websocket(store, actionsAndCallbacks);
-  }
+  /**
+   * initializeWebsocket
+   * @param actionsAndCallbacks actionsAndCallbacks
+   */
+  const initializeWebsocket = (actionsAndCallbacks: any) => {
+    let websocket: any = null;
 
-  if (state.status.isActiveUser) {
+    if (store.getState().status.loggedIn) {
+      websocket = new Websocket(store, actionsAndCallbacks);
+    }
+
+    return websocket;
+  };
+
+  /**
+   * updateUnreadThreadMessagesCount
+   */
+  const updateUnreadThreadMessagesCount = () =>
     getOptionValue(options.setupMessages) &&
-      store.dispatch(<Action>updateUnreadMessageThreadsCount());
-  }
+    store.dispatch(<Action>updateUnreadMessageThreadsCount());
 
   if (!options.setupWorkspacePermissions) {
     return new Promise((resolve) => {
-      /**
-       * resolveFn
-       */
+      // eslint-disable-next-line jsdoc/require-jsdoc
       const resolveFn = () => {
-        resolve(websocket);
+        updateUnreadThreadMessagesCount();
+        resolve(initializeWebsocket(actionsAndCallbacks));
       };
       store.dispatch(<Action>loadStatus(resolveFn));
     });
   } else {
     return new Promise((resolve) => {
       let loadedTotal = 0;
-      /**
-       * resolveFn
-       */
+      // eslint-disable-next-line jsdoc/require-jsdoc
       const resolveFn = () => {
         loadedTotal++;
         if (loadedTotal === 2) {
-          resolve(websocket);
+          updateUnreadThreadMessagesCount();
+          resolve(initializeWebsocket(actionsAndCallbacks));
         }
       };
       store.dispatch(<Action>loadStatus(resolveFn));
