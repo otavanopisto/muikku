@@ -6,6 +6,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 const mode = isDevelopment ? "development" : "production";
 
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 const plugins = [];
@@ -19,6 +20,13 @@ plugins.push(
   })
 );
 
+plugins.push(
+  new HtmlWebpackPlugin({
+      template: __dirname + '/index.html',
+      filename: 'index.html',
+      inject: 'body'
+  })
+);
 const rules = [];
 
 if (mode === "production") {
@@ -78,7 +86,8 @@ for (let file of filenames) {
 
 module.exports = {
   mode,
-  entry: entries,
+//  entry: entries,
+  entry: './entries/index.frontpage',// entries,
   devtool: isDevelopment ? "inline-cheap-module-source-map" : false,
   output: {
     filename: "[name].js",
@@ -110,5 +119,17 @@ module.exports = {
     mApi: "mApi",
     moment: "moment",
     getLocaleText: "getLocaleText",
+  },
+  devServer: {
+    port: 3000,
+    static: '../dist',
+    proxy: [
+      {
+        context: [ '/gfx', '/heartbeat', '/rest', '/scripts', '/login', '/logout' ],
+        target: 'https://dev.muikku.fi:8443',
+        secure: false,
+        changeOrigin: true
+      }
+    ]
   },
 };
