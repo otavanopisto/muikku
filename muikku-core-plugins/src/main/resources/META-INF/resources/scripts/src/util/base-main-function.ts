@@ -6,7 +6,11 @@ import { Action } from "redux";
 import { updateUnreadMessageThreadsCount } from "~/actions/main-function/messages";
 import { StateType } from "~/reducers";
 import { Store } from "redux";
-import { loadStatus, loadWorkspaceStatus } from "~/actions/base/status";
+import {
+  loadEnviromentalForumAreaPermissions,
+  loadStatus,
+  loadWorkspaceStatus,
+} from "~/actions/base/status";
 
 /**
  * getOptionValue
@@ -20,6 +24,7 @@ function getOptionValue(option: boolean) {
 }
 
 /**
+ * Main function to be called when initializing the app
  * @param store store
  * @param options options
  * @param options.setupMessages setupMessages
@@ -51,7 +56,8 @@ export default async function (
   }
 
   /**
-   * initializeWebsocket
+   * Actions to intialize websocket when user is logged in
+   *
    * @param actionsAndCallbacks actionsAndCallbacks
    */
   const initializeWebsocket = (actionsAndCallbacks: any) => {
@@ -65,16 +71,24 @@ export default async function (
   };
 
   /**
-   * updateUnreadThreadMessagesCount
+   * Updates unread thread messages count
    */
   const updateUnreadThreadMessagesCount = () =>
     getOptionValue(options.setupMessages) &&
     store.dispatch(<Action>updateUnreadMessageThreadsCount());
 
+  /**
+   * Loads area permissions for environmental forum
+   * after logging status has been resolved by loadStatus action.
+   */
+  const loadAreaPermissions = () =>
+    store.dispatch(<Action>loadEnviromentalForumAreaPermissions());
+
   if (!options.setupWorkspacePermissions) {
     return new Promise((resolve) => {
       // eslint-disable-next-line jsdoc/require-jsdoc
       const resolveFn = () => {
+        loadAreaPermissions();
         updateUnreadThreadMessagesCount();
         resolve(initializeWebsocket(actionsAndCallbacks));
       };
@@ -87,6 +101,7 @@ export default async function (
       const resolveFn = () => {
         loadedTotal++;
         if (loadedTotal === 2) {
+          loadAreaPermissions();
           updateUnreadThreadMessagesCount();
           resolve(initializeWebsocket(actionsAndCallbacks));
         }

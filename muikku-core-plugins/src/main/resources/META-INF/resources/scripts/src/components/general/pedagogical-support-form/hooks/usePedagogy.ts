@@ -266,8 +266,6 @@ export const usePedagogy = (
         extraDetails !== "" ? extraDetails : null
       );
 
-      console.log("updatedData", updatedData);
-
       unstable_batchedUpdates(() => {
         setEditIsActive(false);
         setData(updatedData);
