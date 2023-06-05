@@ -55,7 +55,6 @@ import AnnouncementsBody from "../components/announcements/body";
 import { AnnouncementListType } from "~/reducers/announcements";
 import AnnouncerBody from "../components/announcer/body";
 import {
-  updateAvailablePurchaseProducts,
   updateLabelFilters,
   updateWorkspaceFilters,
   updateUserGroupFilters,
@@ -131,6 +130,7 @@ interface MainFunctionProps {
   websocket: Websocket;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).USES_HISTORY_API = true;
 
 /**

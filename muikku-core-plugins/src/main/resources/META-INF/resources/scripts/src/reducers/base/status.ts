@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 //This one also uses a hack to access the data in the dom
 //please replace it with the following procedure
 //1. Create a rest endpoint to get the permissions list
@@ -15,6 +16,7 @@ export interface WhoAmIType {
   studyTimeLeftStr: string;
   studyStartDate: string;
   studyEndDate: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   phoneNumbers: any;
   displayName: string;
   curriculumIdentifier: string;
@@ -42,6 +44,33 @@ export interface WhoAmIType {
   studyProgrammeIdentifier: string;
   addresses: string;
   emails: string;
+  services: Services;
+}
+
+/**
+ * Servies that are active or available for user.
+ * Some of these are linked to permissions.
+ */
+export interface Services {
+  /**
+   * Chat service
+   */
+  chat: {
+    isActive: boolean;
+    isAvailable: boolean;
+  };
+  /**
+   * Forum service (enviromental)
+   */
+  environmentForum: {
+    isAvailable: boolean;
+  };
+  /**
+   * Worklist service
+   */
+  worklist: {
+    isAvailable: boolean;
+  };
 }
 
 /**
@@ -58,6 +87,7 @@ export interface StatusType {
   isStudent: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
+  services: Services;
   currentWorkspaceInfo?: {
     id: number;
     organizationEntityId: number;
@@ -139,6 +169,7 @@ export default function status(
     currentWorkspaceId: null,
     canCurrentWorkspaceSignup: false,
     hopsEnabled: false, // /user/property/hops.enabled
+    services: null,
   },
   action: ActionType
 ): StatusType {
