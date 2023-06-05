@@ -63,7 +63,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Stateful
 @RequestScoped
-@Path("/whoami")
+@Path("/user")
 @Produces("application/json")
 @Consumes("application/json")
 @RestCatchSchoolDataExceptions
@@ -117,7 +117,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
   private WorklistController worklistController;
 
   @GET
-  @Path("/")
+  @Path("/whoami")
   @RESTPermit(handling = Handling.INLINE)
   public Response findWhoAmI(@Context Request request) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
