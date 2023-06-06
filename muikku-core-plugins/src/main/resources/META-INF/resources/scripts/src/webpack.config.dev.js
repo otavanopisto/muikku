@@ -125,7 +125,7 @@ module.exports = {
     static: '../dist',
     proxy: [
       {
-        context: [ '/gfx', '/heartbeat', '/rest', '/scripts', '/login', '/logout' ],
+        context: [ '/gfx', '/heartbeat', '/rest', '/scripts', '/login', '/logout', '/JavaScriptLocales' ],
         target: 'https://dev.muikku.fi:8443',
         secure: false,
         changeOrigin: true
