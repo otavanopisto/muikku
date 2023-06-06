@@ -35,7 +35,7 @@ const Avatar = (props: AvatarProps) => {
     <object
       className={`avatar-container ${
         props.size ? "avatar-container--" + props.size : ""
-      }`}
+      } rs_skip_always`}
       data={getUserImageUrl(id)}
       type="image/jpeg"
       aria-label={avatarAriaLabel}
@@ -52,7 +52,7 @@ const Avatar = (props: AvatarProps) => {
     <div
       className={`avatar-container ${
         props.size ? "avatar-container--" + props.size : ""
-      }`}
+      } rs_skip_always`}
     >
       <div
         className={`avatar avatar--category-${category} ${

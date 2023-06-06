@@ -7,6 +7,7 @@ import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 
 /**
@@ -437,40 +438,47 @@ export default class OrganizerField extends React.Component<
     }
     if (this.props.invisible) {
       return (
-        <span className="material-page__organizerfield-wrapper">
-          <span className="material-page__organizerfield">
-            <span className="material-page__organizerfield-terms">
-              <span className="material-page__organizerfield-terms-title">
-                {this.props.content.termTitle}
-              </span>
-              <span className="material-page__organizerfield-terms-container">
-                {this.state.order.map((id) => (
-                  <span className="material-page__organizerfield-term" key={id}>
-                    <span className="material-page__organizerfield-term-icon icon-move"></span>
-                    <span className="material-page__organizerfield-term-label">
-                      <StrMathJAX invisible={true}>
-                        {this.state.terms[id]}
-                      </StrMathJAX>
+        <>
+          {/* TODO: lokalisointi*/}
+          <ReadspeakerMessage text="Järjestelytehtävä" />
+          <span className="material-page__organizerfield-wrapper rs_skip_always">
+            <span className="material-page__organizerfield">
+              <span className="material-page__organizerfield-terms">
+                <span className="material-page__organizerfield-terms-title">
+                  {this.props.content.termTitle}
+                </span>
+                <span className="material-page__organizerfield-terms-container">
+                  {this.state.order.map((id) => (
+                    <span
+                      className="material-page__organizerfield-term"
+                      key={id}
+                    >
+                      <span className="material-page__organizerfield-term-icon icon-move"></span>
+                      <span className="material-page__organizerfield-term-label">
+                        <StrMathJAX invisible={true}>
+                          {this.state.terms[id]}
+                        </StrMathJAX>
+                      </span>
                     </span>
+                  ))}
+                </span>
+              </span>
+              <span className="material-page__organizerfield-categories">
+                {this.props.content.categories.map((category) => (
+                  <span
+                    className="material-page__organizerfield-category"
+                    key={category.id}
+                  >
+                    <span className="material-page__organizerfield-category-title">
+                      {category.name}
+                    </span>
+                    <span className="material-page__organizerfield-category-terms-container" />
                   </span>
                 ))}
               </span>
             </span>
-            <span className="material-page__organizerfield-categories">
-              {this.props.content.categories.map((category) => (
-                <span
-                  className="material-page__organizerfield-category"
-                  key={category.id}
-                >
-                  <span className="material-page__organizerfield-category-title">
-                    {category.name}
-                  </span>
-                  <span className="material-page__organizerfield-category-terms-container" />
-                </span>
-              ))}
-            </span>
           </span>
-        </span>
+        </>
       );
     }
 
@@ -497,195 +505,201 @@ export default class OrganizerField extends React.Component<
 
     // we add that class name in our component
     return (
-      <span
-        className={`material-page__organizerfield-wrapper ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        <span className="material-page__taskfield-header">
-          <span></span>
-          <Instructions
-            modifier="instructions"
-            alignSelfVertically="top"
-            openByHover={false}
-            closeOnClick={true}
-            closeOnOutsideClick={true}
-            persistent
-            content={
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: this.props.i18n.text.get(
-                    "plugin.workspace.organizerField.instructions"
-                  ),
-                }}
-              />
-            }
-          />
-        </span>
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Järjestelytehtävä" />
         <span
-          className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+          className={`material-page__organizerfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
-          <span className="material-page__organizerfield-terms">
-            <span className="material-page__organizerfield-terms-title">
-              {this.props.content.termTitle}
-            </span>
-            <span className="material-page__organizerfield-terms-container">
-              {this.state.order.map((id) => {
-                // add the term in use class if in the uselist
-                const className = `material-page__organizerfield-term ${
-                  this.state.useList.indexOf(id) !== -1
-                    ? "material-page__organizerfield-term--in-use"
-                    : ""
-                } ${
-                  this.state.selectedItemId === id
-                    ? "material-page__organizerfield-term--selected"
-                    : ""
-                }`;
-                if (this.props.readOnly) {
-                  // if readOnly we just return a non draggable thingy
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          <span className="material-page__taskfield-header">
+            <span></span>
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: this.props.i18n.text.get(
+                      "plugin.workspace.organizerField.instructions"
+                    ),
+                  }}
+                />
+              }
+            />
+          </span>
+          <span
+            className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+          >
+            <span className="material-page__organizerfield-terms">
+              <span className="material-page__organizerfield-terms-title">
+                {this.props.content.termTitle}
+              </span>
+              <span className="material-page__organizerfield-terms-container">
+                {this.state.order.map((id) => {
+                  // add the term in use class if in the uselist
+                  const className = `material-page__organizerfield-term ${
+                    this.state.useList.indexOf(id) !== -1
+                      ? "material-page__organizerfield-term--in-use"
+                      : ""
+                  } ${
+                    this.state.selectedItemId === id
+                      ? "material-page__organizerfield-term--selected"
+                      : ""
+                  }`;
+                  if (this.props.readOnly) {
+                    // if readOnly we just return a non draggable thingy
+                    return (
+                      <span className={className} key={id}>
+                        <span className="material-page__organizerfield-term-icon icon-move"></span>
+                        <span className="material-page__organizerfield-term-label">
+                          <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
+                        </span>
+                      </span>
+                    );
+                  }
+                  // Otherwise we run a draggable, where the field itself is the parent container
+                  // the interaction group is only for this field, and it will clone the draggable instead of removing the entire thing
+                  // on move, it has no interaction data so draggables won't interact with each other, and when it's dropped it
+                  // calls the on drop into function using its own termId binding and the argument will be the data of the droppables
                   return (
-                    <span className={className} key={id}>
+                    <Draggable
+                      as="span"
+                      parentContainerSelector=".material-page__organizerfield"
+                      className={className}
+                      interactionGroup={this.props.content.name}
+                      clone
+                      key={id}
+                      onDropInto={this.onDropDraggableItem.bind(this, id)}
+                      onDrag={this.selectItemId.bind(this, id)}
+                      onClick={this.selectItemId.bind(this, id)}
+                    >
                       <span className="material-page__organizerfield-term-icon icon-move"></span>
                       <span className="material-page__organizerfield-term-label">
                         <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
                       </span>
-                    </span>
+                    </Draggable>
                   );
+                })}
+              </span>
+            </span>
+            <span className="material-page__organizerfield-categories">
+              {this.props.content.categories.map((category) => {
+                // we make a category class name for if the answer state is there, only worth it if the whole thing is not right
+                // if the whole thing is right then every category is right
+                const fieldCategoryStateAfterCheck =
+                  this.props.displayCorrectAnswers &&
+                  this.props.checkAnswers &&
+                  !answerIsCheckedAndItisCorrect &&
+                  this.state.answerState &&
+                  this.state.answerState[category.id]
+                    ? this.state.answerState[category.id]["*"] === "FAIL"
+                      ? "incorrect-answer"
+                      : "correct-answer"
+                    : "";
+
+                // Showing the missing terms is only reasonable when display correct answers is there
+                // we first check whether the category is right
+                const wecheckAnswersAndCategoryisCorrect =
+                  this.props.checkAnswers &&
+                  this.state.answerState &&
+                  this.state.answerState[category.id] &&
+                  this.state.answerState[category.id]["*"] === "PASS";
+                let itemCorrectAnswerMissingTerms: any = null;
+                // if we are asked to display and the answers are not right then we add the missing items
+                if (
+                  this.props.displayCorrectAnswers &&
+                  !wecheckAnswersAndCategoryisCorrect
+                ) {
+                  itemCorrectAnswerMissingTerms =
+                    this.state.answerStateMissingTerms &&
+                    this.state.answerStateMissingTerms[category.id] &&
+                    this.state.answerStateMissingTerms[category.id].map(
+                      (missingTermId) => (
+                        <span
+                          key={missingTermId}
+                          className="material-page__organizerfield-term material-page__organizerfield-term--missing"
+                        >
+                          <StrMathJAX>
+                            {this.state.terms[missingTermId]}
+                          </StrMathJAX>
+                        </span>
+                      )
+                    );
                 }
-                // Otherwise we run a draggable, where the field itself is the parent container
-                // the interaction group is only for this field, and it will clone the draggable instead of removing the entire thing
-                // on move, it has no interaction data so draggables won't interact with each other, and when it's dropped it
-                // calls the on drop into function using its own termId binding and the argument will be the data of the droppables
+
                 return (
-                  <Draggable
+                  <Droppable
                     as="span"
-                    parentContainerSelector=".material-page__organizerfield"
-                    className={className}
                     interactionGroup={this.props.content.name}
-                    clone
-                    key={id}
-                    onDropInto={this.onDropDraggableItem.bind(this, id)}
-                    onDrag={this.selectItemId.bind(this, id)}
-                    onClick={this.selectItemId.bind(this, id)}
+                    onClick={this.selectBox.bind(this, category)}
+                    className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
+                    key={category.id}
+                    interactionData={category.id}
                   >
-                    <span className="material-page__organizerfield-term-icon icon-move"></span>
-                    <span className="material-page__organizerfield-term-label">
-                      <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
+                    <span className="material-page__organizerfield-category-title">
+                      {category.name}
                     </span>
-                  </Draggable>
+                    <span className="material-page__organizerfield-category-terms-container">
+                      {this.state.boxes[category.id].map((termId) => {
+                        // showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
+                        // otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
+                        const itemStateAfterCheck =
+                          this.props.displayCorrectAnswers &&
+                          this.props.checkAnswers &&
+                          !answerIsCheckedAndItisCorrect &&
+                          this.state.answerState &&
+                          this.state.answerState[category.id]
+                            ? this.state.answerState[category.id][termId] ===
+                              "FAIL"
+                              ? "incorrect-answer"
+                              : "correct-answer"
+                            : "";
+
+                        return (
+                          <span
+                            onClick={this.preventPropagation}
+                            key={termId}
+                            className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}
+                          >
+                            <span className="material-page__organizerfield-term-label">
+                              <StrMathJAX>
+                                {this.state.terms[termId]}
+                              </StrMathJAX>
+                            </span>
+                            {!this.props.readOnly ? (
+                              <span
+                                onClick={this.deleteTermFromBox.bind(
+                                  this,
+                                  category.id,
+                                  termId
+                                )}
+                                className="material-page__organizerfield-term-icon icon-cross"
+                              ></span>
+                            ) : (
+                              <span className="material-page__organizerfield-term-icon icon-cross"></span>
+                            )}
+                          </span>
+                        );
+                      })}
+                      {itemCorrectAnswerMissingTerms}
+                    </span>
+                  </Droppable>
                 );
               })}
             </span>
           </span>
-          <span className="material-page__organizerfield-categories">
-            {this.props.content.categories.map((category) => {
-              // we make a category class name for if the answer state is there, only worth it if the whole thing is not right
-              // if the whole thing is right then every category is right
-              const fieldCategoryStateAfterCheck =
-                this.props.displayCorrectAnswers &&
-                this.props.checkAnswers &&
-                !answerIsCheckedAndItisCorrect &&
-                this.state.answerState &&
-                this.state.answerState[category.id]
-                  ? this.state.answerState[category.id]["*"] === "FAIL"
-                    ? "incorrect-answer"
-                    : "correct-answer"
-                  : "";
-
-              // Showing the missing terms is only reasonable when display correct answers is there
-              // we first check whether the category is right
-              const wecheckAnswersAndCategoryisCorrect =
-                this.props.checkAnswers &&
-                this.state.answerState &&
-                this.state.answerState[category.id] &&
-                this.state.answerState[category.id]["*"] === "PASS";
-              let itemCorrectAnswerMissingTerms: any = null;
-              // if we are asked to display and the answers are not right then we add the missing items
-              if (
-                this.props.displayCorrectAnswers &&
-                !wecheckAnswersAndCategoryisCorrect
-              ) {
-                itemCorrectAnswerMissingTerms =
-                  this.state.answerStateMissingTerms &&
-                  this.state.answerStateMissingTerms[category.id] &&
-                  this.state.answerStateMissingTerms[category.id].map(
-                    (missingTermId) => (
-                      <span
-                        key={missingTermId}
-                        className="material-page__organizerfield-term material-page__organizerfield-term--missing"
-                      >
-                        <StrMathJAX>
-                          {this.state.terms[missingTermId]}
-                        </StrMathJAX>
-                      </span>
-                    )
-                  );
-              }
-
-              return (
-                <Droppable
-                  as="span"
-                  interactionGroup={this.props.content.name}
-                  onClick={this.selectBox.bind(this, category)}
-                  className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
-                  key={category.id}
-                  interactionData={category.id}
-                >
-                  <span className="material-page__organizerfield-category-title">
-                    {category.name}
-                  </span>
-                  <span className="material-page__organizerfield-category-terms-container">
-                    {this.state.boxes[category.id].map((termId) => {
-                      // showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
-                      // otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
-                      const itemStateAfterCheck =
-                        this.props.displayCorrectAnswers &&
-                        this.props.checkAnswers &&
-                        !answerIsCheckedAndItisCorrect &&
-                        this.state.answerState &&
-                        this.state.answerState[category.id]
-                          ? this.state.answerState[category.id][termId] ===
-                            "FAIL"
-                            ? "incorrect-answer"
-                            : "correct-answer"
-                          : "";
-
-                      return (
-                        <span
-                          onClick={this.preventPropagation}
-                          key={termId}
-                          className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}
-                        >
-                          <span className="material-page__organizerfield-term-label">
-                            <StrMathJAX>{this.state.terms[termId]}</StrMathJAX>
-                          </span>
-                          {!this.props.readOnly ? (
-                            <span
-                              onClick={this.deleteTermFromBox.bind(
-                                this,
-                                category.id,
-                                termId
-                              )}
-                              className="material-page__organizerfield-term-icon icon-cross"
-                            ></span>
-                          ) : (
-                            <span className="material-page__organizerfield-term-icon icon-cross"></span>
-                          )}
-                        </span>
-                      );
-                    })}
-                    {itemCorrectAnswerMissingTerms}
-                  </span>
-                </Droppable>
-              );
-            })}
-          </span>
         </span>
-      </span>
+      </>
     );
   }
 }

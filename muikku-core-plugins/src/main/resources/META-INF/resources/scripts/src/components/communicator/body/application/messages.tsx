@@ -339,7 +339,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                       <p>
                         {`${this.props.i18n.time.format(
                           message.created
-                        )} - Klo ${this.props.i18n.time.format(
+                        )} klo ${this.props.i18n.time.format(
                           message.created,
                           "LT"
                         )}`}
@@ -489,7 +489,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                         <p>
                           {`${this.props.i18n.time.format(
                             thread.threadLatestMessageDate
-                          )} - Klo ${this.props.i18n.time.format(
+                          )} klo ${this.props.i18n.time.format(
                             thread.threadLatestMessageDate,
                             "LT"
                           )}`}

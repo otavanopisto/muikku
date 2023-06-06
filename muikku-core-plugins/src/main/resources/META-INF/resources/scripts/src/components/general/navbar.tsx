@@ -74,7 +74,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
    */
   render() {
     return (
-      <div>
+      <div className="rs_skip_always">
         <nav
           className={`navbar ${
             this.props.modifier ? "navbar--" + this.props.modifier : ""

@@ -480,7 +480,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     if (courseId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
-      return null; 
+      return Collections.emptyList(); 
     }
     return entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/assessmentsRequests/?activeStudents=true", courseId), CourseAssessmentRequest[].class));
   }
@@ -492,11 +492,11 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     if (courseId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
-      return null; 
+      return Collections.emptyList(); 
     }
     if (studentId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
-      return null; 
+      return Collections.emptyList(); 
     }
     return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/?archived="+ archived, studentId, courseId), CourseAssessmentRequest[].class));
   }
@@ -506,7 +506,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     if (studentId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
-      return null; 
+      return Collections.emptyList(); 
     }
     return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/assessmentRequests/", studentId), CourseAssessmentRequest[].class));
   }
@@ -516,7 +516,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     if (studentId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
-      return null; 
+      return Collections.emptyList(); 
     }
     
     CourseAssessment[] courseAssessments = pyramusClient.get(String.format("/students/students/%d/assessments/", studentId), CourseAssessment[].class);
@@ -543,7 +543,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     if (courseId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
-      return null; 
+      return Collections.emptyList(); 
     }
     StringBuffer courseStudentIds = new StringBuffer();
     for (String workspaceStudentIdentifier : workspaceStudentIdentifiers) {
@@ -562,7 +562,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     Long staffMemberId = identifierMapper.getPyramusStaffId(identifier);
     if (staffMemberId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus staff member", identifier));
-      return null; 
+      return Collections.emptyList(); 
     }
     fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest[] compositeAssessmentRequests = pyramusClient.get(
         String.format("/composite/staffMembers/%d/assessmentRequests/", staffMemberId),

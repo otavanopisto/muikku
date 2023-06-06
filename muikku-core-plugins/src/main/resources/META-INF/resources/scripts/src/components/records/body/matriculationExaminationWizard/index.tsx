@@ -128,6 +128,7 @@ interface MatriculationExaminationWizardProps {
   status: StatusType;
   examId: number;
   compulsoryEducationEligible: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
   updateEnrollemnts: (examId: number) => void;
   hops: HOPSType;
@@ -140,6 +141,7 @@ interface MatriculationExaminationWizardProps {
 export interface MatriculationExaminationWizardState {
   initialized: boolean;
   savingDraft: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   examId: any;
   errorMsg?: string;
   saveState?: SaveState;
@@ -157,7 +159,7 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: MatriculationExaminationWizardProps) {
     super(props);
@@ -192,7 +194,7 @@ class MatriculationExaminationWizard extends React.Component<
         canPublishName: "true",
         enrollmentSent: false,
         guidanceCounselor: "",
-        degreeStructure: ExamEnrollmentDegreeStructure.PRE2022,
+        degreeStructure: ExamEnrollmentDegreeStructure.POST2022,
         ssn: "",
         date:
           date.getDate() +
@@ -498,7 +500,7 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * handles possible error messages setting those to state
-   * @param msg
+   * @param msg msg
    */
   handleErrorMsg = (msg: string) => {
     this.setState({
@@ -509,16 +511,16 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * onUsingNewSystemChange
-   * @param usingNewSystem
+   * @param usingOldSystem usingOldSystem
    */
-  handleUsingNewSystemChange = (usingNewSystem: boolean) => {
+  handleUsingNewSystemChange = (usingOldSystem: boolean) => {
     this.setState({
       examinationInformation: {
         ...this.state.examinationInformation,
         ...this.resetExaminationInformationAttendances(),
-        degreeStructure: usingNewSystem
-          ? ExamEnrollmentDegreeStructure.POST2022
-          : ExamEnrollmentDegreeStructure.PRE2022,
+        degreeStructure: usingOldSystem
+          ? ExamEnrollmentDegreeStructure.PRE2022
+          : ExamEnrollmentDegreeStructure.POST2022,
       },
     });
 
@@ -533,9 +535,9 @@ class MatriculationExaminationWizard extends React.Component<
   /**
    * handles when wizard step changes and here check when last step before complete happens,
    * kick offs form submit
-   * @param steps
-   * @returns
+   * @param steps steps
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleStepChange = (steps: object[]) => (step: any) => {
     if (step === steps.length - 1) {
       this.submit();
@@ -545,7 +547,7 @@ class MatriculationExaminationWizard extends React.Component<
   /**
    * Handles examination information change and start draft saving timer, clears existing timer
    * if changes happens before existing timer happens to end
-   * @param examination
+   * @param examination examination
    */
   handleExaminationInformationChange = (
     examination: ExaminationInformation
@@ -588,18 +590,16 @@ class MatriculationExaminationWizard extends React.Component<
             onChangeSystemChange={this.handleUsingNewSystemChange}
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
-            usingNewSystem={
+            usingOldSystem={
               this.state.examinationInformation.degreeStructure ===
-              ExamEnrollmentDegreeStructure.POST2022
-                ? true
-                : false
+              ExamEnrollmentDegreeStructure.PRE2022
             }
             endDate={endDate}
           />
         ),
       },
       {
-        name: "Opiskelijatiedot",
+        name: "Opiskelijatiedot ja ilmoittautuminen",
         component:
           this.state.examinationInformation.degreeStructure ===
           ExamEnrollmentDegreeStructure.POST2022 ? (
@@ -708,7 +708,6 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch dispatch
  * @returns object
  */
 function mapDispatchToProps() {
