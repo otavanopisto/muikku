@@ -9,6 +9,7 @@ import {
   WorkspaceType,
   MaterialCompositeRepliesType,
   WorkspaceEditModeStateType,
+  WorkspaceAssessementStateType,
 } from "~/reducers/workspaces";
 import {
   setCurrentWorkspace,
@@ -127,13 +128,34 @@ class WorkspaceMaterial extends React.Component<
 
     let isDisabled = false;
 
+    // Values to indicate pending state
+    const pendingValues: WorkspaceAssessementStateType[] = [
+      "pending",
+      "pending_fail",
+      "pending_pass",
+    ];
+
     if (this.props.workspace.activity) {
-      isDisabled = this.props.workspace.activity.assessmentState.some(
-        (a) =>
-          a.state === "pending" ||
-          a.state === "pending_fail" ||
-          a.state === "pending_pass"
-      );
+      // Get the number of modules
+      const valueToCheck = this.props.workspace.activity.assessmentState.length;
+      let passValueCount = 0;
+
+      this.props.workspace.activity.assessmentState.forEach((activity) => {
+        // Check if any of the modules are in pending state
+        if (pendingValues.includes(activity.state)) {
+          isDisabled = true;
+        }
+        // Check if module is passed and increment counter
+        if (activity.state === "pass") {
+          passValueCount++;
+        }
+      });
+
+      // If all modules are passed, materials are disabled.
+      // This is to prevent students from changing their answers after passing grades are given
+      if (passValueCount === valueToCheck) {
+        isDisabled = true;
+      }
     }
 
     return (
