@@ -35,6 +35,26 @@
       <ui:insert name="meta"></ui:insert>
 
       <script type="text/javascript">
+        window.rsConf = {
+          general: {
+            usePost: true,
+            enableSkipAlways: true,
+          },
+          ui: {
+            tools: {
+              translation: false,
+              dictionary: false,
+              pagemask: false,
+              download: false,
+              clicklisten: false,
+              enlarge: false,
+              skipbuttons: false,
+            },
+          },
+        };
+      </script>
+
+      <script type="text/javascript">
         var CONTEXTPATH = "#{request.contextPath}";
       </script>
 
@@ -50,6 +70,7 @@
         type="text/javascript"
         src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js"
       />
+
       <script
         defer="defer"
         type="text/javascript"

@@ -788,18 +788,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".material-page__connectfield-wrapper");
         scrollIntoView(".material-page__connectfield-wrapper");
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
-            "                  ']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]");
         
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
-            "                  ']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Hampurilainen')]");
 
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
-            "                  ']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
 
         waitAndClick(".button--muikku-submit-exercise");

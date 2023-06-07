@@ -13,6 +13,7 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 
 /**
@@ -300,17 +301,21 @@ export default class JournalField extends React.Component<
 
     // and here the element itself
     return (
-      <span
-        className={`material-page__journalfield-wrapper ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        {field}
-      </span>
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Oppimispäiväkirjatehtävä" />
+        <span
+          className={`material-page__journalfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          {field}
+        </span>
+      </>
     );
   }
 }

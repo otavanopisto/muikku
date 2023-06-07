@@ -108,6 +108,12 @@
   }
 }
 
+.dialog__window--pedagogy-form-pdf {
+  height: 100%;
+  max-width: unset;
+  width: 100%;
+}
+
 .dialog__window--notebook-pdf-dialog {
   @include breakpoint($breakpoint-pad) {
     height: 90%;

@@ -28,7 +28,6 @@ import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
-import { WorkspaceType } from "~/reducers/workspaces";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [

@@ -9,7 +9,7 @@ import { SavingDraftInfo } from "./saving-draft-info";
  */
 interface MatriculationExaminationEnrollmentInfoProps {
   onChangeSystemChange?: (value: boolean) => void;
-  usingNewSystem?: boolean;
+  usingOldSystem?: boolean;
   saveState?: SaveState;
   draftSaveErrorMsg?: string;
   endDate: string;
@@ -20,7 +20,7 @@ interface MatriculationExaminationEnrollmentInfoProps {
  * MatriculationExaminationEnrollmentInfoState
  */
 interface MatriculationExaminationEnrollmentInfoState {
-  usingNewSystem: boolean;
+  usingOldSystem: boolean;
 }
 
 /**
@@ -38,7 +38,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
     super(props);
 
     this.state = {
-      usingNewSystem: false,
+      usingOldSystem: false,
     };
   }
 
@@ -46,20 +46,19 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
    * componentDidMount
    */
   componentDidMount = () => {
-    this.setState({ usingNewSystem: this.props.usingNewSystem });
+    this.setState({ usingOldSystem: this.props.usingOldSystem });
   };
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
    */
   componentDidUpdate = (
     prevProps: MatriculationExaminationEnrollmentInfoProps
   ) => {
     if (this.props !== prevProps) {
       this.setState({
-        usingNewSystem: this.props.usingNewSystem,
+        usingOldSystem: this.props.usingOldSystem,
       });
     }
   };
@@ -80,7 +79,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
    */
   render() {
     const { saveState, draftSaveErrorMsg } = this.props;
-    const { usingNewSystem } = this.state;
+    const { usingOldSystem } = this.state;
 
     return (
       <div className="matriculation-container">
@@ -101,18 +100,18 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
           </p>
           <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
             <label className="matriculation__label">
-              Suoritan tutkinnon uuden tutkintorakenteen mukaisesti (tutkinnon
-              suorittaminen alkaa keväällä 2022 tai myöhemmin)
+              Suoritan tutkinnon vanhan tutkintorakenteen mukaisesti (tutkinnon
+              suorittaminen alkanut syksyllä 2021 tai aiemmin)
             </label>
             <input
               onChange={this.handleCheckboxChange}
-              checked={usingNewSystem}
+              checked={usingOldSystem}
               type="checkbox"
               className="matriculation__input"
             ></input>
           </div>
 
-          {this.state.usingNewSystem && (
+          {!this.state.usingOldSystem && (
             <>
               <h3 className="matriculation-container__subheader">
                 Oppivelvollisuus

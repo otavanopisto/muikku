@@ -10,6 +10,7 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderType,
+  PedagogyFormAvailability,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import promisify from "~/util/promisify";
@@ -73,6 +74,7 @@ export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<
 
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT_PROP",
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   { property: keyof GuiderStudentUserProfileType; value: any }
 >;
 
@@ -614,6 +616,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                     properties: "hopsPhase",
                   }),
                   "callback"
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 )().then((properties: any) => {
                   dispatch({
                     type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -622,6 +625,18 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                       value: properties[0].value,
                     },
                   });
+                });
+              }
+            );
+
+            promisify(mApi().pedagogy.form.access.read(id), "callback")().then(
+              (pedagogyFormAvaibility: PedagogyFormAvailability) => {
+                dispatch({
+                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                  payload: {
+                    property: "pedagogyFormAvailable",
+                    value: pedagogyFormAvaibility,
+                  },
                 });
               }
             );

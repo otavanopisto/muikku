@@ -83,6 +83,7 @@ import {
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
+  setLocationToPedagogyFormInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { updateHops } from "~/actions/main-function/hops";
@@ -317,6 +318,10 @@ export default class MainFunction extends React.Component<
         setLocationToHopsInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateHops() as Action);
+    } else if (givenLocation === "pedagogy-form") {
+      this.props.store.dispatch(
+        setLocationToPedagogyFormInTranscriptOfRecords() as Action
+      );
     } else if (givenLocation === "yo") {
       this.props.store.dispatch(
         setLocationToYoInTranscriptOfRecords() as Action
@@ -995,7 +1000,12 @@ export default class MainFunction extends React.Component<
       this.loadlib(
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
-      this.props.store.dispatch(loadContactGroup("counselors") as Action);
+
+      const state = this.props.store.getState();
+
+      if (state.status.isActiveUser) {
+        this.props.store.dispatch(loadContactGroup("counselors") as Action);
+      }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
