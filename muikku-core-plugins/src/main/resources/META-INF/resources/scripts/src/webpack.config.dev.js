@@ -86,8 +86,22 @@ for (let file of filenames) {
 
 module.exports = {
   mode,
+  /**
+   * THE OLD VERSION - The problem with having all the entries is that all the apps are 
+   * being initialized at once and some apps cannot initialize immediately
+   */
 //  entry: entries,
-  entry: './entries/index.frontpage',// entries,
+
+  /** 
+   * TEST VERSION 1: Just the frontpage entry - this just barely works
+   */
+//  entry: './entries/index.frontpage',
+
+  /**
+   * TEST VERSION 2: index-router.tsx is an attempt to have a router as an entry point
+   */
+  entry: './entries/index-router.tsx',
+
   devtool: isDevelopment ? "inline-cheap-module-source-map" : false,
   output: {
     filename: "[name].js",
@@ -121,8 +135,13 @@ module.exports = {
     getLocaleText: "getLocaleText",
   },
   devServer: {
+	// Host and port for the dev server
+//    host: 'dev.muikku.fi',
+    host: 'localhost',
     port: 3000,
     static: '../dist',
+    // is this needed for routing?
+    historyApiFallback: true,
     proxy: [
       {
         context: [ '/gfx', '/heartbeat', '/rest', '/scripts', '/login', '/logout', '/JavaScriptLocales' ],
