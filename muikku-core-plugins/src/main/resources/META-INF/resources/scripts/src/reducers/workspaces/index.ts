@@ -372,7 +372,15 @@ export interface TemplateWorkspaceType {
  * Language options for workspace
  * used as lang attribute jsx
  */
-export const languageOptions = ["fi", "en", "sv", "de", "ru", "ja"] as const;
+export const languageOptions = [
+  "fi",
+  "en",
+  "sv",
+  "de",
+  "ru",
+  "ja",
+  "es",
+] as const;
 
 /**
  * Language
