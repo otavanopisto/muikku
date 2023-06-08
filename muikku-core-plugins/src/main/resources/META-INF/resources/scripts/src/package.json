@@ -107,6 +107,5 @@
     "stylelint-declaration-strict-value": "1.8.0",
     "stylelint-order": "5.0.0",
     "webpack-dev-server": "4.15.0"
-  },
-  "proxy": "dev.muikku.fi:8443"
+  }
 }
