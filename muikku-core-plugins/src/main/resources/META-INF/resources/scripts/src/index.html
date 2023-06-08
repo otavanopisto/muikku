@@ -1,100 +1,116 @@
 <!DOCTYPE html>
 <html>
-<head>
-      <script type="text/javascript">
-        var CONTEXTPATH = "";
-      </script>
+  <head>
+    <script type="text/javascript">
+      var CONTEXTPATH = "";
+    </script>
 
-      <!-- jQuery -->
-      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery/2.1.3/jquery.min.js"></script>
+    <!-- jQuery -->
+    <script
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/jquery/2.1.3/jquery.min.js"
+    ></script>
 
-      <!-- jQuery UI -->
-      <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-      <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/i18n/datepicker-fi.js"></script>
+    <!-- jQuery UI -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js"
+    ></script>
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/i18n/datepicker-fi.js"
+    ></script>
 
-      <script defer="defer" type="text/javascript">
-        $(document).ready(function () {
-          $.datepicker.setDefaults(
-            $.datepicker.regional["#{sessionBackingBean.locale}"]
-          );
-        });
-      </script>
+    <script defer="defer" type="text/javascript">
+      $(document).ready(function () {
+        $.datepicker.setDefaults(
+          $.datepicker.regional["#{sessionBackingBean.locale}"]
+        );
+      });
+    </script>
 
-      <!-- Moment -->
-      <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/moment/2.29.1/moment-with-locales.min.js"></script>
+    <!-- Moment -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/moment/2.29.1/moment-with-locales.min.js"
+    ></script>
 
-      <!-- Api resources -->
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="/rest/meta/resources?format=js"
-      ></script>
+    <!-- Api resources -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="/rest/meta/resources?format=js"
+    ></script>
 
-      <!-- Async
+    <!-- Async
   <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/async/0.9.0/async.js" />-->
 
-      <!-- ObjectPath, jQuery REST -->
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/interpreter.js"
-      ></script>
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/parse.js"
-      ></script>
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/tokens.js"
-      ></script>
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="//cdn.muikkuverkko.fi/libs/jquery.rest/1.0.2/jquery.rest.min.js"
-      ></script>
+    <!-- ObjectPath, jQuery REST -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/interpreter.js"
+    ></script>
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/parse.js"
+    ></script>
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/tokens.js"
+    ></script>
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/jquery.rest/1.0.2/jquery.rest.min.js"
+    ></script>
 
-      <!-- Api -->
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="/scripts/api/api.js"
-      ></script>
+    <!-- Api -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="/scripts/api/api.js"
+    ></script>
 
-      <!-- Heartbeat -->
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="/scripts/gui/heartbeat.js"
-      ></script>
+    <!-- Heartbeat -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="/scripts/gui/heartbeat.js"
+    ></script>
 
-      <!-- JavaScript locales -->
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="/JavaScriptLocales?lang=fi_FI"
-      ></script>
+    <!-- JavaScript locales -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="/JavaScriptLocales?lang=fi_FI"
+    ></script>
 
-      <!-- locales -->
-      <script defer="defer" src="https://dev.muikku.fi:8443/scripts/gui/locales.js"></script>
+    <!-- locales -->
+    <script
+      defer="defer"
+      src="https://dev.muikkuverkko.fi:8443/scripts/gui/locales.js"
+    ></script>
 
-      <!-- Muikku icons -->
-      <link
-        rel="stylesheet"
-        type="text/css"
-        href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.3.6/style.css"
-      />
-      <link
-        href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=cyrillic"
-        rel="stylesheet"
-      />
-
-</head>
-<body>
-Webpack-dev-server-test
-<div id="app"></div>
-<div id="root">
-</div>
-</body>
+    <!-- Muikku icons -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.3.6/style.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=cyrillic"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    Webpack-dev-server-test
+    <div id="app"></div>
+    <div id="root"></div>
+  </body>
 </html>

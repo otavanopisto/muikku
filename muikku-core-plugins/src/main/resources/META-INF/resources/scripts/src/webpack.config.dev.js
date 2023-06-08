@@ -6,7 +6,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 const mode = isDevelopment ? "development" : "production";
 
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 const plugins = [];
@@ -22,9 +22,9 @@ plugins.push(
 
 plugins.push(
   new HtmlWebpackPlugin({
-      template: __dirname + '/index.html',
-      filename: 'index.html',
-      inject: 'body'
+    template: __dirname + "/index.html",
+    filename: "index.html",
+    inject: "body",
   })
 );
 const rules = [];
@@ -87,20 +87,20 @@ for (let file of filenames) {
 module.exports = {
   mode,
   /**
-   * THE OLD VERSION - The problem with having all the entries is that all the apps are 
+   * THE OLD VERSION - The problem with having all the entries is that all the apps are
    * being initialized at once and some apps cannot initialize immediately
    */
-//  entry: entries,
+  //  entry: entries,
 
-  /** 
+  /**
    * TEST VERSION 1: Just the frontpage entry - this just barely works
    */
-//  entry: './entries/index.frontpage',
+  //  entry: './entries/index.frontpage',
 
   /**
    * TEST VERSION 2: index-router.tsx is an attempt to have a router as an entry point
    */
-  entry: './entries/index-router.tsx',
+  entry: "./entries/index-router.tsx",
 
   devtool: isDevelopment ? "inline-cheap-module-source-map" : false,
   output: {
@@ -136,21 +136,30 @@ module.exports = {
     getLocaleText: "getLocaleText",
   },
   devServer: {
-	// Host and port for the dev server
-//    host: 'dev.muikku.fi',
-    host: 'localhost',
+    // Host and port for the dev server
+    //    host: 'dev.muikku.fi',
+    host: "localhost",
     port: 3000,
-    static: '../dist',
+    static: "../dist",
     // is this needed for routing?
     historyApiFallback: true,
-    
+    liveReload: true,
+
     proxy: [
       {
-        context: [ '/gfx', '/heartbeat', '/rest', '/scripts', '/login', '/logout', '/JavaScriptLocales' ],
-        target: 'https://dev.muikku.fi:8443',
+        context: [
+          "/gfx",
+          "/heartbeat",
+          "/rest",
+          "/scripts",
+          "/login",
+          "/logout",
+          "/JavaScriptLocales",
+        ],
+        target: "https://dev.muikkuverkko.fi:8443",
         secure: false,
-        changeOrigin: true
-      }
-    ]
+        changeOrigin: true,
+      },
+    ],
   },
 };

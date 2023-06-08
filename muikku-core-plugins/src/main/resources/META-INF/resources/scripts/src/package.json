@@ -108,5 +108,5 @@
     "stylelint-order": "5.0.0",
     "webpack-dev-server": "4.15.0"
   },
-  "proxy": "dev.muikku.fi:8443"
+  "proxy": "dev.muikkuverkko.fi:8443"
 }

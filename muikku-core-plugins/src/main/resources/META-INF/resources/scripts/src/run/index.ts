@@ -90,7 +90,6 @@ export async function runApp(
   return newStore;
 }
 
-
 /**
  * runApp
  * @param reducer reducer
@@ -161,10 +160,11 @@ export function prepareApp(
 
   const props: any = beforeCreateApp ? beforeCreateApp(newStore) : {};
 
-  return React.createElement(
-      Provider,
-      { store: store },
-      React.createElement(App, { store: store, ...props })
-    );
+  console.log("prepareApp", props);
 
+  return React.createElement(
+    Provider,
+    { store: store },
+    React.createElement(App, { store: store, ...props })
+  );
 }

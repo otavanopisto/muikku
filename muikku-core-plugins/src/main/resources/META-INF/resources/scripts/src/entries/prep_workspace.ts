@@ -10,7 +10,7 @@ import tabOrMouse from "~/util/tab-or-mouse";
 export function renderWorkspaces() {
   return prepareApp(reducer, App, async (store) => {
     tabOrMouse();
-  
+
     if (store.getState().status.permissions.WORKSPACE_MANAGE_WORKSPACE) {
       store.dispatch(
         <Action>updateWorkspaceEditModeState({ available: true }, true)
@@ -33,5 +33,5 @@ export function renderWorkspaces() {
       setupWorkspacePermissions: true,
     });
     return { websocket };
-  });  
+  });
 }
