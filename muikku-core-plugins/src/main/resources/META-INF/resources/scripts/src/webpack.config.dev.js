@@ -106,6 +106,7 @@ module.exports = {
   output: {
     filename: "[name].js",
     path: __dirname + "/../dist",
+    publicPath: "/",
   },
   optimization: {
     splitChunks: {
@@ -142,6 +143,7 @@ module.exports = {
     static: '../dist',
     // is this needed for routing?
     historyApiFallback: true,
+    
     proxy: [
       {
         context: [ '/gfx', '/heartbeat', '/rest', '/scripts', '/login', '/logout', '/JavaScriptLocales' ],
