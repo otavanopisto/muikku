@@ -10,7 +10,8 @@ import reducer from "~/reducers/index.frontpage";
 import { loadLocale } from "~/actions/base/locales";
 import tabOrMouse from "~/util/tab-or-mouse";
 
-import { renderWorkspaces } from "~/entries/prep_workspace";
+import { renderMainFunction } from './prep_mainfunction';
+import { renderWorkspaces } from "~/entries/prep_workspace"
 
 class Page extends React.Component {
   render() {
@@ -47,9 +48,21 @@ ReactDOM.render(
       <Route exact path="/" component={Page} />
       <Route path="/test" component={Page2} />
 
-      <Route path="/front" render={renderFront} />
-      <Route path="/workspace/*" render={renderWorkspaces} />
-    </div>
-  </BrowserRouter>,
-  document.getElementById("app")
-);
+          <Route path="/front" render={renderFront} />
+
+          <Route path="/organization" render={renderMainFunction} />
+          <Route path="/coursepicker" render={renderMainFunction} />
+          <Route path="/communicator" render={renderMainFunction} />
+          <Route path="/discussion" render={renderMainFunction} />
+          <Route path="/announcements" render={renderMainFunction} />
+          <Route path="/announcer" render={renderMainFunction} />
+          <Route path="/guider" render={renderMainFunction} />
+          <Route path="/profile" render={renderMainFunction} />
+          <Route path="/records" render={renderMainFunction} />
+          <Route path="/evaluation" render={renderMainFunction} />
+          <Route path="/ceepos/pay" render={renderMainFunction} />
+          <Route path="/ceepos/done" render={renderMainFunction} />
+
+          <Route path="/workspace/*" render={renderWorkspaces} />
+      </div>
+    </BrowserRouter>, document.getElementById('app'));
