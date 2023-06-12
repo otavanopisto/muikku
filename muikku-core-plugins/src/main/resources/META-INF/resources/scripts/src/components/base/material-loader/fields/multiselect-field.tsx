@@ -7,6 +7,7 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * MultiSelectFieldProps
@@ -319,32 +320,36 @@ class MultiSelectField extends React.Component<
 
     if (this.props.invisible) {
       return (
-        <span className="material-page__checkbox-wrapper">
-          <span
-            className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${
-              this.props.content.listType === "checkbox-horizontal"
-                ? "horizontal"
-                : "vertical"
-            }`}
-          >
-            {this.props.content.options.map((o, index) => (
-              <span
-                key={o.name}
-                className="material-page__checkbox-item-container"
-              >
-                <input
-                  className="material-page__checkbox"
-                  type="checkbox"
-                  disabled
-                />
-                <label className="material-page__checkable-label">
-                  {o.text}
-                </label>
-              </span>
-            ))}
+        <>
+          {/* TODO: lokalisointi*/}
+          <ReadspeakerMessage text="Monivalintatehtävä" />
+          <span className="material-page__checkbox-wrapper rs_skip_always">
+            <span
+              className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${
+                this.props.content.listType === "checkbox-horizontal"
+                  ? "horizontal"
+                  : "vertical"
+              }`}
+            >
+              {this.props.content.options.map((o, index) => (
+                <span
+                  key={o.name}
+                  className="material-page__checkbox-item-container"
+                >
+                  <input
+                    className="material-page__checkbox"
+                    type="checkbox"
+                    disabled
+                  />
+                  <label className="material-page__checkable-label">
+                    {o.text}
+                  </label>
+                </span>
+              ))}
+            </span>
+            {correctAnswersummaryComponent}
           </span>
-          {correctAnswersummaryComponent}
-        </span>
+        </>
       );
     }
 
@@ -366,7 +371,7 @@ class MultiSelectField extends React.Component<
     // and we render
     return (
       <span
-        className={`material-page__checkbox-wrapper ${fieldSavedStateClass}`}
+        className={`material-page__checkbox-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}

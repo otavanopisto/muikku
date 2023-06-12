@@ -66,7 +66,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -105,7 +105,7 @@ public class CeeposRESTService {
   private LocaleController localeController;
 
   @Inject
-  private UserController userController;
+  private UserEmailEntityController userEmailEntityController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -186,24 +186,9 @@ public class CeeposRESTService {
     
     // Contact emails and student name for this order
     
-    String staffEmail = null;
-    String studentEmail = null;
-    UserEntityName userEntityName = null;
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      staffEmail = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
-      studentEmail = userController.getUserDefaultEmailAddress(studentIdentifier);
-      userEntityName = userEntityController.getName(studentUserEntity, false);
-      if (userEntityName == null) {
-        User user = userController.findUserByIdentifier(studentUserEntity.defaultSchoolDataIdentifier());
-        if (user != null) {
-          userEntityName = new UserEntityName(user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName());
-        }
-      }
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    String staffEmail = userEmailEntityController.getUserDefaultEmailAddress(sessionController.getLoggedUser(), false);
+    String studentEmail = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
+    UserEntityName userEntityName = userEntityController.getName(studentUserEntity, false);
     if (staffEmail == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Missing staff email %s", sessionController.getLoggedUserIdentifier())).build();
     }
@@ -501,14 +486,7 @@ public class CeeposRESTService {
     if (userEntityName == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Unable to resolve user name %s", sessionController.getLoggedUserIdentifier())).build();
     }
-    String email = null;
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      email = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    String email = userEmailEntityController.getUserDefaultEmailAddress(sessionController.getLoggedUser(), false);
     if (email == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Unable to resolve student email %s", sessionController.getLoggedUserIdentifier())).build();
     }
@@ -943,21 +921,13 @@ public class CeeposRESTService {
 
       // Mail to user and guider
       
-      String staffEmail = null;
-      String studentEmail = null;
       SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(order.getUserIdentifier());
       UserEntity staffMember = userEntityController.findUserEntityById(order.getCreatorId());
       SchoolDataIdentifier staffIdentifier = new SchoolDataIdentifier(
           staffMember.getDefaultIdentifier(),
           staffMember.getDefaultSchoolDataSource().getIdentifier());
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        staffEmail = userController.getUserDefaultEmailAddress(staffIdentifier);
-        studentEmail = userController.getUserDefaultEmailAddress(studentIdentifier);
-      }
-      finally {
-        schoolDataBridgeSessionController.endSystemSession();
-      }
+      String staffEmail = userEmailEntityController.getUserDefaultEmailAddress(staffIdentifier, false); 
+      String studentEmail = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
       
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
       UserEntityName userEntityName = userEntityController.getName(userEntity, false);

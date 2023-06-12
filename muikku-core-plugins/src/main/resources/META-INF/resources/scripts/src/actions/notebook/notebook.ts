@@ -373,11 +373,13 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
         // If user has selected position for new note from the list
         // Because index can be 0, we need to check if it is not null as 0 is falsy value
         if (
-          state.notebook.noteEditedPosition &&
-          state.notebook.noteEditedPosition !== null
+          state.notebook.noteEditedPosition !== null &&
+          state.notebook.noteEditedPosition >= 0
         ) {
           dataToSave.nextSiblingId =
             state.notebook.notes[state.notebook.noteEditedPosition].id || null;
+        } else if (state.notebook.noteEditedPosition === null) {
+          dataToSave.nextSiblingId = null;
         }
 
         // If user changes default position when creating new note
@@ -410,12 +412,14 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
         // Then we need to update notebook entries
         // If note position is null, note is added to the end of the list
         if (
-          state.notebook.noteEditedPosition &&
-          state.notebook.noteEditedPosition !== null
+          state.notebook.noteEditedPosition !== null &&
+          state.notebook.noteEditedPosition >= 0
         ) {
           // If note position is not null, note is added to the list
           // to the given position
           updatedList.splice(state.notebook.noteEditedPosition, 0, entry);
+        } else if (state.notebook.noteEditedPosition === null) {
+          updatedList.push(entry);
         } else {
           // If previous conditions are not met, note is added to the top or bottom
           // of the list depending on user's default position
@@ -452,7 +456,7 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
 
         dispatch(
           displayNotification(
-            "Virhe uuttaa muistiinpanoa tallentaessa",
+            `Virhe uuttaa muistiinpanoa tallentaessa: ${err}`,
             "error"
           )
         );

@@ -30,7 +30,7 @@ export function MaterialLoaderProducersLicense(
     : false;
 
   return (
-    <div className="material-page__metadata-container">
+    <div className="material-page__metadata-container rs_skip">
       {props.material.producers && props.material.producers.length ? (
         <div className="material-page__producers">
           <div className="material-page__producers-label">

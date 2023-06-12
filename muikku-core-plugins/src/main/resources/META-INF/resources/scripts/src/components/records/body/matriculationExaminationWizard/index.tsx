@@ -193,7 +193,7 @@ class MatriculationExaminationWizard extends React.Component<
         canPublishName: "true",
         enrollmentSent: false,
         guidanceCounselor: "",
-        degreeStructure: ExamEnrollmentDegreeStructure.PRE2022,
+        degreeStructure: ExamEnrollmentDegreeStructure.POST2022,
         ssn: "",
         date:
           date.getDate() +
@@ -510,16 +510,16 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * onUsingNewSystemChange
-   * @param usingNewSystem usingNewSystem
+   * @param usingOldSystem usingOldSystem
    */
-  handleUsingNewSystemChange = (usingNewSystem: boolean) => {
+  handleUsingNewSystemChange = (usingOldSystem: boolean) => {
     this.setState({
       examinationInformation: {
         ...this.state.examinationInformation,
         ...this.resetExaminationInformationAttendances(),
-        degreeStructure: usingNewSystem
-          ? ExamEnrollmentDegreeStructure.POST2022
-          : ExamEnrollmentDegreeStructure.PRE2022,
+        degreeStructure: usingOldSystem
+          ? ExamEnrollmentDegreeStructure.PRE2022
+          : ExamEnrollmentDegreeStructure.POST2022,
       },
     });
 
@@ -591,18 +591,16 @@ class MatriculationExaminationWizard extends React.Component<
             onChangeSystemChange={this.handleUsingNewSystemChange}
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
-            usingNewSystem={
+            usingOldSystem={
               this.state.examinationInformation.degreeStructure ===
-              ExamEnrollmentDegreeStructure.POST2022
-                ? true
-                : false
+              ExamEnrollmentDegreeStructure.PRE2022
             }
             endDate={endDate}
           />
         ),
       },
       {
-        name: "Opiskelijatiedot",
+        name: "Opiskelijatiedot ja ilmoittautuminen",
         component:
           this.state.examinationInformation.degreeStructure ===
           ExamEnrollmentDegreeStructure.POST2022 ? (

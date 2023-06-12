@@ -80,6 +80,7 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
         }
       >
         {props.material.title}
+        {props.readspeakerComponent ? props.readspeakerComponent : null}
       </h2>
       {hidden &&
       (materialPageType === "exercise" || materialPageType === "assignment") ? (

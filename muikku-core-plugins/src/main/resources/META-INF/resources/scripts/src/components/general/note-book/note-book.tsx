@@ -36,6 +36,7 @@ import { useDragDropManager } from "react-dnd";
 import Dropdown from "~/components/general/dropdown";
 import { useLocalStorage } from "usehooks-ts";
 import { useTranslation } from "react-i18next";
+import NoteBookPDFDialog from "./notebook-pdf-dialog";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -329,6 +330,15 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
             onClick={handleCloseAllClick}
             disablePropagation={true}
           />
+        </Dropdown>
+        <Dropdown openByHover content={<p>PDF</p>}>
+          <NoteBookPDFDialog notes={notes} workspace={props.currentWorkspace}>
+            <IconButton
+              icon="pdf"
+              buttonModifiers={["notebook-action"]}
+              disablePropagation={true}
+            />
+          </NoteBookPDFDialog>
         </Dropdown>
       </div>
 

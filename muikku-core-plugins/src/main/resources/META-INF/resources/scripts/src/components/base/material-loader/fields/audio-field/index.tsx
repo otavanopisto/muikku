@@ -12,6 +12,7 @@ import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 // so we use the media recorder
 // the media recorder is polyfilled
@@ -441,21 +442,25 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
         ));
       }
       return (
-        <span className="material-page__audiofield-wrapper">
-          <span className="material-page__audiofield">
-            {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
-              <input type="file" />
-            ) : null}
-            {!this.props.readOnly && this.state.supportsMediaAPI() ? (
-              <span className="material-page__audiofield-controls" />
-            ) : null}
-            {this.state.values.length > 0 ? (
-              <span className="material-page__audiofield-files-container">
-                {emptyData}
-              </span>
-            ) : null}
+        <>
+          {/* TODO: lokalisointi*/}
+          <ReadspeakerMessage text="Äänitystehtävä" />
+          <span className="material-page__audiofield-wrapper rs_skip_always">
+            <span className="material-page__audiofield">
+              {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
+                <input type="file" />
+              ) : null}
+              {!this.props.readOnly && this.state.supportsMediaAPI() ? (
+                <span className="material-page__audiofield-controls" />
+              ) : null}
+              {this.state.values.length > 0 ? (
+                <span className="material-page__audiofield-files-container">
+                  {emptyData}
+                </span>
+              ) : null}
+            </span>
           </span>
-        </span>
+        </>
       );
     }
     // rendering things here
@@ -615,68 +620,72 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
 
     // and this is the container
     return (
-      <span
-        className={`material-page__audiofield-wrapper ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        <span className={`material-page__audiofield ${ElementDisabledState}`}>
-          {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
-            <input
-              type="file"
-              accept="audio/*"
-              onChange={this.onFileChanged}
-              multiple
-            />
-          ) : null}
-          {!this.props.readOnly && this.state.supportsMediaAPI() ? (
-            <span className="material-page__audiofield-controls">
-              {!this.state.recording ? (
-                <Link
-                  className="material-page__audiofield-start-record-button icon-record"
-                  onClick={this.start}
-                >
-                  <span className="material-page__audiofield-start-record-label">
-                    {t("actions.start", { ns: "materials" })}
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Äänitystehtävä" />
+        <span
+          className={`material-page__audiofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          <span className={`material-page__audiofield ${ElementDisabledState}`}>
+            {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={this.onFileChanged}
+                multiple
+              />
+            ) : null}
+            {!this.props.readOnly && this.state.supportsMediaAPI() ? (
+              <span className="material-page__audiofield-controls">
+                {!this.state.recording ? (
+                  <Link
+                    className="material-page__audiofield-start-record-button icon-record"
+                    onClick={this.start}
+                  >
+                    <span className="material-page__audiofield-start-record-label">
+                      {t("actions.start", { ns: "materials" })}
+                    </span>
+                  </Link>
+                ) : (
+                  <Link
+                    className="material-page__audiofield-stop-record-button icon-stop"
+                    onClick={this.stop}
+                  >
+                    <span className="material-page__audiofield-stop-record-label">
+                      {t("actions.start", { ns: "materials" })}
+                    </span>
+                  </Link>
+                )}
+                {!this.state.recording ? (
+                  <span className="material-page__audiofield-description material-page__audiofield-description--start-recording">
+                    {t("content.startRecording", { ns: "materials" })}
                   </span>
-                </Link>
-              ) : (
-                <Link
-                  className="material-page__audiofield-stop-record-button icon-stop"
-                  onClick={this.stop}
-                >
-                  <span className="material-page__audiofield-stop-record-label">
-                    {t("actions.start", { ns: "materials" })}
+                ) : (
+                  <span className="material-page__audiofield-description material-page__audiofield-description--stop-recording">
+                    {t("content.stopRecording", { ns: "materials" })}
                   </span>
-                </Link>
-              )}
-              {!this.state.recording ? (
-                <span className="material-page__audiofield-description material-page__audiofield-description--start-recording">
-                  {t("content.startRecording", { ns: "materials" })}
-                </span>
-              ) : (
-                <span className="material-page__audiofield-description material-page__audiofield-description--stop-recording">
-                  {t("content.stopRecording", { ns: "materials" })}
-                </span>
-              )}
-            </span>
-          ) : null}
-          {this.state.values.length > 0 || this.state.recording ? (
-            <span className="material-page__audiofield-files-container">
-              {dataInContainer}
-              {recordingInContainer}
-            </span>
-          ) : null}
-          {this.props.readOnly && this.state.values.length == 0 ? (
-            <span className="material-page__audiofield-files-container material-page__audiofield-files-container--empty">
-              {t("content.noRecordings", { ns: "materials" })}
-            </span>
-          ) : null}
+                )}
+              </span>
+            ) : null}
+            {this.state.values.length > 0 || this.state.recording ? (
+              <span className="material-page__audiofield-files-container">
+                {dataInContainer}
+                {recordingInContainer}
+              </span>
+            ) : null}
+            {this.props.readOnly && this.state.values.length == 0 ? (
+              <span className="material-page__audiofield-files-container material-page__audiofield-files-container--empty">
+                {t("content.noRecordings", { ns: "materials" })}
+              </span>
+            ) : null}
+          </span>
         </span>
-      </span>
+      </>
     );
   }
 }

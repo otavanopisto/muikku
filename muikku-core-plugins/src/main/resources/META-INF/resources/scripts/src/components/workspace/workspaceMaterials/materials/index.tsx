@@ -41,6 +41,12 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
+import ReadSpeakerReader from "~/components/general/readspeaker";
+import { ReadspeakerProvider } from "~/components/context/readspeaker-context";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
 
 /**
  * WorkspaceMaterialsProps
@@ -62,6 +68,7 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -492,6 +499,8 @@ class WorkspaceMaterials extends React.Component<
       return null;
     }
 
+    const readSpeakerParameters: string[] = [];
+
     const isEditable = this.props.workspaceEditMode.active;
 
     const createSectionElementWhenEmpty =
@@ -522,6 +531,8 @@ class WorkspaceMaterials extends React.Component<
     const results: JSX.Element[] = [];
 
     this.props.materials.forEach((section, index) => {
+      readSpeakerParameters.push(`sectionId${section.workspaceMaterialId}`);
+
       // If first section, then above it is "add new section" icon button
       // And it is only showed when editing is active
       if (index === 0 && isEditable) {
@@ -614,7 +625,7 @@ class WorkspaceMaterials extends React.Component<
 
       // If section is restricted we don't return anything
       !isSectionViewRestricted &&
-        section.children.forEach((node) => {
+        section.children.forEach((node, pageI) => {
           // this is the next sibling for the content node that is to be added, aka the current
           const nextSibling = node;
 
@@ -702,6 +713,39 @@ class WorkspaceMaterials extends React.Component<
                 compositeReplies.state === "INCOMPLETE");
           }
 
+          const arrayOfSectionsToRemoved = Array(
+            pageI === 0 ? index : index + 1
+          )
+            .fill(0)
+            .map((_, i) => i);
+
+          const arrayOfPagesToRemoved = Array(pageI)
+            .fill(0)
+            .map((_, i) => i);
+
+          let contentToRead = [
+            ...this.props.materials
+              .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
+              .map((section) => `sectionId${section.workspaceMaterialId}`),
+          ];
+
+          if (pageI !== 0) {
+            contentToRead = [
+              ...section.children
+                .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
+                .map((page) => `pageId${page.workspaceMaterialId}`),
+              ...contentToRead,
+            ];
+          }
+
+          const readSpeakerComponent = (
+            <ReadSpeakerReader
+              entityId={pageI + 1}
+              readParameterType="readid"
+              readParameters={contentToRead}
+            />
+          );
+
           // Actual page material
           // Nothing is shown is workspace or material "compositeReplies" are missing or
           // editing is not active and material is hided and showEvenIfHidden is false
@@ -710,6 +754,7 @@ class WorkspaceMaterials extends React.Component<
             !this.props.materialReplies ||
             (!isEditable && node.hidden && !showEvenIfHidden) ? null : (
               <ContentPanelItem
+                id={`pageId${node.workspaceMaterialId}`}
                 ref={node.workspaceMaterialId + ""}
                 key={node.workspaceMaterialId + ""}
               >
@@ -728,6 +773,7 @@ class WorkspaceMaterials extends React.Component<
                   compositeReplies={compositeReplies}
                   isViewRestricted={false}
                   showEvenIfHidden={showEvenIfHidden}
+                  readspeakerComponent={readSpeakerComponent}
                 />
               </ContentPanelItem>
             );
@@ -744,6 +790,7 @@ class WorkspaceMaterials extends React.Component<
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
+          id={`sectionId${section.workspaceMaterialId}`}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
@@ -824,18 +871,26 @@ class WorkspaceMaterials extends React.Component<
       ) : null;
 
     return (
-      <ContentPanel
-        aside={progressData}
-        onOpenNavigation={this.onOpenNavigation}
-        modifier="workspace-materials"
-        navigation={this.props.navigation}
-        title={t("labels.materials", { ns: "materials" })}
-        ref="content-panel"
-      >
-        {results}
-        {emptyMessage}
-        {createSectionElementWhenEmpty}
-      </ContentPanel>
+      <ReadspeakerProvider displayNotification={this.props.displayNotification}>
+        <ContentPanel
+          aside={progressData}
+          onOpenNavigation={this.onOpenNavigation}
+          modifier="workspace-materials"
+          navigation={this.props.navigation}
+          title={t("labels.materials", { ns: "materials" })}
+          readspeakerComponent={
+            <ReadSpeakerReader
+              readParameterType="readid"
+              readParameters={readSpeakerParameters}
+            />
+          }
+          ref="content-panel"
+        >
+          {results}
+          {emptyMessage}
+          {createSectionElementWhenEmpty}
+        </ContentPanel>
+      </ReadspeakerProvider>
     );
   }
 }
@@ -866,6 +921,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       createWorkspaceMaterialContentNode,
       updateWorkspaceMaterialContentNode,
       materialShowOrHideExtraTools,
+      displayNotification,
     },
     dispatch
   );

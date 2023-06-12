@@ -142,13 +142,7 @@ class WorkspaceJournalsListItem extends React.Component<
                 />
               ) : null
             ) : null}
-            <div
-              className={`application-list__item-header-main ${
-                this.props.journal.isMaterialField
-                  ? "application-list__item-header-main--journal-entry-mandatory"
-                  : "application-list__item-header-main--journal-entry"
-              }`}
-            >
+            <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
               {!this.props.status.isStudent ? (
                 <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-creator">
                   {student ? getName(student, true) : this.props.journal.title}
@@ -163,7 +157,18 @@ class WorkspaceJournalsListItem extends React.Component<
                   <span className="label__text">{t("actions.draft")}</span>
                 </span>
               )}
+
+              {isMandatory && (
+                <span className="label label--mandatory">
+                  <span className="label__text">
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.journal.status.mandatory"
+                    )}
+                  </span>
+                </span>
+              )}
             </div>
+
             <div className="application-list__item-header-aside">
               <span>
                 {localizeTime.date(this.props.journal.created, "L LT")}

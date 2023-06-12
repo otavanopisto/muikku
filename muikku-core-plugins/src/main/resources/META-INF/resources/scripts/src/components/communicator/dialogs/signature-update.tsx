@@ -62,6 +62,25 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   * @param prevState prevState
+   */
+  componentDidUpdate(
+    prevProps: Readonly<CommunicatorSignatureUpdateDialogProps>,
+    prevState: Readonly<CommunicatorSignatureUpdateDialogState>
+  ): void {
+    // On first render signature might be null
+    // so we need to check if it's changes from null to something
+    // and update state
+    if (prevProps.signature !== this.props.signature) {
+      this.setState({
+        signature: this.props.signature ? this.props.signature.signature : "",
+      });
+    }
+  }
+
+  /**
    * handleKeydown
    * @param code code
    * @param closeDialog closeDialog
@@ -125,11 +144,9 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div className="env-dialog__row">
         <div className="env-dialog__form-element-container">
-          {this.state.signature && (
-            <CKEditor onChange={this.onCKEditorChange} autofocus>
-              {this.state.signature}
-            </CKEditor>
-          )}
+          <CKEditor onChange={this.onCKEditorChange} autofocus>
+            {this.state.signature}
+          </CKEditor>
         </div>
       </div>
     );

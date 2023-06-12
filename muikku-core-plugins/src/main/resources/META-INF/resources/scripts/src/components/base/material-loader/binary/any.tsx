@@ -12,7 +12,7 @@ export default function Any(props: { material: MaterialContentNodeType }) {
   const { t } = useTranslation(["files", "common"]);
 
   return (
-    <div>
+    <div className="rs_skip_always">
       <Link
         href={`/rest/materials/binary/${props.material.materialId}/content`}
         openInNewTab={props.material.title}

@@ -44,6 +44,7 @@ import Dropdown from "~/components/general/dropdown";
 import { IconButton } from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { withTranslation, WithTranslation } from "react-i18next";
+import TableOfContentPDFDialog from "./table-of-content-pdf-dialog";
 
 /**
  * ContentProps
@@ -549,8 +550,7 @@ class ContentComponent extends SessionStateComponent<
         modifier="workspace-materials"
         // tocHeaderTitle={t("labels.tableOfContents", { ns: "materials" })}
         tocHeaderExtraContent={
-          <div>
-            {/* <Dropdown openByHover content={<p>{t("actions.openAll")}</p>}> */}
+          <>
             <Dropdown openByHover content={<p>{t("actions.openAll")}</p>}>
               <IconButton
                 icon="arrow-down"
@@ -680,7 +680,21 @@ class ContentComponent extends SessionStateComponent<
             >
               <IconButton icon="filter" buttonModifiers={["toc-action"]} />
             </Dropdown>
-          </div>
+            <Dropdown openByHover content={<p>Sisällysluettelo PDF</p>}>
+              <TableOfContentPDFDialog
+                assignmentTypeFilters={this.state.assignmentTypeFilters}
+                materials={this.props.materials}
+                workspace={this.props.workspace}
+                compositeReplies={this.props.materialReplies}
+              >
+                <IconButton
+                  icon="pdf"
+                  buttonModifiers={["toc-action"]}
+                  disablePropagation={true}
+                />
+              </TableOfContentPDFDialog>
+            </Dropdown>
+          </>
         }
       >
         {this.state.materials.map((node, nodeIndex) => {

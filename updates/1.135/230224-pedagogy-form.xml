@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table if not exists PedagogyForm (
+       id bigint not null auto_increment,
+        formData longtext not null,
+        state varchar(255) not null,
+        studentIdentifier varchar(255) not null,
+        visibility varchar(255),
+        primary key (id)
+    );
+  </sql>
+  
+  <sql>
+    create table PedagogyFormHistory (
+       id bigint not null auto_increment,
+        created datetime not null,
+        creator bigint not null,
+        details longtext,
+        fields longtext,
+        form_id bigint,
+        primary key (id)
+    );
+  </sql>
+    
+  <sql>alter table PedagogyForm add constraint UKenshdnwk7b1y9lpoess2ldhu7 unique (studentIdentifier);</sql>
+  <sql>alter table PedagogyFormHistory add constraint FKgonrbhfu4wj6spcyhouiqcnim foreign key (form_id) references PedagogyForm (id);</sql>
+
+</update> 

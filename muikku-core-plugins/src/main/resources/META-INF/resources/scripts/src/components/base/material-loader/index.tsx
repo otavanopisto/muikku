@@ -269,6 +269,7 @@ export interface MaterialLoaderProps {
   invisible?: boolean;
   answersVisible?: boolean;
   isViewRestricted?: boolean;
+  readspeakerComponent?: JSX.Element;
 
   children?: (
     props: MaterialLoaderProps,

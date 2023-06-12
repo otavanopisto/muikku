@@ -136,14 +136,14 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
   if (props.invisible) {
     return (
       <div
-        className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}
+        className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel} rs_skip_always`}
       ></div>
     );
   }
 
   return (
     <div
-      className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}
+      className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel} rs_skip_always`}
     >
       <Dropdown
         openByHover

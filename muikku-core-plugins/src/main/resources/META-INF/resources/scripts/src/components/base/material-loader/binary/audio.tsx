@@ -13,7 +13,7 @@ export default function Audio(props: {
   invisible?: boolean;
 }) {
   return (
-    <div className="material-page__content material-page__content--binary-audio">
+    <div className="material-page__content material-page__content--binary-audio rs_skip_always">
       <AudioPoolComponent
         invisible={props.invisible}
         className="material-page__audiofield-file"

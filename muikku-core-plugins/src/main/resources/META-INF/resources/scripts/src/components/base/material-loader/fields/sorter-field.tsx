@@ -13,6 +13,7 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 
 /**
@@ -359,14 +360,21 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
         );
       });
       return (
-        <span ref="base" className="material-page__sorterfield-wrapper">
+        <>
+          {/* TODO: lokalisointi*/}
+          <ReadspeakerMessage text="Järjestelytehtävä" />
           <span
-            className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}
+            ref="base"
+            className="material-page__sorterfield-wrapper rs_skip_always"
           >
-            {filler}
+            <span
+              className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}
+            >
+              {filler}
+            </span>
+            {correctAnswersummaryComponent}
           </span>
-          {correctAnswersummaryComponent}
-        </span>
+        </>
       );
     }
 
@@ -391,107 +399,108 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
 
     // we use that element and the class to create the field
     return (
-      <span
-        className={`material-page__sorterfield-wrapper material-page__sorterfield-wrapper--${elementClassName} ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        <span className="material-page__taskfield-header">
-          <span></span>
-          <Instructions
-            modifier="instructions"
-            alignSelfVertically="top"
-            openByHover={false}
-            closeOnClick={true}
-            closeOnOutsideClick={true}
-            persistent
-            content={
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: t(
-                    "instructions.sorterField", {ns: "materials"}
-                  ),
-                }}
-              />
-            }
-          />
-        </span>
-
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Järjestelytehtävä" />
         <span
-          className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+          className={`material-page__sorterfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
-          {this.state.items.map((item, index) => {
-            // We get the text
-            let text = item.name;
-            // if we are wanted to capitalize we do so
-            if (index === 0 && this.props.content.capitalize) {
-              text = text.charAt(0).toUpperCase() + text.slice(1);
-            }
-            // Now we might be able if we are asked to to show the rightness of the very specific item
-            // this only happens if the answer is wrong total because otherwise is right and it's unecessary
-            // we set them up so that they show each if they are right or wrong
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          <span className="material-page__taskfield-header">
+            <span></span>
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: t("instructions.sorterField", { ns: "materials" }),
+                  }}
+                />
+              }
+            />
+          </span>
+          <span
+            className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+          >
+            {this.state.items.map((item, index) => {
+              // We get the text
+              let text = item.name;
+              // if we are wanted to capitalize we do so
+              if (index === 0 && this.props.content.capitalize) {
+                text = text.charAt(0).toUpperCase() + text.slice(1);
+              }
+              // Now we might be able if we are asked to to show the rightness of the very specific item
+              // this only happens if the answer is wrong total because otherwise is right and it's unecessary
+              // we set them up so that they show each if they are right or wrong
 
-            const itemStateAfterCheck =
-              this.props.displayCorrectAnswers &&
-              this.props.checkAnswers &&
-              !answerIsBeingCheckedAndItisCorrect &&
-              this.state.answerState &&
-              this.state.answerState[index]
-                ? this.state.answerState[index].includes("FAIL")
-                  ? "incorrect-answer"
-                  : "correct-answer"
-                : "";
+              const itemStateAfterCheck =
+                this.props.displayCorrectAnswers &&
+                this.props.checkAnswers &&
+                !answerIsBeingCheckedAndItisCorrect &&
+                this.state.answerState &&
+                this.state.answerState[index]
+                  ? this.state.answerState[index].includes("FAIL")
+                    ? "incorrect-answer"
+                    : "correct-answer"
+                  : "";
 
-            if (this.props.readOnly) {
-              // readonly component
+              if (this.props.readOnly) {
+                // readonly component
+                return (
+                  <span
+                    className={`material-page__sorterfield-item ${itemStateAfterCheck}`}
+                    key={item.id}
+                  >
+                    <span className="material-page__sorterfield-item-icon icon-move"></span>
+                    <span className="material-page__sorterfield-item-label">
+                      <StrMathJAX>{text}</StrMathJAX>
+                    </span>
+                  </span>
+                );
+              }
+
+              // The draggable version, note how on interaction we swap
+              // the parent component is a class name always make sure to have the right class name not to overflow
+              // the interaction data is the item itself so the argument would be that
               return (
-                <span
-                  className={`material-page__sorterfield-item ${itemStateAfterCheck}`}
+                <Draggable
+                  denyWidth={this.props.content.orientation === "horizontal"}
+                  as="span"
+                  parentContainerSelector=".material-page__sorterfield"
+                  className={`material-page__sorterfield-item ${
+                    this.state.selectedItem &&
+                    this.state.selectedItem.id === item.id
+                      ? "material-page__sorterfield-item--selected"
+                      : ""
+                  } ${itemStateAfterCheck} rs_skip_always`}
                   key={item.id}
+                  interactionGroup={this.props.content.name}
+                  interactionData={item}
+                  onInteractionWith={this.swap.bind(this, false, item)}
+                  onClick={this.selectItem.bind(this, item)}
+                  onDrag={this.selectItem.bind(this, item)}
+                  onDropInto={this.cancelSelectedItem}
                 >
                   <span className="material-page__sorterfield-item-icon icon-move"></span>
                   <span className="material-page__sorterfield-item-label">
                     <StrMathJAX>{text}</StrMathJAX>
                   </span>
-                </span>
+                </Draggable>
               );
-            }
-
-            // The draggable version, note how on interaction we swap
-            // the parent component is a class name always make sure to have the right class name not to overflow
-            // the interaction data is the item itself so the argument would be that
-            return (
-              <Draggable
-                denyWidth={this.props.content.orientation === "horizontal"}
-                as="span"
-                parentContainerSelector=".material-page__sorterfield"
-                className={`material-page__sorterfield-item ${
-                  this.state.selectedItem &&
-                  this.state.selectedItem.id === item.id
-                    ? "material-page__sorterfield-item--selected"
-                    : ""
-                } ${itemStateAfterCheck}`}
-                key={item.id}
-                interactionGroup={this.props.content.name}
-                interactionData={item}
-                onInteractionWith={this.swap.bind(this, false, item)}
-                onClick={this.selectItem.bind(this, item)}
-                onDrag={this.selectItem.bind(this, item)}
-                onDropInto={this.cancelSelectedItem}
-              >
-                <span className="material-page__sorterfield-item-icon icon-move"></span>
-                <span className="material-page__sorterfield-item-label">
-                  <StrMathJAX>{text}</StrMathJAX>
-                </span>
-              </Draggable>
-            );
-          })}
+            })}
+          </span>
+          {correctAnswersummaryComponent}
         </span>
-        {correctAnswersummaryComponent}
-      </span>
+      </>
     );
   }
 }

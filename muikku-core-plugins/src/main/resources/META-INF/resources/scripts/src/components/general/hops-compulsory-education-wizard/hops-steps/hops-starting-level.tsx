@@ -310,8 +310,8 @@ class HopsStartingLevel extends React.Component<
                 <Button
                   buttonModifiers={["add-hops-row"]}
                   onClick={this.handleAddNewCustomLngClick}
+                  icon="plus"
                 >
-                  <span className="icon-plus"></span>
                   Lisää kieli
                 </Button>
               </div>

@@ -40,6 +40,7 @@ import ApplicationList, {
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import InfoPopover from "~/components/general/info-popover";
 import Dropdown from "~/components/general/dropdown";
 
 /**
@@ -119,9 +120,17 @@ class CommunicatorMessages extends BodyScrollLoader<
       }
 
       if (thread.sender.studiesEnded === true) {
-        return <span className="message__user-studies-ended">{name}</span>;
+        return (
+          <InfoPopover userId={thread.sender.userEntityId}>
+            <span className="message__user-studies-ended">{name}</span>
+          </InfoPopover>
+        );
       }
-      return <span>{name}</span>;
+      return (
+        <InfoPopover userId={thread.sender.userEntityId}>
+          <span>{name}</span>
+        </InfoPopover>
+      );
     }
 
     const messageRecipientsList = thread.recipients.map((recipient) => {
@@ -137,20 +146,28 @@ class CommunicatorMessages extends BodyScrollLoader<
           </span>
         );
       }
+
+      const name = getName(recipient as any, !this.props.status.isStudent);
+
       if (recipient.studiesEnded === true) {
         return (
-          <span
+          <InfoPopover
             key={recipient.recipientId}
-            className="message__user-studies-ended"
+            userId={recipient.recipientId}
           >
-            {getName(recipient, !this.props.status.isStudent)}
-          </span>
+            <span
+              className="message__user-studies-ended"
+              key={recipient.recipientId}
+            >
+              {name}
+            </span>
+          </InfoPopover>
         );
       }
       return (
-        <span key={recipient.recipientId}>
-          {getName(recipient, !this.props.status.isStudent)}
-        </span>
+        <InfoPopover key={recipient.recipientId} userId={recipient.recipientId}>
+          <span key={recipient.recipientId}>{name}</span>
+        </InfoPopover>
       );
     });
 
@@ -165,9 +182,15 @@ class CommunicatorMessages extends BodyScrollLoader<
             (w2) => w2.workspaceEntityId === w.workspaceEntityId
           ) === pos
       )
-      .map((workspace) => (
-        <span key={workspace.workspaceEntityId}>{workspace.workspaceName}</span>
-      ));
+      .map((workspace) => {
+        let workspaceName = workspace.workspaceName;
+
+        if (workspace.workspaceExtension) {
+          workspaceName += ` (${workspace.workspaceExtension})`;
+        }
+
+        return <span key={workspace.workspaceEntityId}>{workspaceName}</span>;
+      });
 
     return [
       messageRecipientsList,
@@ -290,14 +313,22 @@ class CommunicatorMessages extends BodyScrollLoader<
                           {userGroupRecepient.name}
                         </span>
                       ))}
-                      {message.workspaceRecipients.map((workspaceRecepient) => (
-                        <span
-                          className="application-list__header-recipient"
-                          key={workspaceRecepient.workspaceEntityId}
-                        >
-                          {workspaceRecepient.workspaceName}
-                        </span>
-                      ))}
+                      {message.workspaceRecipients.map((workspaceRecepient) => {
+                        let workspaceName = workspaceRecepient.workspaceName;
+
+                        if (workspaceRecepient.workspaceExtension) {
+                          workspaceName += ` (${workspaceRecepient.workspaceExtension})`;
+                        }
+
+                        return (
+                          <span
+                            className="application-list__header-recipient"
+                            key={workspaceRecepient.workspaceEntityId}
+                          >
+                            {workspaceName}
+                          </span>
+                        );
+                      })}
                     </span>
                   </div>
                   <Dropdown
@@ -305,10 +336,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                     openByHover
                     content={
                       <p>
-                        {`${localizeTime.date(message.created)} - Klo ${localizeTime.date(
-                          message.created,
-                          "h:mm"
-                        )}`}
+                        {`${localizeTime.date(
+                          message.created
+                        )} klo ${localizeTime.date(message.created, "h:mm")}`}
                       </p>
                     }
                   >
@@ -452,7 +482,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                         <p>
                           {`${localizeTime.date(
                             thread.threadLatestMessageDate
-                          )} - Klo ${localizeTime.date(
+                          )} klo ${localizeTime.date(
                             thread.threadLatestMessageDate,
                             "h:mm"
                           )}`}
@@ -463,10 +493,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                         className="application-list__header-item-date"
                         aria-label={this.props.t("wcag.date", {
                           ns: "messaging",
-                        })}                      >
-                        {`${localizeTime.date(
-                          thread.threadLatestMessageDate
-                        )}`}
+                        })}
+                      >
+                        {`${localizeTime.date(thread.threadLatestMessageDate)}`}
                       </div>
                     </Dropdown>
                   </ApplicationListItemHeader>

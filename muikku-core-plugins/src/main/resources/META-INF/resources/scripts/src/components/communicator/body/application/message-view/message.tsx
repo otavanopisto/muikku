@@ -20,6 +20,7 @@ import { AnyActionType } from "~/actions";
 import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
 import { WithTranslation, withTranslation } from "react-i18next";
+import InfoPopover from "~/components/general/info-popover";
 
 /**
  * MessageProps
@@ -56,11 +57,13 @@ class Message extends React.Component<MessageProps, MessageState> {
   }
 
   /**
-   * getMessageSender
-   * @param sender sender
+   * Renders sender of message with popover if sender is not current user
+   *
+   * @param sender sender object of message
+   * @param userId userId of current logged in user
    * @returns Returns span element with sender name
    */
-  getMessageSender(sender: UserType): JSX.Element {
+  getMessageSender(sender: UserType, userId: number): JSX.Element {
     if (sender.archived === true) {
       return (
         <span key={sender.userEntityId} className="message__user-archived">
@@ -77,26 +80,50 @@ class Message extends React.Component<MessageProps, MessageState> {
       })`;
     }
 
+    // If sender is me
+    const senderIsMe = sender.userEntityId === userId;
+
+    // If sender has ended studies different styling
     if (sender.studiesEnded === true) {
-      return (
+      // And if sender is me then no popover
+      return senderIsMe ? (
         <span key={sender.userEntityId} className="message__user-studies-ended">
           {name}
         </span>
+      ) : (
+        <InfoPopover userId={sender.userEntityId}>
+          <span
+            key={sender.userEntityId}
+            className="message__user-studies-ended"
+          >
+            {name}
+          </span>
+        </InfoPopover>
       );
     }
-    return <span key={sender.userEntityId}>{name}</span>;
+
+    return senderIsMe ? (
+      <span key={sender.userEntityId}>{name}</span>
+    ) : (
+      <InfoPopover userId={sender.userEntityId}>
+        <span key={sender.userEntityId}>{name}</span>
+      </InfoPopover>
+    );
   }
 
   /**
-   * getMessageRecipients
-   * @param message MessageType
-   * @returns JSX.Element[][]
-   *
    * Returns array of arrays that contains span elements with corresponding
    * recipients depending are they recipients, userGroups or workspaceRecipients
+   *
+   * @param message MessageType
+   * @param userId userId of current logged in user
+   * @returns JSX.Element[][]
    */
-  getMessageRecipients(message: MessageType): JSX.Element[][] {
+  getMessageRecipients(message: MessageType, userId: number): JSX.Element[][] {
     const messageRecipientsList = message.recipients.map((recipient) => {
+      // If recipient is me
+      const recipientIsMe = recipient.userEntityId === userId;
+
       if (recipient.archived === true) {
         return (
           <span key={recipient.userEntityId} className="message__user-archived">
@@ -104,20 +131,45 @@ class Message extends React.Component<MessageProps, MessageState> {
           </span>
         );
       }
+
+      // If recipient has ended studies different styling
       if (recipient.studiesEnded === true) {
-        return (
+        // And if recipient is me then no popover
+        return recipientIsMe ? (
           <span
             key={recipient.userEntityId}
             className="message__user-studies-ended"
           >
             {getName(recipient, !this.props.status.isStudent)}
           </span>
+        ) : (
+          <InfoPopover
+            key={recipient.userEntityId}
+            userId={recipient.userEntityId}
+          >
+            <span
+              key={recipient.userEntityId}
+              className="message__user-studies-ended"
+            >
+              {getName(recipient as any, !this.props.status.isStudent)}
+            </span>
+          </InfoPopover>
         );
       }
-      return (
+
+      return recipientIsMe ? (
         <span key={recipient.userEntityId}>
           {getName(recipient, !this.props.status.isStudent)}
         </span>
+      ) : (
+        <InfoPopover
+          key={recipient.userEntityId}
+          userId={recipient.userEntityId}
+        >
+          <span key={recipient.userEntityId}>
+            {getName(recipient as any, !this.props.status.isStudent)}
+          </span>
+        </InfoPopover>
       );
     });
 
@@ -132,9 +184,15 @@ class Message extends React.Component<MessageProps, MessageState> {
             (w2) => w2.workspaceEntityId === w.workspaceEntityId
           ) === pos
       )
-      .map((workspace) => (
-        <span key={workspace.workspaceEntityId}>{workspace.workspaceName}</span>
-      ));
+      .map((workspace) => {
+        let workspaceName = workspace.workspaceName;
+
+        if (workspace.workspaceExtension) {
+          workspaceName += ` (${workspace.workspaceExtension})`;
+        }
+
+        return <span key={workspace.workspaceEntityId}>{workspaceName}</span>;
+      });
 
     return [
       messageRecipientsList,
@@ -307,7 +365,10 @@ class Message extends React.Component<MessageProps, MessageState> {
                 className="application-list__item-header-main-content application-list__item-header-main-content--communicator-sender"
                 aria-label={this.props.t("wcag.sender", { ns: "messaging" })}
               >
-                {this.getMessageSender(this.props.message.sender)}
+                {this.getMessageSender(
+                  this.props.message.sender,
+                  this.props.status.userId
+                )}
               </span>
               <span
                 className="application-list__item-header-main-content application-list__item-header-main-content--communicator-recipients"
@@ -315,7 +376,10 @@ class Message extends React.Component<MessageProps, MessageState> {
                   ns: "messaging",
                 })}
               >
-                {this.getMessageRecipients(this.props.message)}
+                {this.getMessageRecipients(
+                  this.props.message,
+                  this.props.status.userId
+                )}
               </span>
             </div>
             <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
@@ -325,7 +389,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               >
                 {`${localizeTime.date(
                   this.props.message.created
-                )} - Klo ${localizeTime.date(
+                )} klo ${localizeTime.date(
                   this.props.message.created,
                   "h:mm"
                 )}`}

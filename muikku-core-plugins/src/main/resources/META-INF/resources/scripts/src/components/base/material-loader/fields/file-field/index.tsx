@@ -7,6 +7,7 @@ import Synchronizer from "../base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * FileFieldProps
@@ -203,60 +204,64 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
 
     // and this is the container
     return (
-      <span
-        className={`material-page__filefield-wrapper ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        <span className={`material-page__filefield ${ElementDisabledState}`}>
-          <FileUploader
-            emptyText={
-              this.props.readOnly ? t("content.empty", { ns: "files" }) : null
-            }
-            readOnly={this.props.readOnly}
-            url={this.props.status.contextPath + "/tempFileUploadServlet"}
-            displayNotificationOnError
-            formDataGenerator={formDataGenerator}
-            onFileSuccess={(file: File, data: any) => {
-              this.onFileAdded(file, data);
-            }}
-            hintText={t("content.add", { ns: "materials", context: "file" })}
-            fileTooLargeErrorText={t("notifications.sizeTooLarge", {
-              ns: "files",
-            })}
-            deleteFileText={t("actions.remove")}
-            downloadFileText={t("actions.download", { count: 1 })}
-            files={this.state.values}
-            fileIdKey="fileId"
-            fileNameKey="name"
-            fileUrlGenerator={(f) => `/rest/workspace/fileanswer/${f.fileId}`}
-            fileDownloadAllUrlGenerator={(f) =>
-              "/rest/workspace/allfileanswers/" +
-              f[0].fileId +
-              "?archiveName=" +
-              t("labels.zipFileName", { ns: "files" })
-            }
-            fileDownloadAllLabel={t("actions.download", { count: 0 })}
-            deleteDialogElement={ConfirmRemoveDialog}
-            deleteDialogElementProps={{ onConfirm: this.removeFile }}
-            modifier="taskfield"
-            uploadingTextProcesser={(percent: number) =>
-              t("content.statusUploading", {
-                ns: "materials",
-                progress: percent,
-              })
-            }
-            invisible={this.props.invisible}
-            notificationOfSuccessText={t("notifications.uploadSuccess", {
-              ns: "files",
-            })}
-            displayNotificationOnSuccess
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Tiedoston palautuslaatikko" />
+        <span
+          className={`material-page__filefield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
+          <span className={`material-page__filefield ${ElementDisabledState}`}>
+            <FileUploader
+              emptyText={
+                this.props.readOnly ? t("content.empty", { ns: "files" }) : null
+              }
+              readOnly={this.props.readOnly}
+              url={this.props.status.contextPath + "/tempFileUploadServlet"}
+              displayNotificationOnError
+              formDataGenerator={formDataGenerator}
+              onFileSuccess={(file: File, data: any) => {
+                this.onFileAdded(file, data);
+              }}
+              hintText={t("content.add", { ns: "materials", context: "file" })}
+              fileTooLargeErrorText={t("notifications.sizeTooLarge", {
+                ns: "files",
+              })}
+              deleteFileText={t("actions.remove")}
+              downloadFileText={t("actions.download", { count: 1 })}
+              files={this.state.values}
+              fileIdKey="fileId"
+              fileNameKey="name"
+              fileUrlGenerator={(f) => `/rest/workspace/fileanswer/${f.fileId}`}
+              fileDownloadAllUrlGenerator={(f) =>
+                "/rest/workspace/allfileanswers/" +
+                f[0].fileId +
+                "?archiveName=" +
+                t("labels.zipFileName", { ns: "files" })
+              }
+              fileDownloadAllLabel={t("actions.download", { count: 0 })}
+              deleteDialogElement={ConfirmRemoveDialog}
+              deleteDialogElementProps={{ onConfirm: this.removeFile }}
+              modifier="taskfield"
+              uploadingTextProcesser={(percent: number) =>
+                t("content.statusUploading", {
+                  ns: "materials",
+                  progress: percent,
+                })
+              }
+              invisible={this.props.invisible}
+              notificationOfSuccessText={t("notifications.uploadSuccess", {
+                ns: "files",
+              })}
+              displayNotificationOnSuccess
+            />
+          </span>
         </span>
-      </span>
+      </>
     );
   }
 }

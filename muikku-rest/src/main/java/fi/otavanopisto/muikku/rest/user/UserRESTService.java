@@ -62,9 +62,11 @@ import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserInfo;
 import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -113,6 +115,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -162,9 +165,6 @@ public class UserRESTService extends AbstractRESTService {
   private UserGroupEntityController userGroupEntityController; 
   
   @Inject
-  private UserEmailEntityController userEmailEntityController;
-  
-  @Inject
   private SessionController sessionController;
   
   @Inject
@@ -206,6 +206,9 @@ public class UserRESTService extends AbstractRESTService {
   
   @Inject 
   private CourseMetaController courseMetaController;
+  
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
   @GET
   @Path("/property/{KEY}")
@@ -214,25 +217,6 @@ public class UserRESTService extends AbstractRESTService {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     UserEntityProperty property = userEntityController.getUserEntityPropertyByKey(loggedUserEntity, key);
     return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue(), property == null ? null : property.getUserEntity().getId())).build();
-  }
-  
-  @GET
-  @Path("/defaultEmailAddress")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getCurrentUserDefaultEmailAddress() {
-    String email = null;
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      email = userController.getUserDefaultEmailAddress(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-    
-    // Return value should really be text/plain but due to an mApi bug,
-    // the address has to be returned as a json string, hence the quotes
-    
-    return Response.ok(String.format("\"%s\"", email)).build();
   }
 
   @GET
@@ -293,6 +277,135 @@ public class UserRESTService extends AbstractRESTService {
       userEntityController.setUserEntityProperty(userEntity, payload.getKey(), payload.getValue());
       return Response.ok(payload).build();
     }
+  }
+  
+  @GET
+  @Path("/userInfo/{USERENTITYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getUserInfo(@PathParam("USERENTITYID") Long userEntityId, @QueryParam("data") Set<UserInfo> data) {
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    Map<String, String> result = new HashMap<String, String>();
+    
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    EnvironmentRoleArchetype loggedUserRole = null;
+    if (loggedUser.defaultSchoolDataIdentifier() != null) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+          findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser.defaultSchoolDataIdentifier());
+      loggedUserRole = userSchoolDataIdentifier.getRole().getArchetype();
+    } else {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    Boolean isStudent = userEntityController.isStudent(userEntity);
+
+    if (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+      
+      // "moreInfoForLoggedUser" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
+      if (loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+        result.put("moreInfoForLoggedUser", "true");
+      } else if (loggedUserRole.equals(EnvironmentRoleArchetype.TEACHER)) {
+        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
+        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+
+        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
+        
+        if (!commonWorkspaces.isEmpty()) {
+          result.put("moreInfoForLoggedUser", "true");
+        } else {
+          result.put("moreInfoForLoggedUser", "false");
+        }
+      } else {
+        Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
+        
+        // True if logged user is student's counselor / searchable user is not student
+        if (amICounselor || !isStudent) {
+          result.put("moreInfoForLoggedUser", "true");
+        } else {
+          result.put("moreInfoForLoggedUser", "false");
+        }
+      }
+    } else {
+      if (!isStudent) {
+        result.put("moreInfoForLoggedUser", "true");
+      }
+    }
+    
+    if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && isStudent) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    result.put("isStudent", isStudent.toString());
+    result.put("userId", userEntity.getId().toString());
+    result.put("schoolDataIdentifier", userEntity.defaultSchoolDataIdentifier().toId());
+    UserEntityName name = userEntityController.getName(userEntity, true);
+    
+    if (name != null) {
+      result.put("firstName", name.getFirstName());
+      result.put("lastName", name.getLastName());
+    }
+
+    for (UserInfo d : data) {
+       
+      if (d.equals(UserInfo.AVATAR)) {
+        Boolean hasAvatar = userEntityFileController.hasProfilePicture(userEntity);
+        result.put("hasAvatar", hasAvatar.toString());
+      }
+        
+      if (result.get("moreInfoForLoggedUser").equals("true")) {
+      
+        if (d.equals(UserInfo.EMAIL)) {
+          String email = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
+          if (email != null) {
+            result.put("email", email);
+          }
+        }
+          
+        if (d.equals(UserInfo.PHONENUMBER)) {
+          UserEntityProperty phoneNumber = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-phone");
+          if (phoneNumber != null) {
+            result.put("phoneNumber", phoneNumber.getValue());
+          }
+        } 
+        
+        if (d.equals(UserInfo.EXTRAINFO)) {
+          UserEntityProperty extraInfo = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-extrainfo");
+          if (extraInfo != null) {
+            result.put("extraInfo", extraInfo.getValue());
+          }
+        } 
+        
+        if (d.equals(UserInfo.APPOINTMENTCALENDAR)) {
+          UserEntityProperty appointmentCalendar = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-appointmentCalendar");
+          if (appointmentCalendar != null) {
+            result.put("appointmentCalendar", appointmentCalendar.getValue());
+          }
+        } 
+        
+        if (d.equals(UserInfo.WHATSAPP)) {
+          UserEntityProperty whatsapp = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-whatsapp");
+          if (whatsapp != null) {
+            result.put("whatsapp", whatsapp.getValue());
+          }
+        }
+        
+        if (d.equals(UserInfo.VACATIONS)) {
+          UserEntityProperty vacationStart = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-vacation-start");
+          UserEntityProperty vacationEnd = userEntityController.getUserEntityPropertyByKey(userEntity, "profile-vacation-end");
+          
+          if (vacationStart != null) {
+            result.put("vacationStart", vacationStart.getValue());
+          }
+            
+          if (vacationEnd != null) {
+            result.put("vacationEnd", vacationEnd.getValue());
+          }
+        }
+      }
+    }
+    return Response.ok(result).build();
   }
   
   @GET
@@ -1725,7 +1838,7 @@ public class UserRESTService extends AbstractRESTService {
     
     String emails = null;
     if (userIdentifier != null) {
-      List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(userIdentifier);
+      List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(userIdentifier).stream().map(UserEmailEntity::getAddress).collect(Collectors.toList());
       try {
         emails = new ObjectMapper().writeValueAsString(foundEmails);
       }
@@ -1890,7 +2003,7 @@ public class UserRESTService extends AbstractRESTService {
           
           String email = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
           
-          Long userEntityId = new Long((Integer) o.get("userEntityId"));
+          Long userEntityId = Long.valueOf((Integer) o.get("userEntityId"));
           UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
           Map<String, String> propertyMap = new HashMap<String, String>();
           if (userEntity != null) {
@@ -1918,7 +2031,7 @@ public class UserRESTService extends AbstractRESTService {
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
-            new Long((Integer) o.get("userEntityId")),
+            Long.valueOf((Integer) o.get("userEntityId")),
             (String) o.get("firstName"),
             (String) o.get("lastName"), 
             email,

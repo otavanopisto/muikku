@@ -15,6 +15,7 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * MemoFieldProps
@@ -368,35 +369,39 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
     // and here the element itself
     return (
-      <span
-        className={`material-page__memofield-wrapper ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        {field}
-        <span className="material-page__counter-wrapper">
-          <span className="material-page__word-count-container">
-            <span className="material-page__word-count-title">
-              {t("labels.wordCount", { ns: "materials" })}
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Muistiokenttä" />
+        <span
+          className={`material-page__memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          {field}
+          <span className="material-page__counter-wrapper">
+            <span className="material-page__word-count-container">
+              <span className="material-page__word-count-title">
+                {t("labels.wordCount", { ns: "materials" })}
+              </span>
+              <span className="material-page__word-count">
+                {this.state.words}
+              </span>
             </span>
-            <span className="material-page__word-count">
-              {this.state.words}
+            <span className="material-page__character-count-container">
+              <span className="material-page__character-count-title">
+                {t("labels.characterCount", { ns: "materials" })}
+              </span>
+              <span className="material-page__character-count">
+                {this.state.characters}
+              </span>
             </span>
           </span>
-          <span className="material-page__character-count-container">
-            <span className="material-page__character-count-title">
-              {t("labels.characterCount", { ns: "materials" })}
-            </span>
-            <span className="material-page__character-count">
-              {this.state.characters}
-            </span>
-          </span>
+          {answerExampleComponent}
         </span>
-        {answerExampleComponent}
-      </span>
+      </>
     );
   }
 }

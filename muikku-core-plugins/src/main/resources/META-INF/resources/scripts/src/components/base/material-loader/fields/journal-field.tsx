@@ -13,6 +13,7 @@ import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 
 /**
@@ -250,7 +251,7 @@ class JournalField extends React.Component<
           <>
             <span className="material-page__taskfield-header">
               <span className="material-page__taskfield-title">
-              {t("labels.diaryEntry", { ns: "materials" })}
+                {t("labels.diaryEntry", { ns: "materials" })}
               </span>
               <Instructions
                 modifier="instructions"
@@ -262,9 +263,9 @@ class JournalField extends React.Component<
                 content={
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: t(
-                        "instructions.journalMemoField", {ns: "materials"}
-                      ),
+                      __html: t("instructions.journalMemoField", {
+                        ns: "materials",
+                      }),
                     }}
                   />
                 }
@@ -298,16 +299,20 @@ class JournalField extends React.Component<
 
     // and here the element itself
     return (
-      <span
-        className={`material-page__journalfield-wrapper ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        {field}
-      </span>
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Oppimispäiväkirjatehtävä" />
+        <span
+          className={`material-page__journalfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          {field}
+        </span>
+      </>
     );
   }
 }
