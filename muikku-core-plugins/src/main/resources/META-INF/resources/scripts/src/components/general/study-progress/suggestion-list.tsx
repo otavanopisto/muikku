@@ -29,6 +29,10 @@ interface HopsSuggestionListProps {
    * Must be passed as a prop because portal is used
    */
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
+  openSignUpBehalfDialog: (
+    studentEntityId: number,
+    workspaceId: number
+  ) => void;
 }
 
 /**
@@ -53,6 +57,17 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
     props.displayNotification,
     props.loadData
   );
+
+  /**
+   * Handles open sign up behalf dialog
+   * @param studentEntityId studentEntityId
+   * @param workspaceId workspaceId
+   */
+  const handleOpenSignUpBehalfDialog =
+    (studentEntityId: number, workspaceId: number) =>
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      props.openSignUpBehalfDialog(studentEntityId, workspaceId);
+    };
 
   /**
    * Handles suggestion next click
@@ -117,6 +132,19 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
               {suggestionNextActionType === "remove"
                 ? "Ehdotettu"
                 : "Ehdota seuraavaksi"}
+            </Button>
+
+            <Button
+              buttonModifiers={[
+                "guider-hops-studytool",
+                "guider-hops-studytool-next",
+              ]}
+              onClick={handleOpenSignUpBehalfDialog(
+                props.studentsUserEntityId,
+                suggestion.id
+              )}
+            >
+              Ilmoita työtilaan
             </Button>
           </div>
         );

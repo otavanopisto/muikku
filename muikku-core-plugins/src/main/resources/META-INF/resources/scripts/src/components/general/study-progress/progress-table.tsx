@@ -276,6 +276,9 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
                           updateSuggestionNext={
                             studyProgressUpdater.updateSuggestionForNext
                           }
+                          openSignUpBehalfDialog={
+                            studyProgressUpdater.openSignUpBehalfDialog
+                          }
                         />
                       )}
                     </>
@@ -327,6 +330,9 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
                           course={course}
                           updateSuggestionNext={
                             studyProgressUpdater.updateSuggestionForNext
+                          }
+                          openSignUpBehalfDialog={
+                            studyProgressUpdater.openSignUpBehalfDialog
                           }
                         />
                       )}

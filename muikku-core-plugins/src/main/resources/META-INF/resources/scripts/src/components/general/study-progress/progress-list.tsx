@@ -231,6 +231,9 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
                           updateSuggestionNext={
                             studyProgressUpdater.updateSuggestionForNext
                           }
+                          openSignUpBehalfDialog={
+                            studyProgressUpdater.openSignUpBehalfDialog
+                          }
                         />
                       )}
                     </>
@@ -283,6 +286,9 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
                           course={course}
                           updateSuggestionNext={
                             studyProgressUpdater.updateSuggestionForNext
+                          }
+                          openSignUpBehalfDialog={
+                            studyProgressUpdater.openSignUpBehalfDialog
                           }
                         />
                       )}

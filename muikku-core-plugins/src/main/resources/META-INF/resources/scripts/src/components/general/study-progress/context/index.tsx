@@ -48,6 +48,11 @@ interface StudyProgressUpdaterContext {
   updateSupervisorOptionalSuggestion: (
     params: UpdateSupervisorOptionalSuggestionParams
   ) => Promise<void>;
+  openSignUpBehalfDialog: (
+    studentEntityId: number,
+    workspaceId: number
+  ) => void;
+  closeSignUpBehalfDialog: () => void;
 }
 
 // create contexts
@@ -132,6 +137,10 @@ interface StudyProgresContextProviderProps {
  * StudyProgressContextState
  */
 interface StudyProgressContextState extends StudentActivityByStatus {
+  signUpDialog?: {
+    studentEntityId: number;
+    workspaceId: number;
+  };
   studentChoices: StudentCourseChoice[];
   supervisorOptionalSuggestions: SupervisorOptionalSuggestion[];
   options: string[];
@@ -175,6 +184,34 @@ const StudyProgressContextProvider = (
   React.useEffect(() => {
     ref.current = studyProgress;
   }, [studyProgress]);
+
+  /**
+   * openSignUpBehalfDialog
+   * @param studentEntityId studentEntityId
+   * @param workspaceId workspaceId
+   */
+  const openSignUpBehalfDialog = React.useCallback(
+    (studentEntityId: number, workspaceId: number) => {
+      setStudyProgress((oStudyProgress) => ({
+        ...oStudyProgress,
+        signUpDialog: {
+          studentEntityId,
+          workspaceId,
+        },
+      }));
+    },
+    []
+  );
+
+  /**
+   * closeSignUpBehalfDialog
+   */
+  const closeSignUpBehalfDialog = React.useCallback(() => {
+    setStudyProgress((oStudyProgress) => ({
+      ...oStudyProgress,
+      signUpDialog: undefined,
+    }));
+  }, []);
 
   /**
    * updateSuggestion
@@ -638,6 +675,8 @@ const StudyProgressContextProvider = (
             updateStudentChoice,
             updateSuggestionForNext,
             updateSupervisorOptionalSuggestion,
+            openSignUpBehalfDialog,
+            closeSignUpBehalfDialog,
           }}
         >
           {children}
