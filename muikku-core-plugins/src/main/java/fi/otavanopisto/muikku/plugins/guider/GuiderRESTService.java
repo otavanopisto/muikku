@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.guider;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,6 +41,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
+import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.mail.MailType;
+import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.Flag;
@@ -50,8 +55,11 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
@@ -71,8 +79,10 @@ import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -84,6 +94,7 @@ import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
+import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -95,6 +106,7 @@ import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -166,6 +178,29 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject 
+  private WorkspaceController workspaceController;
+  
+  @Inject
+  private UserIndexer userIndexer;
+  
+  @Inject 
+  private WorkspaceUserEntityIdFinder workspaceUserEntityIdFinder;
+  
+  @Inject
+  private LocaleController localeController;
+  
+  @Inject
+  @Any
+  private Instance<MessagingWidget> messagingWidgets;
+
+  @Inject
+  @BaseUrl
+  private String baseUrl;
+  
+  @Inject
+  private Mailer mailer;
 
   @Inject
   @Any
@@ -1043,6 +1078,145 @@ public class GuiderRESTService extends PluginRESTService {
       date = new Date(((Double) value).longValue() * 1000);
     }
     return date;
+  }
+  
+  @POST
+  @Path("/student/{ID}/workspace/{WORKSPACEID}/signup")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response createWorkspaceSignupByStaff(@PathParam("ID") Long userEntityId, @PathParam("WORKSPACEID") Long workspaceEntityId,
+      fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
+
+    if (!sessionController.isLoggedIn()) { 
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
+
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
+    
+    if (loggedUserRole == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+   
+    if (!userSchoolDataController.amICounselor(studentEntity.defaultSchoolDataIdentifier()) || !loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    if (!workspaceEntityController.canSignup(studentEntity.defaultSchoolDataIdentifier(), workspaceEntity)) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    User student = userController.findUserByDataSourceAndIdentifier(studentEntity.getDefaultSchoolDataSource(), studentEntity.getDefaultIdentifier());
+
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(student.getIdentifier(), student.getSchoolDataSource());
+
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, userIdentifier);
+    if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getArchived())) {
+      workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+    }
+    if (workspaceUserEntity != null && Boolean.FALSE.equals(workspaceUserEntity.getActive())) {
+      workspaceUserEntityController.updateActive(workspaceUserEntity, Boolean.TRUE);
+      userIndexer.indexUser(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
+    }
+    
+    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
+    if (workspaceUser == null) {
+      workspaceUser = workspaceController.createWorkspaceUser(workspace, student, WorkspaceRoleArchetype.STUDENT);
+      waitForWorkspaceUserEntity(workspaceEntity, userIdentifier);
+    }
+    else {
+      workspaceController.updateWorkspaceStudentActivity(workspaceUser, true);
+    }
+
+    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
+    List<UserEntity> recipients = new ArrayList<UserEntity>();
+
+    String workspaceName = workspace.getName();
+    if (!StringUtils.isBlank(workspace.getNameExtension())) {
+      workspaceName += String.format(" (%s)", workspace.getNameExtension()); 
+    }
+
+    String userName = student.getNickName() == null
+      ? student.getDisplayName()
+      : String.format("%s \"%s\" %s (%s)", student.getFirstName(), student.getNickName(), student.getLastName(), student.getStudyProgrammeName());
+
+    
+    User loggedUser = userController.findUserByUserEntityDefaults(sessionController.getLoggedUserEntity());
+    
+    String loggedUserName = loggedUser.getNickName() == null
+        ? loggedUser.getDisplayName()
+        : String.format("%s \"%s\" %s (%s)", loggedUser.getFirstName(), loggedUser.getNickName(), loggedUser.getLastName(), loggedUser.getStudyProgrammeName());
+
+    recipients.add(studentEntity);
+    
+    for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
+      recipients.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
+    }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    
+    workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), entity.getMessage());
+
+    String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.caption");
+    caption = MessageFormat.format(caption, loggedUserName, userName, workspaceName);
+
+    String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
+    
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(student.getIdentifier(), student.getSchoolDataSource());
+    
+    String studentLink = String.format("<a href=\"%s/guider#userprofile/%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
+    String content;
+    if (StringUtils.isEmpty(entity.getMessage())) {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.content");
+      content = MessageFormat.format(content, loggedUserName, studentLink, workspaceLink);
+    } else {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessage");
+      String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
+      content = MessageFormat.format(content, loggedUserName, studentLink, workspaceLink, blockquoteMessage);
+    }
+
+    for (MessagingWidget messagingWidget : messagingWidgets) {
+      // TODO: Category?
+      messagingWidget.postMessage(userSchoolDataIdentifier.getUserEntity(), "message", caption, content, recipients);
+    }
+
+    List<String> recipientEmails = new ArrayList<>(recipients.size());
+    for (UserEntity recipient : recipients){
+     String teacherEmail = userEmailEntityController.getUserDefaultEmailAddress(recipient, false);
+     if (StringUtils.isNotBlank(teacherEmail)) {
+       recipientEmails.add(teacherEmail);
+     }
+    }
+    if (!recipientEmails.isEmpty()) {
+      mailer.sendMail(MailType.HTML, recipientEmails, caption, content);
+    }
+    
+    return Response.noContent().build();
+  }
+  
+  private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    Long workspaceUserEntityId = null;
+    long timeoutTime = System.currentTimeMillis() + 10000;    
+    while (workspaceUserEntityId == null) {
+      workspaceUserEntityId = workspaceUserEntityIdFinder.findWorkspaceUserEntityId(workspaceEntity, userIdentifier);
+      if (workspaceUserEntityId != null || System.currentTimeMillis() > timeoutTime) {
+        break;
+      }
+      try {
+        Thread.sleep(100);
+      }
+      catch (InterruptedException e) {
+      }
+    }
   }
 
 }
