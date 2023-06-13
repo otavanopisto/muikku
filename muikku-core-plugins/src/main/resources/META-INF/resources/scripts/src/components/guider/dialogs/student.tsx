@@ -15,6 +15,7 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderType,
+  PedagogyFormAvailability,
 } from "~/reducers/main-function/guider";
 import StateOfStudies from "./student/tabs/state-of-studies";
 import StudyHistory from "./student/tabs/study-history";
@@ -32,12 +33,17 @@ import { getName } from "~/util/modifiers";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
 import { COMPULSORY_HOPS_VISIBLITY } from "../../general/hops-compulsory-education-wizard/index";
+import UpperSecondaryPedagogicalSupportWizardForm, {
+  UPPERSECONDARY_PEDAGOGYFORM,
+} from "~/components/general/pedagogical-support-form";
 
 export type tabs =
   | "STUDIES"
   | "STUDY_PLAN"
   | "GUIDANCE_RELATIONS"
-  | "STUDY_HISTORY";
+  | "STUDY_HISTORY"
+  | "PEDAGOGICAL_SUPPORT"
+  | "HOPS";
 
 /**
  * StudentDialogProps
@@ -183,13 +189,37 @@ class StudentDialog extends React.Component<
       },
     ];
 
-    // Hops is shown only if basic info is there,
-    // current guider has permissions to use/see (hopsAvailable)
+    if (
+      this.props.guider.currentStudent &&
+      this.props.guider.currentStudent.basic &&
+      UPPERSECONDARY_PEDAGOGYFORM.includes(
+        this.props.guider.currentStudent.basic.studyProgrammeName
+      ) &&
+      this.props.guider.currentStudent.pedagogyFormAvailable &&
+      this.props.guider.currentStudent.pedagogyFormAvailable.accessible
+    ) {
+      tabs.splice(1, 0, {
+        id: "PEDAGOGICAL_SUPPORT",
+        name: "Pedagogisen tuen suunnitelma",
+        type: "guider-student",
+        component: (
+          <UpperSecondaryPedagogicalSupportWizardForm
+            userRole={userRoleForForm(
+              this.props.guider.currentStudent.pedagogyFormAvailable
+            )}
+            studentId={this.props.guider.currentStudent?.basic?.id}
+          />
+        ),
+      });
+    }
+
     if (
       this.props.guider.currentStudent &&
       this.props.guider.currentStudent.basic &&
       this.props.guider.currentStudent.hopsAvailable
     ) {
+      // Hops is shown only if basic info is there,
+      // current guider has permissions to use/see (hopsAvailable)
       // Compulsory hops
       if (
         COMPULSORY_HOPS_VISIBLITY.includes(
@@ -333,3 +363,21 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentDialog);
+
+/**
+ * Returns role string for pedagogical support form
+ *
+ * @param pedagogyFormAvailable pedagogyFormAvailable
+ * @returns role
+ */
+const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAvailability) => {
+  if (pedagogyFormAvailable.specEdTeacher) {
+    return "SPECIAL_ED_TEACHER";
+  }
+  if (pedagogyFormAvailable.courseTeacher) {
+    return "COURSE_TEACHER";
+  }
+  if (pedagogyFormAvailable.guidanceCounselor) {
+    return "GUIDANCE_COUNSELOR";
+  }
+};

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -17,6 +18,7 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.users.EnvironmentRoleEntityController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -51,7 +53,7 @@ public class DefaultSchoolDataUserListener {
     List<SchoolDataUserEventIdentifier> updatedIdentifiers = event.getUpdatedIdentifiers();
     List<SchoolDataUserEventIdentifier> removedIdentifiers = event.getRemovedIdentifiers();
     
-    Collection<String> allEmails = event.getAllEmails();
+    Collection<String> allEmails = event.getAllEmails().stream().map(UserEmail::getAddress).collect(Collectors.toList());
     if (allEmails.isEmpty()) {
       logger.warning("Updating user without email addresses");
     }
@@ -135,7 +137,7 @@ public class DefaultSchoolDataUserListener {
         
         EnvironmentRoleEntity environmentRoleEntity = eventIdentifier.getEnvironmentRoleIdentifier() == null ? null : 
           environmentRoleEntityController.findBy(eventIdentifier.getEnvironmentRoleIdentifier());
-        List<String> emails = eventIdentifier.getEmails();
+        List<UserEmail> emails = eventIdentifier.getEmails();
         
         userEmailEntityController.setUserEmails(eventIdentifier.getIdentifier(), getValidEmails(emails));
         userSchoolDataIdentifierController.setUserIdentifierRole(userSchoolDataIdentifier, environmentRoleEntity);
@@ -143,7 +145,7 @@ public class DefaultSchoolDataUserListener {
       }
       
       for (SchoolDataUserEventIdentifier eventIdentifier : removedIdentifiers) {
-        List<String> emails = eventIdentifier.getEmails();
+        List<UserEmail> emails = eventIdentifier.getEmails();
         userEmailEntityController.setUserEmails(eventIdentifier.getIdentifier(), getValidEmails(emails));
       }
     }
@@ -176,14 +178,14 @@ public class DefaultSchoolDataUserListener {
     
   }
   
-  private List<String> getValidEmails(List<String> emails) {
-    List<String> result = new ArrayList<>();
-    if (emails != null && !emails.isEmpty()) {
-      for (String email : emails) {
-        if (!validEmail(email)) {
-          logger.log(Level.SEVERE, String.format("Found invalid email address (%s), removed from synchronization", email));
+  private List<UserEmail> getValidEmails(List<UserEmail> userEmails) {
+    List<UserEmail> result = new ArrayList<>();
+    if (userEmails != null && !userEmails.isEmpty()) {
+      for (UserEmail userEmail : userEmails) {
+        if (!validEmail(userEmail.getAddress())) {
+          logger.log(Level.SEVERE, String.format("Found invalid email address (%s), removed from synchronization", userEmail.getAddress()));
         } else {
-          result.add(email);
+          result.add(userEmail);
         }
       }
     }

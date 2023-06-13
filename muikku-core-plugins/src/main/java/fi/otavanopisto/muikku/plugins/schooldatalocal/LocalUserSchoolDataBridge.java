@@ -28,11 +28,14 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
+import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
@@ -423,7 +426,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           null,
           null,
           null,
-          null, 
+          null,
           false,
           new HashSet<>());
     }
@@ -571,7 +574,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
   public boolean isActiveUser(User user) {
     return user.getStudyEndDate() == null;
   }
@@ -581,48 +584,48 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
       String organizationIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntriesByStudent(
       SchoolDataIdentifier studentIdentifier, Integer resultsPerPage, Integer page) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
       StudentContactLogEntryRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
       Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public void removeStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
       Long contactLogEntryId) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(
       SchoolDataIdentifier studentIdentifier, Long entryId, StudentContactLogEntryCommentRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(SchoolDataIdentifier userIdentifier, Long entryId,
       Long commentId, StudentContactLogEntryCommentRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public void removeStudentContactLogEntryComment(SchoolDataIdentifier userIdentifier, Long commentId) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates() {
     throw new SchoolDataBridgeInternalException("Not supported");
@@ -669,11 +672,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public String getUserDefaultEmailAddress(String userIdentifier) {
-    throw new SchoolDataBridgeInternalException("Not supported");
-  }
-
-  @Override
   public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
@@ -697,6 +695,21 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public List<String> listStudentAlternativeStudyOptions(String userIdentifier) {
     // TODO Auto-generated method stub
     return null;
+
+  }
+  public UserContactInfo getStudentContactInfo(String userIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public StudentGuidanceRelation getGuidanceRelation(String studentIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public List<SpecEdTeacher> listStudentSpecEdTeachers(SchoolDataIdentifier studentIdentifier,
+      boolean includeGuidanceCouncelors, boolean onlyMessageReceivers) {
+    throw new SchoolDataBridgeInternalException("Not supported");
   }
 
 }

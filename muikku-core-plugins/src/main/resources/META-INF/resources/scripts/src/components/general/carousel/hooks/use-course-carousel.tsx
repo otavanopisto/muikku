@@ -189,7 +189,7 @@ export const useCourseCarousel = (
                 })
               );
             } catch (err) {
-              displayNotification(`Hups errori ${err}`, "error");
+              displayNotification(err, "error");
             }
 
             // Suggestions as Courses, sorted by alphabetically
@@ -220,7 +220,7 @@ export const useCourseCarousel = (
           carouselItems: loadedCourseCarouselData,
         }));
       } catch (err) {
-        displayNotification(`Hups errori, ${err.message}`, "error");
+        displayNotification(err.message, "error");
         setCourseCarousel((courseCarousel) => ({
           ...courseCarousel,
           isLoading: false,

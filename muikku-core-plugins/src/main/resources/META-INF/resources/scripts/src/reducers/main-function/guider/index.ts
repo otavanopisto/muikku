@@ -138,6 +138,16 @@ export type ContactLogEventComment = {
 };
 
 /**
+ * PedagogyFormAvailability
+ */
+export interface PedagogyFormAvailability {
+  accessible: boolean;
+  courseTeacher: boolean;
+  specEdTeacher: boolean;
+  guidanceCounselor: boolean;
+}
+
+/**
  * GuiderStudentUserProfileType
  */
 export interface GuiderStudentUserProfileType {
@@ -163,6 +173,7 @@ export interface GuiderStudentUserProfileType {
   purchases: PurchaseType[];
   hopsPhase?: string;
   hopsAvailable: boolean;
+  pedagogyFormAvailable: PedagogyFormAvailability;
 }
 
 /**
@@ -281,6 +292,12 @@ const initialGuiderState: GuiderType = {
     activityLogs: [],
     purchases: [],
     hopsAvailable: false,
+    pedagogyFormAvailable: {
+      accessible: false,
+      courseTeacher: false,
+      specEdTeacher: false,
+      guidanceCounselor: false,
+    },
   },
 };
 

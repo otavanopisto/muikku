@@ -323,7 +323,6 @@
 
 .application-list__header-item-date {
   text-align: right;
-  width: 5.2rem;
 }
 
 .application-list__header-item-dates {
@@ -794,16 +793,6 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-}
-
-.application-list__item-header-main--journal-entry {
-  border-left: 3px solid $color-journal-entry;
-  padding: 0 0 0 10px;
-}
-
-.application-list__item-header-main--journal-entry-mandatory {
-  border-left: 3px solid $color-journal-page;
-  padding: 0 0 0 10px;
 }
 
 .application-list__item-header-main-content {

@@ -332,6 +332,17 @@ const setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRec
   };
 
 /**
+ * setLocationToPedagogyFormInTranscriptOfRecords
+ */
+const setLocationToPedagogyFormInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
+  function setLocationToHopsInTranscriptOfRecords() {
+    return {
+      type: "UPDATE_RECORDS_LOCATION",
+      payload: <TranscriptOfRecordLocationType>"pedagogy-form",
+    };
+  };
+
+/**
  * setLocationToInfoInTranscriptOfRecords
  */
 const setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
@@ -375,5 +386,6 @@ export {
   setLocationToHopsInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
+  setLocationToPedagogyFormInTranscriptOfRecords,
   updateTranscriptOfRecordsFiles,
 };
