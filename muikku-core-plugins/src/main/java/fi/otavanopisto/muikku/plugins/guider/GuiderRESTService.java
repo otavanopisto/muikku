@@ -1108,10 +1108,6 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (!workspaceEntityController.canSignup(studentEntity.defaultSchoolDataIdentifier(), workspaceEntity)) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-
     User student = userController.findUserByDataSourceAndIdentifier(studentEntity.getDefaultSchoolDataSource(), studentEntity.getDefaultIdentifier());
 
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
