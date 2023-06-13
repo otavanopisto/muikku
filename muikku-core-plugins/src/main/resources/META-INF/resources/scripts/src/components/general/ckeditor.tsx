@@ -28,6 +28,8 @@ const PLUGINS = {
   oembed: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/",
   audio: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/audio/1.0.1/",
   scayt: `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/scayt/${CKEDITOR_VERSION}/`,
+  detail: '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/detail/2.10/',
+  api: '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/api/2.11/',
 
   // CONTEXTPATHREMOVED
   "muikku-mathjax": "/scripts/ckplugins/muikku-mathjax/",
@@ -134,13 +136,15 @@ const extraConfig = (props: CKEditorProps) => ({
         "-",
         "BidiLtr",
         "BidiRtl",
+        "-",
+        "Detail",
       ],
     },
     { name: "tools", items: ["Maximize"] },
   ],
   uploadUrl: "/communicatorAttachmentUploadServlet",
   extraPlugins:
-    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,scayt",
+    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,scayt,detail,api",
   removePlugins: "exportpdf,wsc",
   /* eslint-enable camelcase */
 });
