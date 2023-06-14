@@ -28,8 +28,6 @@ const PLUGINS = {
   oembed: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/",
   audio: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/audio/1.0.1/",
   scayt: `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/scayt/${CKEDITOR_VERSION}/`,
-  detail: '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/detail/2.10/',
-  api: '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/api/2.11/',
 
   // CONTEXTPATHREMOVED
   "muikku-mathjax": "/scripts/ckplugins/muikku-mathjax/",
@@ -49,6 +47,7 @@ const PLUGINS = {
   "muikku-image-target": "/scripts/ckplugins/muikku-image-target/",
   "muikku-embedded": "/scripts/ckplugins/muikku-embedded/",
   "muikku-journalfield": "/scripts/ckplugins/muikku-journalfield/",
+  "muikku-details": "/scripts/ckplugins/muikku-details/",
 };
 const pluginsLoaded: any = {};
 
@@ -87,7 +86,8 @@ const extraConfig = (props: CKEditorProps) => ({
    * There is no need to use allowContent: true setting as it will disable ACF alltogether.
    * Therefore we let ACF to work on it's default filtering settings which are based on the toolbar settings.
    * */
-  extraAllowedContent: "*{*}; *[data*]; audio source[*](*){*}; mark",
+  extraAllowedContent:
+    "*{*}; *[data*]; audio source[*](*){*}; mark; details(*); summary(*);",
 
   /**
    * We remove every class attribute from every html element and every on* prefixed attributes as well as everything related to font stylings.
@@ -137,14 +137,14 @@ const extraConfig = (props: CKEditorProps) => ({
         "BidiLtr",
         "BidiRtl",
         "-",
-        "Detail",
+        "muikku-details",
       ],
     },
     { name: "tools", items: ["Maximize"] },
   ],
   uploadUrl: "/communicatorAttachmentUploadServlet",
   extraPlugins:
-    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,scayt,detail,api",
+    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,scayt,muikku-details",
   removePlugins: "exportpdf,wsc",
   /* eslint-enable camelcase */
 });
