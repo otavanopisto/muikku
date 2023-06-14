@@ -144,13 +144,16 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<
       {!readOnly && (
         <div className="matriculation__form-element-container matriculation__form-element-container--button">
           {index == 0 ? (
-            <label id="removeMatriculationRowLabel" className="visually-hidden">
+            <label
+              id="removeMatriculationRowLabelEnrolled"
+              className="visually-hidden"
+            >
               Poista
             </label>
           ) : null}
           <Button
-            aria-labelledby="removeMatriculationRowLabel"
-            className="icon-trash"
+            aria-labelledby="removeMatriculationRowLabelEnrolled"
+            icon="trash"
             buttonModifiers={"remove-matriculation-row"}
             onClick={onClickDeleteRow(index)}
           ></Button>
@@ -290,13 +293,16 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
       {!readOnly && (
         <div className="matriculation__form-element-container matriculation__form-element-container--button">
           {index == 0 ? (
-            <label id="removeMatriculationRowLabel" className="visually-hidden">
+            <label
+              id="removeMatriculationRowLabelFinished"
+              className="visually-hidden"
+            >
               Poista
             </label>
           ) : null}
           <Button
-            aria-labelledby="removeMatriculationRowLabel"
-            className="icon-trash"
+            aria-labelledby="removeMatriculationRowLabelFinished"
+            icon="trash"
             buttonModifiers={"remove-matriculation-row"}
             onClick={onClickDeleteRow(index)}
           ></Button>
@@ -393,13 +399,16 @@ export const MatriculationExaminationPlannedInputGroup: React.FC<
       {!readOnly && (
         <div className="matriculation__form-element-container matriculation__form-element-container--button">
           {index == 0 ? (
-            <label id="removeMatriculationRowLabel" className="visually-hidden">
+            <label
+              id="removeMatriculationRowLabelPlanned"
+              className="visually-hidden"
+            >
               Poista
             </label>
           ) : null}
           <Button
-            aria-labelledby="removeMatriculationRowLabel"
-            className="icon-trash"
+            aria-labelledby="removeMatriculationRowLabelPlanned"
+            icon="trash"
             buttonModifiers={"remove-matriculation-row"}
             onClick={onClickDeleteRow(index)}
           ></Button>

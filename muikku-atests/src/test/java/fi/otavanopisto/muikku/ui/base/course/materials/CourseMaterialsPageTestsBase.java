@@ -57,7 +57,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
      
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent)
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .addCourseStudent(course1.getId(), mockCourseStudent)
@@ -364,7 +364,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
-    MockCourseStudent courseStudent = new MockCourseStudent(1l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent courseStudent = new MockCourseStudent(1l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
       .addCourseStudent(course1.getId(), courseStudent)
@@ -483,7 +483,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
-    MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
       .addCourseStudent(course1.getId(), courseStudent)
@@ -600,7 +600,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
-    MockCourseStudent courseStudent = new MockCourseStudent(4l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent courseStudent = new MockCourseStudent(4l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
       .addCourseStudent(course1.getId(), courseStudent)
@@ -778,7 +778,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\"/></object><br/></p>", 
           "EXERCISE");
 
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       logout();
       mockBuilder.mockLogin(student);
@@ -788,18 +788,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".material-page__connectfield-wrapper");
         scrollIntoView(".material-page__connectfield-wrapper");
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
-            "                  ']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]");
         
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
-            "                  ']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Hampurilainen')]");
 
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
-            "                  ']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
 
         waitAndClick(".button--muikku-submit-exercise");
@@ -852,7 +849,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "Test", "text/html;editor=CKEditor", 
           "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\"/></object><br/></p>", 
           "EXERCISE");
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       logout();
       mockBuilder.mockLogin(student);
@@ -919,7 +916,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             + "Eu eam dictas ceteros petentium.</p>",
             "EXERCISE");
         logout();
-        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
         mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
         mockBuilder.mockLogin(student);
         login();
@@ -1130,7 +1127,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -1199,7 +1196,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -1270,7 +1267,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -1291,8 +1288,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           
 //          Create note
           waitAndClick("#notebook");
-          waitAndClick(".notebook__actions .icon-plus");
-          waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
+          waitAndClickAndConfirm(".notebook__actions .icon-plus", ".notebook__editor.state-OPEN #note-entry-title", 3, 2000);
           waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "First test note");
           String note = "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. Fusce vitae tortor lectus. Praesent imperdiet pulvinar nulla, et dictum quam faucibus et. Quisque dictum ligula at diam venenatis cursus. "
               + "Nullam efficitur diam id commodo interdum. Pellentesque neque lectus, bibendum ac neque ut, sodales commodo eros. Morbi ac sem tortor.";
@@ -1322,8 +1318,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertText(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p", "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. "
               + "The all mighty vendace is nigh! (edited)");
 //         Create second note
-          waitAndClick(".notebook__actions .icon-plus");
-          waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
+          waitAndClickAndConfirm(".notebook__actions .icon-plus", ".notebook__editor.state-OPEN #note-entry-title", 3, 2000);
           waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "Second test note");
           note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In auctor massa ac gravida iaculis. Sed iaculis odio eget tortor auctor feugiat."
               + " Fusce urna dolor, aliquet cursus tempor vitae, rutrum nec urna. In luctus, tortor vel tempor cursus, leo diam venenatis est.";
@@ -1337,8 +1332,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForVisible(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title");
           assertText(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title", "Second test note");
           waitAndClick(".notebook__actions .icon-arrow-down");
-          waitForPresent(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-auto .notebook__item-body p");
-          assertText(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-auto .notebook__item-body p", note);
+          waitForPresent("div.notebook__items > div:nth-child(1) .notebook__item .rah-static--height-auto .notebook__item-body p");
+          assertText("div.notebook__items > div:nth-child(1) .notebook__item .rah-static--height-auto .notebook__item-body p", note);
 //        Test collapse function
           waitAndClick(".notebook__actions .icon-arrow-up");
           waitForPresent(".notebook__items .draggable-element:first-child .notebook__item .rah-static--height-specific");

@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 @Table(
     uniqueConstraints = @UniqueConstraint(columnNames = {"examId", "userIdentifier"})
 )
+@Deprecated // This is not in relevant use anymore anywhere
 public class SentMatriculationEnrollment {
 
   public Long getId() {

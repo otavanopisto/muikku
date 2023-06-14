@@ -874,7 +874,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 1l, assessorId, assessmentCreated, "Test evaluation.", Boolean.TRUE);
     List<CourseAssessment> courseAssessments = new ArrayList<CourseAssessment>();
     courseAssessments.add(courseAssessment);
-    stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
+    stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourse().getId())))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(objectMapper.writeValueAsString(courseAssessments))

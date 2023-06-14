@@ -374,6 +374,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     ChromeOptions options = new ChromeOptions();
     options.addArguments("--lang=en_US");
     options.addArguments("--start-maximized");
+    options.addArguments("--remote-allow-origins=*");
     ChromeDriver chromeDriver = new ChromeDriver(options);
     return chromeDriver;
   }
@@ -1010,7 +1011,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void assertTextStartsWith(String selector, String text) {
-    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    waitForPresent(selector);
+    String actual = getWebDriver().findElement(By.cssSelector(selector)).getText();
     assertTrue(StringUtils.startsWithIgnoreCase(actual, text));
   }
   

@@ -10,6 +10,7 @@ import static org.junit.Assert.assertEquals;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 import org.junit.Test;
 
@@ -31,6 +32,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel;
 
@@ -63,7 +65,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -97,7 +99,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".link--workspace-assessment");
       waitForVisible(".dialog .dialog__content");
 
-      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
+      courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
       mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
         .mockCompositeGradingScales()
@@ -115,7 +117,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
 
       
       waitAndClick(".link--workspace-assessment");
-      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder
         .addCourseStudent(course1.getId(), courseStudent)
         .mockAssessmentRequests(student.getId(), course1.getId(), null, null, false, false, dateNow)
@@ -128,7 +130,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".link--workspace-assessment");
       waitForVisible(".dialog .dialog__content");
 
-      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
+      courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
       mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
         .addCourseStudent(course1.getId(), courseStudent)
@@ -172,7 +174,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, dateNow);
       
       mockBuilder.removeMockCourseStudent(courseStudent);
-      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED));
+      courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED_PASS));
       mockBuilder
         .mockCourseAssessments(course1, courseStudent, admin)
         .mockWorkspaceBilledPrice(String.valueOf(price/2))
@@ -222,7 +224,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -324,8 +326,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
 
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, course1.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, course1, student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -399,9 +401,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, course1.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-      MockCourseStudent courseStudent3 = new MockCourseStudent(4l, course1.getId(), student3.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, course1, student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent3 = new MockCourseStudent(4l, course1, student3.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
 
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
@@ -473,7 +475,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
 
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       
       mockBuilder
@@ -504,7 +506,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
         
         mockBuilder.removeMockCourseStudent(courseStudent);
-        courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
+        courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
         
         mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
@@ -561,4 +563,140 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     }
   }
 
+  @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.CHROME_HEADLESS,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.EDGE,
+      }
+    )
+    public void journalAssignmentEvaluationTest() throws Exception {
+      MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+      MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+      OffsetDateTime date = OffsetDateTime.now(ZoneOffset.UTC);
+      Builder mockBuilder = mocker();
+
+      try {
+        Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+        mockBuilder
+        .addStaffMember(admin)
+        .addStudent(student)
+        .mockLogin(admin)
+        .addCourse(course1)
+        .build();
+        login();
+        Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+
+        CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+        mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
+        mockBuilder
+          .addCourseStaffMember(course1.getId(), courseStaffMember)
+          .addCourseStudent(course1.getId(), mockCourseStudent)
+          .build();
+        try {
+          WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+
+          WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(),
+              "Test", "text/html;editor=CKEditor",
+              "<p><object type=\"application/vnd.muikku.field.journal\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb&quot;}\" />"
+              + "<input name=\"muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb\" type=\"file\" /></object></p>",
+              "JOURNAL");
+          try {
+            String contentInput = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam convallis mattis purus pharetra sagittis. Mauris eget ullamcorper leo. Donec et sollicitudin neque. Mauris in dapibus augue."
+                + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
+                + "Nulla consectetur quam mi.";
+            logout();
+            mockBuilder.mockLogin(student);
+            login();
+            navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+            waitForPresent(".content-panel__chapter-title-text");
+            addTextToCKEditor(".material-page__journalfield-wrapper", contentInput);
+            waitForPresent(".material-page__field-answer-synchronizer--saved");
+            waitAndClick(".button--muikku-submit-journal");
+            waitForPresent(".material-page__journalfield-wrapper .material-page__ckeditor-replacement--readonly p");
+            
+            mockBuilder.removeMockCourseStudent(mockCourseStudent);
+            mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
+            
+            mockBuilder
+            .mockAssessmentRequests(student.getId(), course1.getId(), mockCourseStudent.getId(), "Hello!", false, false, date)
+            .mockCompositeGradingScales()
+            .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), mockCourseStudent.getId(), "Hello!", false, false, course1, student, date)
+            .mockCompositeCourseAssessmentRequests()
+            .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), mockCourseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
+            .mockStaffCompositeCourseAssessmentRequests()
+            .addCourseStudent(course1.getId(), mockCourseStudent)
+            .mockCourseActivities();
+            
+            logout();
+            mocker().mockLogin(admin);
+            login();
+            selectFinnishLocale();
+            navigate("/evaluation", false);
+            waitAndClick(".button-pill--evaluate");
+
+            waitAndClickAndConfirm(".evaluation-modal__item-actions--journal-feedback .link--evaluation", ".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents", 5, 2000);
+            
+            waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
+            if(getBrowser().equals("chrome_headless")) {
+              sleep(500);
+            }
+            
+            String evaluationText = "Test evaluation for journal entry.";
+            waitForPresent(".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents");
+            addTextToCKEditor(evaluationText);
+            waitAndClick(".form__buttons--evaluation a.button--dialog-execute");
+            waitForNotVisible(".evaluation-modal__evaluate-drawer");
+            waitForVisible(".evaluation-modal__header-title");
+            waitForVisible(".evaluation-modal__item-journal-feedback-data");
+            
+            assertText(".evaluation-modal__item-journal-feedback-data p", evaluationText);
+            OffsetDateTime evaluationDate = OffsetDateTime.now(ZoneOffset.UTC);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
+            String evaluationDateString = evaluationDate.format(formatter);
+            assertTextIgnoreCase(".evaluation-modal__item-meta-item-data", evaluationDateString);
+            
+            logout();
+            StudentMatriculationEligibility studentMatriculationEligibilityAI = new StudentMatriculationEligibility(true, 5, 4, 1);
+            StudentMatriculationEligibility studentMatriculationEligibilityMAA = new StudentMatriculationEligibility(false, 8, 5, 1);
+            mockBuilder
+            .addStudent(student)
+            .mockStudentCourseStats(student.getId(), 25)
+            .mockMatriculationEligibility(true)
+            .mockMatriculationExam(true)
+            .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
+            .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
+            .mockLogin(student)
+            .build();
+            login();
+            selectFinnishLocale();
+            navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
+            waitForVisible(".journal--feedback");
+            assertTextIgnoreCase(".journal--feedback .journal__body", evaluationText);
+            assertTextIgnoreCase(".journal--feedback .journal__meta-item:first-child .journal__meta-item-data", evaluationDateString);
+            assertTextIgnoreCase(".journal--feedback .journal__meta-item:last-child .journal__meta-item-data", "Admin User");
+            navigate("/records#records", false);
+            waitAndClick(".button--assignments-and-exercieses");
+            waitForVisible(".dialog--studies");
+            waitForVisible(".journal--feedback");
+            assertTextIgnoreCase(".journal--feedback .journal__body", evaluationText);
+//            TODO: This can be enabled when records show date without zeros in it.
+//            assertTextStartsWith(".journal--feedback .journal__meta-item:first-child .journal__meta-item-data", evaluationDateString);
+            assertTextIgnoreCase(".journal--feedback .journal__meta-item:last-child .journal__meta-item-data", "Admin User");
+          } finally {
+            archiveUserByEmail(student.getEmail());
+            deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+          }
+        } finally {
+          deleteWorkspace(workspace.getId());
+        }
+      } finally {
+        mockBuilder.wiremockReset();
+      }
+    }
+  
 }

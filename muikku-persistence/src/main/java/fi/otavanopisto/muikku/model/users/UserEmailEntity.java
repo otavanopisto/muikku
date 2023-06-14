@@ -63,6 +63,14 @@ public class UserEmailEntity implements ContextReference {
     this.address = address;
   }
 
+  public Boolean getDefaultAddress() {
+    return defaultAddress;
+  }
+
+  public void setDefaultAddress(Boolean defaultAddress) {
+    this.defaultAddress = defaultAddress;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -75,5 +83,9 @@ public class UserEmailEntity implements ContextReference {
   @NotEmpty
   @Email
   private String address;
+  
+  @NotNull
+  @Column(nullable = false)
+  private Boolean defaultAddress;
 
 }

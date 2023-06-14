@@ -38,6 +38,8 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
+import InfoPopover from "~/components/general/info-popover";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * CommunicatorMessagesProps
@@ -123,9 +125,17 @@ class CommunicatorMessages extends BodyScrollLoader<
       }
 
       if (thread.sender.studiesEnded === true) {
-        return <span className="message__user-studies-ended">{name}</span>;
+        return (
+          <InfoPopover userId={thread.sender.userEntityId}>
+            <span className="message__user-studies-ended">{name}</span>
+          </InfoPopover>
+        );
       }
-      return <span>{name}</span>;
+      return (
+        <InfoPopover userId={thread.sender.userEntityId}>
+          <span>{name}</span>
+        </InfoPopover>
+      );
     }
 
     const messageRecipientsList = thread.recipients.map((recipient) => {
@@ -143,20 +153,28 @@ class CommunicatorMessages extends BodyScrollLoader<
           </span>
         );
       }
+
+      const name = getName(recipient as any, !this.props.status.isStudent);
+
       if (recipient.studiesEnded === true) {
         return (
-          <span
+          <InfoPopover
             key={recipient.recipientId}
-            className="message__user-studies-ended"
+            userId={recipient.recipientId}
           >
-            {getName(recipient as any, !this.props.status.isStudent)}
-          </span>
+            <span
+              className="message__user-studies-ended"
+              key={recipient.recipientId}
+            >
+              {name}
+            </span>
+          </InfoPopover>
         );
       }
       return (
-        <span key={recipient.recipientId}>
-          {getName(recipient as any, !this.props.status.isStudent)}
-        </span>
+        <InfoPopover key={recipient.recipientId} userId={recipient.recipientId}>
+          <span key={recipient.recipientId}>{name}</span>
+        </InfoPopover>
       );
     });
 
@@ -171,9 +189,15 @@ class CommunicatorMessages extends BodyScrollLoader<
             (w2) => w2.workspaceEntityId === w.workspaceEntityId
           ) === pos
       )
-      .map((workspace) => (
-        <span key={workspace.workspaceEntityId}>{workspace.workspaceName}</span>
-      ));
+      .map((workspace) => {
+        let workspaceName = workspace.workspaceName;
+
+        if (workspace.workspaceExtension) {
+          workspaceName += ` (${workspace.workspaceExtension})`;
+        }
+
+        return <span key={workspace.workspaceEntityId}>{workspaceName}</span>;
+      });
 
     return [
       messageRecipientsList,
@@ -290,19 +314,42 @@ class CommunicatorMessages extends BodyScrollLoader<
                           {userGroupRecepient.name}
                         </span>
                       ))}
-                      {message.workspaceRecipients.map((workspaceRecepient) => (
-                        <span
-                          className="application-list__header-recipient"
-                          key={workspaceRecepient.workspaceEntityId}
-                        >
-                          {workspaceRecepient.workspaceName}
-                        </span>
-                      ))}
+                      {message.workspaceRecipients.map((workspaceRecepient) => {
+                        let workspaceName = workspaceRecepient.workspaceName;
+
+                        if (workspaceRecepient.workspaceExtension) {
+                          workspaceName += ` (${workspaceRecepient.workspaceExtension})`;
+                        }
+
+                        return (
+                          <span
+                            className="application-list__header-recipient"
+                            key={workspaceRecepient.workspaceEntityId}
+                          >
+                            {workspaceName}
+                          </span>
+                        );
+                      })}
                     </span>
                   </div>
-                  <div className="application-list__header-item-date">
-                    {this.props.i18n.time.format(message.created)}
-                  </div>
+                  <Dropdown
+                    alignSelfVertically="top"
+                    openByHover
+                    content={
+                      <p>
+                        {`${this.props.i18n.time.format(
+                          message.created
+                        )} klo ${this.props.i18n.time.format(
+                          message.created,
+                          "LT"
+                        )}`}
+                      </p>
+                    }
+                  >
+                    <div className="application-list__header-item-date">
+                      {this.props.i18n.time.format(message.created)}
+                    </div>
+                  </Dropdown>
                 </ApplicationListItemHeader>
                 <ApplicationListItemBody modifiers="communicator-message">
                   <span className="application-list__header-item-body">
@@ -434,16 +481,32 @@ class CommunicatorMessages extends BodyScrollLoader<
                         {thread.messageCountInThread}
                       </div>
                     ) : null}
-                    <div
-                      className="application-list__header-item-date"
-                      aria-label={this.props.i18n.text.get(
-                        "plugin.wcag.messageSendDate.aria.label"
-                      )}
+
+                    <Dropdown
+                      alignSelfVertically="top"
+                      openByHover
+                      content={
+                        <p>
+                          {`${this.props.i18n.time.format(
+                            thread.threadLatestMessageDate
+                          )} klo ${this.props.i18n.time.format(
+                            thread.threadLatestMessageDate,
+                            "LT"
+                          )}`}
+                        </p>
+                      }
                     >
-                      {this.props.i18n.time.format(
-                        thread.threadLatestMessageDate
-                      )}
-                    </div>
+                      <div
+                        className="application-list__header-item-date"
+                        aria-label={this.props.i18n.text.get(
+                          "plugin.wcag.messageSendDate.aria.label"
+                        )}
+                      >
+                        {`${this.props.i18n.time.format(
+                          thread.threadLatestMessageDate
+                        )}`}
+                      </div>
+                    </Dropdown>
                   </ApplicationListItemHeader>
                   <ApplicationListItemBody modifiers="communicator-message">
                     <span

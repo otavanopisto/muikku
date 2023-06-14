@@ -78,12 +78,12 @@ import RecordsBody from "../components/records/body";
 import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
-  setCurrentStudentUserViewAndWorkspace,
   setLocationToHopsInTranscriptOfRecords,
   setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
+  setLocationToPedagogyFormInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { updateHops } from "~/actions/main-function/hops";
@@ -119,6 +119,7 @@ import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/worksp
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 import { loadContactGroup } from "~/actions/base/contacts";
+import { InfoPopperProvider } from "~/components/general/info-popover/context";
 
 moment.locale("fi");
 
@@ -308,14 +309,6 @@ export default class MainFunction extends React.Component<
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateSummary() as Action);
-    } else if (!givenLocation) {
-      this.props.store.dispatch(
-        setCurrentStudentUserViewAndWorkspace(
-          parseInt(originalData.u),
-          originalData.i,
-          parseInt(originalData.w)
-        ) as Action
-      );
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords() as Action
@@ -325,6 +318,10 @@ export default class MainFunction extends React.Component<
         setLocationToHopsInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateHops() as Action);
+    } else if (givenLocation === "pedagogy-form") {
+      this.props.store.dispatch(
+        setLocationToPedagogyFormInTranscriptOfRecords() as Action
+      );
     } else if (givenLocation === "yo") {
       this.props.store.dispatch(
         setLocationToYoInTranscriptOfRecords() as Action
@@ -1003,7 +1000,12 @@ export default class MainFunction extends React.Component<
       this.loadlib(
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
-      this.props.store.dispatch(loadContactGroup("counselors") as Action);
+
+      const state = this.props.store.getState();
+
+      if (state.status.isActiveUser) {
+        this.props.store.dispatch(loadContactGroup("counselors") as Action);
+      }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
@@ -1129,26 +1131,31 @@ export default class MainFunction extends React.Component<
     return (
       <BrowserRouter>
         <div id="root">
-          <Notifications></Notifications>
-          <DisconnectedWarningDialog />
-          <EasyToUseFunctions />
-          <Route exact path="/" render={this.renderIndexBody} />
-          <Route
-            path="/organization"
-            render={this.renderOrganizationAdministrationBody}
-          />
-          <Route path="/coursepicker" render={this.renderCoursePickerBody} />
-          <Route path="/communicator" render={this.renderCommunicatorBody} />
-          <Route path="/discussion" render={this.renderDiscussionBody} />
-          <Route path="/announcements" render={this.renderAnnouncementsBody} />
-          <Route path="/announcer" render={this.renderAnnouncerBody} />
-          <Route path="/guider" render={this.renderGuiderBody} />
-          <Route path="/profile" render={this.renderProfileBody} />
-          <Route path="/records" render={this.renderRecordsBody} />
-          <Route path="/evaluation" render={this.renderEvaluationBody} />
-          <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
-          <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
-          <Chat />
+          <InfoPopperProvider>
+            <Notifications></Notifications>
+            <DisconnectedWarningDialog />
+            <EasyToUseFunctions />
+            <Route exact path="/" render={this.renderIndexBody} />
+            <Route
+              path="/organization"
+              render={this.renderOrganizationAdministrationBody}
+            />
+            <Route path="/coursepicker" render={this.renderCoursePickerBody} />
+            <Route path="/communicator" render={this.renderCommunicatorBody} />
+            <Route path="/discussion" render={this.renderDiscussionBody} />
+            <Route
+              path="/announcements"
+              render={this.renderAnnouncementsBody}
+            />
+            <Route path="/announcer" render={this.renderAnnouncerBody} />
+            <Route path="/guider" render={this.renderGuiderBody} />
+            <Route path="/profile" render={this.renderProfileBody} />
+            <Route path="/records" render={this.renderRecordsBody} />
+            <Route path="/evaluation" render={this.renderEvaluationBody} />
+            <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
+            <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
+            <Chat />
+          </InfoPopperProvider>
         </div>
       </BrowserRouter>
     );

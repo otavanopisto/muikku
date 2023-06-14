@@ -35,6 +35,7 @@ export type LoadWorkspaceActionType =
   | "UPDATE_WORKSPACE"
   | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE";
 export type WorkspaceAssessementStateType =
+  | "transferred"
   | "unassessed"
   | "pending"
   | "pending_pass"
@@ -371,7 +372,15 @@ export interface TemplateWorkspaceType {
  * Language options for workspace
  * used as lang attribute jsx
  */
-export const languageOptions = ["fi", "en", "sw", "ge", "ru", "ja"] as const;
+export const languageOptions = [
+  "fi",
+  "en",
+  "sv",
+  "de",
+  "ru",
+  "ja",
+  "es",
+] as const;
 
 /**
  * Language

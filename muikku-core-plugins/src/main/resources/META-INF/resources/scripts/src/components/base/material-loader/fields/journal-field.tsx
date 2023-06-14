@@ -13,6 +13,8 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * JournalProps
@@ -247,13 +249,30 @@ export default class JournalField extends React.Component<
         // note how somehow numbers come as string...
         field = (
           <>
-            <label>
-              <b>
+            <span className="material-page__taskfield-header">
+              <span className="material-page__taskfield-title">
                 {this.props.i18n.text.get(
                   "plugin.workspace.journalMemoField.label"
                 )}
-              </b>
-            </label>
+              </span>
+              <Instructions
+                modifier="instructions"
+                alignSelfVertically="top"
+                openByHover={false}
+                closeOnClick={true}
+                closeOnOutsideClick={true}
+                persistent
+                content={
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: this.props.i18n.text.get(
+                        "plugin.workspace.journalMemoField.instructions"
+                      ),
+                    }}
+                  />
+                }
+              />
+            </span>
             <CKEditor
               configuration={ckEditorConfig}
               onChange={this.onCKEditorChange}
@@ -282,17 +301,21 @@ export default class JournalField extends React.Component<
 
     // and here the element itself
     return (
-      <span
-        className={`material-page__journalfield-wrapper ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        {field}
-      </span>
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Oppimispäiväkirjatehtävä" />
+        <span
+          className={`material-page__journalfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          {field}
+        </span>
+      </>
     );
   }
 }

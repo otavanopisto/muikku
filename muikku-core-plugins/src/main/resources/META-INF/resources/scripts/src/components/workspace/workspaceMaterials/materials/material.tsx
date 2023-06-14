@@ -43,6 +43,7 @@ interface WorkspaceMaterialProps {
   showEvenIfHidden: boolean;
   workspace: WorkspaceType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  readspeakerComponent: JSX.Element;
 }
 
 /**
@@ -108,7 +109,6 @@ class WorkspaceMaterial extends React.Component<
         case "INCOMPLETE":
           evalStateClassName =
             "material-page__assignment-assessment--incomplete";
-          evalStateIcon = "icon-thumb-down";
           break;
         case "FAILED":
           evalStateClassName = "material-page__assignment-assessment--failed";
@@ -121,7 +121,6 @@ class WorkspaceMaterial extends React.Component<
         case "WITHDRAWN":
           evalStateClassName =
             "material-page__assignment-assessment--withdrawn";
-          evalStateIcon = "";
           break;
       }
     }
@@ -155,6 +154,7 @@ class WorkspaceMaterial extends React.Component<
             onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
+            readspeakerComponent={this.props.readspeakerComponent}
           >
             {(props, state, stateConfiguration) => (
               <div>
@@ -182,7 +182,7 @@ class WorkspaceMaterial extends React.Component<
                 <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
                 {isAssignment && hasEvaluation ? (
                   <div
-                    className={`material-page__assignment-assessment ${evalStateClassName}`}
+                    className={`material-page__assignment-assessment ${evalStateClassName} rs_skip_always`}
                   >
                     <div
                       className={`material-page__assignment-assessment-icon ${evalStateIcon}`}

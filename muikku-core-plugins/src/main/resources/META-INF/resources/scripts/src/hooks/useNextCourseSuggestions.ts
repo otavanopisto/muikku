@@ -107,7 +107,7 @@ export const useNextCourseSuggestions = (
               })
             );
           } catch (err) {
-            displayNotification(`Hups errori ${err}`, "error");
+            displayNotification(err, "error");
           }
 
           // Suggested as next courses, sorted by alphabetically
@@ -132,7 +132,7 @@ export const useNextCourseSuggestions = (
           nextCourses: suggestions,
         }));
       } catch (err) {
-        displayNotification(`Hups errori, ${err.message}`, "error");
+        displayNotification(err.message, "error");
         setNextSuggestions((nextSuggestions) => ({
           ...nextSuggestions,
           isLoading: false,

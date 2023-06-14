@@ -3,7 +3,7 @@ package fi.otavanopisto.muikku.plugins.guider;
 import java.util.Date;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 
 public class GuiderStudentWorkspaceActivityRestModel {
   

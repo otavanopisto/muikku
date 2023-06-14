@@ -889,6 +889,9 @@
   height: 1.25rem;
   margin: 0 0 0 10px;
   padding: 5px;
+  /* stylelint-disable declaration-no-important */
+  text-decoration: none !important;
+  /* stylelint-enable declaration-no-important */
   width: 1.25rem;
 
   &:hover,
@@ -2142,6 +2145,7 @@
 
 .button--add-matriculation-row,
 .button--add-hops-row,
+.button--add-pedagogy-row,
 .button--load-all-hops-events,
 .button--back-to-hops-start {
   background: $color-default;
@@ -2163,7 +2167,8 @@
 }
 
 .button--remove-matriculation-row,
-.button--remove-hops-row {
+.button--remove-hops-row,
+.button--remove-pedagogy-row {
   background: transparent;
   height: 2.25rem;
   padding: 5px;

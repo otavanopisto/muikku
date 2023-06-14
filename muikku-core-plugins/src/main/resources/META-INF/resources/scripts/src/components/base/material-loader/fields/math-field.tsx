@@ -12,6 +12,8 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * MathFieldProps
@@ -131,53 +133,77 @@ export default class TextField extends React.Component<
     );
 
     return (
-      <div
-        className={`material-page__mathfield-wrapper ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        <MathField
-          ref="base"
-          className="material-page__mathfield"
-          userId={this.props.userId}
-          value={this.state.value}
-          onChange={this.setValue}
-          formulaClassName="material-page__mathfield-formula"
-          editorClassName="material-page__mathfield-editor"
-          imageClassName="material-page__mathfield-image"
-          toolbarClassName="material-page__mathfield-toolbar"
-          i18n={{
-            symbols: this.props.i18n.text.get(
-              "plugin.workspace.mathField.symbols"
-            ),
-            relations: this.props.i18n.text.get(
-              "plugin.workspace.mathField.relations"
-            ),
-            geometryAndVectors: this.props.i18n.text.get(
-              "plugin.workspace.mathField.geometryAndVectors"
-            ),
-            setTheoryNotation: this.props.i18n.text.get(
-              "plugin.workspace.mathField.setTheoryNotation"
-            ),
-            mathFormulas: this.props.i18n.text.get(
-              "plugin.workspace.mathField.addMathFormula"
-            ),
-            operators: this.props.i18n.text.get(
-              "plugin.workspace.mathField.operators"
-            ),
-            image: this.props.i18n.text.get(
-              "plugin.workspace.mathField.addImage"
-            ),
-          }}
-          readOnly={this.props.readOnly}
-          dontLoadACE={this.props.readOnly}
-          dontLoadMQ={this.props.readOnly}
-        />
-      </div>
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Matematiikkatehtävä" />
+        <div
+          className={`material-page__mathfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          <span className="material-page__taskfield-header">
+            <span></span>
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: this.props.i18n.text.get(
+                      "plugin.workspace.mathField.instructions"
+                    ),
+                  }}
+                />
+              }
+            />
+          </span>
+          <MathField
+            ref="base"
+            className="material-page__mathfield"
+            userId={this.props.userId}
+            value={this.state.value}
+            onChange={this.setValue}
+            formulaClassName="material-page__mathfield-formula"
+            editorClassName="material-page__mathfield-editor"
+            imageClassName="material-page__mathfield-image"
+            toolbarClassName="material-page__mathfield-toolbar"
+            i18n={{
+              symbols: this.props.i18n.text.get(
+                "plugin.workspace.mathField.symbols"
+              ),
+              relations: this.props.i18n.text.get(
+                "plugin.workspace.mathField.relations"
+              ),
+              geometryAndVectors: this.props.i18n.text.get(
+                "plugin.workspace.mathField.geometryAndVectors"
+              ),
+              setTheoryNotation: this.props.i18n.text.get(
+                "plugin.workspace.mathField.setTheoryNotation"
+              ),
+              mathFormulas: this.props.i18n.text.get(
+                "plugin.workspace.mathField.addMathFormula"
+              ),
+              operators: this.props.i18n.text.get(
+                "plugin.workspace.mathField.operators"
+              ),
+              image: this.props.i18n.text.get(
+                "plugin.workspace.mathField.addImage"
+              ),
+            }}
+            readOnly={this.props.readOnly}
+            dontLoadACE={this.props.readOnly}
+            dontLoadMQ={this.props.readOnly}
+          />
+        </div>
+      </>
     );
   }
 }

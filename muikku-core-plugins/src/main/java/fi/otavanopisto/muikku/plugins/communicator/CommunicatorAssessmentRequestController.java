@@ -19,7 +19,6 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -30,6 +29,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
@@ -123,7 +123,7 @@ public class CommunicatorAssessmentRequestController {
           }
         }
         
-        if (assessmentState.getDate() != null && assessmentState.getGrade() != null) {
+        if (assessmentState.getGradeDate() != null && assessmentState.getGrade() != null) {
           workspaceSubjectsBody = workspaceSubjectsBody + getText("plugin.communicator.assessmentrequest.existingGrade.body",
               new SimpleDateFormat("d.M.yyyy").format(assessmentState.getGradeDate()),
               assessmentState.getGrade(),
