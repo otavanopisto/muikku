@@ -11,7 +11,6 @@
    */
   CKEDITOR.dtd.$editable['summary'] = 1;
 
-  var lang = editor.lang;
   /**
    * Plugin
    */
@@ -24,9 +23,12 @@
       /**
        * Widget
        */
+
+      var lang = editor.lang['muikku-details'];
+
       editor.widgets.add('muikku-details', {
-        button: lang.details.toolbarMenu,
-        template: '<details class="details"><summary class="details__summary">' + lang.details.summary + '</summary><div class="details__content">' + lang.details.content + '</div></details>',
+        button: lang.toolbarMenu,
+        template: '<details class="details"><summary class="details__summary">' + lang.summary + '</summary><div class="details__content">' + lang.content + '</div></details>',
         editables: {
           summary: {
             selector: 'summary.details__summary',

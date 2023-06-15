@@ -33,6 +33,57 @@
     vertical-align: middle;
   }
 
+  // Details/summary plugins rules
+  .details {
+    background: $color-default;
+    border: 1px solid lighten($color-info, 50%);
+    border-radius: 10px;
+    margin: 5px 0;
+
+    &[open] {
+      .details__summary {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+
+        &::after {
+          transform: rotate(-90deg);
+        }
+      }
+    }
+  }
+
+  .details__summary {
+    align-items: center;
+    background: $color-default-lighter-generic-background;
+    border-radius: 10px;
+    color: $color-default-contrast;
+    display: flex;
+    flex-flow: row nowrap;
+    font-weight: 300;
+    justify-content: space-between;
+    padding: 15px;
+
+    &::after {
+      align-items: center;
+      color: $color-info;
+      content: "\f104";
+      cursor: pointer;
+      display: flex;
+      font-family: "muikku";
+      height: 1.5rem;
+      justify-content: center;
+      transform: rotate(0deg);
+      transform-origin: 50% 50%;
+      transition: 0.2s;
+      width: 1.5rem;
+    }
+  }
+
+  .details__content {
+    font-weight: 300;
+    padding: 5px 15px;
+  }
+
   .mathjax-preview-result {
     display: block;
   }

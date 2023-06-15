@@ -168,6 +168,7 @@ const CKEditorConfig = (
         "Smiley",
         "SpecialChar",
         "CreateDiv",
+        "Muikku-details",
       ],
     },
     { name: "links", items: ["Link", "Unlink", "Anchor"] },
@@ -205,8 +206,6 @@ const CKEditorConfig = (
         "-",
         "BidiLtr",
         "BidiRtl",
-        "-",
-        "muikku-details",
       ],
     },
     { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
@@ -214,8 +213,8 @@ const CKEditorConfig = (
   resize_enabled: false,
   removePlugins: "image,exportpdf,wsc",
   extraPlugins: disablePlugins
-    ? "muikku-details,divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax,muikku-details"
-    : "muikku-details,divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax,muikku-journalfield,muikku-details",
+    ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax,muikku-details"
+    : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax,muikku-journalfield,muikku-details",
 });
 
 /**

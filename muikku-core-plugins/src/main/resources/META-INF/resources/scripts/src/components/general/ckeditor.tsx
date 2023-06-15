@@ -116,7 +116,10 @@ const extraConfig = (props: CKEditorProps) => ({
       items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
     },
     { name: "links", items: ["Link"] },
-    { name: "insert", items: ["Image", "Smiley", "SpecialChar"] },
+    {
+      name: "insert",
+      items: ["Image", "Smiley", "SpecialChar"],
+    },
     { name: "colors", items: ["TextColor", "BGColor"] },
     { name: "styles", items: ["Format"] },
     {
@@ -136,15 +139,13 @@ const extraConfig = (props: CKEditorProps) => ({
         "-",
         "BidiLtr",
         "BidiRtl",
-        "-",
-        "muikku-details",
       ],
     },
     { name: "tools", items: ["Maximize"] },
   ],
   uploadUrl: "/communicatorAttachmentUploadServlet",
   extraPlugins:
-    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,scayt,muikku-details",
+    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,scayt",
   removePlugins: "exportpdf,wsc",
   /* eslint-enable camelcase */
 });
