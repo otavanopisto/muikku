@@ -138,7 +138,7 @@ module.exports = {
   devServer: {
     // Host and port for the dev server
     //    host: 'dev.muikku.fi',
-    host: "localhost",
+    host: "dev.muikkuverkko.fi",
     port: 3000,
     static: "../dist",
     // is this needed for routing?
