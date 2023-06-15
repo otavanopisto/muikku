@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   useStudyProgressContextState,
+  useStudyProgressContextUpdater,
   useStudyProgressStaticDataContext,
 } from "./context";
 import SignUpBehalfStudentDialog from "./dialogs/sign-up-behalf-student";
@@ -26,6 +27,8 @@ const StudyProgress = (props: StudyProgressProps) => {
   const { studyProgrammeName, editMode } = props;
 
   const studyProgressStatic = useStudyProgressStaticDataContext();
+
+  const { closeSignUpBehalfDialog } = useStudyProgressContextUpdater();
 
   const { signUpDialog } = useStudyProgressContextState();
 
@@ -105,7 +108,8 @@ const StudyProgress = (props: StudyProgressProps) => {
 
       <SignUpBehalfStudentDialog
         studentsUserEntityId={signUpDialog && signUpDialog.studentEntityId}
-        workspaceId={signUpDialog && signUpDialog.workspaceId}
+        workspaceSuggestion={signUpDialog && signUpDialog.suggestion}
+        onClose={closeSignUpBehalfDialog}
       />
     </>
   );

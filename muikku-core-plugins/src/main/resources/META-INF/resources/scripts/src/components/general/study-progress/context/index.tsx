@@ -5,6 +5,7 @@ import {
   StudentActivityByStatus,
   StudentActivityCourse,
   StudentCourseChoice,
+  Suggestion,
   SupervisorOptionalSuggestion,
 } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
@@ -50,7 +51,7 @@ interface StudyProgressUpdaterContext {
   ) => Promise<void>;
   openSignUpBehalfDialog: (
     studentEntityId: number,
-    workspaceId: number
+    suggestion: Suggestion
   ) => void;
   closeSignUpBehalfDialog: () => void;
 }
@@ -139,7 +140,7 @@ interface StudyProgresContextProviderProps {
 interface StudyProgressContextState extends StudentActivityByStatus {
   signUpDialog?: {
     studentEntityId: number;
-    workspaceId: number;
+    suggestion: Suggestion;
   };
   studentChoices: StudentCourseChoice[];
   supervisorOptionalSuggestions: SupervisorOptionalSuggestion[];
@@ -191,12 +192,12 @@ const StudyProgressContextProvider = (
    * @param workspaceId workspaceId
    */
   const openSignUpBehalfDialog = React.useCallback(
-    (studentEntityId: number, workspaceId: number) => {
+    (studentEntityId: number, suggestion: Suggestion) => {
       setStudyProgress((oStudyProgress) => ({
         ...oStudyProgress,
         signUpDialog: {
           studentEntityId,
-          workspaceId,
+          suggestion,
         },
       }));
     },

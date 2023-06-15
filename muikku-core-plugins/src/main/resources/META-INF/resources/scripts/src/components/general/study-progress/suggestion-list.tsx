@@ -1,6 +1,11 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { Course, CourseStatus, StudentActivityCourse } from "~/@types/shared";
+import {
+  Course,
+  CourseStatus,
+  StudentActivityCourse,
+  Suggestion,
+} from "~/@types/shared";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
@@ -31,7 +36,7 @@ interface HopsSuggestionListProps {
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
   openSignUpBehalfDialog: (
     studentEntityId: number,
-    workspaceId: number
+    suggestion: Suggestion
   ) => void;
 }
 
@@ -61,12 +66,12 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
   /**
    * Handles open sign up behalf dialog
    * @param studentEntityId studentEntityId
-   * @param workspaceId workspaceId
+   * @param suggestion suggestion
    */
   const handleOpenSignUpBehalfDialog =
-    (studentEntityId: number, workspaceId: number) =>
+    (studentEntityId: number, suggestion: Suggestion) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.openSignUpBehalfDialog(studentEntityId, workspaceId);
+      props.openSignUpBehalfDialog(studentEntityId, suggestion);
     };
 
   /**
@@ -141,7 +146,7 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
               ]}
               onClick={handleOpenSignUpBehalfDialog(
                 props.studentsUserEntityId,
-                suggestion.id
+                suggestion
               )}
             >
               Ilmoita työtilaan

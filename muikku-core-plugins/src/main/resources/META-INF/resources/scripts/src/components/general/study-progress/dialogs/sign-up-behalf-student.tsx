@@ -16,6 +16,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
+import { Suggestion } from "~/@types/shared";
 
 /**
  * SignUpBehalfOfStudentParams
@@ -47,10 +48,11 @@ interface SignUpBehalfOfStudentDialogProps {
   /**
    * Id of workspace where student is signing up.
    */
-  workspaceId?: number;
+  workspaceSuggestion?: Suggestion;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   displayNotification: DisplayNotificationTriggerType;
+  onClose: () => void;
 }
 
 /**
@@ -121,13 +123,14 @@ class SignUpBehalfOfStudentDialog extends React.Component<
     try {
       await this.signUpForWorkspaceBehalfOfStudent({
         userId: this.props.studentsUserEntityId,
-        workspaceId: this.props.workspaceId,
+        workspaceId: this.props.workspaceSuggestion.id,
         message: this.state.message,
       });
 
       this.setState({
         disabled: false,
       });
+      this.props.onClose();
       closeDialog();
     } catch (err) {
       displayNotification("Virhe ilmoittautumisessa työtilaan", "error");
@@ -143,6 +146,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
    * @param closeDialog closeDialog
    */
   handleCloseClick(closeDialog: () => void) {
+    this.props.onClose();
     closeDialog();
   }
 
@@ -151,6 +155,10 @@ class SignUpBehalfOfStudentDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    if (!this.props.studentsUserEntityId || !this.props.workspaceSuggestion) {
+      return null;
+    }
+
     /**
      * content
      * @param closeDialog closeDialog
@@ -195,12 +203,18 @@ class SignUpBehalfOfStudentDialog extends React.Component<
       </div>
     );
 
+    let workspaceName = this.props.workspaceSuggestion.name;
+
+    if (this.props.workspaceSuggestion.nameExtension) {
+      workspaceName += ` (${this.props.workspaceSuggestion.nameExtension})`;
+    }
+
     return (
       <Dialog
         modifier="workspace-signup-dialog"
-        isOpen={!!(this.props.studentsUserEntityId && this.props.workspaceId)}
+        title={`ILMOITA OPISKELIJA TYÖTILAAN ${workspaceName}`}
+        isOpen={true}
         disableScroll={true}
-        title="ILMOITA OPISKELIJA TYÖTILAAN"
         content={content}
         footer={footer}
         closeOnOverlayClick={false}
