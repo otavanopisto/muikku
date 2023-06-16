@@ -42,6 +42,21 @@
         upcast: function (element) {
             return element.name == 'details' && element.hasClass( 'details' );
         },
+        init: function () {
+          var summary = this.element.getChild(0);
+
+          summary.on('blur', function () {
+              if (!summary.getText().trim()) {
+                  summary.setText(lang.summary);
+              }
+          });
+          summary.on('keyup', function (ev) {
+              if (ev.data['$'].key === ' ' || ev.data['$'].keyCode === 32) {
+                  ev.data['$'].preventDefault();
+                  editor.insertText(' ');
+              }
+          });
+      }
       });
     }
   });
