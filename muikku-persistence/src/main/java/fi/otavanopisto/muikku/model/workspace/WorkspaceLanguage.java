@@ -4,8 +4,8 @@ public enum WorkspaceLanguage {
 
   fi,
   en,
-  sw,
-  ge,
+  sv,
+  de,
   es,
   ja,
   ru

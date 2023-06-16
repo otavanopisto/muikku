@@ -43,8 +43,8 @@ export const outputCorrectDatePickerLocale = (locale: string) => {
 export const langAttributeLocale: { [key: string]: string } = {
   en: "englanti (EN)",
   fi: "suomi (FI)",
-  sw: "ruotsi (SW)",
-  ge: "saksa (GE)",
+  sv: "ruotsi (SV)",
+  de: "saksa (DE)",
   ja: "japani (JA)",
   ru: "venäjä (RU)",
   es: "espanja (ES)",
