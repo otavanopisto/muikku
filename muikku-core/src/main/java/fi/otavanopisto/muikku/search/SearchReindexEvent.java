@@ -29,6 +29,7 @@ public class SearchReindexEvent {
     USERS,
     WORKSPACES,
     USERGROUPS,
+    STUDYPROGRAMMES,
     COMMUNICATORMESSAGES
   }
 }
