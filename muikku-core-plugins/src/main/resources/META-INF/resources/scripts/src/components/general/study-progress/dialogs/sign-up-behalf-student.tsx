@@ -25,7 +25,7 @@ interface SignUpBehalfOfStudentParams {
   /**
    * "Aka" entity id of the student.
    */
-  userId: number;
+  userIdentifier: string;
   /**
    * Id of workspace where student is signing up.
    */
@@ -44,7 +44,7 @@ interface SignUpBehalfOfStudentDialogProps {
   /**
    * Entity id of the student.
    */
-  studentsUserEntityId?: number;
+  studentUserIdentifier?: string;
   /**
    * Id of workspace where student is signing up.
    */
@@ -94,7 +94,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
   ) =>
     await promisify(
       mApi().guider.student.workspace.signup.create(
-        params.userId,
+        params.userIdentifier,
         params.workspaceId,
         {
           message: params.message,
@@ -122,7 +122,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
 
     try {
       await this.signUpForWorkspaceBehalfOfStudent({
-        userId: this.props.studentsUserEntityId,
+        userIdentifier: this.props.studentUserIdentifier,
         workspaceId: this.props.workspaceSuggestion.id,
         message: this.state.message,
       });
@@ -155,7 +155,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    if (!this.props.studentsUserEntityId || !this.props.workspaceSuggestion) {
+    if (!this.props.studentUserIdentifier || !this.props.workspaceSuggestion) {
       return null;
     }
 

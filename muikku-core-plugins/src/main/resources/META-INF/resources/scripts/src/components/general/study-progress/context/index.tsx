@@ -50,7 +50,7 @@ interface StudyProgressUpdaterContext {
     params: UpdateSupervisorOptionalSuggestionParams
   ) => Promise<void>;
   openSignUpBehalfDialog: (
-    studentEntityId: number,
+    studentIdentifier: string,
     suggestion: Suggestion
   ) => void;
   closeSignUpBehalfDialog: () => void;
@@ -139,7 +139,7 @@ interface StudyProgresContextProviderProps {
  */
 interface StudyProgressContextState extends StudentActivityByStatus {
   signUpDialog?: {
-    studentEntityId: number;
+    studentIdentifier: string;
     suggestion: Suggestion;
   };
   studentChoices: StudentCourseChoice[];
@@ -192,11 +192,11 @@ const StudyProgressContextProvider = (
    * @param workspaceId workspaceId
    */
   const openSignUpBehalfDialog = React.useCallback(
-    (studentEntityId: number, suggestion: Suggestion) => {
+    (studentIdentifier: string, suggestion: Suggestion) => {
       setStudyProgress((oStudyProgress) => ({
         ...oStudyProgress,
         signUpDialog: {
-          studentEntityId,
+          studentIdentifier,
           suggestion,
         },
       }));
@@ -471,6 +471,7 @@ const StudyProgressContextProvider = (
     );
 
     return () => {
+      console.log("Unmounting");
       // Remove callback when unmounting
       websocketState.websocket.removeEventCallback(
         "hops:optionalsuggestion-updated",
@@ -545,17 +546,17 @@ const StudyProgressContextProvider = (
 
       // If course id is null, meaning that delete existing activity course by
       // finding that specific course with subject code and course number and splice it out
-      if (data.courseId) {
-        const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
-          (item) => item.courseId === data.courseId
-        );
 
-        if (indexOfCourse !== -1) {
-          arrayOfStudentActivityCourses.splice(indexOfCourse, 1);
-        } else {
-          // Add new
-          arrayOfStudentActivityCourses.push(data);
-        }
+      const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
+        (item) =>
+          item.courseId === data.courseId && data.subject === item.subject
+      );
+
+      if (indexOfCourse !== -1) {
+        arrayOfStudentActivityCourses.splice(indexOfCourse, 1);
+      } else {
+        // Add new
+        arrayOfStudentActivityCourses.push(data);
       }
 
       // After possible suggestion checking is done, then concat other lists also
@@ -608,6 +609,90 @@ const StudyProgressContextProvider = (
       // Remove callback when unmounting
       websocketState.websocket.removeEventCallback(
         "hops:workspace-suggested",
+        onAnswerSavedAtServer
+      );
+    };
+  }, [websocketState.websocket]);
+
+  React.useEffect(() => {
+    /**
+     * onAnswerSavedAtServer
+     * Websocket event callback to handle answer from server when
+     * something is saved/changed
+     * @param data Websocket data
+     */
+    const onAnswerSavedAtServer = (
+      data: StudentActivityCourse | StudentActivityCourse[]
+    ) => {
+      const { suggestedNextList, onGoingList, gradedList, transferedList } =
+        ref.current;
+
+      // Concated list of different suggestions
+      let arrayOfStudentActivityCourses: StudentActivityCourse[] = [].concat(
+        onGoingList,
+        gradedList,
+        transferedList,
+        suggestedNextList
+      );
+
+      const isArray = Array.isArray(data);
+
+      if (isArray) {
+        arrayOfStudentActivityCourses = arrayOfStudentActivityCourses.filter(
+          (item) => item.courseId !== data[0].courseId
+        );
+      } else {
+        arrayOfStudentActivityCourses = arrayOfStudentActivityCourses.filter(
+          (item) => item.courseId !== data.courseId
+        );
+      }
+
+      arrayOfStudentActivityCourses =
+        arrayOfStudentActivityCourses.concat(data);
+
+      const skillAndArtCourses = filterActivityBySubjects(
+        SKILL_AND_ART_SUBJECTS,
+        arrayOfStudentActivityCourses
+      );
+
+      const otherLanguageSubjects = filterActivityBySubjects(
+        LANGUAGE_SUBJECTS,
+        arrayOfStudentActivityCourses
+      );
+
+      const otherSubjects = filterActivityBySubjects(
+        OTHER_SUBJECT_OUTSIDE_HOPS,
+        arrayOfStudentActivityCourses
+      );
+
+      // Filtered activity courses by status
+      const studentActivityByStatus = filterActivity(
+        arrayOfStudentActivityCourses
+      );
+
+      setStudyProgress((oStudyProgress) => ({
+        ...oStudyProgress,
+        suggestedNextList: studentActivityByStatus.suggestedNextList,
+        onGoingList: studentActivityByStatus.onGoingList,
+        gradedList: studentActivityByStatus.gradedList,
+        transferedList: studentActivityByStatus.transferedList,
+        skillsAndArt: { ...skillAndArtCourses },
+        otherLanguageSubjects: { ...otherLanguageSubjects },
+        otherSubjects: { ...otherSubjects },
+      }));
+    };
+
+    // Adding event callback to handle changes when ever
+    // there has happened some changes with that message
+    websocketState.websocket.addEventCallback(
+      "hops:workspace-signup",
+      onAnswerSavedAtServer
+    );
+
+    return () => {
+      // Remove callback when unmounting
+      websocketState.websocket.removeEventCallback(
+        "hops:workspace-signup",
         onAnswerSavedAtServer
       );
     };

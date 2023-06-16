@@ -35,7 +35,7 @@ interface HopsSuggestionListProps {
    */
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
   openSignUpBehalfDialog: (
-    studentEntityId: number,
+    studentIdentifier: string,
     suggestion: Suggestion
   ) => void;
 }
@@ -69,9 +69,9 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
    * @param suggestion suggestion
    */
   const handleOpenSignUpBehalfDialog =
-    (studentEntityId: number, suggestion: Suggestion) =>
+    (studentIdentifier: string, suggestion: Suggestion) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.openSignUpBehalfDialog(studentEntityId, suggestion);
+      props.openSignUpBehalfDialog(studentIdentifier, suggestion);
     };
 
   /**
@@ -145,7 +145,7 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
                 "guider-hops-studytool-next",
               ]}
               onClick={handleOpenSignUpBehalfDialog(
-                props.studentsUserEntityId,
+                props.studentId,
                 suggestion
               )}
             >

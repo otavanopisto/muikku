@@ -107,7 +107,7 @@ const StudyProgress = (props: StudyProgressProps) => {
       </div>
 
       <SignUpBehalfStudentDialog
-        studentsUserEntityId={signUpDialog && signUpDialog.studentEntityId}
+        studentUserIdentifier={signUpDialog && signUpDialog.studentIdentifier}
         workspaceSuggestion={signUpDialog && signUpDialog.suggestion}
         onClose={closeSignUpBehalfDialog}
       />
