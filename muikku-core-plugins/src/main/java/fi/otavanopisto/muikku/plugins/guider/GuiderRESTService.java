@@ -69,6 +69,7 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotific
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
+import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
@@ -84,6 +85,8 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -205,6 +208,9 @@ public class GuiderRESTService extends PluginRESTService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @Inject
+  private WebSocketMessenger webSocketMessenger;
 
   @GET
   @Path("/students")
@@ -1083,13 +1089,16 @@ public class GuiderRESTService extends PluginRESTService {
   @POST
   @Path("/student/{ID}/workspace/{WORKSPACEID}/signup")
   @RESTPermit (handling = Handling.INLINE)
-  public Response createWorkspaceSignupByStaff(@PathParam("ID") Long userEntityId, @PathParam("WORKSPACEID") Long workspaceEntityId,
+  public Response createWorkspaceSignupByStaff(@PathParam("ID") String userIdentifier, @PathParam("WORKSPACEID") Long workspaceEntityId,
       fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
 
     if (!sessionController.isLoggedIn()) { 
       return Response.status(Status.UNAUTHORIZED).build();
     }
-    UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(userIdentifier);
+
+    UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
 
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
     EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
@@ -1098,7 +1107,7 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (!userSchoolDataController.amICounselor(studentEntity.defaultSchoolDataIdentifier()) || !loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+    if (!userSchoolDataController.amICounselor(studentIdentifier) && !loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
 
@@ -1108,14 +1117,17 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    User student = userController.findUserByDataSourceAndIdentifier(studentEntity.getDefaultSchoolDataSource(), studentEntity.getDefaultIdentifier());
+    User student = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+    
+    if (student == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
 
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
 
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
-    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(student.getIdentifier(), student.getSchoolDataSource());
 
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, userIdentifier);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, studentIdentifier);
     if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getArchived())) {
       workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
     }
@@ -1124,10 +1136,10 @@ public class GuiderRESTService extends PluginRESTService {
       userIndexer.indexUser(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
     }
 
-    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
+    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, studentEntity.defaultSchoolDataIdentifier());
     if (workspaceUser == null) {
       workspaceUser = workspaceController.createWorkspaceUser(workspace, student, WorkspaceRoleArchetype.STUDENT);
-      waitForWorkspaceUserEntity(workspaceEntity, userIdentifier);
+      waitForWorkspaceUserEntity(workspaceEntity, studentIdentifier);
     }
     else {
       workspaceController.updateWorkspaceStudentActivity(workspaceUser, true);
@@ -1145,7 +1157,6 @@ public class GuiderRESTService extends PluginRESTService {
       ? student.getDisplayName()
       : String.format("%s \"%s\" %s (%s)", student.getFirstName(), student.getNickName(), student.getLastName(), student.getStudyProgrammeName());
 
-
     User loggedUser = userController.findUserByUserEntityDefaults(sessionController.getLoggedUserEntity());
 
     String loggedUserName = loggedUser.getNickName() == null
@@ -1158,7 +1169,7 @@ public class GuiderRESTService extends PluginRESTService {
       recipients.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
     }
 
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
 
     workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), entity.getMessage());
 
@@ -1166,8 +1177,6 @@ public class GuiderRESTService extends PluginRESTService {
     caption = MessageFormat.format(caption, loggedUserName, userName, workspaceName);
 
     String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
-
-    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(student.getIdentifier(), student.getSchoolDataSource());
 
     String studentLink = String.format("<a href=\"%s/guider#userprofile/%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
     String content;
@@ -1195,8 +1204,42 @@ public class GuiderRESTService extends PluginRESTService {
     if (!recipientEmails.isEmpty()) {
       mailer.sendMail(MailType.HTML, recipientEmails, caption, content);
     }
+    List<StudyActivityItemRestModel> restItems = new ArrayList<StudyActivityItemRestModel>();
+    
+    SearchProvider searchProvider = getProvider("elastic-search");
+    if (searchProvider != null) {
+      SearchResult searchResult =  searchProvider.findWorkspace(workspaceIdentifier);
+      
+      if (searchResult.getTotalHitCount() > 0) {
+        List<Map<String, Object>> results = searchResult.getResults();
+        Map<String, Object> match = results.get(0);
 
-    return Response.noContent().build();
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> subjectList = (List<Map<String, Object>>) match.get("subjects");
+        for (Map<String, Object> s : subjectList) {
+          StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+
+          item.setCourseName(workspaceName);
+          item.setCourseId(workspaceEntity.getId());
+          item.setCourseNumber((Integer) s.get("courseNumber"));
+          item.setSubject((String) s.get("subjectCode"));
+          item.setStatus(StudyActivityItemStatus.ONGOING);
+          item.setSubjectName((String) s.get("subjectName"));
+          item.setDate(new Date());
+          
+          restItems.add(item);
+        }
+        
+        webSocketMessenger.sendMessage("hops:workspace-suggested", restItems, Arrays.asList(studentEntity, sessionController.getLoggedUserEntity()));
+
+        return Response.ok(restItems).build();
+      }
+      else {
+        throw new RuntimeException(String.format("Search provider couldn't find a unique workspace. %d results.", searchResult.getTotalHitCount()));
+      }
+    } else {
+      throw new RuntimeException(String.format("Elastic search provider not found.", searchProvider));
+    }
   }
 
   private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
