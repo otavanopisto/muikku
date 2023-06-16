@@ -1230,7 +1230,7 @@ public class GuiderRESTService extends PluginRESTService {
           restItems.add(item);
         }
         
-        webSocketMessenger.sendMessage("hops:workspace-suggested", restItems, Arrays.asList(studentEntity, sessionController.getLoggedUserEntity()));
+        webSocketMessenger.sendMessage("hops:workspace-signup", restItems, Arrays.asList(studentEntity, sessionController.getLoggedUserEntity()));
 
         return Response.ok(restItems).build();
       }
