@@ -7,12 +7,12 @@
 
 (function (CKEDITOR) {
   /**
-   * DTD, adding summary to DTD so it can be edited
+   * Adding summary to DTD so it can be edited
    */
   CKEDITOR.dtd.$editable['summary'] = 1;
 
   /**
-   * Plugin
+   * Adding plugin to CKE
    */
   CKEDITOR.plugins.add('muikku-details', {
     requires: 'widget',
@@ -21,9 +21,8 @@
     lang: 'en,fi',
     init: function (editor) {
       /**
-       * Widget
+       * Adding widget
        */
-
       var lang = editor.lang['muikku-details'];
 
       editor.widgets.add('muikku-details', {
@@ -50,6 +49,8 @@
                   summary.setText(lang.summary);
               }
           });
+          // This is to prevent spacebar to open and close details element, basically overriding normal browser behavior
+          // and essentially ripping out accessibility feature of details/summary html component, so sorry!
           summary.on('keyup', function (ev) {
               if (ev.data['$'].key === ' ' || ev.data['$'].keyCode === 32) {
                   ev.data['$'].preventDefault();
