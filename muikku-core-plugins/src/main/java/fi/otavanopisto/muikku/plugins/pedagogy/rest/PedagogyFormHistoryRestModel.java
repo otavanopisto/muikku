@@ -1,0 +1,63 @@
+package fi.otavanopisto.muikku.plugins.pedagogy.rest;
+
+import java.util.Date;
+import java.util.List;
+
+public class PedagogyFormHistoryRestModel {
+
+  public Long getModifierId() {
+    return modifierId;
+  }
+
+  public void setModifierId(Long modifierId) {
+    this.modifierId = modifierId;
+  }
+
+  public String getModifierName() {
+    return modifierName;
+  }
+
+  public void setModifierName(String modifierName) {
+    this.modifierName = modifierName;
+  }
+
+  public boolean isModifierHasAvatar() {
+    return modifierHasAvatar;
+  }
+
+  public void setModifierHasAvatar(boolean modifierHasAvatar) {
+    this.modifierHasAvatar = modifierHasAvatar;
+  }
+
+  public List<String> getEditedFields() {
+    return editedFields;
+  }
+
+  public void setEditedFields(List<String> editedFields) {
+    this.editedFields = editedFields;
+  }
+
+  public String getDetails() {
+    return details;
+  }
+
+  public void setDetails(String details) {
+    this.details = details;
+  }
+
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
+  }
+
+  private Long modifierId;
+  private String modifierName;
+  private boolean modifierHasAvatar;
+  private List<String> editedFields;
+  private String details;
+  private Date date;
+
+}

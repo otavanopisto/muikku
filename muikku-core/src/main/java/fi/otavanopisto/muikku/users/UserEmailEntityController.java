@@ -1,16 +1,20 @@
 package fi.otavanopisto.muikku.users;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.dao.users.UserEmailEntityDAO;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 
 public class UserEmailEntityController {
   
@@ -41,26 +45,25 @@ public class UserEmailEntityController {
     userEmailEntityDAO.delete(userEmail);
   }
 
-  public UserEmailEntity addUserEmail(UserSchoolDataIdentifier userSchoolDataIdentifier, String address) {
-    UserEmailEntity userEmail = userEmailEntityDAO.findByUserSchoolDataIdentifierAndAddress(userSchoolDataIdentifier, address);
-    return userEmail != null ? userEmail : userEmailEntityDAO.create(userSchoolDataIdentifier, address);
+  public UserEmailEntity addUserEmail(UserSchoolDataIdentifier userSchoolDataIdentifier, UserEmail userEmail) {
+    UserEmailEntity userEmailEntity = userEmailEntityDAO.findByUserSchoolDataIdentifierAndAddress(userSchoolDataIdentifier, userEmail.getAddress());
+    return userEmailEntity != null ? userEmailEntity : userEmailEntityDAO.create(userSchoolDataIdentifier, userEmail.getAddress(), userEmail.getDefaultAddress());
   }
 
-  public void removeUserEmail(UserSchoolDataIdentifier userSchoolDataIdentifier, String address) {
-    UserEmailEntity userEmail = userEmailEntityDAO.findByUserSchoolDataIdentifierAndAddress(userSchoolDataIdentifier, address);
-    if (userEmail != null) {
-      userEmailEntityDAO.delete(userEmail);
-    }
+  public UserEmailEntity updateUserEmail(UserEmailEntity userEmailEntity, UserEmail userEmail) {
+    return userEmailEntityDAO.update(userEmailEntity, userEmail.getAddress(), userEmail.getDefaultAddress());
+  }
+
+  public void removeUserEmail(UserEmailEntity userEmailEntity) {
+    userEmailEntityDAO.delete(userEmailEntity);
   }
   
   public String getUserDefaultEmailAddress(UserEntity userEntity, boolean obfuscate) {
-    // TODO User default address support
     SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
     return getUserDefaultEmailAddress(userIdentifier, obfuscate);
   }
 
   public String getUserDefaultEmailAddress(SchoolDataIdentifier schoolDataIdentifier, boolean obfuscate) {
-    // TODO User default address support
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
     if (userSchoolDataIdentifier != null) {
       return getUserDefaultEmailAddress(userSchoolDataIdentifier, obfuscate);
@@ -71,10 +74,10 @@ public class UserEmailEntityController {
   }
 
   public String getUserDefaultEmailAddress(UserSchoolDataIdentifier userSchoolDataIdentifier, boolean obfuscate) {
-    // TODO User default address support
     String emailAddress = null;
     List<UserEmailEntity> userEmailEntities = userEmailEntityDAO.listByUserSchoolDataIdentifier(userSchoolDataIdentifier); 
-    if (userEmailEntities != null && userEmailEntities.size() > 0) {
+    if (userEmailEntities.size() > 0) {
+      userEmailEntities.sort(Comparator.comparing(UserEmailEntity::getDefaultAddress).reversed()); // default address first
       emailAddress = userEmailEntities.get(0).getAddress();
     }
     if (obfuscate && emailAddress != null) {
@@ -97,51 +100,47 @@ public class UserEmailEntityController {
     return emailAddress;
   }
 
-  public List<String> getUserEmailAddresses(UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    List<UserEmailEntity> userEmailEntities = userEmailEntityDAO.listByUserSchoolDataIdentifier(userSchoolDataIdentifier);
-    List<String> emailAddresses = new ArrayList<>();
-    for (UserEmailEntity userEmailEntity : userEmailEntities) {
-      emailAddresses.add(userEmailEntity.getAddress());
-    }
-    return emailAddresses;
+  public List<UserEmailEntity> getUserEmailAddresses(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return userEmailEntityDAO.listByUserSchoolDataIdentifier(userSchoolDataIdentifier);
   }
   
-  public List<String> getUserEmailAddresses(SchoolDataIdentifier schoolDataIdentifier) {
+  public List<UserEmailEntity> getUserEmailAddresses(SchoolDataIdentifier schoolDataIdentifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
     if (userSchoolDataIdentifier != null) {
       return getUserEmailAddresses(userSchoolDataIdentifier);
     } else {
       logger.severe(String.format("Could not find UserSchoolDataIdentifier for identifier %s", schoolDataIdentifier));
-      return null;
+      return Collections.emptyList();
     }
   }
 
-  public void setUserEmails(SchoolDataIdentifier schoolDataIdentifier, List<String> emails) {
+  public void setUserEmails(SchoolDataIdentifier schoolDataIdentifier, List<UserEmail> userEmails) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
     if (userSchoolDataIdentifier != null) {
-      setUserEmails(userSchoolDataIdentifier, emails);
+      setUserEmails(userSchoolDataIdentifier, userEmails);
     } else {
       logger.severe(String.format("Could not find UserSchoolDataIdentifier for identifier %s", schoolDataIdentifier));
     }
   }
   
-  public void setUserEmails(UserSchoolDataIdentifier userSchoolDataIdentifier, List<String> emails) {
-    List<String> existingEmails = getUserEmailAddresses(userSchoolDataIdentifier);
+  public void setUserEmails(UserSchoolDataIdentifier userSchoolDataIdentifier, List<UserEmail> userEmails) {
+    List<UserEmailEntity> userEmailEntities = getUserEmailAddresses(userSchoolDataIdentifier);
     
-    if (emails != null) {
-      for (String email : emails) {
-        if (!existingEmails.contains(email)) {
-          addUserEmail(userSchoolDataIdentifier, email);
-        }
-        
-        existingEmails.remove(email);
+    for (UserEmail userEmail : userEmails) {
+      UserEmailEntity userEmailEntity = userEmailEntities.stream().filter(m -> StringUtils.equalsIgnoreCase(m.getAddress(), userEmail.getAddress())).findFirst().orElse(null);
+      if (userEmailEntity == null) {
+        addUserEmail(userSchoolDataIdentifier, userEmail);
       }
-    } else {
-      logger.severe(String.format("Passed null list to setUserEmails method for userSchoolDataIdentifier %s", userSchoolDataIdentifier.getId()));
+      else if (!userEmail.getDefaultAddress().equals(userEmailEntity.getDefaultAddress())) {
+        updateUserEmail(userEmailEntity, userEmail);
+      }
+      if (userEmailEntity != null) {
+        userEmailEntities.remove(userEmailEntity);
+      }
     }
     
-    for (String email : existingEmails) {
-      removeUserEmail(userSchoolDataIdentifier, email);
+    for (UserEmailEntity userEmailEntity : userEmailEntities) {
+      removeUserEmail(userEmailEntity);
     }
     
   }

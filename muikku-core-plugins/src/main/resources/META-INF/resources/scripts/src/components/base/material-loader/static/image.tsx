@@ -11,6 +11,7 @@ import {
   HTMLToReactComponentRule,
 } from "~/util/modifiers";
 import Zoom from "~/components/general/zoom";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * ImageProps
@@ -154,7 +155,10 @@ export default class Image extends React.Component<ImageProps, ImageState> {
             this.props.dataset.license)
         ) {
           children.push(
-            <span className="image__details icon-copyright" key="details">
+            <span
+              className="image__details icon-copyright rs_skip_always"
+              key="details"
+            >
               <span className="image__details-container">
                 <span className="image__details-label">
                   {this.props.i18n.text.get(
@@ -296,9 +300,13 @@ export default class Image extends React.Component<ImageProps, ImageState> {
         }
 
         return (
-          <Zoom key={props.key} imgsrc={props.src}>
-            <Tag {...props}>{children}</Tag>
-          </Zoom>
+          <>
+            {/* TODO: lokalisointi*/}
+            <ReadspeakerMessage text="Kuva" />
+            <Zoom key={props.key} imgsrc={props.src}>
+              <Tag {...props}>{children}</Tag>
+            </Zoom>
+          </>
         );
       },
     });

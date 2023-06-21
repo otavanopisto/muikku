@@ -113,6 +113,12 @@ public class DefaultSchoolDataWorkspaceListener {
       return;
     }
     
+    // #6597: If the discovered user has no known role, ignore them altogether
+    
+    if (event.getRole() == null) {
+      return;
+    }
+    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getWorkspaceDataSource(), event.getWorkspaceIdentifier());
     if (workspaceEntity != null) {
       WorkspaceRoleEntity workspaceUserRole = workspaceController.findWorkspaceRoleEntityByArchetype(event.getRole());
@@ -164,52 +170,61 @@ public class DefaultSchoolDataWorkspaceListener {
         SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
         WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
-          String currentUserIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
-          if (!StringUtils.equals(currentUserIdentifier, event.getUserIdentifier())) {
-            
-            // WorkspaceUserEntity found, but it points to a different study program
-            
-            UserSchoolDataIdentifier newUserIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-                event.getUserDataSource(), event.getUserIdentifier());
-            if (newUserIdentifier == null) {
-              logger.warning(String.format("Unable to update workspace user. UserSchoolDataIdentifier for %s/%s not found", event.getUserDataSource(), event.getUserIdentifier()));
-            }
-            else {
-              
-              // #5549: If USDI of existing WorkspaceUserEntity changes (someone changed the line of an existing course student in Pyramus),
-              // make sure that the new USDI is not already in use by some other WorkspaceUserEntity. If it is, that WorkspaceUserEntity has
-              // to be permanently deleted to avoid database unique check from crashing (can't have two WorkspaceEntity + USDI).
-
-              WorkspaceUserEntity conflictingUser = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(
-                  workspaceEntity, newUserIdentifier.schoolDataIdentifier());
-              if (conflictingUser != null) {
-                workspaceUserEntityController.deleteWorkspaceUserEntity(conflictingUser);
-              }
-
-              workspaceUserEntity = workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
-              // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
-              if (event.getIsActive() && !workspaceUserEntity.getActive()) {
-                workspaceUserEntity = workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
-              }
-            }
+          
+          // #6597: If role is no longer recognized, we don't care about the workspace user anymore
+          
+          if (event.getRole() == null) {
+            workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
           }
           else {
+            String currentUserIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
+            if (!StringUtils.equals(currentUserIdentifier, event.getUserIdentifier())) {
+
+              // WorkspaceUserEntity found, but it points to a different study program
+
+              UserSchoolDataIdentifier newUserIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
+                  event.getUserDataSource(), event.getUserIdentifier());
+              if (newUserIdentifier == null) {
+                logger.warning(String.format("Unable to update workspace user. UserSchoolDataIdentifier for %s/%s not found", event.getUserDataSource(), event.getUserIdentifier()));
+              }
+              else {
+
+                // #5549: If USDI of existing WorkspaceUserEntity changes (someone changed the line of an existing course student in Pyramus),
+                // make sure that the new USDI is not already in use by some other WorkspaceUserEntity. If it is, that WorkspaceUserEntity has
+                // to be permanently deleted to avoid database unique check from crashing (can't have two WorkspaceEntity + USDI).
+
+                WorkspaceUserEntity conflictingUser = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(
+                    workspaceEntity, newUserIdentifier.schoolDataIdentifier());
+                if (conflictingUser != null) {
+                  workspaceUserEntityController.deleteWorkspaceUserEntity(conflictingUser);
+                }
+
+                workspaceUserEntity = workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
+                // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
+                if (event.getIsActive() && !workspaceUserEntity.getActive()) {
+                  workspaceUserEntity = workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
+                }
+              }
+            }
+
+            // #6597: Support for role changes, even if we currently support only course students and teachers 
+
             WorkspaceRoleEntity workspaceRoleEntity = workspaceController.findWorkspaceRoleEntityByArchetype(event.getRole());
             if (workspaceRoleEntity != null && !workspaceRoleEntity.getId().equals(workspaceUserEntity.getWorkspaceUserRole().getId())) {
               workspaceUserEntity = workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceRoleEntity);
             }
-          }
 
-          // If a student has ended their studies but they are still active in the workspace, change them inactive (but not vice versa)
-          
-          if (!event.getIsActive() && workspaceUserEntity.getActive()) {
-            workspaceUserEntity = workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
-          }
-          
-          // #5549: We may have resurrected a previously archived WorkspaceUserEntity so restore it if needed
-          
-          if (workspaceUserEntity.getArchived()) {
-            workspaceUserEntity = workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+            // If a student has ended their studies but they are still active in the workspace, change them inactive (but not vice versa)
+
+            if (!event.getIsActive() && workspaceUserEntity.getActive()) {
+              workspaceUserEntity = workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
+            }
+
+            // #5549: We may have resurrected a previously archived WorkspaceUserEntity so restore it if needed
+
+            if (workspaceUserEntity.getArchived()) {
+              workspaceUserEntity = workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+            }
           }
         }
       }

@@ -125,7 +125,8 @@ export type TranscriptOfRecordLocationType =
   | "vops"
   | "summary"
   | "yo"
-  | "info";
+  | "info"
+  | "pedagogy-form";
 
 /**
  * initialState

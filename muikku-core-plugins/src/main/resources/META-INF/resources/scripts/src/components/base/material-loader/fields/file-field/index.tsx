@@ -7,6 +7,7 @@ import FileUploader from "~/components/general/file-uploader";
 import Synchronizer from "../base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../base/index";
+import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * FileFieldProps
@@ -205,71 +206,79 @@ export default class FileField extends React.Component<
 
     // and this is the container
     return (
-      <span
-        className={`material-page__filefield-wrapper ${fieldSavedStateClass}`}
-      >
-        <Synchronizer
-          synced={this.state.synced}
-          syncError={this.state.syncError}
-          i18n={this.props.i18n}
-          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-        />
-        <span className={`material-page__filefield ${ElementDisabledState}`}>
-          <FileUploader
-            emptyText={
-              this.props.readOnly
-                ? this.props.i18n.text.get("plugin.workspace.fileField.noFiles")
-                : null
-            }
-            readOnly={this.props.readOnly}
-            url={this.props.status.contextPath + "/tempFileUploadServlet"}
-            displayNotificationOnError
-            formDataGenerator={formDataGenerator}
-            onFileSuccess={(file: File, data: any) => {
-              this.onFileAdded(file, data);
-            }}
-            hintText={this.props.i18n.text.get(
-              "plugin.workspace.fileField.fieldHint"
-            )}
-            fileTooLargeErrorText={this.props.i18n.text.get(
-              "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
-            )}
-            deleteFileText={this.props.i18n.text.get(
-              "plugin.workspace.fileField.removeLink"
-            )}
-            downloadFileText={this.props.i18n.text.get(
-              "plugin.workspace.fileField.downloadLink"
-            )}
-            files={this.state.values}
-            fileIdKey="fileId"
-            fileNameKey="name"
-            fileUrlGenerator={(f) => `/rest/workspace/fileanswer/${f.fileId}`}
-            fileDownloadAllUrlGenerator={(f) =>
-              "/rest/workspace/allfileanswers/" +
-              f[0].fileId +
-              "?archiveName=" +
-              this.props.i18n.text.get("plugin.workspace.fileField.zipFileName")
-            }
-            fileDownloadAllLabel={this.props.i18n.text.get(
-              "plugin.workspace.fileField.downloadAllLink"
-            )}
-            deleteDialogElement={ConfirmRemoveDialog}
-            deleteDialogElementProps={{ onConfirm: this.removeFile }}
-            modifier="taskfield"
-            uploadingTextProcesser={(percent: number) =>
-              this.props.i18n.text.get(
-                "plugin.workspace.fileField.statusUploading",
-                percent
-              )
-            }
-            invisible={this.props.invisible}
-            notificationOfSuccessText={this.props.i18n.text.get(
-              "plugin.workspace.fileFieldUpload.uploadSuccessful"
-            )}
-            displayNotificationOnSuccess
+      <>
+        {/* TODO: lokalisointi*/}
+        <ReadspeakerMessage text="Tiedoston palautuslaatikko" />
+        <span
+          className={`material-page__filefield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
+          <span className={`material-page__filefield ${ElementDisabledState}`}>
+            <FileUploader
+              emptyText={
+                this.props.readOnly
+                  ? this.props.i18n.text.get(
+                      "plugin.workspace.fileField.noFiles"
+                    )
+                  : null
+              }
+              readOnly={this.props.readOnly}
+              url={this.props.status.contextPath + "/tempFileUploadServlet"}
+              displayNotificationOnError
+              formDataGenerator={formDataGenerator}
+              onFileSuccess={(file: File, data: any) => {
+                this.onFileAdded(file, data);
+              }}
+              hintText={this.props.i18n.text.get(
+                "plugin.workspace.fileField.fieldHint"
+              )}
+              fileTooLargeErrorText={this.props.i18n.text.get(
+                "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
+              )}
+              deleteFileText={this.props.i18n.text.get(
+                "plugin.workspace.fileField.removeLink"
+              )}
+              downloadFileText={this.props.i18n.text.get(
+                "plugin.workspace.fileField.downloadLink"
+              )}
+              files={this.state.values}
+              fileIdKey="fileId"
+              fileNameKey="name"
+              fileUrlGenerator={(f) => `/rest/workspace/fileanswer/${f.fileId}`}
+              fileDownloadAllUrlGenerator={(f) =>
+                "/rest/workspace/allfileanswers/" +
+                f[0].fileId +
+                "?archiveName=" +
+                this.props.i18n.text.get(
+                  "plugin.workspace.fileField.zipFileName"
+                )
+              }
+              fileDownloadAllLabel={this.props.i18n.text.get(
+                "plugin.workspace.fileField.downloadAllLink"
+              )}
+              deleteDialogElement={ConfirmRemoveDialog}
+              deleteDialogElementProps={{ onConfirm: this.removeFile }}
+              modifier="taskfield"
+              uploadingTextProcesser={(percent: number) =>
+                this.props.i18n.text.get(
+                  "plugin.workspace.fileField.statusUploading",
+                  percent
+                )
+              }
+              invisible={this.props.invisible}
+              notificationOfSuccessText={this.props.i18n.text.get(
+                "plugin.workspace.fileFieldUpload.uploadSuccessful"
+              )}
+              displayNotificationOnSuccess
+            />
+          </span>
         </span>
-      </span>
+      </>
     );
   }
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 
 public class SchoolDataUserUpdatedEvent {
 
@@ -54,8 +55,8 @@ public class SchoolDataUserUpdatedEvent {
     return defaultIdentifier;
   }
 
-  public Set<String> getAllEmails() {
-    Set<String> result = new HashSet<>();
+  public Set<UserEmail> getAllEmails() {
+    Set<UserEmail> result = new HashSet<>();
     
     result.addAll(discoveredIdentifiers
         .stream().map(eventIdentifier -> eventIdentifier.getEmails()).flatMap(List::stream).collect(Collectors.toSet()));
