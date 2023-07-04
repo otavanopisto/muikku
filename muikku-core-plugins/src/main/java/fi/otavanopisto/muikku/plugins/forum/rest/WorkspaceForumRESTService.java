@@ -405,23 +405,13 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           return Response.status(Status.BAD_REQUEST).build();
       }
 
-      LockForumThread lock = null;
       
-      if (updThread.getLock() != null) {
-        LockForumThread[] list = LockForumThread.values();
-        
-        for (LockForumThread l : list) {
-          if (l.name().equals(updThread.getLock())) {
-            lock = l;
-          }
-        }
-      }
       
       forumController.updateForumThread(forumThread, 
           updThread.getTitle(),
           updThread.getMessage(),
           updThread.getSticky(), 
-          lock);
+          getLock(updThread.getLock()));
       
       return Response.ok(
         restModels.restModel(forumThread)
@@ -429,6 +419,21 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     } else {
       return Response.status(Status.FORBIDDEN).build();
     }
+  }
+  
+  private LockForumThread getLock(String lockString) {
+    LockForumThread lock = null;
+    
+    if (lockString != null) {
+      LockForumThread[] list = LockForumThread.values();
+      
+      for (LockForumThread l : list) {
+        if (l.name().equals(lockString)) {
+          lock = l;
+        }
+      }
+    }
+    return lock;
   }
   
   @DELETE
@@ -491,18 +496,6 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
-
-      LockForumThread lock = null;
-      
-      if (newThread.getLock() != null) {
-        LockForumThread[] list = LockForumThread.values();
-        
-        for (LockForumThread l : list) {
-          if (l.name().equals(newThread.getLock())) {
-            lock = l;
-          }
-        }
-      }
       
       Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addAttributes("a", "target")));
       message.outputSettings().escapeMode(EscapeMode.xhtml);
@@ -512,7 +505,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           newThread.getTitle(),
           message.body().toString(), 
           newThread.getSticky(), 
-          lock);
+          getLock(newThread.getLock()));
   
       forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), null, sessionController.getLoggedUserEntity().getId(), baseUrl, workspaceEntity.getUrlName()));
 
