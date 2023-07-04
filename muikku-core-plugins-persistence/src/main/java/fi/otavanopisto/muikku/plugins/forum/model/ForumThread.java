@@ -4,11 +4,14 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.util.ResourceEntity;
 
 @Entity
@@ -31,12 +34,28 @@ public class ForumThread extends ForumMessage implements ResourceEntity {
     this.sticky = sticky;
   }
 
-  public Boolean getLocked() {
+  public LockForumThread getLock() {
     return locked;
   }
 
-  public void setLocked(Boolean locked) {
+  public void setLock(LockForumThread locked) {
     this.locked = locked;
+  }
+
+  public Long getLockBy() {
+    return lockBy;
+  }
+
+  public void setLockBy(Long lockBy) {
+    this.lockBy = lockBy;
+  }
+
+  public Date getLockDate() {
+    return lockDate;
+  }
+
+  public void setLockDate(Date lockDate) {
+    this.lockDate = lockDate;
   }
 
   public Date getUpdated() {
@@ -53,9 +72,16 @@ public class ForumThread extends ForumMessage implements ResourceEntity {
   @Column(nullable = false)
   private Boolean sticky = Boolean.FALSE;
 
-  @NotNull
-  @Column(nullable = false)
-  private Boolean locked = Boolean.FALSE;
+  @Enumerated(EnumType.STRING)
+  @Column
+  private LockForumThread locked;
+  
+  @Column
+  private Long lockBy;
+  
+  @Column
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date lockDate;
   
   @NotNull
   @Column (nullable=false)

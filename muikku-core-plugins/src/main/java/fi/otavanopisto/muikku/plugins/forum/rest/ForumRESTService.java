@@ -35,6 +35,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Whitelist;
 
+import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -453,7 +454,7 @@ public class ForumRESTService extends PluginRESTService {
 
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
       // User needs permission to change the value of these parameters
-      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLocked().equals(updThread.getLocked())) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLock().equals(updThread.getLock())) {
         if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -462,7 +463,7 @@ public class ForumRESTService extends PluginRESTService {
           updThread.getTitle(),
           updThread.getMessage(),
           updThread.getSticky(), 
-          updThread.getLocked());
+          getLock(updThread.getLock()));
       
       return Response.ok(
         restModels.restModel(forumThread)
@@ -517,7 +518,13 @@ public class ForumRESTService extends PluginRESTService {
     }
 
     if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_WRITE_ENVIRONMENT_MESSAGES)) {
-      if (Boolean.TRUE.equals(newThread.getSticky()) || Boolean.TRUE.equals(newThread.getLocked())) {
+        LockForumThread lock = getLock(newThread.getLock());
+      if (Boolean.TRUE.equals(newThread.getSticky()) || lock != null) {
+        
+        if (lock.equals(LockForumThread.ALL) || (lock.equals(LockForumThread.STUDENTS) && userEntityController.isStudent(sessionController.getLoggedUserEntity()))){
+          return Response.status(Status.FORBIDDEN).build();
+        }
+        
         if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -535,7 +542,7 @@ public class ForumRESTService extends PluginRESTService {
           newThread.getTitle(),
           message.body().toString(), 
           newThread.getSticky(), 
-          newThread.getLocked());
+          getLock(newThread.getLock()));
 
       forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), null, sessionController.getLoggedUserEntity().getId(), baseUrl, null));
       
@@ -749,8 +756,10 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
       }
       
-      if (forumThread.getLocked()) {
-        return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
+      if (forumThread.getLock() != null) {
+        if (forumThread.getLock().equals(LockForumThread.ALL) || (forumThread.getLock().equals(LockForumThread.STUDENTS) && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
+          return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
+        }
       }
       
       if (!(forumArea instanceof EnvironmentForumArea)) {
@@ -777,8 +786,11 @@ public class ForumRESTService extends PluginRESTService {
           }
         }
         ForumThreadReply reply = forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply);
+        if (reply == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Couldn't create new reply").build();
+        }
         forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), forumThread.getId(), reply.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, null));
-        
+
         return Response.ok(createRestModel(reply)).build();
       } else {
         return Response.status(Status.FORBIDDEN).build();
@@ -812,12 +824,29 @@ public class ForumRESTService extends PluginRESTService {
     List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
     
     for (ForumThread thread : threads) {
+      String lock = thread.getLock() != null ? thread.getLock().name() : null;
       long numReplies = forumController.getThreadReplyCount(thread);
       ForumMessageUserRESTModel userRestModel = restModels.createUserRESTModel(thread.getCreator());
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), userRestModel, thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified()));
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), userRestModel, thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), lock, thread.getLockBy(), thread.getLockDate() ,thread.getUpdated(), numReplies, thread.getLastModified()));
     }
     
     return Response.ok(result).build();
+  }
+  
+  private LockForumThread getLock(String lockString) {
+    LockForumThread lock = null;
+    
+    if (lockString != null) {
+      LockForumThread[] list = LockForumThread.values();
+      
+      for (LockForumThread l : list) {
+        if (l.name().equals(lockString)) {
+          lock = l;
+        }
+      }
+    }
+    
+    return lock;
   }
   
   private ForumThreadReplyRESTModel createRestModel(ForumThreadReply entity) {
@@ -967,7 +996,7 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
       }
       
-      if (forumThread.getLocked()) {
+      if (forumThread.getLock().equals(LockForumThread.ALL) || (forumThread.getLock().equals(LockForumThread.STUDENTS) && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
         return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
       }
       
@@ -1061,6 +1090,49 @@ public class ForumRESTService extends PluginRESTService {
 
     private final Boolean editMessages;
     private final Boolean removeThread;
+  }
+  
+  /**
+   * mApi().forum.areas.thread.lock.create(2,5,{lock: "ALL"})
+   * 
+   * @param areaId
+   * @param threadId
+   * @param lockForumThread
+   * 
+   * @return
+   * 
+   * ForumThreadRESTModel
+   */
+  @POST
+  @Path("/areas/{AREAID}/thread/{THREADID}/lock")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response toggleForumThreadLock(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @QueryParam("lock") LockForumThread lock) {
+    try {
+      ForumArea forumArea = forumController.getForumArea(areaId);
+      if (forumArea == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum area not found").build();
+      }
+      ForumThread forumThread = forumController.getForumThread(threadId);
+      if (forumThread == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread not found").build();
+      }
+      
+      if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      
+      if (forumThread.getLock() == null || !forumThread.getLock().equals(lock)) {
+        forumThread = forumController.toggleLock(forumThread, lock, sessionController.getLoggedUserEntity().getId());
+      }
+      return Response.ok(
+          restModels.restModel(forumThread)
+        ).build();
+      
+      
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Failed to lock forum thread", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
 }

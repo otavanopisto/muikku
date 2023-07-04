@@ -34,6 +34,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Whitelist;
 
+import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -399,16 +400,28 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
     
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLocked().equals(updThread.getLocked())) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLock().name().equals(updThread.getLock())) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
 
+      LockForumThread lock = null;
+      
+      if (updThread.getLock() != null) {
+        LockForumThread[] list = LockForumThread.values();
+        
+        for (LockForumThread l : list) {
+          if (l.name().equals(updThread.getLock())) {
+            lock = l;
+          }
+        }
+      }
+      
       forumController.updateForumThread(forumThread, 
           updThread.getTitle(),
           updThread.getMessage(),
           updThread.getSticky(), 
-          updThread.getLocked());
+          lock);
       
       return Response.ok(
         restModels.restModel(forumThread)
@@ -474,11 +487,23 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
 
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (Boolean.TRUE.equals(newThread.getSticky()) || Boolean.TRUE.equals(newThread.getLocked())) {
+      if (Boolean.TRUE.equals(newThread.getSticky()) || newThread.getLock().equals(LockForumThread.ALL.toString())) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
 
+      LockForumThread lock = null;
+      
+      if (newThread.getLock() != null) {
+        LockForumThread[] list = LockForumThread.values();
+        
+        for (LockForumThread l : list) {
+          if (l.name().equals(newThread.getLock())) {
+            lock = l;
+          }
+        }
+      }
+      
       Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addAttributes("a", "target")));
       message.outputSettings().escapeMode(EscapeMode.xhtml);
       message.select("a[target]").attr("rel", "noopener noreferer");
@@ -487,7 +512,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           newThread.getTitle(),
           message.body().toString(), 
           newThread.getSticky(), 
-          newThread.getLocked());
+          lock);
   
       forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), null, sessionController.getLoggedUserEntity().getId(), baseUrl, workspaceEntity.getUrlName()));
 
@@ -755,7 +780,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
       }
       
-      if (forumThread.getLocked()) {
+      if (forumThread.getLock() != null) {
         return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
       } 
       

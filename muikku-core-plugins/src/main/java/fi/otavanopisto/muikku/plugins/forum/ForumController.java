@@ -19,6 +19,7 @@ import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.ResourceRightsController;
+import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.security.ResourceRights;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
@@ -195,9 +196,9 @@ public class ForumController {
     return forumAreaGroupDAO.findById(groupId);
   }
 
-  public ForumThread createForumThread(ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
+  public ForumThread createForumThread(ForumArea forumArea, String title, String message, Boolean sticky, LockForumThread lock) {
     activityLogController.createActivityLog(sessionController.getLoggedUserEntity().getId(), ActivityLogType.FORUM_NEWTHREAD);
-    return forumThreadDAO.create(forumArea, title, clean(message), sessionController.getLoggedUserEntity(), sticky, locked);
+    return forumThreadDAO.create(forumArea, title, clean(message), sessionController.getLoggedUserEntity(), sticky, lock);
   }
 
   public void archiveThread(ForumThread thread) {
@@ -224,15 +225,18 @@ public class ForumController {
   }
 
   public ForumThreadReply createForumThreadReply(ForumThread thread, String message, ForumThreadReply parentReply) {
-    if (thread.getLocked()) {
-      logger.severe("Tried to create a forum thread reply for locked thread");
-      return null;
-    } else {
-      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity(), parentReply);
-      forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
-      activityLogController.createActivityLog(sessionController.getLoggedUserEntity().getId(), ActivityLogType.FORUM_NEWMESSAGE);
-      return reply;
-    }
+    if (thread.getLock() != null) {
+      if (thread.getLock().equals(LockForumThread.ALL) || (thread.getLock().equals(LockForumThread.STUDENTS) && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
+        logger.severe("Tried to create a forum thread reply for locked thread");
+        return null;
+      }
+    } 
+      
+    ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity(), parentReply);
+    forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
+    activityLogController.createActivityLog(sessionController.getLoggedUserEntity().getId(), ActivityLogType.FORUM_NEWMESSAGE);
+    return reply;
+    
   }
 
   public void archiveReply(ForumThreadReply reply) {
@@ -368,9 +372,9 @@ public class ForumController {
     }
   }
   
-  public void updateForumThread(ForumThread thread, String title, String message, Boolean sticky, Boolean locked) {
+  public void updateForumThread(ForumThread thread, String title, String message, Boolean sticky, LockForumThread lock) {
     UserEntity user = sessionController.getLoggedUserEntity();
-    forumThreadDAO.update(thread, title, clean(message), sticky, locked, new Date(), user);
+    forumThreadDAO.update(thread, title, clean(message), sticky, lock, new Date(), user);
   }
 
   public void updateForumThreadReply(ForumThreadReply reply, String message) {
@@ -435,4 +439,7 @@ public class ForumController {
     return null;
   }
   
+  public ForumThread toggleLock(ForumThread thread, LockForumThread lock, Long userEntityId) {
+    return forumThreadDAO.toggleLock(thread, lock, userEntityId);
+  }
 }
