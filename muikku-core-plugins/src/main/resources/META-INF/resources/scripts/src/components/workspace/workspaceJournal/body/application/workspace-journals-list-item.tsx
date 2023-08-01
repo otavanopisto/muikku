@@ -161,9 +161,7 @@ class WorkspaceJournalsListItem extends React.Component<
               {isMandatory && (
                 <span className="label label--mandatory">
                   <span className="label__text">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.journal.status.mandatory"
-                    )}
+                    {t("labels.mandatory", { ns: "workspace" })}
                   </span>
                 </span>
               )}
