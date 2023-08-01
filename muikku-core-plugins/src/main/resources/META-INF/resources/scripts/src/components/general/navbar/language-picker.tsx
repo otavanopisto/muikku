@@ -13,7 +13,6 @@ import { AnyActionType } from "../../../actions/index";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { availableLanguages } from "~/locales/i18n";
 
-
 /**
  * LanguagePickerProps
  */
@@ -41,7 +40,6 @@ class LanguagePicker extends React.Component<
   handleSetLocaleClick =
     (locale: LocaleType, closeDropdown: () => any) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-
       this.props.setLocale({
         locale: locale,
         // eslint-disable-next-line jsdoc/require-jsdoc
@@ -56,17 +54,20 @@ class LanguagePicker extends React.Component<
     return (
       <Dropdown
         modifier="language-picker"
-        items={availableLanguages.map((locale: LocaleType) =>  (closeDropdown: () => any) =>
-          <Link
-            key={locale}
-            className={`link link--full link--language-picker-dropdown`}
-            onClick={this.handleSetLocaleClick(locale, closeDropdown)}
-            role="menuitem"
-          >
-            <span className={`link__locale link__locale--${locale}`}>
-              {this.props.t("labels.language", { context: locale })}
-            </span>
-          </Link>
+        items={availableLanguages.map(
+          (locale: LocaleType) => (closeDropdown: () => any) =>
+            (
+              <Link
+                key={locale}
+                className={`link link--full link--language-picker-dropdown`}
+                onClick={this.handleSetLocaleClick(locale, closeDropdown)}
+                role="menuitem"
+              >
+                <span className={`link__locale link__locale--${locale}`}>
+                  {this.props.t("labels.language", { context: locale })}
+                </span>
+              </Link>
+            )
         )}
       >
         <Link

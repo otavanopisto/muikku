@@ -1139,7 +1139,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.settings", {ns: "common"}))
+        titleActions.updateTitle(i18n.t("labels.settings", { ns: "common" }))
       );
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
       this.props.store.dispatch(

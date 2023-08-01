@@ -280,9 +280,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
             {isDraft && (
               <span className="label label--draft">
-                <span className="label__text">
-                  {t("actions.draft")}
-                </span>
+                <span className="label__text">{t("actions.draft")}</span>
               </span>
             )}
           </div>
@@ -322,7 +320,9 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
                 <div className="loader-empty" />
               ) : comments && comments.length === 0 ? (
                 <div className="empty">
-                  <span>{t("content.empty", { ns: "journal", context: "comments" })}</span>
+                  <span>
+                    {t("content.empty", { ns: "journal", context: "comments" })}
+                  </span>
                 </div>
               ) : (
                 comments.length > 0 &&
@@ -348,7 +348,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
                 className="link link--evaluation"
                 onClick={handleCreateNewComment}
               >
-                {t("labels.create", {context: "comment"})}
+                {t("labels.create", { context: "comment" })}
               </Link>
             </div>
           </AnimateHeight>
@@ -356,7 +356,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </AnimateHeight>
 
       <SlideDrawer
-        title={t("labels.create", {context: "comment"})}
+        title={t("labels.create", { context: "comment" })}
         closeIconModifiers={["evaluation"]}
         modifiers={["journal-comment"]}
         show={createNewActive}
@@ -374,7 +374,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </SlideDrawer>
 
       <SlideDrawer
-        title={t("labels.edit", {context: "comment"})}
+        title={t("labels.edit", { context: "comment" })}
         show={commentToEdit !== undefined}
         closeIconModifiers={["evaluation"]}
         modifiers={["journal-comment"]}

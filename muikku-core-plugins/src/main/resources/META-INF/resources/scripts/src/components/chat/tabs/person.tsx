@@ -103,5 +103,4 @@ class Person extends React.Component<IPersonProps, IPersonState> {
   }
 }
 
-
 export default Person;

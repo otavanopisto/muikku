@@ -133,7 +133,6 @@ class CommunicatorApplication extends React.Component<
   }
 }
 
-
 /**
  * mapDispatchToProps
  * @param dispatch dispatch

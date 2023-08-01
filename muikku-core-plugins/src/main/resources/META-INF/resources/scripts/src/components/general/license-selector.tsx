@@ -162,7 +162,7 @@ interface LicenseType {
 const LICENSES: Array<LicenseType> = [
   {
     id: "CC4",
-    text: i18n.t("labels.cc4", {ns: "materials"}),
+    text: i18n.t("labels.cc4", { ns: "materials" }),
     properties: CCPROPS,
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
@@ -171,7 +171,7 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "CC3",
-    text: i18n.t("labels.cc3", {ns: "materials"}),
+    text: i18n.t("labels.cc3", { ns: "materials" }),
     properties: CCPROPS,
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
@@ -180,7 +180,7 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "CC0",
-    text: i18n.t("labels.cc0", {ns: "materials"}),
+    text: i18n.t("labels.cc0", { ns: "materials" }),
     // eslint-disable-next-line
     value: () => CC0_URL_SSL,
     // eslint-disable-next-line
@@ -189,13 +189,13 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "text_or_link",
-    text: i18n.t("labels.textOrLink", {ns: "materials"}),
+    text: i18n.t("labels.textOrLink", { ns: "materials" }),
     // eslint-disable-next-line
     validate: (value: string) => typeof value === "string",
   },
   {
     id: "none",
-    text: i18n.t("labels.noLicense", {ns: "materials"}),
+    text: i18n.t("labels.noLicense", { ns: "materials" }),
     // eslint-disable-next-line
     value: () => null,
     // eslint-disable-next-line

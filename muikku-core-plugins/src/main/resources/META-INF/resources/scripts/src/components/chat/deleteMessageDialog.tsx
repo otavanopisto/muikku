@@ -62,13 +62,19 @@ class DeleteMessageDialog extends React.Component<
         closeDialog();
       }
       this.props.displayNotification(
-        this.props.i18n.t("notifications.removeSuccess", { ns: "messaging", context: "message" }),
+        this.props.i18n.t("notifications.removeSuccess", {
+          ns: "messaging",
+          context: "message",
+        }),
         "success"
       );
       this.props.onDelete();
     } catch {
       this.props.displayNotification(
-        this.props.i18n.t("notifications.removeError", { ns: "messaging", context: "message" }),
+        this.props.i18n.t("notifications.removeError", {
+          ns: "messaging",
+          context: "message",
+        }),
         "error"
       );
     }

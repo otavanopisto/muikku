@@ -46,8 +46,6 @@ class NavigationAside extends React.Component<
           name={this.props.t("labels.folders", { count: 0 })}
         >
           {this.props.messages.navigation.map((item) => (
-
-
             <NavigationElement
               iconColor={item.color}
               icon={item.icon}
@@ -60,7 +58,12 @@ class NavigationAside extends React.Component<
               }
               isEditable={item.type === "label"}
             >
-              {item.type === "label" ? item.text : this.props.t("labels.folder", {ns: "messaging", context: item.text})}
+              {item.type === "label"
+                ? item.text
+                : this.props.t("labels.folder", {
+                    ns: "messaging",
+                    context: item.text,
+                  })}
             </NavigationElement>
           ))}
         </NavigationTopic>
