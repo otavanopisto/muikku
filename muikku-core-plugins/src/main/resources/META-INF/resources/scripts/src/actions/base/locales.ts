@@ -4,7 +4,7 @@ import mApi from "~/lib/mApi";
 import { LocaleReadResponse, LocaleType } from "~/reducers/base/locales";
 import promisify from "~/util/promisify";
 import notificationActions from "~/actions/base/notifications";
-import i18n, {localizeTime} from "~/locales/i18n";
+import i18n, { localizeTime } from "~/locales/i18n";
 
 // ACTIONS for locale
 export type LOCALE_SET = SpecificActionType<"LOCALE_SET", string>;
@@ -36,9 +36,7 @@ export interface LoadLocaleTriggerType {
  * @param data locale
  */
 const setLocale: SetLocaleTriggerType = function setLocale(data) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-  ) => {
+  return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
     try {
       await promisify(
         mApi().me.locale.create({ lang: data.locale }),
@@ -46,8 +44,7 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
       )();
 
       localizeTime.language = data.locale;
-      i18n.changeLanguage(data.locale)
-
+      i18n.changeLanguage(data.locale);
 
       dispatch({
         type: "LOCALE_SET",
@@ -70,9 +67,7 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
  * loadLocale
  */
 const loadLocale: LoadLocaleTriggerType = function loadLocale() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-  ) => {
+  return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
     try {
       const locale = (await promisify(
         mApi().me.locale.read(),

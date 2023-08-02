@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import {resources} from "~/locales/i18n"
+import { resources } from "~/locales/i18n";
 
 /**
  * LocaleState

@@ -117,7 +117,7 @@ async function loadWhoAMI(
     },
   });
 
-  i18n.changeLanguage(whoAmI.locale)
+  i18n.changeLanguage(whoAmI.locale);
 
   dispatch({
     type: "LOCALE_UPDATE",

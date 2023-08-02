@@ -183,9 +183,7 @@ export interface MessagesNavigationItemUpdateType {
   text: string;
 }
 
-export type NavigationItemTypes = "folder" | "label"
-
-
+export type NavigationItemTypes = "folder" | "label";
 
 /**
  * MessagesNavigationItemType
@@ -196,7 +194,7 @@ export interface MessagesNavigationItemType {
   id: string | number;
   icon: string;
   color?: string;
-  text: string ;
+  text: string;
 }
 
 /**

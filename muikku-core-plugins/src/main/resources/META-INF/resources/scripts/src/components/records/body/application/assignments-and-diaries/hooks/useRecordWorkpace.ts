@@ -33,10 +33,10 @@ export const useRecordWorkspace = (
       isLoading: false,
       workspace: null,
     });
+  const { t } = useTranslation("studies");
 
   React.useEffect(() => {
     let isCancelled = false;
-    const { t } = useTranslation("studies");
     /**
      * loadStudentActivityListData
      * Loads student activity data
