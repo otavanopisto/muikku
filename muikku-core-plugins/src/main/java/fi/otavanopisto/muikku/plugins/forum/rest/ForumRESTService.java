@@ -454,7 +454,7 @@ public class ForumRESTService extends PluginRESTService {
 
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
       // User needs permission to change the value of these parameters
-      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLock().equals(updThread.getLock())) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLock().name().equals(updThread.getLock())) {
         if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -1093,20 +1093,20 @@ public class ForumRESTService extends PluginRESTService {
   }
   
   /**
-   * mApi().forum.areas.thread.lock.create(2,5,{lock: "ALL"})
+   * mApi().forum.areas.thread.lock.update(1, 97, {lock : "ALL"})
    * 
    * @param areaId
    * @param threadId
-   * @param lockForumThread
+   * @param lockForumThread (ALL | STUDENTS | NULL)
    * 
    * @return
    * 
    * ForumThreadRESTModel
    */
-  @POST
+  @PUT
   @Path("/areas/{AREAID}/thread/{THREADID}/lock")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response toggleForumThreadLock(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @QueryParam("lock") LockForumThread lock) {
+  public Response toggleForumThreadLock(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, LockPayload lockPayload) {  
     try {
       ForumArea forumArea = forumController.getForumArea(areaId);
       if (forumArea == null) {
@@ -1120,8 +1120,18 @@ public class ForumRESTService extends PluginRESTService {
       if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
         return Response.status(Status.FORBIDDEN).build();
       }
+      LockForumThread lock = null;
+      if (lockPayload.getLock() != null){
+        if (lockPayload.getLock().equals(LockForumThread.STUDENTS)) {
+          lock = LockForumThread.STUDENTS;
+        }
+        
+        if (lockPayload.getLock().equals(LockForumThread.ALL)) {
+          lock = LockForumThread.ALL;
+        }
+      }
       
-      if (forumThread.getLock() == null || !forumThread.getLock().equals(lock)) {
+      if (!forumThread.getLock().equals(lock)) {
         forumThread = forumController.toggleLock(forumThread, lock, sessionController.getLoggedUserEntity().getId());
       }
       return Response.ok(
