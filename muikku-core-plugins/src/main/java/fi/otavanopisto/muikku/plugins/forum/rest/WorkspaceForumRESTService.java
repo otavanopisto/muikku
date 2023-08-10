@@ -774,7 +774,9 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       }
       
       if (forumThread.getLock() != null) {
-        return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
+        if ((forumThread.getLock().equals(LockForumThread.STUDENTS) && userEntityController.isStudent(sessionController.getLoggedUserEntity())) || forumThread.getLock().equals(LockForumThread.ALL)) {
+          return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
+        }
       } 
       
       if (!(forumArea instanceof WorkspaceForumArea)) {

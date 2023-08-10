@@ -1131,9 +1131,14 @@ public class ForumRESTService extends PluginRESTService {
         }
       }
       
-      if (!forumThread.getLock().equals(lock)) {
-        forumThread = forumController.toggleLock(forumThread, lock, sessionController.getLoggedUserEntity().getId());
+      if (forumThread.getLock() != null && forumThread.getLock().equals(lock)) {
+        Response.ok(
+            restModels.restModel(forumThread)
+          ).build();
       }
+      
+      forumThread = forumController.toggleLock(forumThread, lock, sessionController.getLoggedUserEntity().getId());
+      
       return Response.ok(
           restModels.restModel(forumThread)
         ).build();
