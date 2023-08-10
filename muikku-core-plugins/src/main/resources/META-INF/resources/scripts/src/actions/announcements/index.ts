@@ -384,7 +384,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
             return;
           }
           location.hash = "#active";
-        } else if (announcements.location !== "past" && diff < 0) {
+        } else if (announcements.location !== "expired" && diff < 0) {
           if (data.cancelRedirect) {
             dispatch({
               type: "DELETE_ANNOUNCEMENT",
@@ -392,7 +392,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
             });
             return;
           }
-          location.hash = "#past";
+          location.hash = "#expired";
         } else {
           dispatch({
             type: "UPDATE_ONE_ANNOUNCEMENT",
@@ -523,8 +523,8 @@ const createAnnouncement: CreateAnnouncementTriggerType =
         const diff = moment(data.announcement.endDate).diff(moment(), "days");
         if (announcements.location !== "active" && diff >= 0) {
           location.hash = "#active";
-        } else if (announcements.location !== "past" && diff < 0) {
-          location.hash = "#past";
+        } else if (announcements.location !== "expired" && diff < 0) {
+          location.hash = "#expired";
         } else {
           //TODO why in the world the request to create the announcement does not return the created object?
           //I am forced to reload all the announcements due to being unable to know what was created
