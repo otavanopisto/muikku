@@ -141,7 +141,7 @@ interface ReadspeakerMessageProps {
  * @returns JSX.Element
  */
 export const ReadspeakerMessage = (props: ReadspeakerMessageProps) => (
-  <div
+  <span
     className="rs_message"
     dangerouslySetInnerHTML={{ __html: `<!-- ${props.text} -->` }}
   />

@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.209-SNAPSHOT</version>
+    <version>1.1.211-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -179,6 +179,11 @@
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>openfire-rest-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>muikku-school-data-pyramus</artifactId>
     </dependency>
     
     <!-- Guava (for Ceepos hashing) -->

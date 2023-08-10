@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>insert into PluginSettingKey (plugin, name) values ('chat', 'available');</sql>
+  <sql>insert into PluginSetting (value, key_id) values ('1', (select id from PluginSettingKey where plugin='chat' and name='available'));</sql>
+
+</update>
