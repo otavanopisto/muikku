@@ -155,11 +155,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-
         waitForPresent("span.item-list__latest-message-caption");
         assertText("span.item-list__latest-message-caption", "Test caption");
         LocalDate date = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.M.yyyy");
         String dateText = date.format(formatter);
         waitForPresent("span.item-list__latest-message-date");
         assertText("span.item-list__latest-message-date", dateText);
