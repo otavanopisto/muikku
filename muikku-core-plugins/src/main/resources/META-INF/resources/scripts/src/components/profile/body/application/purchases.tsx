@@ -131,8 +131,8 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           <b>{p.product.Description}</b>
                         </span>
                         <span className="application-list__header-primary-description">
-                          {this.props.t("content.state", {
-                            context: p.state,
+                          {this.props.t(`states.${p.state}`, {
+                            context: "student",
                             ns: "orders",
                           })}
                         </span>
@@ -184,8 +184,8 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                               initialSubject={getErrorMessageTitle(p)}
                               initialMessage={getErrorMessageContent(
                                 p,
-                                this.props.t("content.state", {
-                                  context: p.state,
+                                this.props.t(`states.${p.state}`, {
+                                  context: "student",
                                   ns: "orders",
                                 })
                               )}
@@ -234,8 +234,8 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           <b>{p.product.Description}</b>
                         </span>
                         <span className="application-list__header-primary-description">
-                          {this.props.t("content.state", {
-                            context: p.state,
+                          {this.props.t(`states.${p.state}`, {
+                            context: "student",
                             ns: "orders",
                           })}
                         </span>

@@ -294,7 +294,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         {this.props.guider.currentStudent.purchases &&
         this.props.guider.currentStudent.purchases.length ? (
           <ApplicationList>
-            {this.props.guider.currentStudent.purchases.map((p) => (
+            {this.props.guider.currentStudent.purchases.map((p) => {
               <ApplicationListItem modifiers="product" key={p.id}>
                 <ApplicationListItemHeader modifiers="product">
                   <span
@@ -305,9 +305,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       {p.product.Description}
                     </span>
                     <span className="application-list__header-primary-description">
-                      {this.props.i18n.t("content.state", {
+                      {this.props.i18n.t(`states.${p.state}`, {
                         ns: "orders",
-                        context: p.state,
+                        context: "counselor",
                       })}
                     </span>
                     <span className="application-list__header-primary-meta">
@@ -373,8 +373,8 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                   </span>
                   <span className="application-list__header-secondary"></span>
                 </ApplicationListItemHeader>
-              </ApplicationListItem>
-            ))}
+              </ApplicationListItem>;
+            })}
           </ApplicationList>
         ) : (
           <div className="empty">
