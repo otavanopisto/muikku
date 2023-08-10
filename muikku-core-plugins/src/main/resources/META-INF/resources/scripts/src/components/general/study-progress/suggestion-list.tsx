@@ -38,6 +38,7 @@ interface HopsSuggestionListProps {
     studentIdentifier: string,
     suggestion: Suggestion
   ) => void;
+  onCloseSignUpBehalfDialog: () => void;
 }
 
 /**

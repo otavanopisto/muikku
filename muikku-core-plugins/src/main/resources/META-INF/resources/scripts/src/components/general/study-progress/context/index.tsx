@@ -114,7 +114,9 @@ const useStudyProgressContextUpdater = () => {
 
   // if `undefined`, throw an error
   if (context === undefined) {
-    throw new Error("useUserContextUpdater was used outside of its Provider");
+    throw new Error(
+      "useStudyProgressContextUpdater was used outside of its Provider"
+    );
   }
 
   return context;
@@ -471,7 +473,6 @@ const StudyProgressContextProvider = (
     );
 
     return () => {
-      console.log("Unmounting");
       // Remove callback when unmounting
       websocketState.websocket.removeEventCallback(
         "hops:optionalsuggestion-updated",

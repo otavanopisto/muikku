@@ -174,7 +174,6 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
          * Only one of these can happen
          */
         if (
-          studyProgressStatic.user === "supervisor" &&
           studyProgress.suggestedNextList.find(
             (sCourse) =>
               sCourse.subject === sSubject.subjectCode &&
@@ -279,6 +278,9 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
                           openSignUpBehalfDialog={
                             studyProgressUpdater.openSignUpBehalfDialog
                           }
+                          onCloseSignUpBehalfDialog={
+                            studyProgressUpdater.closeSignUpBehalfDialog
+                          }
                         />
                       )}
                     </>
@@ -333,6 +335,9 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
                           }
                           openSignUpBehalfDialog={
                             studyProgressUpdater.openSignUpBehalfDialog
+                          }
+                          onCloseSignUpBehalfDialog={
+                            studyProgressUpdater.closeSignUpBehalfDialog
                           }
                         />
                       )}

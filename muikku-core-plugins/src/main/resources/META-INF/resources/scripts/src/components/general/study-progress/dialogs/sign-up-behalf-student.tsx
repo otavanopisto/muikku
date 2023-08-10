@@ -81,7 +81,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
       disabled: false,
     };
 
-    this.handleSaveClick = this.handleSaveClick.bind(this);
+    this.handleApplyClick = this.handleApplyClick.bind(this);
     this.handleCloseClick = this.handleCloseClick.bind(this);
   }
 
@@ -104,7 +104,8 @@ class SignUpBehalfOfStudentDialog extends React.Component<
     )();
 
   /**
-   * handleMessageChange
+   * Handles message change
+   *
    * @param e e
    */
   handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -112,10 +113,11 @@ class SignUpBehalfOfStudentDialog extends React.Component<
   };
 
   /**
-   * handleSaveClick
+   * Handle apply click
+   *
    * @param closeDialog closeDialog
    */
-  async handleSaveClick(closeDialog: () => void) {
+  async handleApplyClick(closeDialog: () => void) {
     this.setState({
       disabled: true,
     });
@@ -127,11 +129,15 @@ class SignUpBehalfOfStudentDialog extends React.Component<
         message: this.state.message,
       });
 
-      this.setState({
-        disabled: false,
-      });
-      this.props.onClose();
-      closeDialog();
+      this.setState(
+        {
+          disabled: false,
+        },
+        () => {
+          this.props.onClose();
+          closeDialog();
+        }
+      );
     } catch (err) {
       displayNotification("Virhe ilmoittautumisessa työtilaan", "error");
 
@@ -142,7 +148,8 @@ class SignUpBehalfOfStudentDialog extends React.Component<
   }
 
   /**
-   * handleCloseClick
+   * Handle close click
+   *
    * @param closeDialog closeDialog
    */
   handleCloseClick(closeDialog: () => void) {
@@ -152,6 +159,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
 
   /**
    * Component render method
+   *
    * @returns JSX.Element
    */
   render() {
@@ -159,24 +167,33 @@ class SignUpBehalfOfStudentDialog extends React.Component<
       return null;
     }
 
+    // Workspace name
+    let workspaceName = this.props.workspaceSuggestion.name;
+
+    // + with extension if it exists
+    if (this.props.workspaceSuggestion.nameExtension) {
+      workspaceName += ` (${this.props.workspaceSuggestion.nameExtension})`;
+    }
+
     /**
-     * content
+     * Dialog content
+     *
      * @param closeDialog closeDialog
      * @returns JSX.Element
      */
     const content = (closeDialog: () => void) => (
       <div className="form-element dialog__content-row">
-        <p>
-          <label htmlFor="signUpMessage">
-            {this.props.i18n.text.get("plugin.workspaceSignUp.messageLabel")}
-          </label>
-          <textarea
-            id="signUpMessage"
-            className="form-element__textarea"
-            value={this.state.message}
-            onChange={this.handleMessageChange}
-          />
-        </p>
+        <p>Ilmoita opiskelija työtilaan {workspaceName}</p>
+
+        <label htmlFor="signUpMessage">
+          {this.props.i18n.text.get("plugin.workspaceSignUp.messageLabel")}
+        </label>
+        <textarea
+          id="signUpMessage"
+          className="form-element__textarea"
+          value={this.state.message}
+          onChange={this.handleMessageChange}
+        />
       </div>
     );
 
@@ -188,10 +205,10 @@ class SignUpBehalfOfStudentDialog extends React.Component<
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-ok", "execute"]}
-          onClick={this.handleSaveClick.bind(this, closeDialog)}
+          onClick={this.handleApplyClick.bind(this, closeDialog)}
           disabled={this.state.disabled}
         >
-          Tallenna
+          Ilmoita Opiskelija
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
@@ -203,16 +220,10 @@ class SignUpBehalfOfStudentDialog extends React.Component<
       </div>
     );
 
-    let workspaceName = this.props.workspaceSuggestion.name;
-
-    if (this.props.workspaceSuggestion.nameExtension) {
-      workspaceName += ` (${this.props.workspaceSuggestion.nameExtension})`;
-    }
-
     return (
       <Dialog
         modifier="workspace-signup-dialog"
-        title={`ILMOITA OPISKELIJA TYÖTILAAN ${workspaceName}`}
+        title="Ilmoita opiskelija työtilaan"
         isOpen={true}
         disableScroll={true}
         content={content}
