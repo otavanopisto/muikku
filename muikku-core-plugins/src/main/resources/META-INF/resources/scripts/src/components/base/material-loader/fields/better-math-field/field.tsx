@@ -276,13 +276,18 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   convertToText(node: HTMLElement): string {
     if (node.className === this.props.editorClassName) {
       let latex: string = this.selectedMathField.latex();
+
       if (latex.trim() === "") {
         return "";
       }
       if (!latex.startsWith("\\(")) {
         latex = "\\(" + latex + "\\)";
       }
-      return `<span class="${this.props.formulaClassName}">${latex}</span>`;
+      return `<span class="${this.props.formulaClassName}">${latex
+        .replaceAll("&", "&amp;")
+        .replaceAll(`"`, "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")}</span>`;
     }
     const isImg = node.tagName === "IMG";
     const isRawImg =
@@ -584,13 +589,17 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     // Now we do all this garbage of
     // creating the component by hand
+
+    // MathField wrapper
     this.selectedMathFieldContainer = document.createElement("div");
     this.selectedMathFieldContainer.setAttribute("contenteditable", "false");
     this.selectedMathFieldContainer.className = this.props.editorClassName;
 
+    // Math formula inside MQ editor
     const newElement = document.createElement("span");
     newElement.textContent = selectedFormulaContentUndelimited;
 
+    // MQ Editor
     const actualContainerForTheMathField = document.createElement("div");
     actualContainerForTheMathField.className =
       this.props.editorClassName + "--formula-container";
@@ -598,10 +607,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     actualContainerForTheMathField.appendChild(newElement);
     this.selectedMathFieldContainer.appendChild(actualContainerForTheMathField);
 
+    // ACE editor container
     const editorContainer = document.createElement("div");
     editorContainer.className =
       this.props.editorClassName + "--formula-text-editor";
 
+    // ACE editor
     const editor = document.createElement("div");
     editor.style.position = "absolute";
     editor.style.width = "100%";
