@@ -11,7 +11,6 @@ import {
   DiscussionType,
   DiscussionThreadType,
   DiscussionUserType,
-  DiscussionThreadLockEnum,
 } from "~/reducers/discussion";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { StateType } from "~/reducers";
@@ -141,31 +140,6 @@ class DDiscussionThreads extends React.Component<
   }
 
   /**
-   * Renders thread lock icon
-   *
-   * @param thread thread
-   */
-  renderThreadLockIcon = (thread: DiscussionThreadType) => {
-    let showIcon = false;
-
-    switch (thread.lock) {
-      case DiscussionThreadLockEnum.ALL:
-        showIcon = true;
-        break;
-
-      case DiscussionThreadLockEnum.STUDENTS:
-        showIcon = this.props.status.isStudent;
-        break;
-
-      default:
-        showIcon = false;
-        break;
-    }
-
-    return (showIcon && <div className="discussion__icon icon-lock" />) || null;
-  };
-
-  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -238,7 +212,9 @@ class DDiscussionThreads extends React.Component<
           >
             <DiscussionThreadHeader>
               <div className="application-list__item-header-main">
-                {this.renderThreadLockIcon(thread)}
+                {thread.lock ? (
+                  <div className="discussion__icon icon-lock" />
+                ) : null}
                 {thread.sticky ? (
                   <div className="discussion__icon icon-pin"></div>
                 ) : null}
