@@ -14,6 +14,7 @@ import {
   DiscussionUserType,
   DiscussionSubscribedThread,
   DiscussionSubscribedArea,
+  DiscussionThreadLockEnum,
 } from "~/reducers/discussion";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { StateType } from "~/reducers";
@@ -511,6 +512,31 @@ class DiscussionSubscriptions extends React.Component<
   };
 
   /**
+   * Renders thread lock icon
+   *
+   * @param thread thread
+   */
+  renderThreadLockIcon = (thread: DiscussionThreadType) => {
+    let showIcon = false;
+
+    switch (thread.lock) {
+      case DiscussionThreadLockEnum.ALL:
+        showIcon = true;
+        break;
+
+      case DiscussionThreadLockEnum.STUDENTS:
+        showIcon = this.props.status.isStudent;
+        break;
+
+      default:
+        showIcon = false;
+        break;
+    }
+
+    return (showIcon && <div className="discussion__icon icon-lock" />) || null;
+  };
+
+  /**
    * Renders thread item
    *
    * @param sThreads sThreads
@@ -554,11 +580,9 @@ class DiscussionSubscriptions extends React.Component<
       >
         <DiscussionThreadHeader>
           <div style={{ display: "flex", alignItems: "center" }}>
-            {subscribredThread.locked ? (
-              <div className="discussion__icon icon-lock"></div>
-            ) : null}
+            {this.renderThreadLockIcon(subscribredThread)}
             {subscribredThread.sticky ? (
-              <div className="discussion__icon icon-pin"></div>
+              <div className="discussion__icon icon-pin" />
             ) : null}
             <div
               className={`discussion-category discussion-category--category-${threadCategory}`}

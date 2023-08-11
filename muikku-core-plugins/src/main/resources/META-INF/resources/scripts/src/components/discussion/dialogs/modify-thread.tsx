@@ -5,7 +5,11 @@ import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-import { DiscussionType, DiscussionThreadType } from "~/reducers/discussion";
+import {
+  DiscussionType,
+  DiscussionThreadType,
+  DiscussionThreadLockEnum,
+} from "~/reducers/discussion";
 import {
   modifyDiscussionThread,
   ModifyDiscussionThreadTriggerType,
@@ -21,6 +25,7 @@ import "~/sass/elements/form.scss";
  * ModifyThreadProps
  */
 interface ModifyThreadProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   i18n: i18nType;
   discussion: DiscussionType;
@@ -37,7 +42,7 @@ interface ModifyThreadState {
   title: string;
   locked: boolean;
   threadPinned: boolean;
-  threadLocked: boolean;
+  threadLock: DiscussionThreadLockEnum | null;
 }
 
 /**
@@ -60,22 +65,23 @@ class ModifyThread extends SessionStateComponent<
         title: props.thread.title,
         locked: false,
         threadPinned: props.thread.sticky,
-        threadLocked: props.thread.locked,
+        threadLock: props.thread.lock,
       },
       props.thread.id
     );
 
     this.togglePinned = this.togglePinned.bind(this);
-    this.toggleLocked = this.toggleLocked.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
+    this.onLockChange = this.onLockChange.bind(this);
     this.modifyThread = this.modifyThread.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     this.clearUp = this.clearUp.bind(this);
   }
 
   /**
-   * @param nextProps
+   * componentWillReceiveProps
+   * @param nextProps nextProps
    */
   componentWillReceiveProps(nextProps: ModifyThreadProps) {
     if (nextProps.thread.id !== this.props.thread.id) {
@@ -85,7 +91,7 @@ class ModifyThread extends SessionStateComponent<
             text: nextProps.thread.message,
             title: nextProps.thread.title,
             threadPinned: nextProps.thread.sticky,
-            threadLocked: nextProps.thread.locked,
+            threadLock: nextProps.thread.lock,
           },
           nextProps.thread.id
         )
@@ -102,7 +108,7 @@ class ModifyThread extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked,
+        threadLock: this.props.thread.lock,
       },
       this.props.thread.id
     );
@@ -110,7 +116,7 @@ class ModifyThread extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text
+   * @param text text
    */
   onCKEditorChange(text: string) {
     this.setStateAndStore({ text }, this.props.thread.id);
@@ -125,7 +131,7 @@ class ModifyThread extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked,
+        threadLock: this.props.thread.lock,
       },
       this.props.thread.id
     );
@@ -135,7 +141,7 @@ class ModifyThread extends SessionStateComponent<
    * modifyThread
    * @param closeDialog closeDialog
    */
-  modifyThread(closeDialog: () => any) {
+  modifyThread(closeDialog: () => void) {
     if (this.state.locked) {
       return;
     }
@@ -146,13 +152,13 @@ class ModifyThread extends SessionStateComponent<
       title: this.state.title,
       message: this.state.text,
       sticky: this.state.threadPinned,
-      locked: this.state.threadLocked,
+      lock: this.state.threadLock,
       /**
        * success
        */
       success: () => {
         this.justClear(
-          ["text", "title", "threadPinned", "threadLocked"],
+          ["text", "title", "threadPinned", "threadLock"],
           this.props.thread.id
         );
         this.setState({ locked: false });
@@ -186,11 +192,13 @@ class ModifyThread extends SessionStateComponent<
   }
 
   /**
-   * toggleLocked
+   * Handles the change of the lock select
+   *
+   * @param e e
    */
-  toggleLocked() {
+  onLockChange(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setStateAndStore(
-      { threadLocked: !this.state.threadLocked },
+      { threadLock: e.target.value as DiscussionThreadLockEnum },
       this.props.thread.id
     );
   }
@@ -199,6 +207,21 @@ class ModifyThread extends SessionStateComponent<
    * render
    */
   render() {
+    const options = [
+      {
+        value: DiscussionThreadLockEnum.ALL,
+        label: "Kaikilta",
+      },
+      {
+        value: DiscussionThreadLockEnum.STUDENTS,
+        label: "Opiskelijoilta",
+      },
+      {
+        value: "",
+        label: "-",
+      },
+    ];
+
     const editorTitle =
       this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
       " - " +
@@ -208,7 +231,7 @@ class ModifyThread extends SessionStateComponent<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => void) => [
       <div key="1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
@@ -228,6 +251,24 @@ class ModifyThread extends SessionStateComponent<
       </div>,
       this.props.status.permissions.FORUM_LOCK_STICKY_PERMISSION ? (
         <div key="2" className="env-dialog__row env-dialog__row--options">
+          <div className="env-dialog__form-element-container">
+            <label htmlFor="messageLock" className="env-dialog__label">
+              Lukitse käyttäjiltä
+            </label>
+            <select
+              id="messageLock"
+              className="env-dialog__select"
+              value={this.state.threadLock || ""}
+              onChange={this.onLockChange}
+            >
+              {options.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
             <input
               id="messagePinned"
@@ -239,20 +280,6 @@ class ModifyThread extends SessionStateComponent<
             <label htmlFor="messagePinned" className="env-dialog__input-label">
               {this.props.i18n.text.get(
                 "plugin.discussion.createmessage.pinned"
-              )}
-            </label>
-          </div>
-          <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
-            <input
-              id="messageLocked"
-              type="checkbox"
-              className="env-dialog__input"
-              checked={this.state.threadLocked}
-              onChange={this.toggleLocked}
-            />
-            <label htmlFor="messageLocked" className="env-dialog__input-label">
-              {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.locked"
               )}
             </label>
           </div>
@@ -279,7 +306,7 @@ class ModifyThread extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
