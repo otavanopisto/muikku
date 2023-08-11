@@ -320,7 +320,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     // add the delimiters if necessary
     if (isImg && (node as HTMLImageElement).alt && kids) {
       if (!kids.startsWith("\\(")) {
-        kids = "\\(" + kids + "\\)";
+        kids =
+          "\\(" +
+          kids
+            .replaceAll("&", "&amp;")
+            .replaceAll(`"`, "&quot;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;") +
+          "\\)";
       }
     }
 
