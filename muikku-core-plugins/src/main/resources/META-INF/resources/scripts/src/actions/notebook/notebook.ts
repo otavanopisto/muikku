@@ -224,7 +224,7 @@ const loadNotebookEntries: LoadNotebookEntries =
 
           dispatch(
             displayNotification(
-              "Virhe ladattaessa työtilakohtaisia muistiinpanoja",
+              "Virhe ladattaessa kurssikohtaisia muistiinpanoja",
               "error"
             )
           );

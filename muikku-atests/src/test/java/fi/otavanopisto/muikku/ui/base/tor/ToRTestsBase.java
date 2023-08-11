@@ -332,15 +332,15 @@ public class ToRTestsBase extends AbstractUITest {
       navigate("/records", false);
       
       waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
-      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");
+      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivämäärä");
       waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date");
-      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date span", "01.01.2012");
+      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date span", "1.1.2012");
 //  TODO: This.
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivä");
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date span", "10.11.2021");
-      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(3) .application-sub-panel__item-title", "Ohjaajasi");        
+      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(3) .application-sub-panel__item-title", "Opinto-ohjaaja");        
       findElementOrReloadAndFind(".item-list--student-counselors .item-list__user-name", 5, 5000);
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-name", "Admin User");
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-email", "admin@example.com");
