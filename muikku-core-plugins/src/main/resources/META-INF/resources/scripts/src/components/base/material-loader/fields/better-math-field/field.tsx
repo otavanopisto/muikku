@@ -300,7 +300,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       ? Array.from(node.childNodes)
           .map((node) => {
             if (node.nodeType === Node.TEXT_NODE) {
-              return node.textContent;
+              return node.textContent
+                .replaceAll("&", "&amp;")
+                .replaceAll(`"`, "&quot;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;");
             } else if (node.nodeType === Node.COMMENT_NODE) {
               return "";
             }
@@ -316,14 +320,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     // add the delimiters if necessary
     if (isImg && (node as HTMLImageElement).alt && kids) {
       if (!kids.startsWith("\\(")) {
-        kids =
-          "\\(" +
-          kids
-            .replaceAll("&", "&amp;")
-            .replaceAll(`"`, "&quot;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;") +
-          "\\)";
+        kids = "\\(" + kids + "\\)";
       }
     }
 
