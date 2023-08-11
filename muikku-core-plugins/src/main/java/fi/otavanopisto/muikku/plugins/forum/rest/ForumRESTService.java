@@ -522,8 +522,10 @@ public class ForumRESTService extends PluginRESTService {
       LockForumThread lock = newThread.getLock() != null ? LockForumThread.valueOf(newThread.getLock()) : null;
 
       if (Boolean.TRUE.equals(newThread.getSticky()) || lock != null) {
-        
-        if (lock == LockForumThread.ALL || (lock == LockForumThread.STUDENTS && userEntityController.isStudent(sessionController.getLoggedUserEntity()))){
+        if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+          lock = null;
+        }
+        if (lock == LockForumThread.STUDENTS && userEntityController.isStudent(sessionController.getLoggedUserEntity())){
           return Response.status(Status.FORBIDDEN).build();
         }
         
