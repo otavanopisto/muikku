@@ -327,7 +327,10 @@ class DicussionNewThread extends SessionStateComponent<
         <div key="2" className="env-dialog__row env-dialog__row--options">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageLock" className="env-dialog__label">
-              Lukitse käyttäjiltä
+              {
+                // TODO: lokalisointi
+              }
+              Lukitse
             </label>
             <select
               id="messageLock"

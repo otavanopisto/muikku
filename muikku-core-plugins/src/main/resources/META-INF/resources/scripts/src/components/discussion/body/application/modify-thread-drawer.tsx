@@ -254,7 +254,10 @@ class ModifyThreadDrawer extends SessionStateComponent<
           </div>
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageLock" className="env-dialog__label">
-              Lukitse käyttäjiltä
+              {
+                // TODO: lokalisointi
+              }
+              Lukitse
             </label>
             <select
               id="messageLock"
