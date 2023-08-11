@@ -654,7 +654,6 @@ public class GuiderTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         logout();
-
         String orderNo = getLatestCeeposOrderId();
         String refNo = "456";
         String cSalt = "xxxxxx";
@@ -669,7 +668,6 @@ public class GuiderTestsBase extends AbstractUITest {
         sb.append(cSalt);  // secret ceepos salt for hashing
         String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
         mockBuilder.mockLogin(student).mockCeeposRequestPayment(orderNo, refNo, cSalt, expectedHash, getAppUrl(), ceeposStatus);
-        
         login();
         selectFinnishLocale();
         navigate("/profile#purchases", false);
