@@ -22,13 +22,13 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
   
 	private static final long serialVersionUID = 4967576871472917786L;
 
-	public ForumThread create(ForumArea forumArea, String title, String message, UserEntity creator, Boolean sticky, LockForumThread lock) {
+	public ForumThread create(ForumArea forumArea, String title, String message, UserEntity creator, Boolean sticky, LockForumThread lock, Date lockDate, Long lockBy) {
     Date now = new Date();
 
-    return create(forumArea, title, message, now, creator, now, creator, false, sticky, lock, now);
+    return create(forumArea, title, message, now, creator, now, creator, false, sticky, lock, lockDate, lockBy, now);
   }
   
-  public ForumThread create(ForumArea forumArea, String title, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived, Boolean sticky, LockForumThread lock, Date updated) {
+  public ForumThread create(ForumArea forumArea, String title, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived, Boolean sticky, LockForumThread lock, Date lockDate, Long lockBy, Date updated) {
     ForumThread thread = new ForumThread();
 
     thread.setForumArea(forumArea);
@@ -41,6 +41,8 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     thread.setArchived(archived);
     thread.setSticky(sticky);
     thread.setLock(lock);
+    thread.setLockBy(lockBy);
+    thread.setLockDate(updated);
     thread.setUpdated(updated);
     
     getEntityManager().persist(thread);
@@ -116,13 +118,15 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     return entityManager.createQuery(criteria).getSingleResult();
   }
 
-  public ForumThread update(ForumThread thread, String title, String message, Boolean sticky, LockForumThread lock, Date lastModified, UserEntity lastModifier) {
+  public ForumThread update(ForumThread thread, String title, String message, Boolean sticky, LockForumThread lock, Date lastModified, UserEntity lastModifier, Date lockDate, Long lockBy) {
     thread.setTitle(title);
     thread.setMessage(message);
     thread.setSticky(sticky);
     thread.setLock(lock);
     thread.setLastModified(lastModified);
     thread.setLastModifier(lastModifier.getId());
+    thread.setLockBy(lockBy);
+    thread.setLockDate(lockDate);
     
     getEntityManager().persist(thread);
     

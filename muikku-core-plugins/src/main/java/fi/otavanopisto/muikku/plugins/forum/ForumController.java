@@ -198,7 +198,13 @@ public class ForumController {
 
   public ForumThread createForumThread(ForumArea forumArea, String title, String message, Boolean sticky, LockForumThread lock) {
     activityLogController.createActivityLog(sessionController.getLoggedUserEntity().getId(), ActivityLogType.FORUM_NEWTHREAD);
-    return forumThreadDAO.create(forumArea, title, clean(message), sessionController.getLoggedUserEntity(), sticky, lock);
+    Date lockDate = null;
+    Long lockBy = null;
+    if (lock != null) {
+      lockDate = new Date();
+      lockBy = sessionController.getLoggedUserEntity().getId();
+    }
+    return forumThreadDAO.create(forumArea, title, clean(message), sessionController.getLoggedUserEntity(), sticky, lock, lockDate, lockBy);
   }
 
   public void archiveThread(ForumThread thread) {
@@ -374,7 +380,14 @@ public class ForumController {
   
   public void updateForumThread(ForumThread thread, String title, String message, Boolean sticky, LockForumThread lock) {
     UserEntity user = sessionController.getLoggedUserEntity();
-    forumThreadDAO.update(thread, title, clean(message), sticky, lock, new Date(), user);
+    Date lockDate = new Date();
+    Long lockBy = sessionController.getLoggedUserEntity().getId();
+    if (thread.getLock() == lock) {
+      lockDate = thread.getLockDate();
+      lockBy = thread.getLockBy();
+    }
+    
+    forumThreadDAO.update(thread, title, clean(message), sticky, lock, new Date(), user, lockDate, lockBy);
   }
 
   public void updateForumThreadReply(ForumThreadReply reply, String message) {

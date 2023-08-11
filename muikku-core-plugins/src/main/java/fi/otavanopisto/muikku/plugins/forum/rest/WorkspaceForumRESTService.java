@@ -400,7 +400,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
     
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLock().name().equals(updThread.getLock())) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || forumThread.getLock() != LockForumThread.valueOf(updThread.getLock())) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -411,7 +411,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           updThread.getTitle(),
           updThread.getMessage(),
           updThread.getSticky(), 
-          getLock(updThread.getLock()));
+          updThread.getLock() != null ? LockForumThread.valueOf(updThread.getLock()) : null);
       
       return Response.ok(
         restModels.restModel(forumThread)
@@ -419,21 +419,6 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     } else {
       return Response.status(Status.FORBIDDEN).build();
     }
-  }
-  
-  private LockForumThread getLock(String lockString) {
-    LockForumThread lock = null;
-    
-    if (lockString != null) {
-      LockForumThread[] list = LockForumThread.values();
-      
-      for (LockForumThread l : list) {
-        if (l.name().equals(lockString)) {
-          lock = l;
-        }
-      }
-    }
-    return lock;
   }
   
   @DELETE
@@ -492,7 +477,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
 
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (Boolean.TRUE.equals(newThread.getSticky()) || newThread.getLock().equals(LockForumThread.ALL.name())) {
+      if (Boolean.TRUE.equals(newThread.getSticky()) || LockForumThread.valueOf(newThread.getLock()) == LockForumThread.ALL) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -505,7 +490,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           newThread.getTitle(),
           message.body().toString(), 
           newThread.getSticky(), 
-          getLock(newThread.getLock()));
+          newThread.getLock() != null ? LockForumThread.valueOf(newThread.getLock()) : null);
   
       forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), null, sessionController.getLoggedUserEntity().getId(), baseUrl, workspaceEntity.getUrlName()));
 
