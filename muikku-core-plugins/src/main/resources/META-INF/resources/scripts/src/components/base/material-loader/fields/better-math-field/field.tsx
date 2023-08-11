@@ -307,12 +307,23 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
             return this.convertToText(node as HTMLElement);
           })
           .join("")
-      : (node as HTMLImageElement).alt;
+      : (node as HTMLImageElement).alt
+          .replaceAll("&", "&amp;")
+          .replaceAll(`"`, "&quot;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;");
 
     // add the delimiters if necessary
     if (isImg && (node as HTMLImageElement).alt && kids) {
       if (!kids.startsWith("\\(")) {
-        kids = "\\(" + kids + "\\)";
+        kids =
+          "\\(" +
+          kids
+            .replaceAll("&", "&amp;")
+            .replaceAll(`"`, "&quot;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;") +
+          "\\)";
       }
     }
 
