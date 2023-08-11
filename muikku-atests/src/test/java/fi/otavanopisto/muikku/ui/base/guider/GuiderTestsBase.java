@@ -829,7 +829,7 @@ public class GuiderTestsBase extends AbstractUITest {
       selectEnglishLocale();
       navigate("/guider", false);
       waitAndClick(".application-list__header-primary>span");
-      assertText(".notes .notes__item .notes__item-status.notes__item-status--pending", "Waiting for approval");
+      assertText(".notes .notes__item .notes__item-status.notes__item-status--pending", "Pending");
       waitAndClick(".notes .notes__item .icon-more_vert");
       waitAndClick(".dropdown__container-item:first-child");
       assertPresent(".notification-queue__items .notification-queue__item--success");
