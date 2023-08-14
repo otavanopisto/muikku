@@ -182,18 +182,20 @@ class SignUpBehalfOfStudentDialog extends React.Component<
      * @returns JSX.Element
      */
     const content = (closeDialog: () => void) => (
-      <div className="form-element dialog__content-row">
-        <p>Ilmoita opiskelija työtilaan {workspaceName}</p>
+      <div>
+        <div className="dialog__content-row">Ilmoita opiskelija työtilaan {workspaceName}</div>
+        <div className="form-element dialog__content-row">
 
-        <label htmlFor="signUpMessage">
-          {this.props.i18n.text.get("plugin.workspaceSignUp.messageLabel")}
-        </label>
-        <textarea
-          id="signUpMessage"
-          className="form-element__textarea"
-          value={this.state.message}
-          onChange={this.handleMessageChange}
-        />
+          <label htmlFor="signUpMessage">
+            {this.props.i18n.text.get("plugin.workspaceSignUp.messageLabel")}
+          </label>
+          <textarea
+            id="signUpMessage"
+            className="form-element__textarea"
+            value={this.state.message}
+            onChange={this.handleMessageChange}
+          />
+        </div>
       </div>
     );
 
