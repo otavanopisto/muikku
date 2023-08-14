@@ -61,6 +61,20 @@ function checkIsParentOrSelf(
 }
 
 /**
+ * Escape selected characters to html entities so mathjax can render formulas correctly
+ * @param string
+ */
+function escapeCharactersToHTMLEntities(string: string) {
+  return string
+    ? string
+        .replaceAll("&", "&amp;")
+        .replaceAll(`"`, "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+    : string;
+}
+
+/**
  * MathField
  */
 export default class MathField extends React.Component<FieldProps, FieldState> {
@@ -258,11 +272,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.value = Array.from((this.refs.input as HTMLDivElement).childNodes)
       .map((node) => {
         if (node.nodeType === Node.TEXT_NODE) {
-          return node.textContent
-            .replaceAll("&", "&amp;")
-            .replaceAll(`"`, "&quot;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;");
+          return escapeCharactersToHTMLEntities(node.textContent);
         } else if (node.nodeType === Node.COMMENT_NODE) {
           return "";
         }
@@ -287,11 +297,9 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       if (!latex.startsWith("\\(")) {
         latex = "\\(" + latex + "\\)";
       }
-      return `<span class="${this.props.formulaClassName}">${latex
-        .replaceAll("&", "&amp;")
-        .replaceAll(`"`, "&quot;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")}</span>`;
+      return `<span class="${
+        this.props.formulaClassName
+      }">${escapeCharactersToHTMLEntities(latex)}</span>`;
     }
     const isImg = node.tagName === "IMG";
     const isRawImg =
@@ -304,34 +312,19 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       ? Array.from(node.childNodes)
           .map((node) => {
             if (node.nodeType === Node.TEXT_NODE) {
-              return node.textContent
-                .replaceAll("&", "&amp;")
-                .replaceAll(`"`, "&quot;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;");
+              return escapeCharactersToHTMLEntities(node.textContent);
             } else if (node.nodeType === Node.COMMENT_NODE) {
               return "";
             }
             return this.convertToText(node as HTMLElement);
           })
           .join("")
-      : (node as HTMLImageElement).alt
-          .replaceAll("&", "&amp;")
-          .replaceAll(`"`, "&quot;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;");
+      : escapeCharactersToHTMLEntities((node as HTMLImageElement).alt);
 
     // add the delimiters if necessary
     if (isImg && (node as HTMLImageElement).alt && kids) {
       if (!kids.startsWith("\\(")) {
-        kids =
-          "\\(" +
-          kids
-            .replaceAll("&", "&amp;")
-            .replaceAll(`"`, "&quot;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;") +
-          "\\)";
+        kids = "\\(" + escapeCharactersToHTMLEntities(kids);
       }
     }
 
