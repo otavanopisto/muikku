@@ -6,6 +6,7 @@ import {
   DiscussionThreadReplyType,
   DiscussionThreadReplyListType,
   DiscussionThreadType,
+  DiscussionThreadLockEnum,
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
@@ -80,6 +81,25 @@ class DiscussionCurrentThread extends React.Component<
       hiddenParentsLists: [],
     };
   }
+
+  /**
+   * If thread is locked, user can't reply to it
+   *
+   * @param thread thread
+   * @returns boolean
+   */
+  isThreadLocked = (thread: DiscussionThreadType) => {
+    switch (thread.lock) {
+      case DiscussionThreadLockEnum.ALL:
+        return true;
+
+      case DiscussionThreadLockEnum.STUDENTS:
+        return this.props.status.isStudent;
+
+      default:
+        return false;
+    }
+  };
 
   /**
    * getToPage
@@ -229,22 +249,36 @@ class DiscussionCurrentThread extends React.Component<
       );
     }
 
-    const student: boolean = this.props.status.isStudent === true;
+    // Logged in user is student
+    const student: boolean = this.props.status.isStudent;
+
+    // Creator and logged in user are same
     const threadOwner: boolean =
       this.props.userId === this.props.discussion.current.creator.id;
+
+    // User can edit if user is thread owner or user has editMessages permission
+    const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
+
+    // If thread is locked, user can't reply to it
+    const threadLocked = this.isThreadLocked(this.props.discussion.current);
+
+    // Lock icon is shown if some value exists in lock property
+    const showLockIcon = !!this.props.discussion.current.lock;
+
+    // User can remove thread if user is thread owner or user has removeThread permission
     const canRemoveThread: boolean =
       (!student && threadOwner) ||
       areaPermissions.removeThread ||
       this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
-    let studentCanRemoveThread: boolean = threadOwner ? true : false;
-    const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
-    const threadLocked: boolean = this.props.discussion.current.locked === true;
+
     const replies: DiscussionThreadReplyListType =
       this.props.discussion.currentReplies;
 
-    // If the thread has someone elses messages, student can't remove the thread
+    // student can remove thread if student is thread owner
+    let studentCanRemoveThread: boolean = threadOwner;
 
-    if (studentCanRemoveThread == true) {
+    // If the thread has someone elses messages, student can't remove the thread
+    if (studentCanRemoveThread) {
       for (let i = 0; i < replies.length; i++) {
         if (this.props.userId !== replies[i].creator.id) {
           studentCanRemoveThread = false;
@@ -255,7 +289,7 @@ class DiscussionCurrentThread extends React.Component<
     return (
       <DiscussionCurrentThreadListContainer
         sticky={this.props.discussion.current.sticky}
-        locked={this.props.discussion.current.locked}
+        locked={showLockIcon}
         title={
           <h2 className="application-list__title">
             <span className="application-list__title-main">
@@ -349,7 +383,7 @@ class DiscussionCurrentThread extends React.Component<
               </DiscussionThreadBody>
               {userCreator !== null ? (
                 <DiscussionThreadFooter hasActions>
-                  {!threadLocked || !student ? (
+                  {!threadLocked || threadOwner ? (
                     <Link
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("answer")}
@@ -359,7 +393,7 @@ class DiscussionCurrentThread extends React.Component<
                       )}
                     </Link>
                   ) : null}
-                  {!threadLocked || !student ? (
+                  {!threadLocked || threadOwner ? (
                     <Link
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("quote")}

@@ -5,7 +5,10 @@ import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-import { DiscussionType } from "~/reducers/discussion";
+import {
+  DiscussionThreadLockEnum,
+  DiscussionType,
+} from "~/reducers/discussion";
 import {
   createDiscussionThread,
   CreateDiscussionThreadTriggerType,
@@ -14,7 +17,6 @@ import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-
 import "~/sass/elements/form.scss";
 
 /**
@@ -37,7 +39,7 @@ interface DicussionNewThreadState {
   title: string;
   locked: boolean;
   threadPinned: boolean;
-  threadLocked: boolean;
+  threadLock: DiscussionThreadLockEnum | null;
   threadSubscribed: boolean;
   selectedAreaId: number;
 }
@@ -62,7 +64,7 @@ class DicussionNewThread extends SessionStateComponent<
         title: "",
         locked: false,
         threadPinned: false,
-        threadLocked: false,
+        threadLock: null,
         selectedAreaId:
           props.discussion.areaId ||
           (props.discussion.areas[0] && props.discussion.areas[0].id),
@@ -72,11 +74,11 @@ class DicussionNewThread extends SessionStateComponent<
     );
 
     this.togglePinned = this.togglePinned.bind(this);
-    this.toggleLocked = this.toggleLocked.bind(this);
     this.toggleSubscribeThread = this.toggleSubscribeThread.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onAreaChange = this.onAreaChange.bind(this);
+    this.onLockChange = this.onLockChange.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
   }
@@ -98,7 +100,7 @@ class DicussionNewThread extends SessionStateComponent<
             title: "",
             locked: false,
             threadPinned: false,
-            threadLocked: false,
+            threadLock: null,
             selectedAreaId:
               nextProps.discussion.areaId ||
               (nextProps.discussion.areas[0] &&
@@ -120,7 +122,7 @@ class DicussionNewThread extends SessionStateComponent<
         text: "",
         title: "",
         threadPinned: false,
-        threadLocked: false,
+        threadLock: null,
       },
       this.state.selectedAreaId
     );
@@ -135,7 +137,7 @@ class DicussionNewThread extends SessionStateComponent<
         text: "",
         title: "",
         threadPinned: false,
-        threadLocked: false,
+        threadLock: null,
       },
       this.state.selectedAreaId
     );
@@ -154,12 +156,15 @@ class DicussionNewThread extends SessionStateComponent<
    * @param closeDialog closeDialog
    */
   createThread(closeDialog: () => void) {
-    this.setState({
-      locked: true,
-    });
+    if (this.state.locked) {
+      return;
+    }
+
+    this.setState({ locked: true });
+
     this.props.createDiscussionThread({
       forumAreaId: this.state.selectedAreaId,
-      locked: this.state.threadLocked,
+      lock: this.state.threadLock || null,
       sticky: this.state.threadPinned,
       subscribe: this.state.threadSubscribed,
       message: this.state.text,
@@ -173,7 +178,7 @@ class DicussionNewThread extends SessionStateComponent<
             text: "",
             title: "",
             locked: false,
-            threadLocked: false,
+            threadLock: null,
             threadPinned: false,
           },
           this.state.selectedAreaId
@@ -212,19 +217,21 @@ class DicussionNewThread extends SessionStateComponent<
   /**
    * toggleLocked
    */
-  toggleLocked() {
+  toggleSubscribeThread() {
     this.setStateAndStore(
-      { threadLocked: !this.state.threadLocked },
+      { threadSubscribed: !this.state.threadSubscribed },
       this.state.selectedAreaId
     );
   }
 
   /**
-   * toggleLocked
+   * Handles the change of the lock select
+   *
+   * @param e e
    */
-  toggleSubscribeThread() {
+  onLockChange(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setStateAndStore(
-      { threadSubscribed: !this.state.threadSubscribed },
+      { threadLock: e.target.value as DiscussionThreadLockEnum },
       this.state.selectedAreaId
     );
   }
@@ -236,7 +243,7 @@ class DicussionNewThread extends SessionStateComponent<
   onAreaChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const newSelectedAreaId = parseInt(e.target.value);
     this.justClear(
-      ["text", "title", "threadPinned", "threadLocked"],
+      ["text", "title", "threadPinned", "threadLock"],
       this.state.selectedAreaId
     );
     this.setStateAndStore(
@@ -245,7 +252,7 @@ class DicussionNewThread extends SessionStateComponent<
           text: this.state.text,
           title: this.state.title,
           threadPinned: this.state.threadPinned,
-          threadLocked: this.state.threadLocked,
+          threadLock: this.state.threadLock,
         },
         newSelectedAreaId
       ),
@@ -260,6 +267,21 @@ class DicussionNewThread extends SessionStateComponent<
    * render
    */
   render() {
+    const options = [
+      {
+        value: DiscussionThreadLockEnum.ALL,
+        label: "Kaikilta",
+      },
+      {
+        value: DiscussionThreadLockEnum.STUDENTS,
+        label: "Opiskelijoilta",
+      },
+      {
+        value: "",
+        label: "-",
+      },
+    ];
+
     const editorTitle =
       this.props.i18n.text.get("plugin.discussion.createmessage.topic") +
       " - " +
@@ -303,6 +325,27 @@ class DicussionNewThread extends SessionStateComponent<
       </div>,
       this.props.status.permissions.FORUM_LOCK_STICKY_PERMISSION ? (
         <div key="2" className="env-dialog__row env-dialog__row--options">
+          <div className="env-dialog__form-element-container">
+            <label htmlFor="messageLock" className="env-dialog__label">
+              {
+                // TODO: lokalisointi
+              }
+              Lukitse
+            </label>
+            <select
+              id="messageLock"
+              className="env-dialog__select"
+              value={this.state.threadLock || ""}
+              onChange={this.onLockChange}
+            >
+              {options.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
             <input
               id="messagePinned"
@@ -317,29 +360,19 @@ class DicussionNewThread extends SessionStateComponent<
               )}
             </label>
           </div>
+
           <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
             <input
-              id="messageLocked"
-              type="checkbox"
-              className="env-dialog__input"
-              checked={this.state.threadLocked}
-              onChange={this.toggleLocked}
-            />
-            <label htmlFor="messageLocked" className="env-dialog__input-label">
-              {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.locked"
-              )}
-            </label>
-          </div>
-          <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
-            <input
-              id="messageLocked"
+              id="messageSubscribed"
               type="checkbox"
               className="env-dialog__input"
               checked={this.state.threadSubscribed}
               onChange={this.toggleSubscribeThread}
             />
-            <label htmlFor="messageLocked" className="env-dialog__input-label">
+            <label
+              htmlFor="messageSubscribed"
+              className="env-dialog__input-label"
+            >
               {this.props.i18n.text.get(
                 "plugin.discussion.createmessage.subscribe"
               )}
