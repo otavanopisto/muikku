@@ -258,7 +258,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.value = Array.from((this.refs.input as HTMLDivElement).childNodes)
       .map((node) => {
         if (node.nodeType === Node.TEXT_NODE) {
-          return node.textContent;
+          return node.textContent
+            .replaceAll("&", "&amp;")
+            .replaceAll(`"`, "&quot;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;");
         } else if (node.nodeType === Node.COMMENT_NODE) {
           return "";
         }
