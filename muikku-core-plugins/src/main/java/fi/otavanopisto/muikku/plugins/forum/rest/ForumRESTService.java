@@ -761,7 +761,7 @@ public class ForumRESTService extends PluginRESTService {
       }
       
       if (forumThread.getLock() != null) {
-        if (forumThread.getLock().equals(LockForumThread.ALL) || (forumThread.getLock().equals(LockForumThread.STUDENTS) && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
+        if (forumThread.getLock() == LockForumThread.ALL || (forumThread.getLock() == LockForumThread.STUDENTS && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
           return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
         }
       }
@@ -1079,63 +1079,4 @@ public class ForumRESTService extends PluginRESTService {
     private final Boolean editMessages;
     private final Boolean removeThread;
   }
-  
-//  /**
-//   * mApi().forum.areas.thread.lock.update(1, 97, {lock : "ALL"})
-//   * 
-//   * @param areaId
-//   * @param threadId
-//   * @param lockForumThread (ALL | STUDENTS | NULL)
-//   * 
-//   * @return
-//   * 
-//   * ForumThreadRESTModel
-//   */
-//  @PUT
-//  @Path("/areas/{AREAID}/thread/{THREADID}/lock")
-//  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-//  public Response toggleForumThreadLock(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, LockPayload lockPayload) {  
-//    try {
-//      ForumArea forumArea = forumController.getForumArea(areaId);
-//      if (forumArea == null) {
-//        return Response.status(Status.NOT_FOUND).entity("Forum area not found").build();
-//      }
-//      ForumThread forumThread = forumController.getForumThread(threadId);
-//      if (forumThread == null) {
-//        return Response.status(Status.NOT_FOUND).entity("Forum thread not found").build();
-//      }
-//      
-//      if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
-//        return Response.status(Status.FORBIDDEN).build();
-//      }
-//      LockForumThread lock = null;
-//      if (lockPayload.getLock() != null){
-//        if (lockPayload.getLock().equals(LockForumThread.STUDENTS)) {
-//          lock = LockForumThread.STUDENTS;
-//        }
-//        
-//        if (lockPayload.getLock().equals(LockForumThread.ALL)) {
-//          lock = LockForumThread.ALL;
-//        }
-//      }
-//      
-//      if (forumThread.getLock() != null && forumThread.getLock().equals(lock)) {
-//        Response.ok(
-//            restModels.restModel(forumThread)
-//          ).build();
-//      }
-//      
-//      forumThread = forumController.toggleLock(forumThread, lock, sessionController.getLoggedUserEntity().getId());
-//      
-//      return Response.ok(
-//          restModels.restModel(forumThread)
-//        ).build();
-//      
-//      
-//    } catch (Exception e) {
-//      logger.log(Level.SEVERE, "Failed to lock forum thread", e);
-//      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-//    }
-//  }
-//  
 }
