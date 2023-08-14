@@ -62,16 +62,16 @@ function checkIsParentOrSelf(
 
 /**
  * Escape selected characters to html entities so mathjax can render formulas correctly
- * @param string
+ * @param mathFormula
  */
-function escapeCharactersToHTMLEntities(string: string) {
-  return string
-    ? string
+function escapeCharactersToHTMLEntities(mathFormula: string) {
+  return mathFormula
+    ? mathFormula
         .replaceAll("&", "&amp;")
         .replaceAll(`"`, "&quot;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
-    : string;
+    : mathFormula;
 }
 
 /**
