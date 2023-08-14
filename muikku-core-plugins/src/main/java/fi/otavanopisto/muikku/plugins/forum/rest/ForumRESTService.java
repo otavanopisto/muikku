@@ -451,10 +451,10 @@ public class ForumRESTService extends PluginRESTService {
     if (!forumController.isEnvironmentForumActive()) {
       return Response.status(Status.FORBIDDEN).build();
     }
-
+    LockForumThread updThreadLock = updThread.getLock() != null ? LockForumThread.valueOf(updThread.getLock()) : null;
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
       // User needs permission to change the value of these parameters
-      if (!forumThread.getSticky().equals(updThread.getSticky()) || forumThread.getLock() != LockForumThread.valueOf(updThread.getLock())) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || forumThread.getLock() != updThreadLock) {
         if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -463,7 +463,7 @@ public class ForumRESTService extends PluginRESTService {
           updThread.getTitle(),
           updThread.getMessage(),
           updThread.getSticky(), 
-          updThread.getLock() != null ? LockForumThread.valueOf(updThread.getLock()) : null);
+          updThreadLock);
       
       
       return Response.ok(
