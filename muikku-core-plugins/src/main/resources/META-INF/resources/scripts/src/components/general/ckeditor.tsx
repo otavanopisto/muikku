@@ -47,6 +47,7 @@ const PLUGINS = {
   "muikku-image-target": "/scripts/ckplugins/muikku-image-target/",
   "muikku-embedded": "/scripts/ckplugins/muikku-embedded/",
   "muikku-journalfield": "/scripts/ckplugins/muikku-journalfield/",
+  "muikku-details": "/scripts/ckplugins/muikku-details/",
 };
 const pluginsLoaded: any = {};
 
@@ -85,7 +86,8 @@ const extraConfig = (props: CKEditorProps) => ({
    * There is no need to use allowContent: true setting as it will disable ACF alltogether.
    * Therefore we let ACF to work on it's default filtering settings which are based on the toolbar settings.
    * */
-  extraAllowedContent: "*{*}; *[data*]; audio source[*](*){*}; mark",
+  extraAllowedContent:
+    "*{*}; *[data*]; audio source[*](*){*}; mark; details(*); summary(*);",
 
   /**
    * We remove every class attribute from every html element and every on* prefixed attributes as well as everything related to font stylings.
@@ -114,7 +116,10 @@ const extraConfig = (props: CKEditorProps) => ({
       items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
     },
     { name: "links", items: ["Link"] },
-    { name: "insert", items: ["Image", "Smiley", "SpecialChar"] },
+    {
+      name: "insert",
+      items: ["Image", "Smiley", "SpecialChar"],
+    },
     { name: "colors", items: ["TextColor", "BGColor"] },
     { name: "styles", items: ["Format"] },
     {
