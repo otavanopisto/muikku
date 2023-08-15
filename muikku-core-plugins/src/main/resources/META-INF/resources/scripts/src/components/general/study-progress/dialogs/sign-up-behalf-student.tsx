@@ -183,9 +183,10 @@ class SignUpBehalfOfStudentDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        <div className="dialog__content-row">Ilmoita opiskelija työtilaan {workspaceName}</div>
+        <div className="dialog__content-row">
+          Ilmoita opiskelija työtilaan {workspaceName}
+        </div>
         <div className="form-element dialog__content-row">
-
           <label htmlFor="signUpMessage">
             {this.props.i18n.text.get("plugin.workspaceSignUp.messageLabel")}
           </label>
