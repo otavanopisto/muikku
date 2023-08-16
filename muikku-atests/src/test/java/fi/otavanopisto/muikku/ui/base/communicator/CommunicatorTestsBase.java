@@ -28,6 +28,15 @@ public class CommunicatorTestsBase extends AbstractUITest {
       try{
         login();
         navigate("/communicator", false);
+
+//      Signature
+        waitAndClick(".icon-cog");
+        waitForElementToBeClickable(".link--main-functions-settings-dropdown");
+        click(".link--main-functions-settings-dropdown");
+        addTextToCKEditor("Best Regards from your teacher.");
+        waitAndClick(".button--dialog-execute");
+        waitUntilElementGoesAway("#dialog-title-update-signature", 10);        
+        
         waitAndClick("a.button.button--primary-function");
         waitForPresent(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
         waitAndClick(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
@@ -61,7 +70,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-content-header");
         assertText(".application-list__item-content-header", "Test message");
         waitForPresent(".application-list__item-content-body");
-        assertText(".application-list__item-content-body", "Communicator test");
+        assertText(".application-list__item-content-body p", "Communicator test");
+        assertText(".application-list__item-content-body i.mf-signature", "Best Regards from your teacher.");
       }finally{
         deleteCommunicatorMessages();
       }
@@ -461,5 +471,5 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }  
   }
-  
+
 }
