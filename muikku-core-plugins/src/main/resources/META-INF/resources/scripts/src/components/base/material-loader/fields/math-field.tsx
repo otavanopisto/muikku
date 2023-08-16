@@ -127,7 +127,6 @@ class TextField extends React.Component<MathFieldProps, MathFieldState> {
 
     return (
       <>
-        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage text="Matematiikkatehtävä" />
         <div
           className={`material-page__mathfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
