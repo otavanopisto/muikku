@@ -93,6 +93,7 @@ import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
 import fi.otavanopisto.muikku.atests.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
+import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -1501,7 +1502,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
-  protected DiscussionThread createDiscussionThread(Long groupId, Long discussionId, String title, String message, Boolean sticky, Boolean locked) throws IOException {
+  protected DiscussionThread createDiscussionThread(Long groupId, Long discussionId, String title, String message, Boolean sticky, LockForumThread locked) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     DiscussionThread payload = new DiscussionThread(null, title, message, sticky, null);
