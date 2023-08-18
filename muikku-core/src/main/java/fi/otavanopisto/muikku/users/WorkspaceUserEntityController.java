@@ -9,8 +9,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -28,6 +33,9 @@ public class WorkspaceUserEntityController {
   
   @Inject
   private WorkspaceUserEntityDAO workspaceUserEntityDAO;
+  
+  @Inject
+  private UserEntityController userEntityController;
 
   public WorkspaceUserEntity createWorkspaceUserEntity(UserSchoolDataIdentifier userSchoolDataIdentifier, WorkspaceEntity workspaceEntity, String identifier, WorkspaceRoleEntity workspaceUserRole) {
     return workspaceUserEntityDAO.create(userSchoolDataIdentifier, workspaceEntity, workspaceUserRole, identifier, Boolean.TRUE, Boolean.FALSE);
@@ -205,6 +213,44 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity updateActive(WorkspaceUserEntity workspaceUserEntity, Boolean active) {
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+    UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
+    ObjectMapper objectMapper = new ObjectMapper();
+    List<LastWorkspace> lastWorkspaceList = null;
+    if (lastWorkspaces != null && active == Boolean.FALSE) {
+      if (lastWorkspaces.getValue() != null) {
+        List<LastWorkspace> newList = new ArrayList<LastWorkspace>();
+        String lastWorkspaceJson = lastWorkspaces.getValue();
+        
+        try {
+         lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {});
+        }
+        catch (JsonProcessingException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        
+        if(lastWorkspaceList != null) {
+          for (LastWorkspace lastWorkspace : lastWorkspaceList) {
+            if (lastWorkspace.getWorkspaceId().equals(workspaceUserEntity.getWorkspaceEntity().getId())) {
+              continue;
+            } else {
+              newList.add(lastWorkspace);
+            }
+          }
+        }
+        try {
+          if (newList.isEmpty()) {
+            newList = null;
+          }
+          userEntityController.setUserEntityProperty(userEntity, "last-workspaces", objectMapper.writeValueAsString(newList));
+        }
+        catch (JsonProcessingException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+    }
     return workspaceUserEntityDAO.updateActive(workspaceUserEntity, active);
   }
 
