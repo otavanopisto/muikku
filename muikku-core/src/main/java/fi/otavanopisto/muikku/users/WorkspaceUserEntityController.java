@@ -3,11 +3,13 @@ package fi.otavanopisto.muikku.users;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -213,41 +215,35 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity updateActive(WorkspaceUserEntity workspaceUserEntity, Boolean active) {
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-    UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
-    ObjectMapper objectMapper = new ObjectMapper();
-    List<LastWorkspace> lastWorkspaceList = null;
-    if (lastWorkspaces != null && active == Boolean.FALSE) {
-      if (lastWorkspaces.getValue() != null) {
-        List<LastWorkspace> newList = new ArrayList<LastWorkspace>();
-        String lastWorkspaceJson = lastWorkspaces.getValue();
-        
-        try {
-         lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {});
-        }
-        catch (JsonProcessingException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-        
-        if(lastWorkspaceList != null) {
-          for (LastWorkspace lastWorkspace : lastWorkspaceList) {
-            if (lastWorkspace.getWorkspaceId().equals(workspaceUserEntity.getWorkspaceEntity().getId())) {
-              continue;
-            } else {
-              newList.add(lastWorkspace);
-            }
+    if (Boolean.FALSE.equals(active)) {
+      // #6620: Remove past workspaces from the list of student's last workspaces
+      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+      UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
+      
+      if (lastWorkspaces != null) {
+        if (StringUtils.isEmpty(lastWorkspaces.getValue())) {
+          ObjectMapper objectMapper = new ObjectMapper();
+          List<LastWorkspace> lastWorkspaceList = null;
+          String lastWorkspaceJson = lastWorkspaces.getValue();
+          
+          try {
+           lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {});
           }
-        }
-        try {
-          if (newList.isEmpty()) {
-            newList = null;
+          catch (JsonProcessingException e) {
+            logger.log(Level.WARNING, String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
           }
-          userEntityController.setUserEntityProperty(userEntity, "last-workspaces", objectMapper.writeValueAsString(newList));
-        }
-        catch (JsonProcessingException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+          
+          if(lastWorkspaceList != null) {
+            Long workspaceEntityId = workspaceUserEntity.getWorkspaceEntity().getId();
+            lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
+          }
+          
+          try {
+            userEntityController.setUserEntityProperty(userEntity, "last-workspaces", objectMapper.writeValueAsString(lastWorkspaceList));
+          }
+          catch (JsonProcessingException e) {
+            logger.log(Level.WARNING, String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
+          }
         }
       }
     }
