@@ -371,14 +371,14 @@ class DiscussionCurrentThread extends React.Component<
               >
                 {this.props.discussion.current.created !==
                 this.props.discussion.current.lastModified ? (
-                  <span className="application-list__item-edited">
+                  <div className="application-list__item-edited">
                     {this.props.i18n.text.get(
                       "plugin.discussion.content.isEdited",
                       this.props.i18n.time.format(
                         this.props.discussion.current.lastModified
                       )
                     )}
-                  </span>
+                  </div>
                 ) : null}
               </DiscussionThreadBody>
               {userCreator !== null ? (
