@@ -62,8 +62,7 @@
       "removing_room": "Oletko aivan varma, että haluat poistaa huoneen <b>{{room}}</b>? Tätä toimintoa ei voi peruuttaa."
     },
     "labels": {
-      "active_one": "Aktiivinen",
-      "active_other": "Aktiiviset",
+      "active": "Aktiivinen",
       "address": "Osoite",
       "announcer": "Tiedotin",
       "appointment": "Varaa aika",

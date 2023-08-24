@@ -62,8 +62,7 @@
       "removing_room": "Are you sure you want to remove the room <b>{{room}}</b>? This action cannot be undone."
     },
     "labels": {
-      "active_one": "Aktiivinen",
-      "active_other": "Aktiiviset",
+      "active": "Active",
       "address": "Address",
       "announcer": "Announcer",
       "appointment": "Reserve an appointment",
@@ -204,14 +203,14 @@
       "updateError_comment": "Editing comment failed: {{error}}",
       "updateSuccess": "Editing was successful.",
       "updateSuccess_chatStatus": "Chat state change was successful.",
-      "updateSuccess_chatUserName": "Chatin username change was successful.",
+      "updateSuccess_chatUserName": "Chat username change was successful.",
       "updateSuccess_comment": "Editing the comment was successful",
       "updateSuccess_credentials": "Changing credentials was successful",
       "updateSuccess_password": "Password change was successful"
     },
     "validation": {
       "beginDate": "Begin date is mandatory",
-      "caption": "Caption is mandatory",
+      "caption": "Title is mandatory",
       "content": "Content is mandatory",
       "email": "Email is mandatory",
       "emailInvalid": "*Invalid email",
@@ -274,7 +273,7 @@
       "profileImage": "Profiile picture",
       "remove": "Remove profile picture",
       "vacationSettings": "Vacation settings",
-      "vacationAutoReply": "Automaattinen lomaviesti käytössä",
+      "vacationAutoReply": "Automated vacation reply enabled",
       "whatsAppintegration": "WhatsApp-integration",
       "whatsappIntegration_off": "WhatsApp integration on",
       "whatsappIntegration_on": "WhatsApp integration off",
@@ -856,7 +855,7 @@
     "validation": {
       "beginDate": "Announcement begin date is mandatory",
       "caption": "$t(common:validation.caption)",
-      "caption_message": "Message caption is mandatory.",
+      "caption_message": "Message title is mandatory",
       "caption_announcements": "Announcement title is mandatory",
       "content": "$t(common:validation.content)",
       "content_message": "Message content is mandatory",
@@ -899,7 +898,7 @@
     "content": {
       "empty": "$t(common:content.empty)",
       "empty_tasks": "No tasks",
-      "empty_student": "There are no tasks given for you and you have created any. You can create new tasks in the studies view.",
+      "empty_student": "There are no tasks given for you and you have not created any. You can create new tasks in the studies view.",
       "instructions": "<p>Plus icon will open an editor, which you can use to create a new task. If you wish, you can schedule a task to begin and end on a certain day. You can also set only one date or no date at all. The set dates will not affect the task visibility.</p><p>The task you wrote can only be seen by yourself. Your counselor can also assign tasks to you and then oversee them until they are done. When you have finished the task, you can assign it done. Tasks given by a counselor can be send for approval. When the counselor sets the task done, the sate will change to 'Done'. Tasks will not be archived automatically, but you need to do it yourself by clicking the trash can-icon.</p>"
     },
     "labels": {
@@ -959,7 +958,7 @@
       "noStaff": "No staff found with the given terms",
       "notFound": "No users found with the given terms",
       "notFound_students": "No students found with the given terms",
-      "notFound_userGroups": "Annetuilla ehdoilla ei löydy käyttäjäryhmiä",
+      "notFound_userGroups": "No usergroups found with the given terms",
       "search": "Type in the search field to search from users",
       "search_students": "Type in the search field to search from studernts",
       "search_staff": "Type in the search field to search from the staff",
@@ -1097,7 +1096,7 @@
       "create": "Create new flag",
       "remove": "Remove flag",
       "removed": "Removal in save",
-      "share": "Share the flagv"
+      "share": "Share the flag"
     },
     "labels": {
       "create": "Create new flag",
@@ -1115,7 +1114,7 @@
       "warning": "To remove the flag, it must not be shared. Remove the sharing to remve the flag"
     },
     "validation": {
-      "caption": "Flage name is mandatory"
+      "caption": "Flag name is mandatory"
     }
   },
   "materials": {

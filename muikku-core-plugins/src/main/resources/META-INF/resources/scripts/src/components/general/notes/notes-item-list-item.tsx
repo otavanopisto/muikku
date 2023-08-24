@@ -204,7 +204,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">
-              {t("labels.active", { count: 1 })}
+              {t("labels.active")}
             </span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")} - {moment(dueDate).format("l")}
@@ -215,7 +215,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">
-              {t("labels.active", { count: 1 })}
+              {t("labels.active")}
             </span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")}
@@ -227,7 +227,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">
-              {t("labels.active", { count: 1 })}
+              {t("labels.active")}
             </span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
             <span className="notes__item-dates-date">
