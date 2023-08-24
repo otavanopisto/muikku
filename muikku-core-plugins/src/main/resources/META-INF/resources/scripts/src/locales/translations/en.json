@@ -1268,7 +1268,7 @@
       "removing_attachment": "Remove attachment?",
       "restorePage": "Restoring the page",
       "restrict": "Restrict visibility",
-      "restrict_jnstructionVisibility": "Restrict instruction visibility",
+      "restrict_instructionVisibility": "Restrict instruction visibility",
       "restrict_materialVisibilityForLoggedIn": "Restrict material visibility to signed in",
       "restrict_materialVisibilityForMemebers": "Restrict material visibility to course members",
       "shareAlike": "Yes, as long as others share alike",
@@ -1328,6 +1328,18 @@
     },
     "labels": {
       "defaultPosition": "Default position"
+    },
+    "notifications": {
+      "loadError": "$t(common:notifications.loadError)",
+      "loadError_courseNotes": "Loading the course notes failed",
+      "loadError_defaultLocation": "Loading the default location failed",
+      "loadError_notes": "Loading the notes failed",
+      "removeError": "Removing the note failed",
+      "saveSuccess": "Saving the note was successful",
+      "saveError": "Saving the note failed: {{error}}",
+      "updateError": "$t(common:notifications.updateError)",
+      "updateError_note": "Failed to update the note",
+      "updateError_noteOrder": "Failed to update the notes order"
     }
   },
   "workspace": {

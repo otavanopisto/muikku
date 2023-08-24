@@ -461,7 +461,7 @@
       "loadError_workspaceInterim": "Kurssin välipalautetehtävien lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_workspaceCompositeReplies": "Kurssin tehtävien lataus epäonnistui. Yritä ladata sivu uudelleen",
       "updateError": "$t(common:notifications.updateError)",
-      "updateError_matriculationEligiblity": "Osallistumisoikeuden lataaminen aineelle {{subject}} epäonnistui",
+      "updateError_matriculationEligibility": "Osallistumisoikeuden lataaminen aineelle {{subject}} epäonnistui",
       "updateError_summary": "Yhteenvedon tietojen lataaminen epäonnistui. Yritä ladata sivu uudelleen."
     }
   },
@@ -1267,7 +1267,7 @@
       "removing_attachment": "Poista liite?",
       "restorePage": "Sivun palauttaminen",
       "restrict": "Rajoita näkyvyyttä",
-      "restrict_jnstructionVisibility": "Rajoita ohjeiden näkyvyyttä",
+      "restrict_instructionVisibility": "Rajoita ohjeiden näkyvyyttä",
       "restrict_materialVisibilityForLoggedIn": "Rajoita materiaalin näkyvyys kirjautuneille",
       "restrict_materialVisibilityForMemebers": "Rajoita materiaalin näkyvyys kurssin jäsenille",
       "shareAlike": "Kyllä, mikäli muut jakavat samoin ehdoin",
@@ -1328,6 +1328,18 @@
     },
     "labels": {
       "defaultPosition": "Oletussijainti"
+    },
+    "notifications": {
+      "loadError": "$t(common:notifications.loadError)",
+      "loadError_courseNotes": "Virhe ladattaessa kurssikohtaisia muistiinpanoja",
+      "loadError_defaultLocation": "Virhe ladattaessa oletussijaintia",
+      "loadError_notes": "Virhe ladattaessa muistiinpanoja",
+      "removeError": "Virhe poistaessa muistiinpanoa",
+      "saveSuccess": "Muistiinpano lisätty onnistuneesti",
+      "saveError": "Virhe uuttaa muistiinpanoa tallentaessa: {{error}}",
+      "updateError": "$t(common:notifications.updateError)",
+      "updateError_note": "Virhe muistiinpanoa päivittäessä",
+      "updateError_noteOrder": "Virhe päivittäessä muistiinpanojen järjestystä"
     }
   },
   "workspace": {

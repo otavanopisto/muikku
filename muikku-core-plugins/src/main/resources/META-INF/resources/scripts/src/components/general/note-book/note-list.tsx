@@ -162,14 +162,12 @@ export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
           <div className="notebook__item-buttonset">
             <Button buttonModifiers={["fatal"]} onClick={handleDeleteClick}>
               {t("actions.remove", { ns: "common" })}
-              Poista
             </Button>
             <Button
               buttonModifiers={["cancel"]}
               onClick={() => setDeleteIsActive(false)}
             >
               {t("actions.cancel", { ns: "common" })}
-              Peruuta
             </Button>
           </div>
         </div>

@@ -120,6 +120,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
                 actions.displayNotification(
                   i18n.t("notifications.updateError", {
                     ns: "studies",
+                    context: "matriculationEligibility",
                     subject: subject.subjectCode,
                   }),
                   "error"
@@ -146,7 +147,6 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
           actions.displayNotification(
             i18n.t("notifications.updateError", {
               ns: "studies",
-              context: "matriculationEligibility",
             }),
             "error"
           )

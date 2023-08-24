@@ -604,7 +604,7 @@ class MaterialEditor extends React.Component<
           case MaterialViewRestriction.WORKSPACE_MEMBERS:
             localeString = t("labels.restrict", {
               ns: "materials",
-              context: "jnstructionVisibility",
+              context: "instructionVisibility",
             });
             break;
 
