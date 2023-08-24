@@ -40,7 +40,7 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     thread.setLastModifier(lastModifier.getId());
     thread.setArchived(archived);
     thread.setSticky(sticky);
-    thread.setLock(lock);
+    thread.setLocked(lock);
     thread.setLockBy(lockBy);
     thread.setLockDate(updated);
     thread.setUpdated(updated);
@@ -122,7 +122,7 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     thread.setTitle(title);
     thread.setMessage(message);
     thread.setSticky(sticky);
-    thread.setLock(lock);
+    thread.setLocked(lock);
     thread.setLastModified(lastModified);
     thread.setLastModifier(lastModifier.getId());
     thread.setLockBy(lockBy);
@@ -171,7 +171,7 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
   }
   
   public ForumThread toggleLock(ForumThread thread, LockForumThread lock, Long userEntityId) {
-    thread.setLock(lock);
+    thread.setLocked(lock);
     thread.setLockBy(userEntityId);
     thread.setLockDate(new Date());
     getEntityManager().persist(thread);

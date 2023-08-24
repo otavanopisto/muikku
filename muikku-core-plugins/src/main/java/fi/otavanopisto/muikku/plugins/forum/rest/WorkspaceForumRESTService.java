@@ -400,7 +400,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
     
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (!forumThread.getSticky().equals(updThread.getSticky()) || forumThread.getLock() != LockForumThread.valueOf(updThread.getLock())) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || String.valueOf(forumThread.getLocked()) != updThread.getLock()) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -477,7 +477,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
 
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (Boolean.TRUE.equals(newThread.getSticky()) || LockForumThread.valueOf(newThread.getLock()) == LockForumThread.ALL) {
+      if (Boolean.TRUE.equals(newThread.getSticky()) || newThread.getLock() == String.valueOf(LockForumThread.ALL)) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -758,10 +758,8 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
       }
       
-      if (forumThread.getLock() != null) {
-        if ((forumThread.getLock().equals(LockForumThread.STUDENTS) && userEntityController.isStudent(sessionController.getLoggedUserEntity())) || forumThread.getLock().equals(LockForumThread.ALL)) {
-          return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
-        }
+      if ((forumThread.getLocked() == LockForumThread.STUDENTS && userEntityController.isStudent(sessionController.getLoggedUserEntity())) || forumThread.getLocked() == LockForumThread.ALL) {
+        return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
       } 
       
       if (!(forumArea instanceof WorkspaceForumArea)) {
