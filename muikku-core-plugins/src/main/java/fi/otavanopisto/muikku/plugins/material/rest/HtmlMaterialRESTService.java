@@ -97,6 +97,10 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
+    if (entity.getRemoveAnswers()) {
+      logger.log(Level.WARNING, String.format("Update material %d by user %d with forced answer removal", id, sessionController.getLoggedUserEntity().getId()));
+    }
+    
     try {
       htmlMaterial = htmlMaterialController.updateHtmlMaterialHtml(htmlMaterial, entity.getContent(), entity.getRemoveAnswers());
     }
