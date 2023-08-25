@@ -13,6 +13,16 @@ import {
 } from "../../@types/evaluation";
 
 /**
+ * WorkspaceBasicInfo
+ */
+export interface WorkspaceBasicInfo {
+  id: number;
+  name: string;
+  urlName: string;
+  nameExtension?: string | null;
+}
+
+/**
  * OrganizationCourseTeacherType
  */
 export interface OrganizationCourseTeacherType {
