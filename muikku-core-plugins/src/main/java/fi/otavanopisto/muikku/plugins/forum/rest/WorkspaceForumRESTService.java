@@ -399,8 +399,10 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
+    LockForumThread lock = updThread.getLock() != null ? LockForumThread.valueOf(updThread.getLock()) : null;
+    
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (!forumThread.getSticky().equals(updThread.getSticky()) || String.valueOf(forumThread.getLocked()) != updThread.getLock()) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || forumThread.getLocked() != lock) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -411,7 +413,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           updThread.getTitle(),
           updThread.getMessage(),
           updThread.getSticky(), 
-          updThread.getLock() != null ? LockForumThread.valueOf(updThread.getLock()) : null);
+          lock);
       
       return Response.ok(
         restModels.restModel(forumThread)
@@ -476,8 +478,9 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
     }
 
+    LockForumThread lock = newThread.getLock() != null ? LockForumThread.valueOf(newThread.getLock()) : null;
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (Boolean.TRUE.equals(newThread.getSticky()) || newThread.getLock() == String.valueOf(LockForumThread.ALL)) {
+      if (Boolean.TRUE.equals(newThread.getSticky()) || lock == LockForumThread.ALL) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -490,7 +493,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           newThread.getTitle(),
           message.body().toString(), 
           newThread.getSticky(), 
-          newThread.getLock() != null ? LockForumThread.valueOf(newThread.getLock()) : null);
+          lock);
   
       forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), null, sessionController.getLoggedUserEntity().getId(), baseUrl, workspaceEntity.getUrlName()));
 
