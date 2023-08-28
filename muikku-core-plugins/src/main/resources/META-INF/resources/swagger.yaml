@@ -5,7 +5,7 @@ info:
 security:
   - bearerAuth: []
 servers:
-  - url: https://dev.muikkuverkko.fi
+  - url: /
 paths:
   #/rest/example/examples/:
   #get:

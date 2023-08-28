@@ -27,13 +27,13 @@ import {
   WorkspaceNotesApi,
 } from "../generated/client";
 
-const isDevelopment = process.env.NODE_ENV !== "production";
+/* const isDevelopment = process.env.NODE_ENV !== "production"; */
 
 const configuration = new Configuration({
-  basePath: isDevelopment
-    ? window.location.origin
-    : "https://otavanopisto.muikkuverkko.fi",
+  basePath: window.location.origin,
 });
+
+console.log("API base path: " + configuration.basePath);
 
 /**
  * Utility class for loading api with predefined configuration
