@@ -33,7 +33,7 @@ public class ForumRESTModels {
     long numReplies = forumController.getThreadReplyCount(thread);
     ForumMessageUserRESTModel userRestModel = createUserRESTModel(thread.getCreator());
     
-    String lock = thread.getLock() != null ? thread.getLock().name() : null;
+    String lock = thread.getLocked() != null ? thread.getLocked().name() : null;
     return new ForumThreadRESTModel(
         thread.getId(), 
         thread.getTitle(), 

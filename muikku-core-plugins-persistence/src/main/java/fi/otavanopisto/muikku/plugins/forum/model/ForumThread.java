@@ -34,11 +34,11 @@ public class ForumThread extends ForumMessage implements ResourceEntity {
     this.sticky = sticky;
   }
 
-  public LockForumThread getLock() {
+  public LockForumThread getLocked() {
     return locked;
   }
 
-  public void setLock(LockForumThread locked) {
+  public void setLocked(LockForumThread locked) {
     this.locked = locked;
   }
 

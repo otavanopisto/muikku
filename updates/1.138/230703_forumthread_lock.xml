@@ -4,5 +4,7 @@
   <sql>alter table forumthread add lockBy bigint(20) after locked;</sql>
   <sql>alter table forumthread add lockDate datetime after lockBy;</sql>
   <sql>alter table forumthread modify locked varchar(255);</sql>
+  <sql>update ForumThread set locked=null where locked='0';</sql>
+  <sql>update ForumThread set locked='ALL' where locked='1';</sql>
 
 </update> 

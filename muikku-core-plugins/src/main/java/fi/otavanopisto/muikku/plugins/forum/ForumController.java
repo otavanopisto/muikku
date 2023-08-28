@@ -231,8 +231,8 @@ public class ForumController {
   }
 
   public ForumThreadReply createForumThreadReply(ForumThread thread, String message, ForumThreadReply parentReply) {
-    if (thread.getLock() != null) {
-      if (thread.getLock().equals(LockForumThread.ALL) || (thread.getLock().equals(LockForumThread.STUDENTS) && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
+    if (thread.getLocked() != null) {
+      if (thread.getLocked() == LockForumThread.ALL || (thread.getLocked() == LockForumThread.STUDENTS && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
         logger.severe("Tried to create a forum thread reply for locked thread");
         return null;
       }
@@ -382,7 +382,7 @@ public class ForumController {
     UserEntity user = sessionController.getLoggedUserEntity();
     Date lockDate = new Date();
     Long lockBy = sessionController.getLoggedUserEntity().getId();
-    if (thread.getLock() == lock) {
+    if (thread.getLocked() == lock) {
       lockDate = thread.getLockDate();
       lockBy = thread.getLockBy();
     }
