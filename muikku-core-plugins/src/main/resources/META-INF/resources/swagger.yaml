@@ -9714,7 +9714,7 @@ components:
         - workspaceEntityIds
         - workspaces
       properties:
-        achived:
+        archived:
           type: boolean
         caption:
           type: string
