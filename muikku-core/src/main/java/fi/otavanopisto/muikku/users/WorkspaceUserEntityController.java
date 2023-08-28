@@ -221,25 +221,24 @@ public class WorkspaceUserEntityController {
       UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
       
       if (lastWorkspaces != null) {
-        if (StringUtils.isEmpty(lastWorkspaces.getValue())) {
+        if (StringUtils.isNotEmpty(lastWorkspaces.getValue())) {
           ObjectMapper objectMapper = new ObjectMapper();
           List<LastWorkspace> lastWorkspaceList = null;
           String lastWorkspaceJson = lastWorkspaces.getValue();
           
           try {
-           lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {});
-          }
-          catch (JsonProcessingException e) {
-            logger.log(Level.WARNING, String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
-          }
-          
-          if(lastWorkspaceList != null) {
-            Long workspaceEntityId = workspaceUserEntity.getWorkspaceEntity().getId();
-            lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
-          }
-          
-          try {
-            userEntityController.setUserEntityProperty(userEntity, "last-workspaces", objectMapper.writeValueAsString(lastWorkspaceList));
+            lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {});
+            
+            int lastWorkspaceListSize = lastWorkspaceList.size();
+            
+            if(lastWorkspaceList != null) {
+              Long workspaceEntityId = workspaceUserEntity.getWorkspaceEntity().getId();
+              lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
+            
+              if (lastWorkspaceListSize != lastWorkspaceList.size()) {
+              userEntityController.setUserEntityProperty(userEntity, "last-workspaces", objectMapper.writeValueAsString(lastWorkspaceList));
+              }
+            }
           }
           catch (JsonProcessingException e) {
             logger.log(Level.WARNING, String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
