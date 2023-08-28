@@ -5,6 +5,8 @@
   "main": "index.frontpage.ts",
   "scripts": {
     "build": "webpack",
+    "build-full": "npm run build-client && npm run build",
+    "build-full-windows": "npm run build-client-windows && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint . --ext .ts,.tsx",
     "stylelint": "stylelint \"**/*.scss\"",
