@@ -86,6 +86,61 @@ paths:
       description: Get announcements
       tags:
         - Announcer
+      parameters:
+        - name: hideEnvironmentAnnouncements
+          in: query
+          description: Hide environment announcements
+          schema:
+            type: boolean
+            default: false
+        - name: hideWorkspaceAnnouncements
+          in: query
+          description: Hide workspace announcements
+          schema:
+            type: boolean
+            default: false
+        - name: hideGroupAnnouncements
+          in: query
+          description: Hide group announcements
+          schema:
+            type: boolean
+            default: false
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id
+          schema:
+            type: integer
+        - name: onlyMine
+          in: query
+          description: Only mine
+          schema:
+            type: boolean
+            default: false
+        - name: onlyEditable
+          in: query
+          description: Only editable
+          schema:
+            type: boolean
+            default: false
+        - name: onlyArchived
+          in: query
+          description: Only archived
+          schema:
+            type: boolean
+            default: false
+        - name: timeFrame
+          in: query
+          description: Announcement time frame
+          schema:
+            type: string
+            enum:
+              - ALL
+              - CURRENT
+              - EXPIRED
+              - UPCOMING
+              - CURRENTANDEXPIRED
+              - CURRENTANDUPCOMING
+            default: CURRENT
       responses:
         "200":
           description: ""
@@ -2188,7 +2243,7 @@ paths:
           description: Internal server error
 
   #FEED
-  /rest/feed/feeds:
+  /rest/feed/feeds/{feedReadTarget}:
     get:
       operationId: getFeeds
       summary: Get feeds
@@ -8123,7 +8178,7 @@ components:
             type: object
             description: AnnouncementUpdateRequestBody object
             properties:
-              achived:
+              archived:
                 type: boolean
               caption:
                 type: string
@@ -9691,6 +9746,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceBasicInfo"
+
+    AnnouncementTimeFrame:
+      type: string
+      enum:
+        - ALL
+        - CURRENT
+        - EXPIRED
+        - UPCOMING
+        - CURRENTANDEXPIRED
+        - CURRENTANDUPCOMING
 
     AssessmentRequest:
       type: object

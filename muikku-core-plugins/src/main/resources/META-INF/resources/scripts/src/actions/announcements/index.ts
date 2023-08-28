@@ -4,16 +4,14 @@ import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   AnnouncementsStateType,
-  AnnouncementsPatchType,
-  AnnouncementListType,
-  AnnouncementType,
-  AnnouncementUpdateType,
-  AnnouncementsType,
+  AnnouncementsStatePatch,
+  AnnouncementsState,
 } from "~/reducers/announcements";
 import { loadAnnouncementsHelper } from "./helpers";
 import moment from "~/lib/moment";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
+import { Announcement, UpdateAnnouncementRequest } from "~/generated/client";
 
 export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_STATE",
@@ -21,38 +19,38 @@ export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
 >;
 export type UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
-  AnnouncementsPatchType
+  AnnouncementsStatePatch
 >;
 export type UPDATE_SELECTED_ANNOUNCEMENTS = SpecificActionType<
   "UPDATE_SELECTED_ANNOUNCEMENTS",
-  AnnouncementListType
+  Announcement[]
 >;
 export type ADD_TO_ANNOUNCEMENTS_SELECTED = SpecificActionType<
   "ADD_TO_ANNOUNCEMENTS_SELECTED",
-  AnnouncementType
+  Announcement
 >;
 export type REMOVE_FROM_ANNOUNCEMENTS_SELECTED = SpecificActionType<
   "REMOVE_FROM_ANNOUNCEMENTS_SELECTED",
-  AnnouncementType
+  Announcement
 >;
 export type SET_CURRENT_ANNOUNCEMENT = SpecificActionType<
   "SET_CURRENT_ANNOUNCEMENT",
-  AnnouncementType
+  Announcement
 >;
 export type UPDATE_ONE_ANNOUNCEMENT = SpecificActionType<
   "UPDATE_ONE_ANNOUNCEMENT",
   {
-    update: AnnouncementUpdateType;
-    announcement: AnnouncementType;
+    update: UpdateAnnouncementRequest;
+    announcement: Announcement;
   }
 >;
 export type DELETE_ANNOUNCEMENT = SpecificActionType<
   "DELETE_ANNOUNCEMENT",
-  AnnouncementType
+  Announcement
 >;
 export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS",
-  AnnouncementListType
+  Announcement[]
 >;
 
 /**
@@ -61,7 +59,7 @@ export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
 export interface LoadAnnouncementsAsAClientTriggerType {
   (
     options?: any,
-    callback?: (announcements: AnnouncementListType) => any
+    callback?: (announcements: Announcement[]) => any
   ): AnyActionType;
 }
 
@@ -93,14 +91,14 @@ export interface LoadAnnouncementTriggerType {
  * AddToAnnouncementsSelectedTriggerType
  */
 export interface AddToAnnouncementsSelectedTriggerType {
-  (announcement: AnnouncementType): AnyActionType;
+  (announcement: Announcement): AnyActionType;
 }
 
 /**
  * RemoveFromAnnouncementsSelectedTriggerType
  */
 export interface RemoveFromAnnouncementsSelectedTriggerType {
-  (announcement: AnnouncementType): AnyActionType;
+  (announcement: Announcement): AnyActionType;
 }
 
 /**
@@ -108,8 +106,8 @@ export interface RemoveFromAnnouncementsSelectedTriggerType {
  */
 export interface UpdateAnnouncementTriggerType {
   (data: {
-    announcement: AnnouncementType;
-    update: AnnouncementUpdateType;
+    announcement: Announcement;
+    update: UpdateAnnouncementRequest;
     success?: () => any;
     fail?: () => any;
     cancelRedirect?: boolean;
@@ -121,7 +119,7 @@ export interface UpdateAnnouncementTriggerType {
  */
 export interface DeleteAnnouncementTriggerType {
   (data: {
-    announcement: AnnouncementType;
+    announcement: Announcement;
     success: () => any;
     fail: () => any;
   }): AnyActionType;
@@ -249,8 +247,8 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
   ) => {
     const state = getState();
 
-    let announcement: AnnouncementType = state.announcements.announcements.find(
-      (a: AnnouncementType) => a.id === announcementId
+    let announcement: Announcement = state.announcements.announcements.find(
+      (a: Announcement) => a.id === announcementId
     );
     try {
       if (!announcement) {
@@ -259,7 +257,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
          * care of it if that happens
          */
         try {
-          announcement = <AnnouncementType>(
+          announcement = <Announcement>(
             await promisify(
               mApi().announcer.announcements.read(announcementId),
               "callback"
@@ -349,14 +347,14 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const announcements: AnnouncementsType = state.announcements;
+      const announcements: AnnouncementsState = state.announcements;
 
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
       }
 
       try {
-        const nAnnouncement: AnnouncementType = Object.assign(
+        const nAnnouncement: Announcement = Object.assign(
           {},
           data.announcement,
           data.update
@@ -392,7 +390,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
           dispatch({
             type: "UPDATE_ONE_ANNOUNCEMENT",
             payload: {
-              update: <AnnouncementUpdateType>(
+              update: <Announcement>(
                 await promisify(
                   mApi().announcer.announcements.read(data.announcement.id),
                   "callback"
@@ -459,7 +457,7 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const announcements: AnnouncementsType = state.announcements;
+      const announcements: AnnouncementsState = state.announcements;
 
       await Promise.all(
         announcements.selected.map(async (announcement) => {
@@ -501,7 +499,7 @@ const createAnnouncement: CreateAnnouncementTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const announcements: AnnouncementsType = state.announcements;
+      const announcements: AnnouncementsState = state.announcements;
 
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
@@ -571,7 +569,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         const loadUserGroups = options.loadUserGroups;
         delete options.loadUserGroups;
 
-        const announcements: AnnouncementListType = <AnnouncementListType>(
+        const announcements: Announcement[] = <Announcement[]>(
           await promisify(
             mApi().announcer.announcements.read(options),
             "callback"
@@ -585,7 +583,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
           );
         }
 
-        const payload: AnnouncementsPatchType = {
+        const payload: AnnouncementsStatePatch = {
           state: "READY",
           announcements,
           location: null,
