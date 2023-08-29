@@ -5,7 +5,7 @@ info:
 security:
   - bearerAuth: []
 servers:
-  - url: https://dev.muikkuverkko.fi
+  - url: /
 paths:
   #/rest/example/examples/:
   #get:
@@ -82,13 +82,68 @@ paths:
   /rest/announcer/announcements:
     get:
       operationId: getAnnouncements
-      summary: Get announcements
-      description: Get announcements
+      summary: Get announcements with defined parameters
+      description: Get announcements with defined parameters. Depending on the parameters, the result can be filtered by workspace, archived, editable, time frame, etc.
       tags:
         - Announcer
+      parameters:
+        - name: hideEnvironmentAnnouncements
+          in: query
+          description: Hide environment announcements
+          schema:
+            type: boolean
+            default: false
+        - name: hideWorkspaceAnnouncements
+          in: query
+          description: Hide workspace announcements
+          schema:
+            type: boolean
+            default: false
+        - name: hideGroupAnnouncements
+          in: query
+          description: Hide group announcements
+          schema:
+            type: boolean
+            default: false
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id
+          schema:
+            type: integer
+        - name: onlyMine
+          in: query
+          description: Only mine
+          schema:
+            type: boolean
+            default: false
+        - name: onlyEditable
+          in: query
+          description: Only editable
+          schema:
+            type: boolean
+            default: false
+        - name: onlyArchived
+          in: query
+          description: Only archived
+          schema:
+            type: boolean
+            default: false
+        - name: timeFrame
+          in: query
+          description: Announcement time frame
+          schema:
+            type: string
+            enum:
+              - ALL
+              - CURRENT
+              - EXPIRED
+              - UPCOMING
+              - CURRENTANDEXPIRED
+              - CURRENTANDUPCOMING
+            default: CURRENT
       responses:
         "200":
-          description: ""
+          description: Fetch announcements successfully
           content:
             application/json:
               schema:
@@ -116,8 +171,7 @@ paths:
 
     post:
       operationId: createAnnouncement
-      summary: Create announcement
-      description: Create announcement
+      summary: Create announcement with defined request body
       tags:
         - Announcer
       requestBody:
@@ -151,8 +205,7 @@ paths:
   /rest/announcer/announcements/{announcementId}:
     get:
       operationId: getAnnouncement
-      summary: Get announcement
-      description: Get announcement
+      summary: Get announcement by id
       tags:
         - Announcer
       parameters:
@@ -190,8 +243,7 @@ paths:
 
     put:
       operationId: updateAnnouncement
-      summary: Update announcement
-      description: Update announcement
+      summary: Update announcement by id and with defined request body
       tags:
         - Announcer
       parameters:
@@ -231,8 +283,7 @@ paths:
 
     delete:
       operationId: deleteAnnouncement
-      summary: Delete announcement
-      description: Delete announcement
+      summary: Delete announcement by id
       tags:
         - Announcer
       parameters:
@@ -2188,7 +2239,7 @@ paths:
           description: Internal server error
 
   #FEED
-  /rest/feed/feeds:
+  /rest/feed/feeds/{feedReadTarget}:
     get:
       operationId: getFeeds
       summary: Get feeds
@@ -8123,7 +8174,7 @@ components:
             type: object
             description: AnnouncementUpdateRequestBody object
             properties:
-              achived:
+              archived:
                 type: boolean
               caption:
                 type: string
@@ -9659,7 +9710,7 @@ components:
         - workspaceEntityIds
         - workspaces
       properties:
-        achived:
+        archived:
           type: boolean
         caption:
           type: string

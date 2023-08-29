@@ -6,7 +6,6 @@ import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { UserIndexType, ContactRecipientType } from "~/reducers/user-index";
 import { i18nType } from "reducers/base/i18n";
-import { AnnouncementType } from "~/reducers/announcements";
 import { AnyActionType } from "~/actions";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -28,6 +27,7 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import { Announcement } from "~/generated/client";
 
 /**
  * TargetItemsListType
@@ -40,7 +40,7 @@ type TargetItemsListType = Array<ContactRecipientType>;
 interface NewEditAnnouncementProps {
   children: React.ReactElement<any>;
   i18n: i18nType;
-  announcement?: AnnouncementType;
+  announcement?: Announcement;
   userIndex: UserIndexType;
   createAnnouncement: CreateAnnouncementTriggerType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
