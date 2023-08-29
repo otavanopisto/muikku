@@ -19,6 +19,7 @@ import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
+import { ServerResponse } from "http";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
@@ -904,13 +905,32 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           throw err;
         }
 
+        let conflictError = false;
+
+        // The "message.reason === "CONTAINS_ANSWERS"" is only available for admins, who receive a conflict error (409),
+        if (err.message) {
+          try {
+            const message = JSON.parse(err.message);
+            if (message.reason === "CONTAINS_ANSWERS") {
+              conflictError = true;
+            }
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+        }
+
         if (data.updateLinked) {
+          let showRemoveLinkedAnswersDialogForPublish = false;
+
+          if (conflictError) {
+            showRemoveLinkedAnswersDialogForPublish = true;
+          }
+
           dispatch({
             type: "UPDATE_MATERIAL_CONTENT_NODE",
             payload: {
               showUpdateLinkedMaterialsDialogForPublish: false,
               showUpdateLinkedMaterialsDialogForPublishCount: 0,
-              showRemoveLinkedAnswersDialogForPublish: true,
+              showRemoveLinkedAnswersDialogForPublish,
               showRemoveAnswersDialogForPublish: false,
               material: data.material,
               update: data.material,
@@ -923,14 +943,11 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         }
 
         let showRemoveAnswersDialogForPublish = false;
-        if (!data.removeAnswers && err.message) {
-          try {
-            const message = JSON.parse(err.message);
-            if (message.reason === "CONTAINS_ANSWERS") {
-              showRemoveAnswersDialogForPublish = true;
-            }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
+
+        if (!data.removeAnswers) {
+          if (conflictError) {
+            showRemoveAnswersDialogForPublish = true;
+          }
         }
 
         if (!data.dontTriggerReducerActions) {
