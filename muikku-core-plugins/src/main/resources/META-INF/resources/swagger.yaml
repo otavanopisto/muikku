@@ -9747,16 +9747,6 @@ components:
           items:
             $ref: "#/components/schemas/WorkspaceBasicInfo"
 
-    AnnouncementTimeFrame:
-      type: string
-      enum:
-        - ALL
-        - CURRENT
-        - EXPIRED
-        - UPCOMING
-        - CURRENTANDEXPIRED
-        - CURRENTANDUPCOMING
-
     AssessmentRequest:
       type: object
       description: AssessmentRequest object
