@@ -102,9 +102,6 @@ export async function loadAnnouncementsHelper(
   try {
     const announcements = await announcerApi.getAnnouncements(params);
 
-    /* const announcements = <Announcement[]>(
-      await promisify(mApi().announcer.announcements.read(params), "callback")()
-    ); */
     announcements.forEach((a) =>
       a.userGroupEntityIds.forEach((id) => dispatch(loadUserGroupIndex(id)))
     );
