@@ -905,14 +905,14 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           throw err;
         }
 
-        let conflictError = false;
+        let isConflictError = false;
 
         // The "message.reason === "CONTAINS_ANSWERS"" is only available for admins, who receive a conflict error (409),
         if (err.message) {
           try {
             const message = JSON.parse(err.message);
             if (message.reason === "CONTAINS_ANSWERS") {
-              conflictError = true;
+              isConflictError = true;
             }
             // eslint-disable-next-line no-empty
           } catch (e) {}
@@ -921,7 +921,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         if (data.updateLinked) {
           let showRemoveLinkedAnswersDialogForPublish = false;
 
-          if (conflictError) {
+          if (isConflictError) {
             showRemoveLinkedAnswersDialogForPublish = true;
           } else {
           dispatch(
@@ -955,7 +955,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         let showRemoveAnswersDialogForPublish = false;
 
         if (!data.removeAnswers) {
-          if (conflictError) {
+          if (isConflictError) {
             showRemoveAnswersDialogForPublish = true;
           }
         }
