@@ -103,10 +103,10 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     
     try {
       
-      // #6638: When remove answers flag is on, refuse update for non-admins if material has student answers
+      // #6638: When remove answers flag is on, refuse update for non-admins if material is published or has student answers
       
       if (entity.getRemoveAnswers() && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS)) {
-        if (htmlMaterialController.hasStudentAnswers(htmlMaterial)) {
+        if (workspaceMaterialController.isUsedInPublishedWorkspaces(htmlMaterial) || htmlMaterialController.hasStudentAnswers(htmlMaterial)) {
           logger.log(Level.WARNING, String.format("Update material %d by user %d denied due to material containing student answers", id, sessionController.getLoggedUserEntity().getId()));
           return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
         }

@@ -2553,10 +2553,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       try {
 
-        // #6638: When remove answers flag is on, refuse delete for non-admins if material has student answers
+        // #6638: When remove answers flag is on, refuse delete for non-admins if material's workspace is published or has student answers
         
         if (removeAnswers && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS)) {
-          if (workspaceMaterialController.hasStudentAnswers(workspaceMaterial)) {
+          if (workspaceEntity.getPublished() || workspaceMaterialController.hasStudentAnswers(workspaceMaterial)) {
             logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d denied due to material containing student answers", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
             return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
           }
