@@ -923,10 +923,20 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
 
           if (conflictError) {
             showRemoveLinkedAnswersDialogForPublish = true;
+          } else {
+          dispatch(
+            displayNotification(
+              getState().i18n.text.get(
+                "plugin.workspace.management.notification.failedToUpdateMaterialPage", err.message
+              ),
+              "error"
+            )
+          );
           }
 
           dispatch({
             type: "UPDATE_MATERIAL_CONTENT_NODE",
+
             payload: {
               showUpdateLinkedMaterialsDialogForPublish: false,
               showUpdateLinkedMaterialsDialogForPublishCount: 0,
@@ -971,7 +981,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           dispatch(
             displayNotification(
               getState().i18n.text.get(
-                "plugin.workspace.management.notification.failedToUpdateMaterialPage"
+                "plugin.workspace.management.notification.failedToUpdateMaterialPage", err.message
               ),
               "error"
             )
