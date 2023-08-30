@@ -1128,10 +1128,10 @@ public class GuiderRESTService extends PluginRESTService {
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
 
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, studentIdentifier);
-    if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getArchived())) {
+    if (workspaceUserEntity != null && workspaceUserEntity.getArchived() == Boolean.TRUE) {
       workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
     }
-    if (workspaceUserEntity != null && Boolean.FALSE.equals(workspaceUserEntity.getActive())) {
+    if (workspaceUserEntity != null && workspaceUserEntity.getActive() == Boolean.FALSE) {
       workspaceUserEntityController.updateActive(workspaceUserEntity, Boolean.TRUE);
       userIndexer.indexUser(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
     }
