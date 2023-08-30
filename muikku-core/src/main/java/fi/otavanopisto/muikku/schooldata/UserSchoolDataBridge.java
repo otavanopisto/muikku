@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
@@ -349,5 +350,13 @@ public interface UserSchoolDataBridge {
   public String findUserSsn(SchoolDataIdentifier userIdentifier);
 
   public boolean amICounselor(String studentIdentifier);
+
+  /**
+   * Lists students for who the given user is a guardian for.
+   * 
+   * @param guardianUserIdentifier guardian, should be of role STUDENT_PARENT
+   * @return guardians' students
+   */
+  public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier);
 
 }
