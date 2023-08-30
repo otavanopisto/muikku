@@ -2536,8 +2536,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null || !workspaceEntityId.equals(workspaceEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Workspace entity mismatch").build();
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
     }
     if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
@@ -2545,7 +2545,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      return Response.status(Status.NOT_FOUND).entity("Workspace material not found").build();
     }
     else {
       if (removeAnswers) {
