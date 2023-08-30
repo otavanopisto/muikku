@@ -1667,20 +1667,21 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
     List<String> subjectChoices = new ArrayList<>();
     
-    for (String result : results) {
-      if (result.contains(",")) {
-        String[] o = result.split(",");
-        
-        int i = 0;
-        while (i < o.length) {
-          subjectChoices.add(o[i]);
-          i++;
-        }  
-      } else {
-        subjectChoices.add(result);
-      }
-    }    
-    
+    if (results != null) {
+      for (String result : results) {
+        if (result.contains(",")) {
+          String[] o = result.split(",");
+          
+          int i = 0;
+          while (i < o.length) {
+            subjectChoices.add(o[i]);
+            i++;
+          }  
+        } else {
+          subjectChoices.add(result);
+        }
+      }    
+    }
     return subjectChoices;
   }
 
