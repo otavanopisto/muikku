@@ -1200,7 +1200,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
             dispatch(
               displayNotification(
                 getState().i18n.text.get(
-                  "plugin.workspace.materialsManagement.deleteFailed.notification"
+                  "plugin.workspace.materialsManagement.deleteFailed.notification", err.message
                 ),
                 "error"
               )
