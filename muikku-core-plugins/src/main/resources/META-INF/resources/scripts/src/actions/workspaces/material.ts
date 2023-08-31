@@ -924,14 +924,15 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           if (isConflictError) {
             showRemoveLinkedAnswersDialogForPublish = true;
           } else {
-          dispatch(
-            displayNotification(
-              getState().i18n.text.get(
-                "plugin.workspace.management.notification.failedToUpdateMaterialPage", err.message
-              ),
-              "error"
-            )
-          );
+            dispatch(
+              displayNotification(
+                getState().i18n.text.get(
+                  "plugin.workspace.management.notification.failedToUpdateMaterialPage",
+                  err.message
+                ),
+                "error"
+              )
+            );
           }
 
           dispatch({
@@ -981,7 +982,8 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           dispatch(
             displayNotification(
               getState().i18n.text.get(
-                "plugin.workspace.management.notification.failedToUpdateMaterialPage", err.message
+                "plugin.workspace.management.notification.failedToUpdateMaterialPage",
+                err.message
               ),
               "error"
             )
@@ -1200,7 +1202,8 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
             dispatch(
               displayNotification(
                 getState().i18n.text.get(
-                  "plugin.workspace.materialsManagement.deleteFailed.notification", err.message
+                  "plugin.workspace.materialsManagement.deleteFailed.notification",
+                  err.message
                 ),
                 "error"
               )
