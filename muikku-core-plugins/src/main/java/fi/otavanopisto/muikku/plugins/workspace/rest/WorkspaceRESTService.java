@@ -3496,9 +3496,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createUserFile(MultipartFormDataInput multipart) {
     byte[] fileData = getFile(multipart, "file");
-    String filename = String.format("%s-%s",
-        StringUtils.strip(UUID.randomUUID().toString(), "-"),
-        sanitizeFilename(getString(multipart, "name")));
+    String filename = StringUtils.strip(UUID.randomUUID().toString(), "-");
     try {
       fileAnswerUtils.storeFileToFileSystem(FileAnswerType.FILE, sessionController.getLoggedUserEntity().getId(), filename, fileData);
     }
@@ -3616,26 +3614,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         commentTreeAdd(comments, c, resultList);
       });
     return resultList;
-  }
-
-  private String sanitizeFilename(String filename) {
-    filename = StringUtils.trim(filename);
-    if (StringUtils.isEmpty(filename)) {
-      return filename;
-    }
-    return StringUtils.lowerCase(StringUtils.strip(StringUtils.removePattern(filename, "[\\\\/:*?\"<>|]"), "."));
-  }
-
-  private String getString(MultipartFormDataInput multipart, String field) {
-    try {
-      Map<String, List<InputPart>> form = multipart.getFormDataMap();
-      List<InputPart> inputParts = form.get(field);
-      return inputParts.size() == 0 ? null : inputParts.get(0).getBodyAsString();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-    return null;
   }
 
   private byte[] getFile(MultipartFormDataInput multipart, String field) {

@@ -37,7 +37,6 @@ public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
   private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
-  @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction

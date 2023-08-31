@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchReindexEvent;
 import fi.otavanopisto.muikku.search.SearchReindexEvent.Task;
@@ -59,6 +60,9 @@ public class SchoolDataSearchReindexListener {
   
   @Inject
   private WorkspaceIndexer workspaceIndexer;
+  
+  @Inject
+  private PyramusUpdater pyramusUpdater;
 
   @Inject
   private CommunicatorMessageIndexer communicatorMessageIndexer;
@@ -76,7 +80,7 @@ public class SchoolDataSearchReindexListener {
 
   public void onReindexEvent(@Observes SearchReindexEvent event) {
     if (active) {
-      logger.log(Level.INFO, "Already reindexing, refused to start another reindexing task.");
+      logger.log(Level.INFO, "Already reindexing, refused to start another reindexing task");
       return;
     }
 
@@ -101,14 +105,14 @@ public class SchoolDataSearchReindexListener {
       }
     }
 
-    logger.log(Level.INFO, "Reindex initiated.");
+    logger.log(Level.INFO, "Reindex initiated");
 
     startTimer(getTimeout());
   }
 
   @Timeout
   private void onTimeOut(Timer timer) {
-    logger.log(Level.INFO, "Commencing Reindex task.");
+    logger.log(Level.INFO, "Commencing Reindex task");
     try {
       boolean allDone = true;
 
@@ -118,6 +122,10 @@ public class SchoolDataSearchReindexListener {
 
       if (allDone && (tasks.contains(Task.ALL) || tasks.contains(Task.USERS))) {
         allDone = reindexUsers();
+      }
+
+      if (allDone && (tasks.contains(Task.ALL) || tasks.contains(Task.STUDYPROGRAMMES))) {
+        allDone = reindexStudyProgrammes();
       }
 
       if (allDone && (tasks.contains(Task.ALL) || tasks.contains(Task.USERGROUPS))) {
@@ -132,12 +140,12 @@ public class SchoolDataSearchReindexListener {
         startTimer(getTimeout());
       }
       else {
-        logger.log(Level.INFO, "Reindexing complete.");
+        logger.log(Level.INFO, "Reindexing complete");
         active = false;
       }
     }
     catch (Exception ex) {
-      logger.log(Level.SEVERE, "Reindexing of entities failed.", ex);
+      logger.log(Level.SEVERE, "Reindexing of entities failed", ex);
     }
   }
 
@@ -164,7 +172,7 @@ public class SchoolDataSearchReindexListener {
       }
     }
     catch (Exception ex) {
-      logger.log(Level.SEVERE, "Could not finish indexing workspace entities.", ex);
+      logger.log(Level.SEVERE, "Could not finish indexing workspace entities", ex);
       return true;
     }
   }
@@ -198,9 +206,20 @@ public class SchoolDataSearchReindexListener {
       }
     }
     catch (Exception ex) {
-      logger.log(Level.SEVERE, "Could not finish indexing user entities.", ex);
+      logger.log(Level.SEVERE, "Could not finish indexing user entities", ex);
       return true;
     }
+  }
+  
+  private boolean reindexStudyProgrammes() {
+    try {
+      pyramusUpdater.updateStudyProgrammes();
+      logger.log(Level.INFO, "Reindexed study programmes");
+    }
+    catch (Exception ex) {
+      logger.log(Level.SEVERE, "Could not finish indexing study programmes", ex);
+    }
+    return true;
   }
 
   private boolean reindexUserGroups() {
@@ -231,7 +250,7 @@ public class SchoolDataSearchReindexListener {
       }
     }
     catch (Exception ex) {
-      logger.log(Level.SEVERE, "Could not finish indexing usergroup entities.", ex);
+      logger.log(Level.SEVERE, "Could not finish indexing usergroup entities", ex);
       return true;
     }
   }
@@ -267,7 +286,7 @@ public class SchoolDataSearchReindexListener {
       }
     }
     catch (Exception ex) {
-      logger.log(Level.SEVERE, "Could not finish indexing communicator messages.", ex);
+      logger.log(Level.SEVERE, "Could not finish indexing communicator messages", ex);
       return true;
     }
   }

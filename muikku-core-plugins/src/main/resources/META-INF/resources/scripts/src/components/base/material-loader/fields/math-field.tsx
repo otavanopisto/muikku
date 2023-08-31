@@ -125,8 +125,6 @@ export default class TextField extends React.Component<
    */
   render() {
     // NOTE you cannot change the formula class name unless you want to break backwards compatibility
-    // backwards compability has been broken since you changed the class name from muikku-math-exercise-formula to material-page__mathfield-formula
-    // this means old formulas will 100% fail to parse
 
     const fieldSavedStateClass = createFieldSavedStateClass(
       this.state.fieldSavedState

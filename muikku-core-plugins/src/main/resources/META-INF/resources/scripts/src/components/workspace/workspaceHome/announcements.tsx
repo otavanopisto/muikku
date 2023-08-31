@@ -1,14 +1,13 @@
 import { WorkspaceType } from "~/reducers/workspaces";
-import { AnnouncementListType } from "~/reducers/announcements";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
+import { Announcement } from "~/generated/client";
 
 /**
  * WorkspaceAnnouncementsProps
@@ -16,7 +15,7 @@ import "~/sass/elements/item-list.scss";
 interface WorkspaceAnnouncementsProps {
   status: StatusType;
   workspace: WorkspaceType;
-  announcements: AnnouncementListType;
+  announcements: Announcement[];
   i18n: i18nType;
 }
 

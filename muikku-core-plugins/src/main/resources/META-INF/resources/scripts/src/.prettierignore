@@ -1,2 +1,3 @@
 # Ignore all SCSS files:
 *.scss
+generated
