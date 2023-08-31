@@ -500,6 +500,7 @@
       "french": "French",
       "german": "German",
       "geography": "Geography",
+      "geography_usc": "Geography",
       "goals": "Goals",
       "graduationQuestion": "When do you plan to graduate?",
       "industry": "Teollisuus",
@@ -625,7 +626,6 @@
       "organization": "<p>Otavia is a municipal enterprise owned by the city of Mikkeli that specializes in digital education through Online Upper Secondary School for Adults and Online Comprehensive School for Adults. We also welcome students to enroll in on-campus courses as part of different study programmes for students with immigrant backgrounds. It is also possible to enroll in a number of liberal adult education courses. We provide and develop education locally, nationwide and globally. Exploring, trying out and testing new approaches is at the heart of what we do at Otavia.</p>",
       "passwordChangeMailSent": "Lähetimme varmistusviestin osoitteeseen {{email}}. Pääset vaihtamaan salasanasi klikkaamalla viestissä olevaa linkkiä.",
       "plagScan": "We are using online plagiarism checking system",
-      "selfImprovement": "Otavan Opisto's courses help you develop yourself and your skills. There's a wide selection of courses on learning, well-being, futurology and IT available to you.",
       "site": "The digital learning platform of online upper secondary school Nettilukio and online comprehensive school Nettiperuskoulu",
       "studentApplication": "Browse our Programmes and Fill out Online Application."
     },
