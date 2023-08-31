@@ -89,7 +89,7 @@ class Person extends React.Component<IPersonProps, IPersonState> {
               "labels.remove", {context: "roster", name: name},
             )}
             content={this.props.i18n.t(
-              "labels.removing", {context: "person" }
+              "labels.removing", {context: "user" }
             )}
             modifier="chat-control-box"
             onExecute={this.handleRemove}
