@@ -55,7 +55,6 @@ public class WorkspaceAnnouncementsViewBackingBean {
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
-  @Named
   private WorkspaceBackingBean workspaceBackingBean;
   
   @RequestAction

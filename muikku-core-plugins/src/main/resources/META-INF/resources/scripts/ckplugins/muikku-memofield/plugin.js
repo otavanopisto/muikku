@@ -86,8 +86,10 @@
   } );
 
   CKEDITOR.dialog.add('muikkumemofield', function (editor) {
+    var lang = editor.lang['muikku-memofield'];
+
     return {
-      title : editor.lang['muikku-memofield'].propertiesDialogTitle,
+      title : lang.propertiesDialogTitle,
       minWidth : 420,
       minHeight : 310,
       onShow : function() {
@@ -132,7 +134,7 @@
           {
             id: 'rows',
             type: 'text',
-            label: editor.lang['muikku-memofield'].propertiesDialogRows,
+            label: lang.propertiesDialogRows,
             setup: function(json) {
               this.setValue(json.rows);
             }
@@ -140,7 +142,7 @@
           {
             id: 'example',
             type: 'textarea',
-            label: editor.lang['muikku-memofield'].propertiesDialogExample,
+            label: lang.propertiesDialogExample,
             setup: function(json) {
               this.setValue(json.example);
             }
@@ -148,7 +150,7 @@
           {
             id: 'richedit',
             type: 'checkbox',
-            label: editor.lang['muikku-memofield'].propertiesDialogRichEdit,
+            label: lang.propertiesDialogRichEdit,
             setup: function(json) {
               this.setValue(json.richedit);
             }

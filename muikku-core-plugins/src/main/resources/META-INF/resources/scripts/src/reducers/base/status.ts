@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 //This one also uses a hack to access the data in the dom
 //please replace it with the following procedure
 //1. Create a rest endpoint to get the permissions list
@@ -15,6 +16,7 @@ export interface WhoAmIType {
   studyTimeLeftStr: string;
   studyStartDate: string;
   studyEndDate: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   phoneNumbers: any;
   displayName: string;
   curriculumIdentifier: string;
@@ -42,6 +44,33 @@ export interface WhoAmIType {
   studyProgrammeIdentifier: string;
   addresses: string;
   emails: string;
+  services: Services;
+}
+
+/**
+ * Servies that are active or available for user.
+ * Some of these are linked to permissions.
+ */
+export interface Services {
+  /**
+   * Chat service
+   */
+  chat: {
+    isActive: boolean;
+    isAvailable: boolean;
+  };
+  /**
+   * Forum service (enviromental)
+   */
+  environmentForum: {
+    isAvailable: boolean;
+  };
+  /**
+   * Worklist service
+   */
+  worklist: {
+    isAvailable: boolean;
+  };
 }
 
 /**
@@ -58,6 +87,7 @@ export interface StatusType {
   isStudent: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
+  services: Services;
   currentWorkspaceInfo?: {
     id: number;
     organizationEntityId: number;
@@ -111,9 +141,9 @@ export enum Role {
   CUSTOM = "CUSTOM",
 }
 
-const workspaceIdNode = document.querySelector(
+/* const workspaceIdNode = document.querySelector(
   'meta[name="muikku:workspaceId"]'
-);
+); */
 
 // _MUIKKU_LOCALE should be taken from the html
 /**
@@ -123,32 +153,23 @@ const workspaceIdNode = document.querySelector(
  */
 export default function status(
   state: StatusType = {
-    loggedIn: JSON.parse(
-      document
-        .querySelector('meta[name="muikku:loggedIn"]')
-        .getAttribute("value")
-    ), //whoami.id is checked if exists
+    loggedIn: false, //whoami.id is checked if exists
     userId: null, // whoami.id
     userSchoolDataIdentifier: null, // whoami.identifier
     role: undefined, // whoami.role
     permissions: {},
     contextPath: "", // always empty
-    isActiveUser: JSON.parse(
-      document
-        .querySelector('meta[name="muikku:activeUser"]')
-        .getAttribute("value")
-    ), // whoamI.isActive
+    isActiveUser: false, // whoamI.isActive
     hasFees: false, // whoami.hasEvaluationFees
     profile: null,
     isStudent: false, // check if role is STUDENT
     currentWorkspaceInfo: null,
     hasImage: false,
     imgVersion: new Date().getTime(),
-    currentWorkspaceId:
-      (workspaceIdNode && parseInt(workspaceIdNode.getAttribute("value"))) ||
-      null,
+    currentWorkspaceId: null,
     canCurrentWorkspaceSignup: false,
     hopsEnabled: false, // /user/property/hops.enabled
+    services: null,
   },
   action: ActionType
 ): StatusType {
@@ -194,9 +215,17 @@ export default function status(
       return {
         ...state,
         ...actionPayloadWoPermissions,
+        loggedIn: !!action.payload.userId,
+        isActiveUser: action.payload.isActiveUser,
         permissions: { ...state.permissions, ...action.payload.permissions },
       };
     }
+
+    case "UPDATE_STATUS_WORKSPACEID":
+      return {
+        ...state,
+        currentWorkspaceId: action.payload,
+      };
 
     default:
       return state;

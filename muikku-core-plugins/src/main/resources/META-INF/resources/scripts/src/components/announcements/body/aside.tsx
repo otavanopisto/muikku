@@ -2,19 +2,21 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
-import { AnnouncementType, AnnouncementsType } from "~/reducers/announcements";
+import { AnnouncementsState } from "~/reducers/announcements";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/item-list.scss";
+import { Announcement } from "~/generated/client";
+import { AnyActionType } from "~/actions";
 
 /**
  * AnnouncementsAsideProps
  */
 interface AnnouncementsAsideProps {
   i18n: i18nType;
-  announcements: AnnouncementsType;
+  announcements: AnnouncementsState;
 }
 
 /**
@@ -39,7 +41,7 @@ class AnnouncementsAside extends React.Component<
         {this.props.announcements.announcements.length !== 0 ? (
           <div className="item-list item-list--panel-announcements">
             {this.props.announcements.announcements.map(
-              (announcement: AnnouncementType) => {
+              (announcement: Announcement) => {
                 const extraWorkspaces =
                   announcement.workspaces && announcement.workspaces.length
                     ? announcement.workspaces.length - 1
@@ -114,7 +116,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

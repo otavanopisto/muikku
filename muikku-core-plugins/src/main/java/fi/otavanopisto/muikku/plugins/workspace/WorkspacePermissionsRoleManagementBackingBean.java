@@ -44,7 +44,6 @@ public class WorkspacePermissionsRoleManagementBackingBean extends AbstractWorks
   private WorkspaceController workspaceController;
   
   @Inject
-  @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
   @Inject

@@ -49,6 +49,13 @@ public class ChatController {
   public boolean isChatAvailable(SchoolDataIdentifier userIdentifier) {
     if (userIdentifier != null) {
       
+      // #6621: Master flag for chat availability
+      
+      String chatAvailable = pluginSettingsController.getPluginSetting("chat", "available");
+      if (StringUtils.isBlank(chatAvailable) || !StringUtils.equals(chatAvailable, "1")) {
+        return false;
+      }
+      
       // Chat is always available for admins
       
       EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);

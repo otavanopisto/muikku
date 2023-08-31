@@ -51,7 +51,6 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
-  @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
   @Inject
