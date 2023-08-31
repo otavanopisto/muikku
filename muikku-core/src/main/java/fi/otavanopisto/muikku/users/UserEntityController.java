@@ -372,16 +372,4 @@ public class UserEntityController implements Serializable {
     return userEntityDAO.updateUpdatedByStudent(userEntity, Boolean.TRUE);
   }
 
-//  /**
-//   * Returns role for default identifier of given user
-//   * 
-//   * @param userEntity
-//   * @return
-//   */
-//  public EnvironmentRoleEntity getDefaultIdentifierRole(UserEntity userEntity) {
-//    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(
-//        userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier(), Boolean.FALSE);
-//    return userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getRole() : null;
-//  }
-//
 }
