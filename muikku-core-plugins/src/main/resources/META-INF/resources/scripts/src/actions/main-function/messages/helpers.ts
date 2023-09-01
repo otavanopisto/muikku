@@ -182,6 +182,7 @@ export async function loadMessagesHelper(
     } else if (item.type !== "label") {
       const apiPathId = getApiId(item);
 
+      // Only these three paths are supported
       switch (apiPathId) {
         case "items":
           results = await communicatorApi.getCommunicatorThreads(params);
