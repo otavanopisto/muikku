@@ -1098,7 +1098,7 @@
     },
     "labels": {
       "create": "Create new flag",
-      "createAndShare": "Create and share flags",
+      "createAndSearch": "Create and share flags",
       "edit": "Edit flag",
       "flags": "Flags",
       "share": "Share the flag {{flag}}"

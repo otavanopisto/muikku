@@ -100,7 +100,7 @@ class GuiderToolbarLabels extends React.Component<
                 value={this.state.labelFilter}
                 onChange={this.updateLabelFilter}
                 type="text"
-                placeholder={this.props.i18n.t("labels.createAndShare", {
+                placeholder={this.props.i18n.t("labels.createAndSearch", {
                   ns: "flags",
                 })}
               />
@@ -187,7 +187,7 @@ class GuiderToolbarLabels extends React.Component<
               value={this.state.labelFilter}
               onChange={this.updateLabelFilter}
               type="text"
-              placeholder={this.props.i18n.t("labels.createAndShare", {
+              placeholder={this.props.i18n.t("labels.createAndSearch", {
                 ns: "flags",
               })}
             />
