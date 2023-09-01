@@ -23,11 +23,8 @@ import {
   AddToMessagesSelectedThreadsTriggerType,
 } from "~/actions/main-function/messages";
 import {
-  MessageThreadListType,
   MessagesStateType,
-  MessageThreadExpandedType,
-  MessageThreadType,
-  MessagesType,
+  MessagesState,
   MessageSearchResult,
 } from "~/reducers/main-function/messages";
 import ApplicationList, {
@@ -40,19 +37,20 @@ import ApplicationList, {
 import { StatusType } from "~/reducers/base/status";
 import InfoPopover from "~/components/general/info-popover";
 import Dropdown from "~/components/general/dropdown";
+import { MessageThread, MessageThreadExpanded } from "~/generated/client";
 
 /**
  * CommunicatorMessagesProps
  */
 interface CommunicatorMessagesProps {
-  threads: MessageThreadListType;
+  threads: MessageThread[];
   hasMore: boolean;
   state: MessagesStateType;
   searchMessages: MessageSearchResult[];
-  selectedThreads: MessageThreadListType;
+  selectedThreads: MessageThread[];
   selectedThreadsIds: Array<number>;
-  currentThread: MessageThreadExpandedType;
-  messages: MessagesType;
+  currentThread: MessageThreadExpanded;
+  messages: MessagesState;
 
   loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType;
   removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType;
@@ -99,7 +97,7 @@ class CommunicatorMessages extends BodyScrollLoader<
    * @param thread thread
    * @param userId userId
    */
-  getThreadUserNames(thread: MessageThreadType, userId: number): any {
+  getThreadUserNames(thread: MessageThread, userId: number): any {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
         return (
@@ -210,9 +208,7 @@ class CommunicatorMessages extends BodyScrollLoader<
    * setCurrentThread
    * @param threadOrSearchResult threadOrSearchResult
    */
-  setCurrentThread(
-    threadOrSearchResult: MessageThreadType | MessageSearchResult
-  ) {
+  setCurrentThread(threadOrSearchResult: MessageThread | MessageSearchResult) {
     window.location.hash =
       window.location.hash.split("/")[0] +
       "/" +

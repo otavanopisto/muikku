@@ -37,7 +37,7 @@ import {
   flatten,
 } from "~/util/modifiers";
 import LabelUpdateDialog from "../../dialogs/label-update";
-import { MessagesType } from "~/reducers/main-function/messages";
+import { MessagesState } from "~/reducers/main-function/messages";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -63,7 +63,7 @@ import { AnyActionType } from "~/actions";
  * CommunicatorToolbarProps
  */
 interface CommunicatorToolbarProps {
-  messages: MessagesType;
+  messages: MessagesState;
   i18n: i18nType;
 
   deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType;
