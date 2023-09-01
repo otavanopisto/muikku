@@ -693,8 +693,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public List<String> listStudentAlternativeStudyOptions(String userIdentifier) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new SchoolDataBridgeInternalException("Not supported");
 
   }
   public UserContactInfo getStudentContactInfo(String userIdentifier) {

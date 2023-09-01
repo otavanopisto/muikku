@@ -959,11 +959,7 @@ public class HopsRestService {
       }
     }
     
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      return Response.ok(userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier)).build();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    return Response.ok(userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier)).build();
+
   }
 }

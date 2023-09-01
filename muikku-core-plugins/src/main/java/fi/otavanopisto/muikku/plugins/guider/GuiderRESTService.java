@@ -106,6 +106,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -1088,33 +1089,26 @@ public class GuiderRESTService extends PluginRESTService {
 
   @POST
   @Path("/student/{ID}/workspace/{WORKSPACEID}/signup")
-  @RESTPermit (handling = Handling.INLINE)
-  public Response createWorkspaceSignupByStaff(@PathParam("ID") String userIdentifier, @PathParam("WORKSPACEID") Long workspaceEntityId,
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceSignupByStaff(@PathParam("ID") Long userEntityId, @PathParam("WORKSPACEID") Long workspaceEntityId,
       fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
-
-    if (!sessionController.isLoggedIn()) { 
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(userIdentifier);
-
-    UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
-
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
     EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
 
     if (loggedUserRole == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-
-    if (!userSchoolDataController.amICounselor(studentIdentifier) && !loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-
-
+    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
+    SchoolDataIdentifier studentIdentifier = studentEntity.defaultSchoolDataIdentifier();
+
+    if (!userSchoolDataController.amICounselor(studentIdentifier) && !loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.UNAUTHORIZED).build();
     }
 
     User student = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
@@ -1136,7 +1130,7 @@ public class GuiderRESTService extends PluginRESTService {
       userIndexer.indexUser(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
     }
 
-    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, studentEntity.defaultSchoolDataIdentifier());
+    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, studentIdentifier);
     if (workspaceUser == null) {
       workspaceUser = workspaceController.createWorkspaceUser(workspace, student, WorkspaceRoleArchetype.STUDENT);
       waitForWorkspaceUserEntity(workspaceEntity, studentIdentifier);
@@ -1157,21 +1151,15 @@ public class GuiderRESTService extends PluginRESTService {
       ? student.getDisplayName()
       : String.format("%s \"%s\" %s (%s)", student.getFirstName(), student.getNickName(), student.getLastName(), student.getStudyProgrammeName());
 
-    User loggedUser = userController.findUserByUserEntityDefaults(sessionController.getLoggedUserEntity());
-
-    String loggedUserName = loggedUser.getNickName() == null
-        ? loggedUser.getDisplayName()
-        : String.format("%s \"%s\" %s (%s)", loggedUser.getFirstName(), loggedUser.getNickName(), loggedUser.getLastName(), loggedUser.getStudyProgrammeName());
-
-    recipients.add(studentEntity);
+    UserEntityName loggedUserEntityName = userEntityController.getName(sessionController.getLoggedUserEntity(), false);
+    String loggedUserName = loggedUserEntityName.getNickName() == null
+        ? loggedUserEntityName.getDisplayName()
+        : String.format("%s \"%s\" %s (%s)", loggedUserEntityName.getFirstName(), loggedUserEntityName.getNickName(), loggedUserEntityName.getLastName(), loggedUserEntityName.getStudyProgrammeName());
 
     for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
       recipients.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
     }
-
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
-
-    workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), entity.getMessage());
+    workspaceController.createWorkspaceUserSignup(workspaceEntity, studentEntity, new Date(), entity.getMessage());
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.caption");
     caption = MessageFormat.format(caption, loggedUserName, userName, workspaceName);
@@ -1180,18 +1168,29 @@ public class GuiderRESTService extends PluginRESTService {
 
     String studentLink = String.format("<a href=\"%s/guider#userprofile/%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
     String content;
+    String contentStudent;
     if (StringUtils.isEmpty(entity.getMessage())) {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.content");
       content = MessageFormat.format(content, loggedUserName, studentLink, workspaceLink);
+      
+      contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.content");
+      contentStudent = MessageFormat.format(contentStudent, loggedUserName, userName, workspaceLink);
     } else {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessage");
       String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
       content = MessageFormat.format(content, loggedUserName, studentLink, workspaceLink, blockquoteMessage);
+      
+      contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessage");
+      contentStudent = MessageFormat.format(contentStudent, loggedUserName, userName, workspaceLink, blockquoteMessage);
+
     }
 
     for (MessagingWidget messagingWidget : messagingWidgets) {
       // TODO: Category?
-      messagingWidget.postMessage(userSchoolDataIdentifier.getUserEntity(), "message", caption, content, recipients);
+      messagingWidget.postMessage(studentEntity, "message", caption, content, recipients);
+      
+      // Send own message to the student without a guider link
+      messagingWidget.postMessage(studentEntity, "message", caption, contentStudent, Arrays.asList(studentEntity));
     }
 
     List<String> recipientEmails = new ArrayList<>(recipients.size());
@@ -1204,6 +1203,12 @@ public class GuiderRESTService extends PluginRESTService {
     if (!recipientEmails.isEmpty()) {
       mailer.sendMail(MailType.HTML, recipientEmails, caption, content);
     }
+    
+    String studentEmail = userEmailEntityController.getUserDefaultEmailAddress(studentEntity, false);
+    if (StringUtils.isNotBlank(studentEmail)) {
+      mailer.sendMail(MailType.HTML, Arrays.asList(studentEmail), caption, contentStudent);
+    }
+
     List<StudyActivityItemRestModel> restItems = new ArrayList<StudyActivityItemRestModel>();
     
     SearchProvider searchProvider = getProvider("elastic-search");
@@ -1235,10 +1240,10 @@ public class GuiderRESTService extends PluginRESTService {
         return Response.ok(restItems).build();
       }
       else {
-        throw new RuntimeException(String.format("Search provider couldn't find a unique workspace. %d results.", searchResult.getTotalHitCount()));
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Search provider couldn't find a unique workspace. %d results.", searchResult.getTotalHitCount())).build();
       }
     } else {
-      throw new RuntimeException(String.format("Elastic search provider not found.", searchProvider));
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Elastic search provider not found.", searchProvider)).build();
     }
   }
 

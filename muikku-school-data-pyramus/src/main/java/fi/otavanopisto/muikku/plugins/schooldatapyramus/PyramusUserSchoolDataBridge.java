@@ -1659,27 +1659,15 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
     String results[] = null;
     if (studentId == null) {
-      logger.severe(String.format("Student for identifier %s not found", userIdentifier));
+      return Collections.emptyList();
     }
-    Student student = findPyramusStudent(studentId);
-    if (student != null) {
-      results =  pyramusClient.get(String.format("/students/students/%d/subjectChoices", studentId), String[].class);
-    }
+    results =  pyramusClient.get(String.format("/students/students/%d/subjectChoices", studentId), String[].class);
+      
     List<String> subjectChoices = new ArrayList<>();
     
     if (results != null) {
       for (String result : results) {
-        if (result.contains(",")) {
-          String[] o = result.split(",");
-          
-          int i = 0;
-          while (i < o.length) {
-            subjectChoices.add(o[i]);
-            i++;
-          }  
-        } else {
-          subjectChoices.add(result);
-        }
+        subjectChoices.addAll(Arrays.asList(result.split(",")));
       }    
     }
     return subjectChoices;
