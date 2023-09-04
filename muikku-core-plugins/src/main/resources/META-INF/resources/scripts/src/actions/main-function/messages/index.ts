@@ -1002,7 +1002,6 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
         })
       );
 
-      /* mApi().communicator[getApiId(item)].cacheClear(); */
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null,
