@@ -13,15 +13,15 @@ import {
   DeleteSelectedAnnouncementsTriggerType,
   DeleteAnnouncementTriggerType,
 } from "~/actions/announcements";
-import { AnnouncementType } from "reducers/announcements";
 import { StateType } from "~/reducers";
+import { Announcement } from "~/generated/client";
 
 /**
  * DeleteAnnouncementDialogProps
  */
 interface DeleteAnnouncementDialogProps {
   i18n: i18nType;
-  announcement?: AnnouncementType;
+  announcement?: Announcement;
   children: React.ReactElement<any>;
   deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType;
   deleteAnnouncement: DeleteAnnouncementTriggerType;

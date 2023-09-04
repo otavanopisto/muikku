@@ -38,7 +38,6 @@ public class WorkspaceAnnouncerBackingBean {
   private NavigationController navigationController;
 
   @Inject
-  @Named
   private WorkspaceBackingBean workspaceBackingBean;
   
   @RequestAction

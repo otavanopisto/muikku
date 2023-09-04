@@ -7,31 +7,32 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/article.scss";
 import "~/sass/elements/announcement.scss";
 import "~/sass/elements/rich-text.scss";
-import { AnnouncementType } from "~/reducers/announcements";
 import { StateType } from "~/reducers";
 import { UserIndexType } from "~/reducers/user-index";
 import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
+import { Announcement } from "~/generated/client";
+import { AnyActionType } from "~/actions";
 
 /**
  * AnnouncementProps
  */
-interface AnnouncementProps {
+interface AnnouncementsProps {
   i18n: i18nType;
-  announcement: AnnouncementType;
+  announcement: Announcement;
   userIndex: UserIndexType;
 }
 
 /**
  * AnnouncementState
  */
-interface AnnouncementState {}
+interface AnnouncementsState {}
 
 /**
  * Announcement
  */
-class Announcement extends React.Component<
-  AnnouncementProps,
-  AnnouncementState
+class Announcements extends React.Component<
+  AnnouncementsProps,
+  AnnouncementsState
 > {
   /**
    * componentDidUpdate
@@ -115,8 +116,8 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns JSX.Element
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Announcement);
+export default connect(mapStateToProps, mapDispatchToProps)(Announcements);
