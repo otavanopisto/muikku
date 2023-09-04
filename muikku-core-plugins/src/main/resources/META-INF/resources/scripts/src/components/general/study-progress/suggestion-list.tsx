@@ -35,7 +35,7 @@ interface HopsSuggestionListProps {
    */
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
   openSignUpBehalfDialog: (
-    studentIdentifier: string,
+    studentEntityId: number,
     suggestion: Suggestion
   ) => void;
   onCloseSignUpBehalfDialog: () => void;
@@ -70,9 +70,9 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
    * @param suggestion suggestion
    */
   const handleOpenSignUpBehalfDialog =
-    (studentIdentifier: string, suggestion: Suggestion) =>
+    (studentEntityId: number, suggestion: Suggestion) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.openSignUpBehalfDialog(studentIdentifier, suggestion);
+      props.openSignUpBehalfDialog(studentEntityId, suggestion);
     };
 
   /**
@@ -135,6 +135,9 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
                 studentId: props.studentId,
               })}
             >
+              {
+                // TODO: lokalisointi
+              }
               {suggestionNextActionType === "remove"
                 ? "Ehdotettu"
                 : "Ehdota seuraavaksi"}
@@ -146,10 +149,13 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
                 "guider-hops-studytool-next",
               ]}
               onClick={handleOpenSignUpBehalfDialog(
-                props.studentId,
+                props.studentsUserEntityId,
                 suggestion
               )}
             >
+              {
+                // TODO: lokalisointi
+              }
               Ilmoita työtilaan
             </Button>
           </div>

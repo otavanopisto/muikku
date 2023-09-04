@@ -50,7 +50,7 @@ interface StudyProgressUpdaterContext {
     params: UpdateSupervisorOptionalSuggestionParams
   ) => Promise<void>;
   openSignUpBehalfDialog: (
-    studentIdentifier: string,
+    studentEntityId: number,
     suggestion: Suggestion
   ) => void;
   closeSignUpBehalfDialog: () => void;
@@ -141,7 +141,7 @@ interface StudyProgresContextProviderProps {
  */
 interface StudyProgressContextState extends StudentActivityByStatus {
   signUpDialog?: {
-    studentIdentifier: string;
+    studentEntityId: number;
     suggestion: Suggestion;
   };
   studentChoices: StudentCourseChoice[];
@@ -194,11 +194,11 @@ const StudyProgressContextProvider = (
    * @param workspaceId workspaceId
    */
   const openSignUpBehalfDialog = React.useCallback(
-    (studentIdentifier: string, suggestion: Suggestion) => {
+    (studentEntityId: number, suggestion: Suggestion) => {
       setStudyProgress((oStudyProgress) => ({
         ...oStudyProgress,
         signUpDialog: {
-          studentIdentifier,
+          studentEntityId,
           suggestion,
         },
       }));
@@ -236,6 +236,7 @@ const StudyProgressContextProvider = (
             "callback"
           )();
         } catch (err) {
+          // TODO: lokalisointi
           displayNotification(
             `Update add suggestion:, ${err.message}`,
             "error"
@@ -252,6 +253,7 @@ const StudyProgressContextProvider = (
             "callback"
           )();
         } catch (err) {
+          // TODO: lokalisointi
           displayNotification(
             `Update remove suggestion:, ${err.message}`,
             "error"

@@ -299,6 +299,9 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
                               studentId: studyProgressStatic.studentId,
                             })}
                           >
+                            {
+                              // TODO: lokalisointi
+                            }
                             {suggestedBySupervisor
                               ? "Ehdotettu"
                               : "Ehdota valinnaiseksi"}
@@ -558,6 +561,9 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
         <Tbody>
           <Tr>
             <Td modifiers={["subtitle"]} colSpan={currentMaxCourses + 1}>
+              {
+                // TODO: lokalisointi
+              }
               Hyväksiluvut: Taito- ja taideaineet
             </Td>
           </Tr>
@@ -570,6 +576,9 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
           <Tbody>
             <Tr>
               <Td modifiers={["subtitle"]} colSpan={currentMaxCourses + 1}>
+                {
+                  // TODO: lokalisointi
+                }
                 Hyväksiluvut: Vieraat kielet
               </Td>
             </Tr>
@@ -581,6 +590,9 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
         <Tbody>
           <Tr>
             <Td modifiers={["subtitle"]} colSpan={currentMaxCourses + 1}>
+              {
+                // TODO: lokalisointi
+              }
               Hyväksiluvut: Muut
             </Td>
           </Tr>
