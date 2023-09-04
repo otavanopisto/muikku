@@ -32,6 +32,9 @@ const StudyProgress = (props: StudyProgressProps) => {
 
   const { signUpDialog } = useStudyProgressContextState();
 
+  {
+    // TODO: lokalisointi
+  }
   return (
     <>
       <div className="hops-container__study-tool-indicators">
@@ -107,7 +110,7 @@ const StudyProgress = (props: StudyProgressProps) => {
       </div>
 
       <SignUpBehalfStudentDialog
-        studentUserIdentifier={signUpDialog && signUpDialog.studentIdentifier}
+        studentEntityId={signUpDialog && signUpDialog.studentEntityId}
         workspaceSuggestion={signUpDialog && signUpDialog.suggestion}
         onClose={closeSignUpBehalfDialog}
       />

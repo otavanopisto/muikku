@@ -23,9 +23,9 @@ import { Suggestion } from "~/@types/shared";
  */
 interface SignUpBehalfOfStudentParams {
   /**
-   * "Aka" entity id of the student.
+   * entity id of the student.
    */
-  userIdentifier: string;
+  userEntityId: number;
   /**
    * Id of workspace where student is signing up.
    */
@@ -44,7 +44,7 @@ interface SignUpBehalfOfStudentDialogProps {
   /**
    * Entity id of the student.
    */
-  studentUserIdentifier?: string;
+  studentEntityId?: number;
   /**
    * Id of workspace where student is signing up.
    */
@@ -94,7 +94,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
   ) =>
     await promisify(
       mApi().guider.student.workspace.signup.create(
-        params.userIdentifier,
+        params.userEntityId,
         params.workspaceId,
         {
           message: params.message,
@@ -124,7 +124,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
 
     try {
       await this.signUpForWorkspaceBehalfOfStudent({
-        userIdentifier: this.props.studentUserIdentifier,
+        userEntityId: this.props.studentEntityId,
         workspaceId: this.props.workspaceSuggestion.id,
         message: this.state.message,
       });
@@ -139,6 +139,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
         }
       );
     } catch (err) {
+      // TODO: lokalisointi
       displayNotification("Virhe ilmoittautumisessa työtilaan", "error");
 
       this.setState({
@@ -163,7 +164,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    if (!this.props.studentUserIdentifier || !this.props.workspaceSuggestion) {
+    if (!this.props.studentEntityId || !this.props.workspaceSuggestion) {
       return null;
     }
 
@@ -184,6 +185,9 @@ class SignUpBehalfOfStudentDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div>
         <div className="dialog__content-row">
+          {
+            // TODO: lokalisointi
+          }
           Ilmoita opiskelija työtilaan {workspaceName}
         </div>
         <div className="form-element dialog__content-row">
@@ -211,6 +215,9 @@ class SignUpBehalfOfStudentDialog extends React.Component<
           onClick={this.handleApplyClick.bind(this, closeDialog)}
           disabled={this.state.disabled}
         >
+          {
+            // TODO: lokalisointi
+          }
           Ilmoita Opiskelija
         </Button>
         <Button
@@ -218,6 +225,9 @@ class SignUpBehalfOfStudentDialog extends React.Component<
           onClick={this.handleCloseClick.bind(this, closeDialog)}
           disabled={this.state.disabled}
         >
+          {
+            // TODO: lokalisointi
+          }
           Peruuta
         </Button>
       </div>
