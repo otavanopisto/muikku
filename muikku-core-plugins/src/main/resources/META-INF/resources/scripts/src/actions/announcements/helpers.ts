@@ -9,7 +9,7 @@ import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 import { GetAnnouncementsRequest } from "~/generated/client";
 import { Dispatch } from "react-redux";
-import MApi, { isMApiError, isResponseError } from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * loadAnnouncementsHelper
