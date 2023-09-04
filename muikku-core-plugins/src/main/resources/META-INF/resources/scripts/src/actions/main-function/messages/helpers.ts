@@ -245,7 +245,7 @@ export async function loadMessagesHelper(
       });
     }
   } catch (err) {
-    if (isMApiError(err)) {
+    if (!isMApiError(err)) {
       throw err;
     }
     //Error :(
@@ -331,7 +331,7 @@ export async function setLabelStatusCurrentMessage(
       }
     }
   } catch (err) {
-    if (isMApiError(err)) {
+    if (!isMApiError(err)) {
       throw err;
     }
 
@@ -412,7 +412,7 @@ export function setLabelStatusSelectedMessages(
         }
       }
     } catch (err) {
-      if (isMApiError(err)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
