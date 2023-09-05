@@ -52,10 +52,8 @@ import {
 } from "~/actions/discussion";
 import { loadAnnouncement, loadAnnouncements } from "~/actions/announcements";
 import AnnouncementsBody from "../components/announcements/body";
-import { AnnouncementListType } from "~/reducers/announcements";
 import AnnouncerBody from "../components/announcer/body";
 import {
-  updateAvailablePurchaseProducts,
   updateLabelFilters,
   updateWorkspaceFilters,
   updateUserGroupFilters,
@@ -122,6 +120,7 @@ import { loadContactGroup } from "~/actions/base/contacts";
 import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
+import { Announcement } from "~/generated/client";
 
 moment.locale("fi");
 
@@ -133,6 +132,7 @@ interface MainFunctionProps {
   websocket: Websocket;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).USES_HISTORY_API = true;
 
 /**
@@ -274,6 +274,7 @@ export default class MainFunction extends React.Component<
       );
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const originalData: any = queryString.parse(
       window.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
@@ -302,6 +303,7 @@ export default class MainFunction extends React.Component<
   loadRecordsData(dataSplitted: string[]) {
     const givenLocation = dataSplitted[0].split("/")[0];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const originalData: any = queryString.parse(dataSplitted[1] || "", {
       arrayFormat: "bracket",
     });
@@ -485,6 +487,7 @@ export default class MainFunction extends React.Component<
    * @param refresh refresh
    */
   loadCoursePickerData(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     originalData: any,
     isOrganization: boolean,
     refresh: boolean
@@ -559,6 +562,7 @@ export default class MainFunction extends React.Component<
        */
       const loadCoursepickerDataByUser = (user: UserType) => {
         if (!currentLocationHasData) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {};
           if (user.curriculumIdentifier) {
             defaultSelections["c"] = [user.curriculumIdentifier];
@@ -695,6 +699,7 @@ export default class MainFunction extends React.Component<
        */
       const loadWorkspacesByUser = (user: UserType) => {
         if (!currentLocationHasData) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {
             p: ["PUBLISHED"],
           };
@@ -849,7 +854,7 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadAnnouncementsAsAClient(
           { hideWorkspaceAnnouncements: "false" },
-          (announcements: AnnouncementListType) => {
+          (announcements: Announcement[]) => {
             announcements;
           }
         ) as Action

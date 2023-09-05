@@ -595,9 +595,10 @@ public class GuiderTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
+        WebElement deleteOrderButton = findElement(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
-        waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
+        waitForStaleness(deleteOrderButton);
         assertPresent(".icon-cart-plus");
       }finally {
         deleteUserGroupUsers();

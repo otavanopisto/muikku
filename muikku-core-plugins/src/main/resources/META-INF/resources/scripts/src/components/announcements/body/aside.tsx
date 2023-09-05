@@ -1,21 +1,22 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Link from "~/components/general/link";
-import { AnnouncementType, AnnouncementsType } from "~/reducers/announcements";
+import { AnnouncementsState } from "~/reducers/announcements";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/item-list.scss";
-import { AnyActionType } from "~/actions";
 import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Announcement } from "~/generated/client";
+import { AnyActionType } from "~/actions";
 
 /**
  * AnnouncementsAsideProps
  */
 interface AnnouncementsAsideProps extends WithTranslation {
-  announcements: AnnouncementsType;
+  announcements: AnnouncementsState;
 }
 
 /**
@@ -40,7 +41,7 @@ class AnnouncementsAside extends React.Component<
         {this.props.announcements.announcements.length !== 0 ? (
           <div className="item-list item-list--panel-announcements">
             {this.props.announcements.announcements.map(
-              (announcement: AnnouncementType) => {
+              (announcement: Announcement) => {
                 const extraWorkspaces =
                   announcement.workspaces && announcement.workspaces.length
                     ? announcement.workspaces.length - 1

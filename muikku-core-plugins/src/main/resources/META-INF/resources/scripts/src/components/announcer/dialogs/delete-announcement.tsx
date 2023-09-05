@@ -12,15 +12,14 @@ import {
   DeleteSelectedAnnouncementsTriggerType,
   DeleteAnnouncementTriggerType,
 } from "~/actions/announcements";
-import { AnnouncementType } from "reducers/announcements";
-import { StateType } from "~/reducers";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Announcement } from "~/generated/client";
 
 /**
  * DeleteAnnouncementDialogProps
  */
 interface DeleteAnnouncementDialogProps extends WithTranslation {
-  announcement?: AnnouncementType;
+  announcement?: Announcement;
   children: React.ReactElement<any>;
   deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType;
   deleteAnnouncement: DeleteAnnouncementTriggerType;

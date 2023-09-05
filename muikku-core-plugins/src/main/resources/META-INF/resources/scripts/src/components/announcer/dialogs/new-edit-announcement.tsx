@@ -5,7 +5,6 @@ import CKEditor from "~/components/general/ckeditor";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { UserIndexType, ContactRecipientType } from "~/reducers/user-index";
-import { AnnouncementType } from "~/reducers/announcements";
 import { AnyActionType } from "~/actions";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -29,6 +28,7 @@ import {
 } from "~/actions/base/notifications";
 import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Announcement } from "~/generated/client";
 
 /**
  * TargetItemsListType
@@ -40,7 +40,7 @@ type TargetItemsListType = Array<ContactRecipientType>;
  */
 interface NewEditAnnouncementProps extends WithTranslation {
   children: React.ReactElement<any>;
-  announcement?: AnnouncementType;
+  announcement?: Announcement;
   userIndex: UserIndexType;
   createAnnouncement: CreateAnnouncementTriggerType;
   updateAnnouncement: UpdateAnnouncementTriggerType;

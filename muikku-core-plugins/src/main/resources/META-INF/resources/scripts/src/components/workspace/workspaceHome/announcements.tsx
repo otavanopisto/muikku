@@ -1,5 +1,4 @@
 import { WorkspaceType } from "~/reducers/workspaces";
-import { AnnouncementListType } from "~/reducers/announcements";
 import * as React from "react";
 import { localizeTime } from "~/locales/i18n";
 import { connect } from "react-redux";
@@ -9,6 +8,7 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Announcement } from "~/generated/client";
 
 /**
  * WorkspaceAnnouncementsProps
@@ -16,7 +16,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface WorkspaceAnnouncementsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceType;
-  announcements: AnnouncementListType;
+  announcements: Announcement[];
 }
 
 /**

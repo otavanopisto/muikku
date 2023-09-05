@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import {
-  AnnouncementsType,
+  AnnouncementsState,
   AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
 import { StateType } from "~/reducers";
@@ -15,7 +15,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
-  announcements: AnnouncementsType;
+  announcements: AnnouncementsState;
 }
 
 /**

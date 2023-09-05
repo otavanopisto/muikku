@@ -977,6 +977,7 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const payload: any = {
         message: data.message,
       };

@@ -7,6 +7,7 @@ import {
   StatusType,
   WhoAmIType,
 } from "~/reducers/base/status";
+import { WorkspaceBasicInfo } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import { Role } from "../../reducers/base/status";
 import i18n from "~/locales/i18n";
@@ -25,6 +26,11 @@ export type UPDATE_STATUS = SpecificActionType<
   Partial<StatusType>
 >;
 
+export type UPDATE_STATUS_WORKSPACEID = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACEID",
+  number
+>;
+
 /**
  * LoadStatusType
  */
@@ -37,6 +43,13 @@ export interface LoadStatusType {
  */
 export interface LoadWorkspaceStatusInfoType {
   (readyCb: () => void): AnyActionType;
+}
+
+/**
+ * LoadWorkspaceStatusInfoType
+ */
+export interface LoadEnviromentalForumAreaPermissionsType {
+  (): AnyActionType;
 }
 
 /**
@@ -63,6 +76,7 @@ async function loadWhoAMI(
       role: whoAmI.role,
       isStudent: whoAmI.role === Role.STUDENT,
       userSchoolDataIdentifier: whoAmI.identifier,
+      services: whoAmI.services,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
           "CREATE_ANNOUNCEMENT"
@@ -97,6 +111,18 @@ async function loadWhoAMI(
         PAY_ORDER: whoAmI.permissions.includes("PAY_ORDER"),
         LIST_PRODUCTS: whoAmI.permissions.includes("LIST_PRODUCTS"),
         COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER"),
+        CHAT_ACTIVE: whoAmI.services.chat.isActive,
+        CHAT_AVAILABLE: whoAmI.services.chat.isAvailable,
+        FORUM_ACCESSENVIRONMENTFORUM:
+          whoAmI.services.environmentForum.isAvailable &&
+          whoAmI.permissions.includes("FORUM_ACCESSENVIRONMENTFORUM"),
+        FORUM_CREATEENVIRONMENTFORUM:
+          whoAmI.services.environmentForum.isAvailable &&
+          whoAmI.permissions.includes("FORUM_CREATEENVIRONMENTFORUM"),
+        FORUM_DELETEENVIRONMENTFORUM:
+          whoAmI.services.environmentForum.isAvailable &&
+          whoAmI.permissions.includes("FORUM_DELETEENVIRONMENTFORUM"),
+        WORKLIST_AVAILABLE: whoAmI.services.worklist.isAvailable,
       },
       profile: {
         addresses: (whoAmI.addresses && JSON.parse(whoAmI.addresses)) || [],
@@ -125,109 +151,6 @@ async function loadWhoAMI(
   });
 
   whoAmIReadyCb();
-}
-
-// User has set nickname for chat and activated the chat funtionality via profile view
-/**
- * loadChatActive
- * @param dispatch dispatch
- */
-async function loadChatActive(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
-) {
-  const isActive = <boolean>(
-    await promisify(mApi().chat.isActive.read(), "callback")()
-  );
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      permissions: {
-        CHAT_ACTIVE: isActive,
-      },
-    },
-  });
-}
-
-// User is loggedin and is part of default organization that has access to chat
-/**
- * loadChatAvailable
- * @param dispatch dispatch
- */
-async function loadChatAvailable(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
-) {
-  const isAvailable = <boolean>(
-    await promisify(mApi().chat.isAvailable.read(), "callback")()
-  );
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      permissions: {
-        CHAT_AVAILABLE: isAvailable,
-      },
-    },
-  });
-}
-
-/**
- * loadWorklistAvailable
- * @param dispatch dispatch
- */
-async function loadWorklistAvailable(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
-) {
-  const isAvailable = <boolean>(
-    await promisify(mApi().worklist.isAvailable.read(), "callback")()
-  );
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      permissions: {
-        WORKLIST_AVAILABLE: isAvailable,
-      },
-    },
-  });
-}
-
-/**
- * loadForumIsAvailable
- * @param dispatch dispatch
- * @param permissions permissions
- */
-async function loadForumIsAvailable(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-  permissions: string[]
-) {
-  const isAvailable = <boolean>(
-    await promisify(mApi().forum.isAvailable.read(), "callback")()
-  );
-  const areaPermissions = isAvailable
-    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      <any>(
-        await promisify(
-          mApi().forum.environmentAreaPermissions.read(),
-          "callback"
-        )()
-      )
-    : null;
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      permissions: {
-        FORUM_ACCESSENVIRONMENTFORUM:
-          isAvailable && permissions.includes("FORUM_ACCESSENVIRONMENTFORUM"),
-        FORUM_CREATEENVIRONMENTFORUM:
-          isAvailable && permissions.includes("FORUM_CREATEENVIRONMENTFORUM"),
-        FORUM_DELETEENVIRONMENTFORUM:
-          isAvailable && permissions.includes("FORUM_DELETEENVIRONMENTFORUM"),
-        AREA_PERMISSIONS: areaPermissions,
-      },
-    },
-  });
 }
 
 /**
@@ -331,15 +254,7 @@ const loadStatus: LoadStatusType = function loadStatus(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    if (getState().status.loggedIn) {
-      await loadWhoAMI(dispatch, whoAmIReadyCb);
-      loadChatActive(dispatch);
-      loadChatAvailable(dispatch);
-      loadWorklistAvailable(dispatch);
-      loadForumIsAvailable(dispatch, getState().status.profile.permissions);
-    } else {
-      loadWhoAMI(dispatch, whoAmIReadyCb);
-    }
+    loadWhoAMI(dispatch, whoAmIReadyCb);
   };
 };
 
@@ -353,8 +268,58 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const worspaceId = getState().status.currentWorkspaceId;
-      loadWorkspacePermissions(worspaceId, dispatch, readyCb);
+      const workspaceUrlName = window.location.pathname.split("/")[2];
+
+      let workspaceBasicInfo: WorkspaceBasicInfo = undefined;
+
+      if (workspaceUrlName) {
+        workspaceBasicInfo = <WorkspaceBasicInfo>(
+          await promisify(
+            mApi().workspace.workspaces.basicInfo.read(workspaceUrlName),
+            "callback"
+          )()
+        );
+      }
+
+      dispatch({
+        type: "UPDATE_STATUS_WORKSPACEID",
+        payload: workspaceBasicInfo.id,
+      });
+
+      loadWorkspacePermissions(workspaceBasicInfo.id, dispatch, readyCb);
+    };
+  };
+
+/**
+ * loadWorkspaceStatus
+ */
+const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissionsType =
+  function loadEnviromentalForumAreaPermissions() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      const areaPermissions = state.status.services.environmentForum.isAvailable
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          <any>(
+            await promisify(
+              mApi().forum.environmentAreaPermissions.read(),
+              "callback"
+            )()
+          )
+        : null;
+
+      dispatch({
+        type: "UPDATE_STATUS",
+        payload: {
+          ...state.status,
+          permissions: {
+            AREA_PERMISSIONS: areaPermissions,
+          },
+        },
+      });
     };
   };
 
@@ -419,6 +384,7 @@ export default {
   updateStatusHasImage,
   loadStatus,
   loadWorkspaceStatus,
+  loadEnviromentalForumAreaPermissions,
 };
 export {
   logout,
@@ -426,4 +392,5 @@ export {
   updateStatusHasImage,
   loadStatus,
   loadWorkspaceStatus,
+  loadEnviromentalForumAreaPermissions,
 };

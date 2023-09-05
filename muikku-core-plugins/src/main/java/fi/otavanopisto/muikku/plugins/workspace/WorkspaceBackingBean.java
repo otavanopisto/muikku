@@ -3,13 +3,11 @@ package fi.otavanopisto.muikku.plugins.workspace;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,7 +18,6 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 
-@Named
 @Stateful
 @RequestScoped
 public class WorkspaceBackingBean {
@@ -36,37 +33,14 @@ public class WorkspaceBackingBean {
   @Any
   private Instance<SearchProvider> searchProviders;
   
-  @PostConstruct
-  public void init() {
-    workspaceEntityId = null;
-  }
-  
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
-  }
-
-  @Deprecated
-  public Long getWorkspaceId() {
-    return workspaceEntityId;
-  }
-  
-  public Long getWorkspaceEntityId() {
-    return workspaceEntityId;
-  }
-  
-  public WorkspaceEntity getWorkspaceEntity() {
-    if (getWorkspaceEntityId() == null) {
-      return null;
-    }
-    
-    return workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
   }
 
   public void setWorkspaceUrlName(String workspaceUrlName) {
     
     WorkspaceEntity workspaceEntity = resolveWorkspaceEntity(workspaceUrlName);
     if (workspaceEntity != null) {
-      this.workspaceEntityId = workspaceEntity.getId();
       this.workspaceUrlName = workspaceEntity.getUrlName();
     }
     
@@ -107,7 +81,6 @@ public class WorkspaceBackingBean {
   }
   
 
-  private Long workspaceEntityId;
   private String workspaceUrlName;
   private String workspaceName;
   private String workspaceNameExtension;

@@ -1,10 +1,6 @@
 import Link from "~/components/general/link";
 import * as React from "react";
 import { StatusType } from "~/reducers/base/status";
-import {
-  AnnouncementListType,
-  AnnouncementType,
-} from "~/reducers/announcements";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/label.scss";
@@ -14,13 +10,14 @@ import PagerV2 from "~/components/general/pagerV2";
 import { Panel } from "~/components/general/panel";
 import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Announcement } from "~/generated/client";
 
 /**
  * AnnouncementsPanelProps
  */
 interface AnnouncementsPanelProps extends WithTranslation<"common"> {
   status: StatusType;
-  announcements: AnnouncementListType;
+  announcements: Announcement[];
   overflow?: boolean;
 }
 
@@ -29,7 +26,7 @@ interface AnnouncementsPanelProps extends WithTranslation<"common"> {
  */
 interface AnnouncementsPanelState {
   currentPage: number;
-  announcements: AnnouncementListType;
+  announcements: Announcement[];
   itemsPerPage: number;
 }
 
@@ -125,7 +122,7 @@ class AnnouncementsPanel extends React.Component<
      * renders announcements
      */
     const renderAnnouncements = currentAnnouncements.map(
-      (announcement: AnnouncementType) => {
+      (announcement: Announcement) => {
         const extraWorkspaces =
           announcement.workspaces && announcement.workspaces.length
             ? announcement.workspaces.length - 1
