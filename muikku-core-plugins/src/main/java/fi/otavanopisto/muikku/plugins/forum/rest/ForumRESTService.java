@@ -979,10 +979,6 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
       }
       
-      if (forumThread.getLocked() ==LockForumThread.ALL || (forumThread.getLocked() == LockForumThread.STUDENTS && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
-        return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
-      }
-      
       UserEntity loggedUSerEntity = sessionController.getLoggedUserEntity();
       ForumThreadSubscription forumThreadSubscription = forumThreadSubscriptionController.findByThreadAndUserEntity(forumThread, loggedUSerEntity);
       if (forumThreadSubscription == null) {
