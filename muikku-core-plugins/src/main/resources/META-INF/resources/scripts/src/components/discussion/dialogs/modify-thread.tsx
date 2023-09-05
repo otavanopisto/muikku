@@ -210,10 +210,12 @@ class ModifyThread extends SessionStateComponent<
     const options = [
       {
         value: DiscussionThreadLockEnum.ALL,
+        // TODO: localization
         label: "Kaikilta",
       },
       {
         value: DiscussionThreadLockEnum.STUDENTS,
+        // TODO: localization
         label: "Opiskelijoilta",
       },
       {

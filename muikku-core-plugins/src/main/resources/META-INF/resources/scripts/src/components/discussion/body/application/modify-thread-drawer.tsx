@@ -215,10 +215,12 @@ class ModifyThreadDrawer extends SessionStateComponent<
     const options = [
       {
         value: DiscussionThreadLockEnum.ALL,
+        // TODO: lokalisointi
         label: "Kaikilta",
       },
       {
         value: DiscussionThreadLockEnum.STUDENTS,
+        // TODO: localization
         label: "Opiskelijoilta",
       },
       {
