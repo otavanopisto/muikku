@@ -1108,7 +1108,7 @@ public class GuiderRESTService extends PluginRESTService {
     SchoolDataIdentifier studentIdentifier = studentEntity.defaultSchoolDataIdentifier();
 
     if (!userSchoolDataController.amICounselor(studentIdentifier) && !loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-      return Response.status(Status.UNAUTHORIZED).build();
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     User student = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
@@ -1152,10 +1152,8 @@ public class GuiderRESTService extends PluginRESTService {
       : String.format("%s \"%s\" %s (%s)", student.getFirstName(), student.getNickName(), student.getLastName(), student.getStudyProgrammeName());
 
     UserEntityName loggedUserEntityName = userEntityController.getName(sessionController.getLoggedUserEntity(), false);
-    String loggedUserName = loggedUserEntityName.getNickName() == null
-        ? loggedUserEntityName.getDisplayName()
-        : String.format("%s \"%s\" %s (%s)", loggedUserEntityName.getFirstName(), loggedUserEntityName.getNickName(), loggedUserEntityName.getLastName(), loggedUserEntityName.getStudyProgrammeName());
-
+    String loggedUserName = loggedUserEntityName.getDisplayName();
+    
     for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
       recipients.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
     }
@@ -1163,6 +1161,9 @@ public class GuiderRESTService extends PluginRESTService {
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.caption");
     caption = MessageFormat.format(caption, loggedUserName, userName, workspaceName);
+
+    String captionStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.captionStudent");
+    captionStudent = MessageFormat.format(captionStudent, loggedUserName, workspaceName);
 
     String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
 
@@ -1173,15 +1174,15 @@ public class GuiderRESTService extends PluginRESTService {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.content");
       content = MessageFormat.format(content, loggedUserName, studentLink, workspaceLink);
       
-      contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.content");
-      contentStudent = MessageFormat.format(contentStudent, loggedUserName, userName, workspaceLink);
+      contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentStudent");
+      contentStudent = MessageFormat.format(contentStudent, loggedUserName, workspaceLink);
     } else {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessage");
       String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
       content = MessageFormat.format(content, loggedUserName, studentLink, workspaceLink, blockquoteMessage);
       
-      contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessage");
-      contentStudent = MessageFormat.format(contentStudent, loggedUserName, userName, workspaceLink, blockquoteMessage);
+      contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessageStudent");
+      contentStudent = MessageFormat.format(contentStudent, loggedUserName, workspaceLink, blockquoteMessage);
 
     }
 
@@ -1190,7 +1191,7 @@ public class GuiderRESTService extends PluginRESTService {
       messagingWidget.postMessage(studentEntity, "message", caption, content, recipients);
       
       // Send own message to the student without a guider link
-      messagingWidget.postMessage(studentEntity, "message", caption, contentStudent, Arrays.asList(studentEntity));
+      messagingWidget.postMessage(studentEntity, "message", captionStudent, contentStudent, Arrays.asList(studentEntity));
     }
 
     List<String> recipientEmails = new ArrayList<>(recipients.size());
@@ -1202,11 +1203,6 @@ public class GuiderRESTService extends PluginRESTService {
     }
     if (!recipientEmails.isEmpty()) {
       mailer.sendMail(MailType.HTML, recipientEmails, caption, content);
-    }
-    
-    String studentEmail = userEmailEntityController.getUserDefaultEmailAddress(studentEntity, false);
-    if (StringUtils.isNotBlank(studentEmail)) {
-      mailer.sendMail(MailType.HTML, Arrays.asList(studentEmail), caption, contentStudent);
     }
 
     List<StudyActivityItemRestModel> restItems = new ArrayList<StudyActivityItemRestModel>();
