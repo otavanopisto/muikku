@@ -54,7 +54,7 @@
       <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
@@ -111,7 +111,7 @@
       <artifactId>commons-io</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Hibernate -->
 
     <dependency>
@@ -133,7 +133,7 @@
       <artifactId>jackson-core</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Commons -->
 
     <dependency>
@@ -185,7 +185,7 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>muikku-school-data-pyramus</artifactId>
     </dependency>
-    
+
     <!-- Guava (for Ceepos hashing) -->
 
     <dependency>
@@ -219,13 +219,13 @@
     </dependency>
 
     <!-- XSS prevention -->
-    
+
     <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
       <version>1.13.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>com.rometools</groupId>
       <artifactId>rome</artifactId>
@@ -234,7 +234,7 @@
       <groupId>com.rometools</groupId>
       <artifactId>rome-modules</artifactId>
     </dependency>
-    
+
     <!-- XMPP (for prebind) -->
     <!-- TODO versions in BOM -->
     <dependency>
@@ -323,7 +323,7 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>run build</arguments>
+              <arguments>run build-full</arguments>
             </configuration>
           </execution>
        </executions>
@@ -337,7 +337,7 @@
               <exclude>META-INF/resources/scripts/src/*</exclude>
               <!--
               <exclude>META-INF/resources/scripts/src/node/**/*</exclude>
-              <exclude>META-INF/resources/scripts/src/node/*</exclude> 
+              <exclude>META-INF/resources/scripts/src/node/*</exclude>
               -->
             </excludes>
             <filtering>false</filtering>

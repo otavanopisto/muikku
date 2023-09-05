@@ -1,0 +1,6 @@
+{
+  "typescriptThreePlus": true,
+  "supportsES6": true,
+  "prependFormOrBodyParameters": true,
+  "modelPropertyNaming": "camelCase"
+}
