@@ -1429,7 +1429,7 @@ paths:
   #COURSEPICKER
   /rest/coursepicker/curriculums:
     get:
-      operationId: getCoursePickerCurriculums
+      operationId: getCoursepickerCurriculums
       summary: Get course picker curriculums
       description: Get course picker curriculums
       tags:
@@ -1450,7 +1450,7 @@ paths:
 
   /rest/coursepicker/organizations:
     get:
-      operationId: getCoursePickerOrganizations
+      operationId: getCoursepickerOrganizations
       summary: Get course picker organizations
       description: Get course picker organizations
       tags:
@@ -1463,7 +1463,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Organization"
+                  $ref: "#/components/schemas/WorkspaceOrganization"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1471,7 +1471,7 @@ paths:
 
   /rest/coursepicker/workspaces:
     get:
-      operationId: getCoursePickerWorkspaces
+      operationId: getCoursepickerWorkspaces
       summary: Get course picker workspaces
       description: Get course picker workspaces
       tags:
@@ -1482,6 +1482,66 @@ paths:
           description: Search string
           schema:
             type: string
+        - name: subjects
+          in: query
+          description: Subject ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: educationTypes
+          in: query
+          description: Education type ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: curriculums
+          in: query
+          description: Curriculum ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: organizations
+          in: query
+          description: Organization ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: minVisits
+          in: query
+          description: Minimum visits
+          schema:
+            type: integer
+        - name: publicity
+          in: query
+          description: Publicity restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/PublicityRestriction"
+            default: ONLY_PUBLISHED
+        - name: myWorkspaces
+          in: query
+          description: My workspaces
+          schema:
+            type: boolean
+            default: false
+        - name: templates
+          in: query
+          description: Template restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/TemplateRestriction"
+            default: ONLY_WORKSPACES
+        - name: orderBy
+          in: query
+          description: Order by
+          schema:
+            type: array
+            items:
+              type: string
         - name: firstResult
           in: query
           description: First result
@@ -1511,7 +1571,7 @@ paths:
 
   /rest/coursepicker/workspaces/{workspaceId}:
     get:
-      operationId: getCoursePickerWorkspace
+      operationId: getCoursepickerWorkspace
       summary: Get course picker workspace
       description: Get course picker workspace
       tags:
@@ -1575,6 +1635,8 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceSignUpRequestBody"
       responses:
         "204":
           description: User signed up to workspace successfully
@@ -9269,6 +9331,15 @@ components:
               groupIdentifier:
                 type: string
 
+    WorkspaceSignUpRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+
     WorkspaceStudentUpdateRequestBody:
       content:
         application/json:
@@ -11696,11 +11767,11 @@ components:
       type: object
       description: Organization object
       required:
-        - identifier
+        - id
         - name
       properties:
-        identifier:
-          type: string
+        id:
+          type: integer
         name:
           type: string
 
@@ -11931,6 +12002,13 @@ components:
           description: The date when the form was created
           type: string
 
+    PublicityRestriction:
+      type: string
+      enum:
+        - LIST_ALL
+        - ONLY_PUBLISHED
+        - ONLY_UNPUBLISHED
+
     RecordWorkspaceActivity:
       type: object
       description: RecordWorkspaceActivity object
@@ -12134,6 +12212,13 @@ components:
           type: string
         name:
           type: string
+
+    TemplateRestriction:
+      type: string
+      enum:
+        - LIST_ALL,
+        - ONLY_TEMPLATES,
+        - ONLY_WORKSPACES
 
     UserInfo:
       type: object
@@ -12585,12 +12670,133 @@ components:
           type: string
         language:
           $ref: "#/components/schemas/Language"
-        mandatority:
-          allOf:
-            - $ref: "#/components/schemas/WorkspaceMandatority"
+
+    # NOTE: this is for WorkspaceCoursepicker. Currently its not used because frontend uses one for all Workspace model,
+    # but it should be used in the future. This model based on backend implementation
+    WorkspaceCoursepicker:
+      type: object
+      description: WorkspaceCoursepicker object
+      required:
+        - id
+        - name
+        - nameExtension
+        - description
+        - published
+        - archived
+        - hasCustomImage
+        - mandatority
+        - educationTypeName
+        - isCourseMember
+        - organization
+        - lastVisit
+        - numVisits
+        - urlName
+        - curriculumIdentifiers
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameExtension:
+          type: string
           nullable: true
-        access:
-          $ref: "#/components/schemas/WorkspaceAccess"
+        description:
+          type: string
+        published:
+          type: boolean
+        archived:
+          type: boolean
+        hasCustomImage:
+          type: boolean
+        mandatority:
+          $ref: "#/components/schemas/WorkspaceMandatority"
+        educationTypeName:
+          type: string
+        isCourseMember:
+          type: boolean
+        organization:
+          $ref: "#/components/schemas/Organization"
+        lastVisit:
+          type: string
+        numVisits:
+          type: integer
+        urlName:
+          type: string
+        curriculumIdentifiers:
+          type: array
+          items:
+            type: string
+
+    # NOTE: this is for Organization. Currently its not used because frontend uses one for all Workspace model,
+    # but it should be used in the future. This model based on backend implementation
+    WorkspaceOrganizationManager:
+      type: object
+      description: WorkspaceOrganizationManager object
+      required:
+        - id
+        - name
+        - nameExtension
+        - description
+        - published
+        - archived
+        - studentCount
+        - teachers
+        - educationTypeName
+        - hasCustomImage
+        - urlName
+        - organization
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameExtension:
+          type: string
+          nullable: true
+        description:
+          type: string
+        published:
+          type: boolean
+        archived:
+          type: boolean
+        studentCount:
+          type: integer
+        teachers:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceOrganizationManagerTeacher"
+        educationTypeName:
+          type: string
+        hasCustomImage:
+          type: boolean
+        urlName:
+          type: string
+        organization:
+          $ref: "#/components/schemas/Organization"
+
+    WorkspaceOrganizationManagerTeacher:
+      type: object
+      description: WorkspaceOrganizationManagerTeacher object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+
+    WorkspaceOrganization:
+      type: object
+      description: WorkspaceOrganization object
+      required:
+        - identifier
+        - name
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
 
     WorkspaceWithAddons:
       allOf:
@@ -12820,6 +13026,13 @@ components:
           type: string
         name:
           type: string
+
+    WorkspaceChatStatusType:
+      type: string
+      description: WorkspaceChatStatusType enum
+      enum:
+        - ENABLED
+        - DISABLED
 
     WorkspaceEducationType:
       type: object
