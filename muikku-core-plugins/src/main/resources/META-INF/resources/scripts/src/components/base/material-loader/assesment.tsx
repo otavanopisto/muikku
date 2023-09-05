@@ -69,7 +69,7 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
       {audioAssessments !== undefined && audioAssessments.length > 0 ? (
         <>
           <div className="material-page__assignment-assessment-verbal-label">
-            {t("labels.vocalEvaluation", { ns: "evaluation" })}:
+            {t("labels.verbalEvaluation", { ns: "evaluation" })}:
           </div>
           <div className="voice-container">
             <RecordingsList records={audioRecords} noDeleteFunctions />

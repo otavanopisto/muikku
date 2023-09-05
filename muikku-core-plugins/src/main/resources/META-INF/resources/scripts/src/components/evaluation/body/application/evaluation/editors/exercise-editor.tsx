@@ -395,7 +395,7 @@ class ExerciseEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="assignmentEvaluationGrade">
-              {this.props.t("labels.vocalEvaluation", {
+              {this.props.t("labels.verbalEvaluation", {
                 ns: "evaluation",
                 context: "assignment",
               })}

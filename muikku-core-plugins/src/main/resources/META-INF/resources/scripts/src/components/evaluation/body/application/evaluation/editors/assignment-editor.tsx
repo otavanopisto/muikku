@@ -543,7 +543,7 @@ class AssignmentEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="assignmentEvaluationGrade">
-              {t("labels.vocalEvaluation", { ns: "evaluation" })}
+              {t("labels.verbalEvaluation", { ns: "evaluation" })}
             </label>
 
             <Recorder

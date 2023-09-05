@@ -80,7 +80,7 @@ class WarningDialog extends React.Component<
      */
     const content = (closeDialog: () => void) => (
       <div>
-        {this.props.t("content.unsavedVocalEvaluations", { ns: "evaluation" })}
+        {this.props.t("content.unsavedverbalEvaluations", { ns: "evaluation" })}
       </div>
     );
     return (
@@ -88,7 +88,7 @@ class WarningDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
-        title={this.props.t("labels.unsavedVocalEvaluations", {
+        title={this.props.t("labels.unsavedverbalEvaluations", {
           ns: "evaluation",
         })}
         content={content}

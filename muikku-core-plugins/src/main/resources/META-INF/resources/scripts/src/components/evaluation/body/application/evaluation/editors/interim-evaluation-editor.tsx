@@ -365,7 +365,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
               <label htmlFor="assignmentEvaluationGrade">
                 {t("labels.interimEvaluation", {
                   ns: "evaluation",
-                  context: "vocal",
+                  context: "verbal",
                 })}
               </label>
               <Recorder
