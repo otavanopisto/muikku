@@ -1,5 +1,6 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
+import MApi from "~/api/api";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import {
@@ -161,18 +162,18 @@ async function loadWorkspacePermissions(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   readyCb: () => void
 ) {
+  const coursepickerApi = MApi.getCoursepickerApi();
+
   const permissions = <string[]>(
     await promisify(
       mApi().workspace.workspaces.permissions.read(workspaceId),
       "callback"
     )()
   );
-  const canCurrentWorkspaceSignup = <boolean>(
-    await promisify(
-      mApi().coursepicker.workspaces.canSignup.read(workspaceId),
-      "callback"
-    )()
-  );
+
+  const canCurrentWorkspaceSignup = await coursepickerApi.workspaceCanSignUp({
+    workspaceId,
+  });
 
   dispatch({
     type: "UPDATE_STATUS",

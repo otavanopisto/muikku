@@ -11,12 +11,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/ref-wrapper.scss";
 import { LoadMoreWorkspacesFromServerTriggerType } from "~/actions/workspaces";
 import { loadMoreOrganizationWorkspacesFromServer } from "~/actions/workspaces/organization";
-
-import {
-  WorkspacesStateType,
-  WorkspaceType,
-  WorkspaceListType,
-} from "~/reducers/workspaces";
+import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
 
 /**
  * OrganizationWorkspacesProps
@@ -26,7 +21,7 @@ interface OrganizationWorkspacesProps {
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
-  workspaces: WorkspaceListType;
+  workspaces: WorkspaceType[];
 }
 
 /**

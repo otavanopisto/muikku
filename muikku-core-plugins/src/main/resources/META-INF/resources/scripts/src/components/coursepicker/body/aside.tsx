@@ -13,7 +13,6 @@ import Navigation, {
 import {
   WorkspacesType,
   WorkspaceEducationFilterType,
-  WorkspaceCurriculumFilterType,
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
 
@@ -96,7 +95,7 @@ class NavigationAside extends React.Component<
           )}
         >
           {this.props.workspaces.availableFilters.curriculums.map(
-            (curriculum: WorkspaceCurriculumFilterType) => {
+            (curriculum) => {
               const isActive =
                 this.props.workspaces.activeFilters.curriculumFilters.includes(
                   curriculum.identifier

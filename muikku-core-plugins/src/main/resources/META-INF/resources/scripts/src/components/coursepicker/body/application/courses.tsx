@@ -15,11 +15,7 @@ import {
   loadMoreWorkspacesFromServer,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
-import {
-  WorkspacesStateType,
-  WorkspaceListType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
+import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
 
 /**
  * CoursepickerWorkspacesProps
@@ -29,7 +25,7 @@ interface CoursepickerWorkspacesProps {
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
-  workspaces: WorkspaceListType;
+  workspaces: WorkspaceType[];
 }
 
 /**

@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
-import { WorkspaceListType, WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 
@@ -11,7 +11,7 @@ import { Panel } from "~/components/general/panel";
  */
 interface WorkspacesPanelProps {
   i18n: i18nType;
-  workspaces: WorkspaceListType;
+  workspaces: WorkspaceType[];
 }
 
 /**

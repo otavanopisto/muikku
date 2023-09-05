@@ -25,7 +25,6 @@ import notificationActions from "~/actions/base/notifications";
 import {
   GuiderUserLabelType,
   GuiderUserLabelListType,
-  GuiderWorkspaceListType,
   GuiderUserGroupListType,
   ContactLogEvent,
   ContactLogData,
@@ -33,9 +32,9 @@ import {
   ContactTypes,
 } from "~/reducers/main-function/guider";
 import {
-  WorkspaceListType,
   WorkspaceForumStatisticsType,
   ActivityLogType,
+  WorkspaceType,
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
@@ -133,7 +132,7 @@ export type UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS = SpecificActionType<
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-  GuiderWorkspaceListType
+  WorkspaceType[]
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
@@ -716,7 +715,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         promisify(
           mApi().guider.students.workspaces.read(id, { active: true }),
           "callback"
-        )().then(async (workspaces: WorkspaceListType) => {
+        )().then(async (workspaces: WorkspaceType[]) => {
           if (workspaces && workspaces.length) {
             await Promise.all([
               Promise.all(
@@ -862,7 +861,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
           promisify(
             mApi().guider.students.workspaces.read(id, { active: false }),
             "callback"
-          )().then(async (workspaces: WorkspaceListType) => {
+          )().then(async (workspaces: WorkspaceType[]) => {
             if (workspaces && workspaces.length) {
               await Promise.all([
                 Promise.all(
@@ -1834,7 +1833,7 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
       try {
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-          payload: <GuiderWorkspaceListType>await promisify(
+          payload: <WorkspaceType[]>await promisify(
               mApi().workspace.workspaces.read({
                 userIdentifier: currentUser,
                 includeInactiveWorkspaces: true,

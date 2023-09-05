@@ -20,6 +20,7 @@ import {
 } from "~/reducers/user-index";
 import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
+import MApi from "~/api/api";
 
 /**
  * InputContactsAutofillLoaders
@@ -242,16 +243,14 @@ export default class c extends React.Component<
     const getWorkspacesLoader = () =>
       loaders.workspacesLoader
         ? loaders.workspacesLoader(textInput)
-        : promisify(
-            mApi().coursepicker.workspaces.read({
+        : () =>
+            MApi.getCoursepickerApi().getCoursepickerWorkspaces({
               q: textInput,
               maxResults: 20,
               myWorkspaces: checkHasPermission(
                 this.props.workspacePermissionIsOnlyMyWorkspaces
               ),
-            }),
-            "callback"
-          );
+            });
 
     /**
      * getStaffLoader

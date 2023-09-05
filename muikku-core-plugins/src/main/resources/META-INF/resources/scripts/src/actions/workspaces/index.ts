@@ -3,21 +3,18 @@ import actions, { displayNotification } from "../base/notifications";
 import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import {
-  WorkspaceListType,
   WorkspaceMaterialReferenceType,
   WorkspaceType,
   WorkspaceChatStatusType,
   WorkspaceAssessementStateType,
   WorkspaceAssessmentRequestType,
   WorkspaceEducationFilterListType,
-  WorkspaceCurriculumFilterListType,
   WorkspacesActiveFiltersType,
   WorkspacesStateType,
   WorkspacesPatchType,
   WorkspaceAdditionalInfoType,
   WorkspaceUpdateType,
   WorkspaceSignUpDetails,
-  WorkspaceCurriculumFilterType,
   WorkspaceActivityType,
   WorkspaceInterimEvaluationRequest,
 } from "~/reducers/workspaces";
@@ -45,15 +42,17 @@ import {
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import workspace from "~/reducers/workspace";
+import MApi from "~/api/api";
+import { Curriculum } from "~/generated/client";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
-  WorkspaceCurriculumFilterType[]
+  Curriculum[]
 >;
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<
   "UPDATE_USER_WORKSPACES",
-  WorkspaceListType
+  WorkspaceType[]
 >;
 
 export type UPDATE_LAST_WORKSPACES = SpecificActionType<
@@ -107,7 +106,7 @@ export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
   SpecificActionType<
     "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
-    WorkspaceCurriculumFilterListType
+    Curriculum[]
   >;
 
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES =
@@ -264,7 +263,7 @@ const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
       try {
         dispatch({
           type: "UPDATE_ORGANIZATION_TEMPLATES",
-          payload: <WorkspaceListType>(
+          payload: <WorkspaceType[]>(
             ((await promisify(
               mApi().organizationWorkspaceManagement.workspaces.read(data),
               "callback"
@@ -307,7 +306,7 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
       try {
         dispatch({
           type: "UPDATE_USER_WORKSPACES",
-          payload: <WorkspaceListType>(
+          payload: <WorkspaceType[]>(
             ((await promisify(
               mApi().workspace.workspaces.read({ userId: userId }),
               "callback"
@@ -750,11 +749,10 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
+      const coursepickerApi = MApi.getCoursepickerApi();
 
       try {
-        const curriculums = <WorkspaceCurriculumFilterListType>(
-          await promisify(mApi().coursepicker.curriculums.read(), "callback")()
-        );
+        const curriculums = await coursepickerApi.getCoursepickerCurriculums();
 
         dispatch({
           type: "UPDATE_AVAILABLE_CURRICULUMS",
@@ -1152,7 +1150,7 @@ export interface setFiltersTriggerType {
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (
     loadOrganizationWorkspaceFilters: boolean,
-    callback?: (curriculums: WorkspaceCurriculumFilterListType) => void
+    callback?: (curriculums: Curriculum[]) => void
   ): AnyActionType;
 }
 
@@ -1317,10 +1315,11 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const coursepickerApi = MApi.getCoursepickerApi();
+
       try {
-        const curriculums = <WorkspaceCurriculumFilterListType>(
-          await promisify(mApi().coursepicker.curriculums.read(), "callback")()
-        );
+        const curriculums = await coursepickerApi.getCoursepickerCurriculums();
+
         if (!loadOrganizationWorkspaceFilters) {
           dispatch({
             type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
@@ -1359,13 +1358,16 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const coursepickerApi = MApi.getCoursepickerApi();
+
       try {
-        await promisify(
-          mApi().coursepicker.workspaces.signup.create(data.workspace.id, {
+        await coursepickerApi.workspaceSignUp({
+          workspaceId: data.workspace.id,
+          workspaceSignUpRequest: {
             message: data.message,
-          }),
-          "callback"
-        )();
+          },
+        });
+
         window.location.href = `${getState().status.contextPath}/workspace/${
           data.workspace.urlName
         }`;

@@ -7,7 +7,6 @@ import "~/sass/elements/item-list.scss";
 import {
   WorkspacesType,
   WorkspaceEducationFilterType,
-  WorkspaceCurriculumFilterType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import Navigation, {
@@ -108,7 +107,7 @@ class WorkspacesAside extends React.Component<
           )}
         >
           {this.props.workspaces.availableFilters.curriculums.map(
-            (curriculum: WorkspaceCurriculumFilterType) => {
+            (curriculum) => {
               const isActive =
                 this.props.workspaces.activeFilters.curriculumFilters.includes(
                   curriculum.identifier

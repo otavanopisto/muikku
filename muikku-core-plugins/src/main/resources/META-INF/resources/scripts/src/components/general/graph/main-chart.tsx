@@ -8,7 +8,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
+import { ActivityLogType, WorkspaceType } from "~/reducers/workspaces";
 import WorkspaceFilter from "./filters/workspace-filter";
 import GraphFilter from "./filters/graph-filter";
 import "~/sass/elements/chart.scss";
@@ -22,7 +22,7 @@ let AmCharts: any = null;
 interface CurrentStudentStatisticsProps {
   activityLogs?: Array<ActivityLogType>;
   i18n: i18nType;
-  workspaces?: WorkspaceListType;
+  workspaces?: WorkspaceType[];
 }
 
 /**

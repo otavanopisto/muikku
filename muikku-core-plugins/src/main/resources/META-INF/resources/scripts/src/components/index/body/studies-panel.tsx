@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
 import {
-  WorkspaceListType,
   WorkspaceType,
   WorkspaceMaterialReferenceType,
 } from "~/reducers/workspaces";
@@ -26,7 +25,7 @@ import ItemList from "~/components/general/item-list";
 interface WorkspacesPanelProps {
   i18n: i18nType;
   status: StatusType;
-  workspaces: WorkspaceListType;
+  workspaces: WorkspaceType[];
   lastWorkspaces: WorkspaceMaterialReferenceType[];
   displayNotification: DisplayNotificationTriggerType;
 }
