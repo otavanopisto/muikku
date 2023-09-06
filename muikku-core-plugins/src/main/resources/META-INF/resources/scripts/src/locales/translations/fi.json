@@ -617,9 +617,8 @@
       "nettilukio": "Tavoitteena aikuislukion päättötodistus ja ylioppilaslakki.",
       "nettiperuskoulu": "Tavoitteena aikuisten perusopetuksen päättötodistus.",
       "noWorkspaces": "Sinulla ei ole yhtään kurssia",
-      "noWorkspaces_pt1": "Et ole opiskelijana millään kurssilla. Voit käyttää",
-      "noWorkspaces_coursepicker": "kurssipoimuria",
-      "noWorkspaces_pt2": "löytääksesi sinua kiinnostavia kursseja.",
+      "noWorkspaces_body": "Et ole opiskelijana millään kurssilla. Hae tai selaa kursseja",
+      "noWorkspaces_link": "kurssipoimurista",
       "noUserByEmail": "Muikussa ei ole käyttäjätiliä, jonka sähköpostiosoite olisi {{email}}.",
       "openMaterials": "Creative Commons -lisensoituja oppimateriaaleja, joiden käyttö ei vaadi rekisteröitymistä.",
       "organization": "<p>Otavia on Mikkelin kaupungin ylläpitämä liikelaitos, jossa voi suorittaa aikuisten lukiokoulutuksen, perusopetuksen ja vapaan sivistystyön opintoja. Otavian erityisosaamista ovat etäopetus ja verkkopedagogiikka, monikulttuuristen ryhmien opetus sekä vapaan sivistystyön koulutukset. Otavia tarjoaa koulutusta ja koulutuksen kehittämiseen liittyviä palveluita alueellisesti, valtakunnallisesti ja globaalisti.</p>",
@@ -897,20 +896,6 @@
       "empty_student": "Sinulle ei ole annettu tehtäviä, etkä ole luonut sellaisia itse. Voit luoda uusia tehtäviä Opinnot-näkymässä.",
       "instructions": "<p>Plusikonista aukeaa editori, jolla voit luoda itsellesi uuden tehtävän. Voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy vain sinulle itsellesi. Lisäksi ohjaajasi voi antaa sinulle tehtäviä, joiden valmistumista hän voi seurata. Kun olet tehnyt tehtävän, voit kuitata omat tehtäväsi tehdyiksi. Ohjaajan antamat tehtävät lähetät ohjaajalle hyväksyttäviksi. Kun ohjaaja kuittaa tehtävän tehdyksi, tehtävän tilaksi vaihtuu Tehty. Tehtävät eivät siirry automaattisesti arkistoon, vaan sinun pitää itse tehdä se klikkaamalla roskakorikuvaketta.</p>"
     },
-    "notifications": {
-      "archiveError": "Tehtävän arkistointi epäonnistui. Yritä uudelleen. {{error}}",
-      "archiveSuccess": "Tehtävän arkistointi onnistui",
-      "createError": "Tehtävän luonti epäonnistui. Yritä uudelleen. {{error}}",
-      "createSuccess": "Tehtävä luotiin onnistuneesti",
-      "loadError": "Tehtävien lataus epäonnistui. Yritä ladata sivu uudelleen. {{error}}",
-      "pinError": "Tehtävän kiinnittäminen epäonnistui: {{error}}",
-      "unarchiveError": "Tehtävän palautus epäonnistui. Yritä ladata sivu uudelleen",
-      "updateError": "Tehtävän muokkaus epäonnistui. Yritä uudelleen. {{error}}",
-      "updateError_state": " Tehtävän tilan päivitys epäonnistui. Yritä uudelleen. {{error}}",
-      "updateSuccess": "Tehtävän muokkaus onnistui",
-      "updateSuccess_state": "Tehtävän tila päivitettiin onnistuneesti",
-      "ratingError": "Tehtävän tähditys epäonnistui: {{error}}. Yritä uudelleen."
-    },
     "labels": {
       "active": "Voimassa",
       "create": "Uusi tehtävä",
@@ -932,6 +917,21 @@
       "tasks_active": "Aktiiviset tehtävät",
       "tasks_archived": "Arkistoidut tehtävät",
       "tasks_student": "Opiskelijalle annetut tehtävät"
+    },
+    "notifications": {
+      "archiveError": "Tehtävän arkistointi epäonnistui. Yritä uudelleen. {{error}}",
+      "archiveSuccess": "Tehtävän arkistointi onnistui",
+      "createError": "Tehtävän luonti epäonnistui. Yritä uudelleen. {{error}}",
+      "createSuccess": "Tehtävä luotiin onnistuneesti",
+      "loadError": "Tehtävien lataus epäonnistui. Yritä ladata sivu uudelleen. {{error}}",
+      "pinError": "Tehtävän kiinnittäminen epäonnistui: {{error}}",
+      "unarchiveError": "Tehtävän palautus epäonnistui. Yritä ladata sivu uudelleen",
+      "unarchiveSuccess": "Tehtävän palautus onnistui",
+      "updateError": "Tehtävän muokkaus epäonnistui. Yritä uudelleen. {{error}}",
+      "updateError_state": " Tehtävän tilan päivitys epäonnistui. Yritä uudelleen. {{error}}",
+      "updateSuccess": "Tehtävän muokkaus onnistui",
+      "updateSuccess_state": "Tehtävän tila päivitettiin onnistuneesti",
+      "ratingError": "Tehtävän tähditys epäonnistui: {{error}}. Yritä uudelleen."
     }
   },
   "users": {
@@ -1084,7 +1084,6 @@
       "updateSuccess_userGroup": "Käyttäjäryhmän muokkaus onnistui "
     }
   },
-
   "flags": {
     "actions": {
       "create": "Luo uusi lippu",
@@ -1292,7 +1291,6 @@
       "loadError_attachment": "Liitteen lataus onnistui",
       "loadError_compositeReplies": "Vastausten lataus epäonnistui",
       "notFound": "Materiaalitunniste puuttuu",
-      "processing": "Prosessoidaan {{progress}} %",
       "recording": "Äänitetään {{currentLength}} / {{maxLength}}",
       "removeError": "Materiaalin poisto epäonnistui",
       "saved": "Vastaus tallennettu",
@@ -1349,6 +1347,7 @@
       "create_workspace": "Luo kurssi",
       "create_journal": "Uusi merkintä",
       "edit": "Muokkaa kurssia",
+      "hide": "$t(common:actions.hide)",
       "hide_supplementationRequest": "Piilota täydennyspyyntö",
       "openInMuikku": "Avaa kurssi Muikussa",
       "openInPyramus": "Avaa kurssi Pyramuksessa",
@@ -1649,7 +1648,6 @@
       "updateError_comment": "Oppimispäiväkirjamerkinnän kommentin muokkaus epäonnistui: {{error}}"
     }
   },
-
   "files": {
     "actions": {
       "add": "Lisää tiedosto",
@@ -1671,7 +1669,6 @@
       "uploadSuccess": "Tiedoston lähetys onnistui"
     }
   },
-
   "evaluation": {
     "actions": {
       "askSupplementation": "Pyydä täydennystä",
@@ -1818,7 +1815,6 @@
       "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui"
     }
   },
-
   "orders": {
     "actions": {
       "confirmSave": "Kyllä, viimeistele tilaus",
@@ -1896,7 +1892,6 @@
       "PAID_student": "Olet maksanut tilauksen, mutta opintoajan lisäys epäonnistui. Ota yhteyttä ohjaajaasi."
     }
   },
-
   "ops": {
     "mandatory": "Pakollinen",
     "mandatory_lukioOPS2016": "Pakollinen",

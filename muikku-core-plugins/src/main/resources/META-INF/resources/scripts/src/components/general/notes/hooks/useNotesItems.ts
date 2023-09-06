@@ -418,7 +418,6 @@ export const useNotesItem = (
       }));
     }
   };
-
   /**
    * changenotesItemStatus
    * @param notesItemId notesItemId

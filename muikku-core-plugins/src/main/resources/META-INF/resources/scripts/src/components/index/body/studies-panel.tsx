@@ -176,14 +176,13 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
         <Panel.BodyContent modifier="empty">
           {status.isStudent ? (
             <>
-              {t("content.noWorkspaces", { ns: "frontPage", context: "pt1" })}
+              {t("content.noWorkspaces", { ns: "frontPage", context: "body" })}
               <Link href="/coursepicker" className="link link--index-text-link">
                 {t("content.noWorkspaces", {
                   ns: "frontPage",
-                  context: "coursepicker",
+                  context: "link",
                 })}
               </Link>
-              {t("content.noWorkspaces", { ns: "frontPage", context: "pt2" })}
             </>
           ) : (
             <>{t("content.noWorkspaces", { ns: "frontPage" })} </>

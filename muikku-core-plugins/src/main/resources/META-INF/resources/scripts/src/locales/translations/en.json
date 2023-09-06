@@ -166,7 +166,7 @@
       "403_password": "Please check your password to proceed with password change",
       "409": "Already exists",
       "409_userName": "Username is already in use",
-      "502": "Connection to Muikku has been lost. If you are doing course assignments/exercises please copy all unsaved answers to your computer and reload the page. If the problem continues, please check your Internet connection is working properly and if needed, contact Muikku's helpdesk (helpdesk(a)muikkuverkko.fi) for further assistance.",
+      "502": "Connection to Muikku has been lost. If you are doing course assignments/exercises please copy all unsaved answers to your computer and reload the page. If the problem continues. Please check your Internet connection is working properly and if needed, contact Muikku's helpdesk (helpdesk(a)muikkuverkko.fi) for further assistance.",
       "addError": "Adding failed",
       "availableError": "Resource not available or does not exist.",
       "cancelError": "Cancelling failed",
@@ -184,7 +184,7 @@
       "loadError_locales": "Failed loading the language version",
       "newMessage": "{{user}} - New message",
       "noResults": "No results",
-      "reconnectError": "Connection to Muikku has been lost. If you are doing course assignments/exercises please copy all unsaved answers to your computer and reload the page. If the problem continues, please check your Internet connection is working properly and if needed, contact Muikku's helpdesk (helpdesk(a)muikkuverkko.fi) for further assistance.",
+      "reconnectError": "Connection to Muikku has been lost. If you are doing course assignments/exercises please copy all unsaved answers to your computer and reload the page. If the problem continues. Please check your Internet connection is working properly and if needed, contact Muikku's helpdesk (helpdesk(a)muikkuverkko.fi) for further assistance.",
       "removeError": "Deleting failed",
       "removeError_chatRoom": "Deleting the chat-room <b>{{room}}</b> failed. Please try again.",
       "removeError_comment": "Deleting the comment failed",
@@ -588,7 +588,7 @@
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
-      "loadError_summary": "Loading the summary failed, please refresh the view"
+      "loadError_summary": "Loading the summary failed. Please refresh the view"
     },
     "wcag": {
       "workspaceTemplateSelect": "Set template selected"
@@ -612,14 +612,13 @@
       "checkContactInfo": "Is the following information correct?",
       "forgotPassword": "Enter your email address to the field below, and we will send you a link you can use to reset your password.",
       "immigrantEducation": "Programmes for students with immigrant backgrounds offer comprehensive education for adults. In our campus, the region of Savo joins hands with the whole world.",
-      "inactiveStudent": "Due to the expiration of your study right your access to Muikku is restricted and you can only enter your study register and view courses.</p><p>In case you have a problem, please contact <a href='mailto:helpdesk@muikkuverkko.fi'>helpdesk@muikkuverkko.fi</a>.</p>",
+      "inactiveStudent": "Due to the expiration of your study right your access to Muikku is restricted and you can only enter your study register and view courses.</p><p>In case you have a problem. Please contact <a href='mailto:helpdesk@muikkuverkko.fi'>helpdesk@muikkuverkko.fi</a>.</p>",
       "pointOfContinue": "Your latest studies were",
       "nettilukio": "Aim at Adult Upper Secondary School Certificate.",
       "nettiperuskoulu": "Aim at Adult Secondary School Certificate.",
       "noWorkspaces": "You have no courses.",
-      "noWorkspaces_pt1": "You are not studying in any of the courses. You can use",
-      "noWorkspaces_coursepicker": "coursepicker",
-      "noWorkspaces_pt2": "to find courses that interests you.",
+      "noWorkspaces_body": "You are not a student in any of the courses. Search or browse courses in the",
+      "noWorkspaces_link": "coursepicker",
       "noUserByEmail": "Muikku has no user account corresponding to email address {{email}.",
       "openMaterials": "Materials licensed by Creative Commons license. Registration is not required.",
       "organization": "<p>Otavia is a municipal enterprise owned by the city of Mikkeli that specializes in digital education through Online Upper Secondary School for Adults and Online Comprehensive School for Adults. We also welcome students to enroll in on-campus courses as part of different study programmes for students with immigrant backgrounds. It is also possible to enroll in a number of liberal adult education courses. We provide and develop education locally, nationwide and globally. Exploring, trying out and testing new approaches is at the heart of what we do at Otavia.</p>",
@@ -806,7 +805,6 @@
       "doesNotExistError": "Label does not exist.",
       "locationError": "Wrong address",
       "loadError": "$t(common:notifications.loadError)",
-      "loadError_messages": "Loading messages failed. Please try again.",
       "loadError_discussionAreas": "Loading discussion areas failed. Please try again.",
       "loadError_labels": "Loading labels failed. Please try again.",
       "loadError_latestMessage": "Loading the latest message failed. Please try again.",
@@ -921,22 +919,21 @@
       "tasks_student": "Student's task"
     },
     "notifications": {
-      "archiveError": "Archiving the task failed, please try again. {{error}}",
-      "archiveSuccess": "Archiving the task succeeded.",
-      "createError": "Creating the task failed, please try again. {{error}}",
-      "createSuccess": "Creating the task succeeded.",
+      "archiveError": "Archiving the task failed. Please try again. {{error}}",
+      "archiveSuccess": "Archiving the task succeeded",
+      "createError": "Creating the task failed. Please try again. {{error}}",
+      "createSuccess": "Creating the task succeeded",
       "loadError": "Loading the tasks failed, try again by refreshing the page. {{error}}",
       "pinError": "Pinning the task failed. {{error}}",
-      "unarchiveError": "Unarchiving the task failed, please try again. {{error}}",
-      "unarchiveSuccess": "Unarchiving the task succeeded.",
-      "updateError": "Updating the task failed, please try again. {{error}}",
-      "updateError_state": "Updating the task state failed, please try again. {{error}}",
+      "unarchiveError": "Unarchiving the task failed. Please try again. {{error}}",
+      "unarchiveSuccess": "Unarchiving the task succeeded",
+      "updateError": "Updating the task failed. Please try again. {{error}}",
+      "updateError_state": "Updating the task state failed. Please try again. {{error}}",
       "updateSuccess": "Updating the the task succeeded",
-      "updateSuccess_state": "Updating the task sate succeeded.",
-      "ratingError": "Rating the task failed, please try again. {{error}}"
+      "updateSuccess_state": "Updating the task sate succeeded",
+      "ratingError": "Rating the task failed. Please try again. {{error}}"
     }
   },
-
   "users": {
     "actions": {
       "create": "Create a user group",
@@ -1074,7 +1071,7 @@
       "noResults": "No students",
       "removeError": "Deleting the profile picture failed",
       "saveError": "Saving the profile picture failed",
-      "sendError": "Sending failed, please try again",
+      "sendError": "Sending failed. Please try again",
       "setError": "Setting the user group failed",
       "saveSuccess": "Saving the profile picture succeeded",
       "updateError": "Editing the user failed",
@@ -1087,7 +1084,6 @@
       "updateSuccess_userGroup": "Edting the usergroup succeeded"
     }
   },
-
   "flags": {
     "actions": {
       "create": "Create a new flag",
@@ -1452,7 +1448,7 @@
       "license": "License",
       "linkMaterials": "Link materials",
       "localeCode": "Locale completed",
-      "loading": "Loading, please wait...",
+      "loading": "Loading. Please wait...",
       "loggedInUsers": "Logged users",
       "mandatory": "Mandatory",
       "materialCopyType": "Material copy type",
@@ -1560,6 +1556,7 @@
       "removeError": "Deleting the front page image failed",
       "removeSuccess": "Deleting the front page image failed",
       "saveError": "Saving data failed",
+      "saveSuccess": "$t(common:notifications.saveSuccess)",
       "saveSuccess_basicData": "Saving basic data succeeded",
       "saveSuccess_coverImage": "Saving the front page image succeeded",
       "saveSuccess_data": "Saving the information succeeded",
@@ -1895,7 +1892,6 @@
       "PAID_student": "The payment succeeded, but there was an error with granting the extension to right to study. Please contact your counselor."
     }
   },
-
   "ops": {
     "mandatory": "Mandatory",
     "mandatory_lukioOPS2016": "Mandatory",
