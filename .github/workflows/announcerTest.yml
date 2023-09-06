@@ -1,7 +1,7 @@
 name: Announcer headless tests
 on: 
-  push:
-    branches: [github-actions-update]
+  pull_request:
+    branches: [devel, master]
 jobs:
   testing:
     env:
