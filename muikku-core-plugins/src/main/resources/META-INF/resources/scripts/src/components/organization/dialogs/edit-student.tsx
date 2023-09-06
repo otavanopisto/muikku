@@ -15,7 +15,7 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
-import { UserType } from "~/reducers/user-index";
+import { User } from "~/generated/client";
 
 /**
  * OrganizationUserProps
@@ -24,7 +24,7 @@ interface OrganizationUserProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
   status: StatusType;
-  data: UserType;
+  data: User;
   studyprogrammes: StudyprogrammeTypes;
   updateStudent: UpdateStudentTriggerType;
 }

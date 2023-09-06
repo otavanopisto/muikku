@@ -195,15 +195,13 @@ class OrganizationUser extends React.Component<
           executing: true,
         });
 
-        const data = {
-          firstName: this.state.user.firstName,
-          lastName: this.state.user.lastName,
-          email: this.state.user.email,
-          role: this.state.user.role,
-        };
-
         this.props.createStaffmember({
-          staffmember: data,
+          staffmember: {
+            firstName: this.state.user.firstName,
+            lastName: this.state.user.lastName,
+            email: this.state.user.email,
+            role: this.state.user.role,
+          },
           /**
            * success
            */

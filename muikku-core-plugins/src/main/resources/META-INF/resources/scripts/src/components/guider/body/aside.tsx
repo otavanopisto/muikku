@@ -8,13 +8,13 @@ import {
   GuiderWorkspaceType,
   GuiderType,
 } from "~/reducers/main-function/guider";
-import { UserGroupType } from "~/reducers/user-index";
 import LabelUpdateDialog from "../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
+import { UserGroup } from "~/generated/client";
 
 /**
  * NavigationProps
@@ -144,7 +144,7 @@ class NavigationAside extends React.Component<
             name={this.props.i18n.text.get("plugin.guider.filters.userGroups")}
           >
             {this.props.guider.availableFilters.userGroups.map(
-              (userGroup: UserGroupType) => {
+              (userGroup: UserGroup) => {
                 const isActive =
                   this.props.guider.activeFilters.userGroupFilters.includes(
                     userGroup.id

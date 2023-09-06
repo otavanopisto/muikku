@@ -19,7 +19,6 @@ import {
   StudentUserProfilePhoneType,
   StudentUserProfileEmailType,
   StudentUserAddressType,
-  UserGroupType,
 } from "reducers/user-index";
 import notificationActions from "~/actions/base/notifications";
 import {
@@ -46,6 +45,7 @@ import {
   PurchaseType,
 } from "~/reducers/main-function/profile";
 import { LoadingState } from "~/@types/shared";
+import { UserGroup } from "~/generated/client";
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -646,7 +646,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         promisify(
           mApi().usergroup.groups.read({ userIdentifier: id }),
           "callback"
-        )().then((usergroups: UserGroupType[]) => {
+        )().then((usergroups: UserGroup[]) => {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "usergroups", value: usergroups },

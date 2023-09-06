@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
-import { PagingUserListType } from "~/reducers/main-function/users";
 import { Reducer } from "redux";
+import { Organization, User, UserGroup } from "~/generated/client";
 export type ManipulateType = "UPDATE" | "CREATE";
 
 /**
@@ -31,7 +31,7 @@ export interface UpdateUserType {
 /**
  * UserType
  */
-export interface UserType {
+/* export interface UserType {
   // Ok, but coming from backend, "id" is not a number, but a string. This might cause trouble in the future?
   id: number;
   firstName: string;
@@ -61,7 +61,7 @@ export interface UserType {
   lastLogin?: string;
   archived?: boolean;
   studiesEnded?: boolean;
-}
+} */
 
 /**
  * UserWithSchoolDataType
@@ -120,23 +120,9 @@ export interface UserStaffType {
 }
 
 /**
- * WorkspaceStudentListType
- */
-export interface WorkspaceStudentListType extends PagingUserListType {
-  results: Array<ShortWorkspaceUserWithActiveStatusType>;
-}
-
-/**
- * WorkspaceStaffListType
- */
-export interface WorkspaceStaffListType extends PagingUserListType {
-  results: Array<UserStaffType>;
-}
-
-/**
  * ShortWorkspaceUserWithActiveStatusType
  */
-export interface ShortWorkspaceUserWithActiveStatusType {
+/* export interface ShortWorkspaceUserWithActiveStatusType {
   workspaceUserEntityId: number;
   userIdentifier: string;
   userEntityId: number;
@@ -146,7 +132,7 @@ export interface ShortWorkspaceUserWithActiveStatusType {
   studyProgrammeName: string;
   active: boolean;
   hasImage: boolean;
-}
+} */
 
 /**
  * UserGroupType
@@ -156,7 +142,7 @@ export interface UserGroupType {
   identifier?: string;
   name: string;
   userCount: number;
-  organization?: OrganizationType;
+  organization?: Organization;
   isGuidanceGroup?: boolean;
 }
 
@@ -164,7 +150,7 @@ export interface UserGroupType {
  * UserBaseIndexType
  */
 export interface UserBaseIndexType {
-  [index: number]: UserType;
+  [index: number]: User;
 }
 
 /**
@@ -175,7 +161,7 @@ export interface ContactRecipientType {
   value: {
     id: number;
     name: string;
-    organization?: OrganizationType;
+    organization?: Organization;
     email?: string;
     archived?: boolean;
     studiesEnded?: boolean;
@@ -188,14 +174,14 @@ export interface ContactRecipientType {
  * UserGroupBaseIndexType
  */
 export interface UserGroupBaseIndexType {
-  [index: number]: UserGroupType;
+  [index: number]: UserGroup;
 }
 
 /**
  * UsersBySchoolDataType
  */
 export interface UsersBySchoolDataType {
-  [index: string]: UserType;
+  [index: string]: User;
 }
 
 /**
@@ -296,7 +282,7 @@ export const userIndex: Reducer<UserIndexType> = (
 ) => {
   switch (action.type) {
     case "SET_USER_INDEX": {
-      const prop: { [index: number]: UserType } = {};
+      const prop: { [index: number]: User } = {};
       prop[action.payload.index] = action.payload.value;
       return Object.assign({}, state, {
         users: Object.assign({}, state.users, prop),
@@ -313,7 +299,7 @@ export const userIndex: Reducer<UserIndexType> = (
     }
 
     case "SET_USER_BY_SCHOOL_DATA_INDEX": {
-      const prop: { [index: string]: UserType } = {};
+      const prop: { [index: string]: User } = {};
       prop[action.payload.index] = action.payload.value;
       return Object.assign({}, state, {
         usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop),
@@ -339,7 +325,7 @@ export const userIndex: Reducer<UserIndexType> = (
   action: ActionType
 ): UserIndexType {
   if (action.type === "SET_USER_INDEX") {
-    const prop: { [index: number]: UserType } = {};
+    const prop: { [index: number]: User } = {};
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {
       users: Object.assign({}, state.users, prop),
@@ -351,7 +337,7 @@ export const userIndex: Reducer<UserIndexType> = (
       groups: Object.assign({}, state.groups, prop),
     });
   } else if (action.type === "SET_USER_BY_SCHOOL_DATA_INDEX") {
-    const prop: { [index: string]: UserType } = {};
+    const prop: { [index: string]: User } = {};
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {
       usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop),

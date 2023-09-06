@@ -1,28 +1,28 @@
 import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi, { MApiError } from "~/lib/mApi";
-import { UserType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
+import { User } from "~/generated/client";
 
 /**
  * LoadUserIndexTriggerType
  */
 export interface LoadUserIndexTriggerType {
-  (userId: number, callback?: (user: UserType) => any): AnyActionType;
+  (userId: number, callback?: (user: User) => any): AnyActionType;
 }
 
 /**
  * LoadUserIndexBySchoolDataTriggerType
  */
 export interface LoadUserIndexBySchoolDataTriggerType {
-  (userId: string, callback?: (user: UserType) => any): AnyActionType;
+  (userId: string, callback?: (user: User) => any): AnyActionType;
 }
 
 /**
  * LoadLoggedUserTriggerType
  */
 export interface LoadLoggedUserTriggerType {
-  (callback?: (user: UserType) => any): AnyActionType;
+  (callback?: (user: User) => any): AnyActionType;
 }
 
 /**
@@ -36,7 +36,7 @@ export type SET_USER_INDEX = SpecificActionType<
   "SET_USER_INDEX",
   {
     index: number;
-    value: UserType;
+    value: User;
   }
 >;
 
@@ -52,7 +52,7 @@ export type SET_USER_BY_SCHOOL_DATA_INDEX = SpecificActionType<
   "SET_USER_BY_SCHOOL_DATA_INDEX",
   {
     index: string;
-    value: UserType;
+    value: User;
   }
 >;
 
@@ -81,7 +81,7 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
       fetchingStateUserBySchoolData[userId] = true;
 
       try {
-        const user: UserType = <UserType>(
+        const user: User = <User>(
           ((await promisify(mApi().user.whoami.read(), "callback")()) || 0)
         );
         dispatch({

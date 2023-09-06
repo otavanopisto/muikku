@@ -14,7 +14,6 @@ import { loadAnnouncementsAsAClient } from "~/actions/announcements";
 import { loadLastMessageThreadsFromServer } from "~/actions/main-function/messages";
 import CousePickerBody from "../components/coursepicker/body";
 import { loadLoggedUser } from "~/actions/user-index";
-import { UserType } from "~/reducers/user-index";
 import {
   loadWorkspacesFromServer,
   loadUserWorkspaceCurriculumFiltersFromServer,
@@ -118,7 +117,7 @@ registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 import { loadContactGroup } from "~/actions/base/contacts";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
-import { Announcement } from "~/generated/client";
+import { Announcement, User } from "~/generated/client";
 
 moment.locale("fi");
 
@@ -561,7 +560,7 @@ export default class MainFunction extends React.Component<
        * loadCoursepickerDataByUser
        * @param user user
        */
-      const loadCoursepickerDataByUser = (user: UserType) => {
+      const loadCoursepickerDataByUser = (user: User) => {
         if (!currentLocationHasData) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {};
@@ -589,7 +588,7 @@ export default class MainFunction extends React.Component<
       if (state.status.loggedIn) {
         if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
           this.props.store.dispatch(
-            loadLoggedUser((user: UserType) => {
+            loadLoggedUser((user: User) => {
               loadCoursepickerDataByUser(user);
             }) as Action
           );
@@ -705,7 +704,7 @@ export default class MainFunction extends React.Component<
        * loadWorkspacesByUser
        * @param user user
        */
-      const loadWorkspacesByUser = (user: UserType) => {
+      const loadWorkspacesByUser = (user: User) => {
         if (!currentLocationHasData) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {
@@ -731,7 +730,7 @@ export default class MainFunction extends React.Component<
       if (state.status.loggedIn) {
         if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
           this.props.store.dispatch(
-            loadLoggedUser((user: UserType) => {
+            loadLoggedUser((user: User) => {
               loadWorkspacesByUser(user);
             }) as Action
           );

@@ -24,13 +24,11 @@ import {
 import WorkspaceJournalView from "./application/workspace-journal-view";
 import { JournalsState } from "~/reducers/workspaces/journals";
 import { OptionDefault } from "~/components/general/react-select/types";
-import { ShortWorkspaceUserWithActiveStatusType } from "~/reducers/user-index";
 import Select from "react-select";
-
-type JournalStudentFilterOption = OptionDefault<
-  ShortWorkspaceUserWithActiveStatusType | string
->;
 import WorkspaceJournalFeedback from "./application/workspace-journal-feedback";
+import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
+
+type JournalStudentFilterOption = OptionDefault<WorkspaceStudent | string>;
 
 /**
  * WorkspaceJournalApplicationProps
@@ -70,7 +68,7 @@ class WorkspaceJournalApplication extends React.Component<
 
   /**
    * Handles workspace journal filter change
-   * @param selectedOption selectedOption which can be either a string or a ShortWorkspaceUserWithActiveStatusType
+   * @param selectedOption selectedOption which can be either a string or a WorkspaceStudent
    */
   handleWorkspaceJournalFilterChange(
     selectedOption: JournalStudentFilterOption

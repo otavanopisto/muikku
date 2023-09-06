@@ -12,15 +12,15 @@ import {
   LoadMoreUserTriggerType,
   loadMoreUserGroups,
 } from "~/actions/main-function/users";
-import { UserGroupType } from "~/reducers/user-index";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
+import { UserGroup } from "~/generated/client";
 
 /**
  * OrganizationUserGroupsProps
  */
 interface OrganizationUserGroupsProps {
   i18n: i18nType;
-  userGroups: Array<UserGroupType>;
+  userGroups: UserGroup[];
   userGroupsState: WorkspacesStateType;
   userGroupsHasMore: boolean;
   loadMoreUserGroups: LoadMoreUserTriggerType;
@@ -68,7 +68,7 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
     <div>
       <ApplicationList>
         {userGroups &&
-          userGroups.map((userGroup: UserGroupType, index) => {
+          userGroups.map((userGroup: UserGroup, index) => {
             if (userGroups.length === index + 1) {
               // This div wrapper exists because callback ref must return
               // an element and a class component returns a mounted instance

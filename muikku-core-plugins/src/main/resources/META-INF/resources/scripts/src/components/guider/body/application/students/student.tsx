@@ -1,4 +1,3 @@
-import { UserType } from "~/reducers/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
 import {

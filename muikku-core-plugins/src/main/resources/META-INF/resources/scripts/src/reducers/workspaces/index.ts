@@ -1,11 +1,9 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
-import {
-  UserStaffType,
-  WorkspaceStaffListType,
-  WorkspaceStudentListType,
-} from "~/reducers/user-index";
+import { UserStaffSearchResult } from "~/generated/client/models/UserStaffSearchResult";
+import { WorkspaceStudentSearchResult } from "~/generated/client/models/WorkspaceStudentSearchResult";
+import { UserStaffType } from "~/reducers/user-index";
 import { repairContentNodes } from "~/util/modifiers";
 import {
   AssignmentEvaluationType,
@@ -437,13 +435,13 @@ export interface WorkspaceType {
   assessmentRequests?: WorkspaceAssessmentRequestType[];
   interimEvaluationRequests?: WorkspaceInterimEvaluationRequest[];
   additionalInfo?: WorkspaceAdditionalInfoType;
-  staffMembers?: WorkspaceStaffListType;
+  staffMembers?: UserStaffSearchResult;
   staffMemberSelect?: UserSelectType;
   producers?: WorkspaceProducerType[];
   contentDescription?: MaterialContentNodeType;
   activityLogs?: ActivityLogType[];
-  students?: WorkspaceStudentListType;
-  inactiveStudents?: WorkspaceStudentListType;
+  students?: WorkspaceStudentSearchResult;
+  inactiveStudents?: WorkspaceStudentSearchResult;
   studentsSelect?: UserSelectType;
   details?: WorkspaceDetailsType;
   permissions?: WorkspacePermissionsType[];

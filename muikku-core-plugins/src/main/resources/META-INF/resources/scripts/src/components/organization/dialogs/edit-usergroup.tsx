@@ -30,15 +30,19 @@ import AutofillSelector, {
 } from "~/components/base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
-  UsersSelectType,
+  UsersSelectState,
   UpdateUserGroupType,
-  PagingEnvironmentUserListType,
-  ModifyUserGroupUsersType,
   UpdateUserGroupStateType,
   CurrentUserGroupType,
 } from "~/reducers/main-function/users";
-import { UserGroupType, UserType } from "~/reducers/user-index";
 import { TagItem } from "~/components/general/tag-input";
+import {
+  UpdateUsergroupAddUsersRequest,
+  UpdateUsergroupRemoveUsersRequest,
+  User,
+  UserGroup,
+  UserSearchResult,
+} from "~/generated/client";
 
 /**
  * ValidationType
@@ -54,9 +58,9 @@ type UserCategoriesType = "students" | "staff";
  */
 interface OrganizationEditUsergroupProps {
   children?: React.ReactElement<any>;
-  usergroup: UserGroupType;
+  usergroup: UserGroup;
   i18n: i18nType;
-  users: UsersSelectType;
+  users: UsersSelectState;
   currentUserGroup: CurrentUserGroupType;
   setCurrentUserGroup: SetCurrentUserGroupTriggerType;
   updateOrganizationUsergroup: UpdateUsergroupTriggerType;
@@ -230,7 +234,7 @@ class OrganizationEditUsergroup extends React.Component<
        * success
        * @param users users
        */
-      success: (users: PagingEnvironmentUserListType) => {
+      success: (users: UserSearchResult) => {
         this.setState({
           pages: {
             ...this.state.pages,
@@ -245,7 +249,7 @@ class OrganizationEditUsergroup extends React.Component<
    * turnUsersToSelectItems
    * @param users users
    */
-  turnUsersToSelectItems(users: UserType[]) {
+  turnUsersToSelectItems(users: User[]) {
     const selectItems: SelectItem[] = [];
 
     for (let i = 0; i < users.length; i++) {
@@ -467,8 +471,8 @@ class OrganizationEditUsergroup extends React.Component<
     });
 
     let update: UpdateUserGroupType;
-    let addUsers: ModifyUserGroupUsersType;
-    let removeUsers: ModifyUserGroupUsersType;
+    let addUsers: UpdateUsergroupAddUsersRequest;
+    let removeUsers: UpdateUsergroupRemoveUsersRequest;
     const groupIdentifier: string = this.props.usergroup.id.toString();
 
     if (

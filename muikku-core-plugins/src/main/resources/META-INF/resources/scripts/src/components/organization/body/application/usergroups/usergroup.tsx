@@ -11,7 +11,7 @@ import {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import { UserGroupType } from "~/reducers/user-index";
+import { UserGroup } from "~/generated/client";
 
 /**
  * CourseProps
@@ -19,7 +19,7 @@ import { UserGroupType } from "~/reducers/user-index";
 interface CourseProps {
   i18n: i18nType;
   status: StatusType;
-  usergroup: UserGroupType;
+  usergroup: UserGroup;
 }
 
 /**

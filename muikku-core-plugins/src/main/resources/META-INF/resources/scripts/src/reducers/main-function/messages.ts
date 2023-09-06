@@ -1,7 +1,7 @@
 import { ActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-import { UserGroupType, UserType } from "~/reducers/user-index";
 import { Reducer } from "redux";
+import { User, UserGroup } from "~/generated/client";
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
@@ -40,7 +40,7 @@ export interface MessageSearchResult {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tags: any;
   recipients?: Array<MessageRecepientType>;
-  userGroupRecipients?: Array<UserGroupType>;
+  userGroupRecipients?: UserGroup[];
   workspaceRecipients?: Array<MessageWorkspaceRecipientType>;
 }
 
@@ -83,13 +83,13 @@ export interface MessageThreadType {
   messageCountInThread: number;
   recipientCount?: number;
   recipients?: Array<MessageRecepientType>;
-  sender: UserType;
+  sender: User;
   senderId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tags: any;
   threadLatestMessageDate: string;
   unreadMessagesInThread: boolean;
-  userGroupRecipients?: Array<UserGroupType>;
+  userGroupRecipients?: Array<UserGroup>;
   workspaceRecipients?: Array<{
     archetype: string;
     workspaceEntityId: number;
@@ -111,7 +111,7 @@ export interface MessageThreadUpdateType {
   tags?: any;
   threadLatestMessageDate?: string;
   unreadMessagesInThread?: boolean;
-  sender?: UserType;
+  sender?: User;
   messageCountInThread?: number;
   labels?: MessageThreadLabelListType;
 }
@@ -138,11 +138,11 @@ export interface MessageType {
   id: number;
   recipientCount: number;
   recipients: Array<MessageRecepientType>;
-  sender: UserType;
+  sender: User;
   senderId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tags: any;
-  userGroupRecipients: Array<UserGroupType>;
+  userGroupRecipients: Array<UserGroup>;
   workspaceRecipients: Array<MessageWorkspaceRecipientType>;
 }
 

@@ -21,11 +21,6 @@ import {
   WorkspaceActivityType,
   WorkspaceInterimEvaluationRequest,
 } from "~/reducers/workspaces";
-import {
-  ShortWorkspaceUserWithActiveStatusType,
-  WorkspaceStudentListType,
-  WorkspaceStaffListType,
-} from "~/reducers/user-index";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
@@ -44,7 +39,10 @@ import {
   MaterialContentNodeType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import workspace from "~/reducers/workspace";
+import { WorkspaceStudentSearchResult } from "~/generated/client/models/WorkspaceStudentSearchResult";
+import { UserStaffSearchResult } from "~/generated/client/models/UserStaffSearchResult";
+import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
+import MApi from "~/api/api";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -248,21 +246,23 @@ export interface LoadTemplatesFromServerTriggerType {
  */
 const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
   function loadTemplatesFromServer(query?: string) {
-    const data: WorkspaceQueryDataType = {
-      templates: "ONLY_TEMPLATES",
-      maxResults: 5,
-    };
-
-    if (query) {
-      data.q = query;
-    }
-
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const organizationApi = MApi.getOrganizationApi();
+
+      /* const data = {
+        templates: "ONLY_TEMPLATES",
+        maxResults: 5,
+      };
+
+      if (query) {
+        data.q = query;
+      }
+      */
       try {
-        dispatch({
+        /* dispatch({
           type: "UPDATE_ORGANIZATION_TEMPLATES",
           payload: <WorkspaceListType>(
             ((await promisify(
@@ -270,6 +270,18 @@ const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
               "callback"
             )()) || 0)
           ),
+        }); */
+
+        const organizationWorkspaces =
+          (await organizationApi.getOrganizationWorkspaces({
+            templates: "ONLY_TEMPLATES",
+            maxResults: 5,
+            q: query || "",
+          })) as WorkspaceType[];
+
+        dispatch({
+          type: "UPDATE_ORGANIZATION_TEMPLATES",
+          payload: organizationWorkspaces,
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -1188,7 +1200,7 @@ export interface LoadUsersOfWorkspaceTriggerType {
       maxResults?: number;
     };
     success?: (
-      students: WorkspaceStudentListType | WorkspaceStaffListType
+      users: WorkspaceStudentSearchResult | UserStaffSearchResult
     ) => void;
     fail?: () => void;
   }): AnyActionType;
@@ -1200,7 +1212,7 @@ export interface LoadUsersOfWorkspaceTriggerType {
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
-    student: ShortWorkspaceUserWithActiveStatusType;
+    student: WorkspaceStudent;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -1627,7 +1639,7 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
       getState: () => StateType
     ) => {
       try {
-        const staffMembers = <WorkspaceStaffListType>await promisify(
+        const staffMembers = <UserStaffSearchResult>await promisify(
           mApi().user.staffMembers.read({
             workspaceEntityId: data.workspace.id,
             properties:
@@ -1692,7 +1704,7 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
           payload.active = data.payload.active;
         }
 
-        const students = <WorkspaceStudentListType>(
+        const students = <WorkspaceStudentSearchResult>(
           await promisify(
             mApi().workspace.workspaces.students.read(
               data.workspace.id,
@@ -1751,7 +1763,7 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
     ) => {
       const oldStudents = data.workspace.students;
       try {
-        const newStudent: ShortWorkspaceUserWithActiveStatusType = {
+        const newStudent = {
           ...data.student,
           active: !data.student.active,
         };
@@ -1766,7 +1778,7 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
             return student;
           });
 
-        const payload: WorkspaceStudentListType = {
+        const payload = {
           ...data.workspace.students,
           results: newStudents,
         };

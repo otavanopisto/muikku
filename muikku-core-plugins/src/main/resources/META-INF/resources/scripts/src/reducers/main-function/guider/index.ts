@@ -5,7 +5,6 @@ import {
   StudentUserProfileEmailType,
   StudentUserProfilePhoneType,
   StudentUserAddressType,
-  UserGroupType,
 } from "~/reducers/user-index";
 import {
   WorkspaceType,
@@ -16,6 +15,7 @@ import { HOPSDataType } from "~/reducers/main-function/hops";
 import { PurchaseType, PurchaseProductType } from "../profile";
 import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
+import { UserGroup } from "~/generated/client";
 /**
  * GuiderUserLabelType
  */
@@ -28,7 +28,7 @@ export interface GuiderUserLabelType {
 }
 
 export type GuiderUserLabelListType = Array<GuiderUserLabelType>;
-export type GuiderUserGroupListType = Array<UserGroupType>;
+export type GuiderUserGroupListType = UserGroup[];
 export type GuiderWorkspaceType = WorkspaceType;
 export type GuiderWorkspaceListType = WorkspaceListType;
 
@@ -161,7 +161,7 @@ export interface GuiderStudentUserProfileType {
   phoneNumbers: Array<StudentUserProfilePhoneType>;
   addresses: Array<StudentUserAddressType>;
   files: Array<UserFileType>;
-  usergroups: Array<UserGroupType>;
+  usergroups: Array<UserGroup>;
   // Disabled until it really works
   //  vops: VOPSDataType,
   hops: HOPSDataType;

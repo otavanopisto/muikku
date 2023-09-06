@@ -10,9 +10,9 @@ import { HOPSType } from "./main-function/hops";
 import { MessagesType } from "./main-function/messages";
 import { WorkspacesType } from "./workspaces";
 import {
-  UsersType,
-  UserGroupsType,
-  UsersSelectType,
+  UsersState,
+  UserGroupsState,
+  UsersSelectState,
   StudyprogrammeTypes,
 } from "./main-function/users";
 import { UserIndexType } from "./user-index";
@@ -54,12 +54,12 @@ export interface StateType {
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesType;
   userIndex?: UserIndexType;
-  userSelect?: UsersSelectType;
-  userGroups?: UserGroupsType;
+  userSelect?: UsersSelectState;
+  userGroups?: UserGroupsState;
   workspaces?: WorkspacesType;
   organizationSummary?: OrganizationSummaryType;
   organizationWorkspaces?: WorkspacesType;
-  organizationUsers?: UsersType;
+  organizationUsers?: UsersState;
   discussion?: DiscussionType;
   guider?: GuiderType;
   records?: RecordsType;

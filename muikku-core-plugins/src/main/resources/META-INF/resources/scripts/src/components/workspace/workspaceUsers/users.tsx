@@ -13,12 +13,8 @@ import "~/sass/elements/tabs.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/avatar.scss";
 import { getName } from "~/util/modifiers";
-import {
-  ContactRecipientType,
-  ShortWorkspaceUserWithActiveStatusType,
-} from "~/reducers/user-index";
+import { ContactRecipientType } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
-import { Tabs } from "~/components/general/tabs";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
@@ -36,6 +32,7 @@ import {
   LoadUsersOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { MobileOnlyTabs } from "~/components/general/tabs";
+import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 
 /**
  * WorkspaceUsersProps
@@ -52,13 +49,13 @@ interface WorkspaceUsersProps {
  * WorkspaceUsersState
  */
 interface WorkspaceUsersState {
-  studentCurrentlyBeingSentMessage: ShortWorkspaceUserWithActiveStatusType;
+  studentCurrentlyBeingSentMessage: WorkspaceStudent;
   activeTab: "ACTIVE" | "INACTIVE";
   currentSearch: string;
   currentStaffPage: number;
   currentActiveStudentPage: number;
   currentInactiveStudentPage: number;
-  studentCurrentBeingToggledStatus: ShortWorkspaceUserWithActiveStatusType;
+  studentCurrentBeingToggledStatus: WorkspaceStudent;
 }
 
 /**
@@ -108,6 +105,7 @@ class WorkspaceUsers extends React.Component<
    * UNSAFE_componentWillReceiveProps. Should be refactored at somepoint
    * @param nextProps nextProps
    */
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: WorkspaceUsersProps) {
     if (nextProps.workspace && nextProps.workspace.staffMembers) {
       this.allStaffPages = Math.ceil(
@@ -130,7 +128,7 @@ class WorkspaceUsers extends React.Component<
    * onSendMessageTo
    * @param student student
    */
-  onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType) {
+  onSendMessageTo(student: WorkspaceStudent) {
     this.setState({
       studentCurrentlyBeingSentMessage: student,
     });
@@ -201,9 +199,7 @@ class WorkspaceUsers extends React.Component<
    * setStudentBeingToggledStatus
    * @param student student object
    */
-  setStudentBeingToggledStatus(
-    student: ShortWorkspaceUserWithActiveStatusType
-  ) {
+  setStudentBeingToggledStatus(student: WorkspaceStudent) {
     this.setState({
       studentCurrentBeingToggledStatus: student,
     });

@@ -11,15 +11,12 @@ import promisify from "~/util/promisify";
 import { filterHighlight, getName } from "~/util/modifiers";
 import mApi from "~/lib/mApi";
 import { WorkspaceType } from "~/reducers/workspaces";
-import {
-  WorkspaceStaffListType,
-  ContactRecipientType,
-  UserGroupType,
-  UserType,
-  UserStaffType,
-} from "~/reducers/user-index";
+import { ContactRecipientType, UserStaffType } from "~/reducers/user-index";
 import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
+import { User, UserGroup } from "~/generated/client";
+import { UserStaffSearchResult } from "~/generated/client/models/UserStaffSearchResult";
+import MApi from "~/api/api";
 
 /**
  * InputContactsAutofillLoaders
@@ -228,13 +225,21 @@ export default class c extends React.Component<
     const getUserGroupsLoader = () =>
       loaders.userGroupsLoader
         ? loaders.userGroupsLoader(textInput)
+        : () =>
+            MApi.getUsergroupApi().getUsergroups({
+              q: textInput,
+              maxResults: 20,
+            });
+    /* const getUserGroupsLoader = () =>
+      loaders.userGroupsLoader
+        ? loaders.userGroupsLoader(textInput)
         : promisify(
             mApi().usergroup.groups.read({
               q: textInput,
               maxResults: 20,
             }),
             "callback"
-          );
+          ); */
 
     /**
      * getWorkspacesLoader
@@ -288,7 +293,7 @@ export default class c extends React.Component<
         : [],
       checkHasPermission(this.props.hasStaffPermission, false)
         ? getStaffLoader()()
-            .then((result: WorkspaceStaffListType) => result.results || [])
+            .then((result: UserStaffSearchResult) => result.results || [])
             .catch((err: any): any[] => [])
         : [],
     ]);
@@ -297,7 +302,7 @@ export default class c extends React.Component<
      * userItems
      */
     const userItems: ContactRecipientType[] = searchResults[0].map(
-      (item: UserType): ContactRecipientType => ({
+      (item: User): ContactRecipientType => ({
         type: "user",
         value: {
           id: item.id,
@@ -312,7 +317,7 @@ export default class c extends React.Component<
      * userGroupItems
      */
     const userGroupItems: ContactRecipientType[] = searchResults[1].map(
-      (item: UserGroupType): ContactRecipientType => ({
+      (item: UserGroup): ContactRecipientType => ({
         type: "usergroup",
         value: {
           id: item.id,

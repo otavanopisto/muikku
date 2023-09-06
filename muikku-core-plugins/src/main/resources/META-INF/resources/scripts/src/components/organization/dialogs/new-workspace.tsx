@@ -40,7 +40,7 @@ import AutofillSelector, {
   UiSelectItem,
 } from "~/components/base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
-import { UsersSelectType } from "~/reducers/main-function/users";
+import { UsersSelectState } from "~/reducers/main-function/users";
 import {
   CreateWorkspaceType,
   WorkspaceType,
@@ -66,7 +66,7 @@ interface OrganizationNewWorkspaceProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
   data?: CreateWorkspaceType;
-  users: UsersSelectType;
+  users: UsersSelectState;
   templates: WorkspaceType[];
   activeFilters: WorkspacesActiveFiltersType;
   loadStudents: LoadUsersTriggerType;

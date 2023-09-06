@@ -4865,9 +4865,9 @@ paths:
           description: Internal server error
 
   #ORGANIZATION
-  /rest//organizationUserManagement/contactPersons:
+  /rest/organizationUserManagement/contactPersons:
     get:
-      operationId: getContactPerson
+      operationId: getContactPersons
       summary: Get contact persons
       description: Get contact persons
       tags:
@@ -4878,38 +4878,58 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrganizationContact"
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrganizationContact"
         "400":
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
-  /rest//organizationUserManagement/staffMembers:
+  /rest/organizationUserManagement/staffMembers:
     get:
       operationId: getOrganizationStaffMembers
       summary: Get staff member
       description: Get staff member
       tags:
         - Organization
+      parameters:
+        - name: q
+          in: query
+          description: query string
+          schema:
+            type: string
+        - name: properties
+          in: query
+          description: Properties
+          schema:
+            type: string
+        - name: userGroupIds
+          in: query
+          description: User group ids
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: Staff members object
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - results
-                  - totalHitCount
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/User"
-                  totalHitCount:
-                    type: integer
-                  searchString:
-                    type: string
+                $ref: "#/components/schemas/UserSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4922,25 +4942,38 @@ paths:
       description: Get students
       tags:
         - Organization
+      parameters:
+        - name: q
+          in: query
+          description: query string
+          schema:
+            type: string
+        - name: userGroupIds
+          in: query
+          description: User group ids
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: Students object
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - results
-                  - totalHitCount
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/User"
-                  totalHitCount:
-                    type: integer
-                  searchString:
-                    type: string
+                $ref: "#/components/schemas/UserSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4991,6 +5024,66 @@ paths:
       description: Get organization workspaces
       tags:
         - Organization
+      parameters:
+        - name: q
+          in: query
+          description: query string
+          schema:
+            type: string
+        - name: subjects
+          in: query
+          description: Subject ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: educationTypes
+          in: query
+          description: Education type ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: curriculums
+          in: query
+          description: Curriculum ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: publicity
+          in: query
+          description: Publicity restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/PublicityRestriction"
+            default: ONLY_PUBLISHED
+        - name: templates
+          in: query
+          description: Template restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/TemplateRestriction"
+            default: ONLY_WORKSPACES
+        - name: orderBy
+          in: query
+          description: Order by
+          schema:
+            type: array
+            items:
+              type: string
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 50
       responses:
         "200":
           description: Organization workspaces
@@ -5782,12 +5875,11 @@ paths:
           required: true
           schema:
             type: string
-        - name: active
+        - name: properties
           in: query
-          description: Active
+          description: Properties
           schema:
-            type: boolean
-            default: false
+            type: string
         - name: firstResult
           in: query
           description: First result
@@ -5812,21 +5904,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - results
-                  - totalHitCount
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/UserStaff"
-                  totalHitCount:
-                    type: integer
-                  firstResult:
-                    type: integer
-                  maxResults:
-                    type: integer
+                $ref: "#/components/schemas/UserStaffSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6347,13 +6425,13 @@ paths:
   #USERGROUP
   /rest/usergroup/addusers:
     put:
-      operationId: updateUserToUserGroup
+      operationId: updateUsergroupAddUsers
       summary: Add user to user group
       description: Add user to user group
       tags:
         - Usergroup
       requestBody:
-        $ref: "#/components/requestBodies/UserGroupUpdateRequestBody"
+        $ref: "#/components/requestBodies/UsergroupUpdateAddUsersRequestBody"
       responses:
         "204":
           description: User added to user group successfully
@@ -6362,9 +6440,39 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/usergroup/removeusers:
+    post:
+      operationId: removeUserFromUserGroup
+      summary: Remove user from user group
+      description: Remove user from user group
+      tags:
+        - Usergroup
+      responses:
+        "204":
+          description: User removed from user group successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: updateUsergroupRemoveUsers
+      summary: Remove user from user group
+      description: Remove user from user group
+      tags:
+        - Usergroup
+      requestBody:
+        $ref: "#/components/requestBodies/UsergroupUpdateRemoveUsersRequestBody"
+      responses:
+        "204":
+          description: User removed from user group successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/usergroup/groups:
     get:
-      operationId: getUserGroups
+      operationId: getUsergroups
       summary: Get user groups
       description: Get user groups
       tags:
@@ -6373,7 +6481,6 @@ paths:
         - name: q
           in: query
           description: Search string
-          required: true
           schema:
             type: string
         - name: firstResult
@@ -6410,13 +6517,13 @@ paths:
           description: Internal server error
 
     post:
-      operationId: createUserGroup
+      operationId: createUsergroup
       summary: Create user group
       description: Create user group
       tags:
         - Usergroup
       requestBody:
-        $ref: "#/components/requestBodies/UserGroupCreateRequestBody"
+        $ref: "#/components/requestBodies/UsergroupCreateRequestBody"
       responses:
         "200":
           description: User group created successfully
@@ -6424,6 +6531,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserGroup"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: updateUsergroup
+      summary: Update user group
+      description: Update user group
+      tags:
+        - Usergroup
+      requestBody:
+        $ref: "#/components/requestBodies/UsergroupUpdateRequestBody"
+      responses:
+        "204":
+          description: User group updated successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6450,23 +6572,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserGroup"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/usergroup/removeusers:
-    post:
-      operationId: removeUserFromUserGroup
-      summary: Remove user from user group
-      description: Remove user from user group
-      tags:
-        - Usergroup
-      requestBody:
-        $ref: "#/components/requestBodies/UserGroupUpdateRequestBody"
-      responses:
-        "204":
-          description: User removed from user group successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7582,21 +7687,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - results
-                  - totalHitCount
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/UserStudent"
-                  totalHitCount:
-                    type: integer
-                  firstResult:
-                    type: integer
-                  maxResults:
-                    type: integer
+                $ref: "#/components/schemas/WorkspaceStudentSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8966,15 +9057,11 @@ components:
           schema:
             type: object
             description: OrganizationAddStaffToWorkspaceRequestBody object
-            required:
-              - staffMemberIdentifiers
             properties:
               staffIds:
                 type: array
                 items:
-                  anyOf:
-                    - type: integer
-                    - type: string
+                  $ref: "#/components/schemas/AnyValue"
 
     OrganizationAddStudentsToWorkspaceRequestBody:
       content:
@@ -9115,7 +9202,6 @@ components:
               - firstName
               - lastName
               - email
-              - studyProgrammeIdentifier
             properties:
               firstName:
                 type: string
@@ -9238,12 +9324,12 @@ components:
               studentIdentifier:
                 type: string
 
-    UserGroupCreateRequestBody:
+    UsergroupCreateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: UserGroupCreateRequestBody object
+            description: UsergroupCreateRequestBody object
             required:
               - name
               - isGuidanceGroup
@@ -9253,21 +9339,57 @@ components:
               isGuidanceGroup:
                 type: boolean
 
-    UserGroupUpdateRequestBody:
+    UsergroupUpdateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: UserGroupUpdateRequestBody object
+            description: UsergroupUpdateRequestBody object
             required:
+              - identifier
+              - name
+              - isGuidanceGroup
+            properties:
+              identifier:
+                type: string
+              name:
+                type: string
+              isGuidanceGroup:
+                type: boolean
+
+    UsergroupUpdateAddUsersRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: UsergroupUpdateAddUsersRequestBody object
+            required:
+              - groupIdentifier
               - userIdentifiers
             properties:
+              groupIdentifier:
+                type: string
               userIdentifiers:
                 type: array
                 items:
                   type: string
+
+    UsergroupUpdateRemoveUsersRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: UsergroupUpdateRemoveUsersRequestBody object
+            required:
+              - groupIdentifier
+              - userIdentifiers
+            properties:
               groupIdentifier:
                 type: string
+              userIdentifiers:
+                type: array
+                items:
+                  type: string
 
     WorkspaceStudentUpdateRequestBody:
       content:
@@ -11696,11 +11818,11 @@ components:
       type: object
       description: Organization object
       required:
-        - identifier
+        - id
         - name
       properties:
-        identifier:
-          type: string
+        id:
+          type: integer
         name:
           type: string
 
@@ -11875,6 +11997,13 @@ components:
           description: The postal code of the student
           type: string
           nullable: true
+
+    PublicityRestriction:
+      type: string
+      enum:
+        - LIST_ALL
+        - ONLY_PUBLISHED
+        - ONLY_UNPUBLISHED
 
     PedagogyForm:
       type: object
@@ -12135,6 +12264,30 @@ components:
         name:
           type: string
 
+    TemplateRestriction:
+      type: string
+      enum:
+        - LIST_ALL,
+        - ONLY_TEMPLATES
+        - ONLY_WORKSPACES
+
+    UserSearchResult:
+      description: StaffSearchResult object. Holding the search results of staff search and the total hit count.
+      type: object
+      required:
+        - results
+        - totalHitCount
+        - firstResult
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        totalHitCount:
+          type: integer
+        firstResult:
+          type: integer
+
     UserInfo:
       type: object
       description: Info data. Some of the fields are boolean, but are returned as string by the API. Everyvalue is optional and can be null. Values are returned if they are defined in the API call.
@@ -12319,6 +12472,7 @@ components:
         - properties
         - userEntityId
         - hasImage
+        - role
       properties:
         id:
           type: integer
@@ -12334,6 +12488,8 @@ components:
           type: integer
         hasImage:
           type: boolean
+        role:
+          $ref: "#/components/schemas/Role"
 
     UserGroup:
       type: object
@@ -12352,12 +12508,7 @@ components:
         identifier:
           type: string
         organization:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
+          $ref: "#/components/schemas/Organization"
         isGuidanceGroup:
           type: boolean
 
@@ -12387,6 +12538,23 @@ components:
           type: string
         archived:
           type: boolean
+
+    UserStaffSearchResult:
+      type: object
+      description: UserStaffSearchResult object
+      required:
+        - results
+        - totalHitCount
+        - firstResult
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserStaff"
+        totalHitCount:
+          type: integer
+        firstResult:
+          type: integer
 
     User:
       type: object
@@ -12808,6 +12976,64 @@ components:
         description:
           type: string
           nullable: true
+
+    WorkspaceStudentSearchResult:
+      type: object
+      description: WorkspaceStudentSearchResult object
+      required:
+        - results
+        - totalHitCount
+        - firstResult
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceStudent"
+        totalHitCount:
+          type: integer
+        firstResult:
+          type: integer
+
+    WorkspaceStudent:
+      allOf: #extends WorkspaceUserBase object
+        - $ref: "#/components/schemas/WorkspaceUserBase"
+        - type: object
+          description: WorkspaceUserRestModel object
+          required:
+            - nickname
+            - studyProgrammeName
+            - active
+          properties:
+            nickname:
+              type: string
+            studyProgrammeName:
+              type: string
+            active:
+              type: boolean
+
+    WorkspaceUserBase:
+      type: object
+      description: WorkspaceUserBase object
+      required:
+        - workspaceUserEntityId
+        - userIdentifier
+        - userEntityId
+        - firstName
+        - lastName
+        - hasImage
+      properties:
+        workspaceUserEntityId:
+          type: integer
+        userIdentifier:
+          type: string
+        userEntityId:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        hasImage:
+          type: boolean
 
     WorkspaceType:
       type: object

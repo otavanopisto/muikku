@@ -9,6 +9,7 @@ import {
   WorkspacesStateType,
   WorkspacesPatchType,
   WorkspaceListType,
+  WorkspaceType,
 } from "~/reducers/workspaces";
 import {
   ReducerStateType,
@@ -16,6 +17,7 @@ import {
 } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react";
 import { loadWorkspaceJournalFeedback } from "./journals";
+import MApi from "~/api/api";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
@@ -167,8 +169,8 @@ export async function loadWorkspacesHelper(
   }
 
   try {
-    let nWorkspaces: WorkspaceListType = loadOrganizationWorkspaces
-      ? <WorkspaceListType>(
+    /* let nWorkspaces: WorkspaceType[] = loadOrganizationWorkspaces
+      ? <WorkspaceType[]>(
           await promisify(
             mApi()
               .organizationWorkspaceManagement.workspaces.cacheClear()
@@ -176,7 +178,18 @@ export async function loadWorkspacesHelper(
             "callback"
           )()
         )
-      : <WorkspaceListType>(
+      : <WorkspaceType[]>(
+          await promisify(
+            mApi().coursepicker.workspaces.cacheClear().read(params),
+            "callback"
+          )()
+        ); */
+
+    const organizationApi = MApi.getOrganizationApi();
+
+    let nWorkspaces = loadOrganizationWorkspaces
+      ? <WorkspaceType[]>await organizationApi.getOrganizationWorkspaces(params)
+      : <WorkspaceType[]>(
           await promisify(
             mApi().coursepicker.workspaces.cacheClear().read(params),
             "callback"

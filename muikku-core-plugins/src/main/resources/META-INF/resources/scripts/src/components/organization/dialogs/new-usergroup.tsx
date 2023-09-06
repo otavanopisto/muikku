@@ -27,7 +27,7 @@ import { SelectItem } from "~/actions/workspaces/index";
 import {
   CreateUserGroupType,
   UpdateUserGroupStateType,
-  UsersSelectType,
+  UsersSelectState,
 } from "~/reducers/main-function/users";
 import { TagItem } from "~/components/general/tag-input";
 
@@ -44,7 +44,7 @@ interface ValidationType {
 interface OrganizationNewUserGroupProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
-  users: UsersSelectType;
+  users: UsersSelectState;
   createOrganizationUsergroup: CreateUsergroupTriggerType;
   loadStudents: LoadUsersTriggerType;
   loadStaff: LoadUsersTriggerType;
