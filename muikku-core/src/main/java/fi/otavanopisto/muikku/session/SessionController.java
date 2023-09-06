@@ -54,7 +54,20 @@ public interface SessionController {
    */
   public void login(String authSource, String dataSource, String identifier);
   
+  /**
+   * Returns true if the logged user has the given role.
+   * 
+   * @param role the role
+   * @return true if the logged user has the given role, false otherwise
+   */
   public boolean hasRole(EnvironmentRoleArchetype role);
+
+  /**
+   * Returns true if the logged user has any of the given roles.
+   * 
+   * @param role the roles
+   * @return true if the logged user has any of the given roles, false otherwise
+   */
   public boolean hasAnyRole(EnvironmentRoleArchetype ... roles);
   
   boolean hasPermission(String permission, ContextReference contextReference);
