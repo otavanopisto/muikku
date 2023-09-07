@@ -630,7 +630,7 @@
     "labels": {
       "accessibilityStatement": "Saavutettavuusseloste",
       "aineopiskelu": "Aineopiskelu",
-      "becomeStudent": "Opiskelu",
+      "becomeStudent": "Opiskelijaksi",
       "checkAddress": "Tarkista osoitetietosi",
       "city": "Kaupunki",
       "contact": "Ota yhteyttä",
@@ -785,7 +785,7 @@
       "title": "$t(common:labels.title)",
       "title_message": "Viestin otsikko",
       "title_announcement": "Tiedotteen otsikko",
-      "toBeArchived_announcement": "Arkistoitavat tiedottet",
+      "toBeArchived_announcement": "Arkistoitavat tiedotteet",
       "unsubscribe": "Lopeta herätteiden tilaus"
     },
     "notifications": {
@@ -805,7 +805,7 @@
       "doesNotExistError": "Tunnistetta ei ole olemassa",
       "locationError": "Väärä osoite",
       "loadError": "$t(common:notifications.loadError)",
-      "loadError_discussionAreas": "Keskustelualueiden lataus epäonnistui",
+      "loadError_discussionAreas": "Keskustelualueiden lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_labels": "Tunnisteiden lataus epäonnistui",
       "loadError_latestMessage": "Viimeisimmän viestin lataus epäonnistui",
       "loadError_messageThread": "Keskusteluketjun lataus epäonnistui. Yritä ladata sivu uudelleen.",
@@ -831,7 +831,7 @@
       "restoreError": "$t(common:notifications.restoreError)",
       "restoreError_message": "Viestin palautus epäonnistui",
       "restoreError_messageThread": "Keskusteluketjun palautus epäonnistui",
-      "sendError": "Viestin lähetys epäonnistui.Yritä lähettää viesti uudelleen.",
+      "sendError": "Viestin lähetys epäonnistui. Yritä lähettää viesti uudelleen.",
       "sendSuccess": "Viestin lähetys onnistui",
       "statusChangeError": "Viestin tilan muutos epäonnistui. Yritä uudelleen.",
       "updateError": "$t(common:notifications.updateError)",
