@@ -1132,7 +1132,6 @@
     "content": {
       "add": "Add",
       "add_file": "Add a file by clicking here or by dragging it into this box. You can add one or more files. Allowed maximum file size is 10 Mt",
-      "add_audio": "Add an audio file by clicking the field below",
       "add_producers": "Add a producer",
       "audioFieldIsReadOnly": "New audio clips can not be added because field is currently read-only",
       "confirm": "Publishing this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
