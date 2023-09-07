@@ -679,6 +679,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitForNotVisible(String selector) {
     new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(selector)));
   }
+
+  protected void waitForStaleness(WebElement elementToStale) {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(ExpectedConditions.stalenessOf(elementToStale));
+  }
   
   protected boolean isElementPresent(String selector) {
     try {

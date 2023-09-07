@@ -1,8 +1,4 @@
 import * as React from "react";
-import {
-  MessageType,
-  MessageThreadLabelListType,
-} from "~/reducers/main-function/messages";
 import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
@@ -20,17 +16,23 @@ import { AnyActionType } from "~/actions";
 import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
 import InfoPopover from "~/components/general/info-popover";
-import { User } from "~/generated/client";
+// Message imported as IMessage to avoid conflict with Message component
+// Component can be renamed to something else if needed later
+import {
+  Message as IMessage,
+  MessageThreadLabel,
+  User,
+} from "~/generated/client";
 
 /**
  * MessageProps
  */
 interface MessageProps {
-  message: MessageType;
+  message: IMessage;
   status: StatusType;
   signature: MessageSignatureType;
   i18n: i18nType;
-  labels?: MessageThreadLabelListType;
+  labels?: MessageThreadLabel[];
 }
 
 /**
@@ -120,7 +122,7 @@ class Message extends React.Component<MessageProps, MessageState> {
    * @param userId userId of current logged in user
    * @returns JSX.Element[][]
    */
-  getMessageRecipients(message: MessageType, userId: number): JSX.Element[][] {
+  getMessageRecipients(message: IMessage, userId: number): JSX.Element[][] {
     const messageRecipientsList = message.recipients.map((recipient) => {
       // If recipient is me
       const recipientIsMe = recipient.userEntityId === userId;
@@ -278,7 +280,7 @@ class Message extends React.Component<MessageProps, MessageState> {
       this.props.message.userGroupRecipients.map(
         (ug): ContactRecipientType => ({
           type: "usergroup",
-          value: ug,
+          value: ug as any,
         })
       );
 

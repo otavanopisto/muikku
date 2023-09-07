@@ -128,7 +128,7 @@ export default class ProgressData extends React.Component<
                   containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
                   options={{
                     strokeWidth: 10,
-                    duration: 1000,
+                    duration: 0,
                     color: "#ce01bd",
                     trailColor: "#ebebeb",
                     easing: "easeInOut",
@@ -190,7 +190,7 @@ export default class ProgressData extends React.Component<
                   containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
                   options={{
                     strokeWidth: 10,
-                    duration: 1000,
+                    duration: 0,
                     color: "#ff9900",
                     trailColor: "#ebebeb",
                     easing: "easeInOut",
