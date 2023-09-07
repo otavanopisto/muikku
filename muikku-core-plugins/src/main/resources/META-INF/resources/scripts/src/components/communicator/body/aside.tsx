@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import LabelUpdateDialog from "../dialogs/label-update";
-import { MessagesType } from "~/reducers/main-function/messages";
+import { MessagesState } from "~/reducers/main-function/messages";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 
@@ -18,7 +18,7 @@ import Navigation, {
  */
 interface NavigationProps {
   i18n: i18nType;
-  messages: MessagesType;
+  messages: MessagesState;
   openSignatureDialog: () => any;
 }
 

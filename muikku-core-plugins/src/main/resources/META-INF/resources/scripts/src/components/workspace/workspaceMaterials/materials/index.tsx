@@ -42,7 +42,6 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import ReadSpeakerReader from "~/components/general/readspeaker";
-import { ReadspeakerProvider } from "~/components/context/readspeaker-context";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -714,38 +713,42 @@ class WorkspaceMaterials extends React.Component<
                 compositeReplies.state === "INCOMPLETE");
           }
 
-          const arrayOfSectionsToRemoved = Array(
-            pageI === 0 ? index : index + 1
-          )
-            .fill(0)
-            .map((_, i) => i);
+          let readSpeakerComponent = undefined;
 
-          const arrayOfPagesToRemoved = Array(pageI)
-            .fill(0)
-            .map((_, i) => i);
+          if (!this.props.workspaceEditMode.active) {
+            const arrayOfSectionsToRemoved = Array(
+              pageI === 0 ? index : index + 1
+            )
+              .fill(0)
+              .map((_, i) => i);
 
-          let contentToRead = [
-            ...this.props.materials
-              .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
-              .map((section) => `sectionId${section.workspaceMaterialId}`),
-          ];
+            const arrayOfPagesToRemoved = Array(pageI)
+              .fill(0)
+              .map((_, i) => i);
 
-          if (pageI !== 0) {
-            contentToRead = [
-              ...section.children
-                .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
-                .map((page) => `pageId${page.workspaceMaterialId}`),
-              ...contentToRead,
+            let contentToRead = [
+              ...this.props.materials
+                .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
+                .map((section) => `sectionId${section.workspaceMaterialId}`),
             ];
-          }
 
-          const readSpeakerComponent = (
-            <ReadSpeakerReader
-              entityId={pageI + 1}
-              readParameterType="readid"
-              readParameters={contentToRead}
-            />
-          );
+            if (pageI !== 0) {
+              contentToRead = [
+                ...section.children
+                  .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
+                  .map((page) => `pageId${page.workspaceMaterialId}`),
+                ...contentToRead,
+              ];
+            }
+
+            readSpeakerComponent = (
+              <ReadSpeakerReader
+                entityId={pageI + 1}
+                readParameterType="readid"
+                readParameters={contentToRead}
+              />
+            );
+          }
 
           // Actual page material
           // Nothing is shown is workspace or material "compositeReplies" are missing or
@@ -878,28 +881,24 @@ class WorkspaceMaterials extends React.Component<
       ) : null;
 
     return (
-      <ReadspeakerProvider displayNotification={this.props.displayNotification}>
-        <ContentPanel
-          aside={progressData}
-          onOpenNavigation={this.onOpenNavigation}
-          modifier="workspace-materials"
-          navigation={this.props.navigation}
-          title={this.props.i18n.text.get(
-            "plugin.workspace.materials.pageTitle"
-          )}
-          readspeakerComponent={
-            <ReadSpeakerReader
-              readParameterType="readid"
-              readParameters={readSpeakerParameters}
-            />
-          }
-          ref="content-panel"
-        >
-          {results}
-          {emptyMessage}
-          {createSectionElementWhenEmpty}
-        </ContentPanel>
-      </ReadspeakerProvider>
+      <ContentPanel
+        aside={progressData}
+        onOpenNavigation={this.onOpenNavigation}
+        modifier="workspace-materials"
+        navigation={this.props.navigation}
+        title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")}
+        readspeakerComponent={
+          <ReadSpeakerReader
+            readParameterType="readid"
+            readParameters={readSpeakerParameters}
+          />
+        }
+        ref="content-panel"
+      >
+        {results}
+        {emptyMessage}
+        {createSectionElementWhenEmpty}
+      </ContentPanel>
     );
   }
 }

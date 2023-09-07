@@ -1,17 +1,18 @@
 import notificationActions from "~/actions/base/notifications";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { AnyActionType } from "~/actions";
 import {
-  MessagesNavigationItemType,
+  MessagesNavigationItem,
   MessagesStateType,
-  MessageThreadListType,
-  MessagesPatchType,
-  MessageThreadLabelType,
-  MessageThreadType,
-  MessageSearchResult,
+  MessagesStatePatch,
 } from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
+import {
+  MessageSearchResult,
+  MessageThread,
+  MessageThreadLabel,
+} from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
+import { Dispatch } from "react-redux";
 
 //HELPERS
 
@@ -25,7 +26,7 @@ const MAX_LOADED_AT_ONCE = 30;
  * @param weirdSecondVersion weirdSecondVersion
  */
 export function getApiId(
-  item: MessagesNavigationItemType,
+  item: MessagesNavigationItem,
   weirdSecondVersion = false
 ) {
   if (item.type === "folder") {
@@ -63,7 +64,7 @@ export async function loadMessagesHelper(
   location: string | null,
   query: string | null,
   initial: boolean,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
   //Remove the current message
@@ -162,33 +163,46 @@ export async function loadMessagesHelper(
     });
   }
 
-  let results: MessageThreadListType | MessageSearchResult[];
+  const communicatorApi = MApi.getCommunicatorApi();
+
+  let results: MessageThread[] | MessageSearchResult[];
+
   try {
     if (searchQuery) {
       const queryParams = {
         ...params,
         q: searchQuery,
       };
-      results = <MessageSearchResult[]>(
-        await promisify(
-          mApi().communicator.searchItems.cacheClear().read(queryParams),
-          "callback"
-        )()
-      );
+
+      results = await communicatorApi.getCommunicatorSearchItems({
+        q: searchQuery,
+        firstResult: queryParams.firstResult,
+        maxResults: queryParams.maxResults,
+      });
     } else if (item.type !== "label") {
-      results = <MessageThreadListType>(
-        await promisify(
-          mApi().communicator[getApiId(item)].read(params),
-          "callback"
-        )()
-      );
+      const apiPathId = getApiId(item);
+
+      // Only these three paths are supported
+      switch (apiPathId) {
+        case "items":
+          results = await communicatorApi.getCommunicatorThreads(params);
+          break;
+
+        case "sentitems":
+          results = await communicatorApi.getCommunicatorSentItems(params);
+          break;
+
+        case "trash":
+          results = await communicatorApi.getCommunicatorTrash(params);
+          break;
+
+        default:
+          break;
+      }
     } else {
-      results = <MessageThreadListType>(
-        await promisify(
-          mApi().communicator.userLabels.messages.read(item.id, params),
-          "callback"
-        )()
-      );
+      results = await communicatorApi.getCommunicatorUserLabelMessages({
+        labelId: item.id as number,
+      });
     }
     const hasMore: boolean = results.length === MAX_LOADED_AT_ONCE + 1;
 
@@ -202,7 +216,7 @@ export async function loadMessagesHelper(
 
     //Create the payload for updating all the communicator properties
     const properLocation = location || item.location;
-    const payload: MessagesPatchType = {
+    const payload: MessagesStatePatch = {
       state: "READY",
       hasMore,
       location: properLocation,
@@ -231,6 +245,9 @@ export async function loadMessagesHelper(
       });
     }
   } catch (err) {
+    if (!isMApiError(err)) {
+      throw err;
+    }
     //Error :(
     dispatch(
       notificationActions.displayNotification(
@@ -257,28 +274,30 @@ export async function loadMessagesHelper(
  * @param getState getState
  */
 export async function setLabelStatusCurrentMessage(
-  label: MessageThreadLabelType,
+  label: MessageThreadLabel,
   isToAddLabel: boolean,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
   const state = getState();
   const messageLabel = state.messages.currentThread.labels.find(
-    (mlabel: MessageThreadLabelType) => mlabel.labelId === label.id
+    (mlabel: MessageThreadLabel) => mlabel.labelId === label.id
   );
   const communicatorMessageId =
     state.messages.currentThread.messages[0].communicatorMessageId;
 
+  const communicatorApi = MApi.getCommunicatorApi();
+
   try {
     if (isToAddLabel && !messageLabel) {
-      const serverProvidedLabel: MessageThreadLabelType = <
-        MessageThreadLabelType
-      >await promisify(
-        mApi().communicator.messages.labels.create(communicatorMessageId, {
-          labelId: label.id,
-        }),
-        "callback"
-      )();
+      const serverProvidedLabel =
+        await communicatorApi.addCommunicatorMessageLabel({
+          messageId: communicatorMessageId,
+          addCommunicatorMessageLabelRequest: {
+            labelId: label.id,
+          },
+        });
+
       dispatch({
         type: "UPDATE_MESSAGE_THREAD_ADD_LABEL",
         payload: {
@@ -297,13 +316,11 @@ export async function setLabelStatusCurrentMessage(
           )
         );
       } else {
-        await promisify(
-          mApi().communicator.messages.labels.del(
-            communicatorMessageId,
-            messageLabel.id
-          ),
-          "callback"
-        )();
+        await communicatorApi.deleteCommunicatorMessageLabel({
+          messageId: communicatorMessageId,
+          labelId: messageLabel.id,
+        });
+
         dispatch({
           type: "UPDATE_MESSAGE_THREAD_DROP_LABEL",
           payload: {
@@ -314,6 +331,10 @@ export async function setLabelStatusCurrentMessage(
       }
     }
   } catch (err) {
+    if (!isMApiError(err)) {
+      throw err;
+    }
+
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
@@ -333,31 +354,30 @@ export async function setLabelStatusCurrentMessage(
  * @param getState getState
  */
 export function setLabelStatusSelectedMessages(
-  label: MessageThreadLabelType,
+  label: MessageThreadLabel,
   isToAddLabel: boolean,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
   const state = getState();
 
-  state.messages.selectedThreads.forEach(async (thread: MessageThreadType) => {
+  const communicatorApi = MApi.getCommunicatorApi();
+
+  state.messages.selectedThreads.forEach(async (thread: MessageThread) => {
     const threadLabel = thread.labels.find(
       (mlabel) => mlabel.labelId === label.id
     );
 
     try {
       if (isToAddLabel && !threadLabel) {
-        const serverProvidedLabel: MessageThreadLabelType = <
-          MessageThreadLabelType
-        >await promisify(
-          mApi().communicator.messages.labels.create(
-            thread.communicatorMessageId,
-            {
+        const serverProvidedLabel =
+          await communicatorApi.addCommunicatorMessageLabel({
+            messageId: thread.communicatorMessageId,
+            addCommunicatorMessageLabelRequest: {
               labelId: label.id,
-            }
-          ),
-          "callback"
-        )();
+            },
+          });
+
         dispatch({
           type: "UPDATE_MESSAGE_THREAD_ADD_LABEL",
           payload: {
@@ -377,13 +397,11 @@ export function setLabelStatusSelectedMessages(
             )
           );
         } else {
-          await promisify(
-            mApi().communicator.messages.labels.del(
-              thread.communicatorMessageId,
-              threadLabel.id
-            ),
-            "callback"
-          )();
+          await communicatorApi.deleteCommunicatorMessageLabel({
+            messageId: thread.communicatorMessageId,
+            labelId: threadLabel.id,
+          });
+
           dispatch({
             type: "UPDATE_MESSAGE_THREAD_DROP_LABEL",
             payload: {
@@ -394,6 +412,9 @@ export function setLabelStatusSelectedMessages(
         }
       }
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
       dispatch(
         notificationActions.displayNotification(
           getState().i18n.text.get(
