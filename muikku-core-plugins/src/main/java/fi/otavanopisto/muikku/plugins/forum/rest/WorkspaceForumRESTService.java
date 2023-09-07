@@ -480,7 +480,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
 
     LockForumThread lock = newThread.getLock() != null ? LockForumThread.valueOf(newThread.getLock()) : null;
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (Boolean.TRUE.equals(newThread.getSticky()) || lock != LockForumThread.ALL) {
+      if (Boolean.TRUE.equals(newThread.getSticky()) || lock != null) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }
