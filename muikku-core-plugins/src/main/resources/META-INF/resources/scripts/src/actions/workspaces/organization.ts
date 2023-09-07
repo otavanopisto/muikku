@@ -490,7 +490,7 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
           await organizationApi.addStaffToWorkspace({
             workspaceId: data.workspace.id,
             addStaffToWorkspaceRequest: {
-              staffIds: staffMemberIdentifiers,
+              staffMemberIdentifiers: staffMemberIdentifiers,
             },
           });
 
@@ -648,7 +648,7 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
         await organizationApi.addStaffToWorkspace({
           workspaceId: workspace.id,
           addStaffToWorkspaceRequest: {
-            staffIds: staffMemberIdentifiers,
+            staffMemberIdentifiers: staffMemberIdentifiers,
           },
         });
 

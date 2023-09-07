@@ -494,7 +494,7 @@ export default class MainFunction extends React.Component<
       curriculumFilters: originalData.c || [],
       organizationFilters: originalData.o || [],
       stateFilters: originalData.p || [],
-      templates: originalData.t || [],
+      templates: originalData.t || undefined,
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES",
     };

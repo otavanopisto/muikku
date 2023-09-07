@@ -1,15 +1,14 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import { UserSearchResult, User, UserGroup } from "~/generated/client";
+import {
+  UserSearchResult,
+  User,
+  UserGroup,
+  StudyProgramme,
+} from "~/generated/client";
 
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
-export type StudyprogrammeTypeStatusType =
-  | "WAIT"
-  | "LOADING"
-  | "READY"
-  | "ERROR";
-
-export type StudyprogrammeListType = Array<StudyprogrammeType>;
+export type StudyprogrammeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
 export type UserGroupsStateType =
   | "LOADING"
@@ -45,13 +44,6 @@ export interface PagingUserListType {
 }
 
 /**
- * PagingEnvironmentUserListType
- */
-/* export interface PagingEnvironmentUserListType extends PagingUserListType {
-  results: User[];
-} */
-
-/**
  * UserGroupListType
  */
 export interface UserGroupListType {
@@ -62,8 +54,8 @@ export interface UserGroupListType {
  * StudyprogrammeTypes
  */
 export interface StudyprogrammeTypes {
-  list: StudyprogrammeListType;
-  status: StudyprogrammeTypeStatusType;
+  list: StudyProgramme[];
+  status: StudyprogrammeStatusType;
 }
 
 /**

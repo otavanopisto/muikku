@@ -175,7 +175,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
