@@ -1133,7 +1133,6 @@
       "add": "Add",
       "add_file": "Add a file by clicking here or by dragging it into this box. You can add one or more files. Allowed maximum file size is 10 Mt",
       "add_producers": "Add a producer",
-      "audioFieldIsReadOnly": "New audio clips can not be added because field is currently read-only",
       "confirm": "Publishing this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
       "confirm_pageRemoval": "Deleting this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
       "empty": "$t(common:content.empty)",
@@ -1178,8 +1177,8 @@
       "answer_example": " Example answer",
       "answered": "Answered",
       "assignment": "Assignment",
-      "assignment_cancelled": "You have withrdawn this assignment",
-      "assignment_done": "You have donw this exercise",
+      "assignment_cancelled": "You have withdrawn this assignment",
+      "assignment_done": "You have done this exercise",
       "assignment_returned": "You have returned this assignment",
       "assignments": "Assignments",
       "assignments_done": "Assignments done",
@@ -1824,7 +1823,6 @@
       "remove": "Delete the order"
     },
     "content": {
-      "createStudentOrder": "Click 'Place new order' and choose the product you wish to order. By paying the order, the Nettilukio student will be granted an extension of 6 or 12 months to their right to study.",
       "empty": "$t(common:content.empty)",
       "empty_orders": "You do not have any orders",
       "empty_active": "You do not have any open orders",
