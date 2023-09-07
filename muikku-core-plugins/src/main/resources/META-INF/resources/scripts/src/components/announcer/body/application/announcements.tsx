@@ -11,7 +11,7 @@ import "~/sass/elements/announcement.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/form.scss";
-import { AnnouncementsType, AnnouncementType } from "~/reducers/announcements";
+import { AnnouncementsState as AnnouncementsStateType } from "~/reducers/announcements";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import SelectableList from "~/components/general/selectable-list";
 import Link from "~/components/general/link";
@@ -32,13 +32,15 @@ import ApplicationList, {
   ApplicationListItemDate,
 } from "~/components/general/application-list";
 import { UserIndexType } from "~/reducers/user-index";
+import { Announcement } from "~/generated/client";
+import { AnyActionType } from "~/actions";
 
 /**
  * AnnouncementsProps
  */
 interface AnnouncementsProps {
   i18n: i18nType;
-  announcements: AnnouncementsType;
+  announcements: AnnouncementsStateType;
   userIndex: UserIndexType;
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
@@ -60,7 +62,7 @@ class Announcements extends React.Component<
    * setCurrentAnnouncement
    * @param announcement announcement
    */
-  setCurrentAnnouncement(announcement: AnnouncementType) {
+  setCurrentAnnouncement(announcement: Announcement) {
     window.location.hash =
       window.location.hash.split("/")[0] + "/" + announcement.id;
   }
@@ -81,7 +83,7 @@ class Announcements extends React.Component<
           dataState={this.props.announcements.state}
         >
           {this.props.announcements.announcements.map(
-            (announcement: AnnouncementType) => {
+            (announcement: Announcement) => {
               const className = announcement.workspaces.length
                 ? "announcement announcement--workspace"
                 : "announcement announcement--environment";
@@ -221,7 +223,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       addToAnnouncementsSelected,

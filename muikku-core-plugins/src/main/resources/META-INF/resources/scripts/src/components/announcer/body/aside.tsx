@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import {
-  AnnouncementsType,
+  AnnouncementsState,
   AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
 import { StateType } from "~/reducers";
@@ -16,7 +16,7 @@ import { NavigationTopic } from "../../general/navigation";
  */
 interface NavigationAsideProps {
   i18n: i18nType;
-  announcements: AnnouncementsType;
+  announcements: AnnouncementsState;
 }
 
 /**

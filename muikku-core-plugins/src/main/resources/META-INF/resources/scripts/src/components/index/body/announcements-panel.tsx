@@ -2,10 +2,6 @@ import Link from "~/components/general/link";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
-import {
-  AnnouncementListType,
-  AnnouncementType,
-} from "~/reducers/announcements";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/label.scss";
@@ -13,6 +9,7 @@ import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { Panel } from "~/components/general/panel";
+import { Announcement } from "~/generated/client";
 
 /**
  * AnnouncementsPanelProps
@@ -20,7 +17,7 @@ import { Panel } from "~/components/general/panel";
 interface AnnouncementsPanelProps {
   i18n: i18nType;
   status: StatusType;
-  announcements: AnnouncementListType;
+  announcements: Announcement[];
   overflow?: boolean;
 }
 
@@ -29,7 +26,7 @@ interface AnnouncementsPanelProps {
  */
 interface AnnouncementsPanelState {
   currentPage: number;
-  announcements: AnnouncementListType;
+  announcements: Announcement[];
   itemsPerPage: number;
 }
 
@@ -56,8 +53,7 @@ class AnnouncementsPanel extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
    */
   componentDidUpdate(prevProps: AnnouncementsPanelProps) {
     if (
@@ -101,7 +97,6 @@ class AnnouncementsPanel extends React.Component<
 
   /**
    * render
-   * @returns
    */
   render() {
     const { announcements, currentPage, itemsPerPage } = this.state;
@@ -126,7 +121,7 @@ class AnnouncementsPanel extends React.Component<
      * renders announcements
      */
     const renderAnnouncements = currentAnnouncements.map(
-      (announcement: AnnouncementType) => {
+      (announcement: Announcement) => {
         const extraWorkspaces =
           announcement.workspaces && announcement.workspaces.length
             ? announcement.workspaces.length - 1
@@ -237,8 +232,7 @@ class AnnouncementsPanel extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -250,8 +244,6 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
  */
 function mapDispatchToProps() {
   return {};

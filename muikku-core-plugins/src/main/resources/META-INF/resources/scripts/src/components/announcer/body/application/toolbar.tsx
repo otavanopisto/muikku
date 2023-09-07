@@ -7,7 +7,7 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
-import { AnnouncementsType, AnnouncementType } from "~/reducers/announcements";
+import { AnnouncementsState } from "~/reducers/announcements";
 import DeleteAnnouncementDialog from "../../dialogs/delete-announcement";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
 import {
@@ -22,13 +22,14 @@ import {
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
 } from "~/actions/announcements";
+import { Announcement } from "~/generated/client";
 
 /**
  * AnnouncerToolbarProps
  */
 interface AnnouncerToolbarProps {
   i18n: i18nType;
-  announcements: AnnouncementsType;
+  announcements: AnnouncementsState;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
 }
@@ -91,7 +92,7 @@ class AnnouncerToolbar extends React.Component<
    * go
    * @param announcement announcement
    */
-  go(announcement: AnnouncementType) {
+  go(announcement: Announcement) {
     if (!announcement) {
       return;
     }
@@ -141,10 +142,10 @@ class AnnouncerToolbar extends React.Component<
       //this is why we had to have notOverrideCurrent in the reducers, it's such a mess
       const currentIndex: number =
         this.props.announcements.announcements.findIndex(
-          (a: AnnouncementType) => a.id === this.props.announcements.current.id
+          (a: Announcement) => a.id === this.props.announcements.current.id
         );
-      let next: AnnouncementType = null;
-      let prev: AnnouncementType = null;
+      let next: Announcement = null;
+      let prev: Announcement = null;
 
       if (currentIndex !== -1) {
         next = this.props.announcements.announcements[currentIndex + 1];

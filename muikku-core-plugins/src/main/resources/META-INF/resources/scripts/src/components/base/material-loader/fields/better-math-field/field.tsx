@@ -61,6 +61,20 @@ function checkIsParentOrSelf(
 }
 
 /**
+ * Escape selected characters to html entities so mathjax can render formulas correctly
+ * @param mathFormula
+ */
+function escapeCharactersToHTMLEntities(mathFormula: string) {
+  return mathFormula
+    ? mathFormula
+        .replaceAll("&", "&amp;")
+        .replaceAll(`"`, "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+    : mathFormula;
+}
+
+/**
  * MathField
  */
 export default class MathField extends React.Component<FieldProps, FieldState> {
@@ -258,7 +272,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.value = Array.from((this.refs.input as HTMLDivElement).childNodes)
       .map((node) => {
         if (node.nodeType === Node.TEXT_NODE) {
-          return node.textContent;
+          return escapeCharactersToHTMLEntities(node.textContent);
         } else if (node.nodeType === Node.COMMENT_NODE) {
           return "";
         }
@@ -276,13 +290,16 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   convertToText(node: HTMLElement): string {
     if (node.className === this.props.editorClassName) {
       let latex: string = this.selectedMathField.latex();
+
       if (latex.trim() === "") {
         return "";
       }
       if (!latex.startsWith("\\(")) {
         latex = "\\(" + latex + "\\)";
       }
-      return `<span class="${this.props.formulaClassName}">${latex}</span>`;
+      return `<span class="${
+        this.props.formulaClassName
+      }">${escapeCharactersToHTMLEntities(latex)}</span>`;
     }
     const isImg = node.tagName === "IMG";
     const isRawImg =
@@ -295,19 +312,19 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       ? Array.from(node.childNodes)
           .map((node) => {
             if (node.nodeType === Node.TEXT_NODE) {
-              return node.textContent;
+              return escapeCharactersToHTMLEntities(node.textContent);
             } else if (node.nodeType === Node.COMMENT_NODE) {
               return "";
             }
             return this.convertToText(node as HTMLElement);
           })
           .join("")
-      : (node as HTMLImageElement).alt;
+      : escapeCharactersToHTMLEntities((node as HTMLImageElement).alt);
 
     // add the delimiters if necessary
     if (isImg && (node as HTMLImageElement).alt && kids) {
       if (!kids.startsWith("\\(")) {
-        kids = "\\(" + kids + "\\)";
+        kids = "\\(" + escapeCharactersToHTMLEntities(kids);
       }
     }
 
@@ -584,13 +601,17 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     // Now we do all this garbage of
     // creating the component by hand
+
+    // MathField wrapper
     this.selectedMathFieldContainer = document.createElement("div");
     this.selectedMathFieldContainer.setAttribute("contenteditable", "false");
     this.selectedMathFieldContainer.className = this.props.editorClassName;
 
+    // Math formula inside MQ editor
     const newElement = document.createElement("span");
     newElement.textContent = selectedFormulaContentUndelimited;
 
+    // MQ Editor
     const actualContainerForTheMathField = document.createElement("div");
     actualContainerForTheMathField.className =
       this.props.editorClassName + "--formula-container";
@@ -598,10 +619,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     actualContainerForTheMathField.appendChild(newElement);
     this.selectedMathFieldContainer.appendChild(actualContainerForTheMathField);
 
+    // ACE editor container
     const editorContainer = document.createElement("div");
     editorContainer.className =
       this.props.editorClassName + "--formula-text-editor";
 
+    // ACE editor
     const editor = document.createElement("div");
     editor.style.position = "absolute";
     editor.style.width = "100%";

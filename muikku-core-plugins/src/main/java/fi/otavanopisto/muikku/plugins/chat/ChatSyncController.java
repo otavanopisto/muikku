@@ -417,6 +417,16 @@ public class ChatSyncController {
   }
   
   private RestApiClient getClient() {
+    
+    // #6623: Don't return client if chat has been disabled
+    
+    String chatAvailable = pluginSettingsController.getPluginSetting("chat", "available");
+    if (StringUtils.isBlank(chatAvailable) || !StringUtils.equals(chatAvailable, "1")) {
+      return null;
+    }
+    
+    // Client settings
+    
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
       logger.log(Level.SEVERE, "chat.openfireToken not set");

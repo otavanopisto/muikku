@@ -34,7 +34,6 @@ public class WorkspaceEvaluationBackingBean extends AbstractWorkspaceBackingBean
   private SessionController sessionController;
 
   @Inject
-  @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction
