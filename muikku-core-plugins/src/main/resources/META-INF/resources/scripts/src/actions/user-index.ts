@@ -1,8 +1,8 @@
-import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import { User } from "~/generated/client";
+import { User, UserGroup, UserWhoAmI } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
+import { Dispatch } from "react-redux";
 
 /**
  * LoadUserIndexTriggerType
@@ -44,7 +44,7 @@ export type SET_USER_GROUP_INDEX = SpecificActionType<
   "SET_USER_GROUP_INDEX",
   {
     index: number;
-    value: any; //TODO fix these user groups
+    value: UserGroup; //TODO fix these user groups
   }
 >;
 
@@ -52,7 +52,7 @@ export type SET_USER_BY_SCHOOL_DATA_INDEX = SpecificActionType<
   "SET_USER_BY_SCHOOL_DATA_INDEX",
   {
     index: string;
-    value: User;
+    value: UserWhoAmI;
   }
 >;
 
@@ -66,7 +66,7 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
   callback
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -80,20 +80,21 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
 
       fetchingStateUserBySchoolData[userId] = true;
 
+      const userApi = MApi.getUserApi();
+
       try {
-        const user: User = <User>(
-          ((await promisify(mApi().user.whoami.read(), "callback")()) || 0)
-        );
+        const whoAmIUser = await userApi.getWhoAmI();
+
         dispatch({
           type: "SET_USER_BY_SCHOOL_DATA_INDEX",
           payload: {
             index: userId,
-            value: user,
+            value: whoAmIUser,
           },
         });
-        callback(user);
+        callback(whoAmIUser);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -111,9 +112,11 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
 const loadUserGroupIndex: LoadUserGroupIndexTriggerType =
   function loadUserGroupIndex(groupId) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const usergroupApi = MApi.getUsergroupApi();
+
       const state = getState();
       const currentGroupInfo = state.userIndex.groups[groupId];
       if (currentGroupInfo || fetchingStateUser[groupId]) {
@@ -123,19 +126,19 @@ const loadUserGroupIndex: LoadUserGroupIndexTriggerType =
       fetchingStateUser[groupId] = true;
 
       try {
+        const userGroup = await usergroupApi.getUserGroup({
+          groupId: groupId,
+        });
+
         dispatch({
           type: "SET_USER_GROUP_INDEX",
           payload: {
             index: groupId,
-            value:
-              (await promisify(
-                mApi().usergroup.groups.read(groupId),
-                "callback"
-              )()) || 0,
+            value: userGroup,
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }

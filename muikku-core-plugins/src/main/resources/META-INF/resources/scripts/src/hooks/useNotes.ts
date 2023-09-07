@@ -8,7 +8,6 @@ import {
   NotesItemUpdate,
 } from "~/@types/notes";
 import { i18nType } from "~/reducers/base/i18n";
-import { Role } from "~/reducers/base/status";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
 /**
@@ -28,7 +27,7 @@ export const useOnGoingNotes = (
 
   React.useEffect(() => {
     // This is for students only hook, if you call it as someone else, no loading should happen
-    if (role !== Role.STUDENT) {
+    if (role !== "STUDENT") {
       return;
     }
 

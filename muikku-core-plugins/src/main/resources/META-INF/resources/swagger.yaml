@@ -6582,7 +6582,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WhoAmI"
+                $ref: "#/components/schemas/UserWhoAmI"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -12893,6 +12893,152 @@ components:
         studyProgrammeName:
           type: string
 
+    UserWhoAmI:
+      type: object
+      description: This is whoAmI object returned by whoAmI endpoint. It contains basic information about the user.
+      required:
+        - id
+        - identifier
+        - organizationIdentifier
+        - isActive
+        - firstName
+        - lastName
+        - displayName
+        - nickName
+        - phoneNumbers
+        - addresses
+        - emails
+        - hasImage
+        - role
+        - permissions
+        - curriculumName
+        - curriculumIdentifier
+        - studyTimeEnd
+        - studyTimeLeftStr
+        - studyStartDate
+        - studyEndDate
+        - studyProgrammeName
+        - studyProgrammeIdentifier
+        - locale
+        - hasEvaluationFees
+        - isDefaultOrganization
+        - services
+      properties:
+        id:
+          type: integer
+          nullable: true
+        identifier:
+          type: string
+          description: PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
+          nullable: true
+        organizationIdentifier:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+          description: Whether user is active
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        nickName:
+          type: string
+          nullable: true
+        phoneNumbers:
+          type: string
+          nullable: true
+        addresses:
+          type: string
+          nullable: true
+        emails:
+          type: string
+          nullable: true
+        hasImage:
+          type: boolean
+          nullable: true
+        role:
+          nullable: true
+          $ref: "#/components/schemas/Role"
+        permissions:
+          type: array
+          nullable: true
+          items:
+            type: string
+        curriculumName:
+          type: string
+          nullable: true
+        curriculumIdentifier:
+          type: string
+          nullable: true
+        studyTimeEnd:
+          type: string
+          nullable: true
+        studyTimeLeftStr:
+          type: string
+          nullable: true
+        studyStartDate:
+          type: string
+          nullable: true
+        studyEndDate:
+          type: string
+          nullable: true
+        studyProgrammeName:
+          type: string
+          nullable: true
+        studyProgrammeIdentifier:
+          type: string
+          nullable: true
+        locale:
+          type: string
+          nullable: true
+        hasEvaluationFees:
+          type: boolean
+          nullable: true
+        isDefaultOrganization:
+          type: boolean
+          nullable: true
+        services:
+          $ref: "#/components/schemas/UserWhoAmIServices"
+
+    UserWhoAmIServices:
+      type: object
+      description: WhoAmIServices object
+      required:
+        - chat
+        - environmentForum
+        - worklist
+      properties:
+        chat:
+          type: object
+          required:
+            - isActive
+            - isAvailable
+          properties:
+            isActive:
+              type: boolean
+            isAvailable:
+              type: boolean
+        environmentForum:
+          type: object
+          required:
+            - isAvailable
+          properties:
+            isAvailable:
+              type: boolean
+        worklist:
+          type: object
+          required:
+            - isAvailable
+          properties:
+            isAvailable:
+              type: boolean
+
     Language:
       type: string
       enum:
@@ -13481,116 +13627,6 @@ components:
         nextSiblingId:
           description: Backend uses this to determine the order of the notes. This is not used in the frontend
           type: integer
-          nullable: true
-
-    WhoAmI:
-      type: object
-      description: This is whoAmI object returned by whoAmI endpoint. It contains basic information about the user.
-      required:
-        - id
-        - identifier
-        - organizationIdentifier
-        - isActive
-        - firstName
-        - lastName
-        - displayName
-        - nickName
-        - phoneNumbers
-        - address
-        - emails
-        - hasImage
-        - roles
-        - permissions
-        - curriculumName
-        - curriculumIdentifier
-        - studyTimeEnd
-        - studyTimeLeftStr
-        - studyStartDate
-        - studyEndDate
-        - studyProgrammeName
-        - studyProgrammeIdentifier
-        - locale
-        - hasEvaluationFees
-        - isDefaultOrganization
-      properties:
-        id:
-          type: integer
-          nullable: true
-        identifier:
-          type: string
-          description: PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
-          nullable: true
-        organizationIdentifier:
-          type: string
-          nullable: true
-        isActive:
-          type: boolean
-          description: Whether user is active
-          nullable: true
-        firstName:
-          type: string
-          nullable: true
-        lastName:
-          type: string
-          nullable: true
-        displayName:
-          type: string
-          nullable: true
-        nickName:
-          type: string
-          nullable: true
-        phoneNumbers:
-          type: string
-          nullable: true
-        address:
-          type: string
-          nullable: true
-        emails:
-          type: string
-          nullable: true
-        hasImage:
-          type: boolean
-          nullable: true
-        roles:
-          nullable: true
-          $ref: "#/components/schemas/Role"
-        permissions:
-          type: array
-          nullable: true
-          items:
-            type: string
-        curriculumName:
-          type: string
-          nullable: true
-        curriculumIdentifier:
-          type: string
-          nullable: true
-        studyTimeEnd:
-          type: string
-          nullable: true
-        studyTimeLeftStr:
-          type: string
-          nullable: true
-        studyStartDate:
-          type: string
-          nullable: true
-        studyEndDate:
-          type: string
-          nullable: true
-        studyProgrammeName:
-          type: string
-          nullable: true
-        studyProgrammeIdentifier:
-          type: string
-          nullable: true
-        locale:
-          type: string
-          nullable: true
-        hasEvaluationFees:
-          type: boolean
-          nullable: true
-        isDefaultOrganization:
-          type: boolean
           nullable: true
 
     WorklistEditableFieldType:

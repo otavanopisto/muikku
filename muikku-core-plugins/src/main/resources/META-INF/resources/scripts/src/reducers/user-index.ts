@@ -1,6 +1,7 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import { Organization, User, UserGroup } from "~/generated/client";
+import { Organization, User, UserGroup, UserWhoAmI } from "~/generated/client";
+
 export type ManipulateType = "UPDATE" | "CREATE";
 
 /**
@@ -27,41 +28,6 @@ export interface UpdateUserType {
   studyProgrammeIdentifier?: string;
   ssn?: string;
 }
-
-/**
- * UserType
- */
-/* export interface UserType {
-  // Ok, but coming from backend, "id" is not a number, but a string. This might cause trouble in the future?
-  id: number;
-  firstName: string;
-  lastName?: string;
-  nickName?: string;
-  studyProgrammeName?: string;
-  hasImage?: boolean;
-  hasEvaluationFees?: false;
-  curriculumIdentifier?: string;
-  studyProgrammeIdentifier?: string;
-  organizationIdentifier?: string;
-  isDefaultOrganization?: boolean;
-  permissions?: Array<string>;
-  roles?: Array<string>;
-
-  //EXTENDED VALUES, may or may not be available
-  role?: string;
-  ssn?: string;
-  email?: string;
-  language?: string;
-  municipality?: string;
-  nationality?: string;
-  school?: string;
-  studyStartDate?: string;
-  studyTimeEnd?: string;
-  userEntityId?: number;
-  lastLogin?: string;
-  archived?: boolean;
-  studiesEnded?: boolean;
-} */
 
 /**
  * UserWithSchoolDataType
@@ -120,21 +86,6 @@ export interface UserStaffType {
 }
 
 /**
- * ShortWorkspaceUserWithActiveStatusType
- */
-/* export interface ShortWorkspaceUserWithActiveStatusType {
-  workspaceUserEntityId: number;
-  userIdentifier: string;
-  userEntityId: number;
-  firstName: string;
-  nickName?: string;
-  lastName: string;
-  studyProgrammeName: string;
-  active: boolean;
-  hasImage: boolean;
-} */
-
-/**
  * UserGroupType
  */
 export interface UserGroupType {
@@ -181,7 +132,7 @@ export interface UserGroupBaseIndexType {
  * UsersBySchoolDataType
  */
 export interface UsersBySchoolDataType {
-  [index: string]: User;
+  [index: string]: UserWhoAmI;
 }
 
 /**

@@ -20,7 +20,7 @@ import {
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import { Role, StatusType } from "~/reducers/base/status";
+import { StatusType } from "~/reducers/base/status";
 import { outputCorrectDatePickerLocale } from "../../../helper-functions/locale";
 import equals = require("deep-equal");
 import {
@@ -403,7 +403,7 @@ class NewEditAnnouncement extends SessionStateComponent<
   createOrModifyAnnouncement(closeDialog: () => any) {
     this.setState({ locked: true });
 
-    if (this.props.status.role === Role.TEACHER) {
+    if (this.props.status.role === "TEACHER") {
       if (this.state.currentTarget.length <= 0) {
         this.props.displayNotification(
           this.props.i18n.text.get(
@@ -618,7 +618,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         label={this.props.i18n.text.get(
           "plugin.announcer.createannouncement.target.label"
         )}
-        required={this.props.status.role === Role.TEACHER}
+        required={this.props.status.role === "TEACHER"}
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">

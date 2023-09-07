@@ -7,71 +7,7 @@
 //4. it works :D
 
 import { ActionType } from "~/actions";
-
-/**
- * WhoAmIType
- */
-export interface WhoAmIType {
-  studyTimeEnd: string;
-  studyTimeLeftStr: string;
-  studyStartDate: string;
-  studyEndDate: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  phoneNumbers: any;
-  displayName: string;
-  curriculumIdentifier: string;
-  curriculumName: string;
-  firstName: string;
-  lastName: string;
-  hasEvaluationFees: boolean;
-  hasImage: boolean;
-  id: number;
-  /**
-   * Whether user is active
-   */
-  isActive: boolean;
-  /**
-   * PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
-   */
-  identifier: string;
-  organizationIdentifier: string;
-  locale: string;
-  nickName: string;
-  isDefaultOrganization: boolean;
-  permissions: string[];
-  role: Role;
-  studyProgrammeName: string;
-  studyProgrammeIdentifier: string;
-  addresses: string;
-  emails: string;
-  services: Services;
-}
-
-/**
- * Servies that are active or available for user.
- * Some of these are linked to permissions.
- */
-export interface Services {
-  /**
-   * Chat service
-   */
-  chat: {
-    isActive: boolean;
-    isAvailable: boolean;
-  };
-  /**
-   * Forum service (enviromental)
-   */
-  environmentForum: {
-    isAvailable: boolean;
-  };
-  /**
-   * Worklist service
-   */
-  worklist: {
-    isAvailable: boolean;
-  };
-}
+import { Role, UserWhoAmIServices } from "~/generated/client";
 
 /**
  * StatusType
@@ -87,7 +23,7 @@ export interface StatusType {
   isStudent: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
-  services: Services;
+  services: UserWhoAmIServices;
   currentWorkspaceInfo?: {
     id: number;
     organizationEntityId: number;
@@ -129,16 +65,6 @@ export interface ProfileStatusType {
   studyProgrammeIdentifier: string;
   permissions: string[];
   curriculumName: string;
-}
-
-export enum Role {
-  TEACHER = "TEACHER",
-  STUDENT = "STUDENT",
-  ADMINISTRATOR = "ADMINISTRATOR",
-  MANAGER = "MANAGER",
-  STUDY_PROGRAMME_LEADER = "STUDY_PROGRAMME_LEADER",
-  STUDY_GUIDER = "STUDY_GUIDER",
-  CUSTOM = "CUSTOM",
 }
 
 /* const workspaceIdNode = document.querySelector(
