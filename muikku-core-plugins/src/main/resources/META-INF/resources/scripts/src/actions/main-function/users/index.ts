@@ -3,7 +3,6 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import promisify from "~/util/promisify";
 import {
   UpdateUserGroupStateType,
-  ModifyUserGroupUsersType,
   CurrentUserGroupType,
   UsersSelectState,
   UserStatusType,
@@ -1041,6 +1040,8 @@ const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
           firstResult: data.payload.firstResult,
           maxResults: data.payload.maxResults,
         });
+
+        payload.staff = users;
 
         dispatch({
           type: "UPDATE_CURRENT_USER_GROUP",
