@@ -1167,7 +1167,7 @@ public class GuiderRESTService extends PluginRESTService {
 
     String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
 
-    String studentLink = String.format("<a href=\"%s/guider#userprofile/%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
+    String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
     String content;
     String contentStudent;
     if (StringUtils.isEmpty(entity.getMessage())) {
