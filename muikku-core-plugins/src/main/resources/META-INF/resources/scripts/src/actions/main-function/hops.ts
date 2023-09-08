@@ -8,6 +8,7 @@ import {
   HOPSEligibilityType,
 } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
+import MApi from "~/api/api";
 
 /**
  * UpdateHopsTriggerType
@@ -44,6 +45,8 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
+    const userApi = MApi.getUserApi();
+
     try {
       if (getState().hops.status !== "WAIT") {
         callback && callback();
@@ -54,12 +57,10 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
         payload: <HOPSStatusType>"LOADING",
       });
 
-      const properties: any = await promisify(
-        mApi().user.properties.read(getState().status.userId, {
-          properties: "hopsPhase",
-        }),
-        "callback"
-      )();
+      const properties = await userApi.getUserProperties({
+        userEntityId: getState().status.userId,
+        properties: "hopsPhase",
+      });
 
       dispatch({
         type: "SET_HOPS_PHASE",

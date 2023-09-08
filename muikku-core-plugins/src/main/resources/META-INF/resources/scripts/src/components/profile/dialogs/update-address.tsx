@@ -13,7 +13,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import {
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
@@ -25,7 +25,7 @@ import {
 interface UpdateAddressDialogProps {
   i18n: i18nType;
   children: React.ReactElement<any>;
-  profile: ProfileType;
+  profile: ProfileState;
 
   displayNotification: DisplayNotificationTriggerType;
   updateProfileAddress: UpdateProfileAddressTriggerType;

@@ -10,7 +10,7 @@ import {
 } from "~/actions/base/notifications";
 import Avatar from "../avatar";
 import { ButtonPill } from "~/components/general/button";
-import { fetchUserInfo, useInfoPopperContext, UserInfo } from "./context";
+import { fetchUserInfo, useInfoPopperContext } from "./context";
 import { WhatsappButtonLink } from "../whatsapp-link";
 import { i18nType } from "~/reducers/base/i18n";
 import { GuiderStudentLink } from "../guider-link";
@@ -22,6 +22,7 @@ import {
   PopoverTrigger,
 } from "../popover";
 import "~/sass/elements/item-list.scss";
+import { UserInfo } from "~/generated/client";
 
 /**
  * InfoPopoverProps

@@ -8,7 +8,7 @@ import "~/sass/elements/article.scss";
 import "~/sass/elements/announcement.scss";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { UserIndexType } from "~/reducers/user-index";
+import { UserIndexState } from "~/reducers/user-index";
 import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
@@ -19,7 +19,7 @@ import { AnyActionType } from "~/actions";
 interface AnnouncementsProps {
   i18n: i18nType;
   announcement: Announcement;
-  userIndex: UserIndexType;
+  userIndex: UserIndexState;
 }
 
 /**

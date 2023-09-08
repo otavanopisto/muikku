@@ -1,13 +1,7 @@
 import * as React from "react";
-import {
-  UserWithSchoolDataType,
-  StudentUserAddressType,
-} from "~/reducers/user-index";
 import { StateType } from "reducers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { StatusType } from "~/reducers/base/status";
 import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
@@ -15,8 +9,9 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-
 import "~/sass/elements/buttons.scss";
+import { UserStudentAddress, UserWithSchoolData } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * CheckContactInfoDialogProps
@@ -31,8 +26,8 @@ interface CheckContactInfoDialogProps {
  * CheckContactInfoDialogState
  */
 interface CheckContactInfoDialogState {
-  user: UserWithSchoolDataType;
-  address: StudentUserAddressType;
+  user: UserWithSchoolData;
+  address: UserStudentAddress;
   isOpen: boolean;
 }
 
@@ -65,22 +60,22 @@ class CheckContactInfoDialog extends React.Component<
    * componentDidMount
    */
   async componentDidMount() {
+    const userApi = MApi.getUserApi();
+
     if (this.props.status.isStudent) {
       try {
-        const user: UserWithSchoolDataType = (await promisify(
-          mApi().user.students.read(this.props.status.userSchoolDataIdentifier),
-          "callback"
-        )()) as UserWithSchoolDataType;
+        const user = await userApi.getStudent({
+          studentId: this.props.status.userSchoolDataIdentifier,
+        });
+
         if (!user || (user.updatedByStudent && !FORCE_OPEN)) {
           return;
         }
 
-        const addresses: Array<StudentUserAddressType> = (await promisify(
-          mApi().user.students.addresses.read(
-            this.props.status.userSchoolDataIdentifier
-          ),
-          "callback"
-        )()) as Array<StudentUserAddressType>;
+        const addresses = await userApi.getStudentAddresses({
+          studentId: this.props.status.userSchoolDataIdentifier,
+        });
+
         let address = null;
         for (let i = 0; i < addresses.length; i++) {
           if (addresses[i].defaultAddress) {
@@ -103,7 +98,11 @@ class CheckContactInfoDialog extends React.Component<
           isOpen: true,
         });
         // eslint-disable-next-line no-empty
-      } catch (e) {}
+      } catch (e) {
+        if (!isMApiError(e)) {
+          throw e;
+        }
+      }
     }
   }
   /**
@@ -118,17 +117,19 @@ class CheckContactInfoDialog extends React.Component<
    * confirmContactInfo
    */
   async confirmContactInfo() {
+    const userApi = MApi.getUserApi();
+
     this.closeDialog();
     try {
-      await promisify(
-        mApi().user.students.addresses.update(
-          this.props.status.userSchoolDataIdentifier,
-          this.state.address.identifier,
-          this.state.address
-        ),
-        "callback"
-      )();
+      await userApi.updateStudentAddress({
+        studentId: this.props.status.userSchoolDataIdentifier,
+        addressId: this.state.address.identifier,
+        updateStudentAddressRequest: this.state.address,
+      });
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
       this.props.displayNotification(err.message, "error");
     }
   }

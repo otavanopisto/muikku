@@ -5,7 +5,7 @@ import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import {
-  ProfileType,
+  ProfileState,
   PurchaseType,
   PurchaseStateType,
 } from "~/reducers/main-function/profile";
@@ -27,7 +27,7 @@ import {
  */
 interface IPurchasesProps {
   i18n: i18nType;
-  profile: ProfileType;
+  profile: ProfileState;
 }
 
 /**

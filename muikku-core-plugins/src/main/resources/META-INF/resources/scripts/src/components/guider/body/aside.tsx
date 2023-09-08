@@ -4,7 +4,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
 import {
-  GuiderUserLabelType,
   GuiderWorkspaceType,
   GuiderType,
 } from "~/reducers/main-function/guider";
@@ -50,46 +49,42 @@ class NavigationAside extends React.Component<
           <NavigationTopic
             name={this.props.i18n.text.get("plugin.guider.filters.flags")}
           >
-            {this.props.guider.availableFilters.labels.map(
-              (label: GuiderUserLabelType) => {
-                const isActive =
-                  this.props.guider.activeFilters.labelFilters.includes(
-                    label.id
+            {this.props.guider.availableFilters.labels.map((label) => {
+              const isActive =
+                this.props.guider.activeFilters.labelFilters.includes(label.id);
+              const hash = isActive
+                ? queryString.stringify(
+                    Object.assign({}, locationData, {
+                      c: "",
+                      l: (locationData.l || []).filter(
+                        (i: string) => parseInt(i) !== label.id
+                      ),
+                    }),
+                    { arrayFormat: "bracket" }
+                  )
+                : queryString.stringify(
+                    Object.assign({}, locationData, {
+                      c: "",
+                      l: (locationData.l || []).concat(label.id),
+                    }),
+                    { arrayFormat: "bracket" }
                   );
-                const hash = isActive
-                  ? queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        l: (locationData.l || []).filter(
-                          (i: string) => parseInt(i) !== label.id
-                        ),
-                      }),
-                      { arrayFormat: "bracket" }
-                    )
-                  : queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        l: (locationData.l || []).concat(label.id),
-                      }),
-                      { arrayFormat: "bracket" }
-                    );
-                return (
-                  <NavigationElement
-                    modifiers="aside-navigation-guider-flag"
-                    icon="flag"
-                    key={label.id}
-                    iconColor={label.color}
-                    isActive={isActive}
-                    hash={"?" + hash}
-                    editableWrapper={LabelUpdateDialog}
-                    editableWrapperArgs={{ label: label }}
-                    isEditable
-                  >
-                    {label.name}
-                  </NavigationElement>
-                );
-              }
-            )}
+              return (
+                <NavigationElement
+                  modifiers="aside-navigation-guider-flag"
+                  icon="flag"
+                  key={label.id}
+                  iconColor={label.color}
+                  isActive={isActive}
+                  hash={"?" + hash}
+                  editableWrapper={LabelUpdateDialog}
+                  editableWrapperArgs={{ label: label }}
+                  isEditable
+                >
+                  {label.name}
+                </NavigationElement>
+              );
+            })}
           </NavigationTopic>
         )}
 

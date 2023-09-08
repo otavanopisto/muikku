@@ -3,7 +3,6 @@ import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
-  SummarStudentDetails,
   SummaryDataType,
   SummaryStatusType,
 } from "~/reducers/main-function/records/summary";
@@ -14,7 +13,8 @@ import {
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
-import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
+import MApi from "~/api/api";
+import { Dispatch } from "react-redux";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -36,9 +36,11 @@ export interface UpdateSummaryTriggerType {
  */
 const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const userApi = MApi.getUserApi();
+
     try {
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
@@ -68,9 +70,9 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       const coursesDone: Record<string, unknown>[] = [];
 
       /* Student's study time */
-      const studentsDetails = <SummarStudentDetails>(
-        await promisify(mApi().user.students.read(pyramusId), "callback")()
-      );
+      const studentsDetails = await userApi.getStudent({
+        studentId: pyramusId,
+      });
 
       /* Getting past the object with keys */
       const activityArrays: Record<string, unknown>[] = Object.keys(

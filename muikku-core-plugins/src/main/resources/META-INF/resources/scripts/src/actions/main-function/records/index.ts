@@ -1,6 +1,6 @@
 import actions from "../../base/notifications";
 import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
+import mApi from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
@@ -12,8 +12,9 @@ import {
   RecordWorkspaceActivityByLine,
   RecordWorkspaceActivitiesWithLineCategory,
 } from "~/reducers/main-function/records";
-import { UserFileType, UserWithSchoolDataType } from "~/reducers/user-index";
+import { UserFileType } from "~/reducers/user-index";
 import { Dispatch } from "react-redux";
+import MApi, { isMApiError } from "~/api/api";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
@@ -105,6 +106,8 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
         dispatch({
           type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE",
@@ -130,14 +133,11 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         const userId: number = getState().status.userId;
 
         //we get the users that represent that userId
-        let users: Array<UserWithSchoolDataType> = (await promisify(
-          mApi().user.students.read({
-            userEntityId: userId,
-            includeInactiveStudents: true,
-            maxResults: 20,
-          }),
-          "callback"
-        )()) as Array<UserWithSchoolDataType>;
+        let users = await userApi.getStudents({
+          userEntityId: userId,
+          includeInactiveStudents: true,
+          maxResults: 20,
+        });
 
         //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want
         //The bigger number to be first
@@ -257,7 +257,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           payload: <AllStudentUsersDataStatusType>"READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

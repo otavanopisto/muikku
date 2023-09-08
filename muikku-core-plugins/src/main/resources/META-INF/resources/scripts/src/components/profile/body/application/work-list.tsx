@@ -10,7 +10,7 @@ import {
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import {
-  ProfileType,
+  ProfileState,
   WorklistTemplate,
 } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
@@ -30,7 +30,7 @@ const currentMonthDayLimit = 10;
  */
 interface IWorkListProps {
   i18n: i18nType;
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
   insertProfileWorklistItem: InsertProfileWorklistItemTriggerType;
   loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType;

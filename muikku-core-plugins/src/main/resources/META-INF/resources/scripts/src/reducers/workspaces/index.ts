@@ -1,9 +1,9 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
+import { UserStaff } from "~/generated/client";
 import { UserStaffSearchResult } from "~/generated/client/models/UserStaffSearchResult";
 import { WorkspaceStudentSearchResult } from "~/generated/client/models/WorkspaceStudentSearchResult";
-import { UserStaffType } from "~/reducers/user-index";
 import { repairContentNodes } from "~/util/modifiers";
 import {
   AssignmentEvaluationType,
@@ -450,7 +450,7 @@ export interface WorkspaceType {
   journals?: WorkspaceJournalsType;
 
   // These are only in organizationlistings
-  teachers?: UserStaffType[];
+  teachers?: UserStaff[];
   studentCount?: number;
 }
 

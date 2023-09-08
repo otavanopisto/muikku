@@ -1,6 +1,4 @@
 import * as React from "react";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
@@ -19,11 +17,13 @@ import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
+import MApi from "~/api/api";
 
 /**
  * CommunicatorNewMessageProps
  */
 interface CommunicatorNewMessageProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   replyThreadId?: number;
   replyToAll?: boolean;
@@ -37,7 +37,9 @@ interface CommunicatorNewMessageProps {
   initialSubject?: string;
   initialMessage?: string;
   status: StatusType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpen?: () => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
   onRecipientChange?: (selectedItems: ContactRecipientType[]) => void;
   isOpen?: boolean;
@@ -198,7 +200,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
    * sendMessage
    * @param closeDialog closeDialog
    */
-  sendMessage(closeDialog: () => any) {
+  sendMessage(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
@@ -274,31 +276,27 @@ class CommunicatorNewMessage extends SessionStateComponent<
    * inputContactsAutofillLoaders
    */
   inputContactsAutofillLoaders() {
+    const communicatorApi = MApi.getCommunicatorApi();
+
     return {
       /**
        * studentsLoader
        * @param searchString searchString
        */
-      studentsLoader: (searchString: string) =>
-        promisify(
-          mApi().communicator.recipientsUsersSearch.read({
-            q: searchString,
-            maxResults: 20,
-          }),
-          "callback"
-        ),
+      studentsLoader: (searchString: string) => () =>
+        communicatorApi.getCommunicatorRecipientsUserSearch({
+          q: searchString,
+          maxResults: 20,
+        }),
       /**
        * workspacesLoader
        * @param searchString searchString
        */
-      workspacesLoader: (searchString: string) =>
-        promisify(
-          mApi().communicator.recipientsWorkspacesSearch.read({
-            q: searchString,
-            maxResults: 20,
-          }),
-          "callback"
-        ),
+      workspacesLoader: (searchString: string) => () =>
+        communicatorApi.getCommunicatorRecipientsWorkspacesSearch({
+          q: searchString,
+          maxResults: 20,
+        }),
     };
   }
 

@@ -2,11 +2,7 @@ import promisify, { promisifyNewConstructor } from "~/util/promisify";
 import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi, { MApiError } from "~/lib/mApi";
-import {
-  StudentUserAddressType,
-  UserWithSchoolDataType,
-  UserChatSettingsType,
-} from "~/reducers/user-index";
+import { UserChatSettingsType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import { resize } from "~/util/modifiers";
 import {
@@ -23,6 +19,9 @@ import {
   WorklistTemplate,
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
+import MApi, { isMApiError } from "~/api/api";
+import { Dispatch } from "react-redux";
+import { UserStudentAddress, UserWithSchoolData } from "~/generated/client";
 
 /**
  * LoadProfilePropertiesSetTriggerType
@@ -220,11 +219,11 @@ export type SET_PROFILE_LOCATION = SpecificActionType<
 >;
 export type SET_PROFILE_ADDRESSES = SpecificActionType<
   "SET_PROFILE_ADDRESSES",
-  Array<StudentUserAddressType>
+  UserStudentAddress[]
 >;
 export type SET_PROFILE_STUDENT = SpecificActionType<
   "SET_PROFILE_STUDENT",
-  UserWithSchoolDataType
+  UserWithSchoolData
 >;
 export type SET_PROFILE_CHAT_SETTINGS = SpecificActionType<
   "SET_PROFILE_CHAT_SETTINGS",
@@ -249,19 +248,18 @@ export type SET_PURCHASE_HISTORY = SpecificActionType<
 const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
   function loadProfilePropertiesSet() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       try {
-        const properties = (await promisify(
-          mApi().user.properties.read(state.status.userId, {
-            properties:
-              "profile-phone,profile-appointmentCalendar,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg,communicator-auto-reply-subject",
-          }),
-          "callback"
-        )()) as ProfileProperty[];
+        const properties = (await userApi.getUserProperties({
+          userEntityId: state.status.userId,
+          properties:
+            "profile-phone,profile-appointmentCalendar,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg,communicator-auto-reply-subject",
+        })) as ProfileProperty[];
 
         properties.forEach((property: ProfileProperty) => {
           dispatch({
@@ -286,10 +284,20 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
  */
 const saveProfileProperty: SaveProfilePropertyTriggerType =
   function saveProfileProperty(data) {
-    return async (dispatch: (arg: AnyActionType) => any) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+    ) => {
+      const userApi = MApi.getUserApi();
+
       try {
         const prop = { key: data.key, value: data.value };
-        await promisify(mApi().user.property.create(prop), "callback")();
+
+        await userApi.setUserProperty({
+          setUserPropertyRequest: {
+            key: data.key,
+            value: data.value,
+          },
+        });
 
         dispatch({
           type: "SET_PROFILE_USER_PROPERTY",
@@ -312,7 +320,9 @@ const saveProfileProperty: SaveProfilePropertyTriggerType =
  */
 const loadProfileUsername: LoadProfileUsernameTriggerType =
   function loadProfileUsername() {
-    return async (dispatch: (arg: AnyActionType) => any) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+    ) => {
       try {
         const credentials: any = await promisify(
           mApi().userplugin.credentials.read(),
@@ -339,23 +349,22 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
 const loadProfileAddress: LoadProfileAddressTriggerType =
   function loadProfileAddress() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       try {
         const identifier = state.status.userSchoolDataIdentifier;
-        const addresses: Array<StudentUserAddressType> = <
-          Array<StudentUserAddressType>
-        >await promisify(
-          mApi().user.students.addresses.read(identifier),
-          "callback"
-        )();
 
-        const student: UserWithSchoolDataType = <UserWithSchoolDataType>(
-          await promisify(mApi().user.students.read(identifier), "callback")()
-        );
+        const addresses = await userApi.getStudentAddresses({
+          studentId: identifier,
+        });
+
+        const student = await userApi.getStudent({
+          studentId: identifier,
+        });
 
         dispatch({
           type: "SET_PROFILE_ADDRESSES",
@@ -367,7 +376,7 @@ const loadProfileAddress: LoadProfileAddressTriggerType =
           payload: student,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -376,29 +385,30 @@ const loadProfileAddress: LoadProfileAddressTriggerType =
 
 /**
  * updateProfileAddress
- * @param data
+ * @param data data
  */
 const updateProfileAddress: UpdateProfileAddressTriggerType =
   function updateProfileAddress(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       try {
         if (data.municipality && data.municipality !== "") {
-          const student: UserWithSchoolDataType = { ...state.profile.student };
+          const student = { ...state.profile.student };
           student.municipality = data.municipality;
+
+          const updatedStudent = await userApi.updateStudent({
+            studentId: student.id,
+            updateStudentRequest: student,
+          });
 
           dispatch({
             type: "SET_PROFILE_STUDENT",
-            payload: <UserWithSchoolDataType>(
-              await promisify(
-                mApi().user.students.update(student.id, student),
-                "callback"
-              )()
-            ),
+            payload: updatedStudent,
           });
         }
 
@@ -407,26 +417,19 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
           address = state.profile.addresses[0];
         }
 
-        const nAddress: StudentUserAddressType = {
+        const nAddress = {
           ...address,
-          ...{
-            city: data.city,
-            country: data.country,
-            postalCode: data.postalCode,
-            street: data.street,
-          },
+          city: data.city,
+          country: data.country,
+          postalCode: data.postalCode,
+          street: data.street,
         };
 
-        const nAddressAsSaidFromServer: StudentUserAddressType = <
-          StudentUserAddressType
-        >await promisify(
-          mApi().user.students.addresses.update(
-            state.status.userSchoolDataIdentifier,
-            nAddress.identifier,
-            nAddress
-          ),
-          "callback"
-        )();
+        const nAddressAsSaidFromServer = await userApi.updateStudentAddress({
+          studentId: state.status.userSchoolDataIdentifier,
+          addressId: nAddress.identifier,
+          updateStudentAddressRequest: nAddress,
+        });
 
         const newAddresses = state.profile.addresses.map((a) =>
           a.identifier === nAddressAsSaidFromServer.identifier
@@ -454,7 +457,7 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -469,7 +472,7 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
 const loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
   function loadProfileChatSettings() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -514,11 +517,13 @@ const loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
 
 /**
  * updateProfileChatSettings
- * @param data
+ * @param data data
  */
 const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
   function updateProfileChatSettings(data) {
-    return async (dispatch: (arg: AnyActionType) => any) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+    ) => {
       try {
         const request = await fetch("/rest/chat/settings", {
           method: "PUT",
@@ -559,26 +564,27 @@ const imageSizes = [96, 256];
 
 /**
  * uploadProfileImage
- * @param data
+ * @param data data
  */
 const uploadProfileImage: UploadProfileImageTriggerType =
   function uploadProfileImage(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
         if (data.originalB64) {
-          await promisify(
-            mApi().user.files.create({
+          await userApi.createFile({
+            createFileRequest: {
               contentType: data.file.type,
               base64Data: data.originalB64,
               identifier: "profile-image-original",
               name: data.file.name,
               visibility: "PUBLIC",
-            }),
-            "callback"
-          )();
+            },
+          });
         }
 
         const image: HTMLImageElement = <HTMLImageElement>(
@@ -589,16 +595,16 @@ const uploadProfileImage: UploadProfileImageTriggerType =
 
         for (let i = 0; i < imageSizes.length; i++) {
           const size = imageSizes[i];
-          await promisify(
-            mApi().user.files.create({
+
+          await userApi.createFile({
+            createFileRequest: {
               contentType: "image/jpeg",
               base64Data: resize(image, size),
               identifier: "profile-image-" + size,
               name: "profile-" + size + ".jpg",
               visibility: "PUBLIC",
-            }),
-            "callback"
-          )();
+            },
+          });
         }
 
         dispatch(updateStatusHasImage(true));
@@ -613,7 +619,7 @@ const uploadProfileImage: UploadProfileImageTriggerType =
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -635,24 +641,27 @@ const uploadProfileImage: UploadProfileImageTriggerType =
 const deleteProfileImage: DeleteProfileImageTriggerType =
   function deleteProfileImage() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       const state = getState();
       const allImagesToDelete = ["original", ...imageSizes];
 
       try {
         for (let i = 0; i < allImagesToDelete.length; i++) {
           const identifier = `profile-image-${allImagesToDelete[i]}`;
-          await promisify(
-            mApi().user.files.identifier.del(state.status.userId, identifier),
-            "callback"
-          )();
+
+          await userApi.deleteFile({
+            userEntityId: state.status.userId,
+            identifier: identifier,
+          });
         }
 
         dispatch(updateStatusHasImage(false));
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -669,7 +678,7 @@ const deleteProfileImage: DeleteProfileImageTriggerType =
 
 /**
  * setProfileLocation
- * @param location
+ * @param location location
  */
 const setProfileLocation: SetProfileLocationTriggerType =
   function setProfileLocation(location: string) {
@@ -681,12 +690,12 @@ const setProfileLocation: SetProfileLocationTriggerType =
 
 /**
  * insertProfileWorklistItem
- * @param data
+ * @param data data
  */
 const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
   function insertProfileWorklistItem(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -793,12 +802,12 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
 
 /**
  * deleteProfileWorklistItem
- * @param data
+ * @param data data
  */
 const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -863,7 +872,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
 
 /**
  * editProfileWorklistItem
- * @param data
+ * @param data data
  */
 const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
@@ -879,7 +888,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
     }
 
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -965,7 +974,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
 const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
   function loadProfileWorklistTemplates() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1006,7 +1015,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
     cb?: (d: Array<WorklistSection>) => void
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1047,13 +1056,13 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
 
 /**
  * loadProfileWorklistSection
- * @param index
- * @param refresh
+ * @param index index
+ * @param refresh refresh
  */
 const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
   function loadProfileWorklistSection(index: number, refresh?: boolean) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1100,12 +1109,12 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
 
 /**
  * updateProfileWorklistItemsState
- * @param data
+ * @param data data
  */
 const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType =
   function updateProfileWorklistItemsState(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1168,7 +1177,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
 const loadProfilePurchases: LoadProfilePurchasesTriggerType =
   function loadProfilePurchases() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();

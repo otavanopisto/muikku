@@ -42,7 +42,7 @@ import {
 import { WorkspaceStudentSearchResult } from "~/generated/client/models/WorkspaceStudentSearchResult";
 import { UserStaffSearchResult } from "~/generated/client/models/UserStaffSearchResult";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -358,22 +358,23 @@ const loadLastWorkspacesFromServer: LoadLastWorkspacesFromServerTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
+        const lastWorkspaces = JSON.parse(
+          (
+            await userApi.getUserProperty({
+              key: "last-workspaces",
+            })
+          ).value
+        ) as WorkspaceMaterialReferenceType[];
+
         dispatch({
           type: "UPDATE_LAST_WORKSPACES",
-          payload: <WorkspaceMaterialReferenceType[]>(
-            JSON.parse(
-              (
-                (await promisify(
-                  mApi().user.property.read("last-workspaces"),
-                  "callback"
-                )()) as any
-              ).value
-            )
-          ),
+          payload: lastWorkspaces,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -405,6 +406,8 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
         // Make a deep copy of the current state of last workspaces
         // Because lastWorkspaces can be null if the user has no last workspaces
@@ -432,20 +435,19 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
         // Place the new reference on the top of the array
         lastWorkspaces.unshift(newReference);
 
-        await promisify(
-          mApi().user.property.create({
+        await userApi.setUserProperty({
+          setUserPropertyRequest: {
             key: "last-workspaces",
             value: JSON.stringify(lastWorkspaces),
-          }),
-          "callback"
-        )();
+          },
+        });
 
         dispatch({
           type: "UPDATE_LAST_WORKSPACES",
           payload: lastWorkspaces,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -1638,17 +1640,16 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
-        const staffMembers = <UserStaffSearchResult>await promisify(
-          mApi().user.staffMembers.read({
-            workspaceEntityId: data.workspace.id,
-            properties:
-              "profile-phone,profile-appointmentCalendar,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end",
-            firstResult: data.payload ? data.payload.firstResult : 0,
-            maxResults: data.payload ? data.payload.maxResults : 10,
-          }),
-          "callback"
-        )();
+        const staffMembers = await userApi.getStaffMembers({
+          workspaceEntityId: data.workspace.id,
+          properties:
+            "profile-phone,profile-appointmentCalendar,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end",
+          firstResult: data.payload ? data.payload.firstResult : 0,
+          maxResults: data.payload ? data.payload.maxResults : 10,
+        });
 
         const update: WorkspaceUpdateType = {
           staffMembers,
@@ -1662,7 +1663,7 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

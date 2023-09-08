@@ -15,9 +15,8 @@ import ApplicationList, {
   ApplicationListItemDate,
 } from "~/components/general/application-list";
 import { AnnouncementsState } from "~/reducers/announcements";
-import { UserIndexType } from "~/reducers/user-index";
+import { UserIndexState } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions/index";
-import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 
 /**
  * MessageViewProps
@@ -25,7 +24,7 @@ import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 interface MessageViewProps {
   i18n: i18nType;
   announcements: AnnouncementsState;
-  userIndex: UserIndexType;
+  userIndex: UserIndexState;
 }
 
 /**

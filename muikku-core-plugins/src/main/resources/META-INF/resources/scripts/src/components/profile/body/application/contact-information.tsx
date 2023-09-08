@@ -4,7 +4,7 @@ import Button, { IconButton } from "~/components/general/button";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import ProfileProperty from "./components/profile-property";
 import {
   saveProfileProperty,
@@ -27,7 +27,7 @@ import { AnyActionType } from "~/actions";
  */
 interface ContactInformationProps {
   i18n: i18nType;
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   saveProfileProperty: SaveProfilePropertyTriggerType;

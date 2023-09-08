@@ -5,7 +5,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import mApi from "~/lib/mApi";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
   LoadProfileUsernameTriggerType,
@@ -21,7 +21,7 @@ import {
  */
 interface SecurityProps {
   i18n: i18nType;
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   loadProfileUsername: LoadProfileUsernameTriggerType;

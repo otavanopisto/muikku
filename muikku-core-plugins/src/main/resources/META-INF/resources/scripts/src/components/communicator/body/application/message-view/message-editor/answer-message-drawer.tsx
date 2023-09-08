@@ -15,11 +15,9 @@ import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import CKEditor from "~/components/general/ckeditor";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
-
 import "~/sass/elements/form.scss";
 import "~/sass/elements/environment-dialog.scss";
+import MApi from "~/api/api";
 
 /**
  * AnswerMessageDrawerProps
@@ -218,31 +216,28 @@ class AnswerMessageDrawer extends SessionStateComponent<
    * inputContactsAutofillLoaders
    */
   inputContactsAutofillLoaders() {
+    const communicatorApi = MApi.getCommunicatorApi();
+
     return {
       /**
        * studentsLoader
        * @param searchString searchString
        */
-      studentsLoader: (searchString: string) =>
-        promisify(
-          mApi().communicator.recipientsUsersSearch.read({
-            q: searchString,
-            maxResults: 20,
-          }),
-          "callback"
-        ),
+      studentsLoader: (searchString: string) => () =>
+        communicatorApi.getCommunicatorRecipientsUserSearch({
+          q: searchString,
+          maxResults: 20,
+        }),
+
       /**
        * workspacesLoader
        * @param searchString searchString
        */
-      workspacesLoader: (searchString: string) =>
-        promisify(
-          mApi().communicator.recipientsWorkspacesSearch.read({
-            q: searchString,
-            maxResults: 20,
-          }),
-          "callback"
-        ),
+      workspacesLoader: (searchString: string) => () =>
+        communicatorApi.getCommunicatorRecipientsWorkspacesSearch({
+          q: searchString,
+          maxResults: 20,
+        }),
     };
   }
 

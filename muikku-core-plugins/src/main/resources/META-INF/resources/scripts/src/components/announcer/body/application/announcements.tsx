@@ -31,7 +31,7 @@ import ApplicationList, {
   ApplicationListHeaderPrimary,
   ApplicationListItemDate,
 } from "~/components/general/application-list";
-import { UserIndexType } from "~/reducers/user-index";
+import { UserIndexState } from "~/reducers/user-index";
 import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 
@@ -41,7 +41,7 @@ import { AnyActionType } from "~/actions";
 interface AnnouncementsProps {
   i18n: i18nType;
   announcements: AnnouncementsStateType;
-  userIndex: UserIndexType;
+  userIndex: UserIndexState;
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
 }

@@ -787,7 +787,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/communicator/recipientsUserSearch:
+  /rest/communicator/recipientsUsersSearch:
     get:
       operationId: getCommunicatorRecipientsUserSearch
       summary: Get communicator recipients user search
@@ -821,7 +821,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MessageRecipient"
+                  $ref: "#/components/schemas/User"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -863,7 +863,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MessageRecipientWorkspace"
+                  $ref: "#/components/schemas/WorkspaceBasicInfo"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -5736,6 +5736,27 @@ paths:
           description: Internal server error
 
   #USER
+  /rest/user/files/:
+    post:
+      operationId: createFile
+      summary: Create file
+      description: Create file
+      tags:
+        - User
+      requestBody:
+        $ref: "#/components/requestBodies/UserFileCreateRequestBody"
+      responses:
+        "200":
+          description: File created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserEntityFile"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/user/files/{userEntityId}/identifier/{identifier}:
     delete:
       operationId: deleteFile
@@ -5785,7 +5806,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuiderUserFlag"
+                  $ref: "#/components/schemas/UserFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5798,14 +5819,14 @@ paths:
       tags:
         - User
       requestBody:
-        $ref: "#/components/requestBodies/GuiderUserFlagCreateRequestBody"
+        $ref: "#/components/requestBodies/UserFlagCreateRequestBody"
       responses:
         "200":
           description: Flag created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderUserFlag"
+                $ref: "#/components/schemas/UserFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5826,7 +5847,7 @@ paths:
           schema:
             type: integer
       requestBody:
-        $ref: "#/components/requestBodies/GuiderUserFlagUpdateRequestBody"
+        $ref: "#/components/requestBodies/UserFlagUpdateRequestBody"
 
       responses:
         "200":
@@ -5834,7 +5855,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderUserFlag"
+                $ref: "#/components/schemas/UserFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5883,7 +5904,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuiderUserSharedFlag"
+                  $ref: "#/components/schemas/UserSharedFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5903,14 +5924,14 @@ paths:
           schema:
             type: integer
       requestBody:
-        $ref: "#/components/requestBodies/GuiderUserSharedFlagCreateRequestBody"
+        $ref: "#/components/requestBodies/UserSharedFlagCreateRequestBody"
       responses:
         "200":
           description: Flag share created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderUserSharedFlag"
+                $ref: "#/components/schemas/UserSharedFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6001,25 +6022,22 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/user/property:
     post:
       operationId: setUserProperty
       summary: Set user property
       description: Set user property
       tags:
         - User
-      parameters:
-        - name: key
-          in: path
-          description: Key
-          required: true
-          schema:
-            type: string
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AnyValue"
+        $ref: "#/components/requestBodies/SetUserPropertyValueRequestBody"
       responses:
+        "200":
+          description: User property set successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyValue"
         "204":
           description: User property set successfully
         "400":
@@ -6038,7 +6056,6 @@ paths:
         - name: q
           in: query
           description: Search string
-          required: true
           schema:
             type: string
         - name: properties
@@ -6061,7 +6078,6 @@ paths:
         - name: workspaceEntityId
           in: query
           description: Workspace entity id
-          required: true
           schema:
             type: integer
       responses:
@@ -6373,6 +6389,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: ownerIdentifier
+          in: query
+          description: Owner identifier
+          schema:
+            type: string
       responses:
         "200":
           description: Student flags
@@ -6381,7 +6402,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuiderStudentFlag"
+                  $ref: "#/components/schemas/UserStudentFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6408,7 +6429,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderStudentFlag"
+                $ref: "#/components/schemas/UserStudentFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6563,7 +6584,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/AnyValue"
+                  $ref: "#/components/schemas/User"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9363,12 +9384,12 @@ components:
             allOf:
               - $ref: "#/components/schemas/HopsUppersecondaryData"
 
-    GuiderUserFlagCreateRequestBody:
+    UserFlagCreateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: GuiderUserFlagCreateRequestBody object
+            description: UserFlagCreateRequestBody object
             required:
               - name
               - color
@@ -9378,25 +9399,25 @@ components:
               name:
                 type: string
               color:
-                type: integer
+                type: string
               description:
                 type: string
               ownerIdentifier:
                 type: string
 
-    GuiderUserFlagUpdateRequestBody:
+    UserFlagUpdateRequestBody:
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "#/components/schemas/GuiderUserFlag"
+              - $ref: "#/components/schemas/UserFlag"
 
-    GuiderUserSharedFlagCreateRequestBody:
+    UserSharedFlagCreateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: GuiderUserSharedFlagCreateRequestBody object
+            description: UserSharedFlagCreateRequestBody object
             required:
               - flagId
               - userIdentifier
@@ -9404,6 +9425,23 @@ components:
               flagId:
                 type: integer
               userIdentifier:
+                type: string
+
+    SetUserPropertyValueRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: SetUserPropertyValueRequestBody object
+            required:
+              - key
+              - value
+            properties:
+              key:
+                type: string
+              value:
+                $ref: "#/components/schemas/AnyValue"
+              userEntityId:
                 type: integer
 
     UserStaffCreateRequestBody:
@@ -9537,6 +9575,30 @@ components:
                 type: integer
               studentIdentifier:
                 type: string
+
+    UserFileCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: UserFileCreateRequestBody object
+            required:
+              - name
+              - contentType
+              - base64Data
+              - identifier
+              - visibility
+            properties:
+              name:
+                type: string
+              contentType:
+                type: string
+              base64Data:
+                type: string
+              identifier:
+                type: string
+              visibility:
+                $ref: "#/components/schemas/UserEntityFileVisibility"
 
     UsergroupCreateRequestBody:
       content:
@@ -10715,9 +10777,9 @@ components:
         - ASSESSMENT
         - SUPPLEMENTATIONREQUEST
 
-    GuiderStudentFlag:
+    UserStudentFlag:
       type: object
-      description: GuiderStudentFlag object
+      description: UserStudentFlag object
       required:
         - id
         - flagId
@@ -10732,13 +10794,13 @@ components:
         flagName:
           type: string
         flagColor:
-          type: integer
+          type: string
         studentIdentifier:
           type: string
 
-    GuiderUserFlag:
+    UserFlag:
       type: object
-      description: GuiderUserFlag object
+      description: UserFlag object
       required:
         - id
         - name
@@ -10757,9 +10819,9 @@ components:
         ownerIdentifier:
           type: string
 
-    GuiderUserSharedFlag:
+    UserSharedFlag:
       type: object
-      description: GuiderUserSharedFlag object
+      description: UserSharedFlag object
       required:
         - flagId
         - id
@@ -12591,7 +12653,7 @@ components:
         - defaultAddress
       properties:
         identifier:
-          type: integer
+          type: string
         studentIdentifier:
           type: string
         street:
@@ -12693,7 +12755,7 @@ components:
         - role
       properties:
         id:
-          type: integer
+          type: string
         email:
           type: string
         firstName:
@@ -12730,6 +12792,36 @@ components:
         isGuidanceGroup:
           type: boolean
 
+    UserEntityFile:
+      type: object
+      description: UserEntityFile object
+      required:
+        - id
+        - name
+        - contentType
+        - fileId
+        - base64Data
+        - identifier
+        - userEntityId
+        - visibility
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        contentType:
+          type: string
+        fileId:
+          type: string
+        base64Data:
+          type: string
+        identifier:
+          type: string
+        userEntityId:
+          type: integer
+        visibility:
+          $ref: "#/components/schemas/UserEntityFileVisibility"
+
     UserFile:
       type: object
       description: UserFile object
@@ -12756,6 +12848,15 @@ components:
           type: string
         archived:
           type: boolean
+        size:
+          type: integer
+
+    UserEntityFileVisibility:
+      type: string
+      enum:
+        - PUBLIC
+        - PRIVATE
+        - STAFF
 
     UserStaffSearchResult:
       type: object
@@ -12852,7 +12953,7 @@ components:
         - ceeposLine
       properties:
         id:
-          type: integer
+          type: string
         userEntityId:
           type: integer
         firstName:

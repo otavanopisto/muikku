@@ -11,9 +11,8 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-
 import mApi from "~/lib/mApi";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
   LoadProfileUsernameTriggerType,
@@ -25,7 +24,7 @@ import {
 interface UpdateUsernamePasswordDialogProps {
   i18n: i18nType;
   children: React.ReactElement<any>;
-  profile: ProfileType;
+  profile: ProfileState;
   displayNotification: DisplayNotificationTriggerType;
   loadProfileUsername: LoadProfileUsernameTriggerType;
 }

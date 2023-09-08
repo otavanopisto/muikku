@@ -17,84 +17,11 @@ export interface CreateUserType {
 }
 
 /**
- * UpdateUserType
- */
-export interface UpdateUserType {
-  identifier: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role?: string;
-  studyProgrammeIdentifier?: string;
-  ssn?: string;
-}
-
-/**
- * UserWithSchoolDataType
- */
-export interface UserWithSchoolDataType {
-  curriculumIdentifier?: string;
-  email: string;
-  firstName: string;
-  hasImage: boolean;
-  id: string;
-  language?: string;
-  lastName?: string;
-  municipality?: string;
-  nationality?: string;
-  nickName?: string;
-  school?: string;
-  studyEndDate?: string;
-  studyProgrammeName?: string;
-  studyStartDate?: string;
-  studyTimeEnd?: string;
-  lastLogin?: string;
-  updatedByStudent: boolean;
-  userEntityId: number;
-  matriculationEligibility: boolean;
-  ceeposLine: string | null;
-}
-
-/**
  * UserChatSettingsType
  */
 export interface UserChatSettingsType {
   visibility: "DISABLED" | "VISIBLE_TO_ALL";
   nick?: string;
-}
-
-/**
- * OrganizationType
- */
-export interface OrganizationType {
-  id: number;
-  name: string;
-}
-
-/**
- * UserStaffType
- */
-export interface UserStaffType {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  properties: any;
-  userEntityId: number;
-  hasImage: boolean;
-}
-
-/**
- * UserGroupType
- */
-export interface UserGroupType {
-  id: number;
-  identifier?: string;
-  name: string;
-  userCount: number;
-  organization?: Organization;
-  isGuidanceGroup?: boolean;
 }
 
 /**
@@ -136,15 +63,6 @@ export interface UsersBySchoolDataType {
 }
 
 /**
- * UserIndexType
- */
-export interface UserIndexType {
-  users: UserBaseIndexType;
-  groups: UserGroupBaseIndexType;
-  usersBySchoolData: UsersBySchoolDataType;
-}
-
-/**
  * UserFileType
  */
 export interface UserFileType {
@@ -158,63 +76,18 @@ export interface UserFileType {
 }
 
 /**
- * StudentUserProfileEmailType
+ * UserIndexState
  */
-export interface StudentUserProfileEmailType {
-  studentIdentifier: string;
-  type: string;
-  address: string;
-  defaultAddress: boolean;
-}
-
-/**
- * StudentUserProfilePhoneType
- */
-export interface StudentUserProfilePhoneType {
-  studentIdentifier: string;
-  type: string;
-  number: string;
-  defaultNumber: boolean;
-}
-
-/**
- * StudentUserAddressType
- */
-export interface StudentUserAddressType {
-  identifier: string;
-  studentIdentifier: string;
-  street: string;
-  postalCode: string;
-  city: string;
-  region: string;
-  country: string;
-  type: string;
-  defaultAddress: boolean;
-}
-
-/**
- * StudentUserProfileChatType
- */
-export interface StudentUserProfileChatType {
-  userIdentifier: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  visibility: any;
-}
-
-/**
- * LastLoginStudentDataType
- */
-export interface LastLoginStudentDataType {
-  userIdentifier: string;
-  authenticationProvder: string;
-  address: string;
-  time: string;
+export interface UserIndexState {
+  users: UserBaseIndexType;
+  groups: UserGroupBaseIndexType;
+  usersBySchoolData: UsersBySchoolDataType;
 }
 
 /**
  * initialUserIndexState
  */
-const initialUserIndexState: UserIndexType = {
+const initialUserIndexState: UserIndexState = {
   users: {},
   groups: {},
   usersBySchoolData: {},
@@ -227,7 +100,7 @@ const initialUserIndexState: UserIndexType = {
  * @param action action
  * @returns State of userIndex
  */
-export const userIndex: Reducer<UserIndexType> = (
+export const userIndex: Reducer<UserIndexState> = (
   state = initialUserIndexState,
   action: ActionType
 ) => {
@@ -268,13 +141,13 @@ export const userIndex: Reducer<UserIndexType> = (
  * @param action action
  */
 /* export default function userIndex(
-  state: UserIndexType = {
+  state: UserIndexState = {
     users: {},
     groups: {},
     usersBySchoolData: {},
   },
   action: ActionType
-): UserIndexType {
+): UserIndexState {
   if (action.type === "SET_USER_INDEX") {
     const prop: { [index: number]: User } = {};
     prop[action.payload.index] = action.payload.value;

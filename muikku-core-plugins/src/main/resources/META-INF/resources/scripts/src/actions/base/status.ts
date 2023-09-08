@@ -58,10 +58,6 @@ async function loadWhoAMI(
 ) {
   const userApi = MApi.getUserApi();
 
-  /* const whoAmI = <WhoAmIType>(
-    await promisify(mApi().user.whoami.read(), "callback")()
-  ); */
-
   const whoAmI = await userApi.getWhoAmI();
 
   dispatch({

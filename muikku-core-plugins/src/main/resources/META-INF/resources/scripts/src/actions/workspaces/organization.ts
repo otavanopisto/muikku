@@ -34,9 +34,8 @@ import {
   LoadUsersOfWorkspaceTriggerType,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "./index";
-import { UserStaffSearchResult } from "~/generated/client/models/UserStaffSearchResult";
 import { WorkspaceStudentSearchResult } from "~/generated/client/models/WorkspaceStudentSearchResult";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS
@@ -268,6 +267,8 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
         dispatch({
           type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
@@ -277,13 +278,12 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
           },
         });
 
-        const staffMembers = <UserStaffSearchResult>await promisify(
-          mApi().user.staffMembers.read({
-            ...data.payload,
-            workspaceEntityId: data.workspace.id,
-          }),
-          "callback"
-        )();
+        const staffMembers = await userApi.getStaffMembers({
+          firstResult: data.payload.firstResult,
+          maxResults: data.payload.maxResults,
+          q: data.payload.q,
+          workspaceEntityId: data.workspace.id,
+        });
 
         const update: WorkspaceUpdateType = {
           staffMembers,
@@ -297,7 +297,7 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
 
         data.success && data.success(staffMembers);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

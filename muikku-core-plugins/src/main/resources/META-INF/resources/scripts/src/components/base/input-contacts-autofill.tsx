@@ -11,10 +11,15 @@ import promisify from "~/util/promisify";
 import { filterHighlight, getName } from "~/util/modifiers";
 import mApi from "~/lib/mApi";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { ContactRecipientType, UserStaffType } from "~/reducers/user-index";
+import { ContactRecipientType } from "~/reducers/user-index";
 import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
-import { User, UserGroup } from "~/generated/client";
+import {
+  User,
+  UserGroup,
+  UserStaff,
+  WorkspaceBasicInfo,
+} from "~/generated/client";
 import { UserStaffSearchResult } from "~/generated/client/models/UserStaffSearchResult";
 import MApi from "~/api/api";
 
@@ -22,10 +27,12 @@ import MApi from "~/api/api";
  * InputContactsAutofillLoaders
  */
 export interface InputContactsAutofillLoaders {
-  studentsLoader?: (searchString: string) => any;
-  staffLoader?: (searchString: string) => any;
-  userGroupsLoader?: (searchString: string) => any;
-  workspacesLoader?: (searchString: string) => any;
+  studentsLoader?: (searchString: string) => () => Promise<User[]>;
+  staffLoader?: (searchString: string) => () => Promise<UserStaffSearchResult>;
+  userGroupsLoader?: (searchString: string) => () => Promise<UserGroup[]>;
+  workspacesLoader?: (
+    searchString: string
+  ) => () => Promise<WorkspaceBasicInfo[]>;
 }
 
 /**
@@ -121,7 +128,8 @@ export default class c extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: InputContactsAutofillProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: InputContactsAutofillProps) {
     if (nextProps.selectedItems !== this.props.selectedItems) {
       this.setState({ selectedItems: nextProps.selectedItems });
     }
@@ -208,16 +216,14 @@ export default class c extends React.Component<
     const getStudentsLoader = () =>
       loaders.studentsLoader
         ? loaders.studentsLoader(textInput)
-        : promisify(
-            mApi().user.users.read({
+        : () =>
+            MApi.getUserApi().getUsers({
               q: textInput,
               maxResults: 20,
               onlyDefaultUsers: checkHasPermission(
                 this.props.userPermissionIsOnlyDefaultUsers
               ),
-            }),
-            "callback"
-          );
+            });
 
     /**
      * getUserGroupsLoader
@@ -230,16 +236,6 @@ export default class c extends React.Component<
               q: textInput,
               maxResults: 20,
             });
-    /* const getUserGroupsLoader = () =>
-      loaders.userGroupsLoader
-        ? loaders.userGroupsLoader(textInput)
-        : promisify(
-            mApi().usergroup.groups.read({
-              q: textInput,
-              maxResults: 20,
-            }),
-            "callback"
-          ); */
 
     /**
      * getWorkspacesLoader
@@ -264,13 +260,8 @@ export default class c extends React.Component<
     const getStaffLoader = () =>
       loaders.staffLoader
         ? loaders.staffLoader(textInput)
-        : promisify(
-            mApi().user.staffMembers.read({
-              q: textInput,
-              maxResults: 20,
-            }),
-            "callback"
-          );
+        : () =>
+            MApi.getUserApi().getStaffMembers({ q: textInput, maxResults: 20 });
 
     /**
      * searchResults
@@ -278,7 +269,7 @@ export default class c extends React.Component<
     const searchResults = await Promise.all([
       checkHasPermission(this.props.hasUserPermission)
         ? getStudentsLoader()()
-            .then((result: any[]) => result || [])
+            .then((result) => result || [])
             .catch((err: any): any[] => [])
         : [],
       checkHasPermission(this.props.hasGroupPermission)
@@ -346,7 +337,7 @@ export default class c extends React.Component<
      * staffItems
      */
     const staffItems: ContactRecipientType[] = searchResults[3].map(
-      (item: UserStaffType): ContactRecipientType => ({
+      (item: UserStaff): ContactRecipientType => ({
         type: "staff",
         value: {
           id: item.userEntityId,
