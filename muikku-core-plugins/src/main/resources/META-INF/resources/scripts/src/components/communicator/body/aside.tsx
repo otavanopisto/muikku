@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import LabelUpdateDialog from "../dialogs/label-update";
-import { MessagesType } from "~/reducers/main-function/messages";
+import { MessagesState } from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
 
 import "~/sass/elements/buttons.scss";
@@ -17,9 +17,8 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * NavigationProps
  */
-interface NavigationProps extends WithTranslation {
-  messages: MessagesType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface NavigationProps extends WithTranslation{
+  messages: MessagesState;
   openSignatureDialog: () => any;
 }
 
@@ -42,7 +41,6 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          // TODO: use i18next
           name={this.props.t("labels.folders", { count: 0 })}
         >
           {this.props.messages.navigation.map((item) => (
@@ -68,7 +66,6 @@ class NavigationAside extends React.Component<
           ))}
         </NavigationTopic>
         <NavigationTopic
-          // TODO: use i18next
           name={this.props.t("labels.settings")}
           classModifier="communicator-settings"
         >

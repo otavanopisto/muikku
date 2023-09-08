@@ -1,18 +1,18 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Link from "../../general/link";
-import { MessageThreadListType } from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { MessageThread } from "~/generated/client";
 
 /**
  * LastMessagesPanelProps
  */
 interface LastMessagesPanelProps extends WithTranslation {
-  lastThreads: MessageThreadListType;
+  lastThreads: MessageThread[];
 }
 
 /**

@@ -23,11 +23,8 @@ import {
   AddToMessagesSelectedThreadsTriggerType,
 } from "~/actions/main-function/messages";
 import {
-  MessageThreadListType,
   MessagesStateType,
-  MessageThreadExpandedType,
-  MessageThreadType,
-  MessagesType,
+  MessagesState,
   MessageSearchResult,
 } from "~/reducers/main-function/messages";
 import ApplicationList, {
@@ -42,19 +39,21 @@ import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import InfoPopover from "~/components/general/info-popover";
 import Dropdown from "~/components/general/dropdown";
+import { MessageThread, MessageThreadExpanded } from "~/generated/client";
 
 /**
  * CommunicatorMessagesProps
  */
-interface CommunicatorMessagesProps extends WithTranslation<["common"]> {
-  threads: MessageThreadListType;
+interface CommunicatorMessagesProps extends WithTranslation {
+  threads: MessageThread[];
   hasMore: boolean;
   state: MessagesStateType;
   searchMessages: MessageSearchResult[];
-  selectedThreads: MessageThreadListType;
+  selectedThreads: MessageThread[];
   selectedThreadsIds: Array<number>;
-  currentThread: MessageThreadExpandedType;
-  messages: MessagesType;
+  currentThread: MessageThreadExpanded;
+  messages: MessagesState;
+
   loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType;
   removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType;
   addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType;
@@ -98,7 +97,7 @@ class CommunicatorMessages extends BodyScrollLoader<
    * @param thread thread
    * @param userId userId
    */
-  getThreadUserNames(thread: MessageThreadType, userId: number) {
+  getThreadUserNames(thread: MessageThread, userId: number): any {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
         return <span>{this.props.t("labels.self")}</span>;
@@ -203,9 +202,7 @@ class CommunicatorMessages extends BodyScrollLoader<
    * setCurrentThread
    * @param threadOrSearchResult threadOrSearchResult
    */
-  setCurrentThread(
-    threadOrSearchResult: MessageThreadType | MessageSearchResult
-  ) {
+  setCurrentThread(threadOrSearchResult: MessageThread | MessageSearchResult) {
     window.location.hash =
       window.location.hash.split("/")[0] +
       "/" +

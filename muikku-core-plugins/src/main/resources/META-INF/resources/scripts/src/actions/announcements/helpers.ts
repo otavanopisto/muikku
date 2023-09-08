@@ -4,14 +4,13 @@ import {
   AnnouncementsStatePatch,
   AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
-import { MApiError } from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 import i18n from "~/locales/i18n";
 import { GetAnnouncementsRequest } from "~/generated/client";
 import { Dispatch } from "react-redux";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * loadAnnouncementsHelper
@@ -124,9 +123,10 @@ export async function loadAnnouncementsHelper(
       payload,
     });
   } catch (err) {
-    if (!(err instanceof MApiError)) {
+    if (!isMApiError(err)) {
       throw err;
     }
+
     //Error :(
     dispatch(
       notificationActions.displayNotification(

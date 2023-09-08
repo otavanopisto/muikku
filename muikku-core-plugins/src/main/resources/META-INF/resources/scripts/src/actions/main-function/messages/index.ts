@@ -1,23 +1,12 @@
-import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
 import {
-  MessageThreadListType,
-  MessageThreadExpandedType,
   MessagesStateType,
-  MessagesPatchType,
-  MessageThreadLabelType,
-  MessageThreadType,
+  MessagesStatePatch,
   MessageThreadUpdateType,
-  MessageSignatureType,
-  MessageType,
-  MessagesNavigationItemListType,
   MessageRecepientType,
-  MessagesNavigationItemType,
-  LabelListType,
-  LabelType,
+  MessagesNavigationItem,
 } from "~/reducers/main-function/messages";
 import { displayNotification } from "~/actions/base/notifications";
 import { hexToColorInt, colorIntToHex } from "~/util/modifiers";
@@ -30,6 +19,15 @@ import {
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
 import i18n from "~/locales/i18n";
+import MApi, { isMApiError } from "~/api/api";
+import {
+  CommunicatorSignature,
+  Message,
+  MessageThread,
+  MessageThreadExpanded,
+  MessageThreadLabel,
+} from "~/generated/client";
+import mApi from "~/lib/mApi";
 
 /**
  * UpdateMessageThreadsCountTriggerType
@@ -48,11 +46,11 @@ export type UPDATE_UNREAD_MESSAGE_THREADS_COUNT = SpecificActionType<
 >;
 export type UPDATE_MESSAGE_THREADS = SpecificActionType<
   "UPDATE_MESSAGE_THREADS",
-  MessageThreadListType
+  MessageThread[]
 >;
 export type SET_CURRENT_MESSAGE_THREAD = SpecificActionType<
   "SET_CURRENT_MESSAGE_THREAD",
-  MessageThreadExpandedType
+  MessageThreadExpanded
 >;
 export type UPDATE_MESSAGES_STATE = SpecificActionType<
   "UPDATE_MESSAGES_STATE",
@@ -60,70 +58,70 @@ export type UPDATE_MESSAGES_STATE = SpecificActionType<
 >;
 export type UPDATE_MESSAGES_ALL_PROPERTIES = SpecificActionType<
   "UPDATE_MESSAGES_ALL_PROPERTIES",
-  MessagesPatchType
+  MessagesStatePatch
 >;
 export type UPDATE_MESSAGE_THREAD_ADD_LABEL = SpecificActionType<
   "UPDATE_MESSAGE_THREAD_ADD_LABEL",
   {
     communicatorMessageId: number;
-    label: MessageThreadLabelType;
+    label: MessageThreadLabel;
   }
 >;
 export type UPDATE_MESSAGE_THREAD_DROP_LABEL = SpecificActionType<
   "UPDATE_MESSAGE_THREAD_DROP_LABEL",
   {
     communicatorMessageId: number;
-    label: MessageThreadLabelType;
+    label: MessageThreadLabel;
   }
 >;
 export type PUSH_ONE_MESSAGE_THREAD_FIRST = SpecificActionType<
   "PUSH_ONE_MESSAGE_THREAD_FIRST",
-  MessageThreadType
+  MessageThread
 >;
 export type LOCK_TOOLBAR = SpecificActionType<"LOCK_TOOLBAR", null>;
 export type UNLOCK_TOOLBAR = SpecificActionType<"UNLOCK_TOOLBAR", null>;
 export type UPDATE_ONE_MESSAGE_THREAD = SpecificActionType<
   "UPDATE_ONE_MESSAGE_THREAD",
   {
-    thread: MessageThreadType;
+    thread: MessageThread;
     update: MessageThreadUpdateType;
   }
 >;
 export type UPDATE_MESSAGES_SIGNATURE = SpecificActionType<
   "UPDATE_MESSAGES_SIGNATURE",
-  MessageSignatureType
+  CommunicatorSignature
 >;
 export type DELETE_MESSAGE_THREAD = SpecificActionType<
   "DELETE_MESSAGE_THREAD",
-  MessageThreadType
+  MessageThread
 >;
 export type UPDATE_SELECTED_MESSAGE_THREADS = SpecificActionType<
   "UPDATE_SELECTED_MESSAGE_THREADS",
-  MessageThreadListType
+  MessageThread[]
 >;
 export type ADD_TO_MESSAGES_SELECTED_THREADS = SpecificActionType<
   "ADD_TO_MESSAGES_SELECTED_THREADS",
-  MessageThreadType
+  MessageThread
 >;
 export type ADD_TO_ALL_MESSAGES_SELECTED_THREADS = SpecificActionType<
   "ADD_TO_ALL_MESSAGES_SELECTED_THREADS",
-  MessageThreadType
+  MessageThread
 >;
 export type REMOVE_FROM_MESSAGES_SELECTED_THREADS = SpecificActionType<
   "REMOVE_FROM_MESSAGES_SELECTED_THREADS",
-  MessageThreadType
+  MessageThread
 >;
 export type PUSH_MESSAGE_LAST_IN_CURRENT_THREAD = SpecificActionType<
   "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-  MessageType
+  Message
 >;
 export type UPDATE_MESSAGES_NAVIGATION_LABELS = SpecificActionType<
   "UPDATE_MESSAGES_NAVIGATION_LABELS",
-  MessagesNavigationItemListType
+  MessagesNavigationItem[]
 >;
 export type ADD_MESSAGES_NAVIGATION_LABEL = SpecificActionType<
   "ADD_MESSAGES_NAVIGATION_LABEL",
-  MessagesNavigationItemType
+  MessagesNavigationItem
 >;
 export type UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS = SpecificActionType<
   "UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
@@ -171,18 +169,16 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
         return;
       }
 
+      const communicatorApi = MApi.getCommunicatorApi();
+
       try {
         dispatch({
           type: "UPDATE_UNREAD_MESSAGE_THREADS_COUNT",
-          payload: <number>(
-            ((await promisify(
-              mApi().communicator.receiveditemscount.cacheClear().read(),
-              "callback"
-            )()) || 0)
-          ),
+          payload:
+            (await communicatorApi.getCommunicatorReceivedItemsCount()) || 0,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -215,19 +211,18 @@ const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerTy
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const communicatorApi = MApi.getCommunicatorApi();
+
       try {
         dispatch({
           type: "UPDATE_MESSAGE_THREADS",
-          payload: <MessageThreadListType>await promisify(
-            mApi().communicator.items.read({
-              firstResult: 0,
-              maxResults: maxResults,
-            }),
-            "callback"
-          )(),
+          payload: await communicatorApi.getCommunicatorThreads({
+            firstResult: 0,
+            maxResults: maxResults,
+          }),
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -252,8 +247,8 @@ export interface SendMessageTriggerType {
     replyThreadId: number;
     subject: string;
     text: string;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -268,14 +263,14 @@ export interface LoadMessageThreadsTriggerType {
  * UpdateMessagesSelectedThreads
  */
 export interface UpdateMessagesSelectedThreads {
-  (threads: MessageThreadListType): AnyActionType;
+  (threads: MessageThread[]): AnyActionType;
 }
 
 /**
  * AddToMessagesSelectedThreadsTriggerType
  */
 export interface AddToMessagesSelectedThreadsTriggerType {
-  (thread: MessageThreadType): AnyActionType;
+  (thread: MessageThread): AnyActionType;
 }
 
 /**
@@ -289,35 +284,35 @@ export interface LoadMoreMessageThreadsTriggerType {
  * RemoveFromMessagesSelectedThreadsTriggerType
  */
 export interface RemoveFromMessagesSelectedThreadsTriggerType {
-  (thread: MessageThreadType): AnyActionType;
+  (thread: MessageThread): AnyActionType;
 }
 
 /**
  * AddLabelToSelectedMessageThreadsTriggerType
  */
 export interface AddLabelToSelectedMessageThreadsTriggerType {
-  (label: MessageThreadLabelType): AnyActionType;
+  (label: MessageThreadLabel): AnyActionType;
 }
 
 /**
  * RemoveLabelFromSelectedMessageThreadsTriggerType
  */
 export interface RemoveLabelFromSelectedMessageThreadsTriggerType {
-  (label: MessageThreadLabelType): AnyActionType;
+  (label: MessageThreadLabel): AnyActionType;
 }
 
 /**
  * AddLabelToCurrentMessageThreadTriggerType
  */
 export interface AddLabelToCurrentMessageThreadTriggerType {
-  (label: MessageThreadLabelType): AnyActionType;
+  (label: MessageThreadLabel): AnyActionType;
 }
 
 /**
  * RemoveLabelFromCurrentMessageThreadTriggerType
  */
 export interface RemoveLabelFromCurrentMessageThreadTriggerType {
-  (label: MessageThreadLabelType): AnyActionType;
+  (label: MessageThreadLabel): AnyActionType;
 }
 
 /**
@@ -325,10 +320,10 @@ export interface RemoveLabelFromCurrentMessageThreadTriggerType {
  */
 export interface ToggleMessageThreadReadStatusTriggerType {
   (
-    thread: MessageThreadType | number,
+    thread: MessageThread | number,
     markAsStatus?: boolean,
     dontLockToolbar?: boolean,
-    callback?: () => any
+    callback?: () => void
   ): AnyActionType;
 }
 
@@ -336,7 +331,7 @@ export interface ToggleMessageThreadReadStatusTriggerType {
  * ToggleMessageThreadsReadStatusTriggerType
  */
 export interface ToggleMessageThreadsReadStatusTriggerType {
-  (threads: MessageThreadListType): AnyActionType;
+  (threads: MessageThread[]): AnyActionType;
 }
 
 /**
@@ -416,30 +411,30 @@ const toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType =
 
 /**
  * sendMessage
- * @param message
+ * @param message message
  */
 const sendMessage: SendMessageTriggerType = function sendMessage(message) {
-  const recepientWorkspaces = message.to
-    .filter((x) => x.type === "workspace")
-    .map((x) => x.value.id);
-  const data = {
-    caption: message.subject,
-    content: message.text,
-    categoryName: "message",
-    recipientIds: message.to
-      .filter((x) => x.type === "user" || x.type === "staff")
-      .map((x) => x.value.id),
-    recipientGroupIds: message.to
-      .filter((x) => x.type === "usergroup")
-      .map((x) => x.value.id),
-    recipientStudentsWorkspaceIds: recepientWorkspaces,
-    recipientTeachersWorkspaceIds: recepientWorkspaces,
-  };
-
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const recepientWorkspaces = message.to
+      .filter((x) => x.type === "workspace")
+      .map((x) => x.value.id);
+    const data = {
+      caption: message.subject,
+      content: message.text,
+      categoryName: "message",
+      recipientIds: message.to
+        .filter((x) => x.type === "user" || x.type === "staff")
+        .map((x) => x.value.id),
+      recipientGroupIds: message.to
+        .filter((x) => x.type === "usergroup")
+        .map((x) => x.value.id),
+      recipientStudentsWorkspaceIds: recepientWorkspaces,
+      recipientTeachersWorkspaceIds: recepientWorkspaces,
+    };
+
     if (!message.subject) {
       message.fail && message.fail();
       return dispatch(
@@ -466,26 +461,24 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       );
     }
 
+    const communicatorApi = MApi.getCommunicatorApi();
+
     try {
-      let result: MessageType;
+      let result: Message;
       if (message.replyThreadId) {
-        result = <MessageType>(
-          await promisify(
-            mApi().communicator.messages.create(message.replyThreadId, data),
-            "callback"
-          )()
-        );
+        result = await communicatorApi.createCommunicatorMessageToThread({
+          messageThreadId: message.replyThreadId,
+          createCommunicatorMessageRequest: data,
+        });
       } else {
-        result = <MessageType>(
-          await promisify(
-            mApi().communicator.messages.create(data),
-            "callback"
-          )()
-        );
+        result = await communicatorApi.createCommunicatorMessage({
+          createCommunicatorMessageRequest: data,
+        });
       }
       dispatch(updateUnreadMessageThreadsCount());
 
-      mApi().communicator.sentitems.cacheClear();
+      /* mApi().communicator.sentitems.cacheClear(); */
+
       message.success && message.success();
 
       const state = getState();
@@ -493,7 +486,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
 
       if (state.messages) {
         //First lets check and update the thread count in case the thread is there somewhere for that specific message
-        const thread: MessageThreadType = state.messages.threads.find(
+        const thread: MessageThread = state.messages.threads.find(
           (thread) =>
             thread.communicatorMessageId === result.communicatorMessageId
         );
@@ -543,12 +536,36 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
           //we basically conduct a search for the first result which should be our thread
 
           try {
-            const threads: MessageThreadListType = <MessageThreadListType>(
-              await promisify(
-                mApi().communicator[getApiId(item)].read(params),
-                "callback"
-              )()
-            );
+            let threads: MessageThread[] = null;
+
+            const apiPathId = getApiId(item);
+
+            // Here only cases for items, sentitems and trash are handled
+            switch (apiPathId) {
+              case "items":
+                threads = await communicatorApi.getCommunicatorThreads({
+                  firstResult: params.firstResult,
+                  maxResults: params.maxResults,
+                });
+                break;
+              case "sentitems":
+                threads = await communicatorApi.getCommunicatorSentItems({
+                  firstResult: params.firstResult,
+                  maxResults: params.maxResults,
+                });
+                break;
+              case "trash":
+                threads = await communicatorApi.getCommunicatorTrash({
+                  firstResult: params.firstResult,
+                  maxResults: params.maxResults,
+                });
+                break;
+
+              default:
+                threads = null;
+                break;
+            }
+
             if (threads[0]) {
               if (
                 threads[0].communicatorMessageId !==
@@ -570,7 +587,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
               }
             }
           } catch (err) {
-            if (!(err instanceof MApiError)) {
+            if (!isMApiError(err)) {
               throw err;
             }
           }
@@ -591,7 +608,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
         )
       );
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
@@ -607,8 +624,8 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
 
 /**
  * loadMessageThreads
- * @param location
- * @param query
+ * @param location location
+ * @param query query
  */
 const loadMessageThreads: LoadMessageThreadsTriggerType =
   function loadMessageThreads(location, query) {
@@ -617,7 +634,7 @@ const loadMessageThreads: LoadMessageThreadsTriggerType =
 
 /**
  * updateMessagesSelectedThreads
- * @param threads
+ * @param threads threads
  */
 const updateMessagesSelectedThreads: UpdateMessagesSelectedThreads =
   function updateMessagesSelectedThreads(threads) {
@@ -629,7 +646,7 @@ const updateMessagesSelectedThreads: UpdateMessagesSelectedThreads =
 
 /**
  * addToMessagesSelectedThreads
- * @param thread
+ * @param thread thread
  */
 const addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType =
   function addToMessagesSelectedThreads(thread) {
@@ -641,7 +658,7 @@ const addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType =
 
 /**
  * removeFromMessagesSelectedThreads
- * @param thread
+ * @param thread thread
  */
 const removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType =
   function removeFromMessagesSelectedThreads(thread) {
@@ -722,6 +739,8 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
 
       const state = getState();
 
+      const communicatorApi = MApi.getCommunicatorApi();
+
       const item = state.messages.navigation.find(
         (item) => item.location === state.messages.location
       );
@@ -740,7 +759,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         return;
       }
 
-      let actualThread: MessageThreadType = null;
+      let actualThread: MessageThread = null;
       let communicatorMessageId: number = null;
       if (typeof threadOrId === "number") {
         actualThread = state.messages.threads.find(
@@ -767,31 +786,51 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         });
       }
 
+      const apiPathId = getApiId(item);
+
       try {
         if (
           (actualThread && actualThread.unreadMessagesInThread) ||
           markAsStatus === true
         ) {
-          await promisify(
-            mApi().communicator[getApiId(item)].markasread.create(
-              communicatorMessageId
-            ),
-            "callback"
-          )();
+          // Here only items and trash have markasread endpoints
+          switch (apiPathId) {
+            case "items":
+              await communicatorApi.markCommunicatorThreadAsRead({
+                messageId: communicatorMessageId,
+              });
+              break;
+            case "trash":
+              await communicatorApi.markCommunicatorTrashItemAsRead({
+                messageId: communicatorMessageId,
+              });
+              break;
+            default:
+              break;
+          }
         } else if (
           (actualThread && !actualThread.unreadMessagesInThread) ||
           markAsStatus === false
         ) {
-          await promisify(
-            mApi().communicator[getApiId(item)].markasunread.create(
-              communicatorMessageId
-            ),
-            "callback"
-          )();
+          // Here only items and trash have markasunread endpoints
+          switch (apiPathId) {
+            case "items":
+              await communicatorApi.markCommunicatorThreadAsUnread({
+                messageId: communicatorMessageId,
+              });
+              break;
+            case "trash":
+              await communicatorApi.markCommunicatorTrashItemAsUnread({
+                messageId: communicatorMessageId,
+              });
+              break;
+            default:
+              break;
+          }
         }
         dispatch(updateUnreadMessageThreadsCount());
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -898,21 +937,43 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
         return;
       }
 
+      const communicatorApi = MApi.getCommunicatorApi();
+
       await Promise.all(
         state.messages.selectedThreads.map(async (thread) => {
           try {
-            await promisify(
-              mApi().communicator[getApiId(item)].del(
-                thread.communicatorMessageId
-              ),
-              "callback"
-            )();
+            const apiPathId = getApiId(item);
+
+            // Here only items, sentitems and trash have delete endpoints
+            switch (apiPathId) {
+              case "items":
+                await communicatorApi.deleteCommunicatorMessage({
+                  messageId: thread.communicatorMessageId,
+                });
+                break;
+
+              case "sentitems":
+                await communicatorApi.deleteCommunicatorSentItem({
+                  messageId: thread.communicatorMessageId,
+                });
+                break;
+
+              case "trash":
+                await communicatorApi.deleteCommunicatorTrashItem({
+                  messageId: thread.communicatorMessageId,
+                });
+                break;
+
+              default:
+                break;
+            }
+
             dispatch({
               type: "DELETE_MESSAGE_THREAD",
               payload: thread,
             });
           } catch (err) {
-            if (!(err instanceof MApiError)) {
+            if (!isMApiError(err)) {
               throw err;
             }
             dispatch(
@@ -928,7 +989,6 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
         })
       );
 
-      mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null,
@@ -953,6 +1013,8 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
 
       const state = getState();
 
+      const communicatorApi = MApi.getCommunicatorApi();
+
       const item = state.messages.navigation.find(
         (item) => item.location === state.messages.location
       );
@@ -974,11 +1036,33 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         state.messages.currentThread.messages[0].communicatorMessageId;
 
       try {
-        await promisify(
-          mApi().communicator[getApiId(item)].del(communicatorMessageId),
-          "callback"
-        )();
-        const toDeleteMessageThread: MessageThreadType =
+        const apiPathId = getApiId(item);
+
+        // Here only items, sentitems and trash have delete endpoints
+        switch (apiPathId) {
+          case "items":
+            await communicatorApi.deleteCommunicatorMessage({
+              messageId: communicatorMessageId,
+            });
+            break;
+
+          case "sentitems":
+            await communicatorApi.deleteCommunicatorSentItem({
+              messageId: communicatorMessageId,
+            });
+            break;
+
+          case "trash":
+            await communicatorApi.deleteCommunicatorTrashItem({
+              messageId: communicatorMessageId,
+            });
+            break;
+
+          default:
+            break;
+        }
+
+        const toDeleteMessageThread: MessageThread =
           state.messages.threads.find(
             (message) => message.communicatorMessageId === communicatorMessageId
           );
@@ -989,7 +1073,7 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1003,7 +1087,6 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         );
       }
 
-      mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null,
@@ -1031,6 +1114,8 @@ const loadMessageThread: LoadMessageThreadTriggerType =
     ) => {
       const state = getState();
 
+      const communicatorApi = MApi.getCommunicatorApi();
+
       const item = state.messages.navigation.find(
         (item) => item.location === location
       );
@@ -1044,21 +1129,49 @@ const loadMessageThread: LoadMessageThreadTriggerType =
         return;
       }
 
-      let currentThread: MessageThreadExpandedType;
+      let currentThread: MessageThreadExpanded = null;
       try {
+        // item is a folder
         if (item.type !== "label") {
-          currentThread = <MessageThreadExpandedType>(
-            await promisify(
-              mApi().communicator[getApiId(item, true)].read(messageId),
-              "callback"
-            )()
-          );
+          const apiPathId = getApiId(item, true);
+
+          // Loading a expanded message thread for specific folder by messageId
+          // There is only four api paths that can be used to get a expanded message thread for folders
+          // messages, unread, sentitems, trash. For "items" and "messages", only one exists depending on how it is used
+          // Weird, but its how it is...
+          switch (apiPathId) {
+            case "messages":
+              currentThread =
+                await communicatorApi.getCommunicatorMessageThread({
+                  messageThreadId: messageId,
+                });
+              break;
+            case "unread":
+              currentThread = await communicatorApi.getCommunicatorUnread({
+                messageId: messageId,
+              });
+              break;
+            case "sentitems":
+              currentThread = await communicatorApi.getCommunicatorSentItem({
+                messageId: messageId,
+              });
+              break;
+            case "trash":
+              currentThread = await communicatorApi.getCommunicatorTrashItem({
+                messageId: messageId,
+              });
+              break;
+
+            default:
+              currentThread = null;
+              break;
+          }
         } else {
-          currentThread = <MessageThreadExpandedType>(
-            await promisify(
-              mApi().communicator.userLabels.messages.read(item.id, messageId),
-              "callback"
-            )()
+          currentThread = await communicatorApi.getCommunicatorUserLabelMessage(
+            {
+              labelId: item.id as number,
+              messageId: messageId,
+            }
           );
         }
         dispatch({
@@ -1069,7 +1182,7 @@ const loadMessageThread: LoadMessageThreadTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1105,6 +1218,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
+      const communicatorApi = MApi.getCommunicatorApi();
 
       if (
         state.messages.location === "unread" ||
@@ -1125,12 +1239,37 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
         };
 
         try {
-          const threads: MessageThreadListType = <MessageThreadListType>(
-            await promisify(
-              mApi().communicator[getApiId(item)].read(params),
-              "callback"
-            )()
-          );
+          let threads: MessageThread[] = null;
+
+          const apiPathId = getApiId(item);
+
+          // Here only cases for items, sentitems and trash are handled
+          switch (apiPathId) {
+            case "items":
+              threads = await communicatorApi.getCommunicatorThreads({
+                firstResult: params.firstResult,
+                maxResults: params.maxResults,
+                onlyUnread: params.onlyUnread,
+              });
+              break;
+            case "sentitems":
+              threads = await communicatorApi.getCommunicatorSentItems({
+                firstResult: params.firstResult,
+                maxResults: params.maxResults,
+              });
+              break;
+            case "trash":
+              threads = await communicatorApi.getCommunicatorTrash({
+                firstResult: params.firstResult,
+                maxResults: params.maxResults,
+              });
+              break;
+
+            default:
+              threads = null;
+              break;
+          }
+
           if (threads[0]) {
             dispatch({
               type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
@@ -1141,15 +1280,10 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
               state.messages.currentThread.messages[0].communicatorMessageId ===
                 threads[0].communicatorMessageId
             ) {
-              const result: MessageType = <MessageType>(
-                await promisify(
-                  mApi().communicator.communicatormessages.read(
-                    threads[0].id,
-                    params
-                  ),
-                  "callback"
-                )()
-              );
+              const result = await communicatorApi.getCommunicatorMessage({
+                messageId: threads[0].id,
+              });
+
               dispatch({
                 type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
                 payload: result,
@@ -1160,7 +1294,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
             }
           }
         } catch (err) {
-          if (!(err instanceof MApiError)) {
+          if (!isMApiError(err)) {
             throw err;
           }
           dispatch(
@@ -1185,10 +1319,11 @@ const loadSignature: LoadSignatureTriggerType = function loadSignature() {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const communicatorApi = MApi.getCommunicatorApi();
+
     try {
-      const signatures: Array<MessageSignatureType> = <
-        Array<MessageSignatureType>
-      >await promisify(mApi().communicator.signatures.read(), "callback")();
+      const signatures = await communicatorApi.getCommunicatorSignatures();
+
       if (signatures.length > 0) {
         dispatch({
           type: "UPDATE_MESSAGES_SIGNATURE",
@@ -1196,7 +1331,7 @@ const loadSignature: LoadSignatureTriggerType = function loadSignature() {
         });
       }
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
@@ -1225,52 +1360,47 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
   ) => {
     const state = getState();
 
+    const communicatorApi = MApi.getCommunicatorApi();
+
     try {
       if (newSignature && state.messages.signature) {
-        const nSignatureShape: MessageSignatureType = <MessageSignatureType>{
-          id: state.messages.signature.id,
-          name: state.messages.signature.name,
-          signature: newSignature,
-        };
-        const payload: MessageSignatureType = <MessageSignatureType>(
-          await promisify(
-            mApi().communicator.signatures.update(
-              state.messages.signature.id,
-              nSignatureShape
-            ),
-            "callback"
-          )()
-        );
+        const payload = await communicatorApi.updateCommunicatorSignature({
+          signatureId: state.messages.signature.id,
+          updateCommunicatorSignatureRequest: {
+            id: state.messages.signature.id,
+            name: state.messages.signature.name,
+            signature: newSignature,
+          },
+        });
+
         dispatch({
           type: "UPDATE_MESSAGES_SIGNATURE",
           payload,
         });
       } else if (newSignature) {
-        const payload: MessageSignatureType = <MessageSignatureType>(
-          await promisify(
-            mApi().communicator.signatures.create({
-              name: "standard",
-              signature: newSignature,
-            }),
-            "callback"
-          )()
-        );
+        const payload = await communicatorApi.createCommunicatorSignature({
+          createCommunicatorSignatureRequest: {
+            name: "standard",
+            signature: newSignature,
+          },
+        });
+
         dispatch({
           type: "UPDATE_MESSAGES_SIGNATURE",
           payload,
         });
       } else {
-        await promisify(
-          mApi().communicator.signatures.del(state.messages.signature.id),
-          "callback"
-        )();
+        await communicatorApi.deleteCommunicatorSignature({
+          signatureId: state.messages.signature.id,
+        });
+
         dispatch({
           type: "UPDATE_MESSAGES_SIGNATURE",
           payload: null,
         });
       }
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
@@ -1290,7 +1420,7 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
  * LoadMessagesNavigationLabelsTriggerType
  */
 export interface LoadMessagesNavigationLabelsTriggerType {
-  (callback: () => any): AnyActionType;
+  (callback: () => void): AnyActionType;
 }
 
 /**
@@ -1305,11 +1435,11 @@ export interface AddMessagesNavigationLabelTriggerType {
  */
 export interface UpdateMessagesNavigationLabelTriggerType {
   (data: {
-    label: MessagesNavigationItemType;
+    label: MessagesNavigationItem;
     newName: string;
     newColor: string;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -1318,15 +1448,15 @@ export interface UpdateMessagesNavigationLabelTriggerType {
  */
 export interface RemoveMessagesNavigationLabelTriggerType {
   (data: {
-    label: MessagesNavigationItemType;
-    success?: () => any;
-    fail?: () => any;
+    label: MessagesNavigationItem;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
 /**
  * loadMessagesNavigationLabels
- * @param callback
+ * @param callback callback
  */
 const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
   function loadMessagesNavigationLabels(callback) {
@@ -1334,13 +1464,14 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const communicatorApi = MApi.getCommunicatorApi();
+
       try {
-        const labels: LabelListType = <LabelListType>(
-          await promisify(mApi().communicator.userLabels.read(), "callback")()
-        );
+        const labels = await communicatorApi.getCommunicatorUserLabels();
+
         dispatch({
           type: "UPDATE_MESSAGES_NAVIGATION_LABELS",
-          payload: labels.map((label: LabelType) => ({
+          payload: labels.map((label) => ({
             location: "label-" + label.id,
             id: label.id,
             type: "label",
@@ -1351,7 +1482,7 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
         });
         callback && callback();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1377,6 +1508,8 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const communicatorApi = MApi.getCommunicatorApi();
+
       if (!name) {
         return dispatch(
           displayNotification(
@@ -1393,12 +1526,13 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
       };
 
       try {
-        const newLabel: LabelType = <LabelType>(
-          await promisify(
-            mApi().communicator.userLabels.create(label),
-            "callback"
-          )()
-        );
+        const newLabel = await communicatorApi.createCommunicatorUserLabel({
+          createCommunicatorUserLabelRequest: {
+            name: label.name,
+            color: label.color,
+          },
+        });
+
         dispatch({
           type: "ADD_MESSAGES_NAVIGATION_LABEL",
           payload: {
@@ -1414,7 +1548,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1450,6 +1584,8 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         );
       }
 
+      const communicatorApi = MApi.getCommunicatorApi();
+
       const newLabelData = {
         name: data.newName,
         color: hexToColorInt(data.newColor),
@@ -1457,10 +1593,15 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
       };
 
       try {
-        await promisify(
-          mApi().communicator.userLabels.update(data.label.id, newLabelData),
-          "callback"
-        )();
+        await communicatorApi.updateCommunicatorUserLabel({
+          labelId: data.label.id as number,
+          updateCommunicatorUserLabelRequest: {
+            id: data.label.id as number,
+            name: newLabelData.name,
+            color: newLabelData.color,
+          },
+        });
+
         dispatch({
           type: "UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
           payload: {
@@ -1486,7 +1627,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         });
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         data.fail && data.fail();
@@ -1513,11 +1654,13 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const communicatorApi = MApi.getCommunicatorApi();
+
       try {
-        await promisify(
-          mApi().communicator.userLabels.del(data.label.id),
-          "callback"
-        )();
+        await communicatorApi.deleteCommunicatorUserLabel({
+          labelId: data.label.id as number,
+        });
+
         const { messages } = getState();
 
         //Notice this is an external trigger, not the nicest thing, but as long as we use hash navigation, meh
@@ -1539,7 +1682,7 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
         });
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         data.fail && data.fail();
@@ -1572,6 +1715,8 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
 
       const state = getState();
 
+      const communicatorApi = MApi.getCommunicatorApi();
+
       const item = state.messages.navigation.find(
         (item) => item.location === state.messages.location
       );
@@ -1592,18 +1737,26 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
       await Promise.all(
         state.messages.selectedThreads.map(async (thread) => {
           try {
-            await promisify(
-              mApi().communicator[getApiId(item)].restore.update(
-                thread.communicatorMessageId
-              ),
-              "callback"
-            )();
+            const apiPathId = getApiId(item);
+
+            // Here only trash has restore endpoint
+            switch (apiPathId) {
+              case "trash":
+                await communicatorApi.restoreCommunicatorTrashItem({
+                  messageId: thread.communicatorMessageId,
+                });
+                break;
+
+              default:
+                break;
+            }
+
             dispatch({
               type: "DELETE_MESSAGE_THREAD",
               payload: thread,
             });
           } catch (err) {
-            if (!(err instanceof MApiError)) {
+            if (!isMApiError(err)) {
               throw err;
             }
             dispatch(
@@ -1619,7 +1772,6 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
         })
       );
 
-      mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null,
@@ -1643,6 +1795,7 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
       });
 
       const state = getState();
+      const communicatorApi = MApi.getCommunicatorApi();
 
       const item = state.messages.navigation.find(
         (item) => item.location === state.messages.location
@@ -1665,13 +1818,21 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
         state.messages.currentThread.messages[0].communicatorMessageId;
 
       try {
-        await promisify(
-          mApi().communicator[getApiId(item)].restore.update(
-            communicatorMessageId
-          ),
-          "callback"
-        )();
-        const toDeleteMessageThread: MessageThreadType =
+        const apiPathId = getApiId(item);
+
+        // Here only trash has restore endpoint
+        switch (apiPathId) {
+          case "trash":
+            await communicatorApi.restoreCommunicatorTrashItem({
+              messageId: communicatorMessageId,
+            });
+            break;
+
+          default:
+            break;
+        }
+
+        const toDeleteMessageThread: MessageThread =
           state.messages.threads.find(
             (message) => message.communicatorMessageId === communicatorMessageId
           );
@@ -1682,7 +1843,7 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1696,7 +1857,6 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
         );
       }
 
-      mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null,

@@ -37,7 +37,7 @@ import {
   flatten,
 } from "~/util/modifiers";
 import LabelUpdateDialog from "../../dialogs/label-update";
-import { MessagesType } from "~/reducers/main-function/messages";
+import { MessagesState } from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
@@ -62,8 +62,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * CommunicatorToolbarProps
  */
-interface CommunicatorToolbarProps extends WithTranslation<["common"]> {
-  messages: MessagesType;
+interface CommunicatorToolbarProps extends WithTranslation {
+  messages: MessagesState;
   deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType;
   addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType;
   removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType;

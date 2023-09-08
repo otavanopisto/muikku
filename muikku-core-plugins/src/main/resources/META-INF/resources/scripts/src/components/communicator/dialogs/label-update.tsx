@@ -7,8 +7,8 @@ import {
   RemoveMessagesNavigationLabelTriggerType,
 } from "~/actions/main-function/messages";
 import {
-  MessagesType,
-  MessagesNavigationItemType,
+  MessagesState,
+  MessagesNavigationItem,
 } from "~/reducers/main-function/messages";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -32,11 +32,11 @@ const KEYCODES = {
 interface CommunicatorLabelUpdateDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  label: MessagesNavigationItemType;
+  label: MessagesNavigationItem;
   isOpen?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
-  messages: MessagesType;
+  messages: MessagesState;
   updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType;
   removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType;
 }
