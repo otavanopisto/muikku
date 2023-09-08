@@ -65,41 +65,17 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
           type: "UPDATE_SUMMARY_STATUS",
           payload: <OrganizationSummaryStatusType>"LOADING",
         });
-        /* dispatch({
-          type: "LOAD_WORKSPACE_SUMMARY",
-          payload: <OrganizationSummaryWorkspaceDataType>(
-            await promisify(
-              mApi().organizationWorkspaceManagement.overview.read(),
-              "callback"
-            )()
-          ),
-        }); */
+
         dispatch({
           type: "LOAD_WORKSPACE_SUMMARY",
           payload: await organizationtApi.getOrganizationWorkspaceOverview(),
         });
-        /* dispatch({
-          type: "LOAD_STUDENT_SUMMARY",
-          payload: <OrganizationSummaryStudentsDataType>(
-            await promisify(
-              mApi().organizationUserManagement.studentsSummary.read(),
-              "callback"
-            )()
-          ),
-        }); */
+
         dispatch({
           type: "LOAD_STUDENT_SUMMARY",
           payload: await organizationtApi.getOrganizationStudentsSummary(),
         });
-        /* dispatch({
-          type: "LOAD_ORGANIZATION_CONTACTS",
-          payload: <OrganizationSummaryContactDataType>(
-            await promisify(
-              mApi().organizationUserManagement.contactPersons.read(),
-              "callback"
-            )()
-          ),
-        }); */
+
         dispatch({
           type: "LOAD_ORGANIZATION_CONTACTS",
           payload: await organizationtApi.getContactPersons(),

@@ -252,26 +252,7 @@ const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
     ) => {
       const organizationApi = MApi.getOrganizationApi();
 
-      /* const data = {
-        templates: "ONLY_TEMPLATES",
-        maxResults: 5,
-      };
-
-      if (query) {
-        data.q = query;
-      }
-      */
       try {
-        /* dispatch({
-          type: "UPDATE_ORGANIZATION_TEMPLATES",
-          payload: <WorkspaceListType>(
-            ((await promisify(
-              mApi().organizationWorkspaceManagement.workspaces.read(data),
-              "callback"
-            )()) || 0)
-          ),
-        }); */
-
         const organizationWorkspaces =
           (await organizationApi.getOrganizationWorkspaces({
             templates: "ONLY_TEMPLATES",
