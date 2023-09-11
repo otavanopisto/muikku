@@ -647,17 +647,44 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/communicator/messages/{messageId}:
+  /rest/communicator/messages/{messageThreadId}:
+    get:
+      operationId: getCommunicatorMessageThread
+      summary: Get communicator message thread
+      description: Get communicator message thread
+      tags:
+        - Communicator
+      parameters:
+        - name: messageThreadId
+          in: path
+          description: Communicator message thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadExpanded"
+        "400":
+          description: Invalid request was sent to the server
+        "404":
+          description: Communicator message thread not found
+        "500":
+          description: Internal server error
+
     post:
-      operationId: updateCommunicatorMessage
+      operationId: createCommunicatorMessageToThread
       summary: Update communicator message
       description: Update communicator message
       tags:
         - Communicator
       parameters:
-        - name: messageId
+        - name: messageThreadId
           in: path
-          description: Communicator message id
+          description: Communicator message thread id
           required: true
           schema:
             type: integer
@@ -676,6 +703,68 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
+
+  /rest/communicator/messages/{messageId}/labels:
+    post:
+      operationId: addCommunicatorMessageLabel
+      summary: Add communicator message label
+      description: Add communicator message label
+      tags:
+        - Communicator
+      parameters:
+        - name: messageId
+          in: path
+          description: Communicator message id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/CommunicatorMessageLabelRequestBody"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadLabel"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Communicator message not found
+        "500":
+          description: Internal server error
+
+  /rest/communicator/messages/{messageId}/labels/{labelId}:
+    delete:
+      operationId: deleteCommunicatorMessageLabel
+      summary: Delete communicator message label
+      description: Delete communicator message label
+      tags:
+        - Communicator
+      parameters:
+        - name: messageId
+          in: path
+          description: Communicator message id
+          required: true
+          schema:
+            type: integer
+        - name: labelId
+          in: path
+          description: Communicator message label id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: "Communicator message label deleted successfully"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Communicator message not found
 
   /rest/communicator/receiveditemscount:
     get:
@@ -790,6 +879,11 @@ paths:
       tags:
         - Communicator
       parameters:
+        - name: labelId
+          in: query
+          description: Label id
+          schema:
+            type: integer
         - name: firstResult
           in: query
           description: First result
@@ -803,6 +897,12 @@ paths:
           schema:
             type: integer
             default: 10
+        - name: onlyUnread
+          in: query
+          description: Only unread
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: "Communicator threads"
@@ -929,6 +1029,31 @@ paths:
           description: Internal server error
 
   /rest/communicator/sentitems/{messageId}:
+    get:
+      operationId: getCommunicatorSentItem
+      summary: Get communicator sent item
+      description: Get communicator sent item
+      tags:
+        - Communicator
+      parameters:
+        - name: messageId
+          in: path
+          description: Communicator message id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Communicator sent item"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadExpanded"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     delete:
       operationId: deleteCommunicatorSentItem
       summary: Delete communicator sent item
@@ -990,6 +1115,31 @@ paths:
           description: Internal server error
 
   /rest/communicator/trash/{messageId}:
+    get:
+      operationId: getCommunicatorTrashItem
+      summary: Get communicator trash item
+      description: Get communicator trash item
+      tags:
+        - Communicator
+      parameters:
+        - name: messageId
+          in: path
+          description: Communicator message id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Communicator trash item"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadExpanded"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     delete:
       operationId: deleteCommunicatorTrashItem
       summary: Delete communicator trash item
@@ -1086,10 +1236,10 @@ paths:
           description: Internal server error
 
   /rest/communicator/unread/{messageId}:
-    delete:
-      operationId: deleteCommunicatorUnreadItem
-      summary: Delete communicator unread item
-      description: Delete communicator unread item
+    get:
+      operationId: getCommunicatorUnread
+      summary: Get communicator unread
+      description: Get communicator unread
       tags:
         - Communicator
       parameters:
@@ -1100,12 +1250,14 @@ paths:
           schema:
             type: integer
       responses:
-        "204":
-          description: "Communicator unread item deleted successfully"
+        "200":
+          description: "Communicator unread"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadExpanded"
         "400":
           description: Invalid request was sent to the server
-        "403":
-          description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
 
@@ -1146,10 +1298,28 @@ paths:
                   $ref: "#/components/schemas/MessageSearchResult"
         "400":
           description: Invalid request was sent to the server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
         "403":
           description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
         "500":
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "502":
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
 
   /rest/communicator/signatures:
     get:
@@ -1166,7 +1336,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/AnyValue"
+                  $ref: "#/components/schemas/CommunicatorSignature"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1211,10 +1381,7 @@ paths:
           schema:
             type: integer
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CommunicatorSignature"
+        $ref: "#/components/requestBodies/CommunicatorSignatureUpdateRequestBody"
       responses:
         "200":
           description: Communicator signature updated successfully
@@ -1274,6 +1441,7 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
+
     post:
       operationId: createCommunicatorUserLabel
       summary: Create communicator user label
@@ -1311,10 +1479,7 @@ paths:
           schema:
             type: integer
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Label"
+        $ref: "#/components/requestBodies/CommunicatorUpdateLabelRequestBody"
       responses:
         "200":
           description: Communicator user label updated successfully
@@ -1328,6 +1493,7 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
+
     delete:
       operationId: deleteCommunicatorUserLabel
       summary: Delete communicator user label
@@ -8372,6 +8538,18 @@ components:
                 items:
                   type: integer
 
+    CommunicatorMessageLabelRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: CommunicatorMessageLabelRequestBody object
+            required:
+              - labelId
+            properties:
+              labelId:
+                type: integer
+
     CommunicatorSignatureCreateRequestBody:
       content:
         application/json:
@@ -8387,6 +8565,24 @@ components:
               signature:
                 type: string
 
+    CommunicatorSignatureUpdateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: CommunicatorSignatureUpdateRequestBody object
+            required:
+              - id
+              - name
+              - signature
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              signature:
+                type: string
+
     CommunicatorCreateLabelRequestBody:
       content:
         application/json:
@@ -8397,9 +8593,27 @@ components:
               - color
               - name
             properties:
-              labelName:
+              name:
                 type: string
-              labelColor:
+              color:
+                type: integer
+
+    CommunicatorUpdateLabelRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: CommunicatorUpdateLabelRequestBody object
+            required:
+              - id
+              - color
+              - name
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              color:
                 type: integer
 
     InterimEvaluationRequestCreateRequestBody:
@@ -9945,7 +10159,7 @@ components:
           type: integer
         name:
           type: string
-        content:
+        signature:
           type: string
 
     ContactType:
@@ -11425,7 +11639,7 @@ components:
           items:
             $ref: "#/components/schemas/MessageRecipient"
         sender:
-          type: string
+          $ref: "#/components/schemas/User"
         tags:
           $ref: "#/components/schemas/AnyValue"
         userGroupRecipients:
@@ -11470,7 +11684,7 @@ components:
         created:
           type: string
         sender:
-          type: string
+          $ref: "#/components/schemas/User"
         tags:
           $ref: "#/components/schemas/AnyValue"
         unreadMessagesInThread:
@@ -11563,6 +11777,10 @@ components:
         nickname:
           type: string
           nullable: true
+        archived:
+          type: boolean
+        studiesEnded:
+          type: boolean
 
     MessageRecipientWorkspace:
       type: object
