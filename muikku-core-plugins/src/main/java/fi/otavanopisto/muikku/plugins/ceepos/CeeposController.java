@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.ceepos;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -101,6 +102,10 @@ public class CeeposController {
     return ceeposAssessmentRequestOrderDAO.findById(id);
   }
 
+  public CeeposAssessmentRequestOrder findAssessmentRequestOrderByStudentAndWorkspaceAndState(String studentIdentifier, Long workspaceEntityId, Collection<CeeposOrderState> states) {
+    return ceeposAssessmentRequestOrderDAO.findByStudentAndWorkspaceAndState(studentIdentifier, workspaceEntityId, states);
+  }
+  
   public CeeposOrder findOrderByIdAndArchived(Long id, boolean archived) {
     return ceeposOrderDAO.findByIdAndArchived(id, archived);
   }
@@ -139,4 +144,7 @@ public class CeeposController {
     return ceeposOrderDAO.updateStateAndOrderNumberAndPaid(order, state, orderNumber, paid, userEntityId);
   }
   
+  public CeeposAssessmentRequestOrder updateRequestText(CeeposAssessmentRequestOrder order, String requestText) {
+    return ceeposAssessmentRequestOrderDAO.updateRequestText(order, requestText);
+  }
 }
