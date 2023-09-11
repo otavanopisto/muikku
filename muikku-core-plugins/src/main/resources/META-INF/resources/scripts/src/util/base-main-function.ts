@@ -97,9 +97,11 @@ export default async function (
   } else {
     return new Promise((resolve) => {
       let loadedTotal = 0;
+
       // eslint-disable-next-line jsdoc/require-jsdoc
       const resolveFn = () => {
         loadedTotal++;
+
         if (loadedTotal === 2) {
           loadAreaPermissions();
           updateUnreadThreadMessagesCount();

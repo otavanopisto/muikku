@@ -25,6 +25,11 @@ export type UPDATE_STATUS = SpecificActionType<
   Partial<StatusType>
 >;
 
+export type UPDATE_STATUS_WORKSPACE_PERMISSIONS = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACE_PERMISSIONS",
+  Partial<StatusType>
+>;
+
 export type UPDATE_STATUS_WORKSPACEID = SpecificActionType<
   "UPDATE_STATUS_WORKSPACEID",
   number
@@ -175,7 +180,7 @@ async function loadWorkspacePermissions(
   );
 
   dispatch({
-    type: "UPDATE_STATUS",
+    type: "UPDATE_STATUS_WORKSPACE_PERMISSIONS",
     payload: {
       permissions: {
         WORKSPACE_ACCESS_EVALUATION: permissions.includes(

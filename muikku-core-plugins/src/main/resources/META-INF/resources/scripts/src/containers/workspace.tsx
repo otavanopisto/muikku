@@ -444,7 +444,7 @@ export default class Workspace extends React.Component<
       ) {
         this.props.store.dispatch(
           loadAnnouncementsAsAClient({
-            hideEnvironmentAnnouncements: "true",
+            hideEnvironmentAnnouncements: true,
             workspaceEntityId: state.status.currentWorkspaceId,
           }) as Action
         );
@@ -591,7 +591,7 @@ export default class Workspace extends React.Component<
       //Maybe we shouldn't load again, but whatever, maybe it updates
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({
-          hideEnvironmentAnnouncements: "true",
+          hideEnvironmentAnnouncements: true,
           workspaceEntityId: state.status.currentWorkspaceId,
         }) as Action
       );

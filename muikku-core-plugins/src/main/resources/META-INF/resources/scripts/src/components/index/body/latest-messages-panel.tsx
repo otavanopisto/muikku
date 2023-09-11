@@ -1,19 +1,18 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Link from "../../general/link";
-import { MessageThreadListType } from "~/reducers/main-function/messages";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
-
 import "~/sass/elements/panel.scss";
+import { MessageThread } from "~/generated/client";
 
 /**
  * LastMessagesPanelProps
  */
 interface LastMessagesPanelProps {
   i18n: i18nType;
-  lastThreads: MessageThreadListType;
+  lastThreads: MessageThread[];
 }
 
 /**
