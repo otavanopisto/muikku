@@ -42,7 +42,7 @@ import {
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import workspace from "~/reducers/workspace";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 import { Curriculum } from "~/generated/client";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
@@ -1333,7 +1333,7 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
         }
         callback && callback(curriculums);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

@@ -34,7 +34,7 @@ import {
   LoadMoreWorkspacesFromServerTriggerType,
 } from "./index";
 import { Curriculum, WorkspaceOrganization } from "~/generated/client";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS
@@ -238,7 +238,7 @@ const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizat
         });
         callback && callback(organizations);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
