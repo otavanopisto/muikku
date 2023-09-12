@@ -9,7 +9,7 @@ import "~/sass/elements/buttons.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
-import { Suggestion } from "~/@types/shared";
+import { WorkspaceSuggestion } from "~/generated/client";
 
 /**
  * WorkspaceSignupDialogProps
@@ -19,7 +19,7 @@ interface WorkspaceDescriptionDialogProps {
   children?: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => void;
-  course: Suggestion;
+  course: WorkspaceSuggestion;
 }
 
 /**

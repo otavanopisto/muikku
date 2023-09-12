@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import {
   StudySector,
-  FollowUp,
   FollowUpStudies,
   FollowUpGoal,
 } from "../../../@types/shared";
@@ -23,6 +22,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import { updateFollowUpData, useFollowUp } from "./context/follow-up-context";
+import { HopsGoals } from "~/generated/client";
 
 /**
  * FollowUpGoalsProps
@@ -53,11 +53,11 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
    * @param key key
    * @param value value
    */
-  const handleGoalsChange = <T extends keyof FollowUp>(
+  const handleGoalsChange = <T extends keyof HopsGoals>(
     key: T,
-    value: FollowUp[T]
+    value: HopsGoals[T]
   ) => {
-    const updatedFollowUpData: FollowUp = {
+    const updatedFollowUpData: HopsGoals = {
       ...followUpData.followUp,
       [key]: value,
     };
@@ -78,8 +78,13 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
           </label>
           <DatePicker
             id="graduationGoalMonth"
-            onChange={(date) => handleGoalsChange("graduationGoal", date)}
-            selected={followUpData.followUp.graduationGoal}
+            onChange={(date) =>
+              handleGoalsChange("graduationGoal", moment(date).toString())
+            }
+            selected={
+              followUpData.followUp.graduationGoal &&
+              moment(followUpData.followUp.graduationGoal).toDate()
+            }
             locale={outputCorrectDatePickerLocale(i18n.time.getLocale())}
             dateFormat="MM/yyyy"
             showMonthYearPicker

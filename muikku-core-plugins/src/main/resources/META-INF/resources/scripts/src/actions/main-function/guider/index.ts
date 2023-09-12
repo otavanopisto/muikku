@@ -46,6 +46,7 @@ import {
   PurchaseType,
 } from "~/reducers/main-function/profile";
 import { LoadingState } from "~/@types/shared";
+import MApi from "~/api/api";
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -565,6 +566,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const hopsApi = MApi.getHopsApi();
+
     try {
       const currentUserSchoolDataIdentifier =
         getState().status.userSchoolDataIdentifier;
@@ -599,8 +602,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
             // After basic data is loaded, check if current user of guider has permissions
             // to see/use current student hops
-            promisify(mApi().hops.isHopsAvailable.read(id), "callback")().then(
-              (hopsAvailable: boolean) => {
+            hopsApi
+              .isHopsAvailable({
+                studentIdentifier: id,
+              })
+              .then((hopsAvailable) => {
                 dispatch({
                   type: "SET_CURRENT_GUIDER_STUDENT_PROP",
                   payload: {
@@ -626,8 +632,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                     },
                   });
                 });
-              }
-            );
+              });
 
             promisify(mApi().pedagogy.form.access.read(id), "callback")().then(
               (pedagogyFormAvaibility: PedagogyFormAvailability) => {

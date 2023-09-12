@@ -5,17 +5,11 @@ import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
-
 import "~/sass/elements/wizard.scss";
 import { Step1, Step2, Step3, Step5, Step6 } from "./hops-steps";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import {
   BasicInformation,
-  HopsUpdate,
   SaveState,
-  FollowUp,
-  StudentInfo,
   HopsStudyPeriodPlan,
   HopsCompulsory,
   Education,
@@ -33,6 +27,8 @@ import NewHopsEventDescriptionDialog from "./dialogs/new-hops-event-description-
 import { Textarea } from "./text-area";
 import { StatusType } from "~/reducers/base/status";
 import EditHopsEventDescriptionDialog from "./dialogs/edit-hops-event-description-dialog";
+import MApi, { isMApiError } from "~/api/api";
+import { HopsGoals, HopsHistoryEntry } from "~/generated/client";
 
 export const COMPULSORY_HOPS_VISIBLITY = [
   "Nettiperuskoulu",
@@ -97,13 +93,13 @@ interface CompulsoryEducationHopsWizardProps extends HopsBaseProps {
 interface CompulsoryEducationHopsWizardState {
   basicInfo: BasicInformation;
   hopsCompulsory: HopsCompulsory;
-  hopsFollowUp?: FollowUp;
+  hopsFollowUp?: HopsGoals;
   loading: boolean;
   loadingHistoryEvents: boolean;
   allHistoryEventsLoaded: boolean;
   savingStatus?: SaveState;
   addHopsUpdateDetailsDialogOpen: boolean;
-  updateEventToBeEdited?: HopsUpdate;
+  updateEventToBeEdited?: HopsHistoryEntry;
   hopsUpdateDetails: string;
 }
 
@@ -182,6 +178,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
       loadingHistoryEvents: true,
     });
 
+    const hopsApi = MApi.getHopsApi();
+
     /**
      * Student id get from guider or logged in student
      */
@@ -193,19 +191,19 @@ class CompulsoryEducationHopsWizard extends React.Component<
        */
       const [studentHopsHistory] = await Promise.all([
         (async () => {
-          const studentHopsHistory = (await promisify(
-            mApi().hops.student.history.read(studentId, {
+          const studentHopsHistory = await hopsApi.getStudentHopsHistoryEntries(
+            {
+              studentIdentifier: studentId,
               firstResult: 6,
               maxResults: 999,
-            }),
-            "callback"
-          )()) as HopsUpdate[];
+            }
+          );
 
           return studentHopsHistory;
         })(),
       ]);
 
-      const updatedList: HopsUpdate[] = [].concat(
+      const updatedList: HopsHistoryEntry[] = [].concat(
         this.state.basicInfo.updates,
         studentHopsHistory
       );
@@ -222,6 +220,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
       }
     } catch (err) {
       if (this.isComponentMounted) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
         this.props.displayNotification(err.message, "error");
         this.setState({ loadingHistoryEvents: false });
       }
@@ -236,6 +237,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
       loading: true,
     });
 
+    const hopsApi = MApi.getHopsApi();
+
     /**
      * Student id get from guider or logged in student
      */
@@ -247,20 +250,19 @@ class CompulsoryEducationHopsWizard extends React.Component<
        */
       const [loadedHops] = await Promise.all([
         (async () => {
-          const studentHopsHistory = (await promisify(
-            mApi().hops.student.history.read(studentId),
-            "callback"
-          )()) as HopsUpdate[];
+          const studentHopsHistory = await hopsApi.getStudentHopsHistoryEntries(
+            {
+              studentIdentifier: studentId,
+            }
+          );
 
-          const studentBasicInfo = (await promisify(
-            mApi().hops.student.studentInfo.read(studentId),
-            "callback"
-          )()) as StudentInfo;
+          const studentBasicInfo = await hopsApi.getStudentInfo({
+            studentIdentifier: studentId,
+          });
 
-          const hops = (await promisify(
-            mApi().hops.student.read(studentId),
-            "callback"
-          )()) as HopsCompulsory;
+          const hops: HopsCompulsory = await hopsApi.getStudentHops({
+            studentIdentifier: studentId,
+          });
 
           const loadedHops = {
             basicInfo: {
@@ -301,22 +303,21 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * Update history event details
    */
   updateHistoryEventDetails = async () => {
+    const hopsApi = MApi.getHopsApi();
+
     /**
      * Student id get from guider or logged in student
      */
     const studentId = this.props.studentId;
 
     try {
-      const updatedEvent = (await promisify(
-        mApi().hops.student.history.update(
-          studentId,
-          this.state.updateEventToBeEdited.id,
-          {
-            details: this.state.updateEventToBeEdited.details,
-          }
-        ),
-        "callback"
-      )()) as HopsUpdate;
+      const updatedEvent = await hopsApi.updateStudentHopsHistoryEntry({
+        studentIdentifier: studentId,
+        entryId: this.state.updateEventToBeEdited.id,
+        updateStudentHopsHistoryEntryRequest: {
+          details: this.state.updateEventToBeEdited.details,
+        },
+      });
 
       /**
        * initialize list to be updated
@@ -342,6 +343,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
       }
     } catch (err) {
       if (this.isComponentMounted) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
         this.props.displayNotification(err.message, "error");
         this.setState({ loading: false });
       }
@@ -357,6 +361,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
       savingStatus: "IN_PROGRESS",
     });
 
+    const hopsApi = MApi.getHopsApi();
+
     /**
      * Student id get from guider or logged in student
      */
@@ -365,13 +371,13 @@ class CompulsoryEducationHopsWizard extends React.Component<
     try {
       Promise.all([
         (async () => {
-          await promisify(
-            mApi().hops.student.create(studentId, {
+          await hopsApi.saveStudentHops({
+            studentIdentifier: studentId,
+            saveStudentHopsRequest: {
               formData: JSON.stringify(this.state.hopsCompulsory),
               historyDetails: this.state.hopsUpdateDetails,
-            }),
-            "callback"
-          )();
+            },
+          });
         })(),
       ]).then(async () => {
         if (this.isComponentMounted) {
@@ -387,6 +393,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
       });
     } catch (err) {
       if (this.isComponentMounted) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
         this.props.displayNotification(err.message, "error");
         this.setState({ loading: false, savingStatus: "FAILED" });
       }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useSuggestionList } from "./hooks/useSuggestedList";
 import { connect, Dispatch } from "react-redux";
-import { Course, CourseStatus, StudentActivityCourse } from "~/@types/shared";
+import { Course, CourseStatus } from "~/@types/shared";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
@@ -11,13 +11,14 @@ import {
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
+import { StudentStudyActivity } from "~/generated/client";
 
 /**
  * SuggestionListProps
  */
 interface HopsSuggestionListProps {
   subjectCode: string;
-  suggestedActivityCourses?: StudentActivityCourse[];
+  suggestedActivityCourses?: StudentStudyActivity[];
   course: Course;
   i18n: i18nType;
   studentId: string;

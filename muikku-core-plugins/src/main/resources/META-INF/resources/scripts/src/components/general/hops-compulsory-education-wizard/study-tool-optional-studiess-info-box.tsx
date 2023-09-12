@@ -7,7 +7,7 @@ interface StudyToolOptionalStudiesInfoBoxProps {
   totalOptionalStudiesNeeded: number;
   totalOptionalStudiesCompleted: number;
   selectedNumberOfOptional: number;
-  graduationGoal: Date | null;
+  graduationGoal: string | null;
 }
 
 /**

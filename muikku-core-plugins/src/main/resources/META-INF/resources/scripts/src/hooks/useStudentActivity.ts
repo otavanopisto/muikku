@@ -9,6 +9,8 @@ import {
   StudentActivityByStatus,
   StudentActivityCourse,
 } from "~/@types/shared";
+import MApi, { isMApiError } from "~/api/api";
+import { StudentStudyActivity } from "~/generated/client";
 
 export const SKILL_AND_ART_SUBJECTS: string[] = ["mu", "li", "ks", "ku", "ko"];
 
@@ -33,6 +35,8 @@ export interface UpdateSuggestionParams {
 export interface UseStudentActivityState extends StudentActivityByStatus {
   isLoading: boolean;
 }
+
+const hopsApi = MApi.getHopsApi();
 
 /**
  * Custom hook to return student activity data
@@ -94,10 +98,9 @@ export const useStudentActivity = (
          */
         const [loadedStudentActivity] = await Promise.all([
           (async () => {
-            const studentActivityList = (await promisify(
-              mApi().hops.student.studyActivity.read(studentId),
-              "callback"
-            )()) as StudentActivityCourse[];
+            const studentActivityList = await hopsApi.getStudentStudyActivity({
+              studentIdentifier: studentId,
+            });
 
             const skillAndArtCourses = filterActivityBySubjects(
               SKILL_AND_ART_SUBJECTS,
@@ -170,14 +173,14 @@ export const useStudentActivity = (
      * something is saved/changed
      * @param data Websocket data
      */
-    const onAnswerSavedAtServer = (data: StudentActivityCourse) => {
+    const onAnswerSavedAtServer = (data: StudentStudyActivity) => {
       const { suggestedNextList, onGoingList, gradedList, transferedList } =
         ref.current;
 
       /**
        * Concated list of different suggestions
        */
-      let arrayOfStudentActivityCourses: StudentActivityCourse[] = [].concat(
+      let arrayOfStudentActivityCourses: StudentStudyActivity[] = [].concat(
         suggestedNextList
       );
 
@@ -274,28 +277,49 @@ export const useStudentActivity = (
 
     if (actionType === "add") {
       try {
-        await promisify(
+        /* await promisify(
           mApi().hops.student.toggleSuggestion.create(studentId, {
             courseId: courseId,
             subject: subjectCode,
             courseNumber: courseNumber,
           }),
           "callback"
-        )();
+        )(); */
+
+        await hopsApi.toggleSuggestion({
+          studentIdentifier: studentId,
+          toggleSuggestionRequest: {
+            courseId: courseId,
+            subject: subjectCode,
+            courseNumber: courseNumber,
+          },
+        });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         displayNotification(`Update add suggestion:, ${err.message}`, "error");
       }
     } else {
       try {
-        await promisify(
+        /* await promisify(
           mApi().hops.student.toggleSuggestion.del(studentId, {
             subject: subjectCode,
             courseNumber: courseNumber,
             courseId: courseId,
           }),
           "callback"
-        )();
+        )(); */
+
+        await hopsApi.deleteToggleSuggestion({
+          studentIdentifier: studentId,
+        });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         displayNotification(
           `Update remove suggestion:, ${err.message}`,
           "error"
@@ -322,7 +346,7 @@ export const useStudentActivity = (
  * Lists are Ongoing, Suggested next, Suggested optional, Transfered and graded
  */
 const filterActivity = (
-  list: StudentActivityCourse[]
+  list: StudentStudyActivity[]
 ): Omit<
   StudentActivityByStatus,
   "skillsAndArt" | "otherLanguageSubjects" | "otherSubjects"
@@ -354,7 +378,7 @@ const filterActivity = (
  */
 const filterActivityBySubjects = (
   subjectsList: string[],
-  list: StudentActivityCourse[]
+  list: StudentStudyActivity[]
 ) =>
   subjectsList.reduce(
     (a, v) => ({

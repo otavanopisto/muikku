@@ -1,9 +1,9 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { CourseStatus, StudentActivityCourse } from "~/@types/shared";
-import { Suggestion, SuggestedCourse } from "~/@types/shared";
+import { CourseStatus } from "~/@types/shared";
+import { SuggestedCourse } from "~/@types/shared";
+import { WorkspaceSuggestion } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * NextCourseSuggestions
@@ -20,6 +20,8 @@ interface NextCourse {
   subjectCode: string;
   courseNumber: number;
 }
+
+const hopsApi = MApi.getHopsApi();
 
 /**
  * Custom hook to return next courses suggested by the counselor
@@ -62,10 +64,9 @@ export const useNextCourseSuggestions = (
          */
         const nextSuggestionsData = async () => {
           //Loaded student activity list
-          const studentActivityList = (await promisify(
-            mApi().hops.student.studyActivity.read(studentId),
-            "callback"
-          )()) as StudentActivityCourse[];
+          const studentActivityList = await hopsApi.getStudentStudyActivity({
+            studentIdentifier: studentId,
+          });
 
           // Courses suggested as next.
           const coursesAsNext: NextCourse[] = [];
@@ -86,20 +87,18 @@ export const useNextCourseSuggestions = (
           }
 
           // Initialized supervisor suggestions
-          const suggestions: Suggestion[] = [];
+          const suggestions: WorkspaceSuggestion[] = [];
 
           // Now fetching all suggested data with course list data
           try {
             await Promise.all(
               coursesAsNext.map(async (cItem) => {
-                const suggestionListForSubject = (await promisify(
-                  mApi().hops.listWorkspaceSuggestions.read({
+                const suggestionListForSubject =
+                  await hopsApi.listWorkspaceSuggestions({
                     subject: cItem.subjectCode,
                     courseNumber: cItem.courseNumber,
                     userEntityId: userEntityId,
-                  }),
-                  "callback"
-                )()) as Suggestion[];
+                  });
 
                 for (const suggestion of suggestionListForSubject) {
                   suggestions.push(suggestion);
@@ -107,7 +106,11 @@ export const useNextCourseSuggestions = (
               })
             );
           } catch (err) {
-            displayNotification(err, "error");
+            if (!isMApiError(err)) {
+              throw err;
+            }
+
+            displayNotification(err.message, "error");
           }
 
           // Suggested as next courses, sorted by alphabetically
@@ -132,6 +135,10 @@ export const useNextCourseSuggestions = (
           nextCourses: suggestions,
         }));
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         displayNotification(err.message, "error");
         setNextSuggestions((nextSuggestions) => ({
           ...nextSuggestions,

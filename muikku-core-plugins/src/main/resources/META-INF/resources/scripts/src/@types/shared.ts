@@ -1,4 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import {
+  HopsHistoryEntry,
+  StudentStudyActivity,
+  WorkspaceSuggestion,
+} from "~/generated/client";
+
 /**
  * UsedAs
  */
@@ -306,7 +313,7 @@ export interface BasicInformation {
   studentUserEntityId: number;
   name: string;
   dateOfIssue?: Date;
-  updates?: HopsUpdate[];
+  updates?: HopsHistoryEntry[];
   studyTimeEnd?: string | null;
   educationalLevel?: string | null;
   counselorList?: string[];
@@ -548,7 +555,7 @@ export interface Suggestion {
 /**
  * Course
  */
-export interface SuggestedCourse extends Suggestion {
+export interface SuggestedCourse extends WorkspaceSuggestion {
   suggestedAsNext: boolean;
 }
 
@@ -561,15 +568,15 @@ type CourseType = "Nonstop" | "Ryhmäkurssi";
 /**
  * SuggestionWithWorkspaceInfo
  */
-export interface SuggestionWithWorkspaceInfo extends Suggestion {}
+export interface SuggestionWithWorkspaceInfo extends WorkspaceSuggestion {}
 
 /**
  * StudentCourseChoice
  */
-export interface StudentCourseChoice {
+/* export interface StudentCourseChoice {
   subject: string;
   courseNumber: number;
-}
+} */
 
 /**
  * SupervisorOptionalSuggestion
@@ -586,19 +593,19 @@ export interface StudentActivityByStatus {
   /**
    * List of ongoing courses
    */
-  onGoingList: StudentActivityCourse[];
+  onGoingList: StudentStudyActivity[];
   /**
    * List of suggested courses for next
    */
-  suggestedNextList: StudentActivityCourse[];
+  suggestedNextList: StudentStudyActivity[];
   /**
    * List of transfered courses
    */
-  transferedList: StudentActivityCourse[];
+  transferedList: StudentStudyActivity[];
   /**
    * List of graded courses
    */
-  gradedList: StudentActivityCourse[];
+  gradedList: StudentStudyActivity[];
   /**
    * skillsAndArt
    */

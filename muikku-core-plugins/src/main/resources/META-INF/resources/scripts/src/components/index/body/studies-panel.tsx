@@ -33,7 +33,7 @@ interface WorkspacesPanelProps {
 
 /**
  * StudiesPanel component
- * @param props
+ * @param props props
  * @returns  JSX.element
  */
 const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {

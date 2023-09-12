@@ -1,13 +1,12 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
 import { sleep } from "~/helper-functions/shared";
-import {
-  StudentCourseChoice,
-  SupervisorOptionalSuggestion,
-} from "~/@types/shared";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import {
+  OptionalCourseSuggestion,
+  StudentCourseChoice,
+} from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * UpdateStudentChoicesParams
@@ -23,8 +22,10 @@ export interface UpdateSupervisorOptionalSuggestionParams {
  */
 export interface UseSupervisorOptionalSuggestionState {
   isLoading: boolean;
-  supervisorOptionalSuggestions: SupervisorOptionalSuggestion[];
+  supervisorOptionalSuggestions: OptionalCourseSuggestion[];
 }
+
+const hopsApi = MApi.getHopsApi();
 
 /**
  * Custom hook to return supervisor optional suggestions
@@ -81,10 +82,10 @@ export const useSupervisorOptionalSuggestions = (
          */
         const [loadedSupervisorOptionalSuggestions] = await Promise.all([
           (async () => {
-            const supervisorOptionalSuggestionList = (await promisify(
-              mApi().hops.student.optionalSuggestions.read(studentId),
-              "callback"
-            )()) as SupervisorOptionalSuggestion[];
+            const supervisorOptionalSuggestionList =
+              await hopsApi.getStudentOptionalSuggestions({
+                studentIdentifier: studentId,
+              });
 
             return supervisorOptionalSuggestionList;
           })(),
@@ -100,6 +101,10 @@ export const useSupervisorOptionalSuggestions = (
         }
       } catch (err) {
         if (componentMounted.current) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           displayNotification(err.message, "error");
           setSupervisorOptionalSuggestions((supervisorOptionalSuggestions) => ({
             ...supervisorOptionalSuggestions,
@@ -183,14 +188,18 @@ export const useSupervisorOptionalSuggestions = (
     const { subject, courseNumber, studentId } = params;
 
     try {
-      await promisify(
-        mApi().hops.student.optionalSuggestion.create(studentId, {
+      await hopsApi.createOptionalSuggestion({
+        studentIdentifier: studentId,
+        createOptionalSuggestionRequest: {
           subject: subject,
           courseNumber: courseNumber,
-        }),
-        "callback"
-      )();
+        },
+      });
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       displayNotification(err.message, "error");
     }
   };

@@ -4230,9 +4230,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HopsGoals"
+                $ref: "#/components/schemas/HopsGoals"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4259,9 +4258,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HopsGoals"
+                $ref: "#/components/schemas/HopsGoals"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4372,9 +4369,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StudentCourseChoice"
+                $ref: "#/components/schemas/StudentCourseChoice"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4417,18 +4413,6 @@ paths:
         - name: studentIdentifier
           in: path
           description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: startDate
-          in: query
-          description: Start date
-          required: true
-          schema:
-            type: string
-        - name: endDate
-          in: query
-          description: End date
           required: true
           schema:
             type: string
@@ -4517,7 +4501,7 @@ paths:
         $ref: "#/components/requestBodies/ToggleSuggestionCreateRequestBody"
       responses:
         "204":
-          description: Suggestion toggled successfully
+          description: WorkspaceSuggestion toggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4541,7 +4525,7 @@ paths:
       #  $ref: "#/components/requestBodies/ToggleSuggestionCreateRequestBody"
       responses:
         "204":
-          description: Suggestion toggled successfully
+          description: WorkspaceSuggestion toggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -12290,6 +12274,7 @@ components:
         lastName:
           type: string
         studyTimeEnd:
+          nullable: true
           type: string
         studyProgrammeEducationType:
           type: string
@@ -13021,7 +13006,7 @@ components:
         nameExtension:
           nullable: true
           type: string
-        courseType:
+        type:
           $ref: "#/components/schemas/CourseType"
         description:
           type: string

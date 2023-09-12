@@ -1,12 +1,11 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { CourseStatus, StudentActivityCourse } from "~/@types/shared";
+import { CourseStatus } from "~/@types/shared";
 import { schoolCourseTable } from "~/mock/mock-data";
-import { Suggestion, SuggestedCourse } from "~/@types/shared";
-import { AlternativeStudyObject } from "~/hooks/useStudentAlternativeOptions";
+import { SuggestedCourse } from "~/@types/shared";
 import { filterSpecialSubjects } from "~/helper-functions/shared";
+import MApi, { isMApiError } from "~/api/api";
+import { WorkspaceSuggestion } from "~/generated/client";
 
 /**
  * UseCourseCarousel
@@ -33,6 +32,8 @@ interface CarouselSuggestion {
 const compareAll = (obj1: CarouselSuggestion, obj2: CarouselSuggestion) =>
   obj1.subjectCode === obj2.subjectCode &&
   obj1.courseNumber === obj2.courseNumber;
+
+const hopsApi = MApi.getHopsApi();
 
 /**
  * Custom hook to return student activity data
@@ -74,16 +75,15 @@ export const useCourseCarousel = (
         const [loadedCourseCarouselData] = await Promise.all([
           (async () => {
             // Student subject options
-            const loadedStudentAlternativeOptions = (await promisify(
-              mApi().hops.student.alternativeStudyOptions.read(studentId),
-              "callback"
-            )()) as AlternativeStudyObject;
+            const loadedStudentAlternativeOptions =
+              await hopsApi.getStudentAlternativeStudyOptions({
+                studentIdentifier: studentId,
+              });
 
             //Loaded student activity list
-            const studentActivityList = (await promisify(
-              mApi().hops.student.studyActivity.read(studentId),
-              "callback"
-            )()) as StudentActivityCourse[];
+            const studentActivityList = await hopsApi.getStudentStudyActivity({
+              studentIdentifier: studentId,
+            });
 
             // Initialized with empty array. This list will be looped
             // with server calls that returns suggested courses which will eventually go
@@ -151,23 +151,21 @@ export const useCourseCarousel = (
             });
 
             // Initialized normal suggestions list
-            let suggestions: Suggestion[] = [];
+            let suggestions: WorkspaceSuggestion[] = [];
 
             // Initialized supervisor suggestions
-            let suggestionsAsNext: Suggestion[] = [];
+            let suggestionsAsNext: WorkspaceSuggestion[] = [];
 
             // Now fetching all suggested data with course list data
             try {
               await Promise.all(
                 courses.map(async (cItem) => {
-                  const suggestionListForSubject = (await promisify(
-                    mApi().hops.listWorkspaceSuggestions.read({
+                  const suggestionListForSubject =
+                    await hopsApi.listWorkspaceSuggestions({
                       subject: cItem.subjectCode,
                       courseNumber: cItem.courseNumber,
                       userEntityId: userEntityId,
-                    }),
-                    "callback"
-                  )()) as Suggestion[];
+                    });
 
                   suggestions = suggestions.concat(suggestionListForSubject);
                 })
@@ -175,14 +173,12 @@ export const useCourseCarousel = (
 
               await Promise.all(
                 coursesAsNext.map(async (cItem) => {
-                  const suggestionListForSubject = (await promisify(
-                    mApi().hops.listWorkspaceSuggestions.read({
+                  const suggestionListForSubject =
+                    await hopsApi.listWorkspaceSuggestions({
                       subject: cItem.subjectCode,
                       courseNumber: cItem.courseNumber,
                       userEntityId: userEntityId,
-                    }),
-                    "callback"
-                  )()) as Suggestion[];
+                    });
 
                   suggestionsAsNext = suggestionsAsNext.concat(
                     suggestionListForSubject
@@ -190,7 +186,11 @@ export const useCourseCarousel = (
                 })
               );
             } catch (err) {
-              displayNotification(err, "error");
+              if (!isMApiError(err)) {
+                throw err;
+              }
+
+              displayNotification(err.message, "error");
             }
 
             // Suggestions as Courses, sorted by alphabetically
