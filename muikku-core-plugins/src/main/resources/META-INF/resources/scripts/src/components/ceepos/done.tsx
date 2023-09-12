@@ -11,7 +11,8 @@ import {
   getErrorMessageTitle,
 } from "~/helper-functions/ceepos-error";
 import { getName } from "~/util/modifiers";
-
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
 import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
@@ -24,10 +25,47 @@ interface CeeposDoneProps {
   ceepos: CeeposState;
 }
 
-interface CeeposDoneState {}
+export interface ReturnLink {
+  path: string,
+  text: string
+}
+
+interface CeeposDoneState {
+  returnLink: ReturnLink
+}
 
 class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
-  /**
+
+
+  constructor(props: CeeposDoneProps) {
+    super(props);
+    this.state = {
+      returnLink: {
+        text: props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label"),
+        path: "/"
+      }
+    };
+  }
+
+
+
+  async componentDidMount() {
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+
+      const returnLink: ReturnLink = (await promisify(
+        mApi().ceepos.order.returnLink.read(searchParams.get("id")),
+        "callback"
+      )() as ReturnLink);
+
+        this.setState({returnLink});
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+    /**
    * render
    * @returns
    */
@@ -132,11 +170,9 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
               <Button
                 icon="forward"
                 buttonModifiers={["back-to-muikku", "info"]}
-                href="/"
+                href={this.state.returnLink.path}
               >
-                {this.props.i18n.text.get(
-                  "plugin.ceepos.order.backToMuikkuButton.label"
-                )}
+                {this.state.returnLink.text}
               </Button>
             ) : null}
 
@@ -145,11 +181,9 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                 <Button
                   icon="forward"
                   buttonModifiers={["back-to-muikku", "info"]}
-                  href="/"
+                  href={this.state.returnLink.path}
                 >
-                  {this.props.i18n.text.get(
-                    "plugin.ceepos.order.backToMuikkuButton.label"
-                  )}
+                {this.state.returnLink.text}
                 </Button>
 
                 <CommunicatorNewMessage

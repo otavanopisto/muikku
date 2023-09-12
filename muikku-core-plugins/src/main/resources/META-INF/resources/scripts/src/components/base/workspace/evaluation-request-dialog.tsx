@@ -13,6 +13,8 @@ import {
   requestAssessmentAtWorkspace,
 } from "~/actions/workspaces";
 import { StatusType } from "~/reducers/base/status";
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
 
 /**
  * EvaluationRequestDialogProps
@@ -32,6 +34,7 @@ interface EvaluationRequestDialogProps {
 interface EvaluationRequestDialogState {
   locked: boolean;
   message: string;
+  price: number;
 }
 
 /**
@@ -49,11 +52,13 @@ class EvaluationRequestDialog extends React.Component<
     super(props);
     this.state = {
       locked: false,
+      price: 0,
       message: "",
     };
 
     this.updateMessage = this.updateMessage.bind(this);
     this.request = this.request.bind(this);
+    this.proceedToPay = this.proceedToPay.bind(this);
   }
 
   /**
@@ -96,11 +101,55 @@ class EvaluationRequestDialog extends React.Component<
   }
 
   /**
+   * proceedToPay creates the payment link and
+   * @param closeDialog closeDialog
+   */
+  async proceedToPay(closeDialog: () => any) {
+    try {
+      closeDialog();
+      const link: string = (await promisify(
+        mApi().assessmentrequest.workspace.paidAssessmentRequest.create(
+          this.props.workspace.id,
+          {
+            requestText: this.state.message,
+          }
+        ),
+        "callback"
+      )().then((link: { url: string }) => link.url)) as string;
+      window.location.href = link;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /**
+   * loadPriceInfo loads the assessment prices from backend
+   */
+  loadPriceInfo = async () => {
+    try {
+      const price: number = (await promisify(
+        mApi().assessmentrequest.workspace.assessmentPrice.read(
+          this.props.workspace.id
+        ),
+        "callback"
+      )().then(
+        (assessmentPrice: { price: number }) => assessmentPrice.price
+      )) as number;
+
+      this.setState({
+        price,
+      });
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
     const hasFees = this.props.status.hasFees;
+    const price = this.state.price;
 
     /**
      * content
@@ -124,6 +173,14 @@ class EvaluationRequestDialog extends React.Component<
               {this.props.i18n.text.get(
                 "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
               )}
+              {price > 0 ? (
+                <>
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.price",
+                    price
+                  )}
+                </>
+              ) : null}
             </p>
           </div>
         ) : null}
@@ -145,15 +202,28 @@ class EvaluationRequestDialog extends React.Component<
      */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
-        <Button
-          buttonModifiers={["standard-ok", "execute"]}
-          onClick={this.request.bind(this, closeDialog)}
-          disabled={this.state.locked}
-        >
-          {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.requestButton"
-          )}
-        </Button>
+        {price > 0 ? (
+          <Button
+            buttonModifiers={["standard-ok", "execute"]}
+            buttonAs="div"
+            onClick={this.proceedToPay.bind(this, closeDialog)}
+            disabled={this.state.locked}
+          >
+            {this.props.i18n.text.get(
+              "plugin.workspace.evaluation.requestEvaluation.paymentButton"
+            )}
+          </Button>
+        ) : (
+          <Button
+            buttonModifiers={["standard-ok", "execute"]}
+            onClick={this.request.bind(this, closeDialog)}
+            disabled={this.state.locked}
+          >
+            {this.props.i18n.text.get(
+              "plugin.workspace.evaluation.requestEvaluation.requestButton"
+            )}
+          </Button>
+        )}
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={closeDialog}
@@ -172,6 +242,7 @@ class EvaluationRequestDialog extends React.Component<
         title={this.props.i18n.text.get(
           "plugin.workspace.evaluation.requestEvaluation.title"
         )}
+        executeOnOpen={this.loadPriceInfo}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}

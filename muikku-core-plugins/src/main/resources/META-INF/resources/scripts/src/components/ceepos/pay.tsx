@@ -9,10 +9,12 @@ import {
   getErrorMessageTitle,
 } from "~/helper-functions/ceepos-error";
 import { getName } from "~/util/modifiers";
-
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
+import { ReturnLink } from "./done";
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
 
 import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
@@ -24,9 +26,38 @@ interface CeeposPayProps {
   status: StatusType;
 }
 
-interface CeeposPayState {}
+interface CeeposPayState {
+  returnLink: ReturnLink
+}
+
 
 class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
+  constructor(props: CeeposPayProps) {
+    super(props);
+
+    this.state = {
+      returnLink: {
+        text: props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label"),
+        path: "/"
+      }
+    };
+  }
+
+  // This same one used in both components and the Returnlink interface. Could be a hook
+  async componentDidMount() {
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+
+      const returnLink: ReturnLink = (await promisify(
+        mApi().ceepos.order.returnLink.read(searchParams.get("order")),
+        "callback"
+      )() as ReturnLink);
+        this.setState({returnLink});
+    } catch (e) {
+      throw e;
+    }
+  }
+
   /**
    * render
    * @returns
@@ -62,11 +93,9 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                   <Button
                     icon="forward"
                     buttonModifiers={["back-to-muikku", "info"]}
-                    href="/"
+                    href={this.state.returnLink.path}
                   >
-                    {this.props.i18n.text.get(
-                      "plugin.ceepos.order.backToMuikkuButton.label"
-                    )}
+                    {this.state.returnLink.text}
                   </Button>
                   {this.props.ceepos.purchase ? (
                     <CommunicatorNewMessage
