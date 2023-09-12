@@ -1093,6 +1093,16 @@ public class CeeposRESTService {
             order.getLastModifierId());
         return Response.ok().build(); // Our configuration problem
       }
+
+      // Mark the order as complete
+
+      order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+          order,
+          CeeposOrderState.COMPLETE,
+          paymentConfirmation.getReference(),
+          order.getPaid(),
+          order.getLastModifierId());
+      
       // TODO Add information about price?
       communicatorAssessmentRequestController.sendAssessmentRequestMessage(workspaceAssessmentRequest);
       break;

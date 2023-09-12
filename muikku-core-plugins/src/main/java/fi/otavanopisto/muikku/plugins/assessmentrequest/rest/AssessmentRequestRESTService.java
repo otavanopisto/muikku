@@ -113,7 +113,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       List<CeeposAssessmentRequestOrder> existingOrders = ceeposController.listAssessmentRequestOrdersByStudentAndWorkspace(
           sessionController.getLoggedUser().toId(),
           workspaceEntityId);
-      CeeposAssessmentRequestOrder order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.PAID).findFirst().orElse(null);
+      CeeposAssessmentRequestOrder order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.PAID || o.getState() == CeeposOrderState.COMPLETE).findFirst().orElse(null);
       if (order != null) {
         price.setPrice(0d);
       }
@@ -175,7 +175,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     
     // Check that the user has not paid before
 
-    CeeposAssessmentRequestOrder order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.PAID).findFirst().orElse(null);
+    CeeposAssessmentRequestOrder order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.PAID || o.getState() == CeeposOrderState.COMPLETE).findFirst().orElse(null);
     if (order != null) {
       return Response.status(Status.BAD_REQUEST).entity("Assessment request already exists").build();
     }
