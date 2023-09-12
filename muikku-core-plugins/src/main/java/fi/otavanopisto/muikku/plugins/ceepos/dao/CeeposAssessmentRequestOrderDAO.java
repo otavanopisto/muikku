@@ -1,9 +1,16 @@
 package fi.otavanopisto.muikku.plugins.ceepos.dao;
 
+import java.util.Collection;
 import java.util.Date;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposAssessmentRequestOrder;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposAssessmentRequestOrder_;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
 
 public class CeeposAssessmentRequestOrderDAO extends CorePluginsDAO<CeeposAssessmentRequestOrder> {
@@ -30,6 +37,29 @@ public class CeeposAssessmentRequestOrderDAO extends CorePluginsDAO<CeeposAssess
     order.setArchived(Boolean.FALSE);
 
     return persist(order);
+  }
+  
+  public CeeposAssessmentRequestOrder updateRequestText(CeeposAssessmentRequestOrder order, String requestText) {
+    order.setRequestText(requestText);
+    return persist(order);
+  }
+  
+  public CeeposAssessmentRequestOrder findByStudentAndWorkspaceAndState(String studentIdentifier, Long workspaceEntityId, Collection<CeeposOrderState> states) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CeeposAssessmentRequestOrder> criteria = criteriaBuilder.createQuery(CeeposAssessmentRequestOrder.class);
+    Root<CeeposAssessmentRequestOrder> root = criteria.from(CeeposAssessmentRequestOrder.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(          
+        criteriaBuilder.equal(root.get(CeeposAssessmentRequestOrder_.userIdentifier), studentIdentifier),
+        criteriaBuilder.equal(root.get(CeeposAssessmentRequestOrder_.workspaceEntityId), workspaceEntityId),
+        criteriaBuilder.equal(root.in(CeeposAssessmentRequestOrder_.state), states)
+      )
+    );
+   
+    return getSingleResult(entityManager.createQuery(criteria));
   }
 
 }

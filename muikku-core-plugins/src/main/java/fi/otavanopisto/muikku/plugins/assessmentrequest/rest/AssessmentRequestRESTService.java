@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.assessmentrequest.rest;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -33,6 +34,7 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestPermiss
 import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.otavanopisto.muikku.plugins.ceepos.CeeposController;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposAssessmentRequestOrder;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
 import fi.otavanopisto.muikku.plugins.ceepos.rest.CeeposRedirectRestModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
@@ -167,13 +169,22 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Unable to determine price").build();
     }
     
-    // Create the order
+    // Create the order, or reuse an existing one as long as it is still CREATED or ONGOING
     
-    CeeposAssessmentRequestOrder order = ceeposController.createAssessmentRequestOrder(
-        sessionController.getLoggedUserEntity(),
-        workspaceEntity,
-        payload.getRequestText(),
-        Integer.valueOf((int) (price.getPrice() * 100)));
+    CeeposAssessmentRequestOrder order = ceeposController.findAssessmentRequestOrderByStudentAndWorkspaceAndState(
+        sessionController.getLoggedUser().toId(),
+        workspaceEntityId,
+        Arrays.asList(new CeeposOrderState[] {CeeposOrderState.CREATED, CeeposOrderState.ONGOING}));
+    if (order != null) {
+      order = ceeposController.updateRequestText(order, payload.getRequestText());
+    }
+    else { 
+      order = ceeposController.createAssessmentRequestOrder(
+          sessionController.getLoggedUserEntity(),
+          workspaceEntity,
+          payload.getRequestText(),
+          Integer.valueOf((int) (price.getPrice() * 100)));
+    }
     if (order == null) {
       return Response.status(Status.BAD_REQUEST).entity("Order creation failed").build();
     }
