@@ -4280,7 +4280,6 @@ paths:
             type: string
       requestBody:
         $ref: "#/components/requestBodies/OptionalSuggestionCreateRequestBody"
-
       responses:
         "200":
           description: Student optional suggestion created successfully
@@ -4507,11 +4506,10 @@ paths:
         "500":
           description: Internal server error
 
-    #FIX
-    delete:
-      operationId: deleteToggleSuggestion
-      summary: Delete toggle suggestion
-      description: Delete toggle suggestion
+    put:
+      operationId: updateToggleSuggestion
+      summary: Update toggle suggestion
+      description: Update toggle suggestion
       tags:
         - Hops
       parameters:
@@ -4521,8 +4519,8 @@ paths:
           required: true
           schema:
             type: string
-      #requestBody:
-      #  $ref: "#/components/requestBodies/ToggleSuggestionCreateRequestBody"
+      requestBody:
+        $ref: "#/components/requestBodies/ToggleSuggestionUpdateRequestBody"
       responses:
         "204":
           description: WorkspaceSuggestion toggled successfully
@@ -8935,6 +8933,7 @@ components:
                 type: string
 
     HopsHistoryEntryUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8947,6 +8946,7 @@ components:
                 type: string
 
     HopsGoalsUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8954,6 +8954,7 @@ components:
               - $ref: "#/components/schemas/HopsGoals"
 
     AlternativeStudyOptionSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8961,6 +8962,7 @@ components:
               - $ref: "#/components/schemas/AlternativeStudyOption"
 
     OptionalSuggestionCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8976,6 +8978,7 @@ components:
                 type: integer
 
     StudentCourseChoiceSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8983,6 +8986,7 @@ components:
               - $ref: "#/components/schemas/StudentCourseChoice"
 
     StudentStudyHoursSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8995,11 +8999,31 @@ components:
                 type: integer
 
     ToggleSuggestionCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
             type: object
             description: ToggleSuggestionCreateRequestBody object
+            required:
+              - courseId
+              - subject
+              - courseNumber
+            properties:
+              courseId:
+                type: integer
+              subject:
+                type: string
+              courseNumber:
+                type: integer
+
+    ToggleSuggestionUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: ToggleSuggestionUpdateRequestBody object
             required:
               - courseId
               - subject

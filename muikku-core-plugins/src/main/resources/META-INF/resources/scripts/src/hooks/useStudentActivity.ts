@@ -277,15 +277,6 @@ export const useStudentActivity = (
 
     if (actionType === "add") {
       try {
-        /* await promisify(
-          mApi().hops.student.toggleSuggestion.create(studentId, {
-            courseId: courseId,
-            subject: subjectCode,
-            courseNumber: courseNumber,
-          }),
-          "callback"
-        )(); */
-
         await hopsApi.toggleSuggestion({
           studentIdentifier: studentId,
           toggleSuggestionRequest: {
@@ -303,17 +294,13 @@ export const useStudentActivity = (
       }
     } else {
       try {
-        /* await promisify(
-          mApi().hops.student.toggleSuggestion.del(studentId, {
+        await hopsApi.updateToggleSuggestion({
+          studentIdentifier: studentId,
+          updateToggleSuggestionRequest: {
+            courseId: courseId,
             subject: subjectCode,
             courseNumber: courseNumber,
-            courseId: courseId,
-          }),
-          "callback"
-        )(); */
-
-        await hopsApi.deleteToggleSuggestion({
-          studentIdentifier: studentId,
+          },
         });
       } catch (err) {
         if (!isMApiError(err)) {
