@@ -1,14 +1,8 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
 import { sleep } from "~/helper-functions/shared";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import {
-  CourseStatus,
-  StudentActivityByStatus,
-  StudentActivityCourse,
-} from "~/@types/shared";
+import { StudentActivityByStatus } from "~/@types/shared";
 import MApi, { isMApiError } from "~/api/api";
 import { StudentStudyActivity } from "~/generated/client";
 
@@ -338,17 +332,13 @@ const filterActivity = (
   StudentActivityByStatus,
   "skillsAndArt" | "otherLanguageSubjects" | "otherSubjects"
 > => {
-  const onGoingList = list.filter(
-    (item) => item.status === CourseStatus.ONGOING
-  );
+  const onGoingList = list.filter((item) => item.status === "ONGOING");
   const suggestedNextList = list.filter(
-    (item) => item.status === CourseStatus.SUGGESTED_NEXT
+    (item) => item.status === "SUGGESTED_NEXT"
   );
 
-  const transferedList = list.filter(
-    (item) => item.status === CourseStatus.TRANSFERRED
-  );
-  const gradedList = list.filter((item) => item.status === CourseStatus.GRADED);
+  const transferedList = list.filter((item) => item.status === "TRANSFERRED");
+  const gradedList = list.filter((item) => item.status === "GRADED");
 
   return {
     onGoingList,

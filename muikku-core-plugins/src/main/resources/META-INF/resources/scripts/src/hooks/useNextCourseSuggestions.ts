@@ -1,6 +1,5 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { CourseStatus } from "~/@types/shared";
 import { SuggestedCourse } from "~/@types/shared";
 import { WorkspaceSuggestion } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
@@ -76,7 +75,7 @@ export const useNextCourseSuggestions = (
 
           // Iterate studentActivity and pick only suggested next courses
           for (const a of studentActivityList) {
-            if (a.status === CourseStatus.SUGGESTED_NEXT) {
+            if (a.status === "SUGGESTED_NEXT") {
               suggestedNextIdList.push(a.courseId);
 
               coursesAsNext.push({

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useSuggestionList } from "./hooks/useSuggestedList";
 import { connect, Dispatch } from "react-redux";
-import { Course, CourseStatus } from "~/@types/shared";
+import { Course } from "~/@types/shared";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
@@ -92,10 +92,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
           /**
            * If any of these condition happens, changes respectivily action type
            */
-          if (
-            suggestedCourse &&
-            suggestedCourse.status === CourseStatus.SUGGESTED_NEXT
-          ) {
+          if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
             suggestionNextActionType = "remove";
           }
         }

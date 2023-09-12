@@ -78,9 +78,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
           </label>
           <DatePicker
             id="graduationGoalMonth"
-            onChange={(date) =>
-              handleGoalsChange("graduationGoal", moment(date).toString())
-            }
+            onChange={(date) => handleGoalsChange("graduationGoal", date)}
             selected={
               followUpData.followUp.graduationGoal &&
               moment(followUpData.followUp.graduationGoal).toDate()

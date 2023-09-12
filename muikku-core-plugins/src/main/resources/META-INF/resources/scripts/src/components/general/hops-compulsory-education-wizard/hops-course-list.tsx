@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  SchoolSubject,
-  StudentActivityByStatus,
-  SupervisorOptionalSuggestion,
-} from "~/@types/shared";
+import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
 import HopsSuggestionList from "./hops-suggested-list";
 import {
   ListContainer,

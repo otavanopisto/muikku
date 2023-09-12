@@ -10784,6 +10784,7 @@ components:
           nullable: true
         date:
           type: string
+          format: date-time
         modifier:
           type: string
         modifierId:
@@ -10907,6 +10908,7 @@ components:
         graduationGoal:
           nullable: true
           type: string
+          format: date-time
         followUpGoal:
           type: string
         followUpStudies:
@@ -12340,6 +12342,7 @@ components:
           $ref: "#/components/schemas/CourseStatus"
         date:
           type: string
+          format: date-time
         transferCreditMandatory:
           type: boolean
           nullable: true

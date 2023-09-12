@@ -1,6 +1,5 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { CourseStatus } from "~/@types/shared";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { SuggestedCourse } from "~/@types/shared";
 import { filterSpecialSubjects } from "~/helper-functions/shared";
@@ -111,9 +110,9 @@ export const useCourseCarousel = (
                     (sItem) =>
                       sItem.subject === sCourseItem.subjectCode &&
                       sItem.courseNumber === aCourse.courseNumber &&
-                      (sItem.status === CourseStatus.TRANSFERRED ||
-                        sItem.status === CourseStatus.GRADED ||
-                        sItem.status === CourseStatus.ONGOING)
+                      (sItem.status === "TRANSFERRED" ||
+                        sItem.status === "GRADED" ||
+                        sItem.status === "ONGOING")
                   )
                 ) {
                   // Skip
@@ -131,7 +130,7 @@ export const useCourseCarousel = (
 
             // Iterate studentActivity and pick only suggested next courses
             for (const a of studentActivityList) {
-              if (a.status === CourseStatus.SUGGESTED_NEXT) {
+              if (a.status === "SUGGESTED_NEXT") {
                 suggestedNextIdList.push(a.courseId);
 
                 coursesAsNext.push({

@@ -92,9 +92,7 @@ function FollowUpProvider(providerProps: FollowUpProviderProps) {
               ...loadedFollowUp,
               graduationGoal:
                 loadedFollowUp && loadedFollowUp.graduationGoal
-                  ? moment(loadedFollowUp.graduationGoal)
-                      .toDate()
-                      .toDateString()
+                  ? moment(loadedFollowUp.graduationGoal).toDate()
                   : null,
               followUpGoal:
                 loadedFollowUp && loadedFollowUp.followUpGoal
@@ -137,7 +135,7 @@ function FollowUpProvider(providerProps: FollowUpProviderProps) {
             followUp: {
               ...followUp,
               graduationGoal: followUp.graduationGoal
-                ? moment(followUp.graduationGoal).toDate().toDateString()
+                ? moment(followUp.graduationGoal).toDate()
                 : null,
             },
           }));
