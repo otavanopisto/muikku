@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.assessmentrequest.rest;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -106,7 +105,21 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace %d not found", workspaceEntityId)).build();
     }
-    return Response.ok(workspaceSchoolDataController.getWorkspaceAssessmentPrice(workspaceEntity)).build();
+    WorkspaceAssessmentPrice price = workspaceSchoolDataController.getWorkspaceAssessmentPrice(workspaceEntity);
+    
+    // Price is reset to zero if the user has previously paid for an assessment of this workspace 
+    
+    if (price.getPrice() > 0) {
+      List<CeeposAssessmentRequestOrder> existingOrders = ceeposController.listAssessmentRequestOrdersByStudentAndWorkspace(
+          sessionController.getLoggedUser().toId(),
+          workspaceEntityId);
+      CeeposAssessmentRequestOrder order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.PAID).findFirst().orElse(null);
+      if (order != null) {
+        price.setPrice(0d);
+      }
+      
+    }
+    return Response.ok(price).build();
   }
 
   @POST
@@ -154,11 +167,16 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Workspace entity not found").build();
     }
     
-    // Check that no previous request is pending
+    // List previous orders
+
+    List<CeeposAssessmentRequestOrder> existingOrders = ceeposController.listAssessmentRequestOrdersByStudentAndWorkspace(
+        sessionController.getLoggedUser().toId(),
+        workspaceEntityId);
     
-    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-    WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findLatestAssessmentRequestByWorkspaceAndStudent(workspaceIdentifier, sessionController.getLoggedUser());
-    if (assessmentRequest != null && assessmentRequest.getHandled().equals(Boolean.FALSE)) {
+    // Check that the user has not paid before
+
+    CeeposAssessmentRequestOrder order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.PAID).findFirst().orElse(null);
+    if (order != null) {
       return Response.status(Status.BAD_REQUEST).entity("Assessment request already exists").build();
     }
     
@@ -171,10 +189,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     
     // Create the order, or reuse an existing one as long as it is still CREATED or ONGOING
     
-    CeeposAssessmentRequestOrder order = ceeposController.findAssessmentRequestOrderByStudentAndWorkspaceAndState(
-        sessionController.getLoggedUser().toId(),
-        workspaceEntityId,
-        Arrays.asList(new CeeposOrderState[] {CeeposOrderState.CREATED, CeeposOrderState.ONGOING}));
+    order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.CREATED || o.getState() == CeeposOrderState.ONGOING).findFirst().orElse(null);
     if (order != null) {
       order = ceeposController.updateRequestText(order, payload.getRequestText());
     }
