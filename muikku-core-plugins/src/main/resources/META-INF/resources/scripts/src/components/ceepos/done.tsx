@@ -1,6 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { Dispatch, bindActionCreators } from "redux";
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { CeeposState } from "~/reducers/main-function/ceepos";
@@ -11,63 +17,84 @@ import {
   getErrorMessageTitle,
 } from "~/helper-functions/ceepos-error";
 import { getName } from "~/util/modifiers";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
+import { AnyActionType } from "~/actions/index";
 import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
 
+/**
+ * CeeposDoneProps
+ */
 interface CeeposDoneProps {
   i18n: i18nType;
   pay?: boolean;
   done?: boolean;
   status?: number;
   ceepos: CeeposState;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
+/**
+ * ReturnLink
+ */
 export interface ReturnLink {
-  path: string,
-  text: string
+  path: string;
+  text: string;
 }
 
+/**
+ * CeeposDoneState
+ */
 interface CeeposDoneState {
-  returnLink: ReturnLink
+  returnLink: ReturnLink;
 }
 
+/**
+ * CeeposDone
+ */
 class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
-
-
+  /**
+   * Class constructor
+   * @param props props
+   */
   constructor(props: CeeposDoneProps) {
     super(props);
     this.state = {
       returnLink: {
-        text: props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label"),
-        path: "/"
-      }
+        text: props.i18n.text.get(
+          "plugin.ceepos.order.backToMuikkuButton.label"
+        ),
+        path: "/",
+      },
     };
   }
 
-
-
+  /**
+   * componentDidMount
+   */
   async componentDidMount() {
     try {
       const searchParams = new URLSearchParams(window.location.search);
 
       const returnLink: ReturnLink = (await promisify(
-        mApi().ceepos.order.returnLink.read(searchParams.get("id")),
+        mApi().ceepos.order.returnLink.read(searchParams.get("Id")),
         "callback"
-      )() as ReturnLink);
-
-        this.setState({returnLink});
-
+      )()) as ReturnLink;
+      this.setState({ returnLink });
     } catch (e) {
-      throw e;
+      this.props.displayNotification(
+        this.props.i18n.text.get(
+          "plugin.ceepos.errormessage.assesmentRequest.returnLinkCreateFailed",
+          e
+        ),
+        "error"
+      );
     }
   }
 
-    /**
+  /**
    * render
-   * @returns
+   * @returns JSX component
    */
   render() {
     // Create product data
@@ -183,7 +210,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                   buttonModifiers={["back-to-muikku", "info"]}
                   href={this.state.returnLink.path}
                 >
-                {this.state.returnLink.text}
+                  {this.state.returnLink.text}
                 </Button>
 
                 <CommunicatorNewMessage
@@ -242,6 +269,10 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -249,8 +280,12 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CeeposDone);

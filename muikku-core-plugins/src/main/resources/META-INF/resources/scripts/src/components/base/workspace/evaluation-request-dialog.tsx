@@ -15,6 +15,10 @@ import {
 import { StatusType } from "~/reducers/base/status";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 
 /**
  * EvaluationRequestDialogProps
@@ -25,6 +29,7 @@ interface EvaluationRequestDialogProps {
   isOpen: boolean;
   onClose: () => any;
   requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
 }
 
@@ -104,7 +109,7 @@ class EvaluationRequestDialog extends React.Component<
    * proceedToPay creates the payment link and
    * @param closeDialog closeDialog
    */
-  async proceedToPay(closeDialog: () => any) {
+  proceedToPay = async (closeDialog: () => any) => {
     try {
       closeDialog();
       const link: string = (await promisify(
@@ -118,9 +123,15 @@ class EvaluationRequestDialog extends React.Component<
       )().then((link: { url: string }) => link.url)) as string;
       window.location.href = link;
     } catch (e) {
-      throw e;
+      this.props.displayNotification(
+        this.props.i18n.text.get(
+          "plugin.ceepos.errormessage.assesmentRequest.createFailed",
+          e
+        ),
+        "error"
+      );
     }
-  }
+  };
 
   /**
    * loadPriceInfo loads the assessment prices from backend
@@ -140,7 +151,15 @@ class EvaluationRequestDialog extends React.Component<
         price,
       });
       // eslint-disable-next-line no-empty
-    } catch (e) {}
+    } catch (e) {
+      this.props.displayNotification(
+        this.props.i18n.text.get(
+          "plugin.ceepos.errormessage.assesmentRequest.loadFailed",
+          e
+        ),
+        "error"
+      );
+    }
   };
 
   /**
@@ -206,7 +225,7 @@ class EvaluationRequestDialog extends React.Component<
           <Button
             buttonModifiers={["standard-ok", "execute"]}
             buttonAs="div"
-            onClick={this.proceedToPay.bind(this, closeDialog)}
+            onClick={() => this.proceedToPay(closeDialog)}
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
@@ -269,7 +288,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ requestAssessmentAtWorkspace }, dispatch);
+  return bindActionCreators(
+    { requestAssessmentAtWorkspace, displayNotification },
+    dispatch
+  );
 }
 
 export default connect(
