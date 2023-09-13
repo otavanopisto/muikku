@@ -125,8 +125,7 @@ class EvaluationRequestDialog extends React.Component<
     } catch (e) {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.ceepos.errormessage.assesmentRequest.createFailed",
-          e
+          "plugin.ceepos.errormessage.assesmentRequest.createFailed"
         ),
         "error"
       );
