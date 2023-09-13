@@ -617,6 +617,13 @@ public class CeeposRESTService {
     return Response.ok(String.format("\"%s\"", ceeposPayloadResponse.getPaymentAddress())).build();
   }
   
+  @Path("/manualCompletion/{ORDERID}")
+  @GET
+  @RESTPermit(CeeposPermissions.COMPLETE_ORDER)
+  public Response completeOrderGet(@PathParam("ORDERID") Long orderId) {
+    return completeOrder(orderId);
+  }
+  
   /**
    * REQUEST:
    * 
@@ -1061,10 +1068,11 @@ public class CeeposRESTService {
             order.getLastModifierId());
         return Response.ok().build(); // Our configuration problem
       }
+      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(order.getUserIdentifier());
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(
-          workspaceEntity, sessionController.getLoggedUser());
+          workspaceEntity, identifier);
       if (workspaceUserEntity == null) {
-        logger.severe(String.format("Workspace user entity not found for user %d and workspace %d", sessionController.getLoggedUserEntity().getId(), workspaceEntity.getId()));
+        logger.severe(String.format("Workspace user entity not found for user %s and workspace %d", order.getUserIdentifier(), workspaceEntity.getId()));
         order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
             order,
             CeeposOrderState.ERRORED,
@@ -1085,6 +1093,16 @@ public class CeeposRESTService {
             order.getLastModifierId());
         return Response.ok().build(); // Our configuration problem
       }
+
+      // Mark the order as complete
+
+      order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+          order,
+          CeeposOrderState.COMPLETE,
+          paymentConfirmation.getReference(),
+          order.getPaid(),
+          order.getLastModifierId());
+      
       // TODO Add information about price?
       communicatorAssessmentRequestController.sendAssessmentRequestMessage(workspaceAssessmentRequest);
       break;

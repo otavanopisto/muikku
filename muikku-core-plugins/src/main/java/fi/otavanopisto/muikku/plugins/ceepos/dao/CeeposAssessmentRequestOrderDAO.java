@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.ceepos.dao;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -44,7 +44,7 @@ public class CeeposAssessmentRequestOrderDAO extends CorePluginsDAO<CeeposAssess
     return persist(order);
   }
   
-  public CeeposAssessmentRequestOrder findByStudentAndWorkspaceAndState(String studentIdentifier, Long workspaceEntityId, Collection<CeeposOrderState> states) {
+  public List<CeeposAssessmentRequestOrder> listByStudentAndWorkspace(String studentIdentifier, Long workspaceEntityId) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -54,12 +54,11 @@ public class CeeposAssessmentRequestOrderDAO extends CorePluginsDAO<CeeposAssess
     criteria.where(
       criteriaBuilder.and(          
         criteriaBuilder.equal(root.get(CeeposAssessmentRequestOrder_.userIdentifier), studentIdentifier),
-        criteriaBuilder.equal(root.get(CeeposAssessmentRequestOrder_.workspaceEntityId), workspaceEntityId),
-        criteriaBuilder.equal(root.in(CeeposAssessmentRequestOrder_.state), states)
+        criteriaBuilder.equal(root.get(CeeposAssessmentRequestOrder_.workspaceEntityId), workspaceEntityId)
       )
     );
    
-    return getSingleResult(entityManager.createQuery(criteria));
+    return entityManager.createQuery(criteria).getResultList();
   }
 
 }
