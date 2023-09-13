@@ -2,7 +2,6 @@ import * as React from "react";
 import "~/sass/elements/contact-event.scss";
 import "~/sass/elements/rich-text.scss";
 import { i18nType } from "~/reducers/base/i18n";
-import { ContactLogEvent } from "~/reducers/main-function/guider";
 import CommentContactEvent from "./editors/new-comment";
 import EditContactEvent from "./editors/edit-event";
 import EditContactEventComment from "./editors/edit-comment";
@@ -13,6 +12,7 @@ import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import Link from "~/components/general/link";
+import { ContactLogEvent } from "~/generated/client";
 
 /**
  * ContactEventProps

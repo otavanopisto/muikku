@@ -16,7 +16,6 @@ import DatePicker from "react-datepicker";
 import {
   ContactTypes,
   contactTypesArray,
-  GuiderStudentType,
 } from "~/reducers/main-function/guider";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import * as moment from "moment";
@@ -25,6 +24,7 @@ import {
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
 } from "~/actions/main-function/guider";
+import { Student } from "~/generated/client";
 
 /**
  * NewContactEventProps
@@ -35,7 +35,7 @@ interface NewContactEventProps {
   createContactLogEvent: CreateContactLogEventTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
   logsPerPage: number;
-  currentStudent: GuiderStudentType;
+  currentStudent: Student;
   status: StatusType;
   initialDate?: Date;
   initialSender?: string;

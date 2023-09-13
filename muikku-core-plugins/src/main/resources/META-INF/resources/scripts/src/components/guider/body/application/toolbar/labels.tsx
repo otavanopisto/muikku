@@ -24,13 +24,11 @@ import {
   RemoveGuiderLabelFromSelectedUsersTriggerType,
   removeGuiderLabelFromSelectedUsers,
 } from "~/actions/main-function/guider";
-
 import "~/sass/elements/link.scss";
-
 import "~/sass/elements/form.scss";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
-import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 
@@ -39,7 +37,7 @@ import { AnyActionType } from "~/actions";
  */
 interface GuiderToolbarLabelsProps {
   i18n: i18nType;
-  guider: GuiderType;
+  guider: GuiderState;
   createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType;
   addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType;
   removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType;
@@ -168,8 +166,8 @@ class GuiderToolbarLabels extends React.Component<
     const isAtLeastOneSelected = this.props.guider.selectedStudents.length >= 1;
 
     if (isAtLeastOneSelected) {
-      const partialIds = this.props.guider.selectedStudents.map(
-        (student: GuiderStudentType) => student.flags.map((l) => l.flagId)
+      const partialIds = this.props.guider.selectedStudents.map((student) =>
+        student.flags.map((l) => l.flagId)
       );
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(allInCommon, flatten(...partialIds));

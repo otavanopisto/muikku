@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
-import { ContactLogEvent } from "~/reducers/main-function/guider";
+import { ContactLogEvent } from "~/generated/client";
 
 /**
  * TODO: maybe make this more generic,

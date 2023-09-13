@@ -20,8 +20,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import {
-  GuiderType,
-  GuiderStudentUserProfileLabelType,
+  GuiderState,
   GuiderNotificationStudentsDataType,
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
@@ -47,7 +46,7 @@ import { Instructions } from "~/components/general/instructions";
  */
 interface StateOfStudiesProps {
   i18n: i18nType;
-  guider: GuiderType;
+  guider: GuiderState;
   status: StatusType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
   displayNotification: DisplayNotificationTriggerType;
@@ -155,17 +154,15 @@ class StateOfStudies extends React.Component<
 
     const studentLabels =
       this.props.guider.currentStudent.labels &&
-      this.props.guider.currentStudent.labels.map(
-        (label: GuiderStudentUserProfileLabelType) => (
-          <span className="label" key={label.id}>
-            <span
-              className="label__icon icon-flag"
-              style={{ color: label.flagColor }}
-            ></span>
-            <span className="label__text">{label.flagName}</span>
-          </span>
-        )
-      );
+      this.props.guider.currentStudent.labels.map((label) => (
+        <span className="label" key={label.id}>
+          <span
+            className="label__icon icon-flag"
+            style={{ color: label.flagColor }}
+          ></span>
+          <span className="label__text">{label.flagName}</span>
+        </span>
+      ));
 
     const studentBasicInfo = this.props.guider.currentStudent.basic && (
       <ApplicationSubPanel.Body>

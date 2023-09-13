@@ -6,7 +6,7 @@ import "~/sass/elements/item-list.scss";
 import {
   GuiderUserLabelType,
   GuiderWorkspaceType,
-  GuiderType,
+  GuiderState,
 } from "~/reducers/main-function/guider";
 import { UserGroupType } from "~/reducers/user-index";
 import LabelUpdateDialog from "../dialogs/label-update";
@@ -21,7 +21,7 @@ import Navigation, {
  */
 interface NavigationProps {
   i18n: i18nType;
-  guider: GuiderType;
+  guider: GuiderState;
 }
 
 /**

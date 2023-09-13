@@ -14,7 +14,7 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
-import { ContactLogEventComment } from "~/reducers/main-function/guider";
+import { ContactLogEventComment } from "~/generated/client";
 
 /**
  * EditContactLogEventCommentStateProps

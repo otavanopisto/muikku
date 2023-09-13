@@ -12,8 +12,10 @@ import {
   RecordWorkspaceActivityByLine,
   RecordWorkspaceActivitiesWithLineCategory,
 } from "~/reducers/main-function/records";
-import { UserFileType, UserWithSchoolDataType } from "~/reducers/user-index";
+import { UserWithSchoolDataType } from "~/reducers/user-index";
 import { Dispatch } from "react-redux";
+import MApi from "~/api/api";
+import { UserFile } from "~/generated/client";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
@@ -38,7 +40,7 @@ export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE = SpecificActionType<
 >;
 export type UPDATE_RECORDS_SET_FILES = SpecificActionType<
   "UPDATE_RECORDS_SET_FILES",
-  Array<UserFileType>
+  UserFile[]
 >;
 
 /**
@@ -362,14 +364,11 @@ const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType 
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const files: Array<UserFileType> = <Array<UserFileType>>(
-        await promisify(
-          mApi().guider.users.files.read(
-            getState().status.userSchoolDataIdentifier
-          ),
-          "callback"
-        )()
-      );
+      const guiderApi = MApi.getGuiderApi();
+
+      const files = await guiderApi.getGuiderUserFiles({
+        identifier: getState().status.userSchoolDataIdentifier,
+      });
 
       dispatch({
         type: "UPDATE_RECORDS_SET_FILES",

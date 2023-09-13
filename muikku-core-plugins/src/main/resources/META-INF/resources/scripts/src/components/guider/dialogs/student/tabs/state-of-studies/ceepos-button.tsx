@@ -2,7 +2,7 @@ import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { GuiderType } from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-list.scss";
@@ -26,7 +26,7 @@ import { AnyActionType } from "~/actions";
 interface CeeposButtonProps {
   i18n: i18nType;
   status: StatusType;
-  guider: GuiderType;
+  guider: GuiderState;
   doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType;
 }
 
