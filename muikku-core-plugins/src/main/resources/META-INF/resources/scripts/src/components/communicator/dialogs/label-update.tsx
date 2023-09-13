@@ -7,8 +7,8 @@ import {
   RemoveMessagesNavigationLabelTriggerType,
 } from "~/actions/main-function/messages";
 import {
-  MessagesType,
-  MessagesNavigationItemType,
+  MessagesState,
+  MessagesNavigationItem,
 } from "~/reducers/main-function/messages";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -16,7 +16,6 @@ import { ChromePicker, ColorState } from "react-color";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/form.scss";
 import Button from "~/components/general/button";
 import "~/sass/elements/glyph.scss";
@@ -31,11 +30,11 @@ const KEYCODES = {
  */
 interface CommunicatorLabelUpdateDialogProps {
   children: React.ReactElement<any>;
-  label: MessagesNavigationItemType;
+  label: MessagesNavigationItem;
   isOpen?: boolean;
   onClose?: () => any;
   i18n: i18nType;
-  messages: MessagesType;
+  messages: MessagesState;
   updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType;
   removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType;
 }

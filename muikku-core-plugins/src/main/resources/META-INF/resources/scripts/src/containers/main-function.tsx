@@ -627,7 +627,7 @@ export default class MainFunction extends React.Component<
             loadLastMessageThreadsFromServer.bind(null, 10)
           );
       this.props.store.dispatch(
-        loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action
+        loadAnnouncementsAsAClient({}, { loadUserGroups: false }) as Action
       );
 
       this.props.store.getState().status.loggedIn &&
@@ -868,7 +868,7 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(
         loadAnnouncementsAsAClient(
-          { hideWorkspaceAnnouncements: "false" },
+          { hideWorkspaceAnnouncements: false },
           (announcements: Announcement[]) => {
             announcements;
           }

@@ -43,7 +43,7 @@ interface WorkspaceMaterialProps {
   showEvenIfHidden: boolean;
   workspace: WorkspaceType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
-  readspeakerComponent: JSX.Element;
+  readspeakerComponent?: JSX.Element;
 }
 
 /**

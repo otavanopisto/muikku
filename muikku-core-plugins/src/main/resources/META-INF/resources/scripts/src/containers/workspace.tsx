@@ -72,6 +72,7 @@ import {
   loadWorkspaceCompositeMaterialReplies,
   setCurrentWorkspaceMaterialsActiveNodeId,
 } from "~/actions/workspaces/material";
+import ReadspeakerProvider from "~/components/context/readspeaker-context";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -443,7 +444,7 @@ export default class Workspace extends React.Component<
       ) {
         this.props.store.dispatch(
           loadAnnouncementsAsAClient({
-            hideEnvironmentAnnouncements: "true",
+            hideEnvironmentAnnouncements: true,
             workspaceEntityId: state.status.currentWorkspaceId,
           }) as Action
         );
@@ -590,7 +591,7 @@ export default class Workspace extends React.Component<
       //Maybe we shouldn't load again, but whatever, maybe it updates
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({
-          hideEnvironmentAnnouncements: "true",
+          hideEnvironmentAnnouncements: true,
           workspaceEntityId: state.status.currentWorkspaceId,
         }) as Action
       );
@@ -1307,59 +1308,62 @@ export default class Workspace extends React.Component<
    */
   render() {
     return (
-      <BrowserRouter>
-        <div id="root">
-          <Notifications></Notifications>
-          <DisconnectedWarningDialog />
-          <EasyToUseFunctions />
-          <Route
-            exact
-            path="/workspace/:workspaceUrl/"
-            render={this.renderWorkspaceHome}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/help"
-            render={this.renderWorkspaceHelp}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/discussions"
-            render={this.renderWorkspaceDiscussions}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/announcements"
-            render={this.renderWorkspaceAnnouncements}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/announcer"
-            render={this.renderWorkspaceAnnouncer}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/materials"
-            render={this.renderWorkspaceMaterials}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/users"
-            render={this.renderWorkspaceUsers}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/journal"
-            render={this.renderWorkspaceJournal}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/workspace-management"
-            render={this.renderWorkspaceManagement}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/permissions"
-            render={this.renderWorkspacePermissions}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/evaluation"
-            render={this.renderWorkspaceEvaluation}
-          />
-          <Chat />
-        </div>
-      </BrowserRouter>
+      <ReadspeakerProvider>
+        <BrowserRouter>
+          <div id="root">
+            <Notifications></Notifications>
+            <DisconnectedWarningDialog />
+            <EasyToUseFunctions />
+
+            <Route
+              exact
+              path="/workspace/:workspaceUrl/"
+              render={this.renderWorkspaceHome}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/help"
+              render={this.renderWorkspaceHelp}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/discussions"
+              render={this.renderWorkspaceDiscussions}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/announcements"
+              render={this.renderWorkspaceAnnouncements}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/announcer"
+              render={this.renderWorkspaceAnnouncer}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/materials"
+              render={this.renderWorkspaceMaterials}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/users"
+              render={this.renderWorkspaceUsers}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/journal"
+              render={this.renderWorkspaceJournal}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/workspace-management"
+              render={this.renderWorkspaceManagement}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/permissions"
+              render={this.renderWorkspacePermissions}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/evaluation"
+              render={this.renderWorkspaceEvaluation}
+            />
+            <Chat />
+          </div>
+        </BrowserRouter>
+      </ReadspeakerProvider>
     );
   }
 }
