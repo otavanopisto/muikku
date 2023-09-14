@@ -182,11 +182,6 @@ class EvaluationRequestDialog extends React.Component<
         </div>
         {hasFees ? (
           <div className="dialog__content-row">
-            <label>
-              {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label"
-              )}
-            </label>
             <p>
               {price > 0 ? (
                 <>
@@ -198,6 +193,11 @@ class EvaluationRequestDialog extends React.Component<
               ) : null}
               {this.props.i18n.text.get(
                 "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
+              )}
+            </p>
+            <p>
+              {this.props.i18n.text.get(
+                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.paymentProcessor"
               )}
             </p>
           </div>
