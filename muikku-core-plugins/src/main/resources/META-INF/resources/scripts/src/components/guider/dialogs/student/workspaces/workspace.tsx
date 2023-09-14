@@ -3,7 +3,6 @@ import * as React from "react";
 import {
   WorkspaceType,
   Assessment,
-  WorkspaceActivityType,
   WorkspaceForumStatisticsType,
 } from "~/reducers/workspaces";
 import { Dispatch } from "redux";
@@ -22,6 +21,7 @@ import {
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import { AnyActionType } from "~/actions";
+import { WorkspaceActivity } from "~/generated/client";
 
 /**
  * StudentWorkspaceProps
@@ -312,7 +312,7 @@ class StudentWorkspace extends React.Component<
             <div className="application-sub-panel__body">
               {renderCourseActivity()}
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits"
                 givenDateAttributeLocale="plugin.guider.user.details.lastVisit"
                 labelTranslationString="plugin.guider.visitedLabel"
@@ -322,7 +322,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="plugin.guider.user.details.numberOfJournalEntries"
                 givenDateAttributeLocale="plugin.guider.user.details.lastJournalEntry"
                 labelTranslationString="plugin.guider.journalEntriesLabel"
@@ -346,14 +346,14 @@ class StudentWorkspace extends React.Component<
                 {this.props.i18n.text.get("plugin.guider.assignmentsLabel")}
               </h4>
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 labelTranslationString="plugin.guider.unansweredAssignmentsLabel"
                 conditionalAttribute="evaluablesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredAssignments"
                 givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredAssignment"
                 labelTranslationString="plugin.guider.answeredAssignmentsLabel"
@@ -363,7 +363,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="plugin.guider.user.details.numberOfSubmittedAssignments"
                 givenDateAttributeLocale="plugin.guider.user.details.lastSubmittedAssignment"
                 labelTranslationString="plugin.guider.submittedAssignmentsLabel"
@@ -373,7 +373,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationFailed"
                 givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationFailed"
                 labelTranslationString="plugin.guider.failedAssingmentsLabel"
@@ -383,7 +383,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationPassed"
                 givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationPassed"
                 labelTranslationString="plugin.guider.passedAssingmentsLabel"
@@ -397,14 +397,14 @@ class StudentWorkspace extends React.Component<
                 {this.props.i18n.text.get("plugin.guider.exercisesLabel")}
               </h4>
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 labelTranslationString="plugin.guider.unansweredExercisesLabel"
                 conditionalAttribute="exercisesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredExercises"
                 givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredExercise"
                 labelTranslationString="plugin.guider.answeredExercisesLabel"
@@ -595,7 +595,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
  * GuiderWorkspacePercentsProps
  */
 interface GuiderWorkspacePercentsProps {
-  activity?: WorkspaceActivityType;
+  activity?: WorkspaceActivity;
   i18n: i18nType;
 }
 

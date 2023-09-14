@@ -8,10 +8,8 @@ import Button from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
-import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import { WorkspaceInterimEvaluationRequest } from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
+
 import {
   UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger,
   updateCurrentWorkspaceInterimEvaluationRequests,
@@ -21,6 +19,8 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import MApi, { isMApiError } from "~/api/api";
+import { InterimEvaluationRequest } from "~/generated/client";
 
 /* eslint-disable camelcase */
 const ckEditorConfig = {
@@ -75,7 +75,7 @@ interface InterimEvaluationEditorProps extends MaterialLoaderProps {
  */
 interface InterimEvaluationEditorState {
   loading: boolean;
-  requestData: WorkspaceInterimEvaluationRequest;
+  requestData: InterimEvaluationRequest;
   value: string;
   words: number;
   characters: number;
@@ -98,7 +98,7 @@ class InterimEvaluationEditor extends React.Component<
     const requestData =
       props.workspace.interimEvaluationRequests &&
       props.workspace.interimEvaluationRequests.find(
-        (request: WorkspaceInterimEvaluationRequest) =>
+        (request) =>
           (props.usedAs === "default" &&
             request.workspaceMaterialId ===
               this.props.material.workspaceMaterialId) ||
@@ -159,16 +159,15 @@ class InterimEvaluationEditor extends React.Component<
    * handlePushInterimRequest
    */
   handlePushInterimRequest = async () => {
+    const evaluationApi = MApi.getEvaluationApi();
+
     // If there is no request data, we need to create a new one
     // otherwise delete existing one
     if (this.props.stateConfiguration.state === "SUBMITTED") {
       try {
-        const requestData = (await promisify(
-          mApi().evaluation.interimEvaluationRequest.del(
-            this.state.requestData.id
-          ),
-          "callback"
-        )()) as WorkspaceInterimEvaluationRequest;
+        const requestData = await evaluationApi.deleteInterimEvaluationRequest({
+          interimEvaluationRequestId: this.state.requestData.id,
+        });
 
         this.props.displayNotification(
           this.props.i18n.text.get(
@@ -188,7 +187,11 @@ class InterimEvaluationEditor extends React.Component<
             this.props.onPushAnswer && this.props.onPushAnswer();
           }
         );
-      } catch (error) {
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         this.props.displayNotification(
           this.props.i18n.text.get(
             "plugin.workspace.materialsLoader.cancelInterimEvaluationRequest.error"
@@ -198,13 +201,12 @@ class InterimEvaluationEditor extends React.Component<
       }
     } else {
       try {
-        const requestData = (await promisify(
-          mApi().evaluation.interimEvaluationRequest.create({
+        const requestData = await evaluationApi.createInterimEvaluationRequest({
+          createInterimEvaluationRequestRequest: {
             workspaceMaterialId: this.props.material.workspaceMaterialId,
             requestText: this.state.value,
-          }),
-          "callback"
-        )()) as WorkspaceInterimEvaluationRequest;
+          },
+        });
 
         this.props.displayNotification(
           this.props.i18n.text.get(
@@ -224,7 +226,11 @@ class InterimEvaluationEditor extends React.Component<
             this.props.onPushAnswer && this.props.onPushAnswer();
           }
         );
-      } catch (error) {
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         this.props.displayNotification(
           this.props.i18n.text.get(
             "plugin.workspace.materialsLoader.submitInterimEvaluationRequest.error"

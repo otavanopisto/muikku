@@ -11,11 +11,11 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
-import { EvaluationJournalFeedback } from "~/@types/evaluation";
 import {
   createOrUpdateEvaluationJournalFeedback,
   CreateOrUpdateEvaluationJournalFeedbackTriggerType,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { EvaluationJournalFeedback } from "~/generated/client";
 
 /**
  * SupplementationEditorProps

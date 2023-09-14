@@ -7,7 +7,6 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
-import { AssessmentRequest } from "~/@types/evaluation";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   UpdateNeedsReloadEvaluationRequests,
@@ -25,11 +24,12 @@ import {
   ArchiveStudent,
   archiveStudent,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 
 /**
  * ArchiveDialogProps
  */
-interface ArchiveDialogProps extends AssessmentRequest {
+interface ArchiveDialogProps extends EvaluationAssessmentRequest {
   children?: React.ReactElement<any>;
   place: "card" | "modal";
   isOpen?: boolean;

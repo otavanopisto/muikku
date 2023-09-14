@@ -3,10 +3,9 @@ import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { i18nType } from "~/reducers/base/i18n";
-import {
-  WorkspaceJournalFeedback,
-  WorkspaceJournalType,
-} from "~/reducers/workspaces/journals";
+import { WorkspaceJournalType } from "~/reducers/workspaces/journals";
+import MApi, { isMApiError } from "~/api/api";
+import { EvaluationJournalFeedback } from "~/generated/client";
 
 /**
  * UseFollowUpGoalsState
@@ -14,7 +13,7 @@ import {
 export interface UseDiariesState {
   isLoading: boolean;
   journals: WorkspaceJournalType[];
-  journalFeedback: WorkspaceJournalFeedback | null;
+  journalFeedback: EvaluationJournalFeedback | null;
 }
 
 /**
@@ -25,6 +24,8 @@ const initialState: UseDiariesState = {
   journals: [],
   journalFeedback: null,
 };
+
+const evaluationApi = MApi.getEvaluationApi();
 
 /**
  * Custom hook for student study hours
@@ -79,15 +80,12 @@ export const useJournals = (
             return journals;
           })(),
           (async () => {
-            const journalFeedback = <WorkspaceJournalFeedback>(
-              await promisify(
-                mApi().evaluation.workspaces.students.journalfeedback.read(
-                  workspaceId,
-                  userEntityId
-                ),
-                "callback"
-              )()
-            );
+            const journalFeedback =
+              await evaluationApi.getWorkspaceStudentJournalFeedback({
+                workspaceId,
+                studentEntityId: userEntityId,
+              });
+
             return journalFeedback;
           })(),
         ]);
@@ -102,6 +100,10 @@ export const useJournals = (
         }
       } catch (err) {
         if (!isCancelled) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           displayNotification(
             `${i18n.text.get(
               "plugin.records.errormessage.workspaceDiaryLoadFailed"

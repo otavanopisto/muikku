@@ -1,9 +1,4 @@
 import * as React from "react";
-import {
-  EvaluationEvent,
-  EvaluationEnum,
-  AssessmentRequest,
-} from "~/@types/evaluation";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
@@ -16,6 +11,11 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
+import {
+  EvaluationAssessmentRequest,
+  EvaluationEvent,
+  EvaluationEventType,
+} from "~/generated/client";
 
 /**
  * EvaluationEventContentCardProps
@@ -24,7 +24,7 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
   i18n: i18nType;
   showModifyLink: boolean;
   showDeleteLink: boolean;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   onClickEdit: (
     eventId: string,
     workspaceSubjectIdentifier: string | null,
@@ -67,32 +67,32 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
    * @param typeMsg typeMsg
    * @returns arrow class modifier
    */
-  const evalEventClassMod = (typeMsg: EvaluationEnum) => {
+  const evalEventClassMod = (typeMsg: EvaluationEventType) => {
     let mod = "";
 
     switch (typeMsg) {
-      case EvaluationEnum.EVALUATION_FAIL:
+      case "EVALUATION_FAIL":
         mod = "state-FAILED";
         break;
-      case EvaluationEnum.EVALUATION_IMPROVED:
+      case "EVALUATION_IMPROVED":
         mod = "state-IMPROVED";
         break;
 
-      case EvaluationEnum.INTERIM_EVALUATION_REQUEST:
-      case EvaluationEnum.EVALUATION_REQUEST:
+      case "INTERIM_EVALUATION_REQUEST":
+      case "EVALUATION_REQUEST":
         mod = "state-REQUESTED";
         break;
 
-      case EvaluationEnum.INTERIM_EVALUATION_REQUEST_CANCELLED:
-      case EvaluationEnum.EVALUATION_REQUEST_CANCELLED:
+      case "INTERIM_EVALUATION_REQUEST_CANCELLED":
+      case "EVALUATION_REQUEST_CANCELLED":
         mod = "state-REQUESTED-CANCELLED";
         break;
-      case EvaluationEnum.SUPPLEMENTATION_REQUEST:
+      case "SUPPLEMENTATION_REQUEST":
         mod = "state-INCOMPLETE";
         break;
 
-      case EvaluationEnum.INTERIM_EVALUATION:
-      case EvaluationEnum.EVALUATION_PASS:
+      case "INTERIM_EVALUATION":
+      case "EVALUATION_PASS":
         mod = "state-PASSED";
         break;
 
@@ -139,9 +139,12 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
    * @param typeMsg typeMsg
    * @param grade grade
    */
-  const renderTypeMessage = (typeMsg: EvaluationEnum, grade: string | null) => {
+  const renderTypeMessage = (
+    typeMsg: EvaluationEventType,
+    grade: string | null
+  ) => {
     switch (typeMsg) {
-      case EvaluationEnum.EVALUATION_REQUEST:
+      case "EVALUATION_REQUEST":
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
@@ -156,7 +159,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           </div>
         );
 
-      case EvaluationEnum.EVALUATION_PASS:
+      case "EVALUATION_PASS":
         return (
           <>
             <div className="evaluation-modal__event-meta">
@@ -183,7 +186,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           </>
         );
 
-      case EvaluationEnum.EVALUATION_FAIL:
+      case "EVALUATION_FAIL":
         return (
           <>
             <div className="evaluation-modal__event-meta">
@@ -210,7 +213,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           </>
         );
 
-      case EvaluationEnum.EVALUATION_IMPROVED:
+      case "EVALUATION_IMPROVED":
         return (
           <>
             <div className="evaluation-modal__event-meta">
@@ -237,7 +240,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           </>
         );
 
-      case EvaluationEnum.SUPPLEMENTATION_REQUEST:
+      case "SUPPLEMENTATION_REQUEST":
         return (
           <>
             <div className="evaluation-modal__event-meta">
@@ -256,16 +259,15 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
                 )}
               </span>
             </div>
-            {grade !== null ||
-            type === EvaluationEnum.SUPPLEMENTATION_REQUEST ? (
+            {grade !== null || type === "SUPPLEMENTATION_REQUEST" ? (
               <div className="evaluation-modal__event-grade state-INCOMPLETE">
-                {EvaluationEnum.SUPPLEMENTATION_REQUEST ? "T" : grade}
+                T
               </div>
             ) : null}
           </>
         );
 
-      case EvaluationEnum.EVALUATION_REQUEST_CANCELLED:
+      case "EVALUATION_REQUEST_CANCELLED":
         return (
           <>
             <div className="evaluation-modal__event-meta">
@@ -284,16 +286,15 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
                 )}
               </span>
             </div>
-            {grade !== null ||
-            type === EvaluationEnum.SUPPLEMENTATION_REQUEST ? (
+            {grade !== null || type === "SUPPLEMENTATION_REQUEST" ? (
               <div className="evaluation-modal__event-grade state-INCOMPLETE">
-                {EvaluationEnum.SUPPLEMENTATION_REQUEST ? "T" : grade}
+                T
               </div>
             ) : null}
           </>
         );
 
-      case EvaluationEnum.INTERIM_EVALUATION:
+      case "INTERIM_EVALUATION":
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
@@ -308,7 +309,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           </div>
         );
 
-      case EvaluationEnum.INTERIM_EVALUATION_REQUEST:
+      case "INTERIM_EVALUATION_REQUEST":
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
@@ -323,7 +324,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           </div>
         );
 
-      case EvaluationEnum.INTERIM_EVALUATION_REQUEST_CANCELLED:
+      case "INTERIM_EVALUATION_REQUEST_CANCELLED":
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
@@ -388,7 +389,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
                 onClick={onClickEdit(
                   identifier,
                   workspaceSubjectIdentifier,
-                  type === EvaluationEnum.SUPPLEMENTATION_REQUEST
+                  type === "SUPPLEMENTATION_REQUEST"
                 )}
               >
                 {i18n.text.get(

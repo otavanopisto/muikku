@@ -1,8 +1,8 @@
 import { Reducer } from "redux";
 import { JournalComment } from "~/@types/journal";
 import { ActionType } from "~/actions";
+import { EvaluationJournalFeedback } from "~/generated/client";
 import { MaterialCompositeRepliesStateType } from "./index";
-import { EvaluationJournalFeedback } from "../../@types/evaluation";
 
 export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 

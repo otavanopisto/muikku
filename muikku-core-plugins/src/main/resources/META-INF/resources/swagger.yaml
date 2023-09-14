@@ -1757,6 +1757,12 @@ paths:
       description: Get composite assessment requests
       tags:
         - Evaluation
+      parameters:
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id
+          schema:
+            type: integer
       responses:
         "200":
           description: Composite assessment requests
@@ -1832,6 +1838,12 @@ paths:
           schema:
             type: integer
       responses:
+        "200":
+          description: Interim evaluation request deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InterimEvaluationRequest"
         "204":
           description: Interim evaluation request deleted successfully
         "400":
@@ -1904,10 +1916,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-
+                $ref: "#/components/schemas/AssessmentWithAudio"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1955,10 +1964,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-
+                $ref: "#/components/schemas/AssessmentWithAudio"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -2018,6 +2024,12 @@ paths:
           required: true
           schema:
             type: integer
+        - name: userEntityId
+          in: query
+          description: User entity id
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Workspace material evaluations
@@ -2061,6 +2073,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EvaluationJournalFeedback"
+        "204":
+          description: Workspace student journal feedback not found
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -2156,7 +2170,7 @@ paths:
           description: Student entity id
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         "200":
           description: Workspace student activity
@@ -2233,9 +2247,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/evaluationrequestarchive:
     put:
-      operationId: archiveWorkspaceUserEvaluationRequest
-      summary: Archive workspace user evaluation request
-      description: Archive workspace user evaluation request
+      operationId: archiveEvaluationWorkspaceUser
+      summary: Archive workspace user evaluation
+      description: Archive workspace user evaluation
       tags:
         - Evaluation
       parameters:
@@ -2257,9 +2271,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/events:
     get:
-      operationId: getWorkspaceUserEvents
-      summary: Get workspace user events
-      description: Get workspace user events
+      operationId: getWorkspaceUserEvaluationEvents
+      summary: Get workspace user evaluation events
+      description: Get workspace user evaluation events
       tags:
         - Evaluation
       parameters:
@@ -2393,7 +2407,7 @@ paths:
           description: Workspace assessment id
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         "204":
           description: Workspace user workspace assessment deleted successfully
@@ -8555,6 +8569,7 @@ components:
                 type: integer
 
     InterimEvaluationRequestCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8570,6 +8585,7 @@ components:
                 type: string
 
     EvaluationSaveAssignmentAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8578,8 +8594,6 @@ components:
             required:
               - evaluationType
               - assessorIdentifier
-              - gradingScaleIdentifier
-              - gradeIdentifier
               - verbalAssessment
               - assessmentDate
               - audioAssessments
@@ -8587,7 +8601,7 @@ components:
               identifier:
                 type: string
               evaluationType:
-                type: string
+                $ref: "#/components/schemas/EvaluationType"
               assessorIdentifier:
                 type: string
               gradingScaleIdentifier:
@@ -8597,13 +8611,15 @@ components:
               verbalAssessment:
                 type: string
               assessmentDate:
-                type: string
+                description: Unix timestamp
+                type: integer
               audioAssessments:
                 type: array
                 items:
                   $ref: "#/components/schemas/AudioAssessment"
 
     EvaluationUpdateAssignmentAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8632,13 +8648,15 @@ components:
               verbalAssessment:
                 type: string
               assessmentDate:
-                type: string
+                description: Unix timestamp
+                type: integer
               audioAssessments:
                 type: array
                 items:
                   $ref: "#/components/schemas/AudioAssessment"
 
     EvaluationCreateJournalFeedbackRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8651,6 +8669,7 @@ components:
                 type: string
 
     EvaluationSaveWorkspaceUserAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8678,6 +8697,7 @@ components:
                 type: string
 
     EvaluationUpdateWorkspaceUserAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8708,6 +8728,7 @@ components:
                 type: string
 
     EvaluationSaveSupplementationRequestRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8726,6 +8747,7 @@ components:
                 type: string
 
     EvaluationUpdateSupplementationRequestRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9841,7 +9863,7 @@ components:
         - verbalAssessment
       properties:
         identifier:
-          type: integer
+          type: string
         assessorIdentifier:
           type: string
         gradingScaleIdentifier:
@@ -10390,7 +10412,7 @@ components:
           type: integer
         student:
           description: userEntityId of student
-          type: string
+          type: integer
         workspaceEntityId:
           type: integer
         created:
@@ -10417,7 +10439,7 @@ components:
         - graded
         - passing
         - interimEvaluationRequest
-        - userEntityID
+        - userEntityId
         - firstName
         - lastName
         - studyProgramme
@@ -10450,7 +10472,7 @@ components:
           type: boolean
         interimEvaluationRequest:
           type: boolean
-        userEntityID:
+        userEntityId:
           type: integer
         firstName:
           type: string
@@ -10526,7 +10548,7 @@ components:
         - workspaceSubjectIdentifier
       properties:
         identifier:
-          type: integer
+          type: string
         author:
           type: string
         date:
@@ -10550,7 +10572,7 @@ components:
 
     EvaluationGradeScale:
       type: object
-      description: EvaluationGradeSystem object
+      description: EvaluationGradeScale object
       required:
         - id
         - name
@@ -10935,8 +10957,10 @@ components:
           type: integer
         requestDate:
           type: string
+          format: date-time
         cancellationDate:
           type: string
+          format: date-time
         requestText:
           type: string
         archived:
@@ -11431,20 +11455,27 @@ components:
         workspaceMaterialId:
           type: integer
         gradingScaleIdentifier:
+          nullable: true
           type: string
         gradingScaleSchoolDataSource:
+          nullable: true
           type: string
         grade:
+          nullable: true
           type: string
         gradeIdentifier:
+          nullable: true
           type: string
         gradeSchoolDataSource:
+          nullable: true
           type: string
         gradingScale:
+          nullable: true
           type: string
         verbalAssessment:
           type: string
         passed:
+          nullable: true
           type: boolean
         audioAssessments:
           type: array
@@ -12843,7 +12874,7 @@ components:
         - identifier
       properties:
         identifier:
-          type: integer
+          type: string
         subject:
           $ref: "#/components/schemas/Subject"
         courseNumber:

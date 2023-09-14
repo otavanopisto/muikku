@@ -18,18 +18,18 @@ import {
 import DeleteJournalFeedback from "~/components/evaluation/dialogs/delete-journal-feedback";
 import Button, { ButtonPill } from "~/components/general/button";
 import {
-  AssessmentRequest,
   EvaluationJournalFilters,
   EvaluationStudyDiaryEvent,
 } from "~/@types/evaluation";
 import Dropdown from "~/components/general/dropdown";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventListProps {
   i18n: i18nType;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   evaluation: EvaluationState;
   deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType;
 }

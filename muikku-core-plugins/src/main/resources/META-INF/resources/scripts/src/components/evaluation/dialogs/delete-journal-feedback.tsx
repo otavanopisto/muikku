@@ -13,7 +13,7 @@ import {
   DeleteEvaluationJournalFeedbackTriggerType,
   deleteEvaluationJournalFeedback,
 } from "../../../actions/main-function/evaluation/evaluationActions";
-import { EvaluationJournalFeedback } from "~/@types/evaluation";
+import { EvaluationJournalFeedback } from "~/generated/client";
 
 /**
  * DeleteJournalProps

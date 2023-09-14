@@ -7,18 +7,18 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
-import { AssessmentRequest } from "../../../@types/evaluation";
 import {
   deleteAssessmentRequest,
   DeleteAssessmentRequest,
   deleteInterimEvaluationRequest,
   DeleteInterimEvaluationRequest,
 } from "../../../actions/main-function/evaluation/evaluationActions";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 
 /**
  * ArchiveDialogProps
  */
-interface DeleteRequestDialogProps extends AssessmentRequest {
+interface DeleteRequestDialogProps extends EvaluationAssessmentRequest {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;

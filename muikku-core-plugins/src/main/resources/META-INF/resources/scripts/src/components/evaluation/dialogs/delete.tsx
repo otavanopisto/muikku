@@ -12,7 +12,7 @@ import {
   removeWorkspaceEventFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { i18nType } from "~/reducers/base/i18n";
-import { EvaluationEvent } from "~/@types/evaluation";
+import { EvaluationEvent } from "~/generated/client";
 
 /**
  * DeleteDialogProps

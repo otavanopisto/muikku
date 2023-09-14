@@ -21,7 +21,7 @@ import {
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
-import { AssessmentRequest } from "~/@types/evaluation";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 
 /**
  * SupplementationEditorProps
@@ -31,7 +31,7 @@ interface SupplementationEditorProps {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   type?: "new" | "edit";
   eventId?: string;
   editorLabel?: string;

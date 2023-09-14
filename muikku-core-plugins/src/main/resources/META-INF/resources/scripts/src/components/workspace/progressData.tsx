@@ -1,19 +1,18 @@
-import { WorkspaceActivityType } from "~/reducers/workspaces";
 import { i18nType } from "reducers/base/i18n";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
-
 import "~/sass/elements/workspace-activity.scss";
 import "~/sass/elements/wcag.scss";
+import { WorkspaceActivity } from "~/generated/client";
 
 /**
  * ProgressData
  */
 export default class ProgressData extends React.Component<
   {
-    activity: WorkspaceActivityType;
+    activity: WorkspaceActivity;
     i18n: i18nType;
     title?: string;
     modifier?: string;

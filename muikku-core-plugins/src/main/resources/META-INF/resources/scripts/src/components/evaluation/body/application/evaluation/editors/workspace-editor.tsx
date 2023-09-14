@@ -14,12 +14,7 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
-import {
-  AssessmentRequest,
-  BilledPrice,
-  EvaluationEnum,
-  EvaluationGradeSystem,
-} from "~/@types/evaluation";
+import { BilledPrice } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
@@ -28,6 +23,11 @@ import {
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
+import {
+  EvaluationAssessmentRequest,
+  EvaluationEventType,
+  EvaluationGradeScale,
+} from "~/generated/client";
 
 /**
  * WorkspaceEditorProps
@@ -37,7 +37,7 @@ interface WorkspaceEditorProps {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
@@ -59,7 +59,7 @@ interface WorkspaceEditorState {
   selectedPriceOption?: string;
   existingBilledPriceObject?: BilledPrice;
   locked: boolean;
-  activeGradeSystems: EvaluationGradeSystem[];
+  activeGradeSystems: EvaluationGradeScale[];
 }
 
 /**
@@ -77,7 +77,7 @@ class WorkspaceEditor extends SessionStateComponent<
   WorkspaceEditorProps,
   WorkspaceEditorState
 > {
-  private unknownGradeSystemIsUsed: EvaluationGradeSystem;
+  private unknownGradeSystemIsUsed: EvaluationGradeScale;
 
   /**
    * constructor
@@ -627,10 +627,10 @@ class WorkspaceEditor extends SessionStateComponent<
    * @param type type
    * @returns boolean if graded
    */
-  isGraded = (type: EvaluationEnum) =>
-    type === EvaluationEnum.EVALUATION_PASS ||
-    type === EvaluationEnum.EVALUATION_FAIL ||
-    type === EvaluationEnum.EVALUATION_IMPROVED;
+  isGraded = (type: EvaluationEventType) =>
+    type === "EVALUATION_PASS" ||
+    type === "EVALUATION_FAIL" ||
+    type === "EVALUATION_IMPROVED";
 
   /**
    * Check if evaluation is graded
@@ -697,7 +697,7 @@ class WorkspaceEditor extends SessionStateComponent<
       (type === "new" && this.hasGradedEvaluations()) ||
       (type === "edit" &&
         latestEvent &&
-        latestEvent.type === EvaluationEnum.EVALUATION_IMPROVED);
+        latestEvent.type === "EVALUATION_IMPROVED");
 
     /**
      * Default options

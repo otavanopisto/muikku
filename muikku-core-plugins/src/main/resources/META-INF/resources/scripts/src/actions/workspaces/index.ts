@@ -18,7 +18,6 @@ import {
   WorkspaceUpdateType,
   WorkspaceSignUpDetails,
   WorkspaceCurriculumFilterType,
-  WorkspaceActivityType,
   WorkspaceInterimEvaluationRequest,
 } from "~/reducers/workspaces";
 import {
@@ -44,7 +43,8 @@ import {
   MaterialContentNodeType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import workspace from "~/reducers/workspace";
+import { WorkspaceActivity } from "~/generated/client";
+import MApi from "~/api/api";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -68,7 +68,7 @@ export type SET_CURRENT_WORKSPACE = SpecificActionType<
 
 export type UPDATE_CURRENT_WORKSPACE_ACTIVITY = SpecificActionType<
   "UPDATE_CURRENT_WORKSPACE_ACTIVITY",
-  WorkspaceActivityType
+  WorkspaceActivity
 >;
 
 export type UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS = SpecificActionType<
@@ -520,6 +520,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
+      const evaluationApi = MApi.getEvaluationApi();
 
       const current: WorkspaceType = state.workspaces.currentWorkspace;
       if (
@@ -548,7 +549,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         /* let assesments: WorkspaceStudentAssessmentsType; */
         let assessmentRequests: WorkspaceAssessmentRequestType[];
         let interimEvaluationRequests: WorkspaceInterimEvaluationRequest[];
-        let activity: WorkspaceActivityType;
+        let activity: WorkspaceActivity;
         let additionalInfo: WorkspaceAdditionalInfoType;
         let contentDescription: MaterialContentNodeType;
         let producers: WorkspaceProducerType[];
@@ -607,12 +608,9 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                 true,
                 workspace && workspace.interimEvaluationRequests,
                 () =>
-                  promisify(
-                    mApi().evaluation.workspace.interimEvaluationRequests.read(
-                      data.workspaceId
-                    ),
-                    "callback"
-                  )()
+                  evaluationApi.getWorkspaceInterimEvaluationRequests({
+                    workspaceId: data.workspaceId,
+                  })
               )
             : null,
 
@@ -799,7 +797,7 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
 
       if (state.status.loggedIn) {
         try {
-          const activity = <WorkspaceActivityType>(
+          const activity = <WorkspaceActivity>(
             await promisify(
               mApi()
                 .evaluation.workspaces.students.activity.cacheClear()

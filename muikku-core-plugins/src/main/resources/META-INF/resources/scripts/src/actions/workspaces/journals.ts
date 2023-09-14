@@ -18,6 +18,7 @@ import {
   JournalCommentDelete,
   JournalCommentUpdate,
 } from "~/@types/journal";
+import MApi from "~/api/api";
 
 /**
  * JournalActionUpdate
@@ -902,17 +903,16 @@ const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
       const { userEntityId, workspaceEntityId, fail, success } = data;
 
       const currentJournalsState = getState().journals;
+      const evaluationApi = MApi.getEvaluationApi();
 
       try {
         const [updated] = await Promise.all([
           (async () => {
-            const journalFeedback = (await promisify(
-              mApi().evaluation.workspaces.students.journalfeedback.read(
-                workspaceEntityId,
-                userEntityId
-              ),
-              "callback"
-            )()) as WorkspaceJournalFeedback;
+            const journalFeedback =
+              await evaluationApi.getWorkspaceStudentJournalFeedback({
+                workspaceId: workspaceEntityId,
+                studentEntityId: userEntityId,
+              });
 
             return {
               journalFeedback,

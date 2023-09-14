@@ -11,9 +11,9 @@ import {
   MaterialCompositeRepliesType,
   WorkspaceType,
 } from "~/reducers/workspaces";
-import { AssessmentRequest } from "~/@types/evaluation";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-intermin-evaluation";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 
 /**
  * EvaluationEventContentCardProps
@@ -22,7 +22,7 @@ interface AssessmentListProps {
   i18n: i18nType;
   evaluation: EvaluationState;
   workspaces: WorkspaceType[];
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
 }
 
 /**

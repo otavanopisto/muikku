@@ -10,11 +10,11 @@ import {
 import {
   WorkspaceForumStatisticsType,
   ActivityLogType,
-  WorkspaceActivityType,
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
-import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
+import MApi from "~/api/api";
+import { Dispatch } from "react-redux";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -36,9 +36,11 @@ export interface UpdateSummaryTriggerType {
  */
 const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const evaluationApi = MApi.getEvaluationApi();
+
     try {
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
@@ -101,15 +103,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         await Promise.all([
           Promise.all(
             workspaces.map(async (workspace, index) => {
-              const activity = <WorkspaceActivityType>(
-                await promisify(
-                  mApi().evaluation.workspaces.students.activity.read(
-                    workspace.id,
-                    pyramusId
-                  ),
-                  "callback"
-                )()
-              );
+              const activity = await evaluationApi.getWorkspaceStudentActivity({
+                workspaceId: workspace.id,
+                studentEntityId: pyramusId,
+              });
               workspaces[index].activity = activity;
             })
           ),

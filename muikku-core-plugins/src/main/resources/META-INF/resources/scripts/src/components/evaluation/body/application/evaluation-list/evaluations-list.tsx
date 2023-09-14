@@ -1,6 +1,6 @@
 import * as React from "react";
 import EvaluationCard from "./evaluation-card";
-import { AssessmentRequest, EvaluationSort } from "~/@types/evaluation";
+import { EvaluationSort } from "~/@types/evaluation";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers/index";
 import { connect, Dispatch } from "react-redux";
@@ -18,6 +18,7 @@ import { UpdateImportanceObject } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
 import { AnyActionType } from "~/actions";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 
 /**
  * EvaluationListProps
@@ -92,7 +93,7 @@ export class EvaluationList extends React.Component<
    * also returns sorted list
    * @param assessments assessments
    */
-  filterAndSortAssessments = (assessments?: AssessmentRequest[]) => {
+  filterAndSortAssessments = (assessments?: EvaluationAssessmentRequest[]) => {
     const {
       evaluated,
       notEvaluated,
@@ -153,7 +154,9 @@ export class EvaluationList extends React.Component<
    * Filters assessments by selections aka active checkboxes
    * @param assessments assessments
    */
-  filterAssessmentsBySelections = (assessments: AssessmentRequest[]) => {
+  filterAssessmentsBySelections = (
+    assessments: EvaluationAssessmentRequest[]
+  ) => {
     const { evaluationFilters } = this.props.evaluations;
 
     let filteredAssessments = assessments;
@@ -188,7 +191,7 @@ export class EvaluationList extends React.Component<
    * @param sortBy sortBy
    */
   sortAssessmentsBySortBy = (
-    assessments: AssessmentRequest[],
+    assessments: EvaluationAssessmentRequest[],
     sortBy: SortBy
   ) => {
     const filteredBySortAssessments = assessments;
@@ -246,7 +249,9 @@ export class EvaluationList extends React.Component<
    * comparing it to workspace name or student name
    * @param assessments assessments
    */
-  filterAssessmentsBySearchString = (assessments: AssessmentRequest[]) => {
+  filterAssessmentsBySearchString = (
+    assessments: EvaluationAssessmentRequest[]
+  ) => {
     const filteredAssessments = assessments.filter((aItem) => {
       /**
        * Building checkable student name
@@ -295,7 +300,7 @@ export class EvaluationList extends React.Component<
    * Sorts assessments by importance selections.
    * @param assessments listo of assessments
    */
-  sortByImportance = (assessments: AssessmentRequest[]) => {
+  sortByImportance = (assessments: EvaluationAssessmentRequest[]) => {
     const { importantRequests, unimportantRequests, evaluationSort } =
       this.props.evaluations;
 
@@ -468,7 +473,8 @@ export class EvaluationList extends React.Component<
  * @param ascending ascending
  */
 const byDate =
-  (ascending: boolean) => (a: AssessmentRequest, b: AssessmentRequest) => {
+  (ascending: boolean) =>
+  (a: EvaluationAssessmentRequest, b: EvaluationAssessmentRequest) => {
     // equal items sort equally
     if (a.assessmentRequestDate === b.assessmentRequestDate) {
       return 0;

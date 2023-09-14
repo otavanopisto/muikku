@@ -7,10 +7,7 @@ import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers/index";
 import { AnyActionType } from "~/actions/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import {
-  MaterialAssignmentType,
-  MaterialEvaluationType,
-} from "~/reducers/workspaces/index";
+import { MaterialAssignmentType } from "~/reducers/workspaces/index";
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
@@ -21,31 +18,31 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import {
-  AssessmentRequest,
-  AudioAssessment,
-  EvaluationGradeSystem,
-  AssignmentEvaluationType,
-} from "~/@types/evaluation";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
-import {
-  AssignmentEvaluationGradeRequest,
-  AssignmentEvaluationSaveReturn,
-} from "~/@types/evaluation";
-import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { RecordValue } from "~/@types/recorder";
+import {
+  AssessmentWithAudio,
+  AudioAssessment,
+  EvaluationAssessmentRequest,
+  EvaluationGradeScale,
+  EvaluationType,
+  MaterialEvaluation,
+  SaveWorkspaceAssigmentAssessmentRequest,
+  UpdateWorkspaceAssigmentAssessmentRequest,
+} from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * AssignmentEditorProps
  */
 interface AssignmentEditorProps {
   i18n: i18nType;
-  selectedAssessment: AssessmentRequest;
-  materialEvaluation?: MaterialEvaluationType;
+  selectedAssessment: EvaluationAssessmentRequest;
+  materialEvaluation?: MaterialEvaluation;
   materialAssignment: MaterialAssignmentType;
   compositeReplies: MaterialCompositeRepliesType;
   evaluations: EvaluationState;
@@ -55,7 +52,7 @@ interface AssignmentEditorProps {
   modifiers?: string[];
   isRecording: boolean;
   updateMaterialEvaluationData: (
-    assigmentSaveReturn: AssignmentEvaluationSaveReturn
+    assignmentWithAudio: AssessmentWithAudio
   ) => void;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   /**
@@ -76,7 +73,7 @@ interface AssignmentEditorState {
   grade: string;
   draftId: string;
   locked: boolean;
-  activeGradeSystems: EvaluationGradeSystem[];
+  activeGradeSystems: EvaluationGradeScale[];
   showAudioAssessmentWarningOnClose: boolean;
 }
 
@@ -101,7 +98,7 @@ class AssignmentEditor extends SessionStateComponent<
   AssignmentEditorProps,
   AssignmentEditorState
 > {
-  private unknownGradeSystemIsUsed: EvaluationGradeSystem;
+  private unknownGradeSystemIsUsed: EvaluationGradeScale;
 
   /**
    * constructor
@@ -254,11 +251,15 @@ class AssignmentEditor extends SessionStateComponent<
     workspaceEntityId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-    dataToSave: AssignmentEvaluationGradeRequest;
+    dataToSave:
+      | SaveWorkspaceAssigmentAssessmentRequest
+      | UpdateWorkspaceAssigmentAssessmentRequest;
     materialId: number;
     defaultGrade: string;
     edit: boolean;
   }) => {
+    const evaluationApi = MApi.getEvaluationApi();
+
     this.setState({
       locked: true,
     });
@@ -267,63 +268,64 @@ class AssignmentEditor extends SessionStateComponent<
       data;
 
     try {
-      await promisify(
-        data.edit
-          ? mApi().evaluation.workspace.user.workspacematerial.assessment.update(
-              workspaceEntityId,
-              userEntityId,
-              workspaceMaterialId,
-              this.props.compositeReplies.evaluationInfo.id,
-              {
-                ...dataToSave,
-              }
-            )
-          : mApi().evaluation.workspace.user.workspacematerial.assessment.create(
-              workspaceEntityId,
-              userEntityId,
-              workspaceMaterialId,
-              {
-                ...dataToSave,
-              }
-            ),
-        "callback"
-      )().then(async (data: AssignmentEvaluationSaveReturn) => {
-        await mApi().workspace.workspaces.compositeReplies.cacheClear();
+      const assessmentWithAudio = data.edit
+        ? await evaluationApi.updateWorkspaceAssigmentAssessment({
+            workspaceId: workspaceEntityId,
+            userEntityId: userEntityId,
+            workspaceMaterialId: workspaceMaterialId,
+            assessmentId: this.props.compositeReplies.evaluationInfo.id,
+            updateWorkspaceAssigmentAssessmentRequest: {
+              ...(dataToSave as UpdateWorkspaceAssigmentAssessmentRequest),
+            },
+          })
+        : await evaluationApi.saveWorkspaceAssigmentAssessment({
+            workspaceId: workspaceEntityId,
+            userEntityId: userEntityId,
+            workspaceMaterialId: workspaceMaterialId,
+            saveWorkspaceAssigmentAssessmentRequest: {
+              ...(dataToSave as SaveWorkspaceAssigmentAssessmentRequest),
+            },
+          });
 
-        this.props.updateCurrentStudentCompositeRepliesData({
-          workspaceId: workspaceEntityId,
-          userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId,
-        });
+      await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
-        this.props.updateMaterialEvaluationData(data);
-
-        if (this.props.onAssigmentSave) {
-          this.props.onAssigmentSave(this.props.materialAssignment.materialId);
-        }
-
-        // Clears localstorage on success
-        this.justClear(
-          ["literalEvaluation", "assignmentEvaluationType", "grade"],
-          this.state.draftId
-        );
-
-        this.setState(
-          {
-            locked: false,
-          },
-          () => {
-            if (this.props.onClose) {
-              this.props.onClose();
-            }
-          }
-        );
+      this.props.updateCurrentStudentCompositeRepliesData({
+        workspaceId: workspaceEntityId,
+        userEntityId: userEntityId,
+        workspaceMaterialId: workspaceMaterialId,
       });
-    } catch (error) {
+
+      this.props.updateMaterialEvaluationData(assessmentWithAudio);
+
+      if (this.props.onAssigmentSave) {
+        this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+      }
+
+      // Clears localstorage on success
+      this.justClear(
+        ["literalEvaluation", "assignmentEvaluationType", "grade"],
+        this.state.draftId
+      );
+
+      this.setState(
+        {
+          locked: false,
+        },
+        () => {
+          if (this.props.onClose) {
+            this.props.onClose();
+          }
+        }
+      );
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       notificationActions.displayNotification(
         this.props.i18n.text.get(
           "plugin.evaluation.notifications.saveAssigmentGrade.error",
-          error.message
+          err.message
         ),
         "error"
       );
@@ -353,14 +355,14 @@ class AssignmentEditor extends SessionStateComponent<
         ? `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`
         : null;
 
-    let evaluationType =
+    let evaluationType: EvaluationType =
       this.state.assignmentEvaluationType === "GRADED"
-        ? AssignmentEvaluationType.ASSESSMENT
-        : AssignmentEvaluationType.SUPPLEMENTATIONREQUEST;
+        ? "ASSESSMENT"
+        : "SUPPLEMENTATIONREQUEST";
 
     if (this.state.assignmentEvaluationType === "INCOMPLETE") {
       gradingScaleIdentifier = null;
-      evaluationType = AssignmentEvaluationType.SUPPLEMENTATIONREQUEST;
+      evaluationType = "SUPPLEMENTATIONREQUEST";
     }
 
     const audioAssessments = this.state.records.map(
