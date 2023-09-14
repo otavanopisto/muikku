@@ -188,9 +188,6 @@ class EvaluationRequestDialog extends React.Component<
               )}
             </label>
             <p>
-              {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
-              )}
               {price > 0 ? (
                 <>
                   {this.props.i18n.text.get(
@@ -199,12 +196,21 @@ class EvaluationRequestDialog extends React.Component<
                   )}
                 </>
               ) : null}
+              {this.props.i18n.text.get(
+                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
+              )}
             </p>
           </div>
         ) : null}
         <div className="form-element dialog__content-row">
           <p>
+            <label htmlFor="messageForTeacher">
+              {this.props.i18n.text.get(
+                "plugin.workspace.evaluation.requestEvaluation.userInput.label"
+              )}
+            </label>
             <textarea
+              id="messageForTeacher"
               className="form-element__textarea"
               value={this.state.message}
               onChange={this.updateMessage}
