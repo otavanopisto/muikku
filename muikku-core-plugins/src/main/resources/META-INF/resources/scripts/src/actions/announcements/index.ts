@@ -11,7 +11,11 @@ import moment from "~/lib/moment";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 import i18n from "~/locales/i18n";
-import { Announcement, CreateAnnouncementRequest } from "~/generated/client";
+import {
+  Announcement,
+  CreateAnnouncementRequest,
+  GetAnnouncementsRequest,
+} from "~/generated/client";
 import MApi from "~/api/api";
 import { Dispatch } from "react-redux";
 
@@ -60,6 +64,7 @@ export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
  */
 export interface LoadAnnouncementsAsAClientTriggerType {
   (
+    fetchParams: GetAnnouncementsRequest,
     options?: any,
     callback?: (announcements: Announcement[]) => any
   ): AnyActionType;
@@ -543,12 +548,14 @@ const createAnnouncement: CreateAnnouncementTriggerType =
 
 /**
  * loadAnnouncementsAsAClient
+ * @param fetchParams fetchParams
  * @param options options
  * @param callback callback
  */
 const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
   function loadAnnouncementsFromServer(
-    options = { hideWorkspaceAnnouncements: "false", loadUserGroups: true },
+    fetchParams,
+    options = { loadUserGroups: true },
     callback
   ) {
     return async (
@@ -565,10 +572,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         delete options.loadUserGroups;
 
         const announcerApi = MApi.getAnnouncerApi();
-        const announcements = await announcerApi.getAnnouncements({
-          hideWorkspaceAnnouncements:
-            options.hideWorkspaceAnnouncements === "true" ? true : false,
-        });
+        const announcements = await announcerApi.getAnnouncements(fetchParams);
 
         if (loadUserGroups) {
           announcements.forEach((a) =>
