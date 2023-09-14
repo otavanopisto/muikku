@@ -124,7 +124,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
             <div className="card__text-row">
               <div className="card__subtitle">
                 {this.props.i18n.text.get(
-                  "plugin.ceepos.order.product.created"
+                  "plugin.ceepos.order.product.paid"
                 )}
               </div>
               <div>
@@ -133,17 +133,6 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                 )}
               </div>
             </div>
-            {this.props.ceepos.purchase.paid &&
-            this.props.ceepos.purchase.paid !== null ? (
-              <div className="card__text-row">
-                <div className="card__subtitle">
-                  {this.props.i18n.text.get("plugin.ceepos.order.product.paid")}
-                </div>
-                <div>
-                  {this.props.i18n.time.format(this.props.ceepos.purchase.paid)}
-                </div>
-              </div>
-            ) : null}
           </div>
         </>
       );
