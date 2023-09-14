@@ -175,33 +175,38 @@ class EvaluationRequestDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        <div className="dialog__content-row">
-          {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.description"
-          )}
-        </div>
         {hasFees ? (
+          <>
+            <div className="dialog__content-row">
+              <p>
+                {price > 0 ? (
+                  <>
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.price",
+                      price
+                    )}
+                  </>
+                ) : null}
+                {this.props.i18n.text.get(
+                  "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
+                )}
+              </p>
+            </div>
+            <div className="dialog__content-row">
+              <p>
+                {this.props.i18n.text.get(
+                  "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.paymentProcessor"
+                )}
+              </p>
+            </div>
+          </>
+        ) : (
           <div className="dialog__content-row">
-            <p>
-              {price > 0 ? (
-                <>
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.price",
-                    price
-                  )}
-                </>
-              ) : null}
-              {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
-              )}
-            </p>
-            <p>
-              {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.paymentProcessor"
-              )}
-            </p>
+            {this.props.i18n.text.get(
+              "plugin.workspace.evaluation.requestEvaluation.description"
+            )}
           </div>
-        ) : null}
+        )}
         <div className="form-element dialog__content-row">
           <p>
             <label htmlFor="messageForTeacher">
