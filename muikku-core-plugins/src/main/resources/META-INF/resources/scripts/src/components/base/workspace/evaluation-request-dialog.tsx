@@ -177,34 +177,48 @@ class EvaluationRequestDialog extends React.Component<
       <div>
         {hasFees ? (
           <>
-            <div className="dialog__content-row">
-              <p>
-                {price > 0 ? (
-                  <>
+            {price > 0 ? (
+              <>
+                <div className="dialog__content-row">
+                  <p>
                     {this.props.i18n.text.get(
-                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.price.known",
+                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.price",
                       price
                     )}
-                  </>
-                ) : (
-                  <>
                     {this.props.i18n.text.get(
-                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.price.unknown"
+                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
                     )}
-                  </>
-                )}
-                {this.props.i18n.text.get(
-                  "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
-                )}
-              </p>
-            </div>
-            <div className="dialog__content-row">
-              <p>
-                {this.props.i18n.text.get(
-                  "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.paymentProcessor"
-                )}
-              </p>
-            </div>
+                  </p>
+                </div>
+                <div className="dialog__content-row">
+                  <p>
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.paymentProcessor"
+                    )}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="dialog__content-row">
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.evaluation.requestEvaluation.description"
+                  )}
+                </div>
+                <div className="dialog__content-row">
+                  <label>
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFeeButNoPrice.title"
+                    )}
+                  </label>
+                  <p>
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFeeButNoPrice.content"
+                    )}
+                  </p>
+                </div>
+              </>
+            )}
           </>
         ) : (
           <div className="dialog__content-row">
