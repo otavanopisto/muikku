@@ -182,11 +182,17 @@ class EvaluationRequestDialog extends React.Component<
                 {price > 0 ? (
                   <>
                     {this.props.i18n.text.get(
-                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.price",
+                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.price.known",
                       price
                     )}
                   </>
-                ) : null}
+                ) : (
+                  <>
+                    {this.props.i18n.text.get(
+                      "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.price.unknown"
+                    )}
+                  </>
+                )}
                 {this.props.i18n.text.get(
                   "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
                 )}
