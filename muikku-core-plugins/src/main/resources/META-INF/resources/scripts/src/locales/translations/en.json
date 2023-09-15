@@ -371,7 +371,7 @@
       "remove_attachment": "Delete attachment",
       "studentNotification": "Student notification",
       "studentNotification_studytime": "Study time has ended",
-      "studentNotification_nopassedcourses": "Notification from low course graduations inside a year",
+      "studentNotification_nopassedcourses": "Notification of an inactive student who has completed too few courses during the year",
       "studentNotification_assessmentrequest": "Notification about inactivity in the first 2 months",
       "sent_interimEvaluation": "Interim evaluation request has been sent",
       "school": "School",

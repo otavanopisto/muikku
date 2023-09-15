@@ -11,7 +11,7 @@
       "comment": "Kommentoi",
       "confirmCancel": "Kyllä, peruuta",
       "confirmSave": "Olen varma",
-      "confirmRemove": "Suorita poisto",
+      "confirmRemove": "Hyväksy poisto",
       "create": "Luo",
       "draft": "Luonnos",
       "edit": "Muokkaa",
@@ -388,7 +388,7 @@
     },
     "wcag": {
       "select": "Valitse aine",
-      "selectYearCount": "Valitse vuosilukumäärä",
+      "selectYearCount": "Valitse vuosien lukumäärä",
       "userAvatar": "Opiskelijan kuva",
       "userSelect": "Aseta opiskelija valituksi"
     }
