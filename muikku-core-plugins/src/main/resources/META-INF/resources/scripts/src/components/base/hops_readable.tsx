@@ -1,20 +1,18 @@
 import * as React from "react";
-
 import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/form.scss";
 import { AnyActionType } from "~/actions";
+import { HopsUppersecondary } from "~/generated/client";
 
 /**
  * HopsProps
  */
 interface HopsProps {
-  data?: HOPSDataType;
-  defaultData: HOPSDataType;
+  data?: HopsUppersecondary;
+  defaultData: HopsUppersecondary;
   i18n: i18nType;
 }
 
@@ -22,7 +20,7 @@ interface HopsProps {
  * HopsState
  */
 interface HopsState {
-  hops: HOPSDataType;
+  hops: HopsUppersecondary;
 }
 
 /**

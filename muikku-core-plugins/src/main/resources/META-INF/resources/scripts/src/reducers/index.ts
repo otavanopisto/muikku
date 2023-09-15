@@ -6,7 +6,7 @@ import { CredentialsType } from "./base/credentials";
 import { StatusType } from "./base/status";
 import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsState } from "./announcements";
-import { HOPSType } from "./main-function/hops";
+import { HOPSState } from "./main-function/hops";
 import { MessagesState } from "./main-function/messages";
 import { WorkspacesType } from "./workspaces";
 import {
@@ -49,7 +49,7 @@ export interface StateType {
   eligibilitySubjects?: SubjectEligibilitySubjectsType;
   credentials?: CredentialsType;
   announcements?: AnnouncementsState;
-  hops?: HOPSType;
+  hops?: HOPSState;
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesState;

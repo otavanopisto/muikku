@@ -11,7 +11,7 @@ import { StateType } from "~/reducers";
 import NavigationMenu, {
   NavigationElement,
 } from "~/components/general/navigation";
-import { HOPSType } from "~/reducers/main-function/hops";
+import { HOPSState } from "~/reducers/main-function/hops";
 import { StatusType } from "~/reducers/base/status";
 
 /**
@@ -20,7 +20,7 @@ import { StatusType } from "~/reducers/base/status";
 interface NavigationProps {
   i18n: i18nType;
   location: TranscriptOfRecordLocationType;
-  hops: HOPSType;
+  hops: HOPSState;
   status: StatusType;
   records: RecordsType;
 }

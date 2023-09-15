@@ -24,7 +24,7 @@ import {
   ExaminationGrade,
 } from "~/@types/shared";
 import { StatusType } from "~/reducers/base/status";
-import { HOPSType } from "~/reducers/main-function/hops";
+import { HOPSState } from "~/reducers/main-function/hops";
 import { ExamEnrollmentDegreeStructure } from "~/@types/shared";
 import { YOType } from "~/reducers/main-function/records/yo";
 import {
@@ -131,7 +131,7 @@ interface MatriculationExaminationWizardProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
   updateEnrollemnts: (examId: number) => void;
-  hops: HOPSType;
+  hops: HOPSState;
   yo: YOType;
 }
 

@@ -12,10 +12,10 @@ import {
   WorkspaceListType,
   ActivityLogType,
 } from "~/reducers/workspaces";
-import { HOPSDataType } from "~/reducers/main-function/hops";
 import { PurchaseType, PurchaseProductType } from "../profile";
 import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
+import { HopsUppersecondary } from "~/generated/client";
 /**
  * GuiderUserLabelType
  */
@@ -164,7 +164,7 @@ export interface GuiderStudentUserProfileType {
   usergroups: Array<UserGroupType>;
   // Disabled until it really works
   //  vops: VOPSDataType,
-  hops: HOPSDataType;
+  hops: HopsUppersecondary;
   notifications: GuiderNotificationStudentsDataType;
   contactLogs: ContactLogData;
   currentWorkspaces: WorkspaceListType;

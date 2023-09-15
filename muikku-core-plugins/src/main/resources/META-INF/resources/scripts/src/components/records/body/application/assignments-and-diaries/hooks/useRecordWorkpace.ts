@@ -1,9 +1,8 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
+import MApi from "~/api/api";
 
 /**
  * UseFollowUpGoalsState
@@ -12,6 +11,8 @@ export interface UseAssignmentsState {
   isLoading: boolean;
   workspace: WorkspaceType;
 }
+
+const recordsApi = MApi.getRecordsApi();
 
 /**
  * Custom hook for student study hours
@@ -54,12 +55,10 @@ export const useRecordWorkspace = (
         /**
          * Loaded and filtered student activity
          */
-        const workspace = (await promisify(
-          mApi().records.workspaces.read(workspaceId, {
-            userIdentifier: userEntityId,
-          }),
-          "callback"
-        )()) as WorkspaceType;
+        const workspace = (await recordsApi.getRecordsWorkspace({
+          workspaceId: workspaceId,
+          userIdentifier: userEntityId,
+        })) as WorkspaceType;
 
         if (!isCancelled) {
           setRecordWorkspace((recordWorkspaceData) => ({

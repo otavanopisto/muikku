@@ -5,7 +5,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { RecordsType } from "~/reducers/main-function/records";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
-import { HOPSType } from "~/reducers/main-function/hops";
+import { HOPSState } from "~/reducers/main-function/hops";
 import {
   YOType,
   YOEligibilityType,
@@ -28,7 +28,7 @@ import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wi
 interface YOProps {
   i18n: i18nType;
   records: RecordsType;
-  hops: HOPSType;
+  hops: HOPSState;
   yo: YOType;
   updateYO: updateYOTriggerType;
   eligibilitySubjects: SubjectEligibilitySubjectsType;

@@ -14,7 +14,8 @@ import {
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
-import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
+import MApi from "~/api/api";
+import { Dispatch } from "react-redux";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -36,9 +37,11 @@ export interface UpdateSummaryTriggerType {
  */
 const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const recordsApi = MApi.getRecordsApi();
+
     try {
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
@@ -49,10 +52,9 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       const pyramusId = getState().status.userSchoolDataIdentifier;
 
       /* We need completed courses from Eligibility */
-      const eligibility: any = await promisify(
-        mApi().records.studentMatriculationEligibility.read(pyramusId),
-        "callback"
-      )();
+      const eligibility = await recordsApi.getStudentMatriculationEligibility({
+        studentIdentifier: pyramusId,
+      });
 
       /* We need past month activity */
       const activityLogs: any = await promisify(

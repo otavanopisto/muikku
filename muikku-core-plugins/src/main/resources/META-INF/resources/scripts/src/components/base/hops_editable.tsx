@@ -2,20 +2,20 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
+import { HopsUppersecondary } from "~/generated/client";
 
 /**
  * HopsProps
  */
 interface HopsProps {
-  data?: HOPSDataType;
-  defaultData: HOPSDataType;
-  onHopsChange?: (hops: HOPSDataType) => any;
+  data?: HopsUppersecondary;
+  defaultData: HopsUppersecondary;
+  onHopsChange?: (hops: HopsUppersecondary) => any;
   i18n: i18nType;
   status: StatusType;
 }
@@ -24,7 +24,7 @@ interface HopsProps {
  * HopsState
  */
 interface HopsState {
-  hops: HOPSDataType;
+  hops: HopsUppersecondary;
 }
 
 /**
