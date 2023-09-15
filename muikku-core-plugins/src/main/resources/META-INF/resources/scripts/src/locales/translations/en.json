@@ -1865,7 +1865,7 @@
       "cancelSuccess": "You cancelled the payment. Please contact your counselor.",
       "completionError": "Completing the student order failed",
       "createError": "$t(common:notifications.createError)",
-      "createError_evaluationLink": "Link creation for the evaluation payment failed",
+      "createError_paymentLocation": "Loading the redict location for payment failed",
       "createError_order": "Creating the order failed",
       "createError_payment": "There was problem with the payment. Please contact your counselor",
       "createSuccess": "Payment succeeded",
