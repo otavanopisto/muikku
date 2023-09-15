@@ -73,6 +73,14 @@ export interface DiscussionSubscribedThread {
 }
 
 /**
+ * DiscussionThreadLockEnum
+ */
+export enum DiscussionThreadLockEnum {
+  ALL = "ALL",
+  STUDENTS = "STUDENTS",
+}
+
+/**
  * DiscussionThreadType
  */
 export interface DiscussionThreadType {
@@ -82,7 +90,18 @@ export interface DiscussionThreadType {
   forumAreaId: number;
   id: number;
   lastModified: string;
-  locked: boolean;
+  /**
+   * Lock type of the thread
+   */
+  lock?: DiscussionThreadLockEnum | null;
+  /**
+   * User id of the user who locked the thread.
+   */
+  lockBy?: number | null;
+  /**
+   * Date when the thread was locked. Backend updates this field.
+   */
+  lockDate?: string | null;
   message: string;
   numReplies: number;
   sticky: boolean;
