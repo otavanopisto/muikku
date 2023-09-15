@@ -1103,7 +1103,8 @@ public class CeeposRESTService {
           order.getPaid(),
           order.getLastModifierId());
       
-      // TODO Add information about price?
+      // Message teachers about the assessment request
+      
       communicatorAssessmentRequestController.sendAssessmentRequestMessage(workspaceAssessmentRequest);
       break;
     }

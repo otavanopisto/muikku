@@ -109,7 +109,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     
     // Price is reset to zero if the user has previously paid for an assessment of this workspace 
     
-    if (price.getPrice() > 0) {
+    if (price != null && price.getPrice() > 0) {
       List<CeeposAssessmentRequestOrder> existingOrders = ceeposController.listAssessmentRequestOrdersByStudentAndWorkspace(
           sessionController.getLoggedUser().toId(),
           workspaceEntityId);
