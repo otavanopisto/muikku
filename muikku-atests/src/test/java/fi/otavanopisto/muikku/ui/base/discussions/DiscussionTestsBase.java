@@ -163,7 +163,7 @@ public class DiscussionTestsBase extends AbstractUITest {
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
       DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
-          "<p>Testing testing daa daa</p>", false, false);
+          "<p>Testing testing daa daa</p>", false, null);
       try{
         navigate("/discussion", false);
         waitAndClick("a.button-icon--discussion-action");
@@ -219,7 +219,7 @@ public class DiscussionTestsBase extends AbstractUITest {
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
       DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
-          "<p>Testing testing daa daa</p>", false, false);
+          "<p>Testing testing daa daa</p>", false, null);
       try{
         navigate("/discussion", false);
         selectFinnishLocale();
@@ -262,7 +262,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
       try {
         DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
-            "<p>Testing testing daa daa</p>", false, false);
+            "<p>Testing testing daa daa</p>", false, null);
         try {
         navigate("/discussion", false);
         waitAndClick(".application-list__item-header .discussion-category>span");
@@ -308,7 +308,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
       try {
         DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
-            "<p>Testing testing daa daa</p>", false, false);
+            "<p>Testing testing daa daa</p>", false, null);
         try {
           navigate("/discussion", false);
           waitAndClick(".application-list__item-header .discussion-category>span");
@@ -352,7 +352,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
       try {
         DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
-            "<p>Testing testing daa daa</p>", false, false);
+            "<p>Testing testing daa daa</p>", false, null);
         try {
           navigate("/discussion", false);
           selectFinnishLocale();

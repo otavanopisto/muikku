@@ -141,23 +141,23 @@ class DiscussionThreadReply extends React.Component<
                 </div>
 
                 {discussionItem.created !== discussionItem.lastModified ? (
-                  <span className="application-list__item-edited">
+                  <div className="application-list__item-edited">
                     {this.props.i18n.text.get(
                       "plugin.discussion.content.isEdited",
                       this.props.i18n.time.format(discussionItem.lastModified)
                     )}
-                  </span>
+                  </div>
                 ) : null}
               </DiscussionThreadBody>
             ) : (
               <DiscussionThreadBody html={discussionItem.message}>
                 {discussionItem.created !== discussionItem.lastModified ? (
-                  <span className="application-list__item-edited">
+                  <div className="application-list__item-edited">
                     {this.props.i18n.text.get(
                       "plugin.discussion.content.isEdited",
                       this.props.i18n.time.format(discussionItem.lastModified)
                     )}
-                  </span>
+                  </div>
                 ) : null}
               </DiscussionThreadBody>
             )}
