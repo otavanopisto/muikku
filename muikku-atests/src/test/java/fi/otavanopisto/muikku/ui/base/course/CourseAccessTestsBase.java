@@ -53,8 +53,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.");
         assertTextIgnoreCase(".panel--workspace-signup .button--signup-read-more", "Lue lisää");
         selectEnglishLocale();
-        assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Sign up to this workspace");
-        assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Would you like to enroll to this workspace? See your options to do so on the front page of Muikku.");
+        assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Sign up to this course");        assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Would you like to enroll to this workspace? See your options to do so on the front page of Muikku.");
         assertTextIgnoreCase(".panel--workspace-signup .button--signup-read-more", "Read more");
         click(".panel--workspace-signup .button--signup-read-more");
         waitForPresent("#studying");
