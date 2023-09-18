@@ -418,7 +418,7 @@
       "matriculation_eligible": "Sinulla on oikeus osallistua ylioppilaskirjoituksiin",
       "matriculationEnrollment": "Ilmoittaudu ylioppilaskirjoituksiin",
       "noAbiStatus": "<p>Sinulla ei ole vielä abistatusta eli oikeutta ilmoittautua ylioppilaskirjoituksiin.</p><p>Saavutat abistatuksen, kun olet suorittanut vähintään <b>{{coursesRequired}}</b> lukion pakollista kurssia tai <b>{{creditPointsRequired}}</b> opintopistettä pakollisia opintoja. Vaadittavista kursseista olet suorittanut <b>{{coursesCompleted}}</b> ja vaadittavia opintopisteitä <b>{{creditPoints}}</b>. Lisäksi sinulla tulee olla riittävästi kirjoitettavien aineiden kursseja suoritettuna.</p><p>Keskustele tarvittaessa ilmoittautumisoikeudesta oman ohjaajasi kanssa.</p>",
-      "noneSelectedSubjects": "Et ole valinnut yhtään kirjoitettavaa ainetta. Valitse aineet HOPS-lomakkeelta",
+      "noneSelectedSubjects": "Et ole valinnut yhtään kirjoitettavaa ainetta. Valitse aineet HOPS-lomakkeelta.",
       "notEvaluated": "Ei arviointia",
       "participationRights": "Ainekohtainen osallistumisoikeus",
       "returnedEvaluables": "arvioitavaa tehtävää viimeisen kuukauden aikana.",

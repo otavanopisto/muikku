@@ -305,7 +305,7 @@ public class ToRTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kirjoituksiin (12.12.2025 asti)");
 
       waitForVisible(".application-sub-panel__notification-body--studies-yo-subjects>div");
-      assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään ainetta kirjoitettavaksesi. Valitse aineet HOPS-lomakkeelta.");
+      assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään kirjoitettavaa ainetta. Valitse aineet HOPS-lomakkeelta.");
     }finally {
       archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
