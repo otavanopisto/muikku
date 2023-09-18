@@ -494,7 +494,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitAndClickAndConfirm(".dropdown__container-item:first-child .link--purchasable-product-dropdown", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
-        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "opiskelijalle on luotu tilaus.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         logout();
 
@@ -593,7 +593,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitAndClickAndConfirm(".dropdown__container-item:first-child .link--purchasable-product-dropdown", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
-        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "opiskelijalle on luotu tilaus.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         WebElement deleteOrderButton = findElement(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
@@ -652,7 +652,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitAndClickAndConfirm(".dropdown__container-item:first-child .link--purchasable-product-dropdown", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
-        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "opiskelijalle on luotu tilaus.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         logout();
         String orderNo = getLatestCeeposOrderId();

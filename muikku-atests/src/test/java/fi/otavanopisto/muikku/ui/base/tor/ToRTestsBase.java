@@ -264,7 +264,7 @@ public class ToRTestsBase extends AbstractUITest {
       
       waitForVisible(".tabs__tab-data--yo");
       waitForVisible(".button--yo-signup");
-      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kokeeseen (12.12.2025 asti)");
+      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kirjoituksiin (12.12.2025 asti)");
 
       waitForVisible(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label");
       assertTextIgnoreCase(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label", "Matematiikka, pitkä");
@@ -302,7 +302,7 @@ public class ToRTestsBase extends AbstractUITest {
       
       waitForVisible(".tabs__tab-data--yo");
       waitForVisible(".button--yo-signup");
-      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kokeeseen (12.12.2025 asti)");
+      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kirjoituksiin (12.12.2025 asti)");
 
       waitForVisible(".application-sub-panel__notification-body--studies-yo-subjects>div");
       assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään ainetta kirjoitettavaksesi. Valitse aineet HOPS-lomakkeelta.");
