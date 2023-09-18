@@ -567,7 +567,6 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
     ) => {
       const discussionApi = MApi.getDiscussionApi();
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
-      const workspaceApi = MApi.getWorkspaceApi();
 
       //Remove the current message
       if (!data.notRemoveCurrent) {
@@ -642,7 +641,7 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
                     maxResults: MAX_LOADED_AT_ONCE,
                   });
               } else {
-                threads = await workspaceApi.getWorkspaceForumLatest({
+                threads = await workspaceDiscussionApi.getWorkspaceForumLatest({
                   workspaceId: discussion.workspaceId,
                   firstResult,
                   maxResults: MAX_LOADED_AT_ONCE,
@@ -932,11 +931,6 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
 
       //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
       const firstResult = (actualThreadPage - 1) * MAX_LOADED_AT_ONCE;
-
-      /* const params = {
-        firstResult,
-        maxResults: MAX_LOADED_AT_ONCE,
-      }; */
 
       try {
         let newCurrentThread = discussion.threads.find(

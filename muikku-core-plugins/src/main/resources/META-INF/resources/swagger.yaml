@@ -3605,6 +3605,46 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/workspace/workspaces/{workspaceId}/forumLatest:
+    get:
+      operationId: getWorkspaceForumLatest
+      summary: Get workspace forum latest
+      description: Get workspace forum latest
+      tags:
+        - WorkspaceDiscussion
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Workspace forum latest
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   #GUIDER
   /rest/guider/student/{studentId}/contactLog:
     post:
@@ -7967,46 +8007,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MaterialContentNode"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/workspace/workspaces/{workspaceId}/forumLatest:
-    get:
-      operationId: getWorkspaceForumLatest
-      summary: Get workspace forum latest
-      description: Get workspace forum latest
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-        - name: firstResult
-          in: query
-          description: First result
-          schema:
-            type: integer
-            default: 0
-        - name: maxResults
-          in: query
-          description: Max results
-          schema:
-            type: integer
-            default: 10
-      responses:
-        "200":
-          description: Workspace forum latest
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DiscussionThread"
         "400":
           description: Invalid request was sent to the server
         "500":

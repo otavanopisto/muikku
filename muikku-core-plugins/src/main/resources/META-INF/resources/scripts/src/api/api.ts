@@ -328,15 +328,6 @@ export default class MApi {
   }
 
   /**
-   * Gets initialized workspace notes API
-   *
-   * @returns initialized workspace notes API
-   */
-  public static getWorkspaceApi() {
-    return new WorkspaceApi(configuration);
-  }
-
-  /**
    * Gets initialized discussions API
    *
    * @returns initialized workspaces API
