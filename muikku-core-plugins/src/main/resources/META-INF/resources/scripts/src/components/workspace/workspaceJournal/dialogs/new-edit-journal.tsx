@@ -9,7 +9,6 @@ import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import equals = require("deep-equal");
-import { WorkspaceJournalType } from "~/reducers/workspaces";
 import {
   CreateWorkspaceJournalForCurrentWorkspaceTriggerType,
   createWorkspaceJournalForCurrentWorkspace,

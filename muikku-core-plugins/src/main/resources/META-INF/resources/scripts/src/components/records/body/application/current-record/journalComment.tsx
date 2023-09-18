@@ -1,11 +1,11 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { JournalComment } from "~/@types/journal";
 import { AnyActionType } from "~/actions";
 import {
   ApplicationListItem,
   ApplicationListItemBody,
 } from "~/components/general/application-list";
+import { WorkspaceJournalComment } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
@@ -14,7 +14,7 @@ import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 /**
  * JournalCommentProps
  */
-interface JournalCommentProps extends JournalComment {
+interface JournalCommentProps extends WorkspaceJournalComment {
   i18n: i18nType;
   status: StatusType;
 }
@@ -24,7 +24,7 @@ interface JournalCommentProps extends JournalComment {
  * @param props props
  * @returns JSX.Element
  */
-const JournalComment: React.FC<JournalCommentProps> = (props) => {
+const WorkspaceJournalComment: React.FC<JournalCommentProps> = (props) => {
   const { comment, i18n, status, created, id, firstName, lastName, authorId } =
     props;
 
@@ -72,4 +72,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(JournalComment);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WorkspaceJournalComment);

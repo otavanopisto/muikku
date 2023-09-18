@@ -16,8 +16,8 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { WorkspaceJournalType } from "~/reducers/workspaces/journals";
 import JournalComment from "./journalComment";
+import { WorkspaceJournal } from "~/generated/client";
 
 /**
  * JournalProps
@@ -25,7 +25,7 @@ import JournalComment from "./journalComment";
 interface JournalProps {
   i18n: i18nType;
   displayNotification: DisplayNotificationTriggerType;
-  journal: WorkspaceJournalType;
+  journal: WorkspaceJournal;
   open: boolean;
   onJournalClick: (
     id: number

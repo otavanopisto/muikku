@@ -11,7 +11,7 @@ import "~/sass/elements/evaluation.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
-import { JournalComment } from "~/@types/journal";
+import { WorkspaceJournalComment } from "~/generated/client";
 
 /**
  * SupplementationEditorProps
@@ -20,7 +20,7 @@ interface WorkspaceJournalCommentEditorProps {
   i18n: i18nType;
   status: StatusType;
   locale: LocaleState;
-  journalComment?: JournalComment;
+  journalComment?: WorkspaceJournalComment;
   locked: boolean;
   diaryEventId: number;
   userEntityId: number;

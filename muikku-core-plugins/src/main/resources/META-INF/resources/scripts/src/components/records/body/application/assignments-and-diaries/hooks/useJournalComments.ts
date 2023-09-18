@@ -1,16 +1,15 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { i18nType } from "~/reducers/base/i18n";
-import { JournalComment } from "~/@types/journal";
+import { WorkspaceJournalComment } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * UseFollowUpGoalsState
  */
 export interface UseJournalCcmmentsState {
   isLoading: boolean;
-  journalComments: JournalComment[];
+  journalComments: WorkspaceJournalComment[];
 }
 
 /**
@@ -20,6 +19,8 @@ const initialState: UseJournalCcmmentsState = {
   isLoading: false,
   journalComments: [],
 };
+
+const workspaceApi = MApi.getWorkspaceApi();
 
 /**
  * Custom hook for student study hours
@@ -63,15 +64,10 @@ export const useJournalComments = (
        */
       const [comments] = await Promise.all([
         (async () => {
-          const journals = <JournalComment[]>(
-            await promisify(
-              mApi().workspace.workspaces.journal.comments.read(
-                workspaceId,
-                journalEntryId
-              ),
-              "callback"
-            )()
-          );
+          const journals = await workspaceApi.getWorkspaceJournalComments({
+            workspaceId,
+            journalEntryId,
+          });
           return journals;
         })(),
       ]);
@@ -85,6 +81,10 @@ export const useJournalComments = (
       }
     } catch (err) {
       if (!isCancelled.current) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         displayNotification(
           `${i18n.text.get(
             "plugin.records.errormessage.workspaceDiaryCommentsLoadFailed"

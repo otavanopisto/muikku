@@ -11,7 +11,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
-import { JournalComment } from "~/@types/journal";
+import { WorkspaceJournalComment } from "~/generated/client";
 
 /**
  * SupplementationEditorProps
@@ -19,7 +19,7 @@ import { JournalComment } from "~/@types/journal";
 interface JournalCommentEditorProps {
   i18n: i18nType;
   locale: LocaleState;
-  journalComment?: JournalComment;
+  journalComment?: WorkspaceJournalComment;
   locked: boolean;
   journalEventId: number;
   userEntityId: number;

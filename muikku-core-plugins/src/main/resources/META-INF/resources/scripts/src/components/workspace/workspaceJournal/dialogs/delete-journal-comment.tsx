@@ -9,11 +9,11 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
-import { JournalComment } from "~/@types/journal";
 import {
   DeleteWorkspaceJournalCommentTriggerType,
   deleteWorkspaceJournalComment,
 } from "~/actions/workspaces/journals";
+import { WorkspaceJournalComment } from "~/generated/client";
 
 /**
  * DeleteJournalProps
@@ -21,7 +21,7 @@ import {
 interface DeleteJournalCommentProps {
   i18n: i18nType;
   workspaceEntityId: number;
-  journalComment: JournalComment;
+  journalComment: WorkspaceJournalComment;
   deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,10 +63,7 @@ class DeleteJournalComment extends React.Component<
   deleteJournalComment(closeDialog: () => void) {
     this.setState({ locked: true });
     this.props.deleteWorkspaceJournalComment({
-      deleteCommentPayload: {
-        id: this.props.journalComment.id,
-        journalEntryId: this.props.journalComment.journalEntryId,
-      },
+      commentId: this.props.journalComment.id,
       journalEntryId: this.props.journalComment.journalEntryId,
       workspaceEntityId: this.props.workspaceEntityId,
     });

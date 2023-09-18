@@ -1,7 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { JournalComment } from "~/@types/journal";
 import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import Link from "~/components/general/link";
@@ -14,19 +13,20 @@ import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
 import { i18nType } from "~/reducers/base/i18n";
+import { WorkspaceJournalComment } from "~/generated/client";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventCommentProps {
   i18n: i18nType;
-  journalComment: JournalComment;
+  journalComment: WorkspaceJournalComment;
   userEntityId: number;
   workspaceEntityId: number;
   displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
   canDelete: boolean;
-  onEditClick: (comment: JournalComment) => void;
+  onEditClick: (comment: WorkspaceJournalComment) => void;
 }
 
 /**

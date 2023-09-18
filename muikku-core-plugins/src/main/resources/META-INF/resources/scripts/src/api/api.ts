@@ -281,7 +281,7 @@ export default class MApi {
    *
    * @returns initialized workspaces API
    */
-  public static getWorkspacesApi() {
+  public static getWorkspaceApi() {
     return new WorkspaceApi(configuration);
   }
 

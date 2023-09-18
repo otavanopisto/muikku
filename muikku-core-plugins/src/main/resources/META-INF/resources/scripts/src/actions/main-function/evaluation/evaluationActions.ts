@@ -32,7 +32,6 @@ import {
   WorkspaceSupplementationSaveRequest,
 } from "../../../@types/evaluation";
 import { MaterialAssignmentType } from "../../../reducers/workspaces/index";
-import { EvaluationStudyDiaryEvent } from "../../../@types/evaluation";
 import { Dispatch } from "react-redux";
 import {
   UpdateImportanceObject,
@@ -51,11 +50,11 @@ import {
   EvaluationStatus,
 } from "../../../@types/evaluation";
 import {
-  JournalComment,
-  JournalCommentCreate,
-  JournalCommentDelete,
-  JournalCommentUpdate,
-} from "~/@types/journal";
+  CreateWorkspaceJournalCommentRequest,
+  UpdateWorkspaceJournalCommentRequest,
+  WorkspaceJournal,
+} from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 //////State update interfaces
 export type EVALUATION_BASE_PRICE_STATE_UPDATE = SpecificActionType<
@@ -217,7 +216,7 @@ export type EVALUATION_JOURNAL_STATE_UPDATE = SpecificActionType<
 
 export type EVALUATION_JOURNAL_EVENTS_LOAD = SpecificActionType<
   "EVALUATION_JOURNAL_EVENTS_LOAD",
-  EvaluationStudyDiaryEvent[]
+  WorkspaceJournal[]
 >;
 
 // EVALUATION JOURNAL COMMENTS
@@ -238,7 +237,7 @@ export type EVALUATION_JOURNAL_COMMENTS_LOAD = SpecificActionType<
 export type EVALUATION_JOURNAL_COMMENTS_CREATE = SpecificActionType<
   "EVALUATION_JOURNAL_COMMENTS_CREATE",
   {
-    updatedJournalEntryList: EvaluationStudyDiaryEvent[];
+    updatedJournalEntryList: WorkspaceJournal[];
     updatedCommentsList: EvaluationJournalCommentsByJournal;
   }
 >;
@@ -253,7 +252,7 @@ export type EVALUATION_JOURNAL_COMMENTS_UPDATE = SpecificActionType<
 export type EVALUATION_JOURNAL_COMMENTS_DELETE = SpecificActionType<
   "EVALUATION_JOURNAL_COMMENTS_DELETE",
   {
-    updatedJournalEntryList: EvaluationStudyDiaryEvent[];
+    updatedJournalEntryList: WorkspaceJournal[];
     updatedCommentsList: EvaluationJournalCommentsByJournal;
   }
 >;
@@ -590,7 +589,7 @@ export interface LoadEvaluationJournalCommentsFromServerTriggerType {
  */
 export interface CreateEvaluationJournalCommentTriggerType {
   (data: {
-    newCommentPayload: JournalCommentCreate;
+    newCommentPayload: CreateWorkspaceJournalCommentRequest;
     journalEntryId: number;
     workspaceEntityId: number;
     success?: () => void;
@@ -603,7 +602,7 @@ export interface CreateEvaluationJournalCommentTriggerType {
  */
 export interface UpdateEvaluationJournalCommentTriggerType {
   (data: {
-    updatedCommentPayload: JournalCommentUpdate;
+    updatedCommentPayload: UpdateWorkspaceJournalCommentRequest;
     journalEntryId: number;
     workspaceEntityId: number;
     success?: () => void;
@@ -616,7 +615,7 @@ export interface UpdateEvaluationJournalCommentTriggerType {
  */
 export interface DeleteEvaluationJournalCommentTriggerType {
   (data: {
-    deleteCommentPayload: JournalCommentDelete;
+    commentId: number;
     journalEntryId: number;
     workspaceEntityId: number;
     success?: () => void;
@@ -1245,26 +1244,20 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
       getState: () => StateType
     ) => {
       const state = getState();
+      const workspaceApi = MApi.getWorkspaceApi();
 
       dispatch({
         type: "EVALUATION_JOURNAL_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
       });
 
-      let studyDiaryEvents: EvaluationStudyDiaryEvent[] = [];
-
       try {
-        studyDiaryEvents = (await promisify(
-          mApi().workspace.workspaces.journal.read(
-            data.assessment.workspaceEntityId,
-            {
-              userEntityId: data.assessment.userEntityId,
-              firstResult: 0,
-              maxResults: 512,
-            }
-          ),
-          "callback"
-        )()) as EvaluationStudyDiaryEvent[] | [];
+        const studyDiaryEvents = await workspaceApi.getWorkspaceJournals({
+          workspaceId: data.assessment.workspaceEntityId,
+          userEntityId: data.assessment.userEntityId,
+          firstResult: 0,
+          maxResults: 512,
+        });
 
         const obj: EvaluationJournalCommentsByJournal = studyDiaryEvents.reduce(
           (o, key) => ({ ...o, [key.id]: [] }),
@@ -1286,7 +1279,7 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
           payload: <EvaluationStateType>"READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -2406,17 +2399,17 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
       const evaluationJournalComments =
         getState().evaluations.evaluationJournalComments;
 
+      const workspaceApi = MApi.getWorkspaceApi();
+
       if (
         !evaluationJournalComments.commentsLoaded.includes(data.journalEntryId)
       ) {
         try {
-          const journalCommentList = (await promisify(
-            mApi().workspace.workspaces.journal.comments.read(
-              data.workspaceId,
-              data.journalEntryId
-            ),
-            "callback"
-          )()) as JournalComment[];
+          const journalCommentList =
+            await workspaceApi.getWorkspaceJournalComments({
+              workspaceId: data.workspaceId,
+              journalEntryId: data.journalEntryId,
+            });
 
           const updatedComments: EvaluationJournalCommentsByJournal = {
             ...evaluationJournalComments.comments,
@@ -2435,7 +2428,7 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
             },
           });
         } catch (err) {
-          if (!(err instanceof MApiError)) {
+          if (!isMApiError(err)) {
             throw err;
           }
           dispatch(
@@ -2470,20 +2463,21 @@ const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType 
         success,
       } = data;
 
+      const workspaceApi = MApi.getWorkspaceApi();
+
       const evaluationState = getState().evaluations;
 
       try {
         const [updated] = await Promise.all([
           (async () => {
             // New comment data
-            const newComment = (await promisify(
-              mApi().workspace.workspaces.journal.comments.create(
-                workspaceEntityId,
-                journalEntryId,
-                newCommentPayload
-              ),
-              "callback"
-            )()) as JournalComment;
+            const newComment = await workspaceApi.createWorkspaceJournalComment(
+              {
+                workspaceId: workspaceEntityId,
+                journalEntryId: journalEntryId,
+                createWorkspaceJournalCommentRequest: newCommentPayload,
+              }
+            );
 
             const updatedJournalIndex =
               evaluationState.evaluationDiaryEntries.data.findIndex(
@@ -2518,7 +2512,7 @@ const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType 
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -2553,21 +2547,21 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
         success,
       } = data;
 
+      const workspaceApi = MApi.getWorkspaceApi();
+
       const evaluationState = getState().evaluations;
 
       try {
         const [updated] = await Promise.all([
           (async () => {
             // Updated comment data
-            const updatedComment = (await promisify(
-              mApi().workspace.workspaces.journal.comments.update(
-                workspaceEntityId,
-                journalEntryId,
-                updatedCommentPayload.id,
-                updatedCommentPayload
-              ),
-              "callback"
-            )()) as JournalComment;
+            const updatedComment =
+              await workspaceApi.updateWorkspaceJournalComment({
+                workspaceId: workspaceEntityId,
+                journalEntryId: journalEntryId,
+                journalCommentId: updatedCommentPayload.id,
+                updateWorkspaceJournalCommentRequest: updatedCommentPayload,
+              });
 
             const updatedCommentsList = {
               ...evaluationState.evaluationJournalComments.comments,
@@ -2597,7 +2591,7 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -2624,27 +2618,21 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const {
-        deleteCommentPayload,
-        journalEntryId,
-        workspaceEntityId,
-        fail,
-        success,
-      } = data;
+      const { commentId, journalEntryId, workspaceEntityId, fail, success } =
+        data;
+
+      const workspaceApi = MApi.getWorkspaceApi();
 
       const evaluationState = getState().evaluations;
 
       try {
         const [updated] = await Promise.all([
           (async () => {
-            await promisify(
-              mApi().workspace.workspaces.journal.comments.del(
-                workspaceEntityId,
-                journalEntryId,
-                deleteCommentPayload.id
-              ),
-              "callback"
-            )();
+            await workspaceApi.deleteWorkspaceJournalComment({
+              workspaceId: workspaceEntityId,
+              journalEntryId: journalEntryId,
+              journalCommentId: commentId,
+            });
 
             // Journal index that comment count needs to be updated
             const updatedJournalIndex =
@@ -2664,7 +2652,7 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
             // Find index of deleted comment
             const indexOfDeletedComment = updatedCommentsList[
               journalEntryId
-            ].findIndex((c) => c.id === deleteCommentPayload.id);
+            ].findIndex((c) => c.id === commentId);
 
             // Splice it out
             updatedCommentsList[journalEntryId].splice(
@@ -2692,7 +2680,7 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

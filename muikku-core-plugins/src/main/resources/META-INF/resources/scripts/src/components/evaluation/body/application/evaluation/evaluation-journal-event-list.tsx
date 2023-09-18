@@ -20,9 +20,9 @@ import Button, { ButtonPill } from "~/components/general/button";
 import {
   AssessmentRequest,
   EvaluationJournalFilters,
-  EvaluationStudyDiaryEvent,
 } from "~/@types/evaluation";
 import Dropdown from "~/components/general/dropdown";
+import { WorkspaceJournal } from "~/generated/client";
 
 /**
  * EvaluationEventContentCardProps
@@ -141,10 +141,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
    * @param a a
    * @param b b
    */
-  const sortByDate = (
-    a: EvaluationStudyDiaryEvent,
-    b: EvaluationStudyDiaryEvent
-  ) => {
+  const sortByDate = (a: WorkspaceJournal, b: WorkspaceJournal) => {
     const dateA = new Date(a.created);
     const dateB = new Date(b.created);
 

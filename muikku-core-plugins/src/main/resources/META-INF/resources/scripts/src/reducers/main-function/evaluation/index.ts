@@ -8,13 +8,13 @@ import {
   EvaluationSort,
   EvaluationAssigmentData,
   EvaluationEvent,
-  EvaluationStudyDiaryEvent,
   EvaluationBasePriceById,
   EvaluationFilters,
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
 import { EvaluationJournalFeedback } from "../../../@types/evaluation";
+import { WorkspaceJournal } from "~/generated/client";
 
 /**
  * EvaluationStateAndData
@@ -41,7 +41,7 @@ export interface EvaluationState {
   evaluationSelectedAssessmentId?: AssessmentRequest;
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
   evaluationJournalFeedback?: EvaluationStateAndData<EvaluationJournalFeedback>;
-  evaluationDiaryEntries?: EvaluationStateAndData<EvaluationStudyDiaryEvent[]>;
+  evaluationDiaryEntries?: EvaluationStateAndData<WorkspaceJournal[]>;
   evaluationJournalComments: {
     comments: EvaluationJournalCommentsByJournal;
     commentsLoaded: number[];
