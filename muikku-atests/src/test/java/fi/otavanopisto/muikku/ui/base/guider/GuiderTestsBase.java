@@ -517,11 +517,11 @@ public class GuiderTestsBase extends AbstractUITest {
         selectFinnishLocale();
         navigate("/profile#purchases", false);
         assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
-        assertTextIgnoreCase(".application-list__header-primary-description", "Tilaus on luotu ja sinulle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertTextIgnoreCase(".application-list__header-primary-description", "Tilauksesi on luotu.");
         assertPresent(".application-list__header-primary-actions .button--pay-student-order");
         click(".application-list__header-primary-actions .button--pay-student-order");
         waitForPresent(".card__text-row--ceepos-feedback");
-        assertTextIgnoreCase(".card__text-row--ceepos-feedback", "Tilauksen maksutapahtuma onnistui.");
+        assertTextIgnoreCase(".card__text-row--ceepos-feedback", "Tilauksen maksutapahtuma onnistui");
         assertTextIgnoreCase(".button--back-to-muikku", "Muikun etusivulle");
         click(".button--back-to-muikku");
         
@@ -538,7 +538,7 @@ public class GuiderTestsBase extends AbstractUITest {
           navigate("/profile#general", false);
           assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.addMonths(monthsToIncrease).format(DateTimeFormatter.ofPattern("dd.M.yyyy")));
           navigate("/profile#purchases", false);
-          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Tilaus on viety loppuun ja opintoaikaasi on pidennetty.");
+          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Tilauksesi on maksettu ja käsitelty.");
         }else {
           assertTrue("paymentConfirmation status not 200", false);
         }
@@ -673,7 +673,7 @@ public class GuiderTestsBase extends AbstractUITest {
         selectFinnishLocale();
         navigate("/profile#purchases", false);
         assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
-        assertTextIgnoreCase(".application-list__header-primary-description", "Tilaus on luotu ja sinulle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertTextIgnoreCase(".application-list__header-primary-description", "Tilauksesi on luotu.");
         assertPresent(".application-list__header-primary-actions .button--pay-student-order");
         click(".application-list__header-primary-actions .button--pay-student-order");
         waitForPresent(".card__text-row--ceepos-feedback");
@@ -690,7 +690,7 @@ public class GuiderTestsBase extends AbstractUITest {
           navigate("/profile#general", false);
           assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.getNextWeek().format(DateTimeFormatter.ofPattern("dd.M.yyyy")));
           navigate("/profile#purchases", false);
-          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Peruutit tilauksen. Jos haluat uuden tilauksen, ota yhteyttä ohjaajaasi.");
+          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Peruutit tilauksen.");
           logout();
           mockBuilder.mockLogin(admin);
           login();
