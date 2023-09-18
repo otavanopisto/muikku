@@ -8,12 +8,11 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
-
 import {
   deleteDiscussionArea,
   DeleteDiscussionAreaTriggerType,
 } from "~/actions/discussion";
-import { DiscussionType } from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 
 /**
@@ -21,7 +20,7 @@ import { StateType } from "~/reducers";
  */
 interface DiscussionDeleteAreaProps {
   i18n: i18nType;
-  discussion: DiscussionType;
+  discussion: DiscussionState;
   children: React.ReactElement<any>;
   deleteDiscussionArea: DeleteDiscussionAreaTriggerType;
 }

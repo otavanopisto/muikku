@@ -1,9 +1,5 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import {
-  DiscussionUserType,
-  DiscussionThreadReplyType,
-} from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
 import DeleteThreadComponent from "../../dialogs/delete-thread-component";
@@ -21,15 +17,18 @@ import {
 } from "./threads/threads";
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
+import { AnyActionType } from "~/actions";
+import { DiscussionThreadReply, DiscussionUser } from "~/generated/client";
+import * as moment from "moment";
 
 /**
  * DiscussionThreadReplyProps
  */
 interface DiscussionThreadReplyProps {
-  discussionItem: DiscussionThreadReplyType;
+  discussionItem: DiscussionThreadReply;
   i18n: i18nType;
   status: StatusType;
-  user: DiscussionUserType;
+  user: DiscussionUser;
   avatar?: JSX.Element;
   isStudent: boolean;
   isHidden: boolean;
@@ -53,7 +52,7 @@ interface DiscussionThreadReplyState {
 /**
  * DiscussionThreadReply
  */
-class DiscussionThreadReply extends React.Component<
+class DiscussionThreadReplyComponent extends React.Component<
   DiscussionThreadReplyProps,
   DiscussionThreadReplyState
 > {
@@ -69,7 +68,7 @@ class DiscussionThreadReply extends React.Component<
 
   /**
    * handleOnReplyClick
-   * @param type
+   * @param type type
    */
   handleOnReplyClick =
     (type: "answer" | "modify" | "quote") =>
@@ -90,7 +89,6 @@ class DiscussionThreadReply extends React.Component<
 
   /**
    * render
-   * @returns
    */
   render() {
     const {
@@ -140,7 +138,9 @@ class DiscussionThreadReply extends React.Component<
                   ]
                 </div>
 
-                {discussionItem.created !== discussionItem.lastModified ? (
+                {!moment(discussionItem.created).isSame(
+                  discussionItem.lastModified
+                ) ? (
                   <div className="application-list__item-edited">
                     {this.props.i18n.text.get(
                       "plugin.discussion.content.isEdited",
@@ -151,7 +151,9 @@ class DiscussionThreadReply extends React.Component<
               </DiscussionThreadBody>
             ) : (
               <DiscussionThreadBody html={discussionItem.message}>
-                {discussionItem.created !== discussionItem.lastModified ? (
+                {!moment(discussionItem.created).isSame(
+                  discussionItem.lastModified
+                ) ? (
                   <div className="application-list__item-edited">
                     {this.props.i18n.text.get(
                       "plugin.discussion.content.isEdited",
@@ -255,8 +257,7 @@ class DiscussionThreadReply extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -267,14 +268,13 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DiscussionThreadReply);
+)(DiscussionThreadReplyComponent);

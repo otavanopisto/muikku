@@ -5,7 +5,7 @@ import NewThread from "../dialogs/new-thread";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import HoverButton from "~/components/general/hover-button";
 import Toolbar from "./application/toolbar";
-import { DiscussionType } from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 import DiscussionThreads from "./application/discussion-threads";
 import DiscussionCurrentThread from "./application/discussion-current-thread";
@@ -24,7 +24,7 @@ interface DiscussionApplicationState {}
  */
 interface DiscussionApplicationProps {
   i18n: i18nType;
-  discussion: DiscussionType;
+  discussion: DiscussionState;
 }
 
 /**

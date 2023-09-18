@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-import { DiscussionType } from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/link.scss";
@@ -21,7 +21,7 @@ import { StateType } from "~/reducers";
  */
 interface DiscussionModifyAreaProps {
   i18n: i18nType;
-  discussion: DiscussionType;
+  discussion: DiscussionState;
   children: React.ReactElement<any>;
   updateDiscussionArea: UpdateDiscussionAreaTriggerType;
 }

@@ -1,13 +1,11 @@
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
-
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import {
@@ -17,13 +15,14 @@ import {
   deleteDiscussionThreadReplyFromCurrent,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
+import { DiscussionThreadReply } from "~/generated/client";
 
 /**
  * DiscussionDeleteThreadComponentProps
  */
 interface DiscussionDeleteThreadComponentProps {
   i18n: i18nType;
-  reply?: DiscussionThreadReplyType;
+  reply?: DiscussionThreadReply;
   deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType;
   deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType;
   children: React.ReactElement<any>;
@@ -117,7 +116,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
     );
 
     /**
-     * @param closeDialog
+     * @param closeDialog closeDialog
      */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">

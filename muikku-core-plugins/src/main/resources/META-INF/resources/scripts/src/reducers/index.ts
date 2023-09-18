@@ -16,7 +16,7 @@ import {
   StudyprogrammeTypes,
 } from "./main-function/users";
 import { UserIndexType } from "./user-index";
-import { DiscussionType } from "./discussion";
+import { DiscussionState } from "./discussion";
 import { GuiderType } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
 import {
@@ -60,7 +60,7 @@ export interface StateType {
   organizationSummary?: OrganizationSummaryType;
   organizationWorkspaces?: WorkspacesType;
   organizationUsers?: UsersType;
-  discussion?: DiscussionType;
+  discussion?: DiscussionState;
   guider?: GuiderType;
   records?: RecordsType;
   error?: ErrorType;

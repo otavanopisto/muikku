@@ -1,6 +1,5 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
@@ -13,19 +12,20 @@ import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
+import { DiscussionThreadReply } from "~/generated/client";
 
 /**
  * TODO: maybe make this more generic,
  * since there is need for this kind of a reply outside discussion,
  * for example in the communicator and the guider
- * */
+ */
 
 /**
  * ReplyThreadDrawerProps
  */
 interface ReplyThreadDrawerProps {
   i18n: i18nType;
-  reply?: DiscussionThreadReplyType;
+  reply?: DiscussionThreadReply;
   quote?: string;
   quoteAuthor?: string;
   currentId: number;

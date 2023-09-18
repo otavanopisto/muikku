@@ -1,5 +1,6 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
+import MApi from "~/api/api";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import {
@@ -303,14 +304,10 @@ const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissions
     ) => {
       const state = getState();
 
+      const discussionApi = MApi.getDiscussionApi();
+
       const areaPermissions = state.status.services.environmentForum.isAvailable
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          <any>(
-            await promisify(
-              mApi().forum.environmentAreaPermissions.read(),
-              "callback"
-            )()
-          )
+        ? await discussionApi.getDiscussionEnvironmentAreaPermissions()
         : null;
 
       dispatch({

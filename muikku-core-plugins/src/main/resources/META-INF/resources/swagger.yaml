@@ -2661,6 +2661,37 @@ paths:
           description: Internal server error
 
   /rest/forum/areas/{areaId}/threads/{threadId}:
+    get:
+      operationId: getDiscussionThread
+      summary: Get discussion thread
+      description: Get discussion thread
+      tags:
+        - Discussion
+      parameters:
+        - name: areaId
+          in: path
+          description: Discussion area id
+          required: true
+          schema:
+            type: integer
+        - name: threadId
+          in: path
+          description: Discussion thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Discussion thread
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     put:
       operationId: updateDiscussionThread
       summary: Update discussion thread
@@ -2900,6 +2931,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DiscussionSubscribedThread"
+        "204":
+          description: Discussion thread subscription untoggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -3256,6 +3289,43 @@ paths:
           description: Internal server error
 
   /rest/workspace/workspaces/{workspaceentityId}/forumAreas/{areaId}/threads/{threadId}:
+    get:
+      operationId: getWorkspaceDiscussionThread
+      summary: Get workspace discussion thread
+      description: Get workspace discussion thread
+      tags:
+        - WorkspaceDiscussion
+      parameters:
+        - name: workspaceentityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: areaId
+          in: path
+          description: Discussion area id
+          required: true
+          schema:
+            type: integer
+        - name: threadId
+          in: path
+          description: Discussion thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace discussion thread
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     put:
       operationId: updateWorkspaceDiscussionThread
       summary: Update workspace discussion thread
@@ -7916,6 +7986,18 @@ paths:
           required: true
           schema:
             type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: Workspace forum latest
@@ -8759,6 +8841,7 @@ components:
                 type: string
 
     DiscussionAreaCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8774,6 +8857,7 @@ components:
                 type: string
 
     DiscussionAreaUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8789,6 +8873,7 @@ components:
                 type: string
 
     DiscussionThreadCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8813,6 +8898,7 @@ components:
                 type: integer
 
     DiscussionThreadUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8820,6 +8906,7 @@ components:
               - $ref: "#/components/schemas/DiscussionThread"
 
     DiscussionThreadReplyCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8830,18 +8917,16 @@ components:
             properties:
               message:
                 type: string
+              parentReplyId:
+                type: integer
 
     DiscussionThreadReplyUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
-            type: object
-            description: DiscussionThreadReplyUpdateRequestBody object
-            required:
-              - message
-            properties:
-              message:
-                type: string
+            allOf:
+              - $ref: "#/components/schemas/DiscussionThreadReply"
 
     ContactLogCreateEventRequestBody:
       content:
@@ -10192,7 +10277,7 @@ components:
 
     DiscussionArea:
       type: object
-      description: DiscussionArea object
+      description: DiscussionArea area information
       required:
         - id
         - name
@@ -10213,7 +10298,7 @@ components:
 
     DiscussionThread:
       type: object
-      description: DiscussionThread object
+      description: Thread information
       required:
         - id
         - message
@@ -10241,14 +10326,16 @@ components:
           type: string
         lastModified:
           type: string
+          format: date-time
         forumAreaId:
           type: integer
         entryPoint:
           type: boolean
         creator:
-          type: string
+          $ref: "#/components/schemas/DiscussionUser"
         created:
           type: string
+          format: date-time
         lock:
           $ref: "#/components/schemas/DiscussionThreadLock"
         lockBy:
@@ -10259,6 +10346,7 @@ components:
           description: Date when the thread was locked. Backend updates this field
           nullable: true
           type: string
+          format: date-time
 
     DiscussionThreadReply:
       type: object
@@ -10278,8 +10366,9 @@ components:
           type: integer
         created:
           type: string
+          format: date-time
         creator:
-          type: string
+          $ref: "#/components/schemas/DiscussionUser"
         childReplyCount:
           type: integer
         deleted:
@@ -10288,6 +10377,7 @@ components:
           type: integer
         lastModified:
           type: string
+          format: date-time
         message:
           type: string
         parentReplyId:
@@ -10302,11 +10392,22 @@ components:
         - thread
       properties:
         userEntityId:
+          description: Id of the user
           type: integer
         threadId:
+          description: Id of the thread
           type: integer
         thread:
           $ref: "#/components/schemas/DiscussionThread"
+        workspaceId:
+          description: Id of the workspace
+          type: integer
+        workspaceName:
+          description: Name of the workspace
+          type: string
+        workspaceUrlName:
+          description: Url name of the workspace
+          type: string
 
     DiscussionWorkspaceSubscribedThread:
       allOf:
@@ -10333,11 +10434,22 @@ components:
         - area
       properties:
         userEntityId:
+          description: Id of the user
           type: integer
         areaId:
+          description: Id of the area
           type: integer
         area:
           $ref: "#/components/schemas/DiscussionArea"
+        workspaceId:
+          description: Id of the workspace
+          type: integer
+        workspaceName:
+          description: Name of the workspace. Includes the name extension if it has one.
+          type: string
+        workspaceUrlName:
+          description: Url name of the workspace
+          type: string
 
     DiscussionWorkspaceSubscribedArea:
       allOf:
@@ -10354,6 +10466,27 @@ components:
               type: string
             workspaceUrlName:
               type: string
+
+    DiscussionUser:
+      type: object
+      description: DiscussionUser object
+      required:
+        - id
+        - firstName
+        - lastName
+        - nickname
+        - hasImage
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nickname:
+          type: string
+        hasImage:
+          type: boolean
 
     DiscussionThreadLock:
       type: string
