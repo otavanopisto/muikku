@@ -554,11 +554,11 @@ class DiscussionSubscriptions extends React.Component<
       >
         <DiscussionThreadHeader>
           <div style={{ display: "flex", alignItems: "center" }}>
-            {subscribredThread.locked ? (
-              <div className="discussion__icon icon-lock"></div>
+            {subscribredThread.lock ? (
+              <div className="discussion__icon icon-lock" />
             ) : null}
             {subscribredThread.sticky ? (
-              <div className="discussion__icon icon-pin"></div>
+              <div className="discussion__icon icon-pin" />
             ) : null}
             <div
               className={`discussion-category discussion-category--category-${threadCategory}`}

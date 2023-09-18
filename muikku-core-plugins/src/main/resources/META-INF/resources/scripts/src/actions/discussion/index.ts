@@ -15,6 +15,7 @@ import {
   DiscussionAreaUpdateType,
   DiscussionSubscribedThread,
   DiscussionSubscribedArea,
+  DiscussionThreadLockEnum,
 } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
@@ -184,7 +185,7 @@ export interface loadDiscussionThreadsFromServerTriggerType {
 export interface CreateDiscussionThreadTriggerType {
   (data: {
     forumAreaId: number;
-    locked: boolean;
+    lock: DiscussionThreadLockEnum | null;
     message: string;
     sticky: boolean;
     title: string;
@@ -200,7 +201,7 @@ export interface CreateDiscussionThreadTriggerType {
 export interface ModifyDiscussionThreadTriggerType {
   (data: {
     thread: DiscussionThreadType;
-    locked: boolean;
+    lock: DiscussionThreadLockEnum | null;
     message: string;
     sticky: boolean;
     title: string;
@@ -699,7 +700,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         const discussion: DiscussionType = getState().discussion;
         const params = {
           forumAreaId: data.forumAreaId,
-          locked: data.locked,
+          lock: data.lock,
           message: data.message,
           sticky: data.sticky,
           title: data.title,
@@ -799,7 +800,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
           title: data.title,
           message: data.message,
           sticky: data.sticky,
-          locked: data.locked,
+          lock: data.lock,
         });
         const discussion: DiscussionType = getState().discussion;
         const newThread = <DiscussionThreadType>(

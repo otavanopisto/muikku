@@ -135,23 +135,23 @@ class DiscussionThreadReply extends React.Component<
                   {this.props.i18n.t("content.removed", { ns: "messaging" })}
                 </div>
                 {discussionItem.created !== discussionItem.lastModified ? (
-                  <span className="application-list__item-edited">
+                  <div className="application-list__item-edited">
                     {this.props.i18n.t("labels.edited", {
                       context: "in",
                       time: localizeTime.date(discussionItem.lastModified),
                     })}
-                  </span>
+                  </div>
                 ) : null}
               </DiscussionThreadBody>
             ) : (
               <DiscussionThreadBody html={discussionItem.message}>
                 {discussionItem.created !== discussionItem.lastModified ? (
-                  <span className="application-list__item-edited">
+                  <div className="application-list__item-edited">
                     {this.props.i18n.t("labels.edited", {
                       context: "in",
                       time: localizeTime.date(discussionItem.lastModified),
                     })}
-                  </span>
+                  </div>
                 ) : null}
               </DiscussionThreadBody>
             )}

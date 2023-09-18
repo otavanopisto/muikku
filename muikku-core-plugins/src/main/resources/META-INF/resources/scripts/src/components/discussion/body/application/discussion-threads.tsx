@@ -214,8 +214,8 @@ class DDiscussionThreads extends React.Component<
           >
             <DiscussionThreadHeader>
               <div className="application-list__item-header-main">
-                {thread.locked ? (
-                  <div className="discussion__icon icon-lock"></div>
+                {thread.lock ? (
+                  <div className="discussion__icon icon-lock" />
                 ) : null}
                 {thread.sticky ? (
                   <div className="discussion__icon icon-pin"></div>

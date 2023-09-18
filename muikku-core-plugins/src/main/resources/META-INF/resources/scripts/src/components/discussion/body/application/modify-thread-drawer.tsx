@@ -3,7 +3,11 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import { AnyActionType } from "~/actions";
-import { DiscussionType, DiscussionThreadType } from "~/reducers/discussion";
+import {
+  DiscussionType,
+  DiscussionThreadType,
+  DiscussionThreadLockEnum,
+} from "~/reducers/discussion";
 import {
   modifyDiscussionThread,
   ModifyDiscussionThreadTriggerType,
@@ -35,7 +39,7 @@ interface ModifyThreadDrawerState {
   title: string;
   locked: boolean;
   threadPinned: boolean;
-  threadLocked: boolean;
+  threadLock: DiscussionThreadLockEnum | null;
 }
 
 /**
@@ -58,15 +62,15 @@ class ModifyThreadDrawer extends SessionStateComponent<
         title: props.thread.title,
         locked: false,
         threadPinned: props.thread.sticky,
-        threadLocked: props.thread.locked,
+        threadLock: props.thread.lock,
       },
       props.thread.id
     );
 
     this.togglePinned = this.togglePinned.bind(this);
-    this.toggleLocked = this.toggleLocked.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
+    this.onLockChange = this.onLockChange.bind(this);
     this.modifyThread = this.modifyThread.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     this.clearUp = this.clearUp.bind(this);
@@ -81,7 +85,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked,
+        threadLock: this.props.thread.lock,
       },
       this.props.thread.id
     );
@@ -104,7 +108,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked,
+        threadLock: this.props.thread.lock,
       },
       this.props.thread.id
     );
@@ -112,9 +116,8 @@ class ModifyThreadDrawer extends SessionStateComponent<
 
   /**
    * modifyThread
-   * @param closeDialog closeDialog
    */
-  modifyThread(closeDialog: () => void) {
+  modifyThread() {
     if (this.state.locked) {
       return;
     }
@@ -125,18 +128,17 @@ class ModifyThreadDrawer extends SessionStateComponent<
       title: this.state.title,
       message: this.state.text,
       sticky: this.state.threadPinned,
-      locked: this.state.threadLocked,
+      lock: this.state.threadLock || null,
       /**
        * success
        */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
         this.justClear(
-          ["text", "title", "threadPinned", "threadLocked"],
+          ["text", "title", "threadPinned", "threadLock"],
           this.props.thread.id
         );
         this.setState({ locked: false });
-        closeDialog();
       },
       /**
        * fail
@@ -166,16 +168,6 @@ class ModifyThreadDrawer extends SessionStateComponent<
   }
 
   /**
-   * toggleLocked
-   */
-  toggleLocked() {
-    this.setStateAndStore(
-      { threadLocked: !this.state.threadLocked },
-      this.props.thread.id
-    );
-  }
-
-  /**
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
@@ -187,12 +179,24 @@ class ModifyThreadDrawer extends SessionStateComponent<
             text: nextProps.thread.message,
             title: nextProps.thread.title,
             threadPinned: nextProps.thread.sticky,
-            threadLocked: nextProps.thread.locked,
+            threadLock: nextProps.thread.lock,
           },
           nextProps.thread.id
         )
       );
     }
+  }
+
+  /**
+   * Handles the change of the lock select
+   *
+   * @param e e
+   */
+  onLockChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    this.setStateAndStore(
+      { threadLock: e.target.value as DiscussionThreadLockEnum },
+      this.props.thread.id
+    );
   }
 
   /**
@@ -207,6 +211,25 @@ class ModifyThreadDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const options = [
+      {
+        value: DiscussionThreadLockEnum.ALL,
+        label: this.props.i18n.t("labels.fromAll", {
+          ns: "messaging",
+        }),
+      },
+      {
+        value: DiscussionThreadLockEnum.STUDENTS,
+        label: this.props.i18n.t("labels.fromStudents", {
+          ns: "messaging",
+        }),
+      },
+      {
+        value: "",
+        label: "-",
+      },
+    ];
+
     const editorTitle =
       this.props.i18n.t("labels.edit", {
         ns: "messaging",
@@ -237,6 +260,27 @@ class ModifyThreadDrawer extends SessionStateComponent<
               autoFocus
             />
           </div>
+          <div className="env-dialog__form-element-container">
+            <label htmlFor="messageLock" className="env-dialog__label">
+              {this.props.i18n.t("actions.lock", {
+                ns: "messaging",
+                context: "thread",
+              })}
+              Lukitse
+            </label>
+            <select
+              id="messageLock"
+              className="env-dialog__select"
+              value={this.state.threadLock || ""}
+              onChange={this.onLockChange}
+            >
+              {options.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {this.props.status.permissions.FORUM_LOCK_STICKY_PERMISSION ? (
@@ -256,24 +300,8 @@ class ModifyThreadDrawer extends SessionStateComponent<
                 {this.props.i18n.t("labels.pin", { ns: "messaging" })}
               </label>
             </div>
-            <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
-              <input
-                id="messageLocked"
-                type="checkbox"
-                className="env-dialog__input"
-                checked={this.state.threadLocked}
-                onChange={this.toggleLocked}
-              />
-              <label
-                htmlFor="messageLocked"
-                className="env-dialog__input-label"
-              >
-                {this.props.i18n.t("labels.lock", { ns: "messaging" })}
-              </label>
-            </div>
           </div>
         ) : null}
-
         <div className="env-dialog__row env-dialog__row--ckeditor">
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
