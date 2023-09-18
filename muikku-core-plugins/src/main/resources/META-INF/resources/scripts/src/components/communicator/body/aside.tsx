@@ -17,7 +17,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 /**
  * NavigationProps
  */
-interface NavigationProps extends WithTranslation{
+interface NavigationProps extends WithTranslation {
   messages: MessagesState;
   openSignatureDialog: () => any;
 }
@@ -40,9 +40,7 @@ class NavigationAside extends React.Component<
   render() {
     return (
       <Navigation>
-        <NavigationTopic
-          name={this.props.t("labels.folders", { count: 0 })}
-        >
+        <NavigationTopic name={this.props.t("labels.folders", { count: 0 })}>
           {this.props.messages.navigation.map((item) => (
             <NavigationElement
               iconColor={item.color}
