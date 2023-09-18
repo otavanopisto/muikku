@@ -315,6 +315,9 @@
     }
   },
   "guider": {
+    "actions": {
+      "openStudent": "Avaa opiskelijan ohjausnäkymä"
+    },
     "content": {
       "addTaskInstruction": "<p>Plusikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee 'Odottaa käsittelyä'. Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (roskakorikuvake).</p>",
       "addAttachmentInstruction": "Lisää liitetiedosto klikkaamalla tästä tai raahamalla tiedosto tähän kenttään",
@@ -387,6 +390,7 @@
       "workspaceVisits": "Käynyt kurssilla"
     },
     "wcag": {
+      "openStudent": "Avaa opiskelijan ohjausnäkymä",
       "select": "Valitse aine",
       "selectYearCount": "Valitse vuosien lukumäärä",
       "userAvatar": "Opiskelijan kuva",
@@ -681,6 +685,8 @@
       "create_label": "Uusi tunniste",
       "hide": "$t(common:actions.hide)",
       "hide_comments": "Piilota vastaukset",
+      "lock": "$t(common:actions.lock)",
+      "lock_thread": "Lukitse ketju",
       "remove": "$t(common:actions.remove)",
       "remove_message": "Poista viesti",
       "remove_contactEntry": "Poista yhteydenotto",
@@ -744,6 +750,8 @@
       "folder_unread": "Lukemattomat",
       "folder_sent": "Lähetetyt",
       "folder_trash": "Roskakori",
+      "fromAll": "Kaikilta",
+      "fromStudents": "Opiskelijoilta",
       "lastMessage": "Uusin viesti: {{time}}",
       "lock": "Lukitse viesti",
       "message": "Viesti",

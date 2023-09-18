@@ -331,10 +331,10 @@ class DicussionNewThread extends SessionStateComponent<
         <div key="2" className="env-dialog__row env-dialog__row--options">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageLock" className="env-dialog__label">
-              {
-                // TODO: lokalisointi
-              }
-              Lukitse
+              {this.props.i18n.t("actions.lock", {
+                ns: "messaging",
+                context: "thread",
+              })}
             </label>
             <select
               id="messageLock"

@@ -266,7 +266,6 @@ class ModifyThreadDrawer extends SessionStateComponent<
                 ns: "messaging",
                 context: "thread",
               })}
-              Lukitse
             </label>
             <select
               id="messageLock"
