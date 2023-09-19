@@ -138,11 +138,16 @@ public class PedagogyRestService {
     }
     
     PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
+    
     // UI wants a skeleton return object for the student even if they don't yet have a form at all...
     if (form == null) {
       return Response.ok(toRestModel(form, studentIdentifier)).build();
     }
     else {
+
+      // PedagogyFormHistory creation
+      pedagogyController.createViewHistory(form, sessionController.getLoggedUserEntity().getId());
+      
       return Response.ok(toRestModel(form)).build();
     }
   }
