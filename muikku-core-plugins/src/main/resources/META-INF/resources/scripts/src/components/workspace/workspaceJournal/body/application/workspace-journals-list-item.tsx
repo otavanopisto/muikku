@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import { StatusType } from "~/reducers/base/status";
@@ -26,12 +25,13 @@ import { AnyActionType } from "~/actions";
 import WorkspaceJournalCommentList from "./workspace-journal-comment-list";
 import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * JournalProps
  */
-interface WorkspaceJournalsListItemProps {
-  i18n: i18nType;
+interface WorkspaceJournalsListItemProps extends WithTranslation {
   status: StatusType;
   journal: WorkspaceJournalWithComments;
   workspace: WorkspaceType;
@@ -96,6 +96,8 @@ class WorkspaceJournalsListItem extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     const student =
       this.props.workspace.students &&
       this.props.workspace.students.results.find(
@@ -152,20 +154,14 @@ class WorkspaceJournalsListItem extends React.Component<
               )}
               {isDraft && (
                 <span className="label label--draft">
-                  <span className="label__text">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.journal.status.draft"
-                    )}
-                  </span>
+                  <span className="label__text">{t("actions.draft")}</span>
                 </span>
               )}
 
               {isMandatory && (
                 <span className="label label--mandatory">
                   <span className="label__text">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.journal.status.mandatory"
-                    )}
+                    {t("labels.mandatory", { ns: "workspace" })}
                   </span>
                 </span>
               )}
@@ -173,10 +169,7 @@ class WorkspaceJournalsListItem extends React.Component<
 
             <div className="application-list__item-header-aside">
               <span>
-                {this.props.i18n.time.format(
-                  this.props.journal.created,
-                  "L LT"
-                )}
+                {localizeTime.date(this.props.journal.created, "L LT")}
               </span>
             </div>
           </ApplicationListItemHeader>
@@ -206,16 +199,12 @@ class WorkspaceJournalsListItem extends React.Component<
                         className="link link--application-list"
                         onClick={this.handleJournalEditClick}
                       >
-                        {this.props.i18n.text.get(
-                          "plugin.workspace.journal.editEntryButton.label"
-                        )}
+                        {t("actions.edit")}
                       </Link>
 
                       <DeleteJournal journal={this.props.journal}>
                         <Link as="span" className="link link--application-list">
-                          {this.props.i18n.text.get(
-                            "plugin.workspace.journal.deleteEntryButton.label"
-                          )}
+                          {t("actions.remove")}
                         </Link>
                       </DeleteJournal>
                     </div>
@@ -230,10 +219,7 @@ class WorkspaceJournalsListItem extends React.Component<
                   className="link link--application-list"
                   onClick={this.handleSetJournalItemClick}
                 >
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.journal.comments.title"
-                  )}{" "}
-                  ({this.props.journal.commentCount})
+                  {t("labels.comments")} ({this.props.journal.commentCount})
                 </Link>
               </div>
             )}
@@ -252,7 +238,6 @@ class WorkspaceJournalsListItem extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };
@@ -266,7 +251,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setCurrentJournal }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalsListItem);
+export default withTranslation(["journal", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalsListItem)
+);

@@ -2,25 +2,26 @@ import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
 import { getName } from "~/util/modifiers";
 import { ButtonPill } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
 import moment from "~/lib/moment";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
+import { withTranslation, WithTranslation } from "react-i18next";
+import i18n from "~/locales/i18n";
 
 /**
  * WorkspaceTeachersProps
  */
-interface WorkspaceTeachersProps {
+interface WorkspaceTeachersProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18n: i18nType;
   status: StatusType;
 }
 
@@ -48,6 +49,8 @@ class WorkspaceTeachers extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.status.loggedIn || this.props.status.profile.studyEndDate) {
       return null;
     }
@@ -56,7 +59,7 @@ class WorkspaceTeachers extends React.Component<
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
           <h2 className="panel__header-title">
-            {this.props.i18n.text.get("plugin.workspace.index.teachersTitle")}
+            {t("labels.teacher", { ns: "users", count: 0 })}
           </h2>
         </div>
         {this.props.workspace &&
@@ -113,16 +116,14 @@ class WorkspaceTeachers extends React.Component<
                       </div>
                       {displayVacationPeriod ? (
                         <div className="item-list__user-vacation-period">
-                          {this.props.i18n.text.get(
-                            "plugin.workspace.index.teachersVacationPeriod.label"
-                          )}
+                          {t("labels.away", { ns: "workspace" })}
                           &nbsp;
-                          {this.props.i18n.time.format(
+                          {localizeTime.date(
                             teacher.properties["profile-vacation-start"]
                           )}
                           {teacher.properties["profile-vacation-end"]
                             ? "–" +
-                              this.props.i18n.time.format(
+                              localizeTime.date(
                                 teacher.properties["profile-vacation-end"]
                               )
                             : null}
@@ -149,25 +150,19 @@ class WorkspaceTeachers extends React.Component<
                             },
                           ]}
                           initialSubject={getWorkspaceMessage(
-                            this.props.i18n,
                             this.props.status,
                             this.props.workspace
                           )}
                           initialMessage={getWorkspaceMessage(
-                            this.props.i18n,
                             this.props.status,
                             this.props.workspace,
                             true
                           )}
                         >
                           <ButtonPill
-                            aria-label={this.props.i18n.text.get(
-                              "plugin.workspace.index.newMessage.label"
-                            )}
+                            aria-label={t("labels.send", { ns: "messaging" })}
                             icon="envelope"
-                            title={this.props.i18n.text.get(
-                              "plugin.workspace.index.newMessage.label"
-                            )}
+                            title={t("labels.send", { ns: "messaging" })}
                             buttonModifiers={[
                               "new-message",
                               "new-message-to-staff",
@@ -178,7 +173,6 @@ class WorkspaceTeachers extends React.Component<
                           teacher.properties["profile-phone"] !== null &&
                           teacher.properties["profile-whatsapp"] === "true" && (
                             <WhatsappButtonLink
-                              i18n={this.props.i18n}
                               mobileNumber={teacher.properties["profile-phone"]}
                             />
                           )}
@@ -188,12 +182,12 @@ class WorkspaceTeachers extends React.Component<
                           teacher.properties["profile-appointmentCalendar"] !==
                             null && (
                             <ButtonPill
-                              aria-label={this.props.i18n.text.get(
-                                "plugin.workspace.index.appointmentCalendar.label"
-                              )}
-                              title={this.props.i18n.text.get(
-                                "plugin.workspace.index.appointmentCalendar.label"
-                              )}
+                              aria-label={t("actions.appointment", {
+                                ns: "workspace",
+                              })}
+                              title={t("actions.appointment", {
+                                ns: "workspace",
+                              })}
                               icon="clock"
                               buttonModifiers="appointment-calendar"
                               openInNewTab="_blank"
@@ -213,7 +207,7 @@ class WorkspaceTeachers extends React.Component<
           </div>
         ) : (
           <div className="panel__body panel__body--empty">
-            {this.props.i18n.text.get("plugin.workspace.index.teachersEmpty")}
+            {t("content.empty", { ns: "workspace", context: "teachers" })}
           </div>
         )}
       </div>
@@ -227,7 +221,6 @@ class WorkspaceTeachers extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };
@@ -240,17 +233,17 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceTeachers);
+export default withTranslation(["workspace", "messaging", "users", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceTeachers)
+);
 
 /**
  * getWorkspaceMessage
- * @param i18n i18n
  * @param status status
  * @param workspace workspace
  * @param html html
  */
 export function getWorkspaceMessage(
-  i18n: i18nType,
   status: StatusType,
   workspace: WorkspaceType,
   html?: boolean
@@ -272,7 +265,7 @@ export function getWorkspaceMessage(
     pretext = "<p></p>";
     text =
       '<p><i class="message-from-workspace">' +
-      i18n.text.get("plugin.workspace.index.newMessageCaption") +
+      i18n.t("labels.send", { ns: "workspace" }) +
       " " +
       '<a href="' +
       server +

@@ -3,16 +3,16 @@ import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Toolbar from "./application/toolbar";
 import CoursepickerWorkspaces from "./application/courses";
-import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/react-select-override.scss";
 import Select from "react-select";
 import { StateType } from "~/reducers";
-
 import { WorkspaceBaseFilterType, WorkspacesType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { OptionDefault } from "~/components/general/react-select/types";
 
 type CoursepickerFilterOption = OptionDefault<WorkspaceBaseFilterType>;
@@ -20,9 +20,9 @@ type CoursepickerFilterOption = OptionDefault<WorkspaceBaseFilterType>;
 /**
  * CoursepickerApplicationProps
  */
-interface CoursepickerApplicationProps {
+interface CoursepickerApplicationProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
-  i18n: i18nType;
   workspaces: WorkspacesType;
   status: StatusType;
 }
@@ -69,9 +69,9 @@ class CoursepickerApplication extends React.Component<
    */
   render() {
     const filterTranslationString = {
-      ALL_COURSES: "plugin.coursepicker.allcourses",
-      MY_COURSES: "plugin.coursepicker.owncourses",
-      UNPUBLISHED: "plugin.coursepicker.unpublished",
+      ALL_COURSES: "all",
+      MY_COURSES: "own",
+      UNPUBLISHED: "unpublished",
     };
 
     const options: CoursepickerFilterOption[] =
@@ -83,7 +83,10 @@ class CoursepickerApplication extends React.Component<
 
           return {
             value: filter,
-            label: this.props.i18n.text.get(filterTranslationString[filter]),
+            label: this.props.t("labels.workspaces", {
+              ns: "workspace",
+              context: filterTranslationString[filter],
+            }),
           } as CoursepickerFilterOption;
         })
         .filter((option) => option !== null);
@@ -93,12 +96,12 @@ class CoursepickerApplication extends React.Component<
         option.value === this.props.workspaces.activeFilters.baseFilter
     );
 
-    const title = this.props.i18n.text.get("plugin.coursepicker.pageTitle");
+    const title = this.props.t("labels.coursepicker");
     const toolbar = <Toolbar />;
     const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectCourses" className="visually-hidden">
-          {this.props.i18n.text.get("plugin.coursepicker.select.label")}
+          {this.props.t("labels.workspaceTypeSelect", { ns: "workspace" })}
         </label>
         {this.props.status.loggedIn ? (
           <Select<CoursepickerFilterOption>
@@ -152,7 +155,6 @@ class CoursepickerApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspaces: state.workspaces,
     status: state.status,
   };
@@ -162,11 +164,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CoursepickerApplication);
+export default withTranslation(["workspace"])(
+  connect(mapStateToProps, mapDispatchToProps)(CoursepickerApplication)
+);
