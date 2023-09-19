@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 //Another weird typescript bug, won't import properly
 import { ChromePicker, ColorState } from "react-color";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import {
   UpdateGuiderFilterLabelTriggerType,
@@ -25,6 +24,7 @@ import { DisplayNotificationTriggerType } from "../../../actions/base/notificati
 import { getName } from "~/util/modifiers";
 import { UserFlag, UserSharedFlag } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 const KEYCODES = {
   ENTER: 13,
@@ -33,13 +33,12 @@ const KEYCODES = {
 /**
  * GuiderLabelUpdateDialogProps
  */
-interface GuiderLabelUpdateDialogProps {
+interface GuiderLabelUpdateDialogProps extends WithTranslation<["common"]> {
   // eslint-disable-next-line
   children: React.ReactElement<any>;
   label: UserFlag;
   isOpen?: boolean;
   onClose?: () => void;
-  i18n: i18nType;
   updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType;
   removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType;
   staffId: number;
@@ -100,8 +99,8 @@ class GuiderLabelUpdateDialog extends React.Component<
    * ComponentWillReceiveProps lifecycle, when selected flaks changes, resets states
    * @param nextProps nextProps
    */
-  // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: GuiderLabelUpdateDialogProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: GuiderLabelUpdateDialogProps) {
     if (nextProps.label.id !== this.props.label.id) {
       this.resetState(null, nextProps);
     }
@@ -301,7 +300,7 @@ class GuiderLabelUpdateDialog extends React.Component<
    * Updates selected flaks information or deletes it
    * @param closeDialog closeDialog
    */
-  update = async (closeDialog: () => any) => {
+  update = async (closeDialog: () => void) => {
     // If this is a delete operation, it matters if we have selected the label we are deleting
 
     const locationData = queryString.parse(
@@ -465,7 +464,7 @@ class GuiderLabelUpdateDialog extends React.Component<
    * @param code code
    * @param closeDialog closeDialog
    */
-  onHandleKeyStrokedown(code: number, closeDialog: () => any) {
+  onHandleKeyStrokedown(code: number, closeDialog: () => void) {
     if (code === KEYCODES.ENTER) {
       this.update(closeDialog);
     }
@@ -508,7 +507,7 @@ class GuiderLabelUpdateDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div
         className="dialog__content-row dialog__content-row--label"
         style={{ opacity: this.state.removed ? 0.5 : null }}
@@ -541,15 +540,11 @@ class GuiderLabelUpdateDialog extends React.Component<
         <div className="dialog__container dialog__container--label-form">
           <div className="form-element form-element--edit-label">
             <label htmlFor="guiderLabelName">
-              {this.props.i18n.text.get(
-                "plugin.guider.flags.editFlagDialog.name"
-              )}
+              {this.props.i18n.t("labels.name")}
             </label>
             <input
               id="guiderLabelName"
-              placeholder={this.props.i18n.text.get(
-                "plugin.guider.flags.editFlagDialog.name"
-              )}
+              placeholder={this.props.i18n.t("labels.name")}
               value={this.state.name}
               className="form-element__input form-element__input--guider-label-name"
               disabled={this.state.removed}
@@ -558,22 +553,17 @@ class GuiderLabelUpdateDialog extends React.Component<
           </div>
           <div className="form-element form-element--edit-label">
             <label htmlFor="guiderLabelDescription">
-              {this.props.i18n.text.get(
-                "plugin.guider.flags.editFlagDialog.description"
-              )}
+              {this.props.i18n.t("labels.description")}
             </label>
             <textarea
               id="guiderLabelDescription"
-              placeholder={this.props.i18n.text.get(
-                "plugin.guider.flags.editFlagDialog.description"
-              )}
+              placeholder={this.props.i18n.t("labels.description")}
               className="form-element__textarea form-element__textarea--edit-label"
               value={this.state.description}
               disabled={this.state.removed}
               onChange={this.onDescriptionChange}
             />
           </div>
-
           {isOwnerOfCurrentLabel ? (
             <div className="form-element form-element--edit-label">
               <InputContactsAutofill
@@ -600,7 +590,7 @@ class GuiderLabelUpdateDialog extends React.Component<
      * @param closeDialog closeDialog
      * @returns JSX.Element
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <>
         <div className="dialog__button-set">
           <Button
@@ -608,18 +598,14 @@ class GuiderLabelUpdateDialog extends React.Component<
             disabled={this.state.locked}
             onClick={() => this.update(closeDialog)}
           >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.editFlagDialog.save"
-            )}
+            {this.props.i18n.t("actions.save")}
           </Button>
           <Button
             buttonModifiers={["cancel", "standard-cancel"]}
             disabled={this.state.locked}
             onClick={closeDialog}
           >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.editFlagDialog.cancel"
-            )}
+            {this.props.i18n.t("actions.cancel")}
           </Button>
 
           {isOwnerOfCurrentLabel ? (
@@ -633,12 +619,8 @@ class GuiderLabelUpdateDialog extends React.Component<
               onClick={this.removeLabel}
             >
               {this.state.removed
-                ? this.props.i18n.text.get(
-                    "plugin.guider.flags.confirmFlagDelete.deleted"
-                  )
-                : this.props.i18n.text.get(
-                    "plugin.guider.flags.removeFlag.label"
-                  )}
+                ? this.props.i18n.t("actions.removed", { ns: "flags" })
+                : this.props.i18n.t("actions.remove", { ns: "flags" })}
             </Button>
           ) : (
             <Button
@@ -647,12 +629,8 @@ class GuiderLabelUpdateDialog extends React.Component<
               onClick={() => this.removeLabelLinking(closeDialog)}
             >
               {this.state.removed
-                ? this.props.i18n.text.get(
-                    "plugin.guider.flags.confirmFlagDelete.deleted"
-                  )
-                : this.props.i18n.text.get(
-                    "plugin.guider.flags.removeFlag.label"
-                  )}
+                ? this.props.i18n.t("actions.removed", { ns: "flags" })
+                : this.props.i18n.t("actions.remove", { ns: "flags" })}
             </Button>
           )}
         </div>
@@ -661,9 +639,9 @@ class GuiderLabelUpdateDialog extends React.Component<
           <div className="dialog__state state-INFO">
             <div className="dialog__state-icon icon-notification"></div>
             <div className="dialog__state-text">
-              {this.props.i18n.text.get(
-                "plugin.guider.flags.unableToDeleteFlag.description"
-              )}
+              {this.props.i18n.t("notifications.warning", {
+                ns: "flags",
+              })}
             </div>
           </div>
         )}
@@ -677,9 +655,7 @@ class GuiderLabelUpdateDialog extends React.Component<
         onKeyStroke={this.onHandleKeyStrokedown}
         onOpen={this.resetState}
         modifier="guider-edit-label"
-        title={this.props.i18n.text.get(
-          "plugin.guider.flags.editFlagDialog.title"
-        )}
+        title={this.props.i18n.t("labels.edit")}
         content={content}
         footer={footer}
       >
@@ -695,7 +671,6 @@ class GuiderLabelUpdateDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     staffId: state.status.userId,
     staffIdentifier: state.status.userSchoolDataIdentifier,
   };
@@ -712,7 +687,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GuiderLabelUpdateDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderLabelUpdateDialog)
+);

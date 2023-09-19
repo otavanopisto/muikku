@@ -1,9 +1,9 @@
+/* eslint-disable camelcase */
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
@@ -17,16 +17,18 @@ import Button from "~/components/general/button";
 import { getName } from "~/util/modifiers";
 import { UserFlag } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GuiderLabelShareDialogProps
  */
-interface GuiderLabelShareDialogProps {
+interface GuiderLabelShareDialogProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   label: UserFlag;
   isOpen?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
-  i18n: i18nType;
   displayNotification: DisplayNotificationTriggerType;
   userIndex: UserIndexState;
 }
@@ -45,6 +47,7 @@ class GuiderLabelShareDialog extends React.Component<
   GuiderLabelShareDialogProps,
   GuiderLabelShareDialogState
 > {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sharesResult: any;
   /**
    * constructor
@@ -67,9 +70,9 @@ class GuiderLabelShareDialog extends React.Component<
 
   /**
    * componentWillReceiveProps
-   * @param nextProps
+   * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: GuiderLabelShareDialogProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: GuiderLabelShareDialogProps) {
     if (nextProps.userIndex !== this.props.userIndex) {
       this.updateSharesState();
     }
@@ -77,12 +80,12 @@ class GuiderLabelShareDialog extends React.Component<
 
   /**
    * updateSharesState
-   * @param props
    */
   updateSharesState() {
     this.setState({
       selectedItems: this.sharesResult
         .map(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (result: any): ContactRecipientType => ({
             type: "staff",
             value: {
@@ -120,11 +123,12 @@ class GuiderLabelShareDialog extends React.Component<
    * share
    * @param closeDialog closeDialog
    */
-  share(closeDialog: () => any) {
+  share(closeDialog: () => void) {
     const userApi = MApi.getUserApi();
 
     this.state.selectedItems.forEach(async (member: ContactRecipientType) => {
       const wasAdded = !this.sharesResult.find(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (share: any) => share.userIdentifier === member.value.id
       );
       if (wasAdded) {
@@ -146,6 +150,7 @@ class GuiderLabelShareDialog extends React.Component<
       }
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.sharesResult.forEach(async (share: any) => {
       const wasRemoved = !this.state.selectedItems.find(
         (member: ContactRecipientType) =>
@@ -171,7 +176,7 @@ class GuiderLabelShareDialog extends React.Component<
 
   /**
    * onSharedMembersChange
-   * @param members
+   * @param members members
    */
   onSharedMembersChange(members: ContactRecipientType[]) {
     this.setState({ selectedItems: members });
@@ -179,28 +184,26 @@ class GuiderLabelShareDialog extends React.Component<
 
   /**
    * Component Render method
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     /**
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
-            "plugin.guider.flags.editFlagDialog.cancel"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
         <Button
           buttonModifiers={["success", "standard-ok"]}
           onClick={this.share.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get("plugin.guider.flags.shareFlagDialog.save")}
+          {this.props.i18n.t("actions.save")}
         </Button>
       </div>
     );
@@ -208,7 +211,7 @@ class GuiderLabelShareDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <InputContactsAutofill
         identifier="guiderLabelShare"
         modifier="guider"
@@ -229,10 +232,10 @@ class GuiderLabelShareDialog extends React.Component<
         onClose={this.props.onClose}
         onOpen={this.getShares}
         modifier="guider-share-label"
-        title={this.props.i18n.text.get(
-          "plugin.guider.flags.shareFlagDialog.title",
-          this.props.label.name
-        )}
+        title={this.props.i18n.t("labels.share", {
+          ns: "flags",
+          flag: this.props.label.name,
+        })}
         content={content}
         footer={footer}
       >
@@ -244,26 +247,22 @@ class GuiderLabelShareDialog extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     userIndex: state.userIndex,
   };
 }
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GuiderLabelShareDialog);
+export default withTranslation(["guider", "flags"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderLabelShareDialog)
+);

@@ -9,6 +9,7 @@ import {
   OrganizationWorkspaceSummary,
 } from "~/generated/client";
 import { Dispatch } from "react-redux";
+import i18n from "~/locales/i18n";
 
 /**
  * LoadSummaryTriggerType
@@ -89,7 +90,13 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
           throw err;
         }
         dispatch(
-          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          actions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "organization",
+              context: "summary",
+            }),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_SUMMARY_STATUS",

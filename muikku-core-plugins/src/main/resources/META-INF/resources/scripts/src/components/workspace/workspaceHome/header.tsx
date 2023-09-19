@@ -5,7 +5,7 @@ import {
   WorkspaceCurriculumFilterListType,
   WorkspaceType,
 } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import ProgressData from "../progressData";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
@@ -17,14 +17,14 @@ import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 import { AnyActionType } from "~/actions";
 import { suitabilityMap } from "~/@shared/suitability";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceHomeHeaderProps
  */
-interface WorkspaceHomeHeaderProps {
+interface WorkspaceHomeHeaderProps extends WithTranslation {
   workspace: WorkspaceType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
-  i18n: i18nType;
   status: StatusType;
   updateWorkspace: UpdateWorkspaceTriggerType;
 }
@@ -120,9 +120,7 @@ class WorkspaceHomeHeader extends React.Component<
       return localString ? (
         <div className="meta__item">
           <span className="meta__item-label">Pakollisuus:</span>
-          <span className="meta__item-description">
-            {this.props.i18n.text.get(localString)}
-          </span>
+          <span className="meta__item-description">{localString}</span>
         </div>
       ) : null;
     }
@@ -134,6 +132,8 @@ class WorkspaceHomeHeader extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.workspace) {
       return null;
     }
@@ -167,11 +167,11 @@ class WorkspaceHomeHeader extends React.Component<
       // Otherwise first sort by ascending names a -> ö and then by ascending course number order
       workspaceLengthOrLengths = !isCombinationWorkspace ? (
         <span className="meta__item-description">
-          {this.props.i18n.text.get(
-            "plugin.workspace.index.courseLength",
-            subjects[0].courseLength,
-            subjects[0].courseLengthSymbol.symbol
-          )}
+          {t("labels.workspaceLength", {
+            ns: "workspace",
+            length: subjects[0].courseLength,
+            symbol: subjects[0].courseLengthSymbol.symbol,
+          })}
         </span>
       ) : (
         <>
@@ -190,10 +190,13 @@ class WorkspaceHomeHeader extends React.Component<
                 s.courseNumber ? s.courseNumber : ""
               }`;
 
-              const codeWithLength = `${codeString} ${this.props.i18n.text.get(
-                "plugin.workspace.index.courseLength",
-                s.courseLength,
-                s.courseLengthSymbol.symbol
+              const codeWithLength = `${codeString} ${t(
+                "labels.workspaceLength",
+                {
+                  ns: "workspace",
+                  length: s.courseLength,
+                  symbol: s.courseLengthSymbol.symbol,
+                }
               )}`;
 
               return (
@@ -264,27 +267,19 @@ class WorkspaceHomeHeader extends React.Component<
         <div className="meta meta--workspace">
           <div className="meta__item">
             <span className="meta__item-label">
-              {this.props.i18n.text.get(
-                "plugin.workspace.index.courseLengthLabel"
-              )}
+              {t("labels.length", { ns: "workspace" })}
             </span>
             {workspaceLengthOrLengths}
           </div>
           <div className="meta__item">
             <span className="meta__item-label">
-              {this.props.i18n.text.get(
-                "plugin.workspace.index.courseSubjectLabel"
-              )}
+              {t("labels.subject", { ns: "workspace" })}
             </span>
             {workspaceSubjectNameOrNames}
           </div>
           {this.props.workspace.additionalInfo.workspaceType ? (
             <div className="meta__item">
-              <span className="meta__item-label">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.index.courseTypeLabel"
-                )}
-              </span>
+              <span className="meta__item-label">{t("labels.type")}</span>
               <span className="meta__item-description">
                 {this.props.workspace.additionalInfo.workspaceType}
               </span>
@@ -294,20 +289,18 @@ class WorkspaceHomeHeader extends React.Component<
           this.props.workspace.additionalInfo.endDate ? (
             <div className="meta__item">
               <span className="meta__item-label">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.index.courseDatesLabel"
-                )}
+                {t("labels.dates", { ns: "workspace" })}
               </span>
               <span className="meta__item-description">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.index.courseDates",
-                  this.props.i18n.time.format(
+                {t("labels.workspaceDates", {
+                  ns: "workspace",
+                  beginDate: localizeTime.date(
                     this.props.workspace.additionalInfo.beginDate
                   ),
-                  this.props.i18n.time.format(
+                  endDate: localizeTime.date(
                     this.props.workspace.additionalInfo.endDate
-                  )
-                )}
+                  ),
+                })}
               </span>
             </div>
           ) : null}
@@ -318,10 +311,7 @@ class WorkspaceHomeHeader extends React.Component<
             <div className="meta__item meta__item--progress-data">
               <ProgressData
                 modifier="workspace-home"
-                title={this.props.i18n.text.get(
-                  "plugin.workspace.index.courseProgressLabel"
-                )}
-                i18n={this.props.i18n}
+                title={t("labels.progress", { ns: "workspace" })}
                 activity={this.props.workspace.activity}
               />
             </div>
@@ -338,7 +328,6 @@ class WorkspaceHomeHeader extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     availableCurriculums: state.workspaces.availableCurriculums,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
@@ -353,7 +342,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateWorkspace }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceHomeHeader);
+export default withTranslation(["workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceHomeHeader)
+);

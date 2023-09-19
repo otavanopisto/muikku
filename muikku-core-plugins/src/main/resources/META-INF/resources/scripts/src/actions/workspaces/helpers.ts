@@ -15,6 +15,7 @@ import {
   WorkspaceJournalType,
 } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react";
+import i18n from "~/locales/i18n";
 import { loadWorkspaceJournalFeedback } from "./journals";
 import MApi, { isMApiError } from "~/api/api";
 
@@ -229,10 +230,11 @@ export async function loadWorkspacesHelper(
     if (!isMApiError(err)) {
       throw err;
     }
+
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get("plugin.coursepicker.errormessage.courseLoad"),
+        i18n.t("notifications.loadError", { count: 0, ns: "workspace" }),
         "error"
       )
     );
@@ -358,9 +360,10 @@ export async function loadCurrentWorkspaceJournalsHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.workspace.journal.notification.viewLoadError"
-        ),
+        i18n.t("notifications.loadError", {
+          ns: "journal",
+          context: "entries",
+        }),
         "error"
       )
     );

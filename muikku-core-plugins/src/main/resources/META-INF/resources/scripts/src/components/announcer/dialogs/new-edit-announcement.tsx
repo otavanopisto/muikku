@@ -5,7 +5,6 @@ import CKEditor from "~/components/general/ckeditor";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { UserIndexState, ContactRecipientType } from "~/reducers/user-index";
-import { i18nType } from "reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -27,6 +26,8 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import { localizeTime } from "~/locales/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
 
 /**
@@ -37,16 +38,14 @@ type TargetItemsListType = Array<ContactRecipientType>;
 /**
  * NewEditAnnouncementProps
  */
-interface NewEditAnnouncementProps {
+interface NewEditAnnouncementProps extends WithTranslation {
   children: React.ReactElement<any>;
-  i18n: i18nType;
   announcement?: Announcement;
   userIndex: UserIndexState;
   createAnnouncement: CreateAnnouncementTriggerType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
-
   workspaceId: number;
   workspaces: WorkspacesType;
 }
@@ -115,15 +114,15 @@ class NewEditAnnouncement extends SessionStateComponent<
         subject: props.announcement ? props.announcement.caption : "",
         locked: false,
         startDate: props.announcement
-          ? props.i18n.time
+          ? localizeTime
               .getLocalizedMoment(this.props.announcement.startDate)
               .toDate()
-          : props.i18n.time.getLocalizedMoment().toDate(),
+          : localizeTime.getLocalizedMoment().toDate(),
         endDate: props.announcement
-          ? props.i18n.time
+          ? localizeTime
               .getLocalizedMoment(this.props.announcement.endDate)
               .toDate()
-          : props.i18n.time.getLocalizedMoment().add(1, "day").toDate(),
+          : localizeTime.getLocalizedMoment().add(1, "day").toDate(),
       },
       (props.announcement ? props.announcement.id + "-" : "") +
         (props.workspaceId || "")
@@ -181,10 +180,10 @@ class NewEditAnnouncement extends SessionStateComponent<
             subject: nextProps.announcement.caption,
             text: nextProps.announcement.content,
             currentTarget: this.baseAnnouncementCurrentTarget,
-            startDate: nextProps.i18n.time
+            startDate: localizeTime
               .getLocalizedMoment(nextProps.announcement.startDate)
               .toDate(),
-            endDate: nextProps.i18n.time
+            endDate: localizeTime
               .getLocalizedMoment(nextProps.announcement.endDate)
               .toDate(),
           },
@@ -194,18 +193,14 @@ class NewEditAnnouncement extends SessionStateComponent<
     } else if (this.props.announcement && !nextProps.announcement) {
       this.baseAnnouncementCurrentTarget =
         this.getPredefinedWorkspaceByIdToConcat(nextProps);
-
       this.setState(
         this.getRecoverStoredState(
           {
             subject: "",
             text: "",
             currentTarget: this.baseAnnouncementCurrentTarget,
-            startDate: nextProps.i18n.time.getLocalizedMoment().toDate(),
-            endDate: nextProps.i18n.time
-              .getLocalizedMoment()
-              .add(1, "day")
-              .toDate(),
+            startDate: localizeTime.getLocalizedMoment().toDate(),
+            endDate: localizeTime.getLocalizedMoment().add(1, "day").toDate(),
           },
           nextProps.workspaceId || ""
         )
@@ -239,10 +234,10 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
-          startDate: this.props.i18n.time
+          startDate: localizeTime
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
-          endDate: this.props.i18n.time
+          endDate: localizeTime
             .getLocalizedMoment(this.props.announcement.endDate)
             .toDate(),
         },
@@ -270,11 +265,8 @@ class NewEditAnnouncement extends SessionStateComponent<
           subject: "",
           text: "",
           currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props),
-          startDate: this.props.i18n.time.getLocalizedMoment().toDate(),
-          endDate: this.props.i18n.time
-            .getLocalizedMoment()
-            .add(1, "day")
-            .toDate(),
+          startDate: localizeTime.getLocalizedMoment().toDate(),
+          endDate: localizeTime.getLocalizedMoment().add(1, "day").toDate(),
         },
         this.props.workspaceId || ""
       );
@@ -292,11 +284,8 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: "",
           text: "",
-          startDate: this.props.i18n.time.getLocalizedMoment().toDate(),
-          endDate: this.props.i18n.time
-            .getLocalizedMoment()
-            .add(1, "day")
-            .toDate(),
+          startDate: localizeTime.getLocalizedMoment().toDate(),
+          endDate: localizeTime.getLocalizedMoment().add(1, "day").toDate(),
           currentTarget: this.baseAnnouncementCurrentTarget,
         },
         this.props.workspaceId || ""
@@ -316,10 +305,10 @@ class NewEditAnnouncement extends SessionStateComponent<
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
           currentTarget: this.baseAnnouncementCurrentTarget,
-          startDate: this.props.i18n.time
+          startDate: localizeTime
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
-          endDate: this.props.i18n.time
+          endDate: localizeTime
             .getLocalizedMoment(this.props.announcement.endDate)
             .toDate(),
         },
@@ -406,9 +395,7 @@ class NewEditAnnouncement extends SessionStateComponent<
     if (this.props.status.role === "TEACHER") {
       if (this.state.currentTarget.length <= 0) {
         this.props.displayNotification(
-          this.props.i18n.text.get(
-            "plugin.announcer.errormessage.createAnnouncement.missing.targetGroup"
-          ),
+          this.props.i18n.t("validation.targetGroup", { ns: "messaging" }),
           "error"
         );
 
@@ -428,10 +415,10 @@ class NewEditAnnouncement extends SessionStateComponent<
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
-            this.props.i18n.time.format(this.state.endDate, "YYYY-MM-DD"),
+            localizeTime.date(this.state.endDate, "YYYY-MM-DD"),
           startDate:
             this.state.startDate &&
-            this.props.i18n.time.format(this.state.startDate, "YYYY-MM-DD"),
+            localizeTime.date(this.state.startDate, "YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget
             .filter((w) => w.type === "usergroup")
             .map((w) => (w.value as any).id),
@@ -467,10 +454,10 @@ class NewEditAnnouncement extends SessionStateComponent<
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
-            this.props.i18n.time.format(this.state.endDate, "YYYY-MM-DD"),
+            localizeTime.date(this.state.endDate, "YYYY-MM-DD"),
           startDate:
             this.state.startDate &&
-            this.props.i18n.time.format(this.state.startDate, "YYYY-MM-DD"),
+            localizeTime.date(this.state.startDate, "YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget
             .filter((w) => w.type === "usergroup")
             .map((w) => (w.value as any).id),
@@ -487,11 +474,8 @@ class NewEditAnnouncement extends SessionStateComponent<
               locked: false,
               subject: "",
               text: "",
-              startDate: this.props.i18n.time.getLocalizedMoment().toDate(),
-              endDate: this.props.i18n.time
-                .getLocalizedMoment()
-                .add(1, "day")
-                .toDate(),
+              startDate: localizeTime.getLocalizedMoment().toDate(),
+              endDate: localizeTime.getLocalizedMoment().add(1, "day").toDate(),
               currentTarget: this.getPredefinedWorkspaceByIdToConcat(
                 this.props
               ),
@@ -534,18 +518,16 @@ class NewEditAnnouncement extends SessionStateComponent<
     let editorTitle: string;
     if (this.props.announcement) {
       editorTitle =
-        this.props.i18n.text.get("plugin.announcer.editannouncement.topic") +
+        this.props.i18n.t("labels.edit", { context: "announcement" }) +
         " - " +
-        this.props.i18n.text.get(
-          "plugin.announcer.createannouncement.content.label"
-        );
+        this.props.i18n.t("labels.content");
     } else {
       editorTitle =
-        this.props.i18n.text.get("plugin.announcer.createannouncement.topic") +
+        this.props.i18n.t("labels.create", {
+          context: "announcement",
+        }) +
         " - " +
-        this.props.i18n.text.get(
-          "plugin.announcer.createannouncement.content.label"
-        );
+        this.props.i18n.t("labels.content");
     }
 
     /**
@@ -561,35 +543,27 @@ class NewEditAnnouncement extends SessionStateComponent<
       >
         <div className="env-dialog__form-element-container">
           <label htmlFor="announcementStartSate" className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.startdate.label"
-            )}
+            {this.props.i18n.t("labels.beginDate")}
           </label>
           <DatePicker
             id="announcementStartSate"
             className="env-dialog__input env-dialog__input--date-picker"
             selected={this.state.startDate}
             onChange={this.handleDateChange.bind(this, "startDate")}
-            locale={outputCorrectDatePickerLocale(
-              this.props.i18n.time.getLocale()
-            )}
+            locale={outputCorrectDatePickerLocale(localizeTime.language)}
             dateFormat="P"
           />
         </div>
         <div className="env-dialog__form-element-container">
           <label htmlFor="announcementEndDate" className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.enddate.label"
-            )}
+            {this.props.i18n.t("labels.endDate")}
           </label>
           <DatePicker
             id="announcementEndDate"
             className="env-dialog__input env-dialog__input--date-picker"
             selected={this.state.endDate}
             onChange={this.handleDateChange.bind(this, "endDate")}
-            locale={outputCorrectDatePickerLocale(
-              this.props.i18n.time.getLocale()
-            )}
+            locale={outputCorrectDatePickerLocale(localizeTime.language)}
             dateFormat="P"
           />
         </div>
@@ -612,20 +586,20 @@ class NewEditAnnouncement extends SessionStateComponent<
         onChange={this.setTargetItems}
         autofocus={!this.props.announcement}
         showFullNames={false}
-        placeholder={this.props.i18n.text.get(
-          "plugin.announcer.createannouncement.target.placeholder"
-        )}
-        label={this.props.i18n.text.get(
-          "plugin.announcer.createannouncement.target.label"
-        )}
+        placeholder={this.props.i18n.t("labels.search", {
+          ns: "messaging",
+          context: "target",
+        })}
+        label={this.props.i18n.t("labels.target", { ns: "messaging" })}
         required={this.props.status.role === "TEACHER"}
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
           <label htmlFor="announcementTitle" className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.title.label"
-            )}
+            {this.props.i18n.t("labels.title", {
+              ns: "messaging",
+              context: "announcement",
+            })}
           </label>
           <input
             id="announcementTitle"
@@ -643,9 +617,7 @@ class NewEditAnnouncement extends SessionStateComponent<
       >
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.content.label"
-            )}
+            {this.props.i18n.t("labels.content")}
           </label>
           <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>
             {this.state.text}
@@ -666,20 +638,14 @@ class NewEditAnnouncement extends SessionStateComponent<
           onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            this.props.announcement
-              ? "plugin.announcer.editannouncement.button.send"
-              : "plugin.announcer.createannouncement.button.send"
-          )}
+          {this.props.i18n.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.announcer.createannouncement.button.cancel"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -687,9 +653,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.button.clearDraft"
-            )}
+            {this.props.i18n.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -701,12 +665,12 @@ class NewEditAnnouncement extends SessionStateComponent<
         onOpen={this.checkAgainstStoredState}
         title={
           this.props.announcement
-            ? this.props.i18n.text.get(
-                "plugin.announcer.editannouncement.topic"
-              )
-            : this.props.i18n.text.get(
-                "plugin.announcer.createannouncement.topic"
-              )
+            ? this.props.i18n.t("labels.edit", {
+                context: "announcement",
+              })
+            : this.props.i18n.t("labels.create", {
+                context: "announcement",
+              })
         }
         content={content}
         footer={footer}
@@ -724,7 +688,6 @@ class NewEditAnnouncement extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     userIndex: state.userIndex,
     status: state.status,
 
@@ -748,7 +711,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NewEditAnnouncement);
+export default withTranslation("messaging")(
+  connect(mapStateToProps, mapDispatchToProps)(NewEditAnnouncement)
+);

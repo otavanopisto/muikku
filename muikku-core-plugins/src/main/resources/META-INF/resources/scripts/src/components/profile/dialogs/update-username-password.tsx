@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -17,12 +16,15 @@ import {
   loadProfileUsername,
   LoadProfileUsernameTriggerType,
 } from "~/actions/main-function/profile";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * UpdateUsernamePasswordDialogProps
  */
-interface UpdateUsernamePasswordDialogProps {
-  i18n: i18nType;
+interface UpdateUsernamePasswordDialogProps
+  extends WithTranslation<["common"]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   profile: ProfileState;
   displayNotification: DisplayNotificationTriggerType;
@@ -69,7 +71,10 @@ class UpdateUsernamePasswordDialog extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: UpdateUsernamePasswordDialogProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(
+    nextProps: UpdateUsernamePasswordDialogProps
+  ) {
     if (
       nextProps.profile.username !== null &&
       nextProps.profile.username !== this.state.username
@@ -83,15 +88,13 @@ class UpdateUsernamePasswordDialog extends React.Component<
    * update
    * @param closeDialog closeDialog
    */
-  update(closeDialog: () => any) {
+  update(closeDialog: () => void) {
     const newPassword1 = this.state.newPassword;
     const newPassword2 = this.state.newPasswordConfirm;
 
     if (newPassword1 && newPassword2 == "") {
       this.props.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.notif.emptypass"
-        ),
+        this.props.t("validation.password"),
         "error"
       );
       return;
@@ -99,9 +102,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
 
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.notif.failconfirm"
-        ),
+        this.props.t("validation.password", { context: "match" }),
         "error"
       );
       return;
@@ -119,6 +120,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
 
     mApi()
       .userplugin.credentials.update(values)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .callback((err: any, result: any) => {
         this.setState({
           locked: false,
@@ -127,16 +129,16 @@ class UpdateUsernamePasswordDialog extends React.Component<
         if (err) {
           if (result.status === 403) {
             this.props.displayNotification(
-              this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.unauthorized"
-              ),
+              this.props.t("notifications.403", {
+                context: "password",
+              }),
               "error"
             );
           } else if (result.status === 409) {
             this.props.displayNotification(
-              this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.alreadyinuse"
-              ),
+              this.props.t("notifications.409", {
+                context: "userName",
+              }),
               "error"
             );
           } else {
@@ -152,16 +154,16 @@ class UpdateUsernamePasswordDialog extends React.Component<
           });
           if (values.newPassword === "") {
             this.props.displayNotification(
-              this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.username.successful"
-              ),
+              this.props.t("notifications.updateSuccess", {
+                context: "credentials",
+              }),
               "success"
             );
           } else {
             this.props.displayNotification(
-              this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.successful"
-              ),
+              this.props.t("notifications.updateSuccess", {
+                context: "password",
+              }),
               "success"
             );
           }
@@ -177,6 +179,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
    * @param e e
    */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
@@ -190,19 +193,13 @@ class UpdateUsernamePasswordDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
-        <p>
-          {this.props.i18n.text.get(
-            "plugin.profile.changePassword.dialog.desription"
-          )}
-        </p>
+        <p>{this.props.t("content.changePassword", { ns: "profile" })}</p>
         <form>
           <div className="form-element form-element--profile">
             <label htmlFor="profileUsername">
-              {this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.usernameField.label"
-              )}
+              {this.props.t("labels.userName")}
             </label>
             <input
               id="profileUsername"
@@ -214,9 +211,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileOldPassword">
-              {this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.oldPasswordField.label"
-              )}
+              {this.props.t("labels.oldPassword")}
             </label>
             <input
               id="profileOldPassword"
@@ -228,9 +223,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileNewPassword1">
-              {this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.newPasswordField1.label"
-              )}
+              {this.props.t("labels.password1")}
             </label>
             <input
               id="profileNewPassword1"
@@ -242,9 +235,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileNewPassword2">
-              {this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.newPasswordField2.label"
-              )}
+              {this.props.t("labels.password2")}
             </label>
             <input
               id="profileNewPassword2"
@@ -265,33 +256,27 @@ class UpdateUsernamePasswordDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["success", "standard-ok"]}
           onClick={this.update.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.profile.changePassword.dialog.button.saveLabel"
-          )}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.profile.changePassword.dialog.button.cancelLabel"
-          )}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
     return (
       <Dialog
-        title={this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.title"
-        )}
+        title={this.props.t("labels.changePassword")}
         content={content}
         footer={footer}
         modifier="change-password"
@@ -308,7 +293,6 @@ class UpdateUsernamePasswordDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     profile: state.profile,
   };
 }
@@ -317,14 +301,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { displayNotification, loadProfileUsername },
     dispatch
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UpdateUsernamePasswordDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(UpdateUsernamePasswordDialog)
+);

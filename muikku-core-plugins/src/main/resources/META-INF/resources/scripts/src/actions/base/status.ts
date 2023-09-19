@@ -6,6 +6,7 @@ import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { WorkspaceBasicInfo } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
+import i18n from "~/locales/i18n";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -18,6 +19,11 @@ export type UPDATE_STATUS_HAS_IMAGE = SpecificActionType<
 >;
 export type UPDATE_STATUS = SpecificActionType<
   "UPDATE_STATUS",
+  Partial<StatusType>
+>;
+
+export type UPDATE_STATUS_WORKSPACE_PERMISSIONS = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACE_PERMISSIONS",
   Partial<StatusType>
 >;
 
@@ -138,6 +144,8 @@ async function loadWhoAMI(
     },
   });
 
+  i18n.changeLanguage(whoAmI.locale);
+
   dispatch({
     type: "LOCALE_UPDATE",
     payload: whoAmI.locale,
@@ -171,7 +179,7 @@ async function loadWorkspacePermissions(
   );
 
   dispatch({
-    type: "UPDATE_STATUS",
+    type: "UPDATE_STATUS_WORKSPACE_PERMISSIONS",
     payload: {
       permissions: {
         WORKSPACE_ACCESS_EVALUATION: permissions.includes(

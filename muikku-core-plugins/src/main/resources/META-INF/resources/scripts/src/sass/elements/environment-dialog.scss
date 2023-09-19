@@ -214,6 +214,7 @@
 
 .env-dialog__form-element-container--pinned-thread,
 .env-dialog__form-element-container--locked-thread {
+  align-items: center;
   flex-direction: row;
   flex-grow: 0;
 

@@ -13,8 +13,6 @@ import Users from "./application/users";
 import UserGroups from "./application/usergroups";
 import OrganizationWorkspaces from "./application/workspaces";
 import WorkspacesAside from "./application/workspaces/aside";
-
-import { i18nType } from "~/reducers/base/i18n";
 import { ButtonPill } from "~/components/general/button";
 import WorkspaceDialog from "../dialogs/new-workspace";
 import UserGroupDialog from "../dialogs/new-usergroup";
@@ -32,19 +30,21 @@ import {
   loadWorkspacesFromServer,
   LoadWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 type OrganizationTabs = "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES";
 
 /**
  * OrganizationManagementApplicationProps
  */
-interface OrganizationManagementApplicationProps {
+interface OrganizationManagementApplicationProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
   loadUsers: LoadUsersTriggerType;
   loadUserGroups: LoadUsersTriggerType;
   loadWorkspaces: LoadWorkspacesFromServerTriggerType;
   activeFilters: WorkspacesActiveFiltersType;
-  i18n: i18nType;
 }
 
 /**
@@ -141,7 +141,9 @@ class OrganizationManagementApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.organization.pageTitle");
+    const { t } = this.props;
+
+    const title = t("labels.organizationManagament");
     const usersPrimaryAction = (
       <UserDialog>
         <ButtonPill buttonModifiers="organization" icon="plus" />
@@ -178,9 +180,7 @@ class OrganizationManagementApplication extends React.Component<
           <SearchFormElement
             value={this.state.workspaceSearchFieldValue}
             id="organizationWorkpaceSearch"
-            placeholder={this.props.i18n.text.get(
-              "plugin.organization.workspaces.search.placeholder"
-            )}
+            placeholder={t("labels.search", { ns: "workspace" })}
             name="organization-workspace-search"
             updateField={this.doWorkspaceSearch}
           ></SearchFormElement>
@@ -194,9 +194,7 @@ class OrganizationManagementApplication extends React.Component<
           <SearchFormElement
             value={this.state.userSearchFieldValue}
             id="organizationUserSearch"
-            placeholder={this.props.i18n.text.get(
-              "plugin.organization.users.search.placeholder"
-            )}
+            placeholder={t("labels.search", { ns: "users" })}
             name="organization-user-search"
             updateField={this.doUserSearch}
           ></SearchFormElement>
@@ -210,9 +208,10 @@ class OrganizationManagementApplication extends React.Component<
           <SearchFormElement
             value={this.state.userGroupSearchFieldValue}
             id="oganizationUserGroupSearch"
-            placeholder={this.props.i18n.text.get(
-              "plugin.organization.userGroups.search.placeholder"
-            )}
+            placeholder={t("labels.search", {
+              ns: "users",
+              context: "userGroups",
+            })}
             name="organization-user-group-search"
             updateField={this.doUserGroupSearch}
           ></SearchFormElement>
@@ -228,9 +227,7 @@ class OrganizationManagementApplication extends React.Component<
         panelTabs={[
           {
             id: "SUMMARY",
-            name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.summary"
-            ),
+            name: t("labels.summary", { ns: "organization" }),
             /**
              * component
              */
@@ -242,9 +239,7 @@ class OrganizationManagementApplication extends React.Component<
           },
           {
             id: "USERS",
-            name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.users"
-            ),
+            name: t("labels.users", { ns: "users" }),
             mobileAction: usersPrimaryActionMobile,
             component: (
               <ApplicationPanelBody
@@ -258,9 +253,7 @@ class OrganizationManagementApplication extends React.Component<
           },
           {
             id: "USERSGROUPS",
-            name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.userGroups"
-            ),
+            name: t("labels.userGroups", { ns: "users" }),
             mobileAction: userGroupsPrimaryActionMobile,
             component: (
               <ApplicationPanelBody
@@ -274,9 +267,7 @@ class OrganizationManagementApplication extends React.Component<
           },
           {
             id: "COURSES",
-            name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.courses"
-            ),
+            name: t("labels.workspaces", { ns: "workspace" }),
             mobileAction: coursesPrimaryActionMobile,
             component: (
               <ApplicationPanelBody
@@ -296,7 +287,7 @@ class OrganizationManagementApplication extends React.Component<
     // Removed for the time being
     // {
     //   id: "REPORTS",
-    //   name: this.props.i18n.text.get('plugin.organization.tab.title.reports'),
+    //   name: this.props.t('labels.reports', {ns: "organization"}),
     //   component: () => { return <ApplicationPanelBody modifier="tabs" children={<Reports />} /> }
     // }
   }
@@ -308,7 +299,6 @@ class OrganizationManagementApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     activeFilters: state.organizationWorkspaces.activeFilters,
   };
 }
@@ -317,13 +307,20 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<any>) =>
+const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
   bindActionCreators(
     { loadUsers, loadWorkspaces: loadWorkspacesFromServer, loadUserGroups },
     dispatch
   );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrganizationManagementApplication);
+export default withTranslation([
+  "organization",
+  "workspace",
+  "users",
+  "common",
+])(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(OrganizationManagementApplication)
+);

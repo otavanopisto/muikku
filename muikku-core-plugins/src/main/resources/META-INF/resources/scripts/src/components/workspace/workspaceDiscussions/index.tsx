@@ -24,7 +24,7 @@ export default class WorkspaceDiscussionBody extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: WorkspaceDiscussionBodyProps) {
     super(props);
@@ -36,6 +36,7 @@ export default class WorkspaceDiscussionBody extends React.Component<
    * onOpenNavigation
    */
   onOpenNavigation() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.refs.content as any).getWrappedInstance().refresh();
   }
 

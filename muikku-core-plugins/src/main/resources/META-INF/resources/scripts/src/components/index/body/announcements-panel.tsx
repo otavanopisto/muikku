@@ -1,6 +1,5 @@
 import Link from "~/components/general/link";
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/panel.scss";
@@ -9,13 +8,14 @@ import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { Panel } from "~/components/general/panel";
+import { localizeTime } from "~/locales/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
 
 /**
  * AnnouncementsPanelProps
  */
-interface AnnouncementsPanelProps {
-  i18n: i18nType;
+interface AnnouncementsPanelProps extends WithTranslation<"common"> {
   status: StatusType;
   announcements: Announcement[];
   overflow?: boolean;
@@ -86,10 +86,10 @@ class AnnouncementsPanel extends React.Component<
    * @returns label with correct locale string
    */
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
-    let label = this.props.i18n.text.get("plugin.wcag.pager.goToPage.label");
+    let label = this.props.t("wcag.goToPage", { ns: "messaging" });
 
     if (selected) {
-      label = this.props.i18n.text.get("plugin.wcag.pager.current.label");
+      label = this.props.t("wcag.currentPage", { ns: "messaging" });
     }
 
     return label;
@@ -97,6 +97,7 @@ class AnnouncementsPanel extends React.Component<
 
   /**
    * render
+   * @returns JSX.Element
    */
   render() {
     const { announcements, currentPage, itemsPerPage } = this.state;
@@ -143,7 +144,7 @@ class AnnouncementsPanel extends React.Component<
                 {announcement.caption}
               </span>
               <span className="item-list__announcement-date">
-                {this.props.i18n.time.format(announcement.startDate)}
+                {localizeTime.date(announcement.startDate)}
               </span>
               {announcement.workspaces && announcement.workspaces.length ? (
                 <div className="labels item-list__announcement-workspaces">
@@ -175,7 +176,7 @@ class AnnouncementsPanel extends React.Component<
     const renderPaginationBody = (
       <div
         className="item-list__item item-list__item--announcements"
-        aria-label={this.props.i18n.text.get("plugin.wcag.pager.label")}
+        aria-label={this.props.t("wcag.pager", { ns: "messaging" })}
       >
         <span className="item-list__text-body item-list__text-body--multiline--footer">
           <PagerV2
@@ -195,9 +196,10 @@ class AnnouncementsPanel extends React.Component<
 
     return (
       <Panel
-        header={this.props.i18n.text.get(
-          "plugin.frontPage.announcements.title"
-        )}
+        header={this.props.t("labels.announcement", {
+          ns: "messaging",
+          context: "other",
+        })}
         icon="icon-paper-plane"
         modifier="announcements"
       >
@@ -214,15 +216,10 @@ class AnnouncementsPanel extends React.Component<
               : null}
           </>
         ) : (
-          <div
-            className="empty empty--front-page"
-            aria-label={this.props.i18n.text.get(
-              "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel"
-            )}
-          >
-            {this.props.i18n.text.get(
-              "plugin.frontPage.announcements.noAnnouncements"
-            )}
+          <div className="empty empty--front-page">
+            {this.props.t("content.empty", {
+              context: "announcements",
+            })}
           </div>
         )}
       </Panel>
@@ -237,16 +234,10 @@ class AnnouncementsPanel extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18n: state.i18n,
     announcements: state.announcements.announcements,
   };
 }
 
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementsPanel);
+export default withTranslation(["frontPage", "messaging"])(
+  connect(mapStateToProps)(AnnouncementsPanel)
+);

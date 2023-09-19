@@ -1,16 +1,15 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceListType, WorkspaceType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspacesPanelProps
  */
-interface WorkspacesPanelProps {
-  i18n: i18nType;
+interface WorkspacesPanelProps extends WithTranslation {
   workspaces: WorkspaceListType;
 }
 
@@ -20,13 +19,13 @@ interface WorkspacesPanelProps {
  * @returns  JSX.element
  */
 const WorkspacesPanel: React.FC<WorkspacesPanelProps> = (props) => {
-  const { i18n, workspaces } = props;
+  const { workspaces, t } = props;
 
   return (
     <Panel
       icon="icon-books"
       modifier="workspaces"
-      header={i18n.text.get("plugin.frontPage.workspaces.title")}
+      header={t("labels.workspaces", { ns: "workspace" })}
     >
       {workspaces.length ? (
         <div className="item-list item-list--panel-workspaces">
@@ -62,7 +61,7 @@ const WorkspacesPanel: React.FC<WorkspacesPanelProps> = (props) => {
         </div>
       ) : (
         <Panel.BodyContent modifier="empty">
-          {i18n.text.get("plugin.frontPage.workspaces.noWorkspaces.teacher")}
+          {t("content.noWorkspaces", { ns: "frontPage" })}
         </Panel.BodyContent>
       )}
     </Panel>
@@ -75,9 +74,10 @@ const WorkspacesPanel: React.FC<WorkspacesPanelProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspaces: state.workspaces.userWorkspaces,
   };
 }
 
-export default connect(mapStateToProps)(WorkspacesPanel);
+export default withTranslation(["frontPage", "workspace"])(
+  connect(mapStateToProps)(WorkspacesPanel)
+);

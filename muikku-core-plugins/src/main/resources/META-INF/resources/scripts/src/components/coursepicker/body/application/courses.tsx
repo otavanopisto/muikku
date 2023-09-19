@@ -5,7 +5,6 @@ import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/message.scss";
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
-import { i18nType } from "~/reducers/base/i18n";
 import Course from "./courses/course";
 import { StateType } from "~/reducers";
 import ApplicationList, {
@@ -20,12 +19,13 @@ import {
   WorkspaceListType,
   WorkspaceType,
 } from "~/reducers/workspaces";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CoursepickerWorkspacesProps
  */
-interface CoursepickerWorkspacesProps {
-  i18n: i18nType;
+interface CoursepickerWorkspacesProps extends WithTranslation<["common"]> {
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
@@ -77,7 +77,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}
+            {this.props.t("content.notFound", { context: "workspaces" })}
           </span>
         </div>
       );
@@ -102,7 +102,6 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspacesState: state.workspaces.state,
     workspacesHasMore: state.workspaces.hasMore,
     workspaces: state.workspaces.availableWorkspaces,
@@ -113,11 +112,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ loadMoreWorkspacesFromServer }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CoursepickerWorkspaces);
+export default withTranslation(["workspace"])(
+  connect(mapStateToProps, mapDispatchToProps)(CoursepickerWorkspaces)
+);

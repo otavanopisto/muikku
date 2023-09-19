@@ -1,9 +1,11 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
-import { UserStaff } from "~/generated/client";
-import { UserStaffSearchResult } from "~/generated/client/models/UserStaffSearchResult";
-import { WorkspaceStudentSearchResult } from "~/generated/client/models/WorkspaceStudentSearchResult";
+import {
+  UserStaff,
+  UserStaffSearchResult,
+  WorkspaceStudentSearchResult,
+} from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 import {
   AssignmentEvaluationType,

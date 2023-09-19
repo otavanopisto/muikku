@@ -1,7 +1,8 @@
 import * as React from "react";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { ProfileState } from "~/reducers/main-function/profile";
 import ProfilePicture from "./components/profile-picture";
@@ -10,8 +11,7 @@ import ProfileProperty from "./components/profile-property";
 /**
  * GeneralInformationProps
  */
-interface GeneralInformationProps {
-  i18n: i18nType;
+interface GeneralInformationProps extends WithTranslation {
   profile: ProfileState;
   status: StatusType;
 }
@@ -20,7 +20,9 @@ interface GeneralInformationProps {
  * GeneralInformationState
  */
 interface GeneralInformationState {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   profileVacationStart: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   profileVacationEnd: any;
   phoneNumber: string;
   chatVisibility: string;
@@ -59,7 +61,7 @@ class GeneralInformation extends React.Component<
     const studyTimeEndValues = [];
     if (this.props.status.profile.studyTimeEnd) {
       studyTimeEndValues.push(
-        this.props.i18n.time.format(this.props.status.profile.studyTimeEnd)
+        localizeTime.date(this.props.status.profile.studyTimeEnd)
       );
       if (this.props.status.profile.studyTimeLeftStr) {
         studyTimeEndValues.push(this.props.status.profile.studyTimeLeftStr);
@@ -70,30 +72,26 @@ class GeneralInformation extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get(
-              "plugin.profile.titles.generalInformation"
-            )}
+            {this.props.t("labels.generalInfo", { ns: "profile" })}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <ProfilePicture />
               </div>
-
               <ProfileProperty
                 modifier="study-start-date"
-                i18n={this.props.i18n}
                 condition={!!this.props.status.profile.studyStartDate}
-                label="plugin.profile.studyStartDateLabel"
-                value={this.props.i18n.time.format(
+                label={this.props.t("labels.studyTimeStart", { ns: "users" })}
+                value={localizeTime.date(
                   this.props.status.profile.studyStartDate
                 )}
               />
+
               <ProfileProperty
                 modifier="study-end-date"
-                i18n={this.props.i18n}
                 condition={!!this.props.status.profile.studyTimeEnd}
-                label="plugin.profile.studyTimeEndLabel"
+                label={this.props.t("labels.studyTimeEnd", { ns: "users" })}
                 value={studyTimeEndValues}
               />
             </div>
@@ -110,7 +108,6 @@ class GeneralInformation extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     profile: state.profile,
     status: state.status,
   };
@@ -123,4 +120,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GeneralInformation);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(GeneralInformation)
+);

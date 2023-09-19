@@ -147,6 +147,28 @@ export default function status(
       };
     }
 
+    case "UPDATE_STATUS_WORKSPACE_PERMISSIONS": {
+      const actionPayloadWoPermissions = { ...action.payload };
+      delete actionPayloadWoPermissions["permissions"];
+
+      // TODO remove when JSF removed
+      const stateBasedCloneWoPermissions: any = {};
+      Object.keys(actionPayloadWoPermissions).forEach((k) => {
+        stateBasedCloneWoPermissions[k] = (state as any)[k];
+      });
+
+      const permissionsBasedClone: any = {};
+      Object.keys(action.payload.permissions || {}).forEach((k) => {
+        permissionsBasedClone[k] = (state as any).permissions[k];
+      });
+
+      return {
+        ...state,
+        ...actionPayloadWoPermissions,
+        permissions: { ...state.permissions, ...action.payload.permissions },
+      };
+    }
+
     case "UPDATE_STATUS_WORKSPACEID":
       return {
         ...state,
