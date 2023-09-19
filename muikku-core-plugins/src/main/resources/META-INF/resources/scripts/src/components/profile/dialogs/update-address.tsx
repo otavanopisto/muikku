@@ -1,12 +1,9 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
-
 import Button from "~/components/general/button";
 import {
   displayNotification,
@@ -18,12 +15,13 @@ import {
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
 } from "~/actions/main-function/profile";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * UpdateAddressDialogProps
  */
-interface UpdateAddressDialogProps {
-  i18n: i18nType;
+interface UpdateAddressDialogProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   profile: ProfileType;
 
@@ -74,7 +72,8 @@ class UpdateAddressDialog extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: UpdateAddressDialogProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: UpdateAddressDialogProps) {
     if (
       nextProps.profile.addresses &&
       JSON.stringify(nextProps.profile.addresses) !==
@@ -109,7 +108,7 @@ class UpdateAddressDialog extends React.Component<
    * update
    * @param closeDialog closeDialog
    */
-  update(closeDialog: () => any) {
+  update(closeDialog: () => void) {
     this.props.updateProfileAddress({
       street: this.state.street,
       postalCode: this.state.postalCode,
@@ -135,6 +134,7 @@ class UpdateAddressDialog extends React.Component<
    * @param e e
    */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
@@ -148,19 +148,15 @@ class UpdateAddressDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <p>
-          {this.props.i18n.text.get(
-            "plugin.profile.changeAddressMunicipality.dialog.desription"
-          )}
+          {this.props.t("content.changeAddressMunicipality", { ns: "profile" })}
         </p>
         <form>
           <div className="form-element form-element--profile">
             <label htmlFor="profileStreetAddress">
-              {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.streetField.label"
-              )}
+              {this.props.t("labels.streetAddress", { ns: "frontPage" })}
             </label>
             <input
               id="profileStreetAddress"
@@ -173,9 +169,7 @@ class UpdateAddressDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profilePostalCode">
-              {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label"
-              )}
+              {this.props.t("labels.postalCode", { ns: "frontPage" })}
             </label>
             <input
               id="profilePostalCode"
@@ -188,9 +182,7 @@ class UpdateAddressDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileCity">
-              {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.cityField.label"
-              )}
+              {this.props.t("labels.city", { ns: "frontPage" })}
             </label>
             <input
               id="profileCity"
@@ -203,9 +195,7 @@ class UpdateAddressDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileCountry">
-              {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.countryField.label"
-              )}
+              {this.props.t("labels.country", { ns: "frontPage" })}
             </label>
             <input
               id="profileCountry"
@@ -218,9 +208,7 @@ class UpdateAddressDialog extends React.Component<
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileMunicipality">
-              {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"
-              )}
+              {this.props.t("labels.municipality", { ns: "frontPage" })}
             </label>
             <input
               id="profileMunicipality"
@@ -239,33 +227,29 @@ class UpdateAddressDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["success", "standard-ok"]}
           onClick={this.update.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.profile.changeAddressMunicipality.dialog.button.saveLabel"
-          )}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.profile.changeAddressMunicipality.dialog.button.cancelLabel"
-          )}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
     return (
       <Dialog
-        title={this.props.i18n.text.get(
-          "plugin.profile.changeAddressMunicipality.dialog.title"
-        )}
+        title={this.props.t("labels.changeAddressAndMunicipality", {
+          ns: "profile",
+        })}
         content={content}
         footer={footer}
         modifier="change-address"
@@ -282,7 +266,6 @@ class UpdateAddressDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     profile: state.profile,
   };
 }
@@ -291,14 +274,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<void>) {
   return bindActionCreators(
     { displayNotification, updateProfileAddress },
     dispatch
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UpdateAddressDialog);
+export default withTranslation(["profile"])(
+  connect(mapStateToProps, mapDispatchToProps)(UpdateAddressDialog)
+);

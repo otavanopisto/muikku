@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -23,12 +23,12 @@ import { SimpleActionExecutor } from "~/actions/executor";
 import * as moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * VacationSettingsProps
  */
-interface VacationSettingsProps {
-  i18n: i18nType;
+interface VacationSettingsProps extends WithTranslation {
   profile: ProfileType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -163,8 +163,10 @@ class VacationSettings extends React.Component<
     stateLocation: "profileVacationStart" | "profileVacationEnd",
     newDate: Date
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nState: any = {};
     nState[stateLocation] = newDate;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.setState as any)(nState);
   }
 
@@ -281,7 +283,7 @@ class VacationSettings extends React.Component<
       )
       .onAllSucceed(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.saved"),
+          this.props.t("notifications.saveSuccess"),
           "success"
         );
 
@@ -291,7 +293,7 @@ class VacationSettings extends React.Component<
       })
       .onOneFails(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.failed"),
+          this.props.t("notifications.saveError"),
           "error"
         );
 
@@ -314,16 +316,14 @@ class VacationSettings extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get("plugin.profile.titles.vacationSettings")}
+            {this.props.t("labels.vacationSettings", { ns: "profile" })}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileVacationStart">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.awayStartDate.label"
-                    )}
+                    {this.props.t("labels.beginDate", { ns: "profile" })}
                   </label>
                   <DatePicker
                     id="profileVacationStart"
@@ -334,7 +334,7 @@ class VacationSettings extends React.Component<
                     )}
                     maxDate={this.state.profileVacationEnd}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18n.time.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.state.profileVacationStart}
                     dateFormat="P"
@@ -344,9 +344,7 @@ class VacationSettings extends React.Component<
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileVacationStart">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.awayEndDate.label"
-                    )}
+                    {this.props.t("labels.endDate", { ns: "profile" })}{" "}
                   </label>
                   <DatePicker
                     id="profileVacationEnd"
@@ -357,7 +355,7 @@ class VacationSettings extends React.Component<
                     )}
                     minDate={this.state.profileVacationStart}
                     locale={outputCorrectDatePickerLocale(
-                      this.props.i18n.time.getLocale()
+                      localizeTime.language
                     )}
                     selected={this.state.profileVacationEnd}
                     dateFormat="P"
@@ -387,15 +385,15 @@ class VacationSettings extends React.Component<
                       onChange={this.onVacationAutoReplyChange}
                     />
                     <label htmlFor="profileVacationAutoReply">
-                      {this.props.i18n.text.get(
-                        "plugin.profile.vacationAutoReply.label"
-                      )}
+                      {this.props.t("labels.vacationAutoReply", {
+                        ns: "profile",
+                      })}
                     </label>
                   </div>
                   <div className="form-element__description">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.vacationAutoReply.description"
-                    )}
+                    {this.props.t("content.vacationAutoReply", {
+                      ns: "profile",
+                    })}
                   </div>
                 </div>
               </div>
@@ -411,9 +409,9 @@ class VacationSettings extends React.Component<
                     } form-element`}
                   >
                     <label htmlFor="profileVacationAutoReplySubject">
-                      {this.props.i18n.text.get(
-                        "plugin.profile.vacationAutoReplySubject.label"
-                      )}
+                      {this.props.t("labels.title", {
+                        context: "vacationMessage",
+                      })}
                     </label>
                     <input
                       className="form-element__input form-element__input--profile-auto-reply"
@@ -437,9 +435,9 @@ class VacationSettings extends React.Component<
                     } form-element`}
                   >
                     <label htmlFor="profileVacationAutoReplyMsg">
-                      {this.props.i18n.text.get(
-                        "plugin.profile.vacationAutoReplyMsg.label"
-                      )}
+                      {this.props.t("labels.content", {
+                        context: "vacationMessage",
+                      })}
                     </label>
                     <div className="form-element__textarea-container">
                       <textarea
@@ -459,7 +457,7 @@ class VacationSettings extends React.Component<
                   onClick={this.save}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18n.text.get("plugin.profile.save.button")}
+                  {this.props.t("actions.save")}
                 </Button>
               </div>
             </div>
@@ -476,7 +474,6 @@ class VacationSettings extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     profile: state.profile,
     status: state.status,
   };
@@ -493,4 +490,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VacationSettings);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(VacationSettings)
+);

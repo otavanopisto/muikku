@@ -13,18 +13,17 @@ import {
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "~/@types/evaluation";
 import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps {
+interface NavigationAsideProps extends WithTranslation {
   evaluations: EvaluationState;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
-  i18n: i18nType;
   currentWorkspace: WorkspaceType;
 }
 
@@ -62,6 +61,7 @@ class NavigationAside extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
     const workspaces = [...this.props.evaluations.evaluationWorkspaces];
     const currentWorkspace = this.props.currentWorkspace;
 
@@ -110,7 +110,7 @@ class NavigationAside extends React.Component<
           onClick={this.handleNavigationWorkspaceClick(undefined)}
           isActive={this.props.evaluations.selectedWorkspaceId === undefined}
         >
-          {this.props.i18n.text.get("plugin.evaluation.allRequests")}
+          {t("labels.evaluationRequest", { ns: "evaluation", count: 0 })}
         </NavigationElement>
         {renderNavigationWorkspaceElements.length > 0
           ? renderNavigationWorkspaceElements
@@ -120,11 +120,7 @@ class NavigationAside extends React.Component<
 
     return (
       <NavigationMenu>
-        <NavigationTopic
-          name={this.props.i18n.text.get(
-            "plugin.evaluation.filter.viewSelection"
-          )}
-        >
+        <NavigationTopic name={t("labels.limitations", { ns: "evaluation" })}>
           {renderAllNavigationElements}
         </NavigationTopic>
       </NavigationMenu>
@@ -140,7 +136,6 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     evaluations: state.evaluations,
-    i18n: state.i18n,
     currentWorkspace: state.workspaces.currentWorkspace,
   };
 }
@@ -154,4 +149,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation(["evaluation", "workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);

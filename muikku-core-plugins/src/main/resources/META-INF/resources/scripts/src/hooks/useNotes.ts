@@ -7,24 +7,23 @@ import {
   NotesItemStatus,
   NotesItemUpdate,
 } from "~/@types/notes";
-import { i18nType } from "~/reducers/base/i18n";
+import { useTranslation } from "react-i18next";
 import { Role } from "~/reducers/base/status";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
 /**
  * A hook for getting notes with status "ONGOING" and functions to manipulate them
  * @param status user status for user
- * @param i18n localization
  * @param displayNotification notification thunk
  * @returns an array of notes and functions to update and change status
  */
 export const useOnGoingNotes = (
   status: StatusType,
-  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [notes, setNotes] = React.useState(<NotesItemRead[]>[]);
   const { userId, role } = status;
+  const { t } = useTranslation("tasks");
 
   React.useEffect(() => {
     // This is for students only hook, if you call it as someone else, no loading should happen
@@ -44,13 +43,13 @@ export const useOnGoingNotes = (
         setNotes(notesItems.filter((note) => note.status === "ONGOING"));
       } catch (err) {
         displayNotification(
-          i18n.text.get("plugin.records.tasks.notification.load.error", err),
+          t("notifications.loadError", { error: err }),
           "error"
         );
       }
     };
     loadNotes();
-  }, [userId, role, displayNotification, i18n]);
+  }, [userId, role, displayNotification, t]);
 
   /**
    * changenotesItemStatus
@@ -84,15 +83,12 @@ export const useOnGoingNotes = (
       setNotes(updatedNotesItemList);
 
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.stateUpdate.success"),
+        t("notifications.updateSuccess", { context: "taskState" }),
         "success"
       );
     } catch (err) {
       displayNotification(
-        i18n.text.get(
-          "plugin.records.tasks.notification.stateUpdate.error",
-          err
-        ),
+        t("notifications.updateError", { context: "taskState", error: err }),
         "error"
       );
     }
@@ -131,13 +127,10 @@ export const useOnGoingNotes = (
 
       onSuccess && onSuccess();
 
-      displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.edit.success"),
-        "success"
-      );
+      displayNotification(t("notifications.updateSuccess"), "success");
     } catch (err) {
       displayNotification(
-        i18n.text.get("plugin.records.tasks.notification.edit.error", err),
+        t("notifications.updateError", { error: err }),
         "error"
       );
     }

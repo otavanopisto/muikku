@@ -4,7 +4,6 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   DiscussionType,
   DiscussionThreadType,
@@ -18,16 +17,15 @@ import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-
 import "~/sass/elements/form.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ModifyThreadProps
  */
-interface ModifyThreadProps {
+interface ModifyThreadProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  i18n: i18nType;
   discussion: DiscussionType;
   thread: DiscussionThreadType;
   modifyDiscussionThread: ModifyDiscussionThreadTriggerType;
@@ -210,13 +208,15 @@ class ModifyThread extends SessionStateComponent<
     const options = [
       {
         value: DiscussionThreadLockEnum.ALL,
-        // TODO: localization
-        label: "Kaikilta",
+        label: this.props.i18n.t("labels.fromAll", {
+          ns: "messaging",
+        }),
       },
       {
         value: DiscussionThreadLockEnum.STUDENTS,
-        // TODO: localization
-        label: "Opiskelijoilta",
+        label: this.props.i18n.t("labels.fromStudents", {
+          ns: "messaging",
+        }),
       },
       {
         value: "",
@@ -225,9 +225,9 @@ class ModifyThread extends SessionStateComponent<
     ];
 
     const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
+      this.props.i18n.t("labels.edit") +
       " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+      this.props.i18n.t("labels.content");
 
     /**
      * content
@@ -237,14 +237,18 @@ class ModifyThread extends SessionStateComponent<
       <div key="1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.discussion.createmessage.title")}
+            {this.props.i18n.t("labels.title", {
+              ns: "messaging",
+              context: "message",
+            })}
           </label>
           <input
             id="messageTitle"
             className="env-dialog__input env-dialog__input--new-discussion-thread-title"
-            placeholder={this.props.i18n.text.get(
-              "plugin.discussion.createmessage.title"
-            )}
+            placeholder={this.props.i18n.t("labels.title", {
+              ns: "messaging",
+              context: "message",
+            })}
             value={this.state.title}
             onChange={this.onTitleChange}
             autoFocus
@@ -255,10 +259,10 @@ class ModifyThread extends SessionStateComponent<
         <div key="2" className="env-dialog__row env-dialog__row--options">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageLock" className="env-dialog__label">
-              {
-                // TODO: lokalisointi
-              }
-              Lukitse
+              {this.props.i18n.t("actions.lock", {
+                ns: "messaging",
+                context: "thread",
+              })}
             </label>
             <select
               id="messageLock"
@@ -283,9 +287,7 @@ class ModifyThread extends SessionStateComponent<
               onChange={this.togglePinned}
             />
             <label htmlFor="messagePinned" className="env-dialog__input-label">
-              {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.pinned"
-              )}
+              {this.props.i18n.t("labels.pin", { ns: "messaging" })}
             </label>
           </div>
         </div>
@@ -293,9 +295,7 @@ class ModifyThread extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content"
-            )}
+            {this.props.i18n.t("labels.content")}
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -318,14 +318,14 @@ class ModifyThread extends SessionStateComponent<
           onClick={this.modifyThread.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -333,9 +333,7 @@ class ModifyThread extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -344,7 +342,7 @@ class ModifyThread extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="modify-message"
-        title={this.props.i18n.text.get("plugin.discussion.editmessage.topic")}
+        title={this.props.i18n.t("labels.edit")}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
@@ -361,7 +359,6 @@ class ModifyThread extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     discussion: state.discussion,
     status: state.status,
   };
@@ -375,4 +372,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyDiscussionThread }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModifyThread);
+export default withTranslation(["messaging"])(
+  connect(mapStateToProps, mapDispatchToProps)(ModifyThread)
+);

@@ -7,7 +7,6 @@ import { AnyActionType } from "~/actions/index";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
@@ -16,12 +15,12 @@ import {
   createOrUpdateEvaluationJournalFeedback,
   CreateOrUpdateEvaluationJournalFeedbackTriggerType,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SupplementationEditorProps
  */
-interface JournalFeedbackEditorProps {
-  i18n: i18nType;
+interface JournalFeedbackEditorProps extends WithTranslation {
   locale: LocaleState;
   journalFeedback?: EvaluationJournalFeedback;
   userEntityId: number;
@@ -169,11 +168,7 @@ class JournalFeedbackEditor extends SessionStateComponent<
       <div className="form" role="form">
         <div className="form__row">
           <div className="form-element">
-            <label>
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.journalComments.formContentLabel"
-              )}
-            </label>
+            <label>{this.props.t("labels.content")}</label>
 
             <CKEditor
               onChange={this.handleCKEditorChange}
@@ -190,18 +185,14 @@ class JournalFeedbackEditor extends SessionStateComponent<
             onClick={this.handleSaveClick}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
+            {this.props.t("actions.save")}
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-            )}
+            {this.props.t("actions.cancel")}
           </Button>
           {this.recovered && (
             <Button
@@ -209,9 +200,7 @@ class JournalFeedbackEditor extends SessionStateComponent<
               disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
+              {this.props.t("actions.remove", { context: "draft" })}
             </Button>
           )}
         </div>
@@ -226,7 +215,6 @@ class JournalFeedbackEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     locale: state.locales,
   };
 }
@@ -242,7 +230,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(JournalFeedbackEditor);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(JournalFeedbackEditor)
+);

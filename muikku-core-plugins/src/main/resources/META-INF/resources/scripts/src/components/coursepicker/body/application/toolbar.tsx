@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
@@ -13,12 +12,13 @@ import {
 } from "~/components/general/application-panel/application-panel";
 import { WorkspacesType } from "~/reducers/workspaces";
 import { SearchFormElement } from "~/components/general/form-element";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CoursepickerToolbarProps
  */
-interface CoursepickerToolbarProps {
-  i18n: i18nType;
+interface CoursepickerToolbarProps extends WithTranslation {
   workspaces: WorkspacesType;
 }
 
@@ -60,7 +60,8 @@ class CoursepickerToolbar extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {
     if (
       !this.focused &&
       (nextProps.workspaces.activeFilters.query || "") !==
@@ -117,9 +118,8 @@ class CoursepickerToolbar extends React.Component<
               id="searchCourses"
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
-              placeholder={this.props.i18n.text.get(
-                "plugin.coursepicker.search.placeholder"
-              )}
+              // TODO: Translate this with new i18next
+              placeholder={this.props.t("labels.search", { ns: "workspace" })}
               value={this.state.searchquery}
             />
           </ApplicationPanelToolsContainer>
@@ -135,7 +135,6 @@ class CoursepickerToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspaces: state.workspaces,
   };
 }
@@ -144,11 +143,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CoursepickerToolbar);
+export default withTranslation(["workspace"])(
+  connect(mapStateToProps, mapDispatchToProps)(CoursepickerToolbar)
+);

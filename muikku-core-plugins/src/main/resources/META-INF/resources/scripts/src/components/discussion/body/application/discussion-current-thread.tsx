@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import {
   DiscussionType,
   DiscussionUserType,
@@ -39,13 +39,13 @@ import {
   unsubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CurrentThreadProps
  */
-interface DiscussionCurrentThreadProps {
+interface DiscussionCurrentThreadProps extends WithTranslation {
   discussion: DiscussionType;
-  i18n: i18nType;
   userId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissions: any;
@@ -242,9 +242,9 @@ class DiscussionCurrentThread extends React.Component<
           firstName={userCreator.firstName}
           hasImage={userCreator.hasImage}
           userCategory={userCategory}
-          avatarAriaLabel={this.props.i18n.text.get(
-            "plugin.wcag.userAvatar.label"
-          )}
+          avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
+            ns: "messaging",
+          })}
         />
       );
     }
@@ -300,9 +300,9 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
-                  content={this.props.i18n.text.get(
-                    "plugin.discussion.unsubscribe.thread"
-                  )}
+                  content={this.props.i18n.t("labels.unsubscribe", {
+                    ns: "messaging",
+                  })}
                 >
                   <IconButton
                     icon="bookmark-full"
@@ -317,9 +317,9 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
-                  content={this.props.i18n.text.get(
-                    "plugin.discussion.subscribe.thread"
-                  )}
+                  content={this.props.i18n.t("labels.subscribe", {
+                    ns: "messaging",
+                  })}
                 >
                   <IconButton
                     icon="bookmark-empty"
@@ -344,9 +344,7 @@ class DiscussionCurrentThread extends React.Component<
             aside={
               <span style={{ display: "flex", alignItems: "center" }}>
                 <span>
-                  {this.props.i18n.time.format(
-                    this.props.discussion.current.created
-                  )}
+                  {localizeTime.date(this.props.discussion.current.created)}
                 </span>
               </span>
             }
@@ -372,11 +370,16 @@ class DiscussionCurrentThread extends React.Component<
                 {this.props.discussion.current.created !==
                 this.props.discussion.current.lastModified ? (
                   <div className="application-list__item-edited">
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(
-                        this.props.discussion.current.lastModified
-                      )
+                    {this.props.i18n.t(
+                      "labels.edited",
+
+                      {
+                        context: "in",
+                        ns: "messaging",
+                        time: localizeTime.date(
+                          this.props.discussion.current.lastModified
+                        ),
+                      }
                     )}
                   </div>
                 ) : null}
@@ -388,9 +391,7 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("answer")}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.discussion.reply.message"
-                      )}
+                      {this.props.i18n.t("actions.reply", { ns: "messaging" })}
                     </Link>
                   ) : null}
                   {!threadLocked || threadOwner ? (
@@ -398,9 +399,7 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("quote")}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.discussion.reply.quote"
-                      )}
+                      {this.props.i18n.t("actions.quote")}
                     </Link>
                   ) : null}
                   {canEditThread ? (
@@ -408,15 +407,13 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("modify")}
                     >
-                      {this.props.i18n.text.get("plugin.discussion.reply.edit")}
+                      {this.props.i18n.t("actions.edit")}
                     </Link>
                   ) : null}
                   {canRemoveThread || studentCanRemoveThread ? (
                     <DeleteThreadComponent>
                       <Link className="link link--application-list">
-                        {this.props.i18n.text.get(
-                          "plugin.discussion.reply.delete"
-                        )}
+                        {this.props.i18n.t("actions.remove")}
                       </Link>
                     </DeleteThreadComponent>
                   ) : null}
@@ -531,7 +528,6 @@ class DiscussionCurrentThread extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     discussion: state.discussion,
     userId: state.status.userId,
     permissions: state.status.permissions,
@@ -553,7 +549,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionCurrentThread);
+export default withTranslation(["messaging"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionCurrentThread)
+);

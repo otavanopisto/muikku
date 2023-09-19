@@ -7,8 +7,8 @@ import {
   MaterialContentNodeType,
 } from "~/reducers/workspaces";
 import { AssignmentsTabType } from "../assignments-and-diaries";
-import { i18nType } from "~/reducers/base/i18n";
 import { MaterialContentNode } from "~/generated/client";
+import { useTranslation } from "react-i18next";
 
 /**
  * UseFollowUpGoalsState
@@ -31,16 +31,16 @@ const initialState: UseInterimEvaluationState = {
  *
  * @param workspaceId workspaceId
  * @param tabOpen tabOpen
- * @param i18n i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useInterimEvaluationAssigments = (
   workspaceId: number,
   tabOpen: AssignmentsTabType,
-  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
+  const { t } = useTranslation(["studies", "common"]);
+
   const [
     interimEvaluationeAssignmentsData,
     setInterimEvaluationAssignmentsData,
@@ -112,9 +112,10 @@ export const useInterimEvaluationAssigments = (
       } catch (err) {
         if (!isCancelled) {
           displayNotification(
-            `${i18n.text.get(
-              "plugin.records.errormessage.workspaceAssignmentsExerciseLoadFailed"
-            )}, ${err.message}`,
+            `${t("notifications.loadError", {
+              ns: "studies",
+              context: "workspaceInterim",
+            })}, ${err.message}`,
             "error"
           );
           setInterimEvaluationAssignmentsData(
@@ -147,7 +148,7 @@ export const useInterimEvaluationAssigments = (
     displayNotification,
     tabOpen,
     interimEvaluationeAssignmentsData.interimEvaluationAssignments.length,
-    i18n,
+    t,
   ]);
 
   return {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import {
   AssignmentType,
   MaterialCompositeRepliesType,
@@ -20,14 +20,14 @@ import {
 import AnimateHeight from "react-animate-height";
 import Dropdown from "~/components/general/dropdown";
 import { MaterialContentNode } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * MaterialProps
  */
-interface MaterialProps {
+interface MaterialProps extends WithTranslation {
   material: MaterialContentNode;
   workspace: WorkspaceType;
-  i18n: i18nType;
   status: StatusType;
   compositeReply: MaterialCompositeRepliesType;
   open: boolean;
@@ -47,10 +47,7 @@ interface MaterialState {
 /**
  * Material
  */
-export default class Material extends React.Component<
-  MaterialProps,
-  MaterialState
-> {
+class Material extends React.Component<MaterialProps, MaterialState> {
   /**
    * constructor
    * @param props props
@@ -113,9 +110,7 @@ export default class Material extends React.Component<
               openByHover
               content={
                 <span>
-                  {this.props.i18n.time.format(
-                    compositeReply.evaluationInfo.date
-                  )}
+                  {localizeTime.date(compositeReply.evaluationInfo.date)}
                 </span>
               }
             >
@@ -133,9 +128,7 @@ export default class Material extends React.Component<
               openByHover
               content={
                 <span>
-                  {this.props.i18n.time.format(
-                    compositeReply.evaluationInfo.date
-                  )}
+                  {localizeTime.date(compositeReply.evaluationInfo.date)}
                 </span>
               }
             >
@@ -262,3 +255,5 @@ export default class Material extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(Material);

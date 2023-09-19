@@ -4,7 +4,6 @@ import MultiSelectField from "../fields/multiselect-field";
 import MemoField from "../fields/memo-field";
 import * as React from "react";
 import $ from "~/lib/jquery";
-import { i18nType } from "~/reducers/base/i18n";
 import FileField from "../fields/file-field";
 import ConnectField from "../fields/connect-field";
 import OrganizerField from "../fields/organizer-field";
@@ -94,7 +93,6 @@ const answerCheckables: { [key: string]: (params: any) => boolean } = {
  */
 interface BaseProps {
   material: MaterialContentNode;
-  i18n: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
   websocketState: WebsocketStateType;
@@ -467,7 +465,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     }
 
     // we add our default parameters form redux
-    parameters["i18n"] = props.i18n;
     parameters["status"] = props.status;
     parameters["readOnly"] = props.readOnly;
 
@@ -605,7 +602,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       "/materials/" +
       this.props.material.path;
     const invisible = this.props.invisible;
-    const i18n = this.props.i18n;
 
     const processingRules: HTMLToReactComponentRule[] = [
       {
@@ -680,7 +676,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               path={path}
               invisible={invisible}
               dataset={dataset}
-              i18n={i18n}
             />
           );
         },
@@ -710,7 +705,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               key={props.key}
               invisible={invisible}
               dataset={dataset}
-              i18n={i18n}
             >
               {children}
             </WordDefinition>
@@ -746,7 +740,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               path={path}
               invisible={invisible}
               dataset={dataset}
-              i18n={i18n}
               processingRules={processingRules}
             />
           );
@@ -802,7 +795,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               element={element}
               path={path}
               dataset={dataset}
-              i18n={i18n}
               processingRules={processingRules}
             />
           );

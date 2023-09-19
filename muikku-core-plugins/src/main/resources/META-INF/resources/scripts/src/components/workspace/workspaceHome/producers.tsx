@@ -2,16 +2,14 @@ import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/producers.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ProducersProps
  */
-interface ProducersProps {
+interface ProducersProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18n: i18nType;
 }
 
 /**
@@ -27,6 +25,8 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (
       !this.props.workspace ||
       !this.props.workspace.producers ||
@@ -38,7 +38,7 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
     return (
       <div className="producers">
         <span className="producers__title">
-          {this.props.i18n.text.get("plugin.workspace.index.producersLabel")}:
+          {t("labels.producer", { ns: "workspace", count: 0 })}:
         </span>
         {this.props.workspace.producers.map((producer, index) => {
           let textForTheName = producer.name;
@@ -62,7 +62,6 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
   };
 }
@@ -74,4 +73,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Producers);
+export default withTranslation(["workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Producers)
+);

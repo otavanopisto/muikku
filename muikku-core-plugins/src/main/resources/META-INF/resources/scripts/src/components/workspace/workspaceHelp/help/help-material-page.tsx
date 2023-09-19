@@ -1,8 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
-
 import MaterialLoader from "~/components/base/material-loader";
 import {
   MaterialContentNodeType,
@@ -25,13 +23,16 @@ import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
+<<<<<<< HEAD
 import { MaterialContentNode } from "~/generated/client";
+=======
+import { withTranslation, WithTranslation } from "react-i18next";
+>>>>>>> devel
 
 /**
  * HelpMaterialProps
  */
-interface HelpMaterialProps {
-  i18n: i18nType;
+interface HelpMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
   materialContentNode: MaterialContentNode;
@@ -152,7 +153,6 @@ class WorkspaceMaterial extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspaceEditMode: state.workspaces.editMode,
     status: state.status,
   };
@@ -166,4 +166,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial)
+);

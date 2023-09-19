@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 
 import MaterialLoader from "~/components/base/material-loader";
 import {
@@ -28,12 +27,12 @@ import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 import { MaterialContentNode } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceMaterialProps
  */
-interface WorkspaceMaterialProps {
-  i18n: i18nType;
+interface WorkspaceMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
   materialContentNode: MaterialContentNode;
@@ -208,7 +207,6 @@ class WorkspaceMaterial extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspaceEditMode: state.workspaces.editMode,
     status: state.status,
   };
@@ -222,4 +220,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial)
+);

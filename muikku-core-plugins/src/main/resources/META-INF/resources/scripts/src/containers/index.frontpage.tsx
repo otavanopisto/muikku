@@ -5,8 +5,8 @@ import * as React from "react";
 import "~/sass/util/base.scss";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
-import EasyToUseToolDrawer from "~/components/easy-to-use-reading-functions/easy-to-use-tool-drawer";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
+import "../locales/i18n";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 

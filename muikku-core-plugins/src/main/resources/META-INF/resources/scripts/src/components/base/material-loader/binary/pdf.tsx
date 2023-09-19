@@ -1,19 +1,17 @@
 import { MaterialContentNodeType } from "~/reducers/workspaces";
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
 import { MaterialContentNode } from "~/generated/client";
+import { useTranslation } from "react-i18next";
 
 /**
  * Pdf
  * @param props props
  * @param props.material material
- * @param props.i18n i18n
  */
-export default function Pdf(props: {
-  material: MaterialContentNode;
-  i18n: i18nType;
-}) {
+export default function Pdf(props: { material: MaterialContentNode }) {
+  const { t } = useTranslation(["files", "common"]);
+
   return (
     <div className="material-page__content material-page__content--binary-pdf rs_skip_always">
       <object
@@ -25,7 +23,7 @@ export default function Pdf(props: {
           href={`/rest/materials/binary/${props.material.materialId}/content`}
           openInNewTab={props.material.title}
         >
-          {props.i18n.text.get("plugin.workspace.materials.binaryDownload")}
+          {t("actions.download", { ns: "files" })}
         </Link>
       </object>
       <Link
@@ -33,7 +31,7 @@ export default function Pdf(props: {
         href={`/rest/materials/binary/${props.material.materialId}/content`}
         openInNewTab={props.material.title}
       >
-        {props.i18n.text.get("plugin.workspace.materials.binaryDownload")}
+        {t("actions.download", { ns: "files" })}
       </Link>
     </div>
   );

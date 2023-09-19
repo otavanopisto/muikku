@@ -18,8 +18,6 @@ import {
   MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
-
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
@@ -46,6 +44,10 @@ import {
   requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
 import { MaterialContentNode } from "~/generated/client";
+import i18n from "~/locales/i18n";
+import { AnyActionType } from "~/actions";
+
+/* i18n.t("", { ns: "materials" }); */
 
 //These represent the states assignments and exercises can be in
 const STATES = [
@@ -61,7 +63,7 @@ const STATES = [
     "button-class": "muikku-submit-exercise",
 
     //This is what by default appears on the button
-    "button-text": "plugin.workspace.materialsLoader.sendExerciseButton",
+    "button-text": "actions.send",
 
     //Buttons are not disabled
     "button-disabled": false,
@@ -80,7 +82,7 @@ const STATES = [
     "checks-answers": true,
     "displays-hide-show-answers-on-request-button-if-allowed": true,
     "button-class": "muikku-submit-exercise",
-    "button-text": "plugin.workspace.materialsLoader.exerciseSentButton",
+    "button-text": "actions.sent",
     "button-disabled": false,
 
     //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
@@ -90,9 +92,9 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-assignment",
-    "button-text": "plugin.workspace.materialsLoader.submitAssignmentButton",
+    "button-text": "actions.send",
     //Represents a message that will be shown once the state changes to the success state
-    "success-text": "plugin.workspace.materialsLoader.assignmentSubmitted",
+    "success-text": "notifications.assignmentSubmitted",
     "button-disabled": false,
     "success-state": "SUBMITTED",
     "fields-read-only": false,
@@ -101,8 +103,8 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: "SUBMITTED",
     "button-class": "muikku-withdraw-assignment",
-    "button-text": "plugin.workspace.materialsLoader.withdrawAssignmentButton",
-    "success-text": "plugin.workspace.materialsLoader.assignmentWithdrawn",
+    "button-text": "actions.cancel_assignment",
+    "success-text": "notifications.assignmentWithdrawn",
     "button-disabled": false,
     "success-state": "WITHDRAWN",
     "fields-read-only": true,
@@ -120,8 +122,8 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: ["INCOMPLETE"],
     "button-class": "muikku-withdraw-assignment",
-    "button-text": "plugin.workspace.materialsLoader.withdrawAssignmentButton",
-    "success-text": "plugin.workspace.materialsLoader.assignmentWithdrawn",
+    "button-text": "actions.cancel_assignment",
+    "success-text": "notifications.assignmentWithdrawn",
     "button-disabled": false,
     "success-state": "WITHDRAWN",
     "fields-read-only": true,
@@ -130,8 +132,8 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: "WITHDRAWN",
     "button-class": "muikku-update-assignment",
-    "button-text": "plugin.workspace.materialsLoader.updateAssignmentButton",
-    "success-text": "plugin.workspace.materialsLoader.assignmentUpdated",
+    "button-text": "actions.update",
+    "success-text": "notifications.assignmentUpdated",
     "button-disabled": false,
     "success-state": "SUBMITTED",
     "fields-read-only": false,
@@ -140,7 +142,7 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: "PASSED",
     "button-class": "muikku-evaluated-assignment",
-    "button-text": "plugin.workspace.materialsLoader.evaluatedAssignmentButton",
+    "button-text": "actions.evaluated",
     "button-disabled": true,
     "fields-read-only": true,
   },
@@ -148,7 +150,7 @@ const STATES = [
     "assignment-type": "JOURNAL",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-journal",
-    "button-text": "plugin.workspace.materialsLoader.submitJournalButton",
+    "button-text": "actions.save",
     "success-state": "SUBMITTED",
     "button-disabled": false,
     "fields-read-only": false,
@@ -157,7 +159,7 @@ const STATES = [
     "assignment-type": "JOURNAL",
     state: "SUBMITTED",
     "button-class": "muikku-submit-journal",
-    "button-text": "plugin.workspace.materialsLoader.updateJournalButton",
+    "button-text": "actions.edit",
     "success-state": "ANSWERED",
     "button-disabled": false,
     "fields-read-only": true,
@@ -166,8 +168,7 @@ const STATES = [
     "assignment-type": "INTERIM_EVALUATION",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-interim-evaluation",
-    "button-text":
-      "plugin.workspace.materialsLoader.submitInterimEvaluationRequestButton",
+    "button-text": "actions.send_interimEvaluation",
     "success-state": "SUBMITTED",
     "button-disabled": false,
     "fields-read-only": false,
@@ -176,8 +177,7 @@ const STATES = [
     "assignment-type": "INTERIM_EVALUATION",
     state: "SUBMITTED",
     "button-class": "muikku-submit-interim-evaluation",
-    "button-text":
-      "plugin.workspace.materialsLoader.cancelInterimEvaluationRequestButton",
+    "button-text": "actions.cancel_interimEvaluationRequest",
     "success-state": "ANSWERED",
     "button-disabled": false,
     "fields-read-only": true,
@@ -186,7 +186,7 @@ const STATES = [
     "assignment-type": "INTERIM_EVALUATION",
     state: "PASSED",
     "button-class": "muikku-evaluated-assignment",
-    "button-text": "plugin.workspace.materialsLoader.evaluatedAssignmentButton",
+    "button-text": "actions.evaluated",
     "button-disabled": true,
     "fields-read-only": true,
   },
@@ -198,9 +198,7 @@ const STATES = [
 export interface MaterialLoaderProps {
   material: MaterialContentNode;
   folder?: MaterialContentNode;
-
   workspace: WorkspaceType;
-  i18n: i18nType;
   status: StatusType;
   modifiers?: string | Array<string>;
   id?: string;
@@ -558,8 +556,9 @@ class MaterialLoader extends React.Component<
         this.props.workspace.id,
         this.props.material.workspaceMaterialId,
         compositeReplies && compositeReplies.workspaceMaterialReplyId,
-        this.stateConfiguration["success-text"] &&
-          this.props.i18n.text.get(this.stateConfiguration["success-text"]),
+        this.stateConfiguration["success-text"]
+          ? this.stateConfiguration["success-text"]
+          : undefined,
         this.props.onAssignmentStateModified
       );
     }
@@ -586,8 +585,8 @@ class MaterialLoader extends React.Component<
    * and the value the rightness that came as a result
    * Some items do not trigger this function, which means your rightness count might differ from the
    * amount of fields, because fields self register
-   * @param name
-   * @param value
+   * @param name name
+   * @param value value
    */
   onAnswerChange(name: string, value?: boolean) {
     //The reason we need a sync registry is that the rightness can change so fast
@@ -623,7 +622,7 @@ class MaterialLoader extends React.Component<
    * feel free to go on top and change it to false
    * if chances are it is more likely to be false
    * should save a couple of bytes
-   * @param answerCheckable
+   * @param answerCheckable answerCheckable
    */
   onAnswerCheckableChange(answerCheckable: boolean) {
     if (answerCheckable !== this.state.answerCheckable) {
@@ -719,7 +718,6 @@ class MaterialLoader extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     websocket: state.websocket,
   };
@@ -729,7 +727,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       updateAssignmentState,

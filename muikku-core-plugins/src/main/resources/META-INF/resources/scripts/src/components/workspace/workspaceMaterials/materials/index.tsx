@@ -8,7 +8,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   WorkspaceType,
   MaterialContentNodeListType,
@@ -39,6 +38,7 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
+import { withTranslation, WithTranslation } from "react-i18next";
 import ReadSpeakerReader from "~/components/general/readspeaker";
 import {
   displayNotification,
@@ -52,8 +52,7 @@ import {
 /**
  * WorkspaceMaterialsProps
  */
-interface WorkspaceMaterialsProps {
-  i18n: i18nType;
+interface WorkspaceMaterialsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
@@ -178,29 +177,31 @@ class WorkspaceMaterials extends React.Component<
     nextSibling: MaterialContentNode,
     includesSection: boolean
   ) {
+    const { t } = this.props;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const materialManagementItemsOptions: Array<any> = [
       {
         icon: "plus",
-        text: "plugin.workspace.materialsManagement.createChapterTooltip",
+        text: t("labels.create_chapter", { ns: "materials" }),
         onClick: this.createSection.bind(this, nextSection),
         file: false,
       },
       {
         icon: "plus",
-        text: "plugin.workspace.materialsManagement.createPageTooltip",
+        text: t("labels.create_page", { ns: "materials" }),
         onClick: this.createPage.bind(this, section, nextSibling),
         file: false,
       },
       {
         icon: "paste",
-        text: "plugin.workspace.materialsManagement.pastePageTooltip",
+        text: t("labels.paste", { ns: "materials" }),
         onClick: this.pastePage.bind(this, section, nextSibling),
         file: false,
       },
       {
         icon: "attachment",
-        text: "plugin.workspace.materialsManagement.attachFileTooltip",
+        text: t("actions.add", { ns: "files" }),
         onChange: this.createPageFromBinary.bind(this, section, nextSibling),
         file: true,
       },
@@ -253,15 +254,15 @@ class WorkspaceMaterials extends React.Component<
    * @param nextSibling nextSibling
    */
   createPage(section: MaterialContentNode, nextSibling: MaterialContentNode) {
+    const { t } = this.props;
+
     this.props.createWorkspaceMaterialContentNode(
       {
         workspace: this.props.workspace,
         rootParentId: this.props.workspace.details.rootFolderId,
         parentMaterial: section,
         nextSibling,
-        title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle"
-        ),
+        title: t("labels.newPage", { ns: "materials" }),
         makeFolder: false,
       },
       "materials"
@@ -298,14 +299,14 @@ class WorkspaceMaterials extends React.Component<
    * @param nextSibling nextSibling
    */
   createSection(nextSibling: MaterialContentNode) {
+    const { t } = this.props;
+
     this.props.createWorkspaceMaterialContentNode(
       {
         workspace: this.props.workspace,
         rootParentId: this.props.workspace.details.rootFolderId,
         nextSibling,
-        title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle"
-        ),
+        title: t("labels.newPage", { ns: "materials" }),
         makeFolder: true,
       },
       "materials"
@@ -461,16 +462,16 @@ class WorkspaceMaterials extends React.Component<
   buildViewRestrictionLocaleString = (
     viewRestrict: MaterialViewRestriction
   ) => {
+    const { t } = this.props;
+
     switch (viewRestrict) {
       case MaterialViewRestriction.LoggedIn:
-        return this.props.i18n.text.get(
-          "plugin.workspace.materialViewRestricted"
-        );
+        return t("content.viewRestricted", { ns: "materials" });
 
       case MaterialViewRestriction.WorkspaceMembers:
-        return this.props.i18n.text.get(
-          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
-        );
+        return t("content.viewRestricted_workspaceMembers", {
+          ns: "materials",
+        });
 
       default:
         return null;
@@ -481,6 +482,10 @@ class WorkspaceMaterials extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
+    t("labels.create_chapter", { ns: "materials" });
+
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
     }
@@ -499,9 +504,7 @@ class WorkspaceMaterials extends React.Component<
           <Dropdown
             openByHover
             modifier="material-management-tooltip"
-            content={this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.createChapterTooltip"
-            )}
+            content={t("labels.create_chapter", { ns: "materials" })}
           >
             <ButtonPill
               buttonModifiers="material-management-master"
@@ -515,9 +518,7 @@ class WorkspaceMaterials extends React.Component<
     const emptyMessage =
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
-          {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.empty"
-          )}
+          {t("content.empty", { ns: "materials", context: "materials" })}
         </div>
       ) : null;
 
@@ -538,9 +539,7 @@ class WorkspaceMaterials extends React.Component<
             <Dropdown
               openByHover
               modifier="material-management-tooltip"
-              content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.createChapterTooltip"
-              )}
+              content={t("labels.create_chapter", { ns: "materials" })}
             >
               <ButtonPill
                 buttonModifiers="material-management-master"
@@ -580,7 +579,7 @@ class WorkspaceMaterials extends React.Component<
                       }}
                     />
                     <span className={`link__icon icon-${item.icon}`}></span>
-                    <span>{this.props.i18n.text.get(item.text)}</span>
+                    <span>{item.text}</span>
                   </label>
                 );
               }
@@ -593,7 +592,7 @@ class WorkspaceMaterials extends React.Component<
                   }}
                 >
                   <span className={`link__icon icon-${item.icon}`}></span>
-                  <span>{this.props.i18n.text.get(item.text)}</span>
+                  <span>{item.text}</span>
                 </Link>
               );
             })}
@@ -657,7 +656,7 @@ class WorkspaceMaterials extends React.Component<
                           <span
                             className={`link__icon icon-${item.icon}`}
                           ></span>
-                          <span>{this.props.i18n.text.get(item.text)}</span>
+                          <span>{item.text}</span>
                         </label>
                       );
                     }
@@ -670,7 +669,7 @@ class WorkspaceMaterials extends React.Component<
                         }}
                       >
                         <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{this.props.i18n.text.get(item.text)}</span>
+                        <span>{item.text}</span>
                       </Link>
                     );
                   })}
@@ -810,9 +809,10 @@ class WorkspaceMaterials extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="material-management-tooltip"
-                  content={this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.editChapterTooltip"
-                  )}
+                  content={t("labels.edit", {
+                    ns: "materials",
+                    context: "chapter",
+                  })}
                 >
                   <ButtonPill
                     buttonModifiers="material-management-chapter"
@@ -825,12 +825,8 @@ class WorkspaceMaterials extends React.Component<
                   modifier="material-management-tooltip"
                   content={
                     section.hidden
-                      ? this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.showChapterTooltip"
-                        )
-                      : this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.hideChapterTooltip"
-                        )
+                      ? t("labels.setVisible", { ns: "materials" })
+                      : t("labels.hide", { ns: "materials" })
                   }
                 >
                   <ButtonPill
@@ -868,10 +864,7 @@ class WorkspaceMaterials extends React.Component<
       this.props.workspace && this.props.workspace.activity ? (
         <ProgressData
           modifier="workspace-materials"
-          title={this.props.i18n.text.get(
-            "plugin.workspace.index.courseProgressLabel"
-          )}
-          i18n={this.props.i18n}
+          title={t("labels.progress", { ns: "workspace" })}
           activity={this.props.workspace.activity}
         />
       ) : null;
@@ -882,7 +875,7 @@ class WorkspaceMaterials extends React.Component<
         onOpenNavigation={this.onOpenNavigation}
         modifier="workspace-materials"
         navigation={this.props.navigation}
-        title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")}
+        title={t("labels.materials", { ns: "materials" })}
         readspeakerComponent={
           <ReadSpeakerReader
             readParameterType="readid"
@@ -905,7 +898,6 @@ class WorkspaceMaterials extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     workspace: state.workspaces.currentWorkspace,
     materials: state.workspaces.currentMaterials,
@@ -932,6 +924,13 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
+const componentWithTranslation = withTranslation(
+  ["materials", "workspace", "files", "common"],
+  {
+    withRef: true,
+  }
+)(WorkspaceMaterials);
+
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
-})(WorkspaceMaterials);
+})(componentWithTranslation);

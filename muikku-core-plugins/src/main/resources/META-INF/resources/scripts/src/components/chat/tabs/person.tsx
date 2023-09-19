@@ -4,15 +4,11 @@ import { IChatContact } from "../chat";
 // import PromptDialog, {
 //   PromptDialogButtons,
 // } from "~/components/general/prompt-dialog";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * IPersonProps
  */
 interface IPersonProps {
-  i18n: i18nType;
   modifier?: string;
   person: IChatContact;
   /** If this person is removable from the roster */
@@ -70,11 +66,11 @@ class Person extends React.Component<IPersonProps, IPersonState> {
       : this.props.person.jid;
 
     // const buttons: PromptDialogButtons = {
-    //   execute: this.props.i18n.text.get(
-    //     "plugin.chat.people.delete.prompt.execute"
+    //   execute: this.props.i18n.t(
+    //     "actions.remove"
     //   ),
-    //   cancel: this.props.i18n.text.get(
-    //     "plugin.chat.people.delete.prompt.cancel"
+    //   cancel: this.props.i18n.t(
+    //     "actions.cancel"
     //   ),
     // };
     return (
@@ -89,12 +85,11 @@ class Person extends React.Component<IPersonProps, IPersonState> {
 
         {this.props.removable ? (
           <PromptDialog
-            title={this.props.i18n.text.get(
-              "plugin.chat.people.delete.prompt.title",
-              name
+            title={this.props.i18n.t(
+              "labels.remove", {context: "roster", name: name},
             )}
-            content={this.props.i18n.text.get(
-              "plugin.chat.people.delete.prompt.content"
+            content={this.props.i18n.t(
+              "labels.removing", {context: "user" }
             )}
             modifier="chat-control-box"
             onExecute={this.handleRemove}
@@ -108,14 +103,4 @@ class Person extends React.Component<IPersonProps, IPersonState> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-export default connect(mapStateToProps)(Person);
+export default Person;
