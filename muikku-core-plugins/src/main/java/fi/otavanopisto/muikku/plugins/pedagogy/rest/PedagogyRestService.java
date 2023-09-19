@@ -346,6 +346,7 @@ public class PedagogyRestService {
               avatars.add(historyItem.getCreator());
             }
           }
+          historyModel.setType(historyItem.getType());
           historyModel.setModifierHasAvatar(avatars.contains(historyItem.getCreator()));
           historyModel.setModifierId(historyItem.getCreator());
           historyModel.setModifierName(names.get(historyItem.getCreator()).getDisplayName());
