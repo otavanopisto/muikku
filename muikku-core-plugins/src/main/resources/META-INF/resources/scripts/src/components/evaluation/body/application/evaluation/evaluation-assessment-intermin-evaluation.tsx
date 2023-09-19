@@ -31,6 +31,7 @@ import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
 import InterimEvaluationEditor from "./editors/interim-evaluation-editor";
 import { WorkspaceInterimEvaluationRequest } from "../../../../../reducers/workspaces/index";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * EvaluationCardProps
@@ -55,7 +56,7 @@ interface EvaluationAssessmentInterminEvaluationRequestProps {
 interface EvaluationAssessmentInterminEvaluationRequestState {
   openContent: boolean;
   openDrawer: boolean;
-  materialNode?: MaterialContentNodeType;
+  materialNode?: MaterialContentNode;
   interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
   isLoading: boolean;
   openAssignmentType?: AssignmentType;
@@ -156,7 +157,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
         const material = (await promisify(
           mApi().materials.html.read(assigment.materialId),
           "callback"
-        )()) as MaterialContentNodeType;
+        )()) as MaterialContentNode;
 
         const evaluation = (await promisify(
           mApi().evaluation.workspaces.materials.evaluations.read(
@@ -169,14 +170,11 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           "callback"
         )()) as MaterialEvaluationType[];
 
-        const loadedMaterial: MaterialContentNodeType = Object.assign(
-          material,
-          {
-            evaluation: evaluation[0],
-            assignment: this.props.assigment,
-            path: this.props.assigment.path,
-          }
-        );
+        const loadedMaterial: MaterialContentNode = Object.assign(material, {
+          evaluation: evaluation[0],
+          assignment: this.props.assigment,
+          path: this.props.assigment.path,
+        });
 
         return loadedMaterial;
       })(),
@@ -220,7 +218,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
     /**
      * Get initial values that needs to be updated
      */
-    const updatedMaterial: MaterialContentNodeType = {
+    const updatedMaterial: MaterialContentNode = {
       ...this.state.materialNode,
     };
 

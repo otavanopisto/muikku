@@ -8,13 +8,14 @@ import {
 } from "~/reducers/workspaces";
 import { AssignmentsTabType } from "../assignments-and-diaries";
 import { i18nType } from "~/reducers/base/i18n";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * UseFollowUpGoalsState
  */
 export interface UseAssignmentExerciseState {
   isLoading: boolean;
-  exerciseAssignments: MaterialContentNodeType[];
+  exerciseAssignments: MaterialContentNode[];
 }
 
 /**
@@ -78,15 +79,13 @@ export const useExerciseAssignments = (
                   promisify(
                     mApi().materials.html.read(assignment.materialId),
                     "callback"
-                  )().then(
-                    (assignments: MaterialContentNodeType) => assignments
-                  )
+                  )().then((assignments: MaterialContentNode) => assignments)
                 )
               ),
             ]);
 
             return materials.map(
-              (material, index) => <MaterialContentNodeType>Object.assign(
+              (material, index) => <MaterialContentNode>Object.assign(
                   material,
                   {
                     assignment: assignments[index],

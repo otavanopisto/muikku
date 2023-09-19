@@ -2,6 +2,7 @@ import { MaterialContentNodeType } from "~/reducers/workspaces";
 import * as React from "react";
 import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * Any
@@ -10,7 +11,7 @@ import { i18nType } from "~/reducers/base/i18n";
  * @param props.i18n i18n
  */
 export default function Any(props: {
-  material: MaterialContentNodeType;
+  material: MaterialContentNode;
   i18n: i18nType;
 }) {
   return (

@@ -3,7 +3,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import {
   AssignmentType,
   MaterialCompositeRepliesType,
-  MaterialContentNodeType,
   WorkspaceType,
 } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
@@ -20,12 +19,13 @@ import {
 } from "~/components/general/application-list";
 import AnimateHeight from "react-animate-height";
 import Dropdown from "~/components/general/dropdown";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * MaterialProps
  */
 interface MaterialProps {
-  material: MaterialContentNodeType;
+  material: MaterialContentNode;
   workspace: WorkspaceType;
   i18n: i18nType;
   status: StatusType;

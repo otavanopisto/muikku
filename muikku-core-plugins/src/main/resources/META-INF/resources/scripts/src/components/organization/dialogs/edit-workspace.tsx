@@ -589,7 +589,7 @@ class OrganizationEditWorkspace extends React.Component<
       payload.access = this.state.workspaceAccess;
     }
 
-    const detailsUpdate: WorkspaceDetailsType = {
+    const detailsUpdate: WorkspaceDetails = {
       beginDate: this.props.currentWorkspace.details.beginDate,
       endDate: this.props.currentWorkspace.details.endDate,
       signupStart: this.props.currentWorkspace.details.signupStart,

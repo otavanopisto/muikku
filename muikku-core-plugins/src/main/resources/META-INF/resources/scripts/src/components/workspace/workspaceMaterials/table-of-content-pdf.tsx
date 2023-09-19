@@ -4,18 +4,20 @@ import { styles } from "./table-of-content-pdf-styles";
 import {
   MaterialCompositeRepliesListType,
   MaterialContentNodeListType,
-  MaterialContentNodeType,
-  MaterialViewRestriction,
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
+import {
+  MaterialContentNode,
+  MaterialViewRestriction,
+} from "~/generated/client";
 
 /**
  * ContentType
  */
 interface ContentType {
   type: "topic" | "element";
-  material: MaterialContentNodeType;
+  material: MaterialContentNode;
 }
 
 /**
@@ -83,25 +85,25 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
    * @returns JSX.Element
    */
   const renderContentElement = (
-    mSubNode: MaterialContentNodeType,
+    mSubNode: MaterialContentNode,
     index: number
   ) => {
     const topicMaterial = materials.find((m) => m.id === mSubNode.parentId);
 
     const isTocTopicViewRestrictedFromUser =
       (topicMaterial &&
-        topicMaterial.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+        topicMaterial.viewRestrict === MaterialViewRestriction.LoggedIn &&
         !status.loggedIn) ||
       (topicMaterial &&
         topicMaterial.viewRestrict ===
-          MaterialViewRestriction.WORKSPACE_MEMBERS &&
+          MaterialViewRestriction.WorkspaceMembers &&
         !workspace.isCourseMember &&
         (status.isStudent || !status.loggedIn));
 
     // Boolean if there is view Restriction for toc element
     const isTocElementViewRestricted =
-      mSubNode.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
-      mSubNode.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
+      mSubNode.viewRestrict === MaterialViewRestriction.LoggedIn ||
+      mSubNode.viewRestrict === MaterialViewRestriction.WorkspaceMembers;
 
     const isAssignment = mSubNode.assignmentType === "EVALUATED";
     const isExercise = mSubNode.assignmentType === "EXERCISE";
@@ -190,9 +192,9 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
     if (isTocElementViewRestricted && !status.isStudent && status.loggedIn) {
       icon = renderIcon("restriction", "#ffffff");
       stylesByState =
-        mSubNode.viewRestrict === MaterialViewRestriction.LOGGED_IN
+        mSubNode.viewRestrict === MaterialViewRestriction.LoggedIn
           ? styles.tocElementIconRestrictedToLoggedUsers
-          : mSubNode.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS
+          : mSubNode.viewRestrict === MaterialViewRestriction.WorkspaceMembers
           ? styles.tocElementIconRestrictedToMembers
           : null;
     }
@@ -220,22 +222,19 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
    * @param index index
    * @returns JSX.Element
    */
-  const renderContentTopic = (
-    mNode: MaterialContentNodeType,
-    index: number
-  ) => {
+  const renderContentTopic = (mNode: MaterialContentNode, index: number) => {
     // Boolean if there is view Restriction for toc topic
     const isTocTopicViewRestricted =
-      mNode.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
-      mNode.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
+      mNode.viewRestrict === MaterialViewRestriction.LoggedIn ||
+      mNode.viewRestrict === MaterialViewRestriction.WorkspaceMembers;
 
     // section is restricted in following cases:
     // section is restricted for logged in users and users is not logged in...
     // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
     const isTocTopicViewRestrictedFromUser =
-      (mNode.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+      (mNode.viewRestrict === MaterialViewRestriction.LoggedIn &&
         !status.loggedIn) ||
-      (mNode.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+      (mNode.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
         !workspace.isCourseMember &&
         (status.isStudent || !status.loggedIn));
 
@@ -249,9 +248,9 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
         : null;
 
     const iconStylesByRestriction =
-      mNode.viewRestrict === MaterialViewRestriction.LOGGED_IN
+      mNode.viewRestrict === MaterialViewRestriction.LoggedIn
         ? styles.tocTopicIconRestrictedToLoggedUsers
-        : mNode.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS
+        : mNode.viewRestrict === MaterialViewRestriction.WorkspaceMembers
         ? styles.tocTopicIconRestrictedToMembers
         : null;
 

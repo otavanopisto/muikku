@@ -7,8 +7,6 @@ import { UploadingValue } from "~/@types/shared";
 import {
   MaterialCompositeRepliesListType,
   MaterialContentNodeListType,
-  MaterialContentNodeProducerType,
-  MaterialContentNodeType,
   WorkspaceMaterialEditorType,
   WorkspaceType,
 } from "~/reducers/workspaces";
@@ -19,6 +17,10 @@ import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
+import {
+  MaterialContentNode,
+  MaterialContentNodeProducer,
+} from "~/generated/client";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
@@ -59,7 +61,7 @@ export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES =
  */
 export type INSERT_MATERIAL_CONTENT_NODE = SpecificActionType<
   "INSERT_MATERIAL_CONTENT_NODE",
-  { nodeContent: MaterialContentNodeType; apiPath: ApiPath }
+  { nodeContent: MaterialContentNode; apiPath: ApiPath }
 >;
 
 /**
@@ -68,7 +70,7 @@ export type INSERT_MATERIAL_CONTENT_NODE = SpecificActionType<
 export type UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES = SpecificActionType<
   "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES",
   {
-    material: MaterialContentNodeType;
+    material: MaterialContentNode;
     newPath: string;
   }
 >;
@@ -83,8 +85,8 @@ export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<
     showUpdateLinkedMaterialsDialogForPublish: boolean;
     showRemoveLinkedAnswersDialogForPublish: boolean;
     showUpdateLinkedMaterialsDialogForPublishCount: number;
-    material: MaterialContentNodeType;
-    update: Partial<MaterialContentNodeType>;
+    material: MaterialContentNode;
+    update: Partial<MaterialContentNode>;
     isDraft?: boolean;
   }
 >;
@@ -94,7 +96,7 @@ export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<
  */
 export type DELETE_MATERIAL_CONTENT_NODE = SpecificActionType<
   "DELETE_MATERIAL_CONTENT_NODE",
-  MaterialContentNodeType
+  MaterialContentNode
 >;
 
 /**
@@ -113,16 +115,16 @@ type ApiPath = "materials" | "help";
 export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (
     data: {
-      parentMaterial?: MaterialContentNodeType;
+      parentMaterial?: MaterialContentNode;
       makeFolder: boolean;
       rootParentId: number;
-      nextSibling?: MaterialContentNodeType;
+      nextSibling?: MaterialContentNode;
       copyWorkspaceId?: number;
       copyMaterialId?: number;
       title?: string;
       file?: File;
       workspace: WorkspaceType;
-      success?: (newNode: MaterialContentNodeType) => void;
+      success?: (newNode: MaterialContentNode) => void;
       fail?: () => void;
     },
     apiPath: ApiPath
@@ -136,7 +138,7 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
   (
     data: {
       workspace: WorkspaceType;
-      material: MaterialContentNodeType;
+      material: MaterialContentNode;
       files: File[];
       uploadingValues?: UploadingValue[];
       success?: () => void;
@@ -150,7 +152,7 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
  * RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
  */
 export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
-  (workspace: WorkspaceType, material: MaterialContentNodeType): AnyActionType;
+  (workspace: WorkspaceType, material: MaterialContentNode): AnyActionType;
 }
 
 /**
@@ -159,8 +161,8 @@ export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   (data: {
     workspace: WorkspaceType;
-    material: MaterialContentNodeType;
-    update: Partial<MaterialContentNodeType>;
+    material: MaterialContentNode;
+    update: Partial<MaterialContentNode>;
     isDraft?: boolean;
     updateLinked?: boolean;
     removeAnswers?: boolean;
@@ -177,7 +179,7 @@ export interface LoadWholeWorkspaceMaterialsTriggerType {
   (
     workspaceId: number,
     includeHidden: boolean,
-    callback?: (nodes: Array<MaterialContentNodeType>) => any
+    callback?: (nodes: Array<MaterialContentNode>) => any
   ): AnyActionType;
 }
 
@@ -210,7 +212,7 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
  */
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
-    material: MaterialContentNodeType;
+    material: MaterialContentNode;
     workspace: WorkspaceType;
     removeAnswers?: boolean;
     success?: () => any;
@@ -232,7 +234,7 @@ export interface LoadWholeWorkspaceHelpTriggerType {
   (
     workspaceId: number,
     includeHidden: boolean,
-    callback?: (nodes: Array<MaterialContentNodeType>) => any
+    callback?: (nodes: Array<MaterialContentNode>) => any
   ): AnyActionType;
 }
 
@@ -388,15 +390,15 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
           ).id;
         }
 
-        const newContentNode: MaterialContentNodeType = <
-          MaterialContentNodeType
-        >await promisify(
-          mApi().workspace.workspaces.asContentNode.read(
-            data.workspace.id,
-            workspaceMaterialId
-          ),
-          "callback"
-        )();
+        const newContentNode: MaterialContentNode = <MaterialContentNode>(
+          await promisify(
+            mApi().workspace.workspaces.asContentNode.read(
+              data.workspace.id,
+              workspaceMaterialId
+            ),
+            "callback"
+          )()
+        );
 
         dispatch({
           type: "INSERT_MATERIAL_CONTENT_NODE",
@@ -577,7 +579,7 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
     return async (dispatch: (arg: AnyActionType) => any) => {
       try {
-        const childrenAttachments: MaterialContentNodeType[] =
+        const childrenAttachments: MaterialContentNode[] =
           ((await promisify(
             mApi()
               .workspace.workspaces.materials.cacheClear()
@@ -585,7 +587,7 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
                 parentId: material.workspaceMaterialId,
               }),
             "callback"
-          )()) as MaterialContentNodeType[]) || [];
+          )()) as MaterialContentNode[]) || [];
 
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -780,11 +782,11 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             typeof data.update.producers !== "undefined" &&
             !equals(data.material.producers, data.update.producers)
           ) {
-            const newProducers: MaterialContentNodeProducerType[] =
-              await Promise.all<MaterialContentNodeProducerType>(
+            const newProducers: MaterialContentNodeProducer[] =
+              await Promise.all<MaterialContentNodeProducer>(
                 data.update.producers.map((p) => {
                   if (p.id === null) {
-                    return <Promise<MaterialContentNodeProducerType>>(
+                    return <Promise<MaterialContentNodeProducer>>(
                       promisify(
                         mApi().materials.material.producers.create(
                           data.material.materialId,
@@ -977,8 +979,8 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
       getState: () => StateType
     ) => {
       try {
-        const contentNodes: Array<MaterialContentNodeType> =
-          <Array<MaterialContentNodeType>>await promisify(
+        const contentNodes: Array<MaterialContentNode> =
+          <Array<MaterialContentNode>>await promisify(
             mApi().workspace.workspaces.materialContentNodes.read(workspaceId, {
               includeHidden,
             }),
@@ -1197,8 +1199,8 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
       getState: () => StateType
     ) => {
       try {
-        const contentNodes: Array<MaterialContentNodeType> =
-          <Array<MaterialContentNodeType>>(
+        const contentNodes: Array<MaterialContentNode> =
+          <Array<MaterialContentNode>>(
             await promisify(
               mApi()
                 .workspace.workspaces.help.cacheClear()

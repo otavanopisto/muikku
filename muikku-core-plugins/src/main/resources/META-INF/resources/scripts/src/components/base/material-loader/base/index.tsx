@@ -29,6 +29,7 @@ import Table from "~/components/base/material-loader/static/table";
 import MathJAX from "~/components/base/material-loader/static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
+import { MaterialContentNode } from "~/generated/client";
 
 //These are all our supported objects as for now
 const objects: { [key: string]: any } = {
@@ -92,7 +93,7 @@ const answerCheckables: { [key: string]: (params: any) => boolean } = {
  * BaseProps
  */
 interface BaseProps {
-  material: MaterialContentNodeType;
+  material: MaterialContentNode;
   i18n: i18nType;
   status: StatusType;
   workspace: WorkspaceType;

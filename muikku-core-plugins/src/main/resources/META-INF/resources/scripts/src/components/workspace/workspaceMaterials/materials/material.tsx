@@ -5,7 +5,6 @@ import { i18nType } from "~/reducers/base/i18n";
 
 import MaterialLoader from "~/components/base/material-loader";
 import {
-  MaterialContentNodeType,
   WorkspaceType,
   MaterialCompositeRepliesType,
   WorkspaceEditModeStateType,
@@ -28,6 +27,7 @@ import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * WorkspaceMaterialProps
@@ -36,8 +36,8 @@ interface WorkspaceMaterialProps {
   i18n: i18nType;
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
-  materialContentNode: MaterialContentNodeType;
-  folder: MaterialContentNodeType;
+  materialContentNode: MaterialContentNode;
+  folder: MaterialContentNode;
   compositeReplies: MaterialCompositeRepliesType;
   isViewRestricted: boolean;
   showEvenIfHidden: boolean;

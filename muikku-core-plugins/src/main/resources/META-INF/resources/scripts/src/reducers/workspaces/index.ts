@@ -2,6 +2,14 @@ import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
+  AssessmentRequest,
+  MaterialContentNode,
+  MaterialViewRestriction,
+  WorkspaceAdditionalInfo,
+  WorkspaceDetails,
+  WorkspaceMaterialProducer,
+} from "~/generated/client";
+import {
   UserStaffType,
   WorkspaceStaffListType,
   WorkspaceStudentListType,
@@ -324,7 +332,7 @@ export interface UserSelectType {
 /**
  * WorkspaceDetailsType
  */
-export interface WorkspaceDetailsType {
+/* export interface WorkspaceDetailsType {
   beginDate: string;
   endDate: string;
   signupStart: string;
@@ -334,7 +342,7 @@ export interface WorkspaceDetailsType {
   rootFolderId: number;
   helpFolderId: number;
   indexFolderId: number;
-}
+} */
 
 export enum WorkspaceMandatority {
   MANDATORY = "MANDATORY",
@@ -434,18 +442,18 @@ export interface WorkspaceType {
   forumStatistics?: WorkspaceForumStatisticsType;
   studentAssessments?: WorkspaceStudentAssessmentsType;
   activityStatistics?: WorkspaceActivityStatisticsType;
-  assessmentRequests?: WorkspaceAssessmentRequestType[];
+  assessmentRequests?: AssessmentRequest[];
   interimEvaluationRequests?: WorkspaceInterimEvaluationRequest[];
-  additionalInfo?: WorkspaceAdditionalInfoType;
+  additionalInfo?: WorkspaceAdditionalInfo;
   staffMembers?: WorkspaceStaffListType;
   staffMemberSelect?: UserSelectType;
-  producers?: WorkspaceProducerType[];
-  contentDescription?: MaterialContentNodeType;
+  producers?: WorkspaceMaterialProducer[];
+  contentDescription?: MaterialContentNode;
   activityLogs?: ActivityLogType[];
   students?: WorkspaceStudentListType;
   inactiveStudents?: WorkspaceStudentListType;
   studentsSelect?: UserSelectType;
-  details?: WorkspaceDetailsType;
+  details?: WorkspaceDetails;
   permissions?: WorkspacePermissionsType[];
   mandatority?: WorkspaceMandatority | null;
   //Fancy stuff in here
@@ -600,9 +608,9 @@ export interface WorkspaceEditModeStateType {
  */
 export interface WorkspaceMaterialEditorType {
   currentNodeWorkspace: WorkspaceType;
-  currentNodeValue?: MaterialContentNodeType;
-  currentDraftNodeValue?: MaterialContentNodeType;
-  parentNodeValue?: MaterialContentNodeType;
+  currentNodeValue?: MaterialContentNode;
+  currentDraftNodeValue?: MaterialContentNode;
+  parentNodeValue?: MaterialContentNode;
   section: boolean;
   opened: boolean;
   canDelete: boolean;
@@ -664,11 +672,11 @@ export interface MaterialContentNodeProducerType {
 /**
  * MaterialViewRestriction
  */
-export enum MaterialViewRestriction {
+/* export enum MaterialViewRestriction {
   NONE = "NONE",
   LOGGED_IN = "LOGGED_IN",
   WORKSPACE_MEMBERS = "WORKSPACE_MEMBERS",
-}
+} */
 
 export type AssignmentType =
   | "EXERCISE"
@@ -692,7 +700,7 @@ export interface MaterialContentNodeType {
 
   //Extended Fields (only available when loaded via content node rest endpoint)
   type?: string;
-  children?: Array<MaterialContentNodeType>;
+  children?: Array<MaterialContentNode>;
   workspaceMaterialId?: number;
   materialId?: number;
   level?: number;
@@ -705,7 +713,7 @@ export interface MaterialContentNodeType {
   producers?: MaterialContentNodeProducerType[];
 
   //Assigned fields
-  childrenAttachments?: Array<MaterialContentNodeType>; // this is usually missing and has to be manually retrieved
+  childrenAttachments?: Array<MaterialContentNode>; // this is usually missing and has to be manually retrieved
   evaluation?: MaterialEvaluationType;
   assignment?: MaterialAssignmentType;
 }
@@ -791,7 +799,7 @@ export interface MaterialEvaluationType {
   audioAssessments: AudioAssessment[];
 }
 
-export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
+export type MaterialContentNodeListType = Array<MaterialContentNode>;
 
 /**
  * WorkspacesType
@@ -1105,7 +1113,7 @@ export const workspaces: Reducer<WorkspacesType> = (
        * mapMaterial
        * @param m m
        */
-      const mapMaterial = (m: MaterialContentNodeType) => {
+      const mapMaterial = (m: MaterialContentNode) => {
         if (action.payload.isDraft) {
           return m;
         }
@@ -1121,7 +1129,7 @@ export const workspaces: Reducer<WorkspacesType> = (
           return { ...m, ...action.payload.update };
         }
 
-        const newM: MaterialContentNodeType = {
+        const newM: MaterialContentNode = {
           ...m,
           children: m.children ? m.children.map(mapMaterial) : m.children,
         };
@@ -1196,7 +1204,7 @@ export const workspaces: Reducer<WorkspacesType> = (
        * filterMaterial
        * @param m m
        */
-      const filterMaterial = (m: MaterialContentNodeType) => {
+      const filterMaterial = (m: MaterialContentNode) => {
         // Sometimes I get id sometimes workspaceMaterialId, super inconsistent
         if (
           typeof m.id !== "undefined" &&
@@ -1221,14 +1229,14 @@ export const workspaces: Reducer<WorkspacesType> = (
        * @param arr arr
        */
       const mapMaterial = (
-        m: MaterialContentNodeType,
+        m: MaterialContentNode,
         index: number,
-        arr: Array<MaterialContentNodeType>
+        arr: Array<MaterialContentNode>
       ) => {
         const nextSiblingId = arr[index + 1]
           ? arr[index + 1].workspaceMaterialId
           : null;
-        const newM: MaterialContentNodeType = {
+        const newM: MaterialContentNode = {
           ...m,
           nextSiblingId,
           children: m.children
@@ -1283,7 +1291,7 @@ export const workspaces: Reducer<WorkspacesType> = (
 
     case "INSERT_MATERIAL_CONTENT_NODE": {
       const apiPath = action.payload.apiPath;
-      const insertedContentNode: MaterialContentNodeType =
+      const insertedContentNode: MaterialContentNode =
         action.payload.nodeContent;
 
       const targetArray =
@@ -1379,7 +1387,7 @@ export const workspaces: Reducer<WorkspacesType> = (
   id: number,
   assessmentState: WorkspaceAssessementStateType,
   date: string,
-  assessmentRequestObject: WorkspaceAssessmentRequestType,
+  assessmentRequestObject: AssessmentRequest,
   deleteAssessmentRequestObject: boolean,
   workspace: WorkspaceType
 ) {

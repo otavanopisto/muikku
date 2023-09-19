@@ -25,6 +25,7 @@ import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * HelpMaterialProps
@@ -33,8 +34,8 @@ interface HelpMaterialProps {
   i18n: i18nType;
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
-  materialContentNode: MaterialContentNodeType;
-  folder: MaterialContentNodeType;
+  materialContentNode: MaterialContentNode;
+  folder: MaterialContentNode;
   isViewRestricted: boolean;
   workspace: WorkspaceType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;

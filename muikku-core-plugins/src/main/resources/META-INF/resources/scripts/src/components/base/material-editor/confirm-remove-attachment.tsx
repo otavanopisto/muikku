@@ -15,6 +15,7 @@ import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
   deleteWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * ConfirmRemoveAttachmentProps
@@ -22,7 +23,7 @@ import {
 interface ConfirmRemoveAttachmentProps {
   i18n: i18nType;
   materialEditor: WorkspaceMaterialEditorType;
-  file: MaterialContentNodeType;
+  file: MaterialContentNode;
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType;
   children: any;
 }

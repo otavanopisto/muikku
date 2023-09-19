@@ -12,10 +12,8 @@ import { i18nType } from "~/reducers/base/i18n";
 import {
   WorkspaceType,
   MaterialContentNodeListType,
-  MaterialContentNodeType,
   MaterialCompositeRepliesListType,
   WorkspaceEditModeStateType,
-  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 
 import ContentPanel, {
@@ -46,6 +44,10 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import {
+  MaterialContentNode,
+  MaterialViewRestriction,
+} from "~/generated/client";
 
 /**
  * WorkspaceMaterialsProps
@@ -152,7 +154,7 @@ class WorkspaceMaterials extends React.Component<
    * toggleSectionHiddenStatus
    * @param section section
    */
-  toggleSectionHiddenStatus(section: MaterialContentNodeType) {
+  toggleSectionHiddenStatus(section: MaterialContentNode) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
       material: section,
@@ -171,9 +173,9 @@ class WorkspaceMaterials extends React.Component<
    * @param includesSection includesSection
    */
   getMaterialsOptionListDropdown(
-    section: MaterialContentNodeType,
-    nextSection: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType,
+    section: MaterialContentNode,
+    nextSection: MaterialContentNode,
+    nextSibling: MaterialContentNode,
     includesSection: boolean
   ) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -215,7 +217,7 @@ class WorkspaceMaterials extends React.Component<
    * startupEditor
    * @param section section
    */
-  startupEditor(section: MaterialContentNodeType) {
+  startupEditor(section: MaterialContentNode) {
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
       currentNodeValue: section,
@@ -250,10 +252,7 @@ class WorkspaceMaterials extends React.Component<
    * @param section section
    * @param nextSibling nextSibling
    */
-  createPage(
-    section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
-  ) {
+  createPage(section: MaterialContentNode, nextSibling: MaterialContentNode) {
     this.props.createWorkspaceMaterialContentNode(
       {
         workspace: this.props.workspace,
@@ -276,8 +275,8 @@ class WorkspaceMaterials extends React.Component<
    * @param e e
    */
   createPageFromBinary(
-    section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType,
+    section: MaterialContentNode,
+    nextSibling: MaterialContentNode,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
     this.props.createWorkspaceMaterialContentNode(
@@ -298,7 +297,7 @@ class WorkspaceMaterials extends React.Component<
    * createSection
    * @param nextSibling nextSibling
    */
-  createSection(nextSibling: MaterialContentNodeType) {
+  createSection(nextSibling: MaterialContentNode) {
     this.props.createWorkspaceMaterialContentNode(
       {
         workspace: this.props.workspace,
@@ -318,10 +317,7 @@ class WorkspaceMaterials extends React.Component<
    * @param section section
    * @param nextSibling nextSibling
    */
-  pastePage(
-    section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
-  ) {
+  pastePage(section: MaterialContentNode, nextSibling: MaterialContentNode) {
     const workspaceMaterialCopiedId =
       localStorage.getItem("workspace-material-copied-id") || null;
     const workspaceCopiedId =
@@ -466,12 +462,12 @@ class WorkspaceMaterials extends React.Component<
     viewRestrict: MaterialViewRestriction
   ) => {
     switch (viewRestrict) {
-      case MaterialViewRestriction.LOGGED_IN:
+      case MaterialViewRestriction.LoggedIn:
         return this.props.i18n.text.get(
           "plugin.workspace.materialViewRestricted"
         );
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         return this.props.i18n.text.get(
           "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
         );
@@ -614,9 +610,9 @@ class WorkspaceMaterials extends React.Component<
       // section is restricted for logged in users and users is not logged in...
       // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
       const isSectionViewRestricted =
-        (section.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+        (section.viewRestrict === MaterialViewRestriction.LoggedIn &&
           !this.props.status.loggedIn) ||
-        (section.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+        (section.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
           !this.props.workspace.isCourseMember &&
           (this.props.status.isStudent || !this.props.status.loggedIn));
 

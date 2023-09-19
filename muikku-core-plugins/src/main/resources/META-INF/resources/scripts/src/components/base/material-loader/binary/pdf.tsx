@@ -2,6 +2,7 @@ import { MaterialContentNodeType } from "~/reducers/workspaces";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * Pdf
@@ -10,7 +11,7 @@ import Link from "~/components/general/link";
  * @param props.i18n i18n
  */
 export default function Pdf(props: {
-  material: MaterialContentNodeType;
+  material: MaterialContentNode;
   i18n: i18nType;
 }) {
   return (

@@ -28,6 +28,7 @@ import {
   ResponseError,
   FetchError,
   RequiredError,
+  AssessmentRequestApi,
 } from "../generated/client";
 
 /**
@@ -85,6 +86,15 @@ export default class MApi {
    */
   public static getAnnouncerApi() {
     return new AnnouncerApi(configuration);
+  }
+
+  /**
+   * Get initialized AssessmentRequestApi API
+   *
+   * @returns initialized AssessmentRequestApi API
+   */
+  public static getAssessmentApi() {
+    return new AssessmentRequestApi(configuration);
   }
 
   /**
@@ -281,7 +291,7 @@ export default class MApi {
    *
    * @returns initialized workspaces API
    */
-  public static getWorkspacesApi() {
+  public static getWorkspaceApi() {
     return new WorkspaceApi(configuration);
   }
 

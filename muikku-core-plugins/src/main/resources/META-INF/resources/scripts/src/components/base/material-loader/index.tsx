@@ -45,6 +45,7 @@ import {
   updateWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
+import { MaterialContentNode } from "~/generated/client";
 
 //These represent the states assignments and exercises can be in
 const STATES = [
@@ -195,8 +196,8 @@ const STATES = [
  * MaterialLoaderProps
  */
 export interface MaterialLoaderProps {
-  material: MaterialContentNodeType;
-  folder?: MaterialContentNodeType;
+  material: MaterialContentNode;
+  folder?: MaterialContentNode;
 
   workspace: WorkspaceType;
   i18n: i18nType;

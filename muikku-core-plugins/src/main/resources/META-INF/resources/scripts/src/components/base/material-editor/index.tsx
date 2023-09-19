@@ -9,8 +9,6 @@ import Link from "~/components/general/link";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceType,
-  MaterialContentNodeType,
-  MaterialViewRestriction,
   AssignmentType,
   Language,
   languageOptions,
@@ -45,6 +43,10 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { langAttributeLocale } from "~/helper-functions/locale";
+import {
+  MaterialContentNode,
+  MaterialViewRestriction,
+} from "~/generated/client";
 
 /**
  * MaterialEditorProps
@@ -84,7 +86,7 @@ const CKEditorConfig = (
   locale: string,
   contextPath: string,
   workspace: WorkspaceType,
-  materialNode: MaterialContentNodeType,
+  materialNode: MaterialContentNode,
   disablePlugins: boolean
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
@@ -365,14 +367,15 @@ class MaterialEditor extends React.Component<
       update: {
         viewRestrict:
           this.props.editorState.currentDraftNodeValue.viewRestrict ===
-          MaterialViewRestriction.NONE
-            ? MaterialViewRestriction.WORKSPACE_MEMBERS
+          MaterialViewRestriction.None
+            ? MaterialViewRestriction.WorkspaceMembers
             : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-              MaterialViewRestriction.WORKSPACE_MEMBERS
-            ? MaterialViewRestriction.LOGGED_IN
+              MaterialViewRestriction.WorkspaceMembers
+            ? MaterialViewRestriction.LoggedIn
             : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-                MaterialViewRestriction.LOGGED_IN &&
-              MaterialViewRestriction.NONE,
+              MaterialViewRestriction.LoggedIn
+            ? MaterialViewRestriction.None
+            : MaterialViewRestriction.None,
       },
       isDraft: true,
     });
@@ -585,19 +588,19 @@ class MaterialEditor extends React.Component<
     switch (this.props.locationPage) {
       case "Help": {
         switch (viewRestriction) {
-          case MaterialViewRestriction.NONE:
+          case MaterialViewRestriction.None:
             localeString = this.props.i18n.text.get(
               "plugin.workspace.helpManagement.enableViewRestrictionToMembersPageTooltip"
             );
             break;
 
-          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          case MaterialViewRestriction.WorkspaceMembers:
             localeString = this.props.i18n.text.get(
               "plugin.workspace.helpManagement.enableViewRestrictionToLoggedInPageTooltip"
             );
             break;
 
-          case MaterialViewRestriction.LOGGED_IN:
+          case MaterialViewRestriction.LoggedIn:
             localeString = this.props.i18n.text.get(
               "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
             );
@@ -611,19 +614,19 @@ class MaterialEditor extends React.Component<
       }
       case "Materials": {
         switch (viewRestriction) {
-          case MaterialViewRestriction.NONE:
+          case MaterialViewRestriction.None:
             localeString = this.props.i18n.text.get(
               "plugin.workspace.materialsManagement.enableViewRestrictionToMembersPageTooltip"
             );
             break;
 
-          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          case MaterialViewRestriction.WorkspaceMembers:
             localeString = this.props.i18n.text.get(
               "plugin.workspace.materialsManagement.enableViewRestrictionToLoggedInPageTooltip"
             );
             break;
 
-          case MaterialViewRestriction.LOGGED_IN:
+          case MaterialViewRestriction.LoggedIn:
             localeString = this.props.i18n.text.get(
               "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
             );
@@ -831,10 +834,10 @@ class MaterialEditor extends React.Component<
       if (
         !equals(
           this.props.editorState.currentNodeValue[
-            point as keyof MaterialContentNodeType
+            point as keyof MaterialContentNode
           ],
           this.props.editorState.currentDraftNodeValue[
-            point as keyof MaterialContentNodeType
+            point as keyof MaterialContentNode
           ]
         )
       ) {
@@ -873,15 +876,15 @@ class MaterialEditor extends React.Component<
     ];
 
     switch (this.props.editorState.currentDraftNodeValue.viewRestrict) {
-      case MaterialViewRestriction.NONE:
+      case MaterialViewRestriction.None:
         viewRestrictionButtonModifiers.push("material-editor-enabled");
         break;
 
-      case MaterialViewRestriction.LOGGED_IN:
+      case MaterialViewRestriction.LoggedIn:
         viewRestrictionButtonModifiers.push("material-editor-disabled");
         break;
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         viewRestrictionButtonModifiers.push("material-editor-members-only");
         break;
 

@@ -6,9 +6,7 @@ import {
   WorkspaceChatStatusType,
   WorkspaceAccessType,
   WorkspaceTypeType,
-  WorkspaceProducerType,
   WorkspaceUpdateType,
-  WorkspaceDetailsType,
   WorkspacePermissionsType,
   Language,
   languageOptions,
@@ -54,6 +52,10 @@ import {
   outputCorrectDatePickerLocale,
 } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
+import {
+  WorkspaceDetails,
+  WorkspaceMaterialProducer,
+} from "~/generated/client";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
@@ -86,7 +88,7 @@ interface ManagementPanelState {
   workspaceEndDate: Date | null;
   workspaceSignupStartDate: Date | null;
   workspaceSignupEndDate: Date | null;
-  workspaceProducers: Array<WorkspaceProducerType>;
+  workspaceProducers: Array<WorkspaceMaterialProducer>;
   workspaceDescription: string;
   workspaceLicense: string;
   workspaceHasCustomImage: boolean;
@@ -623,7 +625,7 @@ class ManagementPanel extends React.Component<
       payload = Object.assign({ chatStatus: workspaceChatStatus }, payload);
     }
 
-    const workspaceDetails: WorkspaceDetailsType = {
+    const workspaceDetails: WorkspaceDetails = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.state.workspaceType,
       beginDate:
@@ -647,7 +649,7 @@ class ManagementPanel extends React.Component<
           : null,
     };
 
-    const currentWorkspaceAsDetails: WorkspaceDetailsType = {
+    const currentWorkspaceAsDetails: WorkspaceDetails = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.props.workspace.details.typeId,
       beginDate: moment(this.props.workspace.details.beginDate).toISOString(),

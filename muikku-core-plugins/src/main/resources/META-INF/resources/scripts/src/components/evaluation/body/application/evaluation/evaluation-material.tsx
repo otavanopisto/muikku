@@ -16,13 +16,14 @@ import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * EvaluationMaterialProps
  */
 export interface EvaluationMaterialProps {
   i18n: i18nType;
-  material: MaterialContentNodeType;
+  material: MaterialContentNode;
   compositeReply?: MaterialCompositeRepliesType;
   interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
   workspace: WorkspaceType;

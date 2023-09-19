@@ -6,6 +6,7 @@ import Flash from "./flash";
 import Image from "./image";
 import Audio from "./audio";
 import * as React from "react";
+import { MaterialContentNode } from "~/generated/client";
 
 const registry = {
   "^image/": Image,
@@ -22,7 +23,7 @@ const registry = {
  * @param props.invisible invisible
  */
 export default function BinaryMaterialLoader(props: {
-  material: MaterialContentNodeType;
+  material: MaterialContentNode;
   i18n: i18nType;
   invisible?: boolean;
 }) {

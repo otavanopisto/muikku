@@ -15,6 +15,7 @@ import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
   deleteWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
+import { MaterialContentNode } from "~/generated/client";
 
 /**
  * DeleteWorkspaceMaterialDialogProps
@@ -23,7 +24,7 @@ interface DeleteWorkspaceMaterialDialogProps {
   i18n: i18nType;
   children: any;
   isSection?: boolean;
-  material: MaterialContentNodeType;
+  material: MaterialContentNode;
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType;
   materialEditor: WorkspaceMaterialEditorType;
   onDeleteSuccess: () => any;

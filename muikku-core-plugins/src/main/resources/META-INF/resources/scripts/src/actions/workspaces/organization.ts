@@ -32,12 +32,12 @@ import {
   UserSelectLoader,
 } from "../../reducers/workspaces/index";
 import { loadWorkspacesHelper } from "~/actions/workspaces/helpers";
-import { WorkspaceDetailsType } from "../../reducers/workspaces/index";
 import { SelectItem, CreateWorkspaceStateType } from "./index";
 import {
   LoadUsersOfWorkspaceTriggerType,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "./index";
+import { WorkspaceDetails } from "~/generated/client";
 
 /**
  * UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS
@@ -560,14 +560,14 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
       )().then(data.progress && data.progress("workspace-create"));
 
       if (data.beginDate || data.endDate) {
-        workspace.details = <WorkspaceDetailsType>(
+        workspace.details = <WorkspaceDetails>(
           await promisify(
             mApi().workspace.workspaces.details.read(workspace.id),
             "callback"
           )()
         );
 
-        workspace.details = <WorkspaceDetailsType>await promisify(
+        workspace.details = <WorkspaceDetails>await promisify(
           mApi().workspace.workspaces.details.update(workspace.id, {
             ...workspace.details,
             beginDate: data.beginDate,

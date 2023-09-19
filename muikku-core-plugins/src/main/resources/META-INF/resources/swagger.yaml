@@ -317,8 +317,54 @@ paths:
 
   #ASSESSMENTREQUEST
   /rest/assessmentrequest/workspace/{workspaceEntityId}/assessmentRequests:
+    get:
+      operationId: getWorkspaceAssessmentRequests
+      summary: Get assessment requests
+      description: Get assessment requests
+      tags:
+        - AssessmentRequest
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: studentIdentifier
+          in: query
+          description: Student identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Assessment requests successfully retrieved"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AssessmentRequest"
+        "400":
+          description: Invalid request was sent to the server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "403":
+          description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+
     post:
-      operationId: createAassessmentRequest
+      operationId: createWorkspaceAssessmentRequest
       summary: Create assessment request
       description: Create assessment request
       tags:
@@ -6980,9 +7026,78 @@ paths:
         - name: q
           in: query
           description: Search string
-          required: true
           schema:
             type: string
+        - name: userId
+          in: query
+          description: User entity id
+          schema:
+            type: integer
+        - name: userIdentifier
+          in: query
+          description: User identifier
+          schema:
+            type: string
+        - name: includeInactiveWorkspaces
+          in: query
+          description: Include inactive workspaces
+          schema:
+            type: boolean
+            default: false
+        - name: subjects
+          in: query
+          description: Subjects
+          schema:
+            type: array
+            items:
+              type: string
+        - name: educationTypes
+          in: query
+          description: Education types
+          schema:
+            type: array
+            items:
+              type: string
+        - name: curriculums
+          in: query
+          description: Curriculums
+          schema:
+            type: array
+            items:
+              type: string
+        - name: organizations
+          in: query
+          description: Organizations
+          schema:
+            type: array
+            items:
+              type: string
+        - name: minVisits
+          in: query
+          description: Min visits
+          schema:
+            type: integer
+        - name: publicity
+          in: query
+          description: Publicity restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/PublicityRestriction"
+            default: ONLY_PUBLISHED
+        - name: templates
+          in: query
+          description: Template restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/TemplateRestriction"
+            default: ONLY_WORKSPACES
+        - name: orderBy
+          in: query
+          description: Order by
+          schema:
+            type: array
+            items:
+              type: string
         - name: firstResult
           in: query
           description: First result
@@ -7003,7 +7118,8 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Workspace"
+                  $ref: "#/components/schemas/AnyValue"
+                  #$ref: "#/components/schemas/AnyValue"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7037,6 +7153,31 @@ paths:
           description: Internal server error
 
   /rest/workspace/workspaces/{workspaceId}:
+    get:
+      operationId: getWorkspace
+      summary: Get workspace
+      description: Get workspace
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyValue"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     delete:
       operationId: deleteWorkspace
       summary: Delete workspace
@@ -7059,6 +7200,58 @@ paths:
       responses:
         "204":
           description: Workspace deleted successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/additionalInfo:
+    get:
+      operationId: getWorkspaceAdditionalInfo
+      summary: Get workspace additional info
+      description: Get workspace additional info
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace additional info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceAdditionalInfo"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/description:
+    get:
+      operationId: getWorkspaceDescription
+      summary: Get workspace description
+      description: Get workspace description
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace description
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaterialContentNode"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7376,6 +7569,33 @@ paths:
           description: Internal server error
 
   /rest/workspace/workspaces/{workspaceEntityId}/materialProducers:
+    get:
+      operationId: getWorkspaceMaterialProducers
+      summary: Get workspace material producers
+      description: Get workspace material producers
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace material producers results object
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorkspaceMaterialProducer"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     post:
       operationId: createWorkspaceMaterialProducer
       summary: Create workspace material producer
@@ -9983,6 +10203,7 @@ components:
           type: string
         date:
           type: string
+          format: date-time
 
     BilledPrice:
       type: object
@@ -11458,6 +11679,13 @@ components:
         - id
         - name
         - materialId
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        materialId:
+          type: integer
 
     MaterialContentNode:
       type: object
@@ -11521,13 +11749,9 @@ components:
           items:
             $ref: "#/components/schemas/MaterialContentNode"
         evaluation:
-          type: array
-          items:
-            $ref: "#/components/schemas/MaterialEvaluation"
+          $ref: "#/components/schemas/MaterialEvaluation"
         assignment:
-          type: array
-          items:
-            $ref: "#/components/schemas/MaterialAssignment"
+          $ref: "#/components/schemas/MaterialAssignment"
 
     Message:
       type: object
@@ -12149,6 +12373,13 @@ components:
           description: The date when the form was created
           type: string
 
+    PublicityRestriction:
+      type: string
+      enum:
+        - LIST_ALL
+        - ONLY_PUBLISHED
+        - ONLY_UNPUBLISHED
+
     RecordWorkspaceActivity:
       type: object
       description: RecordWorkspaceActivity object
@@ -12336,6 +12567,13 @@ components:
           nullable: true
         id:
           type: integer
+
+    TemplateRestriction:
+      type: string
+      enum:
+        - LIST_ALL,
+        - ONLY_TEMPLATES,
+        - ONLY_WORKSPACES
 
     StudentCourseChoice:
       allOf:
@@ -12751,6 +12989,46 @@ components:
         - LOGGED_IN
         - ANYONE
 
+    WorkspaceAdditionalInfo:
+      type: object
+      description: WorkspaceAdditionalInfo object
+      required:
+        - beginDate
+        - endDate
+        - viewLink
+        - subjects
+      properties:
+        beginDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        viewLink:
+          type: string
+        workspaceTypeId:
+          type: integer
+        workspaceType:
+          type: string
+        educationType:
+          type: object
+          properties:
+            identifier:
+              type: object
+              properties:
+                identifier:
+                  type: string
+                dataSource:
+                  type: string
+            name:
+              type: string
+            schoolDataSource:
+              type: string
+        subjects:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceSubject"
+
     Workspace:
       type: object
       description: Workspace object
@@ -13066,17 +13344,17 @@ components:
         - indexFolderId
       properties:
         beginDate:
+          description: OffSetDateTime format
           type: string
-          format: date-time
         endDate:
+          description: OffSetDateTime format
           type: string
-          format: date-time
         signupStart:
+          description: OffSetDateTime format
           type: string
-          format: date-time
         signupEnd:
+          description: OffSetDateTime format
           type: string
-          format: date-time
         externalViewUrl:
           type: string
         typeId:
@@ -13093,7 +13371,6 @@ components:
       description: WorkspaceMaterialProducer object
       required:
         - name
-        - id
       properties:
         name:
           type: string
