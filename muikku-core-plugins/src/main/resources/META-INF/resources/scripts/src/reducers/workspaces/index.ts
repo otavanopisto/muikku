@@ -7,7 +7,9 @@ import {
   MaterialViewRestriction,
   WorkspaceAdditionalInfo,
   WorkspaceDetails,
+  WorkspaceEducationType,
   WorkspaceMaterialProducer,
+  WorkspaceSignupGroup,
 } from "~/generated/client";
 import {
   UserStaffType,
@@ -368,12 +370,12 @@ export type WorkspaceChatStatusType = "ENABLED" | "DISABLED";
 /**
  * WorkspacePermissionsType
  */
-export interface WorkspacePermissionsType {
+/* export interface WorkspacePermissionsType {
   workspaceEntityId: number;
   userGroupEntityId: number;
   userGroupName: string;
   canSignup: boolean;
-}
+} */
 
 export type TemplateWorkspaceListType = Array<TemplateWorkspaceType>;
 
@@ -454,7 +456,7 @@ export interface WorkspaceType {
   inactiveStudents?: WorkspaceStudentListType;
   studentsSelect?: UserSelectType;
   details?: WorkspaceDetails;
-  permissions?: WorkspacePermissionsType[];
+  permissions?: WorkspaceSignupGroup[];
   mandatority?: WorkspaceMandatority | null;
   //Fancy stuff in here
   journals?: WorkspaceJournalsType;
@@ -501,8 +503,7 @@ export interface WorkspaceEducationFilterType {
   name: string;
 }
 
-export type WorkspaceEducationFilterListType =
-  Array<WorkspaceEducationFilterType>;
+/* export type WorkspaceEducationFilterListType = Array<WorkspaceEducationType>; */
 
 /**
  * WorkspaceCurriculumFilterType
@@ -539,7 +540,7 @@ export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
  * WorkspacesavailableFiltersType
  */
 export interface WorkspacesavailableFiltersType {
-  educationTypes: WorkspaceEducationFilterListType;
+  educationTypes: WorkspaceEducationType[];
   curriculums: WorkspaceCurriculumFilterListType;
   organizations?: WorkspaceOrganizationFilterListType;
   baseFilters?: WorkspaceBaseFilterListType;
@@ -550,7 +551,7 @@ export interface WorkspacesavailableFiltersType {
  * OrganizationWorkspacesAvailableFiltersType
  */
 export interface OrganizationWorkspacesAvailableFiltersType {
-  educationTypes: WorkspaceEducationFilterListType;
+  educationTypes: WorkspaceEducationType[];
   curriculums: WorkspaceCurriculumFilterListType;
   stateFilters?: WorkspaceStateFilterListType;
 }

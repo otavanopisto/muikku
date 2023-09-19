@@ -54,7 +54,7 @@ class NavigationAside extends React.Component<
           name={this.props.t("labels.educationLevel", { ns: "workspace" })}
         >
           {this.props.workspaces.availableFilters.educationTypes.map(
-            (educationType: WorkspaceEducationFilterType) => {
+            (educationType: WorkspaceEducationType) => {
               const isActive =
                 this.props.workspaces.activeFilters.educationFilters.includes(
                   educationType.identifier

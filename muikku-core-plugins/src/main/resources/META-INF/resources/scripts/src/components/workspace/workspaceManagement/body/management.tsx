@@ -7,7 +7,6 @@ import {
   WorkspaceAccessType,
   WorkspaceTypeType,
   WorkspaceUpdateType,
-  WorkspacePermissionsType,
   Language,
   languageOptions,
 } from "~/reducers/workspaces";
@@ -54,6 +53,7 @@ import { AnyActionType } from "~/actions/index";
 import {
   WorkspaceDetails,
   WorkspaceMaterialProducer,
+  WorkspaceSignupGroup,
 } from "~/generated/client";
 import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -92,7 +92,7 @@ interface ManagementPanelState {
   workspaceDescription: string;
   workspaceLicense: string;
   workspaceHasCustomImage: boolean;
-  workspacePermissions: Array<WorkspacePermissionsType>;
+  workspacePermissions: Array<WorkspaceSignupGroup>;
   workspaceChatStatus: WorkspaceChatStatusType;
   workspaceUsergroupNameFilter: string;
   currentWorkspaceProducerInputValue: string;
@@ -528,7 +528,7 @@ class ManagementPanel extends React.Component<
    * togglePermissionIn
    * @param permission permission
    */
-  togglePermissionIn(permission: WorkspacePermissionsType) {
+  togglePermissionIn(permission: WorkspaceSignupGroup) {
     this.setState({
       workspacePermissions: this.state.workspacePermissions.map((pte) => {
         if (pte.userGroupEntityId === permission.userGroupEntityId) {
@@ -675,7 +675,7 @@ class ManagementPanel extends React.Component<
     if (
       !equals(this.props.workspace.permissions, this.state.workspacePermissions)
     ) {
-      const permissionsArray: WorkspacePermissionsType[] = [];
+      const permissionsArray: WorkspaceSignupGroup[] = [];
 
       this.state.workspacePermissions.forEach((permission) => {
         const originalPermission = this.props.workspace.permissions.find(

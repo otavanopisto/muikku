@@ -7177,7 +7177,32 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-
+    put:
+      operationId: updateWorkspace
+      summary: Update workspace
+      description: Update workspace
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceUpdateRequestBody"
+      responses:
+        "200":
+          description: Workspace updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workspace"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
     delete:
       operationId: deleteWorkspace
       summary: Delete workspace
@@ -7387,34 +7412,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WorkspaceBasicInfo"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/workspace/workspaces/{workspaceEntityId}:
-    put:
-      operationId: updateWorkspace
-      summary: Update workspace
-      description: Update workspace
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace entity id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        $ref: "#/components/requestBodies/WorkspaceUpdateRequestBody"
-      responses:
-        "200":
-          description: Workspace updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Workspace"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7968,21 +7965,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - results
-                  - totalHitCount
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/UserStudent"
-                  totalHitCount:
-                    type: integer
-                  firstResult:
-                    type: integer
-                  maxResults:
-                    type: integer
+                $ref: "#/components/schemas/WorkspaceStudentSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9951,11 +9934,11 @@ components:
               - $ref: "#/components/schemas/WorkspaceDetails"
 
     WorkspaceUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: "#/components/schemas/Workspace"
+            $ref: "#/components/schemas/AnyValue"
 
     WorkspaceCreateRequestBody:
       content:
@@ -9975,6 +9958,7 @@ components:
                 type: string
 
     WorkspaceSignupGroupUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -13427,6 +13411,23 @@ components:
           type: string
         hasImage:
           type: boolean
+
+    WorkspaceStudentSearchResult:
+      type: object
+      description: WorkspaceStudentSearchResult object
+      required:
+        - results
+        - totalHitCount
+        - firstResult
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceStudent"
+        totalHitCount:
+          type: integer
+        firstResult:
+          type: integer
 
     WorkspaceJournal:
       type: object

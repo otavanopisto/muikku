@@ -22,7 +22,6 @@ import {
 } from "~/reducers/user-index";
 import {
   WorkspaceUpdateType,
-  WorkspaceEducationFilterListType,
   WorkspaceCurriculumFilterListType,
   WorkspaceStateFilterListType,
   WorkspacesActiveFiltersType,
@@ -37,7 +36,7 @@ import {
   LoadUsersOfWorkspaceTriggerType,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "./index";
-import { WorkspaceDetails } from "~/generated/client";
+import { WorkspaceDetails, WorkspaceEducationType } from "~/generated/client";
 import i18n from "~/locales/i18n";
 
 /**
@@ -54,7 +53,7 @@ export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS =
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
   SpecificActionType<
     "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-    WorkspaceEducationFilterListType
+    WorkspaceEducationType[]
   >;
 /**
  * UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS
