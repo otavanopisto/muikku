@@ -41,7 +41,7 @@ export class MatriculationExaminationEnrollmentCompleted extends React.Component
 
   /**
    * renderStateMessage
-   * @param saveState
+   * @param saveState saveState
    * @returns render save state message
    */
   renderStateMessage = (saveState: SaveState) =>

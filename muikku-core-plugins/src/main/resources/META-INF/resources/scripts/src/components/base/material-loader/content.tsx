@@ -2,6 +2,7 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Base from "~/components/base/material-loader/base";
 import BinaryMaterialLoader from "~/components/base/material-loader/binary";
+import i18n from "~/locales/i18n";
 
 /**
  * MaterialLoaderContentProps
@@ -43,8 +44,9 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
       props.workspace.id,
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
-      props.stateConfiguration["success-text"] &&
-        props.i18n.text.get(props.stateConfiguration["success-text"])
+      props.stateConfiguration["success-text"]
+        ? i18n.t(props.stateConfiguration["success-text"], { ns: "materials" })
+        : undefined
     );
   }
 }
@@ -70,8 +72,9 @@ function onModification(props: MaterialLoaderContentProps) {
       props.workspace.id,
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
-      props.stateConfiguration["success-text"] &&
-        props.i18n.text.get(props.stateConfiguration["success-text"]),
+      props.stateConfiguration["success-text"]
+        ? i18n.t(props.stateConfiguration["success-text"], { ns: "materials" })
+        : undefined,
       props.onAssignmentStateModified
     );
   }
@@ -104,7 +107,6 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
         typeof props.compositeReplies === "undefined" ? null : (
           <Base
             material={props.material}
-            i18n={props.i18n}
             status={props.status}
             usedAs={props.usedAs}
             workspace={props.workspace}
@@ -134,7 +136,6 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
       {props.material.type === "binary" ? (
         <BinaryMaterialLoader
           material={props.material}
-          i18n={props.i18n}
           invisible={props.invisible}
         />
       ) : null}

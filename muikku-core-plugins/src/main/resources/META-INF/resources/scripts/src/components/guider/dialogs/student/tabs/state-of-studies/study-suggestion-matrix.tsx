@@ -6,7 +6,6 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { i18nType } from "~/reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import { useStudentActivity } from "~/hooks/useStudentActivity";
 import HopsCourseTable from "~/components/general/hops-compulsory-education-wizard/hops-course-table";
@@ -19,7 +18,6 @@ import { filterSpecialSubjects } from "~/helper-functions/shared";
  * StudyToolProps
  */
 interface StudySuggestionMatrixProps {
-  i18n: i18nType;
   /**
    * Identifier of student
    */
@@ -161,7 +159,6 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     websocketState: state.websocket,
-    i18n: state.i18n,
   };
 }
 

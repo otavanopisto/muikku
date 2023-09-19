@@ -1,6 +1,5 @@
 import MainFunctionNavbar from "../base/main-function/navbar";
 import Application from "./body/application";
-import Aside from "./body/aside";
 import * as React from "react";
 import ScreenContainer from "~/components/general/screen-container";
 
@@ -15,7 +14,6 @@ export default class RecordsBody extends React.Component<
    * render
    */
   render() {
-    const aside = <Aside />;
     return (
       <div>
         <MainFunctionNavbar activeTrail="records" />

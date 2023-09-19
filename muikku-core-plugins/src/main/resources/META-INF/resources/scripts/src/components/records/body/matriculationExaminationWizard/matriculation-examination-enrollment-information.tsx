@@ -111,7 +111,6 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   /**
    * Updates props to state
    * @param prevProps prevProps
-   * @param prevState prevState
    */
   componentDidUpdate = (
     prevProps: MatriculationExaminationEnrollmentInformationProps
@@ -449,8 +448,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles examination information changes and passes it to parent component
-   * @param key
-   * @param value
+   * @param key key of changed value
+   * @param value value
    */
   handleExaminationInformationChange = <T extends keyof ExaminationInformation>(
     key: T,

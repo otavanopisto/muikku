@@ -1,13 +1,11 @@
 import * as React from "react";
 import FrontpageFeed from "./feed";
-import { i18nType } from "~/reducers/base/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FrontpageNewsProps
  */
-interface FrontpageNewsProps {
-  i18n: i18nType;
-}
+interface FrontpageNewsProps extends WithTranslation {}
 
 /**
  * FrontpageNewsState
@@ -17,7 +15,7 @@ interface FrontpageNewsState {}
 /**
  * FrontpageNews
  */
-export default class FrontpageNews extends React.Component<
+class FrontpageNews extends React.Component<
   FrontpageNewsProps,
   FrontpageNewsState
 > {
@@ -30,12 +28,10 @@ export default class FrontpageNews extends React.Component<
         id="news"
         role="feed"
         className="screen-container__section"
-        aria-label={this.props.i18n.text.get(
-          "plugin.wcag.frontPageSectionNewsLabel"
-        )}
+        aria-label={this.props.t("wcag.otaviaNews", { ns: "frontPage" })}
       >
         <h2 className="screen-container__header">
-          {this.props.i18n.text.get("plugin.sectionTitle.news")}
+          {this.props.t("labels.news", { ns: "frontPage" })}
         </h2>
         <div className="ordered-container ordered-container--frontpage-news">
           <div className="ordered-container__item ordered-container__item--frontpage-news">
@@ -53,3 +49,5 @@ export default class FrontpageNews extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(FrontpageNews);

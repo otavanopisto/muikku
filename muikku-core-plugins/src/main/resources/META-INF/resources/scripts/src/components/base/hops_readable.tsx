@@ -1,6 +1,4 @@
 import * as React from "react";
-
-import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
@@ -8,14 +6,16 @@ import { StateType } from "~/reducers";
 
 import "~/sass/elements/form.scss";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * HopsProps
  */
-interface HopsProps {
+interface HopsProps extends WithTranslation {
   data?: HOPSDataType;
   defaultData: HOPSDataType;
-  i18n: i18nType;
+  status: StatusType;
 }
 
 /**
@@ -58,236 +58,216 @@ class Hops extends React.Component<HopsProps, HopsState> {
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.data || !this.props.data.optedIn) {
       return null;
     }
+
+    const valueToLanguageString: { [key: string]: string } = {
+      yes: t("labels.yes"),
+      no: t("labels.no"),
+      maybe: t("labels.maybe", { ns: "hops" }),
+      AI: t("content.finnish", {
+        ns: "hops",
+        context: "native",
+      }),
+      S2: t("content.finnish", {
+        ns: "hops",
+        context: "secondary",
+      }),
+      MAA: t("labels.longSyllabus", { ns: "hops" }),
+      MAB: t("labels.shortSyllabus", { ns: "hops" }),
+      BI: t("labels.biology", { ns: "hops" }),
+      FY: t("labels.physics", { ns: "hops" }),
+      GE: t("labels.geography", { ns: "hops" }),
+      KE: t("labels.chemistry", { ns: "hops" }),
+      UE: t("labels.religionEl", { ns: "hops" }),
+      ET: t("labels.ethics", { ns: "hops" }),
+      UX: t("labels.religionOther", { ns: "hops" }),
+    };
 
     return (
       <div className="application-sub-panel__body">
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.records.hops.goals.upperSecondary"
-            )}
+            {t("content.targetUpperSecondary", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.goalSecondarySchoolDegree
-                ? this.props.i18n.text.get(
-                    "plugin.records.hops.goals." +
-                      this.state.hops.goalSecondarySchoolDegree
-                  )
+                ? valueToLanguageString[
+                    this.state.hops.goalSecondarySchoolDegree
+                  ]
                 : "-"}
             </span>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.records.hops.goals.matriculationExam"
-            )}
+            {t("content.targetMatriculationExam", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.goalMatriculationExam
-                ? this.props.i18n.text.get(
-                    "plugin.records.hops.goals." +
-                      this.state.hops.goalMatriculationExam
-                  )
+                ? valueToLanguageString[this.state.hops.goalMatriculationExam]
                 : "-"}
             </span>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.records.hops.goals.vocationalYears1"
-            )}
+            {t("content.iHave", { ns: "hops" })}
             <span className="application-sub-panel__item-inline-value">
               {this.state.hops.vocationalYears
                 ? this.state.hops.vocationalYears
                 : "-"}
             </span>
-            {this.props.i18n.text.get(
-              "plugin.records.hops.goals.vocationalYears2"
-            )}
+            {t("content.vocationalYears", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.goalJustMatriculationExam
-                ? this.props.i18n.text.get(
-                    "plugin.records.hops.goals." +
-                      this.state.hops.goalJustMatriculationExam
-                  )
+                ? valueToLanguageString[
+                    this.state.hops.goalJustMatriculationExam
+                  ]
                 : "-"}
             </span>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.records.hops.goals.justTransferCredits1"
-            )}
+            {t("content.iHave", { ns: "hops" })}
             <span className="application-sub-panel__item-inline-value">
               {this.state.hops.transferCreditYears
                 ? this.state.hops.transferCreditYears
                 : "-"}
             </span>
-            {this.props.i18n.text.get(
-              "plugin.records.hops.goals.justTransferCredits2"
-            )}
+            {t("content.justTransferCredits", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.justTransferCredits
-                ? this.props.i18n.text.get(
-                    "plugin.records.hops.goals." +
-                      this.state.hops.justTransferCredits
-                  )
+                ? valueToLanguageString[this.state.hops.justTransferCredits]
                 : "-"}
             </span>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.records.hops.goals.completionYears1"
-            )}
+            {t("content.completionEstimateYears1", { ns: "hops" })}
             <span className="application-sub-panel__item-inline-value">
               {this.state.hops.completionYears
                 ? this.state.hops.completionYears
                 : "-"}
             </span>
-            {this.props.i18n.text.get(
-              "plugin.records.hops.goals.completionYears2"
-            )}
+            {t("content.completionEstimateYears2", { ns: "hops" })}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.records.hops.languages.mandatory.title"
-            )}
+            {t("content.finnishMandatority", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {!this.state.hops.finnish
                 ? "-"
-                : this.state.hops.finnish === "AI"
-                ? this.props.i18n.text.get(
-                    "plugin.records.hops.languages.finnish.native"
-                  )
-                : this.props.i18n.text.get(
-                    "plugin.records.hops.languages.finnish.foreign"
-                  )}
+                : valueToLanguageString[this.state.hops.finnish]}
             </span>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.records.hops.languages.mandatory.additionalInfo"
-            )}
+            {t("content.otherMandatoryLanguages", { ns: "hops" })}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.records.hops.languages.optional.title"
-            )}
+            {t("content.studyOptionalLanguages", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
             <label className="application-sub-panel__item-label">
-              {this.props.i18n.text.get("plugin.records.hops.languages.german")}
+              {t("labels.german", { ns: "hops" })}
             </label>
             <span className="application-sub-panel__single-entry">
               {!this.state.hops.german
                 ? "-"
                 : this.state.hops.german
-                ? this.props.i18n.text.get("plugin.records.hops.goals.yes")
-                : this.props.i18n.text.get("plugin.records.hops.goals.no")}
+                ? t("labels.yes")
+                : t("labels.yes")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
             <label className="application-sub-panel__item-label">
-              {this.props.i18n.text.get("plugin.records.hops.languages.french")}
+              {t("labels.french", { ns: "hops" })}
             </label>
             <span className="application-sub-panel__single-entry">
               {!this.state.hops.french
                 ? "-"
                 : this.state.hops.french
-                ? this.props.i18n.text.get("plugin.records.hops.goals.yes")
-                : this.props.i18n.text.get("plugin.records.hops.goals.no")}
+                ? t("labels.yes")
+                : t("labels.yes")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
             <label className="application-sub-panel__item-label">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.languages.italian"
-              )}
+              {t("labels.italian", { ns: "hops" })}
             </label>
             <span className="application-sub-panel__single-entry">
               {!this.state.hops.italian
                 ? "-"
                 : this.state.hops.italian
-                ? this.props.i18n.text.get("plugin.records.hops.goals.yes")
-                : this.props.i18n.text.get("plugin.records.hops.goals.no")}
+                ? t("labels.yes")
+                : t("labels.yes")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
             <label className="application-sub-panel__item-label">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.languages.spanish"
-              )}
+              {t("labels.spanish", { ns: "hops" })}
             </label>
             <span className="application-sub-panel__single-entry">
               {!this.state.hops.spanish
                 ? "-"
                 : this.state.hops.spanish
-                ? this.props.i18n.text.get("plugin.records.hops.goals.yes")
-                : this.props.i18n.text.get("plugin.records.hops.goals.no")}
+                ? t("labels.yes")
+                : t("labels.yes")}
             </span>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get("plugin.records.hops.mathSyllabus.title")}
+            {t("content.mathSyllabus", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.mathSyllabus
-                ? this.props.i18n.text.get(
-                    "plugin.records.hops.mathSyllabus." +
-                      this.state.hops.mathSyllabus
-                  )
+                ? valueToLanguageString[this.state.hops.mathSyllabus]
                 : "-"}
             </span>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get("plugin.records.hops.science.title")}
+            {this.props.status.profile.curriculumName === "OPS 2016"
+              ? t("labels.ops2016", { ns: "hops" })
+              : t("labels.ops2021", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.science
-                ? this.props.i18n.text.get(
-                    "plugin.records.hops.science." + this.state.hops.science
-                  )
+                ? valueToLanguageString[this.state.hops.science]
                 : "-"}
             </span>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get("plugin.records.hops.religion.title")}
+            {t("labels.beliefSubjectIs", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.state.hops.religion
-                ? this.props.i18n.text.get(
-                    "plugin.records.hops.religion." + this.state.hops.religion
-                  )
+                ? valueToLanguageString[this.state.hops.religion]
                 : "-"}
             </span>
           </div>
@@ -295,9 +275,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         {this.state.hops.additionalInfo ? (
           <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.additionalInfo.title"
-              )}
+              {t("labels.additionalInfo", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data">
               <span className="application-sub-panel__single-entry">
@@ -317,8 +295,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     defaultData: state.hops && state.hops.value,
+    status: state.status,
   };
 }
 
@@ -330,4 +308,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Hops);
+export default withTranslation(["hops", "guider", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Hops)
+);

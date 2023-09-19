@@ -11,18 +11,17 @@ interface TextAreaProps
 
 /**
  * Creates Textarea element specifically for matriculation examination
- * @param root0.label label
- * @param root0.labelAria labelAria
+ * @param props props
  */
-export const Textarea: React.FC<TextAreaProps> = ({
-  label,
-  labelAria,
-  ...rest
-}) => (
-  <>
-    <label className="matriculation__label" aria-label={labelAria}>
-      {label}
-    </label>
-    <textarea {...rest} />
-  </>
-);
+export const Textarea: React.FC<TextAreaProps> = (props) => {
+  const { label, labelAria, ...rest } = props;
+
+  return (
+    <>
+      <label className="matriculation__label" aria-label={labelAria}>
+        {label}
+      </label>
+      <textarea {...rest} />
+    </>
+  );
+};
