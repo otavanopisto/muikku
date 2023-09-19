@@ -49,7 +49,6 @@ import {
   WorkspaceType,
   WorkspaceAccessType,
   WorkspacesActiveFiltersType,
-  WorkspaceDetailsType,
 } from "~/reducers/workspaces";
 import { TagItem } from "~/components/general/tag-input";
 import { UserStaffType } from "~/reducers/user-index";
@@ -57,6 +56,7 @@ import * as moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { WorkspaceDetails } from "~/generated/client";
 
 /**
  * ValidationType

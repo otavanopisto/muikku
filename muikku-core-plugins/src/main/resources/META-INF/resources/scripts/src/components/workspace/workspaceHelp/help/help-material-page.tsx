@@ -3,7 +3,6 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import MaterialLoader from "~/components/base/material-loader";
 import {
-  MaterialContentNodeType,
   WorkspaceType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -23,11 +22,8 @@ import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
-<<<<<<< HEAD
 import { MaterialContentNode } from "~/generated/client";
-=======
 import { withTranslation, WithTranslation } from "react-i18next";
->>>>>>> devel
 
 /**
  * HelpMaterialProps

@@ -503,25 +503,13 @@ class ContentComponent extends SessionStateComponent<
     const { t } = this.props;
 
     switch (viewRestrict) {
-<<<<<<< HEAD
       case MaterialViewRestriction.LoggedIn:
-        return this.props.i18n.text.get(
-          "plugin.workspace.materialViewRestricted"
-        );
-
-      case MaterialViewRestriction.WorkspaceMembers:
-        return this.props.i18n.text.get(
-          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
-        );
-=======
-      case MaterialViewRestriction.LOGGED_IN:
         return t("content.viewRestricted", { ns: "materials" });
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         return t("content.viewRestricted_workspaceMembers", {
           ns: "materials",
         });
->>>>>>> devel
 
       default:
         return null;
