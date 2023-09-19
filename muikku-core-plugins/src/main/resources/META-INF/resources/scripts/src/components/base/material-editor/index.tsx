@@ -42,7 +42,6 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
-import i18n from "~/locales/i18n";
 import { langAttributeLocale } from "~/helper-functions/locale";
 import {
   MaterialContentNode,

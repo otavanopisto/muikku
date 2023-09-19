@@ -31,6 +31,7 @@ import {
   MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ContentProps

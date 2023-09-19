@@ -46,6 +46,7 @@ import {
   WorkspaceDetails,
   WorkspaceMaterialProducer,
 } from "~/generated/client";
+import i18n from "~/locales/i18n";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
