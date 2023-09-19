@@ -1,17 +1,14 @@
 import * as React from "react";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { Assessment } from "~/reducers/workspaces";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * AssessmentRequestIndicatorProps
  */
 interface AssessmentRequestIndicatorProps {
   assessment: Assessment;
-  i18n: i18nType;
 }
 
 /**
@@ -22,7 +19,9 @@ interface AssessmentRequestIndicatorProps {
 export const AssessmentRequestIndicator: React.FC<
   AssessmentRequestIndicatorProps
 > = (props) => {
-  const { assessment, i18n } = props;
+  const { assessment } = props;
+
+  const { t } = useTranslation(["studies", "common"]);
 
   if (
     assessment.state === "pending" ||
@@ -34,10 +33,11 @@ export const AssessmentRequestIndicator: React.FC<
         openByHover
         content={
           <span>
-            {i18n.text.get(
-              "plugin.records.workspace.pending",
-              props.i18n.time.format(assessment.date)
-            )}
+            {t("content.sent", {
+              ns: "studies",
+              context: "evaluationRequest",
+              date: localizeTime.date(assessment.date),
+            })}
           </span>
         }
       >
@@ -50,10 +50,11 @@ export const AssessmentRequestIndicator: React.FC<
         openByHover
         content={
           <span>
-            {i18n.text.get(
-              "plugin.records.workspace.interimEvaluationPending",
-              props.i18n.time.format(assessment.date)
-            )}
+            {t("content.sent", {
+              ns: "studies",
+              context: "interimEvaluationRequest",
+              date: localizeTime.date(assessment.date),
+            })}
           </span>
         }
       >
@@ -64,24 +65,4 @@ export const AssessmentRequestIndicator: React.FC<
   return null;
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AssessmentRequestIndicator);
+export default AssessmentRequestIndicator;

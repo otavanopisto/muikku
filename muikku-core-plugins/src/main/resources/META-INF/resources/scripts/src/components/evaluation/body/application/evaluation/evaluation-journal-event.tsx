@@ -18,13 +18,13 @@ import {
   JournalCommentCreate,
   JournalCommentUpdate,
 } from "~/@types/journal";
-import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import {
   LoadEvaluationJournalCommentsFromServerTriggerType,
   loadEvaluationJournalCommentsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationStudyDiaryEvent } from "~/@types/evaluation";
+import { useTranslation } from "react-i18next";
 import {
   UpdateEvaluationJournalCommentTriggerType,
   updateEvaluationJournalComment,
@@ -38,7 +38,6 @@ import {
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventProps extends EvaluationStudyDiaryEvent {
-  i18n: i18nType;
   open: boolean;
   onClickOpen?: (diaryId: number) => void;
   evaluation: EvaluationState;
@@ -63,7 +62,6 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     userEntityId,
     workspaceEntityId,
     id,
-    i18n,
     commentCount,
     createEvaluationJournalComment,
     updateEvaluationJournalComment,
@@ -79,6 +77,8 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     JournalComment | undefined
   >(undefined);
   const [editorLocked, setEditorLocked] = React.useState(false);
+
+  const { t } = useTranslation(["evaluation", "journal", "common"]);
 
   React.useEffect(() => {
     if (!createNewActive && commentToEdit === undefined) {
@@ -248,7 +248,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const formatedDate = `${moment(created).format("l")} - ${moment(
     created
-  ).format("LT")}`;
+  ).format("h:mm")}`;
 
   const arrowClasses = !showComments
     ? `evaluation-modal__event-arrow evaluation-modal__event-arrow--journal-comment evaluation-modal__event-arrow--right`
@@ -280,11 +280,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
             {isDraft && (
               <span className="label label--draft">
-                <span className="label__text">
-                  {i18n.text.get(
-                    "plugin.evaluation.evaluationModal.journalEntry.statusDraft"
-                  )}
-                </span>
+                <span className="label__text">{t("actions.draft")}</span>
               </span>
             )}
           </div>
@@ -292,9 +288,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           <div className="evaluation-modal__item-meta">
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.journalEntry.writtenLabel"
-                )}
+                {t("labels.written", { ns: "evaluation" })}
               </span>
               <span className="evaluation-modal__item-meta-item-data">
                 {formatedDate}
@@ -316,10 +310,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           >
             <div className={arrowClasses + " icon-arrow-right"} />
             <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.journalComments.title"
-              )}{" "}
-              ({commentCount})
+              {t("labels.comments")} ({commentCount})
             </div>
           </div>
 
@@ -330,9 +321,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
               ) : comments && comments.length === 0 ? (
                 <div className="empty">
                   <span>
-                    {i18n.text.get(
-                      "plugin.evaluation.evaluationModal.journalComments.noComments"
-                    )}
+                    {t("content.empty", { ns: "journal", context: "comments" })}
                   </span>
                 </div>
               ) : (
@@ -359,9 +348,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
                 className="link link--evaluation"
                 onClick={handleCreateNewComment}
               >
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.journalComments.newCommentButton"
-                )}
+                {t("labels.create", { context: "comment" })}
               </Link>
             </div>
           </AnimateHeight>
@@ -369,9 +356,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </AnimateHeight>
 
       <SlideDrawer
-        title={i18n.text.get(
-          "plugin.evaluation.evaluationModal.journalComments.newComment.editorTitle"
-        )}
+        title={t("labels.create", { context: "comment" })}
         closeIconModifiers={["evaluation"]}
         modifiers={["journal-comment"]}
         show={createNewActive}
@@ -389,9 +374,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </SlideDrawer>
 
       <SlideDrawer
-        title={i18n.text.get(
-          "plugin.evaluation.evaluationModal.journalComments.editComment.editorTitle"
-        )}
+        title={t("labels.edit", { context: "comment" })}
         show={commentToEdit !== undefined}
         closeIconModifiers={["evaluation"]}
         modifiers={["journal-comment"]}
@@ -418,7 +401,6 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     evaluation: state.evaluations,
   };
 }

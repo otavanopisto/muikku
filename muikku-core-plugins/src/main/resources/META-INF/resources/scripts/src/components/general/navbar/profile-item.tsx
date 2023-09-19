@@ -2,7 +2,7 @@ import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
@@ -14,13 +14,13 @@ import {
   OpenReadingRuler,
   openReadingRuler,
 } from "../../../actions/easy-to-use-functions/index";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ProfileItemProps
  */
-interface ProfileItemProps {
+interface ProfileItemProps extends WithTranslation {
   modifier: string;
-  i18n: i18nType;
   status: StatusType;
   logout: LogoutTriggerType;
   openReadingRuler: OpenReadingRuler;
@@ -47,35 +47,35 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
     const items: Array<any> = [
       {
         icon: "user",
-        text: "plugin.profileBadge.links.personalInfo",
+        text: this.props.t("labels.personalInfo"),
         href: "/profile",
         to: this.props.isProfileContainedInThisApp,
       },
       {
         icon: "question",
-        text: "plugin.profileBadge.links.userGuide",
+        text: this.props.t("labels.instructions"),
         href: "https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials",
         openInNewTab: "_blank",
       },
       {
         icon: "support",
-        text: "plugin.profileBadge.links.helpdesk",
+        text: this.props.t("labels.helpdesk"),
         href: "mailto:helpdesk@muikkuverkko.fi",
       },
       {
         icon: "support",
-        text: "plugin.profileBadge.links.opinvoimala",
+        text: this.props.t("labels.opinvoimala"),
         href: "https://www.opinvoimala.fi",
         openInNewTab: "_blank",
       },
       {
         icon: "ruler",
-        text: "plugin.wcag.readingRuler.link.label",
+        text: this.props.t("labels.readingRuler"),
         onClick: this.props.openReadingRuler,
       },
       {
         icon: "sign-out",
-        text: "plugin.profileBadge.links.logout",
+        text: this.props.t("actions.signOut"),
         onClick: this.props.logout,
       },
     ];
@@ -94,7 +94,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
             openInNewTab={item.openInNewTab}
           >
             <span className={`link__icon icon-${item.icon}`}></span>
-            <span>{this.props.i18n.text.get(item.text)}</span>
+            <span>{item.text}</span>
           </Link>
         ))}
       >
@@ -103,15 +103,11 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
           role="menuitem"
           tabIndex={0}
           aria-haspopup="true"
-          aria-label={this.props.i18n.text.get(
-            "plugin.wcag.profileMenu.aria.label"
-          )}
+          aria-label={this.props.t("wcag.profileMenu")}
         >
           {this.props.status.hasImage ? (
             <img
-              alt={this.props.i18n.text.get(
-                "plugin.profileBadge.links.profileImageAtl"
-              )}
+              alt={this.props.t("labels.profileImage", { ns: "profile" })}
               src={getUserImageUrl(
                 this.props.status.userId,
                 null,
@@ -137,7 +133,6 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }
@@ -147,8 +142,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ logout, openReadingRuler }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileItem);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(ProfileItem)
+);

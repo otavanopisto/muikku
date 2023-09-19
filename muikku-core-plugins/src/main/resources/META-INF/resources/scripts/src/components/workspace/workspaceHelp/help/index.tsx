@@ -8,7 +8,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   WorkspaceType,
   MaterialContentNodeListType,
@@ -35,12 +34,12 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * HelpMaterialsProps
  */
-interface HelpMaterialsProps {
-  i18n: i18nType;
+interface HelpMaterialsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
@@ -159,29 +158,31 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     nextSibling: MaterialContentNodeType,
     includesSection: boolean
   ) {
+    const { t } = this.props;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const materialManagementItemsOptions: Array<any> = [
       {
         icon: "plus",
-        text: "plugin.workspace.materialsManagement.createChapterTooltip",
+        text: t("labels.create_chapter", { ns: "materials" }),
         onClick: this.createSection.bind(this, nextSection),
         file: false,
       },
       {
         icon: "plus",
-        text: "plugin.workspace.materialsManagement.createPageTooltip",
+        text: t("labels.create_page", { ns: "materials" }),
         onClick: this.createPage.bind(this, section, nextSibling),
         file: false,
       },
       {
         icon: "paste",
-        text: "plugin.workspace.materialsManagement.pastePageTooltip",
+        text: t("labels.paste", { ns: "materials" }),
         onClick: this.pastePage.bind(this, section, nextSibling),
         file: false,
       },
       {
         icon: "attachment",
-        text: "plugin.workspace.materialsManagement.attachFileTooltip",
+        text: t("actions.add", { ns: "files" }),
         onChange: this.createPageFromBinary.bind(this, section, nextSibling),
         file: true,
       },
@@ -237,15 +238,15 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType
   ) {
+    const { t } = this.props;
+
     this.props.createWorkspaceMaterialContentNode(
       {
         workspace: this.props.workspace,
         rootParentId: this.props.workspace.details.helpFolderId,
         parentMaterial: section,
         nextSibling,
-        title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle"
-        ),
+        title: t("labels.newPage", { ns: "materials" }),
         makeFolder: false,
       },
       "help"
@@ -282,14 +283,14 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param nextSibling nextSibling
    */
   createSection(nextSibling: MaterialContentNodeType) {
+    const { t } = this.props;
+
     this.props.createWorkspaceMaterialContentNode(
       {
         workspace: this.props.workspace,
         rootParentId: this.props.workspace.details.helpFolderId,
         nextSibling,
-        title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle"
-        ),
+        title: t("labels.newPage", { ns: "materials" }),
         makeFolder: true,
       },
       "help"
@@ -432,16 +433,16 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   buildViewRestrictionLocaleString = (
     viewRestrict: MaterialViewRestriction
   ) => {
+    const { t } = this.props;
+
     switch (viewRestrict) {
       case MaterialViewRestriction.LOGGED_IN:
-        return this.props.i18n.text.get(
-          "plugin.workspace.materialViewRestricted"
-        );
+        return t("content.viewRestricted", { ns: "materials" });
 
       case MaterialViewRestriction.WORKSPACE_MEMBERS:
-        return this.props.i18n.text.get(
-          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
-        );
+        return t("content.viewRestricted_workspaceMembers", {
+          ns: "materials",
+        });
 
       default:
         return null;
@@ -452,6 +453,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
     }
@@ -468,9 +471,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           <Dropdown
             openByHover
             modifier="material-management-tooltip"
-            content={this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.createChapterTooltip"
-            )}
+            content={t("labels.create_chapter", { ns: "materials" })}
           >
             <ButtonPill
               buttonModifiers="material-management-master"
@@ -484,9 +485,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     const emptyMessage =
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
-          {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.empty"
-          )}
+          {t("content.empty", { ns: "materials", context: "materials" })}
         </div>
       ) : null;
 
@@ -504,9 +503,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             <Dropdown
               openByHover
               modifier="material-management-tooltip"
-              content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.createChapterTooltip"
-              )}
+              content={t("labels.create_chapter", { ns: "materials" })}
             >
               <ButtonPill
                 buttonModifiers="material-management-master"
@@ -546,7 +543,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                       }}
                     />
                     <span className={`link__icon icon-${item.icon}`}></span>
-                    <span>{this.props.i18n.text.get(item.text)}</span>
+                    <span>{item.text}</span>
                   </label>
                 );
               }
@@ -559,7 +556,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   }}
                 >
                   <span className={`link__icon icon-${item.icon}`}></span>
-                  <span>{this.props.i18n.text.get(item.text)}</span>
+                  <span>{item.text}</span>
                 </Link>
               );
             })}
@@ -623,7 +620,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                           <span
                             className={`link__icon icon-${item.icon}`}
                           ></span>
-                          <span>{this.props.i18n.text.get(item.text)}</span>
+                          <span>{item.text}</span>
                         </label>
                       );
                     }
@@ -636,7 +633,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                         }}
                       >
                         <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{this.props.i18n.text.get(item.text)}</span>
+                        <span>{item.text}</span>
                       </Link>
                     );
                   })}
@@ -706,9 +703,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                 <Dropdown
                   openByHover
                   modifier="material-management-tooltip"
-                  content={this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.editChapterTooltip"
-                  )}
+                  content={t("labels.edit", {
+                    ns: "materials",
+                    context: "chapter",
+                  })}
                 >
                   <ButtonPill
                     buttonModifiers="material-management-chapter"
@@ -721,12 +719,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   modifier="material-management-tooltip"
                   content={
                     section.hidden
-                      ? this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.showChapterTooltip"
-                        )
-                      : this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.hideChapterTooltip"
-                        )
+                      ? t("labels.setVisible", { ns: "materials" })
+                      : t("labels.hide", { ns: "materials" })
                   }
                 >
                   <ButtonPill
@@ -765,7 +759,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         onOpenNavigation={this.onOpenNavigation}
         modifier="workspace-instructions"
         navigation={this.props.navigation}
-        title={this.props.i18n.text.get("plugin.workspace.helpPage.title")}
+        title={t("labels.instructions", { ns: "workspace" })}
         ref="content-panel"
       >
         {results}
@@ -782,7 +776,6 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     workspace: state.workspaces.currentWorkspace,
     materials: state.workspaces.currentHelp,
@@ -806,6 +799,13 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
+const componentWithTranslation = withTranslation(
+  ["workspace", "materials", "files", "common"],
+  {
+    withRef: true,
+  }
+)(Help);
+
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
-})(Help);
+})(componentWithTranslation);

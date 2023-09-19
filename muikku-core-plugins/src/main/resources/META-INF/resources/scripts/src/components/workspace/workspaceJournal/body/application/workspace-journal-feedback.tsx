@@ -1,15 +1,14 @@
 import * as React from "react";
 import { WorkspaceJournalFeedback } from "~/reducers/workspaces/journals";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { i18nType } from "~/reducers/base/i18n";
 import * as moment from "moment";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalFeedback
  */
 interface WorkspaceJournalFeedbackProps {
   journalFeedback: WorkspaceJournalFeedback;
-  i18n: i18nType;
 }
 
 /**
@@ -21,22 +20,17 @@ const WorkspaceJournalFeedback: React.FC<WorkspaceJournalFeedbackProps> = (
   props
 ) => {
   const { journalFeedback } = props;
-
+  const { t } = useTranslation("journal");
   return (
     <div className="journal journal--feedback">
-      <div className="journal__header">
-        {props.i18n.text.get("plugin.workspace.journal.journalFeedBackTitle")}
-      </div>
+      <div className="journal__header">{t("labels.feedback")}</div>
       <article className="journal__body rich-text">
         <CkeditorContentLoader html={journalFeedback.feedback} />
       </article>
       <div className="journal__meta">
         <div className="journal__meta-item">
           <div className="journal__meta-item-label">
-            {props.i18n.text.get(
-              "plugin.workspace.journal.journalFeedBackDate"
-            )}
-            :
+            {t("labels.feedbackDate")}:
           </div>
           <div className="journal__meta-item-data">
             {moment(journalFeedback.created).format("l")}
@@ -44,10 +38,7 @@ const WorkspaceJournalFeedback: React.FC<WorkspaceJournalFeedbackProps> = (
         </div>
         <div className="journal__meta-item">
           <div className="journal__meta-item-label">
-            {props.i18n.text.get(
-              "plugin.workspace.journal.journalFeedBackAuthor"
-            )}
-            :
+            {t("labels.feedbackAuthor")}:
           </div>
           <div className="journal__meta-item-data">
             {journalFeedback.creatorName}

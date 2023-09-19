@@ -8,6 +8,7 @@ import {
   CeeposPayStatusCodeType,
 } from "~/reducers/main-function/ceepos";
 import { PurchaseType } from "~/reducers/main-function/profile";
+import i18n from "~/locales/i18n";
 
 /**
  * LoadCeeposPurchaseTriggerType
@@ -67,9 +68,7 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
 
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.ceepos.errormessage.orderLoadFailed"
-            ),
+            i18n.t("notifications.loadError", { ns: "orders", count: 1 }),
             "error"
           )
         );

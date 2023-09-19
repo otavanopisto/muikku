@@ -13,6 +13,7 @@ import {
   GuiderPatchType,
 } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
+import i18n from "~/locales/i18n";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 25;
@@ -129,7 +130,11 @@ export async function loadStudentsHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get("plugin.guider.errorMessage.users"),
+        i18n.t("notifications.loadError", {
+          ns: "users",
+          count: 0,
+          context: "students",
+        }),
         "error"
       )
     );

@@ -1,18 +1,13 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
-import { AnyActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
-import { i18nType } from "~/reducers/base/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DeleteDialogProps
  */
-interface DeleteDialogProps {
-  i18n: i18nType;
+interface DeleteDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;
@@ -71,17 +66,13 @@ class DeleteDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.handleDeleteAudioFieldClick.bind(this, closeDialog)}
         >
-          {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.removeButton"
-          )}
+          {this.props.t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.cancelButton"
-          )}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -93,20 +84,14 @@ class DeleteDialog extends React.Component<
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const content = (closeDialog: () => any) => (
-      <div>
-        {this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.description"
-        )}
-      </div>
+      <div>{this.props.t("content.removing", { ns: "evaluation" })}</div>
     );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
-        title={this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.title"
-        )}
+        title={this.props.t("labels.remove", { ns: "evaluation" })}
         content={content}
         footer={footer}
       >
@@ -116,24 +101,4 @@ class DeleteDialog extends React.Component<
   }
 }
 
-/* localStorage.getItem(`workspace-editor-edit.${draftId}.`)
- */
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteDialog);
+export default withTranslation()(DeleteDialog);

@@ -7,7 +7,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   MaterialContentNodeListType,
   WorkspaceType,
@@ -30,12 +29,12 @@ import {
   setWholeWorkspaceHelp,
   updateWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ContentProps
  */
-interface ContentProps {
-  i18n: i18nType;
+interface ContentProps extends WithTranslation {
   status: StatusType;
   materials: MaterialContentNodeListType;
   activeNodeId: number;
@@ -369,16 +368,16 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   buildViewRestrictionLocaleString = (
     viewRestrict: MaterialViewRestriction
   ) => {
+    const { t } = this.props;
+
     switch (viewRestrict) {
       case MaterialViewRestriction.LOGGED_IN:
-        return this.props.i18n.text.get(
-          "plugin.workspace.materialViewRestricted"
-        );
+        return t("content.viewRestricted", { ns: "materials" });
 
       case MaterialViewRestriction.WORKSPACE_MEMBERS:
-        return this.props.i18n.text.get(
-          "plugin.workspace.materialViewRestrictedToWorkspaceMembers"
-        );
+        return t("content.viewRestricted_workspaceMembers", {
+          ns: "materials",
+        });
 
       default:
         return null;
@@ -407,6 +406,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.materials || !this.props.materials.length) {
       return null;
     }
@@ -416,9 +417,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     return (
       <Toc
         modifier="workspace-instructions"
-        tocHeaderTitle={this.props.i18n.text.get(
-          "plugin.workspace.materials.tocTitle"
-        )}
+        tocHeaderTitle={t("labels.tableOfContents", { ns: "materials" })}
       >
         {this.state.materials.map((node, nodeIndex) => {
           // Boolean if there is view Restriction for toc topic
@@ -622,7 +621,6 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     materials: state.workspaces.currentHelp,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
@@ -642,6 +640,10 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {
+const componentWithTranslation = withTranslation(["workspace", "common"], {
   withRef: true,
 })(ContentComponent);
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  withRef: true,
+})(componentWithTranslation);
