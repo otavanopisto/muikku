@@ -7,18 +7,17 @@ import HoverButton from "~/components/general/hover-button";
 import Button from "~/components/general/button";
 import Toolbar from "./application/toolbar";
 import NewEditAnnouncement from "../dialogs/new-edit-announcement";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AnnouncerApplicationProps
  */
-interface AnnouncerApplicationProps {
+interface AnnouncerApplicationProps extends WithTranslation {
   aside: React.ReactElement<any>;
-  i18n: i18nType;
 }
 
 /**
@@ -34,15 +33,24 @@ class AnnouncerApplication extends React.Component<
   AnnouncerApplicationState
 > {
   /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    this.props.i18n.setDefaultNamespace("messaging");
+  }
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.announcer.pageTitle");
+    const title = this.props.i18n.t("labels.announcer");
     const primaryOption = (
       <NewEditAnnouncement>
         <Button buttonModifiers="primary-function">
-          {this.props.i18n.text.get("plugin.announcer.button.create")}
+          {this.props.t("actions.create", {
+            ns: "messaging",
+            context: "announcement",
+          })}
         </Button>
       </NewEditAnnouncement>
     );
@@ -69,24 +77,12 @@ class AnnouncerApplication extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  * @returns object
  */
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({});
+const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) => ({});
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AnnouncerApplication);
+export default withTranslation()(
+  connect(null, mapDispatchToProps)(AnnouncerApplication)
+);

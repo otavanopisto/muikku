@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import UserPanel from "~/components/general/user-panel";
 import { bindActionCreators } from "redux";
 import { UsersType } from "~/reducers/main-function/users";
@@ -10,12 +9,13 @@ import {
   loadStudents,
   loadStaff,
 } from "~/actions/main-function/users";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * OrganizationUsersProps
  */
-interface OrganizationUsersProps {
-  i18n: i18nType;
+interface OrganizationUsersProps extends WithTranslation {
   users: UsersType;
   loadStaff: LoadUsersTriggerType;
   loadStudents: LoadUsersTriggerType;
@@ -71,23 +71,33 @@ class OrganizationUsers extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     return (
       <div>
         <UserPanel
-          i18n={this.props.i18n}
           identifier={"staff"}
-          onEmpty="plugin.organization.users.staff.empty"
+          onEmpty={t("content.noStaff", { ns: "users" })}
           searchString={this.props.users.staff.searchString}
-          title="plugin.organization.users.staff.title"
+          title={t("labels.staff", {
+            ns: "users",
+            context: "organization",
+          })}
           users={this.props.users.staff}
           pageChange={this.staffPanelPageChange}
         />
         <UserPanel
-          i18n={this.props.i18n}
           identifier={"students"}
-          onEmpty="plugin.organization.users.students.empty"
+          onEmpty={t("content.notFound", {
+            ns: "users",
+            context: "students",
+          })}
           searchString={this.props.users.students.searchString}
-          title="plugin.organization.users.students.title"
+          title={t("labels.student", {
+            ns: "users",
+            context: "organization",
+            count: 0,
+          })}
           users={this.props.users.students}
           pageChange={this.studentPanelPageChange}
         />
@@ -102,7 +112,6 @@ class OrganizationUsers extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     users: state.organizationUsers,
   };
 }
@@ -111,8 +120,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ loadStudents, loadStaff }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizationUsers);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(OrganizationUsers)
+);

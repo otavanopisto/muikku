@@ -10,17 +10,18 @@ import { logout, LogoutTriggerType } from "~/actions/base/status";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import $ from "~/lib/jquery";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import "~/sass/elements/drawer.scss";
 import "~/sass/elements/menu.scss";
 import "~/sass/elements/link.scss";
 import { getUserImageUrl } from "~/util/modifiers";
+import { AnyActionType } from "~/actions";
 import {
   OpenReadingRuler,
   openReadingRuler,
 } from "~/actions/easy-to-use-functions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * checkLinkClicked
@@ -37,14 +38,13 @@ function checkLinkClicked(target: HTMLElement): boolean {
 /**
  * DrawerProps
  */
-interface DrawerProps {
+interface DrawerProps extends WithTranslation {
   open: boolean;
   onClose: () => any;
   items: Array<React.ReactElement<any>>;
   modifier: string;
   navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>;
   status: StatusType;
-  i18n: i18nType;
   logout: LogoutTriggerType;
   openReadingRuler: OpenReadingRuler;
 }
@@ -245,9 +245,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                   }`}
                   width="157"
                   height="56"
-                  alt={this.props.i18n.text.get(
-                    "plugin.site.logo.linkBackToFrontPage"
-                  )}
+                  alt={this.props.t("content.home")}
                 />
               </Link>
             </div>
@@ -292,9 +290,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                         <span className="menu__item-link-icon icon-user"></span>
                       )}
                       <span className="menu__item-link-text">
-                        {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.personalInfo"
-                        )}
+                        {this.props.t("labels.personalInfo")}
                       </span>
                     </Link>
                   </li>
@@ -307,9 +303,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     >
                       <span className="menu__item-link-icon icon-question" />
                       <span className="menu__item-link-text">
-                        {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.userGuide"
-                        )}
+                        {this.props.t("labels.instructions")}
                       </span>
                     </Link>
                   </li>
@@ -322,9 +316,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     >
                       <span className="menu__item-link-icon icon-support"></span>
                       <span className="menu__item-link-text">
-                        {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.helpdesk"
-                        )}
+                        {this.props.t("labels.helpdesk")}
                       </span>
                     </Link>
                   </li>
@@ -346,9 +338,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     >
                       <span className="menu__item-link-icon icon-sign-out"></span>
                       <span className="menu__item-link-text">
-                        {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.logout"
-                        )}
+                        {this.props.t("actions.signOut")}
                       </span>
                     </Link>
                   </li>
@@ -369,7 +359,6 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }
@@ -379,8 +368,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ logout, openReadingRuler }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Drawer);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(Drawer)
+);

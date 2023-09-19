@@ -1,14 +1,13 @@
 import * as React from "react";
 import { RecordValue } from "~/@types/recorder";
 import Link from "~/components/general/link";
-import { StateType } from "~/reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "./dialogs/delete-warning";
 import { AudioPoolComponent } from "../audio-pool-component";
+import { useTranslation } from "react-i18next";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
@@ -21,7 +20,6 @@ interface RecordProps
     React.AudioHTMLAttributes<HTMLAudioElement>,
     HTMLAudioElement
   > {
-  i18n: i18nType;
   record: RecordValue;
   noDeleteFunctions: boolean;
   onClickDelete?: (recordId: string) => void;
@@ -45,6 +43,7 @@ function Record(props: RecordProps) {
   props = { ...defaultRecordtProps, ...props };
 
   const { record, onClickDelete, noDeleteFunctions, ...rest } = props;
+  const { t } = useTranslation();
 
   const open = record.uploading || record.failed;
 
@@ -67,9 +66,7 @@ function Record(props: RecordProps) {
 
         <Link
           className="voice-recorder__download-button icon-download"
-          title={props.i18n.text.get(
-            "plugin.workspace.audioField.downloadLink"
-          )}
+          title={t("actions.download", { count: 1 })}
           href={record.url}
           openInNewTab={record.name}
         />
@@ -77,9 +74,7 @@ function Record(props: RecordProps) {
           <DeleteDialog onDeleteAudio={handleClickDelete}>
             <Link
               className="voice-recorder__remove-button icon-trash"
-              title={props.i18n.text.get(
-                "plugin.workspace.audioField.removeLink"
-              )}
+              title={t("actions.remove")}
             />
           </DeleteDialog>
         ) : null}
@@ -117,22 +112,12 @@ function Record(props: RecordProps) {
         ) : null}
         {record.failed ? (
           <div className="voice-recorder__file-record-error">
-            {props.i18n.text.get("plugin.workspace.audioField.uploadFailed")}
+            {t("notifications.saveError", { ns: "materials" })}
           </div>
         ) : null}
       </AnimateHeight>
     </>
   );
-}
-
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
 }
 
 /**
@@ -143,4 +128,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Record);
+export default connect(null, mapDispatchToProps)(Record);

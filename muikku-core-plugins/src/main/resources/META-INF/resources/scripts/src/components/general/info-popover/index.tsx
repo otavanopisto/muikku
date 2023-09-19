@@ -2,7 +2,8 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { StateType } from "~/reducers";
+import { useTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/popper.scss";
 import {
   displayNotification,
@@ -12,7 +13,6 @@ import Avatar from "../avatar";
 import { ButtonPill } from "~/components/general/button";
 import { fetchUserInfo, useInfoPopperContext, UserInfo } from "./context";
 import { WhatsappButtonLink } from "../whatsapp-link";
-import { i18nType } from "~/reducers/base/i18n";
 import { GuiderStudentLink } from "../guider-link";
 import * as moment from "moment";
 import {
@@ -27,7 +27,6 @@ import "~/sass/elements/item-list.scss";
  * InfoPopoverProps
  */
 interface InfoPopoverProps {
-  i18n: i18nType;
   /**
    * User id to fetch user info
    */
@@ -164,12 +163,11 @@ const InfoPopover = (props: InfoPopoverProps) => {
               <div className="item-list__user-name">
                 {data.info.firstName} {data.info.lastName}
               </div>
-              <ContactInformation info={data.info} i18n={props.i18n} />
-              <ContactVacation info={data.info} i18n={props.i18n} />
-              <ContactExtraInfo info={data.info} i18n={props.i18n} />
+              <ContactInformation info={data.info} />
+              <ContactVacation info={data.info} />
+              <ContactExtraInfo info={data.info} />
               <ContactActions
                 info={data.info}
-                i18n={props.i18n}
                 onCommunicatorMessageOpen={() =>
                   setNewMessageDialogIsOpen(true)
                 }
@@ -191,7 +189,6 @@ const InfoPopover = (props: InfoPopoverProps) => {
  */
 interface ContactInformationProps {
   info: UserInfo;
-  i18n: i18nType;
 }
 
 /**
@@ -228,7 +225,6 @@ function ContactInformation(props: ContactInformationProps) {
  */
 interface ContactVacationProps {
   info: UserInfo;
-  i18n: i18nType;
 }
 
 /**
@@ -240,8 +236,8 @@ interface ContactVacationProps {
  * @returns JSX.Element
  */
 function ContactVacation(props: ContactVacationProps) {
-  const { info, i18n } = props;
-
+  const { info } = props;
+  const { t } = useTranslation("workspace");
   let displayVacationPeriod = !!info.vacationStart;
   // however if we have a range
   if (info.vacationEnd) {
@@ -260,10 +256,10 @@ function ContactVacation(props: ContactVacationProps) {
 
   return (
     <div className="item-list__user-vacation-period">
-      {i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}
+      {t("labels.away")}
       &nbsp;
-      {i18n.time.format(info.vacationStart)}
-      {info.vacationEnd ? `- ${i18n.time.format(info.vacationEnd)}` : null}
+      {localizeTime.date(info.vacationStart)}
+      {info.vacationEnd ? `- ${localizeTime.date(info.vacationEnd)}` : null}
     </div>
   );
 }
@@ -273,7 +269,6 @@ function ContactVacation(props: ContactVacationProps) {
  */
 interface ContactExtraInfoProps {
   info: UserInfo;
-  i18n: i18nType;
 }
 
 /**
@@ -300,7 +295,6 @@ function ContactExtraInfo(props: ContactExtraInfoProps) {
  */
 interface ContactActionsProps {
   info: UserInfo;
-  i18n: i18nType;
   onCommunicatorMessageOpen?: () => void;
   onCommunicatorMessageClose?: () => void;
 }
@@ -315,8 +309,8 @@ interface ContactActionsProps {
  * @returns JSX.Element
  */
 function ContactActions(props: ContactActionsProps) {
-  const { info, i18n } = props;
-
+  const { info } = props;
+  const { t } = useTranslation(["messaging", "common"]);
   return (
     <>
       <div className="item-list__user-actions">
@@ -342,28 +336,24 @@ function ContactActions(props: ContactActionsProps) {
             ]}
           >
             <ButtonPill
-              aria-label={i18n.text.get(
-                "plugin.workspace.index.newMessage.label"
+              aria-label={t(
+                "labels.send"
               )}
               icon="envelope"
-              title={i18n.text.get("plugin.workspace.index.newMessage.label")}
+              title={t("labels.send")}
               buttonModifiers={["new-message", "new-message-to-staff"]}
             ></ButtonPill>
           </CommunicatorNewMessage>
         ) : null} */}
 
         {info.phoneNumber && info.whatsapp === "true" ? (
-          <WhatsappButtonLink i18n={i18n} mobileNumber={info.phoneNumber} />
+          <WhatsappButtonLink mobileNumber={info.phoneNumber} />
         ) : null}
 
         {info.appointmentCalendar ? (
           <ButtonPill
-            aria-label={i18n.text.get(
-              "plugin.workspace.index.appointmentCalendar.label"
-            )}
-            title={i18n.text.get(
-              "plugin.workspace.index.appointmentCalendar.label"
-            )}
+            aria-label={t("labels.appointment")}
+            title={t("labels.appointment")}
             icon="clock"
             buttonModifiers="appointment-calendar"
             openInNewTab="_blank"
@@ -373,16 +363,6 @@ function ContactActions(props: ContactActionsProps) {
       </div>
     </>
   );
-}
-
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
 }
 
 /**
@@ -398,4 +378,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(InfoPopover);
+export default connect(null, mapDispatchToProps)(InfoPopover);

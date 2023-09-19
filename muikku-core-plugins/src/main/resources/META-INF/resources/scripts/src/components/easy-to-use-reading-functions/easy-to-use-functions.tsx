@@ -9,14 +9,12 @@ import {
   CloseReadingRuler,
   closeReadingRuler,
 } from "~/actions/easy-to-use-functions";
-import { i18nType } from "~/reducers/base/i18n";
 import ReadingRuler from "./reading-ruler/reading-ruler";
 
 /**
  * EasyToUseFunctionsProps
  */
 interface EasyToUseFunctionsProps {
-  i18n: i18nType;
   easyToUse: EasyToUseFunctionState;
   closeReadingRuler: CloseReadingRuler;
 }
@@ -46,7 +44,6 @@ const EasyToUseFunctions: React.FC<EasyToUseFunctionsProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     easyToUse: state.easyToUse,
   };
 }

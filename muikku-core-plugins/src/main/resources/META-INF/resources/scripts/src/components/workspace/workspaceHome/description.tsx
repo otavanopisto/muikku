@@ -5,7 +5,6 @@ import {
   WorkspaceType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
@@ -14,6 +13,7 @@ import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
+import { withTranslation, WithTranslation } from "react-i18next";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -22,9 +22,8 @@ import {
 /**
  * DescriptionPanelProps
  */
-interface DescriptionPanelProps {
+interface DescriptionPanelProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18n: i18nType;
   isInFrontPage?: boolean;
   workspaceEditMode: WorkspaceEditModeStateType;
   displayNotification: DisplayNotificationTriggerType;
@@ -43,17 +42,17 @@ class DescriptionPanel extends React.Component<
   DescriptionPanelState
 > {
   /**
-   *
+   * render
    */
   render() {
+    const { t } = this.props;
+
     return (
       <div className="panel panel--workspace-description">
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
           <h2 className="panel__header-title">
-            {this.props.i18n.text.get(
-              "plugin.workspace.index.descriptionTitle"
-            )}
+            {t("labels.introduction", { ns: "workspace" })}
           </h2>
         </div>
 
@@ -100,7 +99,6 @@ class DescriptionPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
   };
@@ -115,4 +113,6 @@ function mapDispatchToProps() {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel);
+export default withTranslation(["workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DescriptionPanel)
+);

@@ -1,22 +1,22 @@
 import { WorkspaceType } from "~/reducers/workspaces";
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
 
 /**
  * WorkspaceAnnouncementsProps
  */
-interface WorkspaceAnnouncementsProps {
+interface WorkspaceAnnouncementsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceType;
   announcements: Announcement[];
-  i18n: i18nType;
 }
 
 /**
@@ -35,6 +35,8 @@ class WorkspaceAnnouncements extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (
       this.props.status.loggedIn &&
       this.props.status.isActiveUser &&
@@ -45,9 +47,7 @@ class WorkspaceAnnouncements extends React.Component<
           <div className="panel__header">
             <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
             <h2 className="panel__header-title">
-              {this.props.i18n.text.get(
-                "plugin.workspace.index.announcementsTitle"
-              )}
+              {t("labels.announcement", { ns: "messaging", count: 0 })}
             </h2>
           </div>
           {this.props.announcements.length && this.props.workspace ? (
@@ -72,7 +72,7 @@ class WorkspaceAnnouncements extends React.Component<
                         {a.caption}
                       </span>
                       <span className="item-list__announcement-date">
-                        {this.props.i18n.time.format(a.startDate)}
+                        {localizeTime.date(a.startDate)}
                       </span>
                     </span>
                   </Link>
@@ -81,9 +81,10 @@ class WorkspaceAnnouncements extends React.Component<
             </div>
           ) : (
             <div className="panel__body panel__body--empty">
-              {this.props.i18n.text.get(
-                "plugin.workspace.index.announcementsEmpty"
-              )}
+              {t("content.empty", {
+                ns: "messaging",
+                context: "announcements",
+              })}
             </div>
           )}
         </div>
@@ -99,7 +100,6 @@ class WorkspaceAnnouncements extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
     announcements: state.announcements.announcements,
     status: state.status,
@@ -113,7 +113,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceAnnouncements);
+export default withTranslation(["workspace", "messaging", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceAnnouncements)
+);

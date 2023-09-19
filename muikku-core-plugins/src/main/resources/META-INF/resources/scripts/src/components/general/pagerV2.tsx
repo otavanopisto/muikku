@@ -1,10 +1,8 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
-import { StateType } from "~/reducers";
-import { connect } from "react-redux";
 import "~/sass/elements/pager.scss";
 import "~/sass/elements/wcag.scss";
 import ReactPaginateForked, { ReactPaginateForkProps } from "react-paginate";
+import { useTranslation } from "react-i18next";
 
 /**
  * PagerV2Props extends ReactPaginateForkProps excluding ariaLabelBuilder
@@ -12,11 +10,6 @@ import ReactPaginateForked, { ReactPaginateForkProps } from "react-paginate";
  */
 interface PagerV2Props
   extends Omit<ReactPaginateForkProps, "ariaLabelBuilder"> {
-  /**
-   * Translations
-   */
-  i18n: i18nType;
-
   /**
    * Default `plugin.wcag.pager.goToPage.label`
    */
@@ -45,7 +38,7 @@ const defaultPagerV2Props = {
  */
 const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
   props = { ...defaultPagerV2Props, ...props };
-
+  const { t } = useTranslation("paging");
   /**
    * Creates aria-label for a tags depending if link is selected
    * or not. Label is default or user defined if ariaLabelGoToPage/ariaLabelCurrent
@@ -57,7 +50,7 @@ const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
   const handleAriaLabelBuilder = (index: number, selected: boolean): string => {
     let label = props.ariaLabelGoToPage
       ? props.ariaLabelGoToPage
-      : props.i18n.text.get("plugin.wcag.pager.goToPage.label");
+      : t("wcag.goToPage");
 
     /**
      * If item is selected, then its current item
@@ -65,7 +58,7 @@ const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
     if (selected) {
       label = props.ariaLabelCurrent
         ? props.ariaLabelCurrent
-        : props.i18n.text.get("plugin.wcag.pager.current.label");
+        : t("wcag.currentPage");
     }
 
     return label;
@@ -76,23 +69,4 @@ const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @returns object
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PagerV2);
+export default PagerV2;
