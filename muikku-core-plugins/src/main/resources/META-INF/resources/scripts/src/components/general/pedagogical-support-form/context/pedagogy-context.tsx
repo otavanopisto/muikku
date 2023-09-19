@@ -46,7 +46,9 @@ function PedagogyProvider(props: PedagogyProviderProps) {
 function usePedagogyContext() {
   const context = React.useContext(PedagogyContext);
   if (context === undefined) {
-    throw new Error("usePedagogyContext must be used within a WizardProvider");
+    throw new Error(
+      "usePedagogyContext must be used within a PedagogyProvider"
+    );
   }
   return context;
 }
