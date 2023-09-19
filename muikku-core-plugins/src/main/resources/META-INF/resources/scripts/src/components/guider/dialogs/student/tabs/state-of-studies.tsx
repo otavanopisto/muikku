@@ -127,7 +127,8 @@ class StateOfStudies extends React.Component<
         }
       >
         {this.props.guider.currentStudent.basic &&
-        this.props.guider.currentStudent.basic.ceeposLine !== null && this.props.guider.currentStudent.basic.ceeposLine !== "aineopiskelu" ? (
+        this.props.guider.currentStudent.basic.ceeposLine !== null &&
+        this.props.guider.currentStudent.basic.ceeposLine !== "aineopiskelu" ? (
           <CeeposButton />
         ) : null}
         <NewMessage
