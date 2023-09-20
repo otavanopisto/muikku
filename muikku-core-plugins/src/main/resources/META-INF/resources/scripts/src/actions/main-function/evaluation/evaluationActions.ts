@@ -616,14 +616,7 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
         });
       }
 
-      /* let GradingSystems: EvaluationGradeScale[] = []; */
-
       try {
-        /* GradingSystems = (await promisify(
-          mApi().evaluation.compositeGradingScales.read(),
-          "callback"
-        )()) as EvaluationGradeScale[]; */
-
         const GradingSystems = await evaluationApi.getEvaluationGradingScales();
 
         dispatch({
@@ -679,36 +672,18 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
 
       let evaluationAssessmentRequests: EvaluationAssessmentRequest[] = [];
 
-      /* await mApi().evaluation.compositeAssessmentRequests.cacheClear(); */
-
       try {
         if (state.evaluations.selectedWorkspaceId) {
-          /* evaluationAssessmentRequests = (await promisify(
-            mApi().evaluation.compositeAssessmentRequests.read({
-              workspaceEntityId: state.evaluations.selectedWorkspaceId,
-            }),
-            "callback"
-          )()) as EvaluationAssessmentRequest[]; */
           evaluationAssessmentRequests =
             await evaluationApi.getCompositeAssessmentRequests({
               workspaceEntityId: state.evaluations.selectedWorkspaceId,
             });
         } else if (useFromWorkspace && state.workspaces.currentWorkspace.id) {
-          /* evaluationAssessmentRequests = (await promisify(
-            mApi().evaluation.compositeAssessmentRequests.read({
-              workspaceEntityId: state.workspaces.currentWorkspace.id,
-            }),
-            "callback"
-          )()) as EvaluationAssessmentRequest[]; */
           evaluationAssessmentRequests =
             await evaluationApi.getCompositeAssessmentRequests({
               workspaceEntityId: state.workspaces.currentWorkspace.id,
             });
         } else {
-          /* evaluationAssessmentRequests = (await promisify(
-            mApi().evaluation.compositeAssessmentRequests.read({}),
-            "callback"
-          )()) as EvaluationAssessmentRequest[]; */
           evaluationAssessmentRequests =
             await evaluationApi.getCompositeAssessmentRequests();
         }
@@ -723,7 +698,7 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
           payload: <EvaluationStateType>"READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -844,7 +819,7 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1007,16 +982,7 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
         payload: <EvaluationStateType>"LOADING",
       });
 
-      /* let evaluationAssessmentEvents: EvaluationEvent[] = []; */
-
       try {
-        /* evaluationAssessmentEvents = (await promisify(
-          mApi().evaluation.workspaceuser.events.read(
-            data.assessment.workspaceUserEntityId
-          ),
-          "callback"
-        )()) as EvaluationEvent[]; */
-
         const evaluationAssessmentEvents =
           await evaluationApi.getWorkspaceUserEvaluationEvents({
             workspaceUserEntityId: data.assessment.workspaceUserEntityId,
@@ -1074,14 +1040,6 @@ const loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFrom
       });
 
       try {
-        /* const journalFeedback = (await promisify(
-          mApi().evaluation.workspaces.students.journalfeedback.read(
-            data.workspaceEntityId,
-            data.userEntityId
-          ),
-          "callback"
-        )()) as EvaluationJournalFeedback | null; */
-
         const journalFeedback =
           await evaluationApi.getWorkspaceStudentJournalFeedback({
             workspaceId: data.workspaceEntityId,
@@ -1134,17 +1092,6 @@ const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFe
       const evaluationApi = MApi.getEvaluationApi();
 
       try {
-        /* const journalFeedback = (await promisify(
-          mApi().evaluation.workspaces.students.journalfeedback.create(
-            data.workspaceEntityId,
-            data.userEntityId,
-            {
-              feedback: data.feedback,
-            }
-          ),
-          "callback"
-        )()) as EvaluationJournalFeedback; */
-
         const journalFeedback =
           await evaluationApi.saveWorkspaceStudentJournalFeedback({
             workspaceId: data.workspaceEntityId,
@@ -1208,15 +1155,6 @@ const deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerTyp
       const evaluationApi = MApi.getEvaluationApi();
 
       try {
-        /* await promisify(
-          mApi().evaluation.workspaces.students.journalfeedback.del(
-            data.workspaceEntityId,
-            data.userEntityId,
-            data.feedbackId
-          ),
-          "callback"
-        )(); */
-
         await evaluationApi.deleteWorkspaceStudentJournalFeedback({
           workspaceId: data.workspaceEntityId,
           studentEntityId: data.userEntityId,
@@ -1535,38 +1473,6 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
 
       if (type === "new") {
         try {
-          /* await promisify(
-            mApi().evaluation.workspaceuser.assessment.create(
-              state.evaluations.evaluationSelectedAssessmentId
-                .workspaceUserEntityId,
-              {
-                ...workspaceEvaluation,
-              }
-            ),
-            "callback"
-          )().then((data: WorkspaceEvaluationSaveReturn) => {
-            onSuccess();
-
-            if (billingPrice) {
-              dispatch(
-                updateBillingToServer({
-                  assessmentIdentifier: data.identifier,
-                  price: billingPrice.toString(),
-                })
-              );
-            }
-
-            // Base price has to be loaded again because combination workspace
-            // price changes. This only happens after creating new evaluation
-            dispatch(
-              loadBasePriceFromServer({
-                workspaceEntityId:
-                  state.evaluations.evaluationSelectedAssessmentId
-                    .workspaceEntityId,
-              })
-            );
-          }); */
-
           await evaluationApi
             .saveWorkspaceUserAssessment({
               workspaceUserEntityId:
@@ -1623,29 +1529,6 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
         }
       } else {
         try {
-          /* await promisify(
-            mApi().evaluation.workspaceuser.assessment.update(
-              state.evaluations.evaluationSelectedAssessmentId
-                .workspaceUserEntityId,
-
-              {
-                ...workspaceEvaluation,
-              }
-            ),
-            "callback"
-          )().then((data: WorkspaceEvaluationSaveReturn) => {
-            onSuccess();
-
-            if (billingPrice) {
-              dispatch(
-                updateBillingToServer({
-                  assessmentIdentifier: data.identifier,
-                  price: billingPrice,
-                })
-              );
-            }
-          }); */
-
           await evaluationApi
             .updateWorkspaceUserAssessment({
               workspaceUserEntityId:
@@ -1719,25 +1602,6 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
 
       if (type === "new") {
         try {
-          /* await promisify(
-            mApi().evaluation.workspaceuser.supplementationrequest.create(
-              state.evaluations.evaluationSelectedAssessmentId
-                .workspaceUserEntityId,
-              {
-                ...workspaceSupplementation,
-              }
-            ),
-            "callback"
-          )().then(() => {
-            dispatch(
-              loadEvaluationAssessmentEventsFromServer({
-                assessment: state.evaluations.evaluationSelectedAssessmentId,
-              })
-            );
-
-            onSuccess();
-          }); */
-
           await evaluationApi
             .saveWorkspaceUserSupplementationRequest({
               workspaceUserEntityId:
@@ -1776,25 +1640,6 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
         }
       } else {
         try {
-          /* await promisify(
-            mApi().evaluation.workspaceuser.supplementationrequest.update(
-              state.evaluations.evaluationSelectedAssessmentId
-                .workspaceUserEntityId,
-              {
-                ...workspaceSupplementation,
-              }
-            ),
-            "callback"
-          )().then(() => {
-            dispatch(
-              loadEvaluationAssessmentEventsFromServer({
-                assessment: state.evaluations.evaluationSelectedAssessmentId,
-              })
-            );
-
-            onSuccess();
-          }); */
-
           await evaluationApi
             .updateWorkspaceUserSupplementationRequest({
               workspaceUserEntityId:
@@ -1875,38 +1720,6 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
         eventType === "EVALUATION_FAIL"
       ) {
         try {
-          /* await promisify(
-            mApi().evaluation.workspaceuser.workspaceassessment.del(
-              state.evaluations.evaluationSelectedAssessmentId
-                .workspaceUserEntityId,
-              identifier
-            ),
-            "callback"
-          )().then(() => {
-            dispatch(
-              loadEvaluationAssessmentEventsFromServer({
-                assessment: state.evaluations.evaluationSelectedAssessmentId,
-              })
-            );
-
-            // Base price has to be loaded again because combination workspace
-            // price changes. This only happens after creating new evaluation
-            dispatch(
-              loadBasePriceFromServer({
-                workspaceEntityId:
-                  state.evaluations.evaluationSelectedAssessmentId
-                    .workspaceEntityId,
-              })
-            );
-
-            dispatch({
-              type: "EVALUATION_STATE_UPDATE",
-              payload: <EvaluationStateType>"READY",
-            });
-
-            onSuccess();
-          }); */
-
           await evaluationApi
             .deleteWorkspaceUserWorkspaceAssessment({
               workspaceUserEntityId:
@@ -1963,38 +1776,6 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
         }
       } else if (eventType === "SUPPLEMENTATION_REQUEST") {
         try {
-          /* await promisify(
-            mApi().evaluation.workspaceuser.supplementationrequest.del(
-              state.evaluations.evaluationSelectedAssessmentId
-                .workspaceUserEntityId,
-              identifier
-            ),
-            "callback"
-          )().then(() => {
-            dispatch(
-              loadEvaluationAssessmentEventsFromServer({
-                assessment: state.evaluations.evaluationSelectedAssessmentId,
-              })
-            );
-
-            // Base price has to be loaded again because combination workspace
-            // price changes. This only happens after creating new evaluation
-            dispatch(
-              loadBasePriceFromServer({
-                workspaceEntityId:
-                  state.evaluations.evaluationSelectedAssessmentId
-                    .workspaceEntityId,
-              })
-            );
-
-            dispatch({
-              type: "EVALUATION_STATE_UPDATE",
-              payload: <EvaluationStateType>"READY",
-            });
-
-            onSuccess();
-          }); */
-
           await evaluationApi
             .deleteWorkspaceUserSupplementationRequest({
               workspaceUserEntityId:
@@ -2440,15 +2221,6 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
       const evaluationApi = MApi.getEvaluationApi();
 
       try {
-        /* await promisify(
-          mApi().evaluation.workspaceuser.evaluationrequestarchive.update(
-            workspaceUserEntityId
-          ),
-          "callback"
-        )().then(() => {
-          dispatch(loadEvaluationAssessmentRequestsFromServer());
-        }); */
-
         await evaluationApi
           .archiveEvaluationWorkspaceUser({
             workspaceUserEntityId: workspaceUserEntityId,
@@ -2494,20 +2266,6 @@ const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
       const evaluationApi = MApi.getEvaluationApi();
 
       try {
-        /* await promisify(
-          mApi().evaluation.interimEvaluationRequest.del(
-            interimEvaluatiomRequestId
-          ),
-          "callback"
-        )().then(() => {
-          notificationActions.displayNotification(
-            "Välipalautepyyntö poistettu onnistuneesti",
-            "success"
-          );
-
-          dispatch(loadEvaluationAssessmentRequestsFromServer());
-        }); */
-
         await evaluationApi
           .deleteInterimEvaluationRequest({
             interimEvaluationRequestId: interimEvaluatiomRequestId,
