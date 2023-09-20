@@ -783,7 +783,7 @@ public class CeeposRESTService {
   
   @Path("/order/{ORDERID}/returnLink")
   @GET
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getReturnLink(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
@@ -798,6 +798,13 @@ public class CeeposRESTService {
     if (order == null) {
       logger.warning(String.format("Ceepos order %d: Not found", orderId));
       return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Verify order ownership
+    
+    if (!StringUtils.equals(order.getUserIdentifier(), sessionController.getLoggedUser().toId())) {
+      logger.severe(String.format("Ceepos order %d illegal user access %s", orderId, sessionController.getLoggedUser().toId()));
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     // Figure out the product
