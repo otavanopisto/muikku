@@ -232,7 +232,7 @@ class ConnectField extends React.Component<
 
   /**
    * checkAnswers
-   * @returns fail or pass
+   * @returns
    */
   checkAnswers() {
     // if we are not allowed to check for rightness then return
