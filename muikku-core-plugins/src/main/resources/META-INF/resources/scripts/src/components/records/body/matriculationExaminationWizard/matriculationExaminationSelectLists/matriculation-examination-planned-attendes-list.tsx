@@ -26,8 +26,8 @@ const defaultUseSelectProps = {
 
 /**
  * MatriculationExaminationFutureSelectsList
- * @param props
- * @returns
+ * @param props props
+ * @returns JSX.Element
  */
 export const MatriculationExaminationPlannedAttendesList: React.FC<
   MatriculationExaminationPlannedAttendesListProps
@@ -45,9 +45,9 @@ export const MatriculationExaminationPlannedAttendesList: React.FC<
 
   /**
    * Handles matriculation examation planned subject group change
-   * @param key
-   * @param value
-   * @param index
+   * @param key key
+   * @param value value
+   * @param index index of the subject group
    */
   const handleMatriculationExaminationSubjectGroupChange = <
     T extends keyof ExaminationPlannedSubject

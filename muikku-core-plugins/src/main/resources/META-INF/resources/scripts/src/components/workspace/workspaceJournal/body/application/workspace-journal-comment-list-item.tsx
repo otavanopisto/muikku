@@ -18,19 +18,18 @@ import {
 } from "~/components/general/application-list";
 import { bindActionCreators } from "redux";
 import { JournalComment } from "~/@types/journal";
-import { i18nType } from "~/reducers/base/i18n";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
   UpdateWorkspaceJournalCommentTriggerType,
   updatedWorkspaceJournalComment,
 } from "../../../../../actions/workspaces/journals";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalCommentListProps
  */
 interface WorkspaceJournalCommentListItemProps {
-  i18n: i18nType;
   journalComment: JournalComment;
   workspaceEntityId: number;
   status: StatusType;
@@ -44,6 +43,7 @@ interface WorkspaceJournalCommentListItemProps {
 export const WorkspaceJournalCommentListItem: React.FC<
   WorkspaceJournalCommentListItemProps
 > = (props): JSX.Element => {
+  const { t } = useTranslation(["journal", "common"]);
   const { journalComment, status } = props;
 
   const { authorId, comment, firstName, lastName, created } = journalComment;
@@ -100,7 +100,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
   const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
   const formatedDate = `${moment(created).format("l")} - ${moment(
     created
-  ).format("LT")}`;
+  ).format("h:mm")}`;
 
   return (
     <ApplicationListItem className="journal journal--comment">
@@ -147,9 +147,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 className="link link--application-list"
                 onClick={handleEditCommentClick}
               >
-                {props.i18n.text.get(
-                  "plugin.workspace.journal.editCommentButton.label"
-                )}
+                {t("actions.edit")}
               </Link>
 
               <DeleteJournalComment
@@ -157,9 +155,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 workspaceEntityId={props.workspaceEntityId}
               >
                 <Link as="span" className="link link--application-list">
-                  {props.i18n.text.get(
-                    "plugin.workspace.journal.deleteCommentButton.label"
-                  )}
+                  {t("actions.remove")}
                 </Link>
               </DeleteJournalComment>
             </ApplicationListItemFooter>
@@ -175,9 +171,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
+  return {};
 }
 
 /**

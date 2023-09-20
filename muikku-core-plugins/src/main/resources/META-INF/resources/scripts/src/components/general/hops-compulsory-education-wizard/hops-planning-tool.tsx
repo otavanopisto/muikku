@@ -18,7 +18,6 @@ import {
 } from "~/actions/base/notifications";
 import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
-import { i18nType } from "~/reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import { useStudentChoices } from "~/hooks/useStudentChoices";
 import HopsCourseList from "~/components/general/hops-compulsory-education-wizard/hops-course-list";
@@ -28,6 +27,7 @@ import { filterSpecialSubjects } from "~/helper-functions/shared";
 import Dropdown from "../dropdown";
 import { useSupervisorOptionalSuggestions } from "~/hooks/useSupervisorOptionalSuggestion";
 import { HopsUsePlace } from "./index";
+import { localizeTime } from "~/locales/i18n";
 import { useFollowUp } from "./context/follow-up-context";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -39,7 +39,6 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
  * StudyToolProps
  */
 interface HopsPlanningToolProps {
-  i18n: i18nType;
   user: HopsUser;
   usePlace: HopsUsePlace;
   /**
@@ -135,7 +134,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     /**
      * Localized moment initialzied to variable
      */
-    const localizedMoment = props.i18n.time.getLocalizedMoment;
+    const localizedMoment = localizeTime.getLocalizedMoment;
 
     /**
      * Time in months need to be study. Based on calculation from hours total to complete and study hours per week
@@ -487,8 +486,8 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
    * @returns number of years + months
    */
   const showAsReadableTime = (nd: number) => {
-    const localizedMoment = props.i18n.time.getLocalizedMoment;
-    const momentDuration = props.i18n.time.duration;
+    const localizedMoment = localizeTime.getLocalizedMoment;
+    const momentDuration = localizeTime.duration;
 
     /**
      * Current date
@@ -996,7 +995,6 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     websocketState: state.websocket,
-    i18n: state.i18n,
   };
 }
 

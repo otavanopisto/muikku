@@ -10,6 +10,7 @@ import {
 import { WorkspaceBasicInfo } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import { Role } from "../../reducers/base/status";
+import i18n from "~/locales/i18n";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -146,6 +147,8 @@ async function loadWhoAMI(
       },
     },
   });
+
+  i18n.changeLanguage(whoAmI.locale);
 
   dispatch({
     type: "LOCALE_UPDATE",

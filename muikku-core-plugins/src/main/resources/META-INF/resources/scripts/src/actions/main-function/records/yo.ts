@@ -14,6 +14,7 @@ import {
   EligibleStatusType,
 } from "~/reducers/main-function/records/yo";
 import { StateType } from "~/reducers";
+import i18n from "~/locales/i18n";
 
 export type UPDATE_STUDIES_YO = SpecificActionType<
   "UPDATE_STUDIES_YO",
@@ -117,10 +118,11 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
               }
               dispatch(
                 actions.displayNotification(
-                  getState().i18n.text.get(
-                    "plugin.records.yo.errormessage.eligibilityUpdateFailedOnSubject",
-                    subject.subjectCode
-                  ),
+                  i18n.t("notifications.updateError", {
+                    ns: "studies",
+                    context: "matriculationEligibility",
+                    subject: subject.subjectCode,
+                  }),
                   "error"
                 )
               );
@@ -143,9 +145,9 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.records.yo.errormessage.eligibilityUpdateFailed"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "studies",
+            }),
             "error"
           )
         );
@@ -227,9 +229,9 @@ const updateYO: updateYOTriggerType = function updateYO() {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.records.yo.errormessage.yoUpdateFailed"
-          ),
+          i18n.t("notifications.loadError", {
+            ns: "studies",
+          }),
           "error"
         )
       );

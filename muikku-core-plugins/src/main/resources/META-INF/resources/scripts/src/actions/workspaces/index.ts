@@ -44,7 +44,7 @@ import {
   MaterialContentNodeType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import workspace from "~/reducers/workspace";
+import i18n from "~/locales/i18n";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -275,11 +275,13 @@ const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.errormessage.workspaceLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "templates",
+            }),
             "error"
           )
         );
@@ -318,11 +320,14 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.errormessage.workspaceLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "workspaces",
+              count: 0,
+            }),
             "error"
           )
         );
@@ -347,28 +352,30 @@ const loadLastWorkspacesFromServer: LoadLastWorkspacesFromServerTriggerType =
       getState: () => StateType
     ) => {
       try {
+        const lastWorkspaces: WorkspaceMaterialReferenceType[] = JSON.parse(
+          (
+            (await promisify(
+              mApi().user.property.read("last-workspaces"),
+              "callback"
+            )()) as any
+          ).value
+        );
+        // lastWorkspaces can never be null, or the update functionality does not work
         dispatch({
           type: "UPDATE_LAST_WORKSPACES",
-          payload: <WorkspaceMaterialReferenceType[]>(
-            JSON.parse(
-              (
-                (await promisify(
-                  mApi().user.property.read("last-workspaces"),
-                  "callback"
-                )()) as any
-              ).value
-            )
-          ),
+          payload: lastWorkspaces ? lastWorkspaces : [],
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.errormessage.lastWorkspaceLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "latest",
+            }),
             "error"
           )
         );
@@ -406,7 +413,6 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
         const existingReferenceLocation = lastWorkspaces.findIndex(
           (lw) => lw.workspaceId === newReference.workspaceId
         );
-
         // If there is a reference with the same workspaceId, we remove the old one
         if (existingReferenceLocation !== -1) {
           lastWorkspaces.splice(existingReferenceLocation, 1);
@@ -726,11 +732,14 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
-              "plugin.workspace.errormessage.workspaceLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "workspaces",
+              count: 0,
+            }),
             "error"
           )
         );
@@ -749,8 +758,6 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       try {
         const curriculums = <WorkspaceCurriculumFilterListType>(
           await promisify(mApi().coursepicker.curriculums.read(), "callback")()
@@ -764,11 +771,13 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
-              "plugin.workspace.errormessage.requestAssessmentFail"
-            ),
+            i18n.t("notifications.sendError", {
+              ns: "workspace",
+              context: "evaluationRequests",
+            }),
             "error"
           )
         );
@@ -818,9 +827,10 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
         } catch (err) {
           dispatch(
             actions.displayNotification(
-              state.i18n.text.get(
-                "plugin.workspace.errormessage.workspaceActivityLoadFailed"
-              ),
+              i18n.t("notifications.loadError", {
+                ns: "workspace",
+                context: "activity",
+              }),
               "error"
             )
           );
@@ -870,9 +880,10 @@ const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentR
         } catch (err) {
           dispatch(
             actions.displayNotification(
-              state.i18n.text.get(
-                "plugin.workspace.errormessage.workspaceAssessmentRequestFailed"
-              ),
+              i18n.t("notifications.loadError", {
+                ns: "workspace",
+                context: "evaluationRequests",
+              }),
               "error"
             )
           );
@@ -919,8 +930,6 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       try {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const assessmentRequest: WorkspaceAssessmentRequestType = <
@@ -966,9 +975,10 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
 
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
-              "plugin.workspace.evaluation.requestEvaluation.notificationText"
-            ),
+            i18n.t("notifications.sendSuccess", {
+              ns: "workspace",
+              context: "evaluationRequests",
+            }),
             "success"
           )
         );
@@ -977,11 +987,13 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
-              "plugin.workspace.errormessage.requestAssessmentFail"
-            ),
+            i18n.t("notifications.sendError", {
+              ns: "workspace",
+              context: "evaluationRequests",
+            }),
             "error"
           )
         );
@@ -1011,8 +1023,6 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       try {
         const assessmentRequest: WorkspaceAssessmentRequestType =
           data.workspace.assessmentRequests[
@@ -1021,9 +1031,10 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         if (!assessmentRequest) {
           dispatch(
             actions.displayNotification(
-              state.i18n.text.get(
-                "plugin.workspace.errormessage.cancelAssessmentFail"
-              ),
+              i18n.t("notifications.cancelError", {
+                ns: "workspace",
+                context: "evaluationRequests",
+              }),
               "error"
             )
           );
@@ -1067,9 +1078,10 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
 
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
-              "plugin.workspace.evaluation.cancelEvaluation.notificationText"
-            ),
+            i18n.t("notifications.sendSuccess", {
+              ns: "workspace",
+              context: "evaluationRequestsCancel",
+            }),
             "success"
           )
         );
@@ -1078,11 +1090,13 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           actions.displayNotification(
-            state.i18n.text.get(
-              "plugin.workspace.errormessage.cancelAssessmentFail"
-            ),
+            i18n.t("notifications.cancelError", {
+              ns: "workspace",
+              context: "evaluationRequests",
+            }),
             "error"
           )
         );
@@ -1291,11 +1305,13 @@ const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFil
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.coursepicker.errormessage.educationFilters"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "educationFilters",
+            }),
             "error"
           )
         );
@@ -1337,11 +1353,13 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.coursepicker.errormessage.curriculumFilters"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "curriculumFilters",
+            }),
             "error"
           )
         );
@@ -1374,9 +1392,13 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get("plugin.workspaceSignUp.notif.error"),
+            i18n.t("notifications.sendError", {
+              ns: "workspace",
+              context: "signUp",
+            }),
             "error"
           )
         );
@@ -1602,11 +1624,13 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       if (!(err instanceof MApiError)) {
         throw err;
       }
+
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToUpdateWorkspace"
-          ),
+          i18n.t("notifications.updateError", {
+            ns: "workspace",
+            context: "settings",
+          }),
           "error"
         )
       );
@@ -1653,11 +1677,13 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToLoadTeachers"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "teachers",
+            }),
             "error"
           )
         );
@@ -1727,11 +1753,13 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToLoadStudents"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "students",
+            }),
             "error"
           )
         );
@@ -1812,11 +1840,13 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
           });
         }
         data.fail && data.fail();
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToUpdateStudents"
-            ),
+            i18n.t("notifications.archiveError", {
+              ns: "users",
+              context: "student",
+            }),
             "error"
           )
         );
@@ -1901,11 +1931,13 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToUpdateMaterialAnswersState"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "workspace",
+              context: "answers",
+            }),
             "error"
           )
         );
@@ -2040,11 +2072,13 @@ const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToLoadChatSettigns"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "chatSettings",
+            }),
             "error"
           )
         );
@@ -2086,11 +2120,13 @@ const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorks
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToLoadDetails"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "nameDetails",
+            }),
             "error"
           )
         );
@@ -2137,11 +2173,13 @@ const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurren
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToUpdateDetails"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "workspace",
+              context: "nameDetails",
+            }),
             "error"
           )
         );
@@ -2236,11 +2274,13 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToUpdateProducers"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "workspace",
+              context: "producers",
+            }),
             "error"
           )
         );
@@ -2273,11 +2313,13 @@ const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToLoadWorkspaceTypes "
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "types",
+            }),
             "error"
           )
         );
@@ -2329,11 +2371,13 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToDeleteImage"
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "workspace",
+              context: "coverImage",
+            }),
             "error"
           )
         );
@@ -2434,11 +2478,12 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToCloneWorkspace"
-            ),
+            i18n.t("notifications.copyError", {
+              ns: "workspace",
+            }),
             "error"
           )
         );
@@ -2519,9 +2564,10 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
 
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToUpdateImage"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "workspace",
+              context: "coverImage",
+            }),
             "error"
           )
         );
@@ -2565,11 +2611,13 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToLoadWorkspacePermissions"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "permissions",
+            }),
             "error"
           )
         );

@@ -32,7 +32,6 @@ public class AnnouncerTestsBase extends AbstractUITest {
         login();
         navigate("/announcer", false);
         waitAndClick(".application-panel__actions-aside  > a.button--primary-function");
-        
         waitForPresent(".cke_contents");
         waitForPresent(".env-dialog__row--dates .env-dialog__form-element-container:nth-child(2) input");
         selectAllAndClear(".env-dialog__row--dates .env-dialog__form-element-container:nth-child(2) input");
@@ -219,14 +218,11 @@ public class AnnouncerTestsBase extends AbstractUITest {
       navigate("/announcer", false);
       waitForPresent(".application-panel__content-main.loader-empty");
       navigate("/", false);
-      navigate("/announcer#past", false);
-      
+      navigate("/announcer#expired", false);
       waitForPresent(".application-list__item-content-header");
       assertTextIgnoreCase(".application-list__item-content-header", "Test title");
       navigate("/", false);
-      
       waitForVisible(".panel--announcements");
-      
       assertTrue("Element found even though it shouldn't be there", isElementPresent(".item-list__item--announcements .item-list__announcement-caption") == false);
     }finally{
       deleteAnnouncements();
@@ -239,7 +235,6 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     MockStaffMember another = new MockStaffMember(3l, 3l, 1l, "Another", "User", UserRole.ADMINISTRATOR, "121212-1234", "blaablaa@example.com", Sex.MALE);
-
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStaffMember(another).addStudent(student).mockLogin(admin).build();
     login();    
@@ -249,9 +244,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
       navigate("/announcer", false);
       waitForPresent(".application-list__item-content-header");
       assertCount(".application-list__item-content-header" ,2);
-      
       navigate("/", false);
-      navigate("/announcer#mine", false);
+      navigate("/announcer#own", false);
       waitForPresent(".application-list__item-content-header");
       assertTextIgnoreCase(".application-list__item-content-header ", "Test title");
       assertCount(".application-list__item-content-header" ,1);

@@ -9,7 +9,6 @@ import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import mApi from "~/lib/mApi";
-import { StateType } from "~/reducers";
 import { WorkspaceInterimEvaluationRequest } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import {
@@ -21,6 +20,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /* eslint-disable camelcase */
 const ckEditorConfig = {
@@ -63,7 +63,9 @@ const ckEditorConfig = {
 /**
  * InterimEvaluationEditorProps
  */
-interface InterimEvaluationEditorProps extends MaterialLoaderProps {
+interface InterimEvaluationEditorProps
+  extends MaterialLoaderProps,
+    WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stateConfiguration: any;
   updateCurrentWorkspaceInterimEvaluationRequests: UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger;
@@ -159,6 +161,8 @@ class InterimEvaluationEditor extends React.Component<
    * handlePushInterimRequest
    */
   handlePushInterimRequest = async () => {
+    const { t } = this.props;
+
     // If there is no request data, we need to create a new one
     // otherwise delete existing one
     if (this.props.stateConfiguration.state === "SUBMITTED") {
@@ -171,9 +175,10 @@ class InterimEvaluationEditor extends React.Component<
         )()) as WorkspaceInterimEvaluationRequest;
 
         this.props.displayNotification(
-          this.props.i18n.text.get(
-            "plugin.workspace.materialsLoader.cancelInterimEvaluationRequest.success"
-          ),
+          t("notifications.cancelSuccess", {
+            ns: "workspace",
+            context: "interimEvaluationRequests",
+          }),
           "success"
         );
 
@@ -190,9 +195,10 @@ class InterimEvaluationEditor extends React.Component<
         );
       } catch (error) {
         this.props.displayNotification(
-          this.props.i18n.text.get(
-            "plugin.workspace.materialsLoader.cancelInterimEvaluationRequest.error"
-          ),
+          t("notifications.cancelError", {
+            ns: "workspace",
+            context: "interimEvaluationRequests",
+          }),
           "error"
         );
       }
@@ -207,9 +213,10 @@ class InterimEvaluationEditor extends React.Component<
         )()) as WorkspaceInterimEvaluationRequest;
 
         this.props.displayNotification(
-          this.props.i18n.text.get(
-            "plugin.workspace.materialsLoader.submitInterimEvaluationRequest.success"
-          ),
+          t("notifications.sendSuccess", {
+            ns: "workspace",
+            context: "interimEvaluationRequests",
+          }),
           "success"
         );
 
@@ -226,9 +233,9 @@ class InterimEvaluationEditor extends React.Component<
         );
       } catch (error) {
         this.props.displayNotification(
-          this.props.i18n.text.get(
-            "plugin.workspace.materialsLoader.submitInterimEvaluationRequest.error"
-          ),
+          t("notifications.sendError_interimEvaluationRequests", {
+            ns: "workspace",
+          }),
           "error"
         );
       }
@@ -240,6 +247,8 @@ class InterimEvaluationEditor extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     let creatingInterimEvaluationRequestBlocked = false;
 
     const isSubmitted =
@@ -284,9 +293,9 @@ class InterimEvaluationEditor extends React.Component<
             buttonModifiers={this.props.stateConfiguration["button-class"]}
             onClick={this.handlePushInterimRequest}
           >
-            {this.props.i18n.text.get(
-              this.props.stateConfiguration["button-text"]
-            )}
+            {t(this.props.stateConfiguration["button-text"], {
+              ns: "workspace",
+            })}
           </Button>
         ) : null}
         {this.props.stateConfiguration[
@@ -297,11 +306,9 @@ class InterimEvaluationEditor extends React.Component<
             buttonModifiers="muikku-show-correct-answers-button"
             onClick={this.props.onToggleAnswersVisible}
           >
-            {this.props.i18n.text.get(
-              this.props.answersVisible
-                ? "plugin.workspace.materialsLoader.hideAnswers"
-                : "plugin.workspace.materialsLoader.showAnswers"
-            )}
+            {this.props.answersVisible
+              ? t("actions.hide", { ns: "materials" })
+              : t("actions.show", { ns: "materials" })}
           </Button>
         ) : null}
       </div>
@@ -311,7 +318,7 @@ class InterimEvaluationEditor extends React.Component<
       <>
         <div className="material-page__content rich-text">
           <span className="material-page__interim-evaluation-field-label">
-            Viesti opettajalle:
+            {t("labels.teacherMessage", { ns: "materials" })}
           </span>
           <span className={`material-page__interim-evaluation-wrapper`}>
             {field}
@@ -320,9 +327,7 @@ class InterimEvaluationEditor extends React.Component<
 
         {creatingInterimEvaluationRequestBlocked && !isEvaluated ? (
           <div className="material-page__content-disclaimer rich-text">
-            {this.props.i18n.text.get(
-              "plugin.workspace.materialsLoader.interimEvaluationDisclaimer"
-            )}
+            {t("content.interimEvaluationDisclaimer", { ns: "materials" })}
           </div>
         ) : (
           !this.props.readOnly && buttons
@@ -330,14 +335,6 @@ class InterimEvaluationEditor extends React.Component<
       </>
     );
   }
-}
-
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {};
 }
 
 /**
@@ -351,7 +348,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InterimEvaluationEditor);
+export default withTranslation(["workspace", "materials", "common"])(
+  connect(null, mapDispatchToProps)(InterimEvaluationEditor)
+);
