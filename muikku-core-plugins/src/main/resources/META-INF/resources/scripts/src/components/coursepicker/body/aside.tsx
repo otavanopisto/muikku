@@ -11,12 +11,12 @@ import Navigation, {
 } from "~/components/general/navigation";
 import {
   WorkspacesType,
-  WorkspaceEducationFilterType,
   WorkspaceCurriculumFilterType,
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { WorkspaceEducationType } from "~/generated/client";
 
 /**
  * NavigationAsideProps

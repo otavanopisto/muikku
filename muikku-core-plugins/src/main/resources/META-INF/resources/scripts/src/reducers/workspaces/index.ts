@@ -6,6 +6,7 @@ import {
   MaterialContentNode,
   MaterialViewRestriction,
   WorkspaceAdditionalInfo,
+  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceEducationType,
   WorkspaceMaterialProducer,
@@ -365,7 +366,7 @@ export interface WorkspaceStudentAssessmentStateType {
   text?: string;
 }
 
-export type WorkspaceChatStatusType = "ENABLED" | "DISABLED";
+/* export type WorkspaceChatStatusType = "ENABLED" | "DISABLED"; */
 
 /**
  * WorkspacePermissionsType
@@ -424,7 +425,7 @@ export interface WorkspaceType {
   numVisits: number;
   published: boolean;
   urlName: string;
-  chatStatus?: WorkspaceChatStatusType;
+  chatStatus?: WorkspaceChatStatus;
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccessType;

@@ -5,7 +5,6 @@ import mApi, { MApiError } from "~/lib/mApi";
 import {
   WorkspaceMaterialReferenceType,
   WorkspaceType,
-  WorkspaceChatStatusType,
   WorkspaceAssessementStateType,
   WorkspaceCurriculumFilterListType,
   WorkspacesActiveFiltersType,
@@ -41,12 +40,14 @@ import {
   AssessmentRequest,
   MaterialContentNode,
   WorkspaceAdditionalInfo,
+  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceEducationType,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
+import workspace from "~/reducers/workspace";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -539,6 +540,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
+      const chatApi = MApi.getChatApi();
       const workspaceApi = MApi.getWorkspaceApi();
       const assessmentRequestApi = MApi.getAssessmentApi();
 
@@ -576,7 +578,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         let isCourseMember: boolean;
         let journals: WorkspaceJournalsType;
         let details: WorkspaceDetails;
-        let chatStatus: WorkspaceChatStatusType;
+        let chatStatus: WorkspaceChatStatus;
         const status = state.status;
 
         [
@@ -747,10 +749,14 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
 
           state.status.loggedIn
             ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
-                promisify(
+                /* promisify(
                   mApi().chat.workspaceChatSettings.read(data.workspaceId),
                   "callback"
-                )()
+                )() */
+
+                chatApi.getWorkspaceChatSettings({
+                  workspaceEntityId: data.workspaceId,
+                })
               )
             : null,
         ])) as any;
@@ -773,7 +779,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
 
         data.success && data.success(workspace);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -903,23 +909,34 @@ const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentR
       getState: () => StateType
     ) => {
       const state = getState();
+      const assessmentRequestApi = MApi.getAssessmentApi();
 
       if (state.status.loggedIn) {
         try {
-          const assessmentRequests = <AssessmentRequest[]>await promisify(
+          /* const assessmentRequests = <AssessmentRequest[]>await promisify(
             mApi()
               .assessmentrequest.workspace.assessmentRequests.cacheClear()
               .read(state.workspaces.currentWorkspace.id, {
                 studentIdentifier: state.status.userSchoolDataIdentifier,
               }),
             "callback"
-          )();
+          )(); */
+
+          const assessmentRequests =
+            await assessmentRequestApi.getWorkspaceAssessmentRequests({
+              workspaceEntityId: state.workspaces.currentWorkspace.id,
+              studentIdentifier: state.status.userSchoolDataIdentifier,
+            });
 
           dispatch({
             type: "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS",
             payload: assessmentRequests,
           });
         } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           dispatch(
             actions.displayNotification(
               i18n.t("notifications.loadError", {
@@ -972,9 +989,11 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const assessmentRequestApi = MApi.getAssessmentApi();
+
       try {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const assessmentRequest: AssessmentRequest = <AssessmentRequest>(
+        /* const assessmentRequest: AssessmentRequest = <AssessmentRequest>(
           await promisify(
             mApi().assessmentrequest.workspace.assessmentRequests.create(
               data.workspace.id,
@@ -984,12 +1003,19 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
             ),
             "callback"
           )()
-        );
+        ); */
 
-        /**
-         * First finding current "assessmentState state" and depending what state it is assign new state
-         * Will be changed when module specific evaluation assessment request functionality is implemented
-         */
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const assessmentRequest =
+          await assessmentRequestApi.createWorkspaceAssessmentRequest({
+            workspaceEntityId: data.workspace.id,
+            createWorkspaceAssessmentRequestRequest: {
+              requestText: data.text,
+            },
+          });
+
+        // First finding current "assessmentState state" and depending what state it is assign new state
+        // Will be changed when module specific evaluation assessment request functionality is implemented
         let newAssessmentState =
           data.workspace.activity.assessmentState[0].state;
 
@@ -1003,16 +1029,12 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
           newAssessmentState = "pending";
         }
 
-        /**
-         * Must be done for now. To update activity when assessmentRequest is being made.
-         * In future changing state locally is better options one combination workspace module specific
-         * request are implemented
-         */
+        // Must be done for now. To update activity when assessmentRequest is being made.
+        // In future changing state locally is better options one combination workspace module specific
+        // request are implemented
         dispatch(updateCurrentWorkspaceActivity({}));
 
-        /**
-         * Same here
-         */
+        // Same here
         dispatch(updateCurrentWorkspaceAssessmentRequest({}));
 
         dispatch(
@@ -1026,7 +1048,7 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
         );
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1065,6 +1087,8 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const assessmentRequestApi = MApi.getAssessmentApi();
+
       try {
         const assessmentRequest: AssessmentRequest =
           data.workspace.assessmentRequests[
@@ -1083,18 +1107,21 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
           data.fail && data.fail();
           return;
         }
-        await promisify(
+        /* await promisify(
           mApi().assessmentrequest.workspace.assessmentRequests.del(
             data.workspace.id,
             assessmentRequest.id
           ),
           "callback"
-        )();
+        )(); */
 
-        /**
-         * First finding current "assessmentState state" and depending what state it is assign new state
-         * Will be changed when module specific evaluation assessment request functionality is implemented
-         */
+        await assessmentRequestApi.deleteWorkspaceAssessmentRequest({
+          workspaceEntityId: data.workspace.id,
+          assessmentRequestId: assessmentRequest.id,
+        });
+
+        // First finding current "assessmentState state" and depending what state it is assign new state
+        // Will be changed when module specific evaluation assessment request functionality is implemented
         let newAssessmentState =
           data.workspace.activity.assessmentState[0].state;
 
@@ -1106,16 +1133,12 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
           newAssessmentState = "fail";
         }
 
-        /**
-         * Must be done for now. To update activity when assessmentRequest is being made.
-         * In future changing state locally is better options one combination workspace module specific
-         * request are implemented
-         */
+        // Must be done for now. To update activity when assessmentRequest is being made.
+        // In future changing state locally is better options one combination workspace module specific
+        // request are implemented
         dispatch(updateCurrentWorkspaceActivity({}));
 
-        /**
-         * Same here
-         */
+        // Same here
         dispatch(updateCurrentWorkspaceAssessmentRequest({}));
 
         dispatch(
@@ -1129,7 +1152,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         );
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1476,6 +1499,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const chatApi = MApi.getChatApi();
     const workspaceApi = MApi.getWorkspaceApi();
 
     const actualOriginal: WorkspaceType = { ...data.workspace };
@@ -1569,13 +1593,21 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
 
       // Update workspace chat status (enabled/disabled)
       if (newChatStatus) {
-        await promisify(
+        /* await promisify(
           mApi().chat.workspaceChatSettings.update(data.workspace.id, {
             chatStatus: newChatStatus,
             workspaceEntityId: data.workspace.id,
           }),
           "callback"
-        )();
+        )(); */
+
+        await chatApi.updateWorkspaceChatSettings({
+          workspaceEntityId: data.workspace.id,
+          updateWorkspaceChatSettingsRequest: {
+            chatStatus: newChatStatus,
+            workspaceEntityId: data.workspace.id,
+          },
+        });
 
         // Add chat status back to the update object
         data.update.chatStatus = newChatStatus;
@@ -2140,15 +2172,21 @@ const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const chatApi = MApi.getChatApi();
+
       try {
-        const chatStatus: WorkspaceChatStatusType = <WorkspaceChatStatusType>(
+        /* const chatStatus: WorkspaceChatStatusType = <WorkspaceChatStatusType>(
           await promisify(
             mApi().chat.workspaceChatSettings.read(
               getState().workspaces.currentWorkspace.id
             ),
             "callback"
           )()
-        );
+        ); */
+
+        const chatStatus = await chatApi.getWorkspaceChatSettings({
+          workspaceEntityId: getState().workspaces.currentWorkspace.id,
+        });
 
         const currentWorkspace: WorkspaceType =
           getState().workspaces.currentWorkspace;
@@ -2161,7 +2199,7 @@ const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 

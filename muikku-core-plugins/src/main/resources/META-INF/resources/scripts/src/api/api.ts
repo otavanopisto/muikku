@@ -29,6 +29,7 @@ import {
   FetchError,
   RequiredError,
   AssessmentRequestApi,
+  ChatApi,
 } from "../generated/client";
 
 /**
@@ -86,6 +87,15 @@ export default class MApi {
    */
   public static getAnnouncerApi() {
     return new AnnouncerApi(configuration);
+  }
+
+  /**
+   * Get initialized ChatApi API
+   *
+   * @returns initialized ChatApi API
+   */
+  public static getChatApi() {
+    return new ChatApi(configuration);
   }
 
   /**

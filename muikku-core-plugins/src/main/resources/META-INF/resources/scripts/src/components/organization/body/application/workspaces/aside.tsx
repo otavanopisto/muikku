@@ -5,7 +5,6 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import {
   WorkspacesType,
-  WorkspaceEducationFilterType,
   WorkspaceCurriculumFilterType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
@@ -14,6 +13,7 @@ import Navigation, {
   NavigationElement,
 } from "~/components/general/navigation";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { WorkspaceEducationType } from "~/generated/client";
 
 /**
  * NavigationAsideProps

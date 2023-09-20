@@ -3,7 +3,6 @@ import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import {
   WorkspaceType,
-  WorkspaceChatStatusType,
   WorkspaceAccessType,
   WorkspaceTypeType,
   WorkspaceUpdateType,
@@ -51,6 +50,7 @@ import {
 } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
 import {
+  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
@@ -93,7 +93,7 @@ interface ManagementPanelState {
   workspaceLicense: string;
   workspaceHasCustomImage: boolean;
   workspacePermissions: Array<WorkspaceSignupGroup>;
-  workspaceChatStatus: WorkspaceChatStatusType;
+  workspaceChatStatus: WorkspaceChatStatus;
   workspaceUsergroupNameFilter: string;
   currentWorkspaceProducerInputValue: string;
   newWorkspaceImageSrc?: string;
@@ -279,7 +279,7 @@ class ManagementPanel extends React.Component<
    * setWorkspaceChatTo
    * @param value value
    */
-  setWorkspaceChatTo(value: WorkspaceChatStatusType) {
+  setWorkspaceChatTo(value: WorkspaceChatStatus) {
     this.setState({
       workspaceChatStatus: value,
     });

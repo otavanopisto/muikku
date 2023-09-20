@@ -406,7 +406,7 @@ paths:
 
   /rest/assessmentrequest/workspace/{workspaceEntityId}/assessmentRequests/{assessmentRequestId}:
     delete:
-      operationId: deleteAssessmentRequest
+      operationId: deleteWorkspaceAssessmentRequest
       summary: Delete assessment request
       description: Delete assessment request
       tags:
@@ -638,6 +638,65 @@ paths:
           description: Attempted to make a call with unauthorized client
         "404":
           description: Ceepos user orders not found
+        "500":
+          description: Internal server error
+
+  #CHAT
+  /rest/chat/workspaceChatSettings/{workspaceEntityId}:
+    get:
+      operationId: getWorkspaceChatSettings
+      summary: Get workspace chat settings
+      description: Get workspace chat settings
+      tags:
+        - Chat
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace chat settings successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceChatStatus"
+        "400":
+          description: Invalid request was sent to the server
+        "404":
+          description: Workspace chat settings not found
+        "500":
+          description: Internal server error
+    put:
+      operationId: updateWorkspaceChatSettings
+      summary: Update workspace chat settings
+      description: Update workspace chat settings
+      tags:
+        - Chat
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceChatStatusUpdateRequestBody"
+      responses:
+        "200":
+          description: Workspace chat settings successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceChatStatus"
+        "204":
+          description: Workspace chat settings successfully updated
+        "400":
+          description: Invalid request was sent to the server
+        "404":
+          description: Workspace chat settings not found
         "500":
           description: Internal server error
 
@@ -9686,6 +9745,22 @@ components:
               groupIdentifier:
                 type: string
 
+    WorkspaceChatStatusUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: WorkspaceChatStatusUpdateRequestBody object
+            required:
+              - chatStatus
+              - workspaceEntityId
+            properties:
+              chatStatus:
+                $ref: "#/components/schemas/WorkspaceChatStatus"
+              workspaceEntityId:
+                type: integer
+
     WorkspaceStudentUpdateRequestBody:
       content:
         application/json:
@@ -13429,6 +13504,47 @@ components:
         firstResult:
           type: integer
 
+    WorkspaceStudent:
+      allOf: #extends WorkspaceUserBase object
+        - $ref: "#/components/schemas/WorkspaceUserBase"
+        - type: object
+          description: WorkspaceUserRestModel object
+          required:
+            - nickname
+            - studyProgrammeName
+            - active
+          properties:
+            nickname:
+              type: string
+            studyProgrammeName:
+              type: string
+            active:
+              type: boolean
+
+    WorkspaceUserBase:
+      type: object
+      description: WorkspaceUserBase object
+      required:
+        - workspaceUserEntityId
+        - userIdentifier
+        - userEntityId
+        - firstName
+        - lastName
+        - hasImage
+      properties:
+        workspaceUserEntityId:
+          type: integer
+        userIdentifier:
+          type: string
+        userEntityId:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        hasImage:
+          type: boolean
+
     WorkspaceJournal:
       type: object
       description: WorkspaceJournal object
@@ -13757,6 +13873,12 @@ components:
           format: date-time
         count:
           type: integer
+
+    WorkspaceChatStatus:
+      type: string
+      enum:
+        - ENABLED
+        - DISABLED
 
     ErrorModel:
       type: object
