@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
-import { i18nType } from "reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -14,13 +13,13 @@ import {
   updateWorkspaceJournalInCurrentWorkspace,
 } from "~/actions/workspaces/journals";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NewEditJournalProps
  */
-interface WorkspaceJournalEditorProps {
+interface WorkspaceJournalEditorProps extends WithTranslation {
   type?: "new" | "edit";
-  i18n: i18nType;
   journal?: WorkspaceJournalWithComments;
   createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType;
   updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType;
@@ -197,15 +196,13 @@ class WorkspaceJournalEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
+    t("labels.edit", { ns: "journal" });
+
     const editorTitle = this.props.journal
-      ? this.props.i18n.text.get("plugin.workspace.journal.editEntry.title") +
-        " - " +
-        this.props.i18n.text.get("plugin.workspace.journal.entry.content.label")
-      : this.props.i18n.text.get("plugin.workspace.journal.newEntry.title") +
-        " - " +
-        this.props.i18n.text.get(
-          "plugin.workspace.journal.entry.content.label"
-        );
+      ? t("labels.edit", { ns: "journal" }) + " - " + t("labels.content")
+      : t("labels.create", { ns: "journal" }) + " - " + t("labels.content");
 
     return (
       <div className="form" role="form">
@@ -213,9 +210,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
           <section className="env-dialog__wrapper">
             <div className="env-dialog__content">
               <header className="env-dialog__header">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.journal.editEntry.title"
-                )}
+                {t("labels.edit", { ns: "journal" })}
               </header>
               <section className="env-dialog__body">
                 <div
@@ -224,9 +219,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
                 >
                   <div className="env-dialog__form-element-container">
                     <label htmlFor="journalTitle" className="env-dialog__label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.journal.entry.title.label"
-                      )}
+                      {t("labels.title")}
                     </label>
                     <input
                       id="journalTitle"
@@ -247,9 +240,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
                 >
                   <div className="env-dialog__form-element-container">
                     <label className="env-dialog__label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.journal.entry.content.label"
-                      )}
+                      {t("labels.content")}
                     </label>
                     <CKEditor
                       editorTitle={editorTitle}
@@ -267,18 +258,14 @@ class WorkspaceJournalEditor extends SessionStateComponent<
                     onClick={this.handleSaveJournalClick}
                     disabled={this.state.locked}
                   >
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.journal.save.button.label"
-                    )}
+                    {t("actions.save")}
                   </Button>
                   <Button
                     onClick={this.props.onClose}
                     disabled={this.state.locked}
                     buttonModifiers="dialog-cancel"
                   >
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.journal.cancel.button.label"
-                    )}
+                    {t("actions.cancel")}
                   </Button>
                   {this.recovered && (
                     <Button
@@ -286,9 +273,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
                       disabled={this.state.locked}
                       onClick={this.handleDeleteEditorDraft}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.journal.deleteDraft.button.label"
-                      )}
+                      {t("actions.remove", { context: "draft" })}
                     </Button>
                   )}
                 </div>
@@ -307,9 +292,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
  * @returns object
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
+  return {};
 }
 
 /**
@@ -327,7 +310,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalEditor);
+export default withTranslation(["journal", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalEditor)
+);

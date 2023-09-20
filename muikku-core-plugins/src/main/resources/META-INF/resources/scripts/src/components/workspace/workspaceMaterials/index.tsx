@@ -22,12 +22,11 @@ import {
 } from "react-dnd-multi-backend";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
-import { AnyActionType } from "~/actions";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -49,7 +48,7 @@ export const HTML5toTouch: MultiBackendOptions = {
 /**
  * WorkspaceMaterialsBodyProps
  */
-interface WorkspaceMaterialsBodyProps {
+interface WorkspaceMaterialsBodyProps extends WithTranslation {
   workspaceUrl: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (newId: number) => any;
@@ -135,7 +134,7 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
       {
         id: "table-of-contents",
         type: "workspace-table-of-contents",
-        name: "Sisällysluettelo",
+        name: this.props.t("labels.tableOfContents", { ns: "materials" }),
         component: <TableOfContentsComponent ref="content" />,
       },
     ];
@@ -144,7 +143,7 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
       materialEditorTabs.push({
         id: "notebook",
         type: "workspace-notebook",
-        name: "Muistiinpanot",
+        name: this.props.t("labels.notes", { ns: "materials" }),
         component: (
           <DndProvider options={HTML5toTouch}>
             <NoteBook />
@@ -202,14 +201,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps, null, {
+const componentWithTranslation = withTranslation("materials", {
   withRef: true,
 })(WorkspaceMaterialsBody);
+
+export default connect(mapStateToProps, null, null, {
+  withRef: true,
+})(componentWithTranslation);

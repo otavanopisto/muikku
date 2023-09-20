@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import NewThread from "../dialogs/new-thread";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import HoverButton from "~/components/general/hover-button";
@@ -12,6 +11,7 @@ import DiscussionCurrentThread from "./application/discussion-current-thread";
 import Button from "~/components/general/button";
 import "~/sass/elements/link.scss";
 import { AnyActionType } from "../../../actions/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 import DiscussionSubscriptions from "./application/discussion-subscriptions";
 
 /**
@@ -22,8 +22,7 @@ interface DiscussionApplicationState {}
 /**
  * DiscussionApplicationProps
  */
-interface DiscussionApplicationProps {
-  i18n: i18nType;
+interface DiscussionApplicationProps extends WithTranslation {
   discussion: DiscussionType;
 }
 
@@ -41,18 +40,29 @@ class DiscussionApplication extends React.Component<
   constructor(props: DiscussionApplicationProps) {
     super(props);
   }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    this.props.i18n.setDefaultNamespace("messaging");
+  }
+
   /**
    * render
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.forum.pageTitle");
+    const title = this.props.i18n.t("labels.discussion");
     const toolbar = <Toolbar />;
     const primaryOption =
       !this.props.discussion.current &&
       this.props.discussion.areas.length > 0 ? (
         <NewThread>
           <Button buttonModifiers="primary-function">
-            {this.props.i18n.text.get("plugin.discussion.createmessage.topic")}
+            {this.props.i18n.t("actions.create", {
+              ns: "messaging",
+              context: "message",
+            })}
           </Button>
         </NewThread>
       ) : null;
@@ -71,7 +81,6 @@ class DiscussionApplication extends React.Component<
           toolbar={toolbar}
         >
           {!this.props.discussion.subscribedThreadOnly && <DiscussionThreads />}
-
           {this.props.discussion.subscribedThreadOnly && (
             <DiscussionSubscriptions />
           )}
@@ -90,7 +99,6 @@ class DiscussionApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     discussion: state.discussion,
   };
 }
@@ -103,7 +111,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionApplication);
+export default withTranslation(["messaging"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionApplication)
+);

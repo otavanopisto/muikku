@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
@@ -13,7 +12,6 @@ import { RecordsType } from "~/reducers/main-function/records";
  * StudiesToolbarProps
  */
 interface StudiesToolbarProps {
-  i18n: i18nType;
   records: RecordsType;
 }
 
@@ -90,7 +88,7 @@ class StudiesToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     records: (state as any).records,
   };
 }

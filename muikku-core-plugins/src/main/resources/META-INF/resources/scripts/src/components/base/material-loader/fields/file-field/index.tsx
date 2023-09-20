@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
@@ -7,17 +6,17 @@ import FileUploader from "~/components/general/file-uploader";
 import Synchronizer from "../base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * FileFieldProps
  */
-interface FileFieldProps {
+interface FileFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
   };
-  i18n: i18nType;
   status: StatusType;
   usedAs: UsedAs;
   readOnly?: boolean;
@@ -55,10 +54,7 @@ interface FileFieldState {
 /**
  * FileField
  */
-export default class FileField extends React.Component<
-  FileFieldProps,
-  FileFieldState
-> {
+class FileField extends React.Component<FileFieldProps, FileFieldState> {
   /**
    * constructor
    * @param props props
@@ -186,6 +182,8 @@ export default class FileField extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     // if elements is disabled
     const ElementDisabledState = this.props.readOnly
       ? "material-page__taskfield-disabled"
@@ -215,17 +213,12 @@ export default class FileField extends React.Component<
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
-            i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           <span className={`material-page__filefield ${ElementDisabledState}`}>
             <FileUploader
               emptyText={
-                this.props.readOnly
-                  ? this.props.i18n.text.get(
-                      "plugin.workspace.fileField.noFiles"
-                    )
-                  : null
+                this.props.readOnly ? t("content.empty", { ns: "files" }) : null
               }
               readOnly={this.props.readOnly}
               url={this.props.status.contextPath + "/tempFileUploadServlet"}
@@ -234,18 +227,12 @@ export default class FileField extends React.Component<
               onFileSuccess={(file: File, data: any) => {
                 this.onFileAdded(file, data);
               }}
-              hintText={this.props.i18n.text.get(
-                "plugin.workspace.fileField.fieldHint"
-              )}
-              fileTooLargeErrorText={this.props.i18n.text.get(
-                "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
-              )}
-              deleteFileText={this.props.i18n.text.get(
-                "plugin.workspace.fileField.removeLink"
-              )}
-              downloadFileText={this.props.i18n.text.get(
-                "plugin.workspace.fileField.downloadLink"
-              )}
+              hintText={t("content.add", { ns: "materials", context: "file" })}
+              fileTooLargeErrorText={t("notifications.sizeTooLarge", {
+                ns: "files",
+              })}
+              deleteFileText={t("actions.remove")}
+              downloadFileText={t("actions.download", { count: 1 })}
               files={this.state.values}
               fileIdKey="fileId"
               fileNameKey="name"
@@ -254,26 +241,22 @@ export default class FileField extends React.Component<
                 "/rest/workspace/allfileanswers/" +
                 f[0].fileId +
                 "?archiveName=" +
-                this.props.i18n.text.get(
-                  "plugin.workspace.fileField.zipFileName"
-                )
+                t("labels.zipFileName", { ns: "files" })
               }
-              fileDownloadAllLabel={this.props.i18n.text.get(
-                "plugin.workspace.fileField.downloadAllLink"
-              )}
+              fileDownloadAllLabel={t("actions.download", { count: 0 })}
               deleteDialogElement={ConfirmRemoveDialog}
               deleteDialogElementProps={{ onConfirm: this.removeFile }}
               modifier="taskfield"
               uploadingTextProcesser={(percent: number) =>
-                this.props.i18n.text.get(
-                  "plugin.workspace.fileField.statusUploading",
-                  percent
-                )
+                t("content.statusUploading", {
+                  ns: "materials",
+                  progress: percent,
+                })
               }
               invisible={this.props.invisible}
-              notificationOfSuccessText={this.props.i18n.text.get(
-                "plugin.workspace.fileFieldUpload.uploadSuccessful"
-              )}
+              notificationOfSuccessText={t("notifications.uploadSuccess", {
+                ns: "files",
+              })}
               displayNotificationOnSuccess
             />
           </span>
@@ -282,3 +265,5 @@ export default class FileField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "files", "common"])(FileField);

@@ -1,17 +1,17 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { Assessment } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * AssessmentProps
  */
 interface RecordsAssessmentIndicatorProps {
-  i18n: i18nType;
   assessment?: Assessment;
   isCombinationWorkspace: boolean;
 }
@@ -24,7 +24,9 @@ interface RecordsAssessmentIndicatorProps {
 const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
   props
 ) => {
-  const { i18n, assessment, isCombinationWorkspace } = props;
+  const { assessment, isCombinationWorkspace } = props;
+
+  const { t } = useTranslation(["studies", "common"]);
 
   if (!assessment) {
     return null;
@@ -38,10 +40,10 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         openByHover
         content={
           <span>
-            {i18n.text.get(
-              "plugin.records.workspace.evaluated",
-              i18n.time.format(assessment.date)
-            ) + getShortenGradeExtension(assessment.grade)}
+            {t("labels.evaluablesDone", {
+              ns: "studies",
+              date: localizeTime.date(assessment.date),
+            }) + getShortenGradeExtension(assessment.grade)}
           </span>
         }
       >
@@ -55,21 +57,23 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
       </Dropdown>
     );
   } else if (assessment.state === "incomplete") {
-    const status = i18n.text.get(
+    const status =
       assessment.state === "incomplete"
-        ? "plugin.records.workspace.incomplete"
-        : "plugin.records.workspace.failed"
-    );
-
+        ? t("labels.incomplete", {
+            ns: "workspace",
+          })
+        : t("labels.failed", {
+            ns: "workspace",
+          });
     return (
       <Dropdown
         openByHover
         content={
           <span>
-            {i18n.text.get(
-              "plugin.records.workspace.evaluated",
-              i18n.time.format(assessment.date)
-            ) +
+            {t("labels.evaluablesDone", {
+              ns: "studies",
+              date: localizeTime.date(assessment.date),
+            }) +
               " - " +
               status}
           </span>
@@ -94,11 +98,13 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           content={
             <span>
               {assessment.grade
-                ? i18n.text.get(
-                    "plugin.records.workspace.evaluated",
-                    i18n.time.format(assessment.date)
-                  ) + getShortenGradeExtension(assessment.grade)
-                : i18n.text.get("plugin.records.workspace.notEvaluated")}
+                ? t("labels.evaluablesDone", {
+                    ns: "studies",
+                    date: localizeTime.date(assessment.date),
+                  }) + getShortenGradeExtension(assessment.grade)
+                : t("content.notEvaluated", {
+                    ns: "studies",
+                  })}
             </span>
           }
         >
@@ -117,24 +123,4 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
   return null;
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RecordsAssessmentIndicator);
+export default RecordsAssessmentIndicator;

@@ -6,6 +6,7 @@ import {
   MessagesStatePatch,
 } from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
+import i18n from "~/locales/i18n";
 import {
   MessageSearchResult,
   MessageThread,
@@ -251,9 +252,7 @@ export async function loadMessagesHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.communicator.errormessage.msgsLoadFailed"
-        ),
+        i18n.t("notifications.loadError", { ns: "messaging" }),
         "error"
       )
     );
@@ -309,9 +308,10 @@ export async function setLabelStatusCurrentMessage(
       if (!messageLabel) {
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.labelDoesNotExist"
-            ),
+            i18n.t("notifications.doesNotExistError", {
+              ns: "messaging",
+              context: "label",
+            }),
             "error"
           )
         );
@@ -337,9 +337,7 @@ export async function setLabelStatusCurrentMessage(
 
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.communicator.errormessage.labelingFailed"
-        ),
+        i18n.t("notifications.addError", { ns: "messaging", context: "label" }),
         "error"
       )
     );
@@ -390,9 +388,10 @@ export function setLabelStatusSelectedMessages(
           //TODO translate this
           dispatch(
             notificationActions.displayNotification(
-              getState().i18n.text.get(
-                "plugin.communicator.errormessage.labelDoesNotExist"
-              ),
+              i18n.t("notifications.doesNotExistError", {
+                ns: "messaging",
+                context: "label",
+              }),
               "error"
             )
           );
@@ -417,9 +416,10 @@ export function setLabelStatusSelectedMessages(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.communicator.errormessage.labelingFailed"
-          ),
+          i18n.t("notifications.addError", {
+            ns: "messaging",
+            context: "label",
+          }),
           "error"
         )
       );

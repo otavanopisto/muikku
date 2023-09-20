@@ -89,7 +89,7 @@ export const contactTypesArray = [
   "EMAIL",
   "PHONE",
   "CHATLOG",
-  "SKYPE",
+  "ONLINE",
   "FACE2FACE",
   "ABSENCE",
   "MUIKKU",

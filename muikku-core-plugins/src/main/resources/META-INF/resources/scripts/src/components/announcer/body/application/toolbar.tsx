@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
@@ -22,13 +21,14 @@ import {
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
 } from "~/actions/announcements";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
 
 /**
  * AnnouncerToolbarProps
  */
-interface AnnouncerToolbarProps {
-  i18n: i18nType;
+interface AnnouncerToolbarProps extends WithTranslation {
   announcements: AnnouncementsState;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
@@ -164,9 +164,10 @@ class AnnouncerToolbar extends React.Component<
             <div className="application-panel__mobile-current-folder">
               <span className="application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
-                {this.props.i18n.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location
-                )}
+                {this.props.i18n.t("labels.category", {
+                  context: this.props.announcements.location,
+                  ns: "messaging",
+                })}
               </span>
             </div>
 
@@ -215,9 +216,10 @@ class AnnouncerToolbar extends React.Component<
             <div className="application-panel__mobile-current-folder">
               <span className="glyph application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
-                {this.props.i18n.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location
-                )}
+                {this.props.i18n.t("labels.category", {
+                  context: this.props.announcements.location,
+                  ns: "messaging",
+                })}
               </span>
             </div>
             {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}
@@ -254,7 +256,6 @@ class AnnouncerToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     announcements: state.announcements,
   };
 }
@@ -264,11 +265,13 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateAnnouncement, removeFromAnnouncementsSelected },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncerToolbar);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncerToolbar)
+);

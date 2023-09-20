@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as moment from "moment";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
 import { MatriculationExaminationEnrollmentInfo as Step1 } from "./matriculation-examination-enrollment-info";
 import { MatriculationExaminationEnrollmentInformation as Step2 } from "./matriculation-examination-enrollment-information";
 import { MatriculationExaminationEnrollmentInformationNew as Step2New } from "./matriculation-examination-enrollment-information-new";
@@ -35,6 +34,7 @@ import {
   MatriculationStudent,
   MatriculationStudentExamination,
 } from "~/@types/shared";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 moment.locale("fi");
 
@@ -122,9 +122,8 @@ export const EXAMINATION_SUCCESS_GRADES_MAP = [
 /**
  * MatriculationExaminationWizardProps
  */
-interface MatriculationExaminationWizardProps {
+interface MatriculationExaminationWizardProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18n: i18nType;
   status: StatusType;
   examId: number;
   compulsoryEducationEligible: boolean;
@@ -568,6 +567,8 @@ class MatriculationExaminationWizard extends React.Component<
    * Render method
    */
   render() {
+    const { t } = this.props;
+
     if (!this.state.initialized) {
       return <></>;
     }
@@ -677,12 +678,8 @@ class MatriculationExaminationWizard extends React.Component<
             nextTextOnFinalActionStep="Ilmoittaudu"
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"
-            nextButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.next"
-            )}
-            backButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.prev"
-            )}
+            nextButtonText={t("actions.next")}
+            backButtonText={t("actions.previous")}
             onStepChange={this.handleStepChange(steps)}
           />
         </div>
@@ -698,7 +695,6 @@ class MatriculationExaminationWizard extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces && state.workspaces.currentWorkspace,
     status: state.status,
     hops: state.hops,
@@ -714,7 +710,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MatriculationExaminationWizard);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(MatriculationExaminationWizard)
+);

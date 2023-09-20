@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
@@ -8,15 +7,17 @@ import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 import { HopsUppersecondary } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * HopsProps
  */
-interface HopsProps {
+interface HopsProps extends WithTranslation {
   data?: HopsUppersecondary;
   defaultData: HopsUppersecondary;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onHopsChange?: (hops: HopsUppersecondary) => any;
-  i18n: i18nType;
   status: StatusType;
 }
 
@@ -32,7 +33,8 @@ interface HopsState {
  */
 class Hops extends React.Component<HopsProps, HopsState> {
   /**
-   * @param props
+   * constructor
+   * @param props props
    */
   constructor(props: HopsProps) {
     super(props);
@@ -49,7 +51,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: HopsProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: HopsProps) {
     const nextData = nextProps.data || nextProps.defaultData;
     if (nextData !== this.state.hops) {
       this.setState({ hops: nextData });
@@ -61,7 +64,9 @@ class Hops extends React.Component<HopsProps, HopsState> {
    * @param property property
    * @param value value
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   set(property: string, value: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nProp: any = {};
     nProp[property] = value || null;
     const nval = Object.assign({}, this.state.hops, nProp);
@@ -95,21 +100,44 @@ class Hops extends React.Component<HopsProps, HopsState> {
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const data = this.props.data || this.props.defaultData;
     if (!data || !data.optedIn) {
       return null;
     }
+
+    const valueToLanguageString: { [key: string]: string } = {
+      yes: t("labels.yes"),
+      no: t("labels.no"),
+      maybe: t("labels.maybe", { ns: "hops" }),
+      AI: t("content.finnish", {
+        ns: "hops",
+      }),
+      S2: t("content.finnish", {
+        ns: "hops",
+        context: "secondary",
+      }),
+      MAA: t("labels.longSyllabus", { ns: "hops" }),
+      MAB: t("labels.shortSyllabus", { ns: "hops" }),
+      BI: t("labels.biology", { ns: "hops" }),
+      FY: t("labels.physics", { ns: "hops" }),
+      GE: t("labels.geography", { ns: "hops" }),
+      KE: t("labels.chemistry", { ns: "hops" }),
+      UE: t("labels.religionEl", { ns: "hops" }),
+      ET: t("labels.ethics", { ns: "hops" }),
+      UX: t("labels.religionOther", { ns: "hops" }),
+    };
+
     return (
       <div className="application-sub-panel">
         <div className="application-sub-panel__body">
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.goals.upperSecondary"
-              )}
+              {t("content.targetUpperSecondary", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data form-element">
-              {["yes", "no", "maybe"].map((option: string) => {
+              {["yes", "no", "maybe"].map((option) => {
                 const onEvent = this.set.bind(
                   this,
                   "goalSecondarySchoolDegree",
@@ -133,9 +161,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                       htmlFor={"goalSecondarySchoolDegree" + option}
                       onClick={onEvent}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.records.hops.goals." + option
-                      )}
+                      {valueToLanguageString[option]}
                     </label>
                   </div>
                 );
@@ -144,12 +170,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
           </div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.goals.matriculationExam"
-              )}
+              {t("content.targetMatriculationExam", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data">
-              {["yes", "no", "maybe"].map((option: string) => {
+              {["yes", "no", "maybe"].map((option) => {
                 const onEvent = this.set.bind(
                   this,
                   "goalMatriculationExam",
@@ -171,9 +195,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                       htmlFor={"goalMatriculationExam" + option}
                       onClick={onEvent}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.records.hops.goals." + option
-                      )}
+                      {valueToLanguageString[option]}
                     </label>
                   </div>
                 );
@@ -183,9 +205,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           {this.state.hops.goalMatriculationExam === "yes" && (
             <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
               <div className="application-sub-panel__item-title">
-                {this.props.i18n.text.get(
-                  "plugin.records.hops.goals.matriculationSubjects"
-                )}
+                {t("content.matriculationSubjectsGoal", { ns: "hops" })}
               </div>
               <div className="application-sub-panel__item-data">
                 <MatriculationSubjectsList
@@ -201,11 +221,9 @@ class Hops extends React.Component<HopsProps, HopsState> {
           )}
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title form-element">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.goals.vocationalYears1"
-              )}
+              {t("content.iHave", { ns: "hops" })}
               <label htmlFor="vocationalYears" className="visually-hidden">
-                {this.props.i18n.text.get("plugin.wcag.selectYearCount.label")}
+                {t("wcag.selectYearCount", { ns: "guider" })}
               </label>
               <select
                 id="vocationalYears"
@@ -214,9 +232,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 onChange={this.setFromEventValue.bind(this, "vocationalYears")}
               >
                 <option disabled value="">
-                  {this.props.i18n.text.get(
-                    "plugin.records.hops.selectAnOption"
-                  )}
+                  {t("labels.select")}
                 </option>
                 {["1", "2", "2,5", "3", "4", "5", "6", "7", "8", "9", "10"].map(
                   (n) => (
@@ -226,12 +242,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   )
                 )}
               </select>
-              {this.props.i18n.text.get(
-                "plugin.records.hops.goals.vocationalYears2"
-              )}
+
+              {t("content.vocationalYears", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data">
-              {["yes", "no"].map((option: string) => {
+              {["yes", "no"].map((option) => {
                 const onEvent = this.set.bind(
                   this,
                   "goalJustMatriculationExam",
@@ -255,9 +270,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                       htmlFor={"goalJustMatriculationExam" + option}
                       onClick={onEvent}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.records.hops.goals." + option
-                      )}
+                      {valueToLanguageString[option]}
                     </label>
                   </div>
                 );
@@ -266,11 +279,9 @@ class Hops extends React.Component<HopsProps, HopsState> {
           </div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title form-element">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.goals.justTransferCredits1"
-              )}
+              {t("content.iHave", { ns: "hops" })}
               <label htmlFor="transferCreditYears" className="visually-hidden">
-                {this.props.i18n.text.get("plugin.wcag.selectYearCount.label")}
+                {t("wcag.selectYearCount", { ns: "guider" })}
               </label>
               <select
                 id="transferCreditYears"
@@ -282,9 +293,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 )}
               >
                 <option disabled value="">
-                  {this.props.i18n.text.get(
-                    "plugin.records.hops.selectAnOption"
-                  )}
+                  {t("labels.select")}
                 </option>
                 {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map(
                   (n) => (
@@ -294,12 +303,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   )
                 )}
               </select>
-              {this.props.i18n.text.get(
-                "plugin.records.hops.goals.justTransferCredits2"
-              )}
+
+              {t("content.justTransferCredits", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data">
-              {["yes", "no"].map((option: string) => {
+              {["yes", "no"].map((option) => {
                 const onEvent = this.set.bind(
                   this,
                   "justTransferCredits",
@@ -321,9 +329,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                       htmlFor={"justTransferCredits" + option}
                       onClick={onEvent}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.records.hops.goals." + option
-                      )}
+                      {valueToLanguageString[option]}
                     </label>
                   </div>
                 );
@@ -332,11 +338,9 @@ class Hops extends React.Component<HopsProps, HopsState> {
           </div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title form-element">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.goals.completionYears1"
-              )}
+              {t("content.completionEstimateYears1", { ns: "hops" })}
               <label htmlFor="completionYears" className="visually-hidden">
-                {this.props.i18n.text.get("plugin.wcag.selectYearCount.label")}
+                {t("wcag.selectYearCount", { ns: "guider" })}
               </label>
               <select
                 id="completionYears"
@@ -345,9 +349,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 onChange={this.setFromEventValue.bind(this, "completionYears")}
               >
                 <option disabled value="">
-                  {this.props.i18n.text.get(
-                    "plugin.records.hops.selectAnOption"
-                  )}
+                  {t("labels.select")}
                 </option>
                 {["1", "2", "3", "4"].map((n) => (
                   <option key={n} value={n}>
@@ -355,21 +357,18 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   </option>
                 ))}
               </select>
-              {this.props.i18n.text.get(
-                "plugin.records.hops.goals.completionYears2"
-              )}
+
+              {t("content.completionEstimateYears2", { ns: "hops" })}
             </div>
           </div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.languages.mandatory.title"
-              )}
+              {t("content.finnishMandatority", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data">
-              {["AI", "S2"].map((option: string) => {
+              {["AI", "S2"].map((option) => {
                 const onEvent = this.set.bind(this, "finnish", option);
-                const nativity: any = { AI: "native", S2: "foreign" };
+
                 return (
                   <div
                     className="form-element form-element--checkbox-radiobutton"
@@ -383,10 +382,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                       onChange={onEvent}
                     />
                     <label htmlFor={"finnish" + option} onClick={onEvent}>
-                      {this.props.i18n.text.get(
-                        "plugin.records.hops.languages.finnish." +
-                          nativity[option]
-                      )}
+                      {valueToLanguageString[option]}
                     </label>
                   </div>
                 );
@@ -395,16 +391,12 @@ class Hops extends React.Component<HopsProps, HopsState> {
           </div>
           <div>
             <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.languages.mandatory.additionalInfo"
-              )}
+              {t("content.otherMandatoryLanguages", { ns: "hops" })}
             </div>
           </div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.languages.optional.title"
-              )}
+              {t("content.studyOptionalLanguages", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data">
               <div className="form-element form-element--checkbox-radiobutton">
@@ -419,9 +411,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   )}
                 />
                 <label htmlFor="langGerman">
-                  {this.props.i18n.text.get(
-                    "plugin.records.hops.languages.german"
-                  )}
+                  {t("labels.german", { ns: "hops" })}
                 </label>
               </div>
               <div className="form-element form-element--checkbox-radiobutton">
@@ -436,9 +426,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   )}
                 />
                 <label htmlFor="langFrench">
-                  {this.props.i18n.text.get(
-                    "plugin.records.hops.languages.french"
-                  )}
+                  {t("labels.french", { ns: "hops" })}
                 </label>
               </div>
               <div className="form-element form-element--checkbox-radiobutton">
@@ -453,9 +441,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   )}
                 />
                 <label htmlFor="langItalian">
-                  {this.props.i18n.text.get(
-                    "plugin.records.hops.languages.italian"
-                  )}
+                  {t("labels.italian", { ns: "hops" })}
                 </label>
               </div>
               <div className="form-element form-element--checkbox-radiobutton">
@@ -470,21 +456,17 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   )}
                 />
                 <label htmlFor="langSpanish">
-                  {this.props.i18n.text.get(
-                    "plugin.records.hops.languages.spanish"
-                  )}
+                  {t("labels.spanish", { ns: "hops" })}
                 </label>
               </div>
             </div>
           </div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.records.hops.mathSyllabus.title"
-              )}
+              {t("content.mathSyllabus", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data">
-              {["MAA", "MAB"].map((option: string) => {
+              {["MAA", "MAB"].map((option) => {
                 const onEvent = this.set.bind(this, "mathSyllabus", option);
                 return (
                   <div
@@ -499,9 +481,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                       onChange={onEvent}
                     />
                     <label htmlFor={"mathSyllabus" + option} onClick={onEvent}>
-                      {this.props.i18n.text.get(
-                        "plugin.records.hops.mathSyllabus." + option
-                      )}
+                      {valueToLanguageString[option]}
                     </label>
                   </div>
                 );
@@ -511,15 +491,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
               {this.props.status.profile.curriculumName === "OPS 2016"
-                ? this.props.i18n.text.get(
-                    "plugin.records.hops.science.ops2016.title"
-                  )
-                : this.props.i18n.text.get(
-                    "plugin.records.hops.science.ops2021.title"
-                  )}
+                ? t("labels.ops2016", { ns: "hops" })
+                : t("labels.ops2021", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data">
-              {["BI", "FY", "KE", "GE"].map((option: string) => {
+              {["BI", "FY", "KE", "GE"].map((option) => {
                 const onEvent = this.set.bind(this, "science", option);
                 return (
                   <div
@@ -534,9 +510,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                       onChange={onEvent}
                     />
                     <label htmlFor={"science" + option} onClick={onEvent}>
-                      {this.props.i18n.text.get(
-                        "plugin.records.hops.science." + option
-                      )}
+                      {valueToLanguageString[option]}
                     </label>
                   </div>
                 );
@@ -545,10 +519,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
           </div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get("plugin.records.hops.religion.title")}
+              {t("labels.beliefSubjectIs", { ns: "hops" })}
             </div>
             <div className="application-sub-panel__item-data">
-              {["UE", "ET", "UX"].map((option: string) => {
+              {["UE", "ET", "UX"].map((option) => {
                 const onEvent = this.set.bind(this, "religion", option);
                 return (
                   <div
@@ -563,9 +537,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                       onChange={onEvent}
                     />
                     <label htmlFor={"religion" + option} onClick={onEvent}>
-                      {this.props.i18n.text.get(
-                        "plugin.records.hops.religion." + option
-                      )}
+                      {valueToLanguageString[option]}
                     </label>
                   </div>
                 );
@@ -577,9 +549,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
               htmlFor="additionalInfo"
               className="application-sub-panel__item-title"
             >
-              {this.props.i18n.text.get(
-                "plugin.records.hops.additionalInfo.title"
-              )}
+              {t("labels.additionalInfo", { ns: "hops" })}
             </label>
             <div className="application-sub-panel__item-data form-element__textarea-container">
               <textarea
@@ -602,7 +572,6 @@ class Hops extends React.Component<HopsProps, HopsState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     defaultData: state.hops && state.hops.value,
     status: state.status,
   };
@@ -612,8 +581,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Hops);
+export default withTranslation(["hops", "guider", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Hops)
+);

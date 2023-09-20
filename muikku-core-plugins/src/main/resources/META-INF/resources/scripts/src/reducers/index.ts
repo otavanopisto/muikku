@@ -1,5 +1,4 @@
 import { EasyToUseFunctionState } from "./easy-to-use-functions/index";
-import { i18nType } from "./base/i18n";
 import { LocaleState } from "./base/locales";
 import { NotificationState } from "./base/notifications";
 import { CredentialsType } from "./base/credentials";
@@ -39,7 +38,6 @@ import { NoteBookState } from "./notebook/notebook";
  */
 export interface StateType {
   notifications: NotificationState;
-  i18n: i18nType;
   locales: LocaleState;
   status: StatusType;
   contacts: Contacts;

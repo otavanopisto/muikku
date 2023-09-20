@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import {
@@ -13,12 +12,12 @@ import NavigationMenu, {
 } from "~/components/general/navigation";
 import { HOPSState } from "~/reducers/main-function/hops";
 import { StatusType } from "~/reducers/base/status";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NavigationProps
  */
-interface NavigationProps {
-  i18n: i18nType;
+interface NavigationProps extends WithTranslation {
   location: TranscriptOfRecordLocationType;
   hops: HOPSState;
   status: StatusType;
@@ -71,21 +70,23 @@ class Navigation extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     const sections = [
       {
-        name: this.props.i18n.text.get("plugin.records.category.summary"),
+        name: t("labels.summary", { ns: "studies" }),
         hash: "summary",
       },
       {
-        name: this.props.i18n.text.get("plugin.records.category.records"),
+        name: t("labels.records", { ns: "studies" }),
         hash: "records",
       },
       {
-        name: this.props.i18n.text.get("plugin.records.category.hops"),
+        name: t("labels.hops", { ns: "studies" }),
         hash: "hops",
       },
       {
-        name: this.props.i18n.text.get("plugin.records.category.yo"),
+        name: t("labels.matriculationExams", { ns: "studies" }),
         hash: "yo",
       },
     ];
@@ -114,7 +115,6 @@ class Navigation extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     location: state.records.location,
     hops: state.hops,
     records: state.records,
@@ -129,4 +129,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
+export default withTranslation(["studies", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Navigation)
+);

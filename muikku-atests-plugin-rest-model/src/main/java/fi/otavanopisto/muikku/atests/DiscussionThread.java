@@ -5,7 +5,7 @@ public class DiscussionThread {
   public DiscussionThread() {
   }
 
-  public DiscussionThread(Long id, String title, String message, Boolean sticky, Boolean locked) {
+  public DiscussionThread(Long id, String title, String message, Boolean sticky, LockForumThread locked) {
     this.id = id;
     this.title = title;
     this.message = message;
@@ -45,11 +45,11 @@ public class DiscussionThread {
     this.sticky = sticky;
   }
 
-  public Boolean getLocked() {
+  public LockForumThread getLocked() {
     return locked;
   }
 
-  public void setLocked(Boolean locked) {
+  public void setLocked(LockForumThread locked) {
     this.locked = locked;
   }
 
@@ -57,5 +57,5 @@ public class DiscussionThread {
   private String title;
   private String message;
   private Boolean sticky;
-  private Boolean locked;
+  private LockForumThread locked;
 }

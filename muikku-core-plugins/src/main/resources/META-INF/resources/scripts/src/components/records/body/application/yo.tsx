@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { RecordsType } from "~/reducers/main-function/records";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
@@ -21,12 +20,13 @@ import MatriculationEligibilityRow from "./matriculation-eligibility-row/matricu
 import { updateYO } from "~/actions/main-function/records/yo";
 import { updateYOTriggerType } from "../../../../actions/main-function/records/yo";
 import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * YOProps
  */
-interface YOProps {
-  i18n: i18nType;
+interface YOProps extends WithTranslation {
   records: RecordsType;
   hops: HOPSState;
   yo: YOType;
@@ -77,7 +77,7 @@ class YO extends React.Component<YOProps, YOState> {
    * @returns JSX.Element
    */
   render() {
-    const i18n = this.props.i18n;
+    const { t } = this.props;
 
     if (
       this.props.records.location !== "yo" ||
@@ -96,18 +96,10 @@ class YO extends React.Component<YOProps, YOState> {
               />
             ))
           ) : (
-            <div>
-              {this.props.i18n.text.get(
-                "plugin.records.yo.noMatriculationSubjectsSelected"
-              )}
-            </div>
+            <div>{t("content.noneSelectedSubjects", { ns: "studies" })}</div>
           )
         ) : (
-          <div>
-            {this.props.i18n.text.get(
-              "plugin.records.yo.participationRights.loading"
-            )}
-          </div>
+          <div>{t("labels.loading")}</div>
         );
 
       const enrollmentLink =
@@ -120,18 +112,14 @@ class YO extends React.Component<YOProps, YOState> {
                   <div key={exam.id}>
                     <div className="application-sub-panel__notification-content">
                       <span className="application-sub-panel__notification-content-title">
-                        {this.props.i18n.text.get(
-                          "plugin.records.yo.button.signUp.hasAssigned"
-                        )}
+                        {t("actions.alreadySignedUp", { ns: "studies" })}
                       </span>
                     </div>
                     <div className="application-sub-panel__notification-content">
                       {!this.state.succesfulEnrollments.includes(exam.id) ? (
                         <>
                           <span className="application-sub-panel__notification-content-label">
-                            {i18n.text.get(
-                              "plugin.records.matriculation.enrollmentDate"
-                            )}
+                            {t("labels.enrollmentDate", { ns: "studies" })}
                           </span>
 
                           <span className="application-sub-panel__notification-content-data">
@@ -154,10 +142,12 @@ class YO extends React.Component<YOProps, YOState> {
                       }
                     >
                       <Button className="button button--yo-signup">
-                        {this.props.i18n.text.get(
-                          "plugin.records.yo.button.signUp.active",
-                          new Date(exam.ends).toLocaleDateString("fi-Fi")
-                        )}
+                        {t("actions.signUp", {
+                          ns: "studies",
+                          dueDate: new Date(exam.ends).toLocaleDateString(
+                            "fi-Fi"
+                          ),
+                        })}
                       </Button>
                     </MatriculationExaminationWizardDialog>
                   </div>
@@ -170,20 +160,18 @@ class YO extends React.Component<YOProps, YOState> {
         // Github issue: #4840
         <div>
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get("plugin.records.yo.title")}
+            {t("labels.matriculationExams", { ns: "studies" })}
           </h2>
           <div className="application-sub-panel application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">
-              {this.props.i18n.text.get("plugin.records.yo.abiStatus.title")}
+              {t("labels.abiStatus", { ns: "studies" })}
             </div>
             {this.props.yo.eligibility != null ? (
               this.props.yo.eligibilityStatus == "ELIGIBLE" ? (
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body">
-                      {this.props.i18n.text.get(
-                        "plugin.records.yo.abiStatus.content.finished"
-                      )}
+                      {t("content.abiStatus", { ns: "studies" })}
                     </div>
                     {this.props.yo.enrollment.length > 0 && (
                       <div className="application-sub-panel__notification-footer">
@@ -198,13 +186,16 @@ class YO extends React.Component<YOProps, YOState> {
                     <div
                       className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete"
                       dangerouslySetInnerHTML={{
-                        __html: i18n.text.get(
-                          "plugin.records.matriculation.notEligible",
-                          this.props.yo.eligibility.coursesCompleted,
-                          this.props.yo.eligibility.coursesRequired,
-                          this.props.yo.eligibility.creditPoints,
-                          this.props.yo.eligibility.creditPointsRequired
-                        ),
+                        __html: t("content.noAbiStatus", {
+                          ns: "studies",
+                          coursesCompleted:
+                            this.props.yo.eligibility.coursesCompleted,
+                          coursesRequired:
+                            this.props.yo.eligibility.coursesRequired,
+                          creditPoints: this.props.yo.eligibility.creditPoints,
+                          creditPointsRequired:
+                            this.props.yo.eligibility.creditPointsRequired,
+                        }),
                       }}
                     />
                     {this.props.yo.enrollment.length > 0 && (
@@ -219,9 +210,7 @@ class YO extends React.Component<YOProps, YOState> {
           </div>
           <div className="application-sub-panel  application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">
-              {this.props.i18n.text.get(
-                "plugin.records.yo.participationRights.title"
-              )}
+              {t("content.participationRights", { ns: "studies" })}
             </div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-yo-subjects">
               <div className="application-sub-panel__notification-item">
@@ -243,7 +232,6 @@ class YO extends React.Component<YOProps, YOState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     records: state.records,
     hops: state.hops,
     yo: state.yo,
@@ -255,8 +243,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateYO }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(YO);
+export default withTranslation(["studies", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(YO)
+);

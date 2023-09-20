@@ -1,6 +1,5 @@
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
 import Step1 from "./form";
 import Step2 from "./summary";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -15,14 +14,16 @@ import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import * as moment from "moment";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * CopyWizardProps
  */
-interface CopyWizardProps {
+interface CopyWizardProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18n: i18nType;
   copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
 }
 
@@ -164,6 +165,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
    * @param steps steps
    * @param step step
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   checkLastStep(steps: Array<any>, step: number) {
     if (step === steps.length - 1) {
       this.copyWorkspace();
@@ -174,10 +176,11 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     const props = {
       getStore: this.getStore,
       updateStore: this.updateStore,
-      i18n: this.props.i18n,
       workspace: this.props.workspace,
       onDone: this.props.onDone,
       resultingWorkspace: this.state.resultingWorkspace,
@@ -185,9 +188,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     };
     const steps = [
       {
-        name: this.props.i18n.text.get(
-          "plugin.workspace.management.wizard.step1"
-        ),
+        name: t("labels.step1", { ns: "workspace" }),
         component: <Step1 {...props} />,
       },
     ];
@@ -195,19 +196,14 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     //The reason step 6 is twice is so that the user can review before
     //the action is completed, I guess this stepzilla thing is kind of funny
     steps.push({
-      name: this.props.i18n.text.get(
-        "plugin.workspace.management.wizard.step6"
-      ),
+      name: t("labels.step6", { ns: "workspace" }),
       component: <Step2 {...props} />,
     });
     steps.push({
-      name: this.props.i18n.text.get(
-        "plugin.workspace.management.wizard.finalStep"
-      ),
+      name: t("labels.stepLast", { ns: "workspace" }),
       component: <Step2 {...props} />,
     });
 
-    // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18n/Example.js
     return (
       <div className="wizard">
         <div className="wizard__container">
@@ -218,17 +214,14 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
             showSteps={false}
             preventEnterSubmission={true}
             prevBtnOnLastStep={true}
-            nextTextOnFinalActionStep={this.props.i18n.text.get(
-              "plugin.workspace.management.copyWorkspace"
-            )}
+            nextTextOnFinalActionStep={t("labels.copy", {
+              ns: "workspace",
+              context: "workspace",
+            })}
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"
-            nextButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.next"
-            )}
-            backButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.prev"
-            )}
+            nextButtonText={t("actions.next")}
+            backButtonText={t("actions.previous")}
             onStepChange={this.checkLastStep.bind(this, steps)}
           />
         </div>
@@ -243,7 +236,6 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces && state.workspaces.currentWorkspace,
   };
 }
@@ -252,8 +244,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ copyCurrentWorkspace }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CopyWizard);
+export default withTranslation(["workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(CopyWizard)
+);

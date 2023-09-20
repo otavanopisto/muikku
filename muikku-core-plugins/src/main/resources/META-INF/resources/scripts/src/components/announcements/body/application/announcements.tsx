@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
@@ -10,14 +9,15 @@ import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
 import { UserIndexType } from "~/reducers/user-index";
 import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
 import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 
 /**
  * AnnouncementProps
  */
-interface AnnouncementsProps {
-  i18n: i18nType;
+interface AnnouncementsProps extends WithTranslation {
   announcement: Announcement;
   userIndex: UserIndexType;
 }
@@ -46,10 +46,17 @@ class Announcements extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const articleDate =
+      this.props.announcement &&
+      localizeTime.date(this.props.announcement.startDate);
+
     if (!this.props.announcement) {
       return (
         <div>
-          {this.props.i18n.text.get("plugin.announcer.announcement.empty")}
+          {this.props.i18n.t("content.empty", {
+            ns: "messaging",
+            context: "announcements",
+          })}
         </div>
       );
     }
@@ -87,9 +94,7 @@ class Announcements extends React.Component<
             })}
           </div>
         ) : null}
-        <div className="article__date">
-          {this.props.i18n.time.format(this.props.announcement.startDate)}
-        </div>
+        <div className="article__date">{articleDate}</div>
         <section className="article__body rich-text">
           <CkeditorLoaderContent html={this.props.announcement.content} />
         </section>
@@ -105,7 +110,6 @@ class Announcements extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     announcement: state.announcements.current,
     userIndex: state.userIndex,
   };
@@ -120,4 +124,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Announcements);
+export default withTranslation("messaging")(
+  connect(mapStateToProps, mapDispatchToProps)(Announcements)
+);

@@ -16,6 +16,7 @@ import {
 import { StateType } from "~/reducers";
 import MApi from "~/api/api";
 import { Dispatch } from "react-redux";
+import i18n from "~/locales/i18n";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -176,9 +177,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.records.summary.errormessage.summaryUpdateFailed"
-          ),
+          i18n.t("notifications.updateError", {
+            ns: "studies",
+            context: "summary",
+          }),
           "error"
         )
       );

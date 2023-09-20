@@ -7,6 +7,7 @@ import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
 import MApi, { isMApiError } from "~/api/api";
 import { HopsEligibility, HopsUppersecondary } from "~/generated/client";
+import i18n from "~/locales/i18n";
 
 /**
  * UpdateHopsTriggerType
@@ -92,9 +93,9 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.records.hops.errormessage.hopsLoadFailed"
-          ),
+          i18n.t("notifications.loadError", {
+            ns: "hops",
+          }),
           "error"
         )
       );
@@ -132,9 +133,7 @@ const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.records.hops.errormessage.hopsUpdateFailed"
-          ),
+          i18n.t("notifications.updateError", { ns: "hops" }),
           "error"
         )
       );
