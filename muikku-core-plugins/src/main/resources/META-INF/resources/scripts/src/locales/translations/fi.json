@@ -1918,5 +1918,23 @@
     "unspecifiedOptional": "Valinnainen",
     "unspecifiedOptional_lukioOPS2016": "Muu",
     "unspecifiedOptional_lukioOPS2021": "Paikallinen valinnainen"
+  },
+  "readSpeaker": {
+    "messages": {
+      "assignment": "Tehtävä",
+      "assignment_audio": "Äänitystehtävä",
+      "assignment_file": "Tiedoston palautuslaatikko",
+      "assignment_connect": "Yhdistelykenttä",
+      "assignment_journal": "Oppimispäiväkirjatehtävä",
+      "assignment_math": "Matematiikkatehtävä",
+      "assignment_memo": "Muistiokenttä",
+      "assignment_multiSelect": "Monivalintatehtävä",
+      "assignment_organizer": "Järjestelytehtävä",
+      "assignment_select": "Valintakenttä",
+      "assignment_text": "Tekstikenttä",
+      "iframe": "Iframe-upotus",
+      "image": "Kuva",
+      "mathJax": "Matematiikkakaava"
+    }
   }
 }

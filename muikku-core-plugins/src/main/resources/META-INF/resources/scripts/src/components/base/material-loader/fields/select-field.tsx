@@ -9,7 +9,7 @@ import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import { v4 as uuidv4 } from "uuid";
-import { StrMathJAX } from "../static/mathjax";
+import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -224,8 +224,12 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
       ) {
         return (
           <>
-            {/* TODO: lokalisointi*/}
-            <ReadspeakerMessage text="Valintakenttä" />
+            <ReadspeakerMessage
+              text={t("messages.assignment", {
+                ns: "readSpeaker",
+                context: "select",
+              })}
+            />
             <span className="material-page__selectfield-wrapper rs_skip_always">
               <select
                 className="material-page__selectfield"
@@ -243,8 +247,12 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
 
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Valintakenttä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "select",
+            })}
+          />
           <span
             className="material-page__radiobutton-wrapper rs_skip_always"
             ref="base"
@@ -359,8 +367,12 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
         this.props.content.listType === "list" ? "list" : "dropdown";
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Valintakenttä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "select",
+            })}
+          />
           <span
             className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass} rs_skip_always`}
           >
@@ -402,8 +414,12 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
     //this is for the standard
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Valintakenttä" />
+        <ReadspeakerMessage
+          text={t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "select",
+          })}
+        />
         <span
           className={`material-page__radiobutton-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >

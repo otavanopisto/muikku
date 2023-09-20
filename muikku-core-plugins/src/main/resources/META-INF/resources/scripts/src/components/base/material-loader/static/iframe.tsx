@@ -6,11 +6,12 @@ import {
   HTMLtoReactComponent,
   HTMLToReactComponentRule,
 } from "~/util/modifiers";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * IframeProps
  */
-interface IframeProps {
+interface IframeProps extends WithTranslation {
   element: HTMLElement;
   path: string;
   dataset: {
@@ -30,7 +31,7 @@ interface IframeState {
 /**
  * Iframe
  */
-export default class Iframe extends React.Component<IframeProps, IframeState> {
+class Iframe extends React.Component<IframeProps, IframeState> {
   private mainParentRef: React.RefObject<HTMLDivElement>;
   private loadedH5P = false;
 
@@ -194,8 +195,12 @@ export default class Iframe extends React.Component<IframeProps, IframeState> {
 
           return (
             <>
-              {/* TODO: lokalisointi*/}
-              <ReadspeakerMessage text="Iframe upotus" />
+              <ReadspeakerMessage
+                text={this.props.t("messages.assignment", {
+                  ns: "readSpeaker",
+                  context: "iframe",
+                })}
+              />
               <span className="material-page__iframe-wrapper rs_skip_always">
                 <OutsideClickListener
                   containerStyle={containerStyle}
@@ -220,3 +225,5 @@ export default class Iframe extends React.Component<IframeProps, IframeState> {
     return HTMLtoReactComponent(this.props.element, iframeOnlySpecificRules);
   }
 }
+
+export default withTranslation(["workspace", "readSpeaker"])(Iframe);

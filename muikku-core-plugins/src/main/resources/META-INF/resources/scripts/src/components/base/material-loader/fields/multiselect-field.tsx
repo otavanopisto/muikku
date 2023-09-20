@@ -3,7 +3,7 @@ import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import { v4 as uuidv4 } from "uuid";
-import { StrMathJAX } from "../static/mathjax";
+import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -322,7 +322,12 @@ class MultiSelectField extends React.Component<
       return (
         <>
           {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Monivalintatehtävä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "multiSelect",
+            })}
+          />
           <span className="material-page__checkbox-wrapper rs_skip_always">
             <span
               className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${

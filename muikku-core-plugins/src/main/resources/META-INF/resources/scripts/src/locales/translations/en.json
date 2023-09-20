@@ -1914,5 +1914,24 @@
     "unspecifiedOptional": "*Optional",
     "unspecifiedOptional_lukioOPS2016": "Other",
     "unspecifiedOptional_lukioOPS2021": "Local optional"
+  },
+
+  "readSpeaker": {
+    "messages": {
+      "assignment": "Assignment",
+      "assignment_audio": "Audio assignment",
+      "assignment_file": "File upload box",
+      "assignment_connect": "Connect field",
+      "assignment_journal": "Journal assignment",
+      "assignment_math": "Math assignment",
+      "assignment_memo": "Memo field",
+      "assignment_multiSelect": "Multiselect assignment",
+      "assignment_organizer": "Sorter assigment",
+      "assignment_select": "Select assignment",
+      "assignment_text": "Text field",
+      "iframe": "Iframe",
+      "image": "Image",
+      "mathJax": "Math formula"
+    }
   }
 }
