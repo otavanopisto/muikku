@@ -1,17 +1,12 @@
 import * as React from "react";
-import { AnyActionType } from "~/actions";
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import { StateType } from "~/reducers";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/reducers/main-function/records";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import RecordsGroupItem from "./records-group-item";
 import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
-
+import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
 
 /**
@@ -19,7 +14,6 @@ import "~/sass/elements/label.scss";
  */
 interface RecordsGroupProps {
   recordGroup: RecordWorkspaceActivitiesWithLineCategory;
-  i18n: i18nType;
 }
 
 /**
@@ -29,6 +23,7 @@ interface RecordsGroupProps {
  */
 export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   const { recordGroup } = props;
+  const { t } = useTranslation(["studies", "common"]);
 
   const [creditSortDirection, setWorkspaceSortDirection] = React.useState<
     "asc" | "desc"
@@ -66,7 +61,9 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
         </div>
         <div className="application-sub-panel__item">
           <div className="empty">
-            <span>{props.i18n.text.get("plugin.records.courses.empty")}</span>
+            <span>
+              {t("content.empty", { ns: "studies", context: "workspaces" })}
+            </span>
           </div>
         </div>
       </ApplicationList>
@@ -144,21 +141,4 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(mapStateToProps, mapDispatchToProps)(RecordsGroup);
+export default RecordsGroup;

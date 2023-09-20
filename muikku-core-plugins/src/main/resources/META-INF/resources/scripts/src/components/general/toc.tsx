@@ -273,11 +273,14 @@ export class TocElement extends React.Component<
    * @returns HTMLElement
    */
   getElement(): HTMLElement {
-    return (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this.refs["element"] as any) &&
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this.refs["element"] as any).getWrappedInstance().getElement()
-    );
+    const ref = this.refs["element"] as any;
+
+    if (ref) {
+      if (ref.getWrappedInstance) {
+        return ref.getWrappedInstance().getElement();
+      } else {
+        return ref.getElement();
+      }
+    }
   }
 }

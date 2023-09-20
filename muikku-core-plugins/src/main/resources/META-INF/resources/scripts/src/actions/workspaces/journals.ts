@@ -17,6 +17,7 @@ import {
   WorkspaceJournal,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
+import i18n from "~/locales/i18n";
 
 /**
  * JournalActionUpdate
@@ -303,11 +304,14 @@ const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromSe
         if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.load.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "comments",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -358,11 +362,13 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
         if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.notification.create.error"
-            ),
+            i18n.t("notifications.createError", {
+              ns: "journal",
+              context: "entry",
+            }),
             "error"
           )
         );
@@ -422,11 +428,13 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
         if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.notification.update.error"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "journal",
+              context: "entry",
+            }),
             "error"
           )
         );
@@ -477,11 +485,14 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
         if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.notification.delete.error"
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "journal",
+              context: "entry",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -573,11 +584,14 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
         if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.load.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "comments",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -689,11 +703,14 @@ const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
         if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.create.error"
-            ),
+            i18n.t("notifications.createError", {
+              context: "comment",
+              ns: "journal",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -784,11 +801,13 @@ const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
         if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.update.error"
-            ),
+            i18n.t("notifications.updateError", {
+              context: "comment",
+              ns: "journal",
+            }),
             "error"
           )
         );
@@ -868,11 +887,14 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
         if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.delete.error"
-            ),
+            i18n.t("notifications.updateError", {
+              context: "comment",
+              ns: "journal",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -930,9 +952,11 @@ const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.feedback.notification.delete.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "feedback",
+              error: err,
+            }),
             "error"
           )
         );

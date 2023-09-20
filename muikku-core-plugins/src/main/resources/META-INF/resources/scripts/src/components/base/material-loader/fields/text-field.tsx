@@ -6,19 +6,19 @@
 
 import * as React from "react";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import AutosizeInput from "react-input-autosize";
 import { UsedAs } from "~/@types/shared";
 import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * TextFieldProps
  */
-interface TextFieldProps {
+interface TextFieldProps extends WithTranslation {
   type: string;
   content: {
     autogrow: boolean;
@@ -39,7 +39,6 @@ interface TextFieldProps {
   ) => any;
   readOnly?: boolean;
   initialValue?: string;
-  i18n: i18nType;
   usedAs: UsedAs;
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
@@ -70,10 +69,7 @@ interface TextFieldState {
 /**
  * TextField
  */
-export default class TextField extends React.Component<
-  TextFieldProps,
-  TextFieldState
-> {
+class TextField extends React.Component<TextFieldProps, TextFieldState> {
   /**
    * constructor
    * @param props props
@@ -101,7 +97,7 @@ export default class TextField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -111,8 +107,8 @@ export default class TextField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(nextProps: TextFieldProps, nextState: TextFieldState) {
     // So we only update if these props change and any of the state
@@ -120,7 +116,6 @@ export default class TextField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18n !== nextProps.i18n ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -132,7 +127,7 @@ export default class TextField extends React.Component<
 
   /**
    * onInputChange - when the input change
-   * @param e
+   * @param e e
    */
   onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!this.props.content) {
@@ -151,7 +146,6 @@ export default class TextField extends React.Component<
 
   /**
    * checkAnswers
-   * @param param0
    */
   checkAnswers() {
     // if the property is not there we cancel
@@ -225,8 +219,8 @@ export default class TextField extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(prevProps: TextFieldProps, prevState: TextFieldState) {
     this.checkAnswers();
@@ -234,9 +228,11 @@ export default class TextField extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.content) {
       return null;
     }
@@ -265,15 +261,18 @@ export default class TextField extends React.Component<
         answersAreExample = true;
         actuallyCorrectAnswers = this.props.content.rightAnswers;
       }
+
       // We create the component
       correctAnswersummaryComponent = actuallyCorrectAnswers.length ? (
         <span className="material-page__field-answer-examples">
           <span className="material-page__field-answer-examples-title">
-            {this.props.i18n.text.get(
-              answersAreExample
-                ? "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
-                : "plugin.workspace.assigment.checkAnswers.correctSummary.title"
-            )}
+            {answersAreExample
+              ? t("labels.answer", { ns: "materials", context: "example" })
+              : t("labels.answer", {
+                  ns: "materials",
+                  context: "correct",
+                })}
+            :
           </span>
           {actuallyCorrectAnswers.map((answer, index) => (
             <span key={index} className="material-page__field-answer-example">
@@ -306,7 +305,7 @@ export default class TextField extends React.Component<
      * Component
      * @param props props
      */
-    const Component = (props: any) => {
+    /* const Component = (props: any) => {
       if (this.props.content.autogrow) {
         return <AutosizeInput {...props} />;
       } else {
@@ -321,7 +320,7 @@ export default class TextField extends React.Component<
           </span>
         );
       }
-    };
+    }; */
 
     // Lets calculate textfield width based on textfield size option.
     // If no option size has been set then we use 50 as a default value.
@@ -477,7 +476,6 @@ export default class TextField extends React.Component<
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
-            i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           {this.props.content.hint ? (
@@ -496,3 +494,5 @@ export default class TextField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(TextField);

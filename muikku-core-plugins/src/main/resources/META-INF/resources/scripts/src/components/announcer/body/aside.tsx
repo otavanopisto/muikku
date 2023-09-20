@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   AnnouncementsState,
   AnnouncerNavigationItemType,
@@ -10,12 +9,12 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import Navigation, { NavigationElement } from "../../general/navigation";
 import { NavigationTopic } from "../../general/navigation";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps {
-  i18n: i18nType;
+interface NavigationAsideProps extends WithTranslation {
   announcements: AnnouncementsState;
 }
 
@@ -45,7 +44,10 @@ class NavigationAside extends React.Component<
             hash={navItem.location}
             icon={navItem.icon}
           >
-            {navItem.text(this.props.i18n)}
+            {this.props.t("labels.category", {
+              ns: "messaging",
+              context: navItem.text,
+            })}
           </NavigationElement>
         )
       );
@@ -53,7 +55,7 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          name={this.props.i18n.text.get("plugin.announcer.folders.title")}
+          name={this.props.i18n.t("labels.folders", { count: 0 })}
         >
           {navigationElementList}
         </NavigationTopic>
@@ -69,7 +71,6 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     announcements: state.announcements,
   };
 }
@@ -83,4 +84,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation("messaging")(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);

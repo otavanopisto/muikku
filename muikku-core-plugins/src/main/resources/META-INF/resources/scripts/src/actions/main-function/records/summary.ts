@@ -14,7 +14,7 @@ import {
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
-import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
+import i18n from "~/locales/i18n";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -174,9 +174,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.records.summary.errormessage.summaryUpdateFailed"
-          ),
+          i18n.t("notifications.updateError", {
+            ns: "studies",
+            context: "summary",
+          }),
           "error"
         )
       );

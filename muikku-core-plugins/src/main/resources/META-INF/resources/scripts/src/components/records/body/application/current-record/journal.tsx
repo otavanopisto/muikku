@@ -9,21 +9,20 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
 import { useJournalComments } from "../assignments-and-diaries/hooks/useJournalComments";
+import { useTranslation } from "react-i18next";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import JournalComment from "./journalComment";
 import { WorkspaceJournal } from "~/generated/client";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * JournalProps
  */
 interface JournalProps {
-  i18n: i18nType;
   displayNotification: DisplayNotificationTriggerType;
   journal: WorkspaceJournal;
   open: boolean;
@@ -38,13 +37,12 @@ interface JournalProps {
  * @returns JSX.Element
  */
 const Journal: React.FC<JournalProps> = (props) => {
-  const { i18n, displayNotification, journal, onJournalClick, open } = props;
-
+  const { displayNotification, journal, onJournalClick, open } = props;
   const [showComments, setShowComments] = React.useState<boolean>(false);
+  const { t } = useTranslation("journal");
   const { journalComments, loadJournalComments } = useJournalComments(
     journal.workspaceEntityId,
     journal.id,
-    i18n,
     displayNotification
   );
 
@@ -80,7 +78,7 @@ const Journal: React.FC<JournalProps> = (props) => {
           </span>
         </div>
         <div className="application-list__item-header-aside">
-          <span>{i18n.time.format(journal.created, "L LT")}</span>
+          <span>{localizeTime.date(journal.created, "L LT")}</span>
         </div>
       </ApplicationListItemHeader>
       <ApplicationListItemBody className="application-list__item-body">
@@ -95,8 +93,7 @@ const Journal: React.FC<JournalProps> = (props) => {
           >
             <div className={`icon-arrow-right ${arrowClass}`} />
             <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
-              {i18n.text.get("plugin.records.journal.comments.title")} (
-              {journal.commentCount})
+              {t("labels.comments", { ns: "common" })} ({journal.commentCount})
             </div>
           </div>
 
@@ -105,9 +102,7 @@ const Journal: React.FC<JournalProps> = (props) => {
               <div className="loader-empty" />
             ) : journalComments.journalComments.length === 0 ? (
               <div className="empty">
-                <span>
-                  {i18n.text.get("plugin.records.journal.comments.empty")}
-                </span>
+                <span>{t("content.empty", { context: "comments" })}</span>
               </div>
             ) : (
               <ApplicationList>
@@ -124,16 +119,6 @@ const Journal: React.FC<JournalProps> = (props) => {
 };
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -141,4 +126,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Journal);
+export default connect(null, mapDispatchToProps)(Journal);

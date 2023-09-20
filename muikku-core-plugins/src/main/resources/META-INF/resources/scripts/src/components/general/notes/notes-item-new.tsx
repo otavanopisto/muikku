@@ -1,10 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
 import EnvironmentDialog from "~/components/general/environment-dialog";
-import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
-import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
@@ -17,17 +12,18 @@ import {
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
+import { localizeTime } from "~/locales/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NotesItemNewProps
  */
-interface NotesItemNewProps {
+interface NotesItemNewProps extends WithTranslation {
   /**
    * Id of note owner (recipient)
    */
   newNoteOwnerId: number;
   children: React.ReactElement;
-  i18n: i18nType;
   onNotesItemSaveClick?: (
     newNotesItem: NotesItemCreate,
     onSuccess?: () => void
@@ -133,9 +129,7 @@ class NotesItemNew extends SessionStateComponent<
       <div key="new-note-1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.records.tasks.createEditnote.title.label"
-            )}
+            {this.props.i18n.t("labels.title")}
           </label>
           <input
             className="env-dialog__input"
@@ -149,7 +143,7 @@ class NotesItemNew extends SessionStateComponent<
 
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.records.tasks.priority.label")}
+            {this.props.i18n.t("labels.priority", { ns: "tasks" })}
           </label>
           <select
             className="env-dialog__select"
@@ -162,19 +156,22 @@ class NotesItemNew extends SessionStateComponent<
             value={this.state.notesItem.priority}
           >
             <option value={NotesItemPriority.HIGH}>
-              {this.props.i18n.text.get(
-                "plugin.records.tasks.priority.high.label"
-              )}
+              {this.props.i18n.t("labels.priority", {
+                ns: "tasks",
+                context: "high",
+              })}
             </option>
             <option value={NotesItemPriority.NORMAL}>
-              {this.props.i18n.text.get(
-                "plugin.records.tasks.priority.normal.label"
-              )}
+              {this.props.i18n.t("labels.priority", {
+                ns: "tasks",
+                context: "normal",
+              })}
             </option>
             <option value={NotesItemPriority.LOW}>
-              {this.props.i18n.text.get(
-                "plugin.records.tasks.priority.low.label"
-              )}
+              {this.props.i18n.t("labels.priority", {
+                ns: "tasks",
+                context: "low",
+              })}
             </option>
           </select>
         </div>
@@ -182,9 +179,7 @@ class NotesItemNew extends SessionStateComponent<
       <div key="new-note-2" className="env-dialog__row env-dialog__row--dates">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.records.tasks.createEditnote.startdate.label"
-            )}
+            {this.props.i18n.t("labels.beginDate")}
           </label>
           <DatePicker
             className="env-dialog__input"
@@ -196,9 +191,7 @@ class NotesItemNew extends SessionStateComponent<
             onChange={(date, e) =>
               this.handleNotesItemChange("startDate", date)
             }
-            locale={outputCorrectDatePickerLocale(
-              this.props.i18n.time.getLocale()
-            )}
+            locale={outputCorrectDatePickerLocale(localizeTime.language)}
             dateFormat="P"
             minDate={new Date()}
             maxDate={this.state.notesItem.dueDate}
@@ -206,9 +199,7 @@ class NotesItemNew extends SessionStateComponent<
         </div>
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.records.tasks.createEditnote.enddate.label"
-            )}
+            {this.props.i18n.t("labels.endDate", { ns: "common" })}
           </label>
           <DatePicker
             className="env-dialog__input"
@@ -218,9 +209,7 @@ class NotesItemNew extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
-            locale={outputCorrectDatePickerLocale(
-              this.props.i18n.time.getLocale()
-            )}
+            locale={outputCorrectDatePickerLocale(localizeTime.language)}
             dateFormat="P"
             minDate={
               this.state.notesItem.startDate !== null
@@ -233,9 +222,7 @@ class NotesItemNew extends SessionStateComponent<
       <div key="new-note-3" className="env-dialog__row">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.records.tasks.createEditnote.content.label"
-            )}
+            {this.props.i18n.t("labels.description")}
           </label>
           <CKEditor
             onChange={(e) => this.handleNotesItemChange("description", e)}
@@ -255,10 +242,10 @@ class NotesItemNew extends SessionStateComponent<
           buttonModifiers={["dialog-execute"]}
           onClick={this.handleSaveClick(closeDialog)}
         >
-          {this.props.i18n.text.get("plugin.records.tasks.send")}
+          {this.props.i18n.t("actions.save")}
         </Button>
         <Button buttonModifiers={["dialog-cancel"]} onClick={closeDialog}>
-          {this.props.i18n.text.get("plugin.records.tasks.cancel")}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -266,9 +253,7 @@ class NotesItemNew extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="add-note"
-        title={this.props.i18n.text.get(
-          "plugin.records.tasks.createnote.topic"
-        )}
+        title={this.props.i18n.t("labels.create", { ns: "tasks" })}
         content={content}
         footer={footer}
         onOpen={this.clearUp}
@@ -279,22 +264,4 @@ class NotesItemNew extends SessionStateComponent<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(NotesItemNew);
+export default withTranslation("tasks")(NotesItemNew);

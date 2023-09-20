@@ -1,8 +1,8 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceJournalComment } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
+import { useTranslation } from "react-i18next";
 
 /**
  * UseFollowUpGoalsState
@@ -33,10 +33,10 @@ const workspaceApi = MApi.getWorkspaceApi();
 export const useJournalComments = (
   workspaceId: number,
   journalEntryId: number,
-  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [journalComments, setJournalComments] = React.useState(initialState);
+  const { t } = useTranslation("journal");
 
   const isCancelled = React.useRef(false);
 
@@ -86,9 +86,9 @@ export const useJournalComments = (
         }
 
         displayNotification(
-          `${i18n.text.get(
-            "plugin.records.errormessage.workspaceDiaryCommentsLoadFailed"
-          )}, ${err.message}`,
+          `${t("notifications.loadError", { context: "comments" })}, ${
+            err.message
+          }`,
           "error"
         );
         setJournalComments((commentsData) => ({

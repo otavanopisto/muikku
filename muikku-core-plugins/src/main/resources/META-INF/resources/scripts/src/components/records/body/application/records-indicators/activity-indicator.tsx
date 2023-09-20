@@ -1,9 +1,6 @@
 import * as React from "react";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 
 /**
@@ -11,7 +8,6 @@ import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
  */
 interface ActivityIndicatorProps {
   credit: RecordWorkspaceActivity;
-  i18n: i18nType;
 }
 
 /**
@@ -21,7 +17,8 @@ interface ActivityIndicatorProps {
  * @returns JSX.Element
  */
 const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
-  const { credit, i18n } = props;
+  const { credit } = props;
+  const { t } = useTranslation(["studies", "common"]);
 
   if (credit.exercisesTotal + credit.evaluablesTotal === 0) {
     return null;
@@ -34,12 +31,12 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
           openByHover
           content={
             <span>
-              {i18n.text.get(
-                "plugin.records.workspace.activity.assignment.title",
-                Math.round(
+              {t("labels.evaluablesDone", {
+                ns: "studies",
+                percent: Math.round(
                   (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
-                )
-              )}
+                ),
+              })}
             </span>
           }
         >
@@ -62,12 +59,12 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
           openByHover
           content={
             <span>
-              {i18n.text.get(
-                "plugin.records.workspace.activity.exercise.title",
-                Math.round(
+              {t("labels.exercisesDone", {
+                ns: "studies",
+                percent: Math.round(
                   (credit.exercisesAnswered / credit.exercisesTotal) * 100
-                )
-              )}
+                ),
+              })}
             </span>
           }
         >
@@ -89,21 +86,4 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityIndicator);
+export default ActivityIndicator;

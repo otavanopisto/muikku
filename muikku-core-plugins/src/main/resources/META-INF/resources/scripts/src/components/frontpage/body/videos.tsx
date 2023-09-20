@@ -1,13 +1,11 @@
 import * as React from "react";
+import { withTranslation, WithTranslation } from "react-i18next";
 import Carousel, { CarouselVideoItem } from "~/components/general/carousel";
-import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * FrontpageVideosProps
  */
-interface FrontpageVideosProps {
-  i18n: i18nType;
-}
+interface FrontpageVideosProps extends WithTranslation {}
 
 /**
  * FrontpageVideosState
@@ -17,7 +15,7 @@ interface FrontpageVideosState {}
 /**
  * FrontpageVideos
  */
-export default class FrontpageVideos extends React.Component<
+class FrontpageVideos extends React.Component<
   FrontpageVideosProps,
   FrontpageVideosState
 > {
@@ -29,9 +27,7 @@ export default class FrontpageVideos extends React.Component<
       <section
         id="videos"
         className="screen-container__section"
-        aria-label={this.props.i18n.text.get(
-          "plugin.wcag.frontPageSectionVideosLabel"
-        )}
+        aria-label={this.props.t("wcag.videos", { ns: "frontPage" })}
       >
         <Carousel
           naturalSlideHeight={720}
@@ -73,3 +69,5 @@ export default class FrontpageVideos extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(FrontpageVideos);

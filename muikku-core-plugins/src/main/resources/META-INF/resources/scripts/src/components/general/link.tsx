@@ -9,20 +9,20 @@ import { HTMLAttributeAnchorTarget } from "react";
 import { Redirect } from "react-router-dom";
 import "~/sass/elements/link.scss";
 import { scrollToSection } from "~/util/modifiers";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions/index";
+
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * LinkProps
  */
 interface LinkProps
   extends React.DetailedHTMLProps<
-    React.AnchorHTMLAttributes<HTMLAnchorElement>,
-    HTMLAnchorElement
-  > {
+      React.AnchorHTMLAttributes<HTMLAnchorElement>,
+      HTMLAnchorElement
+    >,
+    WithTranslation {
   disablePropagation?: boolean;
   disabled?: boolean;
   as?: string;
@@ -35,7 +35,6 @@ interface LinkProps
   scrollPadding?: number;
   disableScroll?: boolean;
   disableSmoothScroll?: boolean;
-  i18n: i18nType;
 }
 
 /**
@@ -203,7 +202,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
         return (
           <>
             <span className="visually-hidden">
-              {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+              {this.props.t("wcag.externalLink")}
             </span>
             <span
               role="presentation"
@@ -237,7 +236,8 @@ export class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["disableScroll"];
     delete elementProps["as"];
     delete elementProps["disableSmoothScroll"];
-    delete elementProps["i18n"];
+    delete elementProps["tReady"];
+    delete elementProps["t"];
 
     if (
       (elementProps.href == null &&
@@ -270,7 +270,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
           ) : this.props.openInNewTab ? (
             <>
               <span className="visually-hidden">
-                {this.props.i18n.text.get("plugin.wcag.externalLink.label")}
+                {this.props.t("wcag.externalLink")}
               </span>
               <span
                 role="presentation"
@@ -309,24 +309,4 @@ export class Link extends React.Component<LinkProps, LinkState> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true,
-})(Link);
+export default withTranslation("common", { withRef: true })(Link);

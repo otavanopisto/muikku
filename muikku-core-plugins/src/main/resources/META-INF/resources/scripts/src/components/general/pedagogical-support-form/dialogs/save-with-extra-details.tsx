@@ -1,12 +1,8 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { AnyActionType } from "~/actions";
 import { formFieldsWithTranslation } from "../helpers";
 import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
 
@@ -14,7 +10,6 @@ import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
  * SaveExtraDetailsDialogProps
  */
 interface SaveExtraDetailsDialogProps {
-  i18n: i18nType;
   changedFields: string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
@@ -138,25 +133,4 @@ class SaveExtraDetailsDialog extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SaveExtraDetailsDialog);
+export default SaveExtraDetailsDialog;
