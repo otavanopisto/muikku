@@ -5,13 +5,7 @@
  */
 
 import * as React from "react";
-<<<<<<< HEAD
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
 import { ActivityLogType, WorkspaceType } from "~/reducers/workspaces";
-=======
-import { WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
->>>>>>> devel
 import WorkspaceFilter from "./filters/workspace-filter";
 import GraphFilter from "./filters/graph-filter";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -25,12 +19,7 @@ let AmCharts: any = null;
  */
 interface CurrentStudentStatisticsProps extends WithTranslation {
   activityLogs?: Array<ActivityLogType>;
-<<<<<<< HEAD
-  i18n: i18nType;
   workspaces?: WorkspaceType[];
-=======
-  workspaces?: WorkspaceListType;
->>>>>>> devel
 }
 
 /**
