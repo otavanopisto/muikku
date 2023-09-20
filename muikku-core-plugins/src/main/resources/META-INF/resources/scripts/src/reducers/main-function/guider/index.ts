@@ -20,6 +20,7 @@ import {
   GuiderStudentNotification,
   UserFile,
   UserStudentFlag,
+  ContactType,
 } from "~/generated/client";
 /**
  * GuiderUserLabelType
@@ -80,22 +81,7 @@ export interface GuiderNotificationStudentsDataType {
 /**
  * ContactTypesArray for dropdowns etc.
  */
-export const contactTypesArray = [
-  "OTHER",
-  "LETTER",
-  "EMAIL",
-  "PHONE",
-  "CHATLOG",
-  "ONLINE",
-  "FACE2FACE",
-  "ABSENCE",
-  "MUIKKU",
-] as const;
-
-/**
- *  ContactTypes created from the ContactTypesArray
- */
-export type ContactTypes = typeof contactTypesArray[number];
+export const contactTypesArray = Object.values(ContactType);
 
 /**
  * PedagogyFormAvailability
