@@ -21,6 +21,7 @@
       "hide": "Hide",
       "hideAll": "Hide all",
       "hide_comments": "Hide comments",
+      "lock": "Lock",
       "next": "Next",
       "previous": "Previous",
       "openAll": "Open all",
@@ -685,6 +686,8 @@
       "create_label": "New label",
       "hide": "$t(common:actions.hide)",
       "hide_comments": "Hide answers",
+      "lock": "$t(common:actions.lock)",
+      "lock_thread": "Lock threat",
       "remove": "$t(common:actions.remove)",
       "remove_message": "Delete message",
       "remove_contactEntry": "Delete contact entry",
@@ -748,6 +751,8 @@
       "folder_unread": "Unread",
       "folder_sent": "Sent",
       "folder_trash": "Trash",
+      "fromAll": "From all",
+      "fromStudents": "From students",
       "lastMessage": "Latest message: {{time}}",
       "lock": "Lock message",
       "message": "Message",
@@ -1915,7 +1920,6 @@
     "unspecifiedOptional_lukioOPS2016": "Other",
     "unspecifiedOptional_lukioOPS2021": "Local optional"
   },
-
   "readSpeaker": {
     "messages": {
       "assignment": "Assignment",
