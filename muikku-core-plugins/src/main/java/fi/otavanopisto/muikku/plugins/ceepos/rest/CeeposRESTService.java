@@ -617,6 +617,8 @@ public class CeeposRESTService {
     return Response.ok(String.format("\"%s\"", ceeposPayloadResponse.getPaymentAddress())).build();
   }
   
+  // Just a convenience endpoint to make it easier to complete orders via browser
+  
   @Path("/manualCompletion/{ORDERID}")
   @GET
   @RESTPermit(CeeposPermissions.COMPLETE_ORDER)
