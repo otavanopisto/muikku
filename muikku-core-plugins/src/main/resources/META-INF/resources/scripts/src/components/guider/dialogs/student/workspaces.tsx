@@ -1,18 +1,17 @@
 import Workspace from "./workspaces/workspace";
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { WorkspaceType } from "~/reducers/workspaces";
 
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/empty.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * CurrentStudentWorkspacesProps
  */
-interface CurrentStudentWorkspacesProps {
-  i18n: i18nType;
+interface CurrentStudentWorkspacesProps extends WithTranslation<["common"]> {
   workspaces: WorkspaceType[];
   locale: string;
 }
@@ -47,7 +46,11 @@ class CurrentStudentWorkspaces extends React.Component<
       </div>
     ) : (
       <div className="empty">
-        <span>{this.props.i18n.text.get("plugin.guider.noWorkspaces")}</span>
+        <span>
+          {this.props.i18n.t("content.notInWorkspaces", {
+            ns: "guider",
+          })}
+        </span>
       </div>
     );
   }
@@ -59,7 +62,6 @@ class CurrentStudentWorkspaces extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     locale: state.locales.current,
   };
 }
@@ -71,7 +73,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CurrentStudentWorkspaces);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(CurrentStudentWorkspaces)
+);

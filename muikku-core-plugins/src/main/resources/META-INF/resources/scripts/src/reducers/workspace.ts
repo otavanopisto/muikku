@@ -2,10 +2,8 @@ import { easyToUse } from "./easy-to-use-functions/index";
 import { notifications } from "./base/notifications";
 import { locales } from "./base/locales";
 import status from "./base/status";
-import i18n from "./base/i18n";
 import { title } from "./base/title";
 import websocket from "./util/websocket";
-
 import { workspaces } from "./workspaces";
 import { announcements } from "./announcements";
 import { discussion } from "./discussion";
@@ -23,7 +21,6 @@ export default combineReducers({
   discussion,
   easyToUse,
   evaluations,
-  i18n,
   journals,
   locales,
   notebook,

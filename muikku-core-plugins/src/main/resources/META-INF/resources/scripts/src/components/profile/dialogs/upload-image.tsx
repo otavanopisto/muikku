@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -22,12 +21,13 @@ import {
   uploadProfileImage,
   UploadProfileImageTriggerType,
 } from "~/actions/main-function/profile";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * UploadImageDialogProps
  */
-interface UploadImageDialogProps {
-  i18n: i18nType;
+interface UploadImageDialogProps extends WithTranslation {
   displayNotification: DisplayNotificationTriggerType;
   uploadProfileImage: UploadProfileImageTriggerType;
 
@@ -36,6 +36,7 @@ interface UploadImageDialogProps {
   src?: string;
 
   isOpen: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose: () => any;
 }
 
@@ -80,7 +81,7 @@ class UploadImageDialog extends React.Component<
    * upload
    * @param closeDialog closeDialog
    */
-  upload(closeDialog: () => any) {
+  upload(closeDialog: () => void) {
     this.setState({ locked: true });
     this.props.uploadProfileImage({
       croppedB64: this.retriever.getAsDataURL(),
@@ -117,9 +118,10 @@ class UploadImageDialog extends React.Component<
    */
   showLoadError() {
     this.props.displayNotification(
-      this.props.i18n.text.get(
-        "plugin.profile.errormessage.profileImage.loadFailed"
-      ),
+      this.props.t("notifications.loadError", {
+        ns: "users",
+        context: "profilePicture",
+      }),
       "error"
     );
   }
@@ -147,7 +149,7 @@ class UploadImageDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <ImageEditor
           className="image-editor image-editor--profile"
@@ -177,34 +179,28 @@ class UploadImageDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["execute", "standard-ok"]}
           onClick={this.upload.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.profile.changeImage.dialog.saveButton.label"
-          )}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.profile.changeImage.dialog.cancelButton.label"
-          )}
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        title={this.props.i18n.text.get(
-          "plugin.profile.changeImage.dialog.title"
-        )}
+        title={this.props.t("labels.profileImage", { ns: "profile" })}
         content={content}
         footer={footer}
         modifier="upload-image"
@@ -215,24 +211,16 @@ class UploadImageDialog extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { displayNotification, uploadProfileImage },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UploadImageDialog);
+export default withTranslation(["common"])(
+  connect(null, mapDispatchToProps)(UploadImageDialog)
+);

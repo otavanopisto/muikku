@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/buttons.scss";
@@ -15,12 +14,13 @@ import {
   WorkspaceEducationFilterType,
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
+import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * NavigationAsideProps
  */
-interface NavigationAsideProps {
-  i18n: i18nType;
+interface NavigationAsideProps extends WithTranslation {
   workspaces: WorkspacesType;
   status: StatusType;
 }
@@ -50,7 +50,7 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          name={this.props.i18n.text.get("plugin.coursepicker.filters.title")}
+          name={this.props.t("labels.educationLevel", { ns: "workspace" })}
         >
           {this.props.workspaces.availableFilters.educationTypes.map(
             (educationType: WorkspaceEducationFilterType) => {
@@ -90,9 +90,7 @@ class NavigationAside extends React.Component<
           )}
         </NavigationTopic>
         <NavigationTopic
-          name={this.props.i18n.text.get(
-            "plugin.coursepicker.filters.curriculum"
-          )}
+          name={this.props.t("labels.curriculum", { ns: "workspace" })}
         >
           {this.props.workspaces.availableFilters.curriculums.map(
             (curriculum) => {
@@ -131,9 +129,8 @@ class NavigationAside extends React.Component<
         </NavigationTopic>
         {this.props.workspaces.availableFilters.organizations.length > 1 ? (
           <NavigationTopic
-            name={this.props.i18n.text.get(
-              "plugin.coursepicker.filters.organization"
-            )}
+            // TODO: Translate this using i18next
+            name={this.props.t("labels.organization", { ns: "workspace" })}
           >
             {this.props.workspaces.availableFilters.organizations.map(
               (organization: WorkspaceOrganizationFilterType) => {
@@ -184,7 +181,6 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspaces: state.workspaces,
     status: state.status,
   };
@@ -194,8 +190,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation(["workspace"])(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);

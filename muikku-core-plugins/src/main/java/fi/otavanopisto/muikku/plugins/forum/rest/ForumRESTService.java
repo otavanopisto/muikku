@@ -35,6 +35,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Whitelist;
 
+import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -450,19 +451,20 @@ public class ForumRESTService extends PluginRESTService {
     if (!forumController.isEnvironmentForumActive()) {
       return Response.status(Status.FORBIDDEN).build();
     }
-
+    LockForumThread updThreadLock = updThread.getLock() != null ? LockForumThread.valueOf(updThread.getLock()) : null;
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
       // User needs permission to change the value of these parameters
-      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLocked().equals(updThread.getLocked())) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || forumThread.getLocked() != updThreadLock) {
         if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
           return Response.status(Status.BAD_REQUEST).build();
       }
-
+      
       forumController.updateForumThread(forumThread, 
           updThread.getTitle(),
           updThread.getMessage(),
           updThread.getSticky(), 
-          updThread.getLocked());
+          updThreadLock);
+      
       
       return Response.ok(
         restModels.restModel(forumThread)
@@ -517,7 +519,13 @@ public class ForumRESTService extends PluginRESTService {
     }
 
     if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_WRITE_ENVIRONMENT_MESSAGES)) {
-      if (Boolean.TRUE.equals(newThread.getSticky()) || Boolean.TRUE.equals(newThread.getLocked())) {
+      LockForumThread lock = newThread.getLock() != null ? LockForumThread.valueOf(newThread.getLock()) : null;
+
+      if (Boolean.TRUE.equals(newThread.getSticky()) || lock != null) {
+        if (lock == LockForumThread.STUDENTS && userEntityController.isStudent(sessionController.getLoggedUserEntity())){
+          return Response.status(Status.FORBIDDEN).build();
+        }
+        
         if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
           return Response.status(Status.BAD_REQUEST).build();
       }
@@ -535,7 +543,7 @@ public class ForumRESTService extends PluginRESTService {
           newThread.getTitle(),
           message.body().toString(), 
           newThread.getSticky(), 
-          newThread.getLocked());
+          lock);
 
       forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), thread.getId(), null, sessionController.getLoggedUserEntity().getId(), baseUrl, null));
       
@@ -749,7 +757,7 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
       }
       
-      if (forumThread.getLocked()) {
+      if (forumThread.getLocked() == LockForumThread.ALL || (forumThread.getLocked() == LockForumThread.STUDENTS && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
         return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
       }
       
@@ -777,8 +785,11 @@ public class ForumRESTService extends PluginRESTService {
           }
         }
         ForumThreadReply reply = forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply);
+        if (reply == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Couldn't create new reply").build();
+        }
         forumMessageSent.fire(new ForumMessageSent(forumArea.getId(), forumThread.getId(), reply.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl, null));
-        
+
         return Response.ok(createRestModel(reply)).build();
       } else {
         return Response.status(Status.FORBIDDEN).build();
@@ -812,9 +823,10 @@ public class ForumRESTService extends PluginRESTService {
     List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
     
     for (ForumThread thread : threads) {
+      String lock = thread.getLocked() != null ? thread.getLocked().name() : null;
       long numReplies = forumController.getThreadReplyCount(thread);
       ForumMessageUserRESTModel userRestModel = restModels.createUserRESTModel(thread.getCreator());
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), userRestModel, thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified()));
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), userRestModel, thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), lock, thread.getLockBy(), thread.getLockDate() ,thread.getUpdated(), numReplies, thread.getLastModified()));
     }
     
     return Response.ok(result).build();
@@ -967,10 +979,6 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
       }
       
-      if (forumThread.getLocked()) {
-        return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
-      }
-      
       UserEntity loggedUSerEntity = sessionController.getLoggedUserEntity();
       ForumThreadSubscription forumThreadSubscription = forumThreadSubscriptionController.findByThreadAndUserEntity(forumThread, loggedUSerEntity);
       if (forumThreadSubscription == null) {
@@ -1062,5 +1070,4 @@ public class ForumRESTService extends PluginRESTService {
     private final Boolean editMessages;
     private final Boolean removeThread;
   }
-  
 }

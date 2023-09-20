@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 import {
   WorkspaceType,
   WorkspaceMaterialReferenceType,
@@ -22,8 +22,7 @@ import ItemList from "~/components/general/item-list";
 /**
  * WorkspacesPanelProps
  */
-interface WorkspacesPanelProps {
-  i18n: i18nType;
+interface WorkspacesPanelProps extends WithTranslation {
   status: StatusType;
   workspaces: WorkspaceType[];
   lastWorkspaces: WorkspaceMaterialReferenceType[];
@@ -32,11 +31,11 @@ interface WorkspacesPanelProps {
 
 /**
  * StudiesPanel component
- * @param props
+ * @param props props
  * @returns  JSX.element
  */
 const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
-  const { i18n, status, workspaces, lastWorkspaces } = props;
+  const { t, status, workspaces, lastWorkspaces } = props;
 
   const { nextSuggestions } = useNextCourseSuggestions(
     props.status.userSchoolDataIdentifier,
@@ -48,12 +47,12 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
     <Panel
       icon="icon-books"
       modifier="workspaces"
-      header={i18n.text.get("plugin.frontPage.studies.title")}
+      header={t("labels.studying", { ns: "frontPage" })}
     >
       {lastWorkspaces && lastWorkspaces.length > 0 ? (
         <>
           <Panel.BodyTitle>
-            {i18n.text.get("plugin.frontPage.studies.continue.title")}
+            {t("labels.continue", { ns: "frontPage" })}
           </Panel.BodyTitle>
           <Panel.BodyContent>
             {lastWorkspaces.map((lastWorkspace) => (
@@ -66,9 +65,9 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                 </ItemList.Item>
                 <ItemList.ItemFooter modifier="continue-studies">
                   <span>
-                    {props.i18n.text.get(
-                      "plugin.frontPage.latestWorkspace.material.part1"
-                    )}
+                    <span>
+                      {t("content.pointOfContinue", { ns: "frontPage" })}
+                    </span>
                   </span>
                   <Link
                     className="link--index-text-link"
@@ -86,7 +85,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       {nextSuggestions.nextCourses.length > 0 ? (
         <>
           <Panel.BodyTitle>
-            {i18n.text.get("plugin.frontPage.studies.next.title")}
+            {t("labels.next", { ns: "frontPage" })}
           </Panel.BodyTitle>
           <Panel.BodyContent>
             <ItemList modifier="suggestions">
@@ -103,15 +102,12 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                     <Link
                       className="link--index"
                       aria-label={
-                        props.i18n.text.get(
-                          "plugin.frontPage.suggestedWorkspaces.checkOut"
-                        ) + workspace.name
+                        t("actions.checkOut", { ns: "workspace" }) +
+                        workspace.name
                       }
                       href={`/workspace/${workspace.urlName}`}
                     >
-                      {props.i18n.text.get(
-                        "plugin.frontPage.suggestedWorkspaces.checkOut"
-                      )}
+                      {t("actions.checkOut", { ns: "workspace" })}
                     </Link>
                     <WorkspaceSignup
                       workspaceSignUpDetails={{
@@ -124,14 +120,11 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                       <Link
                         className="link--index"
                         aria-label={
-                          props.i18n.text.get(
-                            "plugin.frontPage.suggestedWorkspaces.signUp"
-                          ) + workspace.name
+                          t("actions.signUp", { ns: "workspace" }) +
+                          workspace.name
                         }
                       >
-                        {props.i18n.text.get(
-                          "plugin.frontPage.suggestedWorkspaces.signUp"
-                        )}
+                        {t("actions.signUp", { ns: "workspace" })}
                       </Link>
                     </WorkspaceSignup>
                   </ItemList.ItemFooter>
@@ -143,7 +136,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       ) : null}
 
       <Panel.BodyTitle>
-        {i18n.text.get("plugin.frontPage.studies.workspaces.title")}
+        {t("labels.workspaces", { ns: "workspace", context: "yours" })}
       </Panel.BodyTitle>
       {workspaces.length ? (
         <Panel.BodyContent>
@@ -182,20 +175,16 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
         <Panel.BodyContent modifier="empty">
           {status.isStudent ? (
             <>
-              {i18n.text.get("plugin.frontPage.workspaces.noWorkspaces.part1")}{" "}
+              {t("content.noWorkspaces", { ns: "frontPage", context: "body" })}
               <Link href="/coursepicker" className="link link--index-text-link">
-                {i18n.text.get(
-                  "plugin.frontPage.workspaces.noWorkspaces.coursepicker"
-                )}
-              </Link>{" "}
-              {i18n.text.get("plugin.frontPage.workspaces.noWorkspaces.part2")}
+                {t("content.noWorkspaces", {
+                  ns: "frontPage",
+                  context: "link",
+                })}
+              </Link>
             </>
           ) : (
-            <>
-              {i18n.text.get(
-                "plugin.frontPage.workspaces.noWorkspaces.teacher"
-              )}
-            </>
+            <>{t("content.noWorkspaces", { ns: "frontPage" })} </>
           )}
         </Panel.BodyContent>
       )}
@@ -210,7 +199,6 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18n: state.i18n,
     workspaces: state.workspaces.userWorkspaces,
     lastWorkspaces: state.workspaces.lastWorkspaces,
   };
@@ -224,4 +212,6 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
-export default connect(mapStateToProps, mapDispatchToProps)(StudiesPanel);
+export default withTranslation(["frontPage", "workspace"])(
+  connect(mapStateToProps, mapDispatchToProps)(StudiesPanel)
+);

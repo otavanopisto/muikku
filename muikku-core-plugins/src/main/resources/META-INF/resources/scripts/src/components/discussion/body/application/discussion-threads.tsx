@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { getName } from "~/util/modifiers";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/rich-text.scss";
@@ -35,13 +34,14 @@ import {
   SubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * DiscussionThreadsProps
  */
-interface DiscussionThreadsProps {
+interface DiscussionThreadsProps extends WithTranslation {
   discussion: DiscussionType;
-  i18n: i18nType;
   status: StatusType;
   subscribeDiscussionThread: SubscribeDiscussionThread;
   unsubscribeDiscussionThread: UnsubscribeDiscustionThread;
@@ -88,10 +88,10 @@ class DDiscussionThreads extends React.Component<
    * @returns label with correct locale string
    */
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
-    let label = this.props.i18n.text.get("plugin.wcag.pager.goToPage.label");
+    let label = this.props.i18n.t("wcag.goToPage", { ns: "messaging" });
 
     if (selected) {
-      label = this.props.i18n.text.get("plugin.wcag.pager.current.label");
+      label = this.props.i18n.t("wcag.currentPage", { ns: "messaging" });
     }
 
     return label;
@@ -161,7 +161,10 @@ class DDiscussionThreads extends React.Component<
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.communicator.empty.topic")}
+            {this.props.i18n.t("content.empty", {
+              ns: "messaging",
+              context: "messages",
+            })}
           </span>
         </div>
       );
@@ -197,13 +200,12 @@ class DDiscussionThreads extends React.Component<
               firstName={user.firstName}
               hasImage={user.hasImage}
               userCategory={userCategory}
-              avatarAriaLabel={this.props.i18n.text.get(
-                "plugin.wcag.userAvatar.label"
-              )}
+              avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
+                ns: "messaging",
+              })}
             />
           );
         }
-
         return (
           <DiscussionThread
             key={thread.id}
@@ -212,8 +214,8 @@ class DDiscussionThreads extends React.Component<
           >
             <DiscussionThreadHeader>
               <div className="application-list__item-header-main">
-                {thread.locked ? (
-                  <div className="discussion__icon icon-lock"></div>
+                {thread.lock ? (
+                  <div className="discussion__icon icon-lock" />
                 ) : null}
                 {thread.sticky ? (
                   <div className="discussion__icon icon-pin"></div>
@@ -230,9 +232,9 @@ class DDiscussionThreads extends React.Component<
                   <Dropdown
                     openByHover
                     modifier="discussion-tooltip"
-                    content={this.props.i18n.text.get(
-                      "plugin.discussion.unsubscribe.thread"
-                    )}
+                    content={this.props.i18n.t("labels.unsubscribe", {
+                      ns: "messaging",
+                    })}
                   >
                     <IconButton
                       icon="bookmark-full"
@@ -247,9 +249,9 @@ class DDiscussionThreads extends React.Component<
                   <Dropdown
                     openByHover
                     modifier="discussion-tooltip"
-                    content={this.props.i18n.text.get(
-                      "plugin.discussion.subscribe.thread"
-                    )}
+                    content={this.props.i18n.t("labels.subscribe", {
+                      ns: "messaging",
+                    })}
                   >
                     <IconButton
                       icon="bookmark-empty"
@@ -281,15 +283,15 @@ class DDiscussionThreads extends React.Component<
                       user,
                       this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                     )}
-                  , {this.props.i18n.time.format(thread.created)}
+                  , {localizeTime.date(thread.created)}
                 </span>
               </div>
               <div className="application-list__item-footer-content-aside">
                 <div className="application-list__item-counter-container">
                   <span className="application-list__item-counter-title">
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.titleText.replyCount"
-                    )}{" "}
+                    {this.props.i18n.t("labels.replyCount", {
+                      ns: "messaging",
+                    })}
                   </span>
                   <span className="application-list__item-counter">
                     {thread.numReplies}
@@ -297,10 +299,10 @@ class DDiscussionThreads extends React.Component<
                 </div>
                 <div className="application-list__item-date">
                   <span>
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.titleText.lastMessage"
-                    )}{" "}
-                    {this.props.i18n.time.format(thread.updated)}
+                    {this.props.i18n.t("labels.lastMessage", {
+                      ns: "messaging",
+                      time: localizeTime.date(thread.updated),
+                    })}
                   </span>
                 </div>
               </div>
@@ -337,7 +339,6 @@ class DDiscussionThreads extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     discussion: state.discussion,
     status: state.status,
   };
@@ -357,4 +358,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DDiscussionThreads);
+export default withTranslation(["messaging"])(
+  connect(mapStateToProps, mapDispatchToProps)(DDiscussionThreads)
+);

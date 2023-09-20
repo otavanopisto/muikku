@@ -1,11 +1,12 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import {
   DiscussionType,
   DiscussionUserType,
   DiscussionThreadReplyType,
   DiscussionThreadReplyListType,
   DiscussionThreadType,
+  DiscussionThreadLockEnum,
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
@@ -38,13 +39,13 @@ import {
   unsubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CurrentThreadProps
  */
-interface DiscussionCurrentThreadProps {
+interface DiscussionCurrentThreadProps extends WithTranslation {
   discussion: DiscussionType;
-  i18n: i18nType;
   userId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissions: any;
@@ -80,6 +81,25 @@ class DiscussionCurrentThread extends React.Component<
       hiddenParentsLists: [],
     };
   }
+
+  /**
+   * If thread is locked, user can't reply to it
+   *
+   * @param thread thread
+   * @returns boolean
+   */
+  isThreadLocked = (thread: DiscussionThreadType) => {
+    switch (thread.lock) {
+      case DiscussionThreadLockEnum.ALL:
+        return true;
+
+      case DiscussionThreadLockEnum.STUDENTS:
+        return this.props.status.isStudent;
+
+      default:
+        return false;
+    }
+  };
 
   /**
    * getToPage
@@ -222,29 +242,43 @@ class DiscussionCurrentThread extends React.Component<
           firstName={userCreator.firstName}
           hasImage={userCreator.hasImage}
           userCategory={userCategory}
-          avatarAriaLabel={this.props.i18n.text.get(
-            "plugin.wcag.userAvatar.label"
-          )}
+          avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
+            ns: "messaging",
+          })}
         />
       );
     }
 
-    const student: boolean = this.props.status.isStudent === true;
+    // Logged in user is student
+    const student: boolean = this.props.status.isStudent;
+
+    // Creator and logged in user are same
     const threadOwner: boolean =
       this.props.userId === this.props.discussion.current.creator.id;
+
+    // User can edit if user is thread owner or user has editMessages permission
+    const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
+
+    // If thread is locked, user can't reply to it
+    const threadLocked = this.isThreadLocked(this.props.discussion.current);
+
+    // Lock icon is shown if some value exists in lock property
+    const showLockIcon = !!this.props.discussion.current.lock;
+
+    // User can remove thread if user is thread owner or user has removeThread permission
     const canRemoveThread: boolean =
       (!student && threadOwner) ||
       areaPermissions.removeThread ||
       this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
-    let studentCanRemoveThread: boolean = threadOwner ? true : false;
-    const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
-    const threadLocked: boolean = this.props.discussion.current.locked === true;
+
     const replies: DiscussionThreadReplyListType =
       this.props.discussion.currentReplies;
 
-    // If the thread has someone elses messages, student can't remove the thread
+    // student can remove thread if student is thread owner
+    let studentCanRemoveThread: boolean = threadOwner;
 
-    if (studentCanRemoveThread == true) {
+    // If the thread has someone elses messages, student can't remove the thread
+    if (studentCanRemoveThread) {
       for (let i = 0; i < replies.length; i++) {
         if (this.props.userId !== replies[i].creator.id) {
           studentCanRemoveThread = false;
@@ -255,7 +289,7 @@ class DiscussionCurrentThread extends React.Component<
     return (
       <DiscussionCurrentThreadListContainer
         sticky={this.props.discussion.current.sticky}
-        locked={this.props.discussion.current.locked}
+        locked={showLockIcon}
         title={
           <h2 className="application-list__title">
             <span className="application-list__title-main">
@@ -266,9 +300,9 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
-                  content={this.props.i18n.text.get(
-                    "plugin.discussion.unsubscribe.thread"
-                  )}
+                  content={this.props.i18n.t("labels.unsubscribe", {
+                    ns: "messaging",
+                  })}
                 >
                   <IconButton
                     icon="bookmark-full"
@@ -283,9 +317,9 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
-                  content={this.props.i18n.text.get(
-                    "plugin.discussion.subscribe.thread"
-                  )}
+                  content={this.props.i18n.t("labels.subscribe", {
+                    ns: "messaging",
+                  })}
                 >
                   <IconButton
                     icon="bookmark-empty"
@@ -310,9 +344,7 @@ class DiscussionCurrentThread extends React.Component<
             aside={
               <span style={{ display: "flex", alignItems: "center" }}>
                 <span>
-                  {this.props.i18n.time.format(
-                    this.props.discussion.current.created
-                  )}
+                  {localizeTime.date(this.props.discussion.current.created)}
                 </span>
               </span>
             }
@@ -337,36 +369,37 @@ class DiscussionCurrentThread extends React.Component<
               >
                 {this.props.discussion.current.created !==
                 this.props.discussion.current.lastModified ? (
-                  <span className="application-list__item-edited">
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(
-                        this.props.discussion.current.lastModified
-                      )
+                  <div className="application-list__item-edited">
+                    {this.props.i18n.t(
+                      "labels.edited",
+
+                      {
+                        context: "in",
+                        ns: "messaging",
+                        time: localizeTime.date(
+                          this.props.discussion.current.lastModified
+                        ),
+                      }
                     )}
-                  </span>
+                  </div>
                 ) : null}
               </DiscussionThreadBody>
               {userCreator !== null ? (
                 <DiscussionThreadFooter hasActions>
-                  {!threadLocked || !student ? (
+                  {!threadLocked || threadOwner ? (
                     <Link
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("answer")}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.discussion.reply.message"
-                      )}
+                      {this.props.i18n.t("actions.reply", { ns: "messaging" })}
                     </Link>
                   ) : null}
-                  {!threadLocked || !student ? (
+                  {!threadLocked || threadOwner ? (
                     <Link
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("quote")}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.discussion.reply.quote"
-                      )}
+                      {this.props.i18n.t("actions.quote")}
                     </Link>
                   ) : null}
                   {canEditThread ? (
@@ -374,15 +407,13 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("modify")}
                     >
-                      {this.props.i18n.text.get("plugin.discussion.reply.edit")}
+                      {this.props.i18n.t("actions.edit")}
                     </Link>
                   ) : null}
                   {canRemoveThread || studentCanRemoveThread ? (
                     <DeleteThreadComponent>
                       <Link className="link link--application-list">
-                        {this.props.i18n.text.get(
-                          "plugin.discussion.reply.delete"
-                        )}
+                        {this.props.i18n.t("actions.remove")}
                       </Link>
                     </DeleteThreadComponent>
                   ) : null}
@@ -497,7 +528,6 @@ class DiscussionCurrentThread extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     discussion: state.discussion,
     userId: state.status.userId,
     permissions: state.status.permissions,
@@ -519,7 +549,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionCurrentThread);
+export default withTranslation(["messaging"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionCurrentThread)
+);

@@ -1,5 +1,4 @@
 import { ActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import { Reducer } from "redux";
 import { Announcement } from "~/generated/client";
 
@@ -11,10 +10,7 @@ export interface AnnouncerNavigationItemType {
   id: string | number;
   icon: string;
   color?: string;
-  /**
-   * text
-   */
-  text(i18n: i18nType): string;
+  text: string;
 }
 
 export type AnnouncerNavigationItemListType =
@@ -25,49 +21,25 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "active",
     id: "active",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.active");
-    },
+    text: "active",
   },
   {
-    location: "past",
-    id: "past",
+    location: "expired",
+    id: "expired",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.past");
-    },
+    text: "expired",
   },
   {
-    location: "mine",
-    id: "mine",
+    location: "own",
+    id: "own",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.mine");
-    },
+    text: "own",
   },
   {
     location: "archived",
     id: "archived",
     icon: "trash-alt",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.archived");
-    },
+    text: "archived",
   },
 ];
 

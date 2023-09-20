@@ -1,18 +1,17 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 import "~/sass/elements/add-producer.scss";
 import "~/sass/elements/wcag.scss";
 
 /**
  * AddProducerProps
  */
-interface AddProducerProps {
+interface AddProducerProps extends WithTranslation {
   producers?: Array<any>;
   title?: string;
   addProducer: (name: string) => any;
   removeProducer?: (index: number) => any;
   modifier?: string;
-  i18n: i18nType;
   wcagLabel?: string;
 }
 
@@ -26,10 +25,7 @@ interface AddProducerState {
 /**
  * AddProducer
  */
-export default class AddProducer extends React.Component<
-  AddProducerProps,
-  AddProducerState
-> {
+class AddProducer extends React.Component<AddProducerProps, AddProducerState> {
   /**
    * constructor
    * @param props props
@@ -105,6 +101,8 @@ export default class AddProducer extends React.Component<
    * @returns JSX.Elemenet
    */
   render() {
+    const { t } = this.props;
+
     return (
       <div
         className={`add-producer ${
@@ -112,9 +110,7 @@ export default class AddProducer extends React.Component<
         }`}
       >
         {this.props.title ? (
-          <h3 className="add-producer__title">
-            {this.props.i18n.text.get(this.props.title)}
-          </h3>
+          <h3 className="add-producer__title">{this.props.title}</h3>
         ) : null}
         <div className="add-producer__functionality-container">
           <div className="form__row">
@@ -129,9 +125,7 @@ export default class AddProducer extends React.Component<
                 className="visually-hidden"
                 htmlFor={this.props.wcagLabel && this.props.wcagLabel}
               >
-                {this.props.i18n.text.get(
-                  "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
-                )}
+                {t("content.add", { ns: "materials", context: "producers" })}
               </label>
               <input
                 id={this.props.wcagLabel && this.props.wcagLabel}
@@ -144,9 +138,10 @@ export default class AddProducer extends React.Component<
                 value={this.state.currentInputValue}
                 onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}
                 onChange={this.updateInputValue}
-                placeholder={this.props.i18n.text.get(
-                  "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
-                )}
+                placeholder={t("content.add", {
+                  ns: "materials",
+                  context: "producers",
+                })}
                 type="text"
               />
               <div
@@ -178,3 +173,7 @@ export default class AddProducer extends React.Component<
     );
   }
 }
+
+export default withTranslation(["workspace", "materials", "common"])(
+  AddProducer
+);
