@@ -321,7 +321,6 @@ class MultiSelectField extends React.Component<
     if (this.props.invisible) {
       return (
         <>
-          {/* TODO: lokalisointi*/}
           <ReadspeakerMessage
             text={t("messages.assignment", {
               ns: "readSpeaker",

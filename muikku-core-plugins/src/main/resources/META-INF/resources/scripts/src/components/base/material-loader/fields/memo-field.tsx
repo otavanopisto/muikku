@@ -370,7 +370,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     // and here the element itself
     return (
       <>
-        {/* TODO: lokalisointi*/}
         <ReadspeakerMessage
           text={t("messages.assignment", {
             ns: "readSpeaker",
