@@ -126,8 +126,7 @@ class StateOfStudies extends React.Component<
           this.props.i18n.t("labels.noEmail", { ns: "guider" })
         }
       >
-        {this.props.guider.currentStudent.basic &&
-        this.props.guider.currentStudent.basic.ceeposLine !== null &&
+        {this.props.guider.currentStudent.basic.ceeposLine !== null &&
         this.props.guider.currentStudent.basic.ceeposLine !== "aineopiskelu" ? (
           <CeeposButton />
         ) : null}
