@@ -67,10 +67,6 @@ export interface ProfileStatusType {
   curriculumName: string;
 }
 
-/* const workspaceIdNode = document.querySelector(
-  'meta[name="muikku:workspaceId"]'
-); */
-
 // _MUIKKU_LOCALE should be taken from the html
 /**
  * status

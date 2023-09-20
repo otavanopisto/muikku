@@ -97,11 +97,12 @@ class CheckContactInfoDialog extends React.Component<
           address,
           isOpen: true,
         });
-        // eslint-disable-next-line no-empty
       } catch (e) {
         if (!isMApiError(e)) {
           throw e;
         }
+
+        this.props.displayNotification(e.message, "error");
       }
     }
   }

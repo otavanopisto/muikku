@@ -384,7 +384,10 @@ export const guider: Reducer<GuiderType> = (
         newCurrent.labels = newCurrent.labels.concat([action.payload.label]);
       }
 
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFn
+       * @param student student
+       */
       const mapFn = function (student: GuiderStudentType) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
@@ -413,7 +416,10 @@ export const guider: Reducer<GuiderType> = (
         );
       }
 
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFn
+       * @param student student
+       */
       const mapFn = function (student: GuiderStudentType) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
@@ -434,7 +440,10 @@ export const guider: Reducer<GuiderType> = (
     }
 
     case "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS": {
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFnStudentLabel
+       * @param label label
+       */
       const mapFnStudentLabel = function (label: UserStudentFlag) {
         if (label.flagId === action.payload.labelId) {
           return Object.assign({}, label, action.payload.update);
@@ -442,7 +451,10 @@ export const guider: Reducer<GuiderType> = (
         return label;
       };
 
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFn
+       * @param student student
+       */
       const mapFn = function (student: GuiderStudentType) {
         return Object.assign({}, student, {
           flags: student.flags.map(mapFnStudentLabel),
@@ -464,12 +476,18 @@ export const guider: Reducer<GuiderType> = (
     }
 
     case "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS": {
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * filterFnStudentLabel
+       * @param label label
+       */
       const filterFnStudentLabel = function (label: UserStudentFlag) {
         return label.flagId !== action.payload;
       };
 
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFn
+       * @param student student
+       */
       const mapFn = function (student: GuiderStudentType) {
         return Object.assign({}, student, {
           flags: student.flags.filter(filterFnStudentLabel),
