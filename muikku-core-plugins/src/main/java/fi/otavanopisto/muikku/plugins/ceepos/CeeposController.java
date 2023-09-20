@@ -101,8 +101,8 @@ public class CeeposController {
     return ceeposAssessmentRequestOrderDAO.findById(id);
   }
 
-  public List<CeeposAssessmentRequestOrder> listAssessmentRequestOrdersByStudentAndWorkspace(String studentIdentifier, Long workspaceEntityId) {
-    return ceeposAssessmentRequestOrderDAO.listByStudentAndWorkspace(studentIdentifier, workspaceEntityId);
+  public List<CeeposAssessmentRequestOrder> listAssessmentRequestOrdersByStudentAndWorkspaceAndArchived(String studentIdentifier, Long workspaceEntityId, Boolean archived) {
+    return ceeposAssessmentRequestOrderDAO.listByStudentAndWorkspaceAndArchived(studentIdentifier, workspaceEntityId, archived);
   }
   
   public CeeposOrder findOrderByIdAndArchived(Long id, boolean archived) {

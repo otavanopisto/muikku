@@ -44,7 +44,7 @@ public class CeeposAssessmentRequestOrderDAO extends CorePluginsDAO<CeeposAssess
     return persist(order);
   }
   
-  public List<CeeposAssessmentRequestOrder> listByStudentAndWorkspace(String studentIdentifier, Long workspaceEntityId) {
+  public List<CeeposAssessmentRequestOrder> listByStudentAndWorkspaceAndArchived(String studentIdentifier, Long workspaceEntityId, Boolean archived) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -54,7 +54,8 @@ public class CeeposAssessmentRequestOrderDAO extends CorePluginsDAO<CeeposAssess
     criteria.where(
       criteriaBuilder.and(          
         criteriaBuilder.equal(root.get(CeeposAssessmentRequestOrder_.userIdentifier), studentIdentifier),
-        criteriaBuilder.equal(root.get(CeeposAssessmentRequestOrder_.workspaceEntityId), workspaceEntityId)
+        criteriaBuilder.equal(root.get(CeeposAssessmentRequestOrder_.workspaceEntityId), workspaceEntityId),
+        criteriaBuilder.equal(root.get(CeeposAssessmentRequestOrder_.archived), archived)
       )
     );
    
