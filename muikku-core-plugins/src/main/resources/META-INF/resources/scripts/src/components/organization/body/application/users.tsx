@@ -3,7 +3,7 @@ import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import UserPanel from "~/components/general/user-panel";
 import { bindActionCreators } from "redux";
-import { UsersType } from "~/reducers/main-function/users";
+import { UsersState } from "~/reducers/main-function/users";
 import {
   LoadUsersTriggerType,
   loadStudents,
@@ -16,7 +16,7 @@ import { AnyActionType } from "~/actions";
  * OrganizationUsersProps
  */
 interface OrganizationUsersProps extends WithTranslation {
-  users: UsersType;
+  users: UsersState;
   loadStaff: LoadUsersTriggerType;
   loadStudents: LoadUsersTriggerType;
 }

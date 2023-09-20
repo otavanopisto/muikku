@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import EnvironmentDialog from "~/components/general/environment-dialog";
-import { UserIndexType, ContactRecipientType } from "~/reducers/user-index";
+import { UserIndexState, ContactRecipientType } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,7 +19,7 @@ import {
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import { Role, StatusType } from "~/reducers/base/status";
+import { StatusType } from "~/reducers/base/status";
 import { outputCorrectDatePickerLocale } from "../../../helper-functions/locale";
 import equals = require("deep-equal");
 import {
@@ -41,7 +41,7 @@ type TargetItemsListType = Array<ContactRecipientType>;
 interface NewEditAnnouncementProps extends WithTranslation {
   children: React.ReactElement<any>;
   announcement?: Announcement;
-  userIndex: UserIndexType;
+  userIndex: UserIndexState;
   createAnnouncement: CreateAnnouncementTriggerType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   displayNotification: DisplayNotificationTriggerType;
@@ -392,7 +392,7 @@ class NewEditAnnouncement extends SessionStateComponent<
   createOrModifyAnnouncement(closeDialog: () => any) {
     this.setState({ locked: true });
 
-    if (this.props.status.role === Role.TEACHER) {
+    if (this.props.status.role === "TEACHER") {
       if (this.state.currentTarget.length <= 0) {
         this.props.displayNotification(
           this.props.i18n.t("validation.targetGroup", { ns: "messaging" }),
@@ -591,7 +591,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           context: "target",
         })}
         label={this.props.i18n.t("labels.target", { ns: "messaging" })}
-        required={this.props.status.role === Role.TEACHER}
+        required={this.props.status.role === "TEACHER"}
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">

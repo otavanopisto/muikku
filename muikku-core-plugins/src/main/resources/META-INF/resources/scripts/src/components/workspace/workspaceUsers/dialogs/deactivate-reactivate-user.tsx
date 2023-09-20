@@ -9,9 +9,9 @@ import {
   toggleActiveStateOfStudentOfWorkspace,
   ToggleActiveStateOfStudentOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
-import { ShortWorkspaceUserWithActiveStatusType } from "~/reducers/user-index";
 import { getName } from "~/util/modifiers";
 import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -19,7 +19,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * DeactivateReactivateUserDialogProps
  */
 interface DeactivateReactivateUserDialogProps extends WithTranslation {
-  user: ShortWorkspaceUserWithActiveStatusType;
+  user: WorkspaceStudent;
   toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType;
   workspace: WorkspaceType;
 

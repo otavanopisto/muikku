@@ -6,7 +6,7 @@ import { StatusType } from "~/reducers/base/status";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import {
   saveProfileProperty,
   SaveProfilePropertyTriggerType,
@@ -29,7 +29,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * VacationSettingsProps
  */
 interface VacationSettingsProps extends WithTranslation {
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   saveProfileProperty: SaveProfilePropertyTriggerType;
