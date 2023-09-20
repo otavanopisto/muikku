@@ -63,6 +63,8 @@ export type SupportActionMatriculationExamination =
 
 export type OpinionType = "studentOpinionOfSupport" | "schoolOpinionOfSupport";
 
+export type HistoryEntryType = "EDIT" | "VIEW";
+
 /**
  * The history of the updates made to the form
  */
@@ -91,6 +93,10 @@ export interface HistoryEntry {
    * The date when the update was made
    */
   date: Date;
+  /**
+   * The type of the history entry
+   */
+  type: HistoryEntryType | null;
 }
 
 /**
