@@ -437,7 +437,7 @@ class OrganizerField extends React.Component<
           <ReadspeakerMessage
             text={this.props.t("messages.assignment", {
               ns: "readSpeaker",
-              context: "sorter",
+              context: "organizer",
             })}
           />
           <span className="material-page__organizerfield-wrapper rs_skip_always">
@@ -508,7 +508,7 @@ class OrganizerField extends React.Component<
         <ReadspeakerMessage
           text={this.props.t("messages.assignment", {
             ns: "readSpeaker",
-            context: "sorter",
+            context: "organizer",
           })}
         />
         <span
